@@ -223,7 +223,7 @@ public class OutputTransformerTest {
           accessorNewVariable(scanner, context, valueSet, parent, "newVar", true);
       fail();
     } catch (IllegalArgumentException e) {
-      assertThat(e.getMessage().contains("is not a repeated field"));
+      assertThat(e.getMessage()).contains("is not a repeated field");
     }
   }
 
