@@ -126,7 +126,7 @@ public abstract class LongRunningConfig {
       return new AutoValue_LongRunningConfig(
           ProtoTypeRef.create(returnType),
           ProtoTypeRef.create(metadataType),
-          LRO_IMPLEMENTS_DELETE,
+          LRO_IMPLEMENTS_CANCEL,
           LRO_IMPLEMENTS_DELETE,
           initialPollDelay,
           pollDelayMultiplier,
