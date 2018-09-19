@@ -32,6 +32,7 @@
 
 use Google\ApiCore\ApiException;
 use Google\ApiCore\ValidationException;
+use Google\Auth\CredentialsLoader;
 use Google\Rpc\Code;
 use Google\Rpc\Status;
 use PHPUnit\Framework\TestCase;
@@ -93,7 +94,8 @@ class ShowcaseIntegrationTests extends TestCase
                                 'credentials' => null,
                             ]
                         ]
-                    ]
+                    ],
+                    'credentials' => CredentialsLoader::makeInsecureCredentials(),
                 ]);
             }
 
