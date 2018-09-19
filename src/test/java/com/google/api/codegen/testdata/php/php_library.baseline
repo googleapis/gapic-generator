@@ -1,13 +1,13 @@
 ============== file: composer.json ==============
 {
-  "name": "google/example-library",
+  "name": "google/cloud-example-library",
   "description": "Google Example Library API client for PHP",
   "license": "Apache-2.0",
   "minimum-stability": "stable",
   "autoload": {
     "psr-4": {
-      "Google\\Example\\Library\\": "src",
-      "Google\\Example\\Library\\Tests\\": "tests",
+      "Google\\Cloud\\Example\\Library\\": "src",
+      "Google\\Cloud\\Example\\Library\\Tests\\": "tests",
       "": "proto/src"
     }
   },
@@ -47,7 +47,7 @@
  * @experimental
  */
 
-namespace Google\Example\Library\V1\Gapic;
+namespace Google\Cloud\Example\Library\V1\Gapic;
 
 use Google\ApiCore\ApiException;
 use Google\ApiCore\Call;
@@ -2198,9 +2198,9 @@ class LibraryServiceGapicClient
  * @experimental
  */
 
-namespace Google\Example\Library\V1;
+namespace Google\Cloud\Example\Library\V1;
 
-use Google\Example\Library\V1\Gapic\LibraryServiceGapicClient;
+use Google\Cloud\Example\Library\V1\Gapic\LibraryServiceGapicClient;
 
 /**
  * {@inheritdoc}
@@ -3130,7 +3130,7 @@ try {
 //         className: "PublishSeriesRequestPiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeries" of type "OptionalArrayMethod"
 
 // [START canonical_core]
@@ -3145,6 +3145,7 @@ use \Google\Example\Library\V1\Shelf;
 $libraryServiceClient = new LibraryServiceClient();
 
 // $name = 'Math';
+// $edition = 123;
 $shelf = new Shelf();
 $shelf->setName($name);
 $books = [];
@@ -3153,7 +3154,7 @@ $seriesUuid = new SeriesUuid();
 $seriesUuid->setSeriesString($seriesString);
 
 try {
-    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
+    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
 } finally {
     $libraryServiceClient->close();
 }
@@ -3198,7 +3199,7 @@ $seriesUuid = new SeriesUuid();
 $edition = 2;
 
 try {
-    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
+    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
 } finally {
     $libraryServiceClient->close();
 }
@@ -3313,9 +3314,9 @@ try {
  * This file was automatically generated - do not edit!
  */
 
-namespace Google\Example\Library\Tests\System\V1;
+namespace Google\Cloud\Example\Library\Tests\System\V1;
 
-use Google\Example\Library\V1\LibraryServiceClient;
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\ApiCore\Testing\GeneratedTest;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\Book_Rating;
@@ -3372,9 +3373,9 @@ class LibraryServiceSmokeTest extends GeneratedTest
  * This file was automatically generated - do not edit!
  */
 
-namespace Google\Example\Library\Tests\Unit\V1;
+namespace Google\Cloud\Example\Library\Tests\Unit\V1;
 
-use Google\Example\Library\V1\LibraryServiceClient;
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\ApiCore\ApiException;
 use Google\ApiCore\BidiStream;
 use Google\ApiCore\CredentialsWrapper;

@@ -20,8 +20,7 @@ language_settings:
     # from the gRPC package name of the API to test the generated
     # code. See: https://github.com/googleapis/toolkit/issues/309
     package_name: Library::V1
-  php:
-    package_name: Google\Example\Library\V1
+  # Use default PHP package name.
   nodejs:
     package_name: library.v1
     domain_layer_location: google-cloud
@@ -97,10 +96,6 @@ interfaces:
       - name%book_id=$PROJECT_ID
       - book . rating=GOOD
     flattening_group_name: update_book_2
-  experimental_features:
-    iam_resources:
-    - type: google.example.library.v1.Book
-      field: name
   methods:
   - name: CreateShelf
     flattening:
@@ -249,8 +244,11 @@ interfaces:
         defaults:
         - shelf.name=Math
         - series_uuid.series_string=xyz3141592654
+        - edition=123
         attributes:
         - parameter: shelf.name
+          sample_argument: true
+        - parameter: edition
           sample_argument: true
       on_success:
       - loop:

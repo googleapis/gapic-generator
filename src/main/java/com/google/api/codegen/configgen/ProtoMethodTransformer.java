@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.configgen;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
+
 import com.google.api.BackendRule;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoMethodModel;
@@ -31,12 +33,16 @@ public class ProtoMethodTransformer implements MethodTransformer {
 
   @Override
   public String getTimeoutMillis(MethodModel method) {
-    Model model = ((ProtoMethodModel) method).getProtoMethod().getModel();
+    return String.valueOf(getTimeoutMillis((ProtoMethodModel) method));
+  }
+
+  public static long getTimeoutMillis(ProtoMethodModel method) {
+    Model model = method.getProtoMethod().getModel();
     for (BackendRule backendRule : model.getServiceConfig().getBackend().getRulesList()) {
       if (backendRule.getSelector().equals(method.getFullName())) {
-        return String.valueOf((int) Math.ceil(backendRule.getDeadline() * MILLIS_PER_SECOND));
+        return (long) Math.ceil(backendRule.getDeadline() * MILLIS_PER_SECOND);
       }
     }
-    return "60000";
+    return DEFAULT_MAX_RETRY_DELAY;
   }
 }

@@ -4120,6 +4120,8 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_discuss_book():
+  """Testing calling forms"""
+
   # [START turing_prog_request_streaming_bidi_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4128,17 +4130,19 @@ def sample_discuss_book():
   request = {'name': name}
 
   requests = [request]
-  for element in client.discuss_book(requests):
-      # process element
-      pass
-  print(response)
+  for response_item in client.discuss_book(requests):
+      print(response_item)
 
   # [END turing_prog_request_streaming_bidi_core]
 # [END turing_prog_request_streaming_bidi]
 
 def main():
-  # FIXME: Convert argv from strings to the correct types.
-  sample_discuss_book(*sys.argv[1:])
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  args = parser.parse_args()
+
+  sample_discuss_book()
 
 if __name__ == '__main__':
   main()
@@ -4171,6 +4175,8 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_find_related_books():
+  """Testing calling forms"""
+
   # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4181,16 +4187,20 @@ def sample_find_related_books():
   shelves = [shelves_element]
 
   # Iterate over all results
-  for element in client.find_related_books(names, shelves):
-      book = element
+  for response_item in client.find_related_books(names, shelves):
+      book = response_item
       print('Here\'s a related book: {}'.format(book))
 
   # [END sample_core]
 # [END sample]
 
 def main():
-  # FIXME: Convert argv from strings to the correct types.
-  sample_find_related_books(*sys.argv[1:])
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  args = parser.parse_args()
+
+  sample_find_related_books()
 
 if __name__ == '__main__':
   main()
@@ -4223,6 +4233,8 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_find_related_books():
+  """Testing calling forms"""
+
   # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4234,16 +4246,20 @@ def sample_find_related_books():
 
   # Iterate over results one page at a time
   for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
-      for element in page:
-          book = element
+      for response_item in page:
+          book = response_item
           print('Here\'s a related book: {}'.format(book))
 
   # [END sample_core]
 # [END sample]
 
 def main():
-  # FIXME: Convert argv from strings to the correct types.
-  sample_find_related_books(*sys.argv[1:])
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  args = parser.parse_args()
+
+  sample_find_related_books()
 
 if __name__ == '__main__':
   main()
@@ -4276,6 +4292,8 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_get_big_book():
+  """Testing calling forms"""
+
   # [START hopper_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4298,8 +4316,12 @@ def sample_get_big_book():
 # [END hopper]
 
 def main():
-  # FIXME: Convert argv from strings to the correct types.
-  sample_get_big_book(*sys.argv[1:])
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  args = parser.parse_args()
+
+  sample_get_big_book()
 
 if __name__ == '__main__':
   main()
@@ -4332,6 +4354,8 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_monolog_about_book():
+  """Testing calling forms"""
+
   # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4347,8 +4371,12 @@ def sample_monolog_about_book():
 # [END sample]
 
 def main():
-  # FIXME: Convert argv from strings to the correct types.
-  sample_monolog_about_book(*sys.argv[1:])
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  args = parser.parse_args()
+
+  sample_monolog_about_book()
 
 if __name__ == '__main__':
   main()
@@ -4381,12 +4409,15 @@ import sys
 from google.cloud.example import library_v1
 import six
 
-def sample_publish_series(name):
+def sample_publish_series(name, edition):
+  """Testing calling forms"""
+
   # [START canonical_core]
 
   client = library_v1.LibraryServiceClient()
 
   # name = 'Math'
+  # edition = 123
 
   if isinstance(name, six.binary_type):
     name = name.decode('utf-8')
@@ -4398,7 +4429,7 @@ def sample_publish_series(name):
   series_string = 'xyz3141592654'
   series_uuid = {'series_string': series_string}
 
-  response = client.publish_series(shelf, books, series_uuid)
+  response = client.publish_series(shelf, books, series_uuid, edition=edition)
   for title in response.book_names:
     print('Title: {}'.format(title))
   print('That\'s all!')
@@ -4407,8 +4438,14 @@ def sample_publish_series(name):
 # [END canonical]
 
 def main():
-  # FIXME: Convert argv from strings to the correct types.
-  sample_publish_series(*sys.argv[1:])
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--name', type=str, default='Math')
+  parser.add_argument('--edition', type=int, default=123)
+  args = parser.parse_args()
+
+  sample_publish_series(args.name, args.edition)
 
 if __name__ == '__main__':
   main()
@@ -4441,6 +4478,8 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_publish_series():
+  """Testing calling forms"""
+
   # [START canonical_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4462,8 +4501,12 @@ def sample_publish_series():
 # [END canonical]
 
 def main():
-  # FIXME: Convert argv from strings to the correct types.
-  sample_publish_series(*sys.argv[1:])
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  args = parser.parse_args()
+
+  sample_publish_series()
 
 if __name__ == '__main__':
   main()
@@ -4496,23 +4539,27 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_stream_books():
+  """Testing calling forms"""
+
   # [START lovelace_core]
 
   client = library_v1.LibraryServiceClient()
 
   name = 'BASIC'
 
-  for element in client.stream_books(name):
-      # process element
-      pass
-  print(response)
+  for response_item in client.stream_books(name):
+      print(response_item)
 
   # [END lovelace_core]
 # [END lovelace]
 
 def main():
-  # FIXME: Convert argv from strings to the correct types.
-  sample_stream_books(*sys.argv[1:])
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  args = parser.parse_args()
+
+  sample_stream_books()
 
 if __name__ == '__main__':
   main()
@@ -4545,21 +4592,25 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_stream_shelves():
+  """Testing calling forms"""
+
   # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
-  for element in client.stream_shelves():
-      # process element
-      pass
-  print(response)
+  for response_item in client.stream_shelves():
+      print(response_item)
 
   # [END sample_core]
 # [END sample]
 
 def main():
-  # FIXME: Convert argv from strings to the correct types.
-  sample_stream_shelves(*sys.argv[1:])
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  args = parser.parse_args()
+
+  sample_stream_shelves()
 
 if __name__ == '__main__':
   main()

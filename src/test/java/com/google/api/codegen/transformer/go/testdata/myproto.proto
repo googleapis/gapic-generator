@@ -4,6 +4,8 @@ package google.example.myproto.v1;
 
 import "google/longrunning/operations.proto";
 import "singleservice.proto";
+import "google/api/annotations.proto";
+import "google/rpc/code.proto";
 
 option go_package = "google.golang.org/genproto/googleapis/example/myproto/v1;myproto";
 
@@ -14,7 +16,11 @@ service Gopher {
   // Returns Operation, but doesn't have long_running config in gapic.yaml
   rpc NotLroMethod(SimpleRequest) returns (google.longrunning.Operation);
 
-  rpc RetryMethod(SimpleRequest) returns (SimpleResponse);
+  rpc RetryMethod(SimpleRequest) returns (SimpleResponse) {
+    option (google.api.retry) = {
+      codes: [INTERNAL, UNAVAILABLE]
+    };
+  }
   rpc PageStreamMethod(PageStreamRequest) returns (PageStreamResponse);
 
   rpc ServerStreamMethod(SimpleRequest) returns (stream SimpleResponse);

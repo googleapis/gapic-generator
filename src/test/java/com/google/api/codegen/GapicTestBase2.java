@@ -52,18 +52,23 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   protected ConfigProto gapicConfig;
   protected PackageMetadataConfig packageConfig;
   private final String baselineFile;
+  private final String protoPackage;
 
   public GapicTestBase2(
       TargetLanguage language,
       String[] gapicConfigFileNames,
       String packageConfigFileName,
       List<String> snippetNames,
-      String baselineFile) {
+      String baselineFile,
+      String protoPackage) {
     this.language = language;
     this.gapicConfigFileNames = gapicConfigFileNames;
     this.packageConfigFileName = packageConfigFileName;
     this.snippetNames = ImmutableList.copyOf(snippetNames);
     this.baselineFile = baselineFile;
+
+    // Represents the test value for the --package flag.
+    this.protoPackage = protoPackage;
 
     String dir = language.toString().toLowerCase();
     if ("python".equals(dir)) {
@@ -130,7 +135,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       TargetLanguage language,
       String[] gapicConfigFileNames,
       String packageConfigFileName,
-      String apiName) {
+      String apiName,
+      String protoPackage) {
     Model model = Model.create(Service.getDefaultInstance());
     GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
     PackageMetadataConfig packageConfig = PackageMetadataConfig.createDummyPackageMetadataConfig();
@@ -139,7 +145,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             Arrays.asList("surface", "test", "samples"), ArtifactType.LEGACY_GAPIC_AND_PACKAGE);
 
     List<CodeGenerator<?>> generators =
-        GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
+        GapicGeneratorFactory.create(
+            language, model, productConfig, packageConfig, artifactFlags, true);
 
     List<String> snippetNames = new ArrayList<>();
     for (CodeGenerator<?> generator : generators) {
@@ -149,7 +156,13 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     String baseline = language.toString().toLowerCase() + "_" + apiName + ".baseline";
 
     return new Object[] {
-      language, gapicConfigFileNames, packageConfigFileName, snippetNames, apiName, baseline
+      language,
+      gapicConfigFileNames,
+      packageConfigFileName,
+      snippetNames,
+      apiName,
+      baseline,
+      protoPackage
     };
   }
 
@@ -168,7 +181,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       return null;
     }
 
-    GapicProductConfig productConfig = GapicProductConfig.create(model, gapicConfig, language);
+    GapicProductConfig productConfig =
+        GapicProductConfig.create(model, gapicConfig, protoPackage, language);
     if (productConfig == null) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
@@ -184,7 +198,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
         new ArtifactFlags(enabledArtifacts, ArtifactType.LEGACY_GAPIC_AND_PACKAGE);
 
     List<CodeGenerator<?>> generators =
-        GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
+        GapicGeneratorFactory.create(
+            language, model, productConfig, packageConfig, artifactFlags, true);
 
     // Don't run any generators we're not testing.
     ArrayList<CodeGenerator<?>> testedGenerators = new ArrayList<>();
