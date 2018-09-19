@@ -81,17 +81,17 @@ public class OutputTransformerTest {
           accessorNewVariable(scanner, context, valueSet, parent, "response", false);
       fail();
     } catch (IllegalArgumentException e) {
-      assertThat(
-          e.getMessage().contains("cannot define variable response: it is a reserved keyword"));
+      assertThat(e.getMessage())
+          .contains("cannot define variable response: it is a reserved keyword");
     }
+    scanner = new Scanner("$resp");
     try {
       OutputView.VariableView variableView =
           accessorNewVariable(scanner, context, valueSet, parent, "response_item", false);
       fail();
     } catch (IllegalArgumentException e) {
-      assertThat(
-          e.getMessage()
-              .contains("cannot define variable response_item: it is a reserved keyword"));
+      assertThat(e.getMessage())
+          .contains("cannot define variable response_item: it is a reserved keyword");
     }
   }
 
