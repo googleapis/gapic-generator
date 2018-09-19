@@ -4409,7 +4409,7 @@ import sys
 from google.cloud.example import library_v1
 import six
 
-def sample_publish_series(name):
+def sample_publish_series(name, edition):
   """Testing calling forms"""
 
   # [START canonical_core]
@@ -4417,6 +4417,7 @@ def sample_publish_series(name):
   client = library_v1.LibraryServiceClient()
 
   # name = 'Math'
+  # edition = 123
 
   if isinstance(name, six.binary_type):
     name = name.decode('utf-8')
@@ -4428,7 +4429,7 @@ def sample_publish_series(name):
   series_string = 'xyz3141592654'
   series_uuid = {'series_string': series_string}
 
-  response = client.publish_series(shelf, books, series_uuid)
+  response = client.publish_series(shelf, books, series_uuid, edition=edition)
   for title in response.book_names:
     print('Title: {}'.format(title))
   print('That\'s all!')
@@ -4440,10 +4441,11 @@ def main():
   import argparse
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--name', default='')
+  parser.add_argument('--name', type=str, default='Math')
+  parser.add_argument('--edition', type=int, default=123)
   args = parser.parse_args()
 
-  sample_publish_series(args.name)
+  sample_publish_series(args.name, args.edition)
 
 if __name__ == '__main__':
   main()

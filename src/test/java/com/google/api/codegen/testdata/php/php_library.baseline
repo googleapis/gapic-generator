@@ -3130,7 +3130,7 @@ try {
 //         className: "PublishSeriesRequestPiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeries" of type "OptionalArrayMethod"
 
 // [START canonical_core]
@@ -3145,6 +3145,7 @@ use \Google\Example\Library\V1\Shelf;
 $libraryServiceClient = new LibraryServiceClient();
 
 // $name = 'Math';
+// $edition = 123;
 $shelf = new Shelf();
 $shelf->setName($name);
 $books = [];
@@ -3153,7 +3154,7 @@ $seriesUuid = new SeriesUuid();
 $seriesUuid->setSeriesString($seriesString);
 
 try {
-    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
+    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
 } finally {
     $libraryServiceClient->close();
 }
@@ -3198,7 +3199,7 @@ $seriesUuid = new SeriesUuid();
 $edition = 2;
 
 try {
-    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
+    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
 } finally {
     $libraryServiceClient->close();
 }
