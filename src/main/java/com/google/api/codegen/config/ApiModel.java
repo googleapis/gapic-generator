@@ -29,9 +29,6 @@ public interface ApiModel {
 
   DiagCollector getDiagCollector();
 
-  /** Return the service address. */
-  String getServiceAddress();
-
   /** Return the service port. TODO(cbao): Read the port from config. */
   Integer getServicePort();
 

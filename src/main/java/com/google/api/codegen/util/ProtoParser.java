@@ -24,6 +24,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.protobuf.Api;
+import java.util.List;
 import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
@@ -73,5 +74,15 @@ public class ProtoParser {
   public boolean isHttpGetMethod(Method method) {
     return !Strings.isNullOrEmpty(
         method.getDescriptor().getMethodAnnotation(AnnotationsProto.http).getGet());
+  }
+
+  /** The hostname for this service (e.g. "foo.googleapis.com"). */
+  public static String getDefaultHost(Interface service) {
+    return service.getProto().getOptions().getExtension(AnnotationsProto.defaultHost);
+  }
+
+  /** The hostname for this service (e.g. "foo.googleapis.com"). */
+  public static List<String> getOauth(Interface service) {
+    return service.getProto().getOptions().getExtension(AnnotationsProto.oauth).getScopesList();
   }
 }

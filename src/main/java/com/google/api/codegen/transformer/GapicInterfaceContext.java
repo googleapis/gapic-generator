@@ -27,6 +27,7 @@ import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.ProtoModels;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -325,5 +326,14 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   @Override
   public String serviceTitle() {
     return getApiModel().getTitle();
+  }
+
+  @Override
+  public String getDefaultHost() {
+    String hostFromProtoFile = ProtoParser.getDefaultHost(getInterface());
+    if (!Strings.isNullOrEmpty(hostFromProtoFile)) {
+      return hostFromProtoFile;
+    }
+    return getModel().getServiceConfig().getName();
   }
 }

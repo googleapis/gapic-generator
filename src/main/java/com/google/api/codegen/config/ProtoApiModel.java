@@ -45,11 +45,6 @@ public class ProtoApiModel implements ApiModel {
     return protoModel;
   }
 
-  @Override
-  public String getServiceAddress() {
-    return protoModel.getServiceConfig().getName();
-  }
-
   /** Return the service port. TODO(cbao): Read the port from config. */
   @Override
   public Integer getServicePort() {

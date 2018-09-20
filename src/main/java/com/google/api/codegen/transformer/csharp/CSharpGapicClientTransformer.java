@@ -346,7 +346,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     String name = context.getNamer().getApiSettingsClassName(context.getInterfaceConfig());
     settingsClass.name(name);
     ApiModel model = context.getApiModel();
-    settingsClass.serviceAddress(model.getServiceAddress());
+    settingsClass.serviceAddress(context.getDefaultHost());
     settingsClass.servicePort(model.getServicePort());
     settingsClass.authScopes(model.getAuthScopes());
     settingsClass.callSettings(generateCallSettings(context));
@@ -516,7 +516,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ApiModel model = context.getApiModel();
-    settingsDoc.serviceAddress(model.getServiceAddress());
+    settingsDoc.serviceAddress(context.getDefaultHost());
     settingsDoc.servicePort(model.getServicePort());
     settingsDoc.exampleApiMethodName(""); // Unused in C#
     settingsDoc.exampleApiMethodSettingsGetter(""); // Unused in C#
