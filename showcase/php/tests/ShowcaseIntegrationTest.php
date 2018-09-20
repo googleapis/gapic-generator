@@ -37,7 +37,7 @@ use Google\Rpc\Code;
 use Google\Rpc\Status;
 use PHPUnit\Framework\TestCase;
 
-class ShowcaseIntegrationTests extends TestCase
+class ShowcaseIntegrationTest extends TestCase
 {
     private static $grpcClient;
 
