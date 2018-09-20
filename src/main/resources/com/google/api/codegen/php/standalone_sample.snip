@@ -330,9 +330,8 @@
 @end
 
 @private processResponse(sample)
-    #{@sample.outputs}
     @if sample.outputs.size == 0
-        print($response);
+        printf($response . PHP_EOL);
     @else
         {@processOutputViews(sample.outputs)}
     @end
@@ -356,15 +355,10 @@
 @end
 
 @private processPrintView(view)
-    # Since numeric comparison seems to not work, we use explicit zero tests
     @if not(view.args.size)
-        print("{@view.format}");
+        printf("{@view.format}" . PHP_EOL);
     @else
-        @if view.format == "%s"
-            print({@variableField(view.args.get(0))});
-        @else
-            printf("{@view.format}", {@concatenatedArgs(view.args)});
-        @end
+        printf("{@view.format}" . PHP_EOL, {@concatenatedArgs(view.args)});
     @end
 @end
 
