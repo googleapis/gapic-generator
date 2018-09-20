@@ -222,6 +222,7 @@ anchor_run_php: &anchor_run_php
               sudo apt-get install -y zlib1g-dev
               sudo pecl install grpc ;
           fi
+          sudo echo 'extension="grpc.so"' >> /usr/local/lib/php/php.ini
         when: always
     - run:
         name: Copy pecl extensions to pecl-cache directory
@@ -282,7 +283,7 @@ anchor_run_php: &anchor_run_php
         command: |
           cd workspace/gapic-generator/showcase/php
           composer update
-          vendor/bin/phpunit tests/ShowcaseIntegrationTests.php
+          vendor/bin/phpunit
 
 # Test a NodeJS client if generation succeeded.
 anchor_test_nodejs_client: &anchor_test_nodejs_client
