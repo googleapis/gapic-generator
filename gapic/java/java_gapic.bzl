@@ -1,4 +1,4 @@
-load("//gapic:gapic.bzl", "gapic_srcjar", "proto_custom_srcjar")
+load("//gapic:gapic.bzl", "gapic_srcjar", "proto_custom_library")
 
 def _java_gapic_srcjar_impl(ctx):
     gapic_srcjar = ctx.file.gapic_srcjar
@@ -56,11 +56,11 @@ java_gapic_srcjar = rule(
     implementation = _java_gapic_srcjar_impl,
 )
 
-def resource_name_java_proto_library(name, deps, gapic_yaml, visibility = None):
+def java_resource_name_proto_library(name, deps, gapic_yaml, visibility = None):
     srcjar_target_name = "%s_srcjar" % name
     srcjar_output_suffix = ".srcjar"
 
-    proto_custom_srcjar(
+    proto_custom_library(
         name = srcjar_target_name,
         deps = deps,
         plugin = Label("@com_google_protoc_java_resource_names_plugin_repositories//:gapic_plugin"),

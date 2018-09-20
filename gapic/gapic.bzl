@@ -48,7 +48,7 @@ gapic_srcjar = rule(
     implementation = _gapic_srcjar_impl,
 )
 
-def _proto_custom_srcjar_impl(ctx):
+def _proto_custom_library_impl(ctx):
     imports = depset()
     srcs = depset()
     for dep in ctx.attr.deps:
@@ -106,7 +106,7 @@ def _proto_custom_srcjar_impl(ctx):
             arguments = [intermediate_output.path, output.path],
         )
 
-proto_custom_srcjar = rule(
+proto_custom_library = rule(
     attrs = {
         "deps": attr.label_list(mandatory = True, allow_empty = False, providers = ["proto"]),
         "plugin": attr.label(mandatory = False, executable = True, cfg = "host"),
@@ -128,11 +128,11 @@ proto_custom_srcjar = rule(
     outputs = {
         "output": "%{name}%{output_suffix}",
     },
-    implementation = _proto_custom_srcjar_impl,
+    implementation = _proto_custom_library_impl,
 )
 
 def proto_library_with_info(name, deps):
-    proto_custom_srcjar(
+    proto_custom_library(
         name = name,
         deps = deps,
         extra_args = [
