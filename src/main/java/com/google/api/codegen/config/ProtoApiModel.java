@@ -18,6 +18,7 @@ import com.google.api.Authentication;
 import com.google.api.AuthenticationRule;
 import com.google.api.Service;
 import com.google.api.codegen.gapic.ProtoModels;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
@@ -59,6 +60,10 @@ public class ProtoApiModel implements ApiModel {
   @Override
   public List<String> getAuthScopes() {
     Set<String> result = new TreeSet<>();
+
+    // Get scopes from protofile.
+    getInterfaces().forEach(i -> result.addAll(ProtoParser.getAuthScopes(i.getInterface())));
+
     Service config = protoModel.getServiceConfig();
     Authentication auth = config.getAuthentication();
     for (AuthenticationRule rule : auth.getRulesList()) {
