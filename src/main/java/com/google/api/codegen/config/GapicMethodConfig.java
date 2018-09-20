@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
-import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.ReleaseLevel;
@@ -26,6 +25,7 @@ import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
@@ -46,6 +46,7 @@ import org.threeten.bp.Duration;
  */
 @AutoValue
 public abstract class GapicMethodConfig extends MethodConfig {
+
   public Method getMethod() {
     return ((ProtoMethodModel) getMethodModel()).getProtoMethod();
   }
@@ -172,6 +173,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
             fieldNamePatterns,
             resourceNameConfigs,
             getOptionalFields(methodModel, methodConfigProto.getRequiredFieldsList()));
+    if (diagCollector.getErrorCount() > 0) {
+      return null;
+    }
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
@@ -194,14 +198,14 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    LongRunningConfig longRunningConfig = null;
-    if (!LongRunningConfigProto.getDefaultInstance().equals(methodConfigProto.getLongRunning())) {
-      longRunningConfig =
-          LongRunningConfig.createLongRunningConfig(
-              method.getModel(), diagCollector, methodConfigProto.getLongRunning());
-      if (longRunningConfig == null) {
-        error = true;
-      }
+    LongRunningConfig longRunningConfig =
+        LongRunningConfig.createLongRunningConfig(
+            method,
+            diagCollector,
+            methodConfigProto.getLongRunning(),
+            ProtoParser.getProtoParser());
+    if (diagCollector.getErrorCount() > 0) {
+      error = true;
     }
 
     List<String> headerRequestParams =
