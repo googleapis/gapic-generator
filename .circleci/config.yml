@@ -213,9 +213,8 @@ anchor_run_php: &anchor_run_php
     - run:
         name: Copy restored extensions into extensions directory
         command: |
-          sudo mkdir -p /tmp/pecl-grpc-cache
-          ls /tmp/pecl-grpc-cache
-          sudo cp -r /tmp/pecl-grpc-cache/* /usr/local/lib/php/extensions/no-debug-non-zts-20170718/
+          mkdir -p /tmp/pecl-grpc-cache
+          sudo cp -r /tmp/pecl-grpc-cache/. /usr/local/lib/php/extensions/no-debug-non-zts-20170718/
     - run:
         name: Install grpc pecl extension if grpc.so is missing
         command: >
@@ -226,7 +225,7 @@ anchor_run_php: &anchor_run_php
         when: always
     - run:
         name: Copy pecl extensions to pecl-cache directory
-        command: sudo cp -r /usr/local/lib/php/extensions/no-debug-non-zts-20170718/* /tmp/pecl-grpc-cache/
+        command: sudo cp -r /usr/local/lib/php/extensions/no-debug-non-zts-20170718/. /tmp/pecl-grpc-cache/
     - save_cache:
         key: pecl-grpc-v1.15.0
         paths:
