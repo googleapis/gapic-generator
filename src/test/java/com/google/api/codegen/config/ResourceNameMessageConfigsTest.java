@@ -221,4 +221,17 @@ public class ResourceNameMessageConfigsTest {
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
   }
+
+  @Test
+  public void testCreateFlatteningFromProtoFile() {
+    DiagCollector diagCollector = new BoundedDiagCollector();
+    FlatteningConfig flatteningConfig = FlatteningConfig.createFlattening(diagCollector)
+  }
+
+  @Test
+  public void testCreateFlatteningFromProtoFileAndGapicConfig() {
+    // MethodConfig.createFlattening();
+    DiagCollector diagCollector = new BoundedDiagCollector();
+    FlatteningConfig flatteningConfig = FlatteningConfig.createFlattening(diagCollector)
+  }
 }
