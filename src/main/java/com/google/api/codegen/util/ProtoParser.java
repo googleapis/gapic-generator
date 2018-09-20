@@ -40,7 +40,7 @@ import javax.annotation.Nullable;
 public class ProtoParser {
 
   /** Return the path, e.g. "shelves/*" for a resource field. Return null if no path found. */
-  public static String getResourcePath(Field element) {
+  public String getResourcePath(Field element) {
     Resource resource =
         (Resource) element.getOptionFields().get(AnnotationsProto.resource.getDescriptor());
     if (resource != null) {

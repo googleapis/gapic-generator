@@ -68,8 +68,8 @@ public class ProtoMethodTransformer implements MethodTransformer {
       List<FlatteningConfig> flatteningConfigs,
       MethodConfigProto methodConfigProto) {
     return
-        // Methods with few parameters can have a request object.
-        isRequestObjectMethod(method)
+    // Methods with few parameters can have a request object.
+    isRequestObjectMethod(method)
         // Code generators implementing overloads must provide them in addition to the
         // implementation taking the request object outright (to satisfy the requirement that
         // adding an overload is always non-breaking).

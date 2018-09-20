@@ -45,7 +45,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   public static SingleResourceNameConfig createSingleResourceName(
       DiagCollector diagCollector,
       CollectionConfigProto collectionConfigProto,
-      ProtoFile file,
+      @Nullable ProtoFile file,
       TargetLanguage language) {
     String namePattern = collectionConfigProto.getNamePattern();
     PathTemplate nameTemplate;
@@ -105,8 +105,8 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
    */
   @Nullable
   public static SingleResourceNameConfig createSingleResourceName(
-      DiagCollector diagCollector, Field resourceField, ProtoFile file) {
-    String namePattern = ProtoParser.getResourcePath(resourceField);
+      DiagCollector diagCollector, Field resourceField, ProtoFile file, ProtoParser protoParser) {
+    String namePattern = protoParser.getResourcePath(resourceField);
     PathTemplate nameTemplate;
     try {
       String nameTemplateString = escapePathTemplate(namePattern);
