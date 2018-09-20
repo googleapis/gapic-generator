@@ -266,8 +266,7 @@ jobs:
       - run:
           name: Checkout googleapis
           command: |
-            mkdir -p googleapis
-            git clone https://github.com/googleapis/googleapis.git googleapis
+            git clone --single-branch https://github.com/googleapis/googleapis.git googleapis
       - run:
           name: Setup showcase protos.
           command: |
@@ -282,7 +281,7 @@ jobs:
           command: |
             export RUNNING_IN_ARTMAN_DOCKER=True
             rm -rf gapic-generator/.git/
-            gapic-generator/gradlew -p gapic-generator fatJar createToolPaths install build -x test -x javadoc
+            gapic-generator/gradlew -p gapic-generator fatJar createToolPaths
       - persist_to_workspace:
           # Save the toolkit and googleapis installations in workspace for later CircleCI jobs.
           root: /tmp/workspace
