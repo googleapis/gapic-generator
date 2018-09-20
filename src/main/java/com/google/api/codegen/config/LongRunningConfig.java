@@ -73,13 +73,13 @@ public abstract class LongRunningConfig {
       LongRunningConfigProto longRunningConfigProto,
       ProtoParser protoParser) {
     LongRunningConfig longRunningConfig =
-        createLongRunningConfig(method, diagCollector, protoParser);
+        createLongRunningConfigFromProtoFile(method, diagCollector, protoParser);
     if (longRunningConfig != null) {
       return longRunningConfig;
     }
 
     if (!LongRunningConfigProto.getDefaultInstance().equals(longRunningConfigProto)) {
-      return LongRunningConfig.createLongRunningConfig(
+      return LongRunningConfig.createLongRunningConfigFromGapicConfig(
           method.getModel(), diagCollector, longRunningConfigProto);
     }
     return null;
@@ -87,7 +87,7 @@ public abstract class LongRunningConfig {
 
   /** Creates an instance of LongRunningConfig based on protofile annotations. */
   @Nullable
-  private static LongRunningConfig createLongRunningConfig(
+  private static LongRunningConfig createLongRunningConfigFromProtoFile(
       Method method, DiagCollector diagCollector, ProtoParser protoParser) {
 
     boolean error = false;
@@ -157,7 +157,7 @@ public abstract class LongRunningConfig {
 
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
-  private static LongRunningConfig createLongRunningConfig(
+  private static LongRunningConfig createLongRunningConfigFromGapicConfig(
       Model model, DiagCollector diagCollector, LongRunningConfigProto longRunningConfigProto) {
 
     boolean error = false;
