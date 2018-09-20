@@ -146,44 +146,35 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     SmokeTestConfig smokeTestConfig =
         createSmokeTestConfig(diagCollector, apiInterface, interfaceConfigProto);
 
-    ImmutableList<String> requiredConstructorParams;
-    if (interfaceConfigProto != null) {
-      requiredConstructorParams =
-          ImmutableList.copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
-      for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
-        if (!CONSTRUCTOR_PARAMS.contains(param)) {
-          diagCollector.addDiag(
-              Diag.error(SimpleLocation.TOPLEVEL, "Unsupported constructor param: %s", param));
-        }
+    ImmutableList<String> requiredConstructorParams =
+        ImmutableList.copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
+    for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
+      if (!CONSTRUCTOR_PARAMS.contains(param)) {
+        diagCollector.addDiag(
+            Diag.error(SimpleLocation.TOPLEVEL, "Unsupported constructor param: %s", param));
       }
-    } else {
-      requiredConstructorParams = ImmutableList.of();
     }
-
-    String manualDoc = "";
 
     ImmutableList.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableList.builder();
-    if (interfaceConfigProto != null) {
-      for (CollectionConfigProto collectionConfigProto :
-          interfaceConfigProto.getCollectionsList()) {
-        String entityName = collectionConfigProto.getEntityName();
-        ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
-        if (!(resourceName instanceof SingleResourceNameConfig)) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "Inconsistent configuration - single resource name %s specified for interface, "
-                      + " but was not found in GapicProductConfig configuration.",
-                  entityName));
-          return null;
-        }
-        resourcesBuilder.add((SingleResourceNameConfig) resourceName);
+    for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
+      String entityName = collectionConfigProto.getEntityName();
+      ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
+      if (!(resourceName instanceof SingleResourceNameConfig)) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Inconsistent configuration - single resource name %s specified for interface, "
+                    + " but was not found in GapicProductConfig configuration.",
+                entityName));
+        return null;
       }
-      manualDoc =
-          Strings.nullToEmpty(
-                  interfaceConfigProto.getLangDoc().get(language.toString().toLowerCase()))
-              .trim();
+      resourcesBuilder.add((SingleResourceNameConfig) resourceName);
     }
+    String manualDoc =
+        Strings.nullToEmpty(
+                interfaceConfigProto.getLangDoc().get(language.toString().toLowerCase()))
+            .trim();
+
     ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
 
     if (diagCollector.hasErrors()) {
@@ -206,8 +197,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static SmokeTestConfig createSmokeTestConfig(
       DiagCollector diagCollector,
       Interface apiInterface,
-      @Nullable InterfaceConfigProto interfaceConfigProto) {
-    if (interfaceConfigProto != null && interfaceConfigProto.hasSmokeTest()) {
+      InterfaceConfigProto interfaceConfigProto) {
+    if (interfaceConfigProto.hasSmokeTest()) {
       return SmokeTestConfig.createSmokeTestConfig(
           new ProtoInterfaceModel(apiInterface),
           interfaceConfigProto.getSmokeTest(),

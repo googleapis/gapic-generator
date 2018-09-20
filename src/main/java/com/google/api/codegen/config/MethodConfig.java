@@ -184,35 +184,33 @@ public abstract class MethodConfig {
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      @Nullable MethodConfigProto methodConfigProto,
+      MethodConfigProto methodConfigProto,
       MethodModel methodModel) {
     boolean missing = false;
     // Enforce unique flattening configs, in case proto annotations overlaps with configProto
     // flattening.
     Map<String, FlatteningConfig> flatteningConfigs = new LinkedHashMap<>();
 
-    if (methodConfigProto != null) {
-      for (FlatteningGroupProto flatteningGroup :
-          methodConfigProto.getFlattening().getGroupsList()) {
-        FlatteningConfig groupConfig =
-            FlatteningConfig.createFlattening(
-                diagCollector,
-                messageConfigs,
-                resourceNameConfigs,
-                methodConfigProto,
-                flatteningGroup,
-                methodModel);
-        if (groupConfig == null) {
-          missing = true;
-        } else {
-          flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
-        }
-      }
-      if (missing) {
-        return null;
+    for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
+      FlatteningConfig groupConfig =
+          FlatteningConfig.createFlattening(
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              flatteningGroup,
+              methodModel);
+      if (groupConfig == null) {
+        missing = true;
+      } else {
+        flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
       }
     }
-    // TODO get flattenings from proto annotations.
+    if (missing) {
+      return null;
+    }
+
+    // Get flattenings from proto annotations.
     if (methodModel instanceof ProtoMethodModel) {
       List<MethodSignature> methodSignatures =
           ProtoParser.getMethodSignatures((ProtoMethodModel) methodModel);
@@ -241,7 +239,7 @@ public abstract class MethodConfig {
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ResourceNameTreatment defaultResourceNameTreatment,
-      @Nullable ImmutableMap<String, String> fieldNamePatterns,
+      ImmutableMap<String, String> fieldNamePatterns,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       Iterable<FieldModel> fields) {
     ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();

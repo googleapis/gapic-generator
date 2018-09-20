@@ -142,8 +142,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       error = true;
     }
 
-    boolean hasRequestObjectMethod = configUtils.isRequestObjectMethod(methodModel);
-    hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
+    boolean hasRequestObjectMethod =
+        configUtils.isRequestObjectMethod(methodModel, flattening, methodConfigProto);
     if (hasRequestObjectMethod && method.getRequestStreaming()) {
       diagCollector.addDiag(
           Diag.error(
@@ -157,10 +157,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
 
-    ResourceNameTreatment defaultResourceNameTreatment = null;
-    if (methodConfigProto != null) {
-      defaultResourceNameTreatment = methodConfigProto.getResourceNameTreatment();
-    }
+    ResourceNameTreatment defaultResourceNameTreatment =
+        methodConfigProto.getResourceNameTreatment();
     if (defaultResourceNameTreatment == null
         || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
@@ -190,12 +188,11 @@ public abstract class GapicMethodConfig extends MethodConfig {
             getOptionalFields(methodModel, requiredFields));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
-    SampleSpec sampleSpec;
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
-    sampleSpec = new SampleSpec(methodConfigProto);
+    SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
 
-    String rerouteToGrpcInterface = null;
-    rerouteToGrpcInterface = Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
+    String rerouteToGrpcInterface =
+        Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
 
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;
     ReleaseLevel releaseLevel = ReleaseLevel.GA;
