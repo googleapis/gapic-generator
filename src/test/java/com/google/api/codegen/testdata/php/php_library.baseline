@@ -3161,6 +3161,7 @@ try {
         printf("Title: %s" . PHP_EOL, $title);
     }
     printf("That's all!" . PHP_EOL);
+    printf("series_uuid: %s" . PHP_EOL, $response->getSeriesUuid()->getSeriesBytes());
 } finally {
     $libraryServiceClient->close();
 }
@@ -3205,13 +3206,8 @@ $seriesUuid = new SeriesUuid();
 $edition = 2;
 
 try {
-<<<<<<< HEAD
     $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
-    print($response);
-=======
-    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
     printf("%s" . PHP_EOL, $response);
->>>>>>> wip
 } finally {
     $libraryServiceClient->close();
 }
