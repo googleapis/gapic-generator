@@ -81,8 +81,8 @@ public class ProtoParser {
     return service.getProto().getOptions().getExtension(AnnotationsProto.defaultHost);
   }
 
-  /** The hostname for this service (e.g. "foo.googleapis.com"). */
-  public static List<String> getOauth(Interface service) {
+  /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
+  public static List<String> getAuthScopes(Interface service) {
     return service.getProto().getOptions().getExtension(AnnotationsProto.oauth).getScopesList();
   }
 }
