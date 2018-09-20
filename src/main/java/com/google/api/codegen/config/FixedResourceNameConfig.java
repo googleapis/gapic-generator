@@ -49,7 +49,7 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
   public static FixedResourceNameConfig createFixedResourceNameConfig(
       DiagCollector diagCollector,
       FixedResourceNameValueProto fixedResourceNameValueProto,
-      ProtoFile file) {
+      @Nullable ProtoFile file) {
 
     String entityName = fixedResourceNameValueProto.getEntityName();
     String fixedValue = fixedResourceNameValueProto.getFixedValue();

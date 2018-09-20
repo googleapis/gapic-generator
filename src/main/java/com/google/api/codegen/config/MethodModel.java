@@ -97,7 +97,7 @@ public interface MethodModel {
 
   Iterable<? extends FieldModel> getOutputFields();
 
-  Iterable<? extends FieldModel> getResourceNameInputFields();
+  List<? extends FieldModel> getResourceNameInputFields();
 
   boolean isIdempotent();
 
