@@ -64,7 +64,7 @@ public class ProtoParser {
     return field.getParent().getSimpleName().toLowerCase();
   }
 
-  /** Get long running settings. * */
+  /** Get long running settings. */
   public OperationTypes getLongRunningOperation(Method method) {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
   }
