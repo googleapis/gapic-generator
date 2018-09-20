@@ -29,6 +29,11 @@ import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
+  private static ProtoParser protoParser = new ProtoParser();
+
+  public static ProtoParser getProtoParser() {
+    return protoParser;
+  }
 
   /** Return the path, e.g. "shelves/*" for a resource field. Return null if no path found. */
   public String getResourcePath(Field element) {
@@ -82,7 +87,7 @@ public class ProtoParser {
   }
 
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
-  public static List<String> getAuthScopes(Interface service) {
+  public List<String> getAuthScopes(Interface service) {
     return service.getProto().getOptions().getExtension(AnnotationsProto.oauth).getScopesList();
   }
 }
