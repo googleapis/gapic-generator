@@ -30,12 +30,14 @@ import org.threeten.bp.Duration;
 /** LongRunningConfig represents the long-running operation configuration for a method. */
 @AutoValue
 public abstract class LongRunningConfig {
-  private static final boolean LRO_IMPLEMENTS_CANCEL = true;
-  private static final boolean LRO_IMPLEMENTS_DELETE = true;
-  private static final int LRO_INITIAL_POLL_DELAY_MILLIS = 3000;
-  private static final double LRO_POLL_DELAY_MULTIPLIER = 1.3;
-  private static final int LRO_MAX_POLL_DELAY_MILLIS = 60000;
-  private static final int LRO_TOTAL_POLL_TIMEOUT_MILLS = 600000;
+
+  // Default values for LongRunningConfig fields.
+  static final boolean LRO_IMPLEMENTS_CANCEL = true;
+  static final boolean LRO_IMPLEMENTS_DELETE = true;
+  static final int LRO_INITIAL_POLL_DELAY_MILLIS = 3000;
+  static final double LRO_POLL_DELAY_MULTIPLIER = 1.3;
+  static final int LRO_MAX_POLL_DELAY_MILLIS = 60000;
+  static final int LRO_TOTAL_POLL_TIMEOUT_MILLS = 600000;
 
   /** Returns the message type returned from a completed operation. */
   public abstract TypeModel getReturnType();
@@ -64,14 +66,33 @@ public abstract class LongRunningConfig {
   /** Returns total polling timeout. */
   public abstract Duration getTotalPollTimeout();
 
-  /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
-  public static LongRunningConfig createLongRunningConfig(
-      Method method, DiagCollector diagCollector) {
+  static LongRunningConfig createLongRunningConfig(
+      Method method,
+      DiagCollector diagCollector,
+      LongRunningConfigProto longRunningConfigProto,
+      ProtoParser protoParser) {
+    LongRunningConfig longRunningConfig =
+        createLongRunningConfigFromProtoFile(method, diagCollector, protoParser);
+    if (longRunningConfig != null) {
+      return longRunningConfig;
+    }
+
+    if (!LongRunningConfigProto.getDefaultInstance().equals(longRunningConfigProto)) {
+      return LongRunningConfig.createLongRunningConfigFromGapicConfig(
+          method.getModel(), diagCollector, longRunningConfigProto);
+    }
+    return null;
+  }
+
+  /** Creates an instance of LongRunningConfig based on protofile annotations. */
+  @Nullable
+  private static LongRunningConfig createLongRunningConfigFromProtoFile(
+      Method method, DiagCollector diagCollector, ProtoParser protoParser) {
 
     boolean error = false;
     Model model = method.getModel();
-    OperationTypes operationTypes = ProtoParser.getLongRunningOperation(method);
+    OperationTypes operationTypes = protoParser.getLongRunningOperation(method);
     if (operationTypes == null
         || operationTypes.equals(operationTypes.getDefaultInstanceForType())) {
       return null;
@@ -116,7 +137,6 @@ public abstract class LongRunningConfig {
     }
 
     Duration initialPollDelay = Duration.ofMillis(LRO_INITIAL_POLL_DELAY_MILLIS);
-    double pollDelayMultiplier = LRO_POLL_DELAY_MULTIPLIER;
     Duration maxPollDelay = Duration.ofMillis(LRO_MAX_POLL_DELAY_MILLIS);
     Duration totalPollTimeout = Duration.ofMillis(LRO_TOTAL_POLL_TIMEOUT_MILLS);
 
@@ -126,10 +146,10 @@ public abstract class LongRunningConfig {
       return new AutoValue_LongRunningConfig(
           ProtoTypeRef.create(returnType),
           ProtoTypeRef.create(metadataType),
-          LRO_IMPLEMENTS_DELETE,
+          LRO_IMPLEMENTS_CANCEL,
           LRO_IMPLEMENTS_DELETE,
           initialPollDelay,
-          pollDelayMultiplier,
+          LRO_POLL_DELAY_MULTIPLIER,
           maxPollDelay,
           totalPollTimeout);
     }
@@ -137,7 +157,7 @@ public abstract class LongRunningConfig {
 
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
-  public static LongRunningConfig createLongRunningConfig(
+  private static LongRunningConfig createLongRunningConfigFromGapicConfig(
       Model model, DiagCollector diagCollector, LongRunningConfigProto longRunningConfigProto) {
 
     boolean error = false;

@@ -117,7 +117,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
 
     RetryCodesConfig retryCodesConfig =
         RetryCodesConfig.create(
-            diagCollector, interfaceConfigProto, apiInterface, new ProtoParser());
+            diagCollector, interfaceConfigProto, apiInterface, ProtoParser.getProtoParser());
 
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);

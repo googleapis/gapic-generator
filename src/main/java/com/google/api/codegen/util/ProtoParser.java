@@ -38,6 +38,11 @@ import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
+  private static ProtoParser protoParser = new ProtoParser();
+
+  public static ProtoParser getProtoParser() {
+    return protoParser;
+  }
 
   /** Return the path, e.g. "shelves/*" for a resource field. Return null if no path found. */
   public String getResourcePath(Field element) {
@@ -105,8 +110,8 @@ public class ProtoParser {
         .orElse(false);
   }
 
-  /** Get long running settings. * */
-  public static OperationTypes getLongRunningOperation(Method method) {
+  /** Get long running settings. */
+  public OperationTypes getLongRunningOperation(Method method) {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
   }
 
