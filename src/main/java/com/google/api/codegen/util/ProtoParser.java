@@ -22,6 +22,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.Strings;
 import com.google.longrunning.OperationTypes;
 import com.google.longrunning.OperationsProto;
@@ -55,6 +56,12 @@ public class ProtoParser {
       if (apiInterface != null) {
         return apiInterface.getFile().getFullName();
       }
+    } else {
+      ProtoFile root = (ProtoFile) model.getRoots().iterator().next();
+      if (root == null) {
+        return null;
+      }
+      return root.getFullName();
     }
     return null;
   }

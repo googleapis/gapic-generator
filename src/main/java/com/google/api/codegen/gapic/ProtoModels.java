@@ -16,7 +16,9 @@ package com.google.api.codegen.gapic;
 
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -29,11 +31,17 @@ public class ProtoModels {
 
   /** Gets the interfaces for the apis in the service config. */
   public static List<Interface> getInterfaces(Model model) {
-    return model
-        .getServiceConfig()
-        .getApisList()
-        .stream()
-        .map(api -> model.getSymbolTable().lookupInterface(api.getName()))
-        .collect(ImmutableList.toImmutableList());
+    if (model.getServiceConfig().getApisCount() == 0) {
+      List<Interface> interfaces = new LinkedList<>();
+      model.getRoots().forEach(r -> interfaces.addAll(((ProtoFile) r).getInterfaces()));
+      return interfaces;
+    } else {
+      return model
+          .getServiceConfig()
+          .getApisList()
+          .stream()
+          .map(api -> model.getSymbolTable().lookupInterface(api.getName()))
+          .collect(ImmutableList.toImmutableList());
+    }
   }
 }
