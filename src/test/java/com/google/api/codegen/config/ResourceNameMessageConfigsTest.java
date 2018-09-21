@@ -43,7 +43,6 @@ import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -147,8 +146,16 @@ public class ResourceNameMessageConfigsTest {
 
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            new LinkedList<>(), diagCollector, emptyConfigProto, defaultPackage, protoParser);
+            sourceProtoFiles, diagCollector, emptyConfigProto, defaultPackage, protoParser);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
+
+    assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(2);
+    ResourceNameMessageConfig bookMessageConfig =
+        messageConfigs.getResourceTypeConfigMap().get("library.Book");
+    assertThat(bookMessageConfig.fieldEntityMap().get("name")).isEqualTo("book");
+    ResourceNameMessageConfig shelfMessageConfig =
+        messageConfigs.getResourceTypeConfigMap().get("library.Shelf");
+    assertThat(shelfMessageConfig.fieldEntityMap().get("name")).isEqualTo("shelf");
   }
 
   @Test
@@ -356,10 +363,7 @@ public class ResourceNameMessageConfigsTest {
         .isEqualTo(ASTERISK_SHELF_PATH);
 
     FieldConfig bookConfig = shelfAndBookFlattening.getFlattenedFieldConfigs().get("book");
-    assertThat(bookConfig.getResourceNameTreatment()).isEqualTo(ResourceNameTreatment.STATIC_TYPES);
-    assertThat(((SingleResourceNameConfig) bookConfig.getResourceNameConfig()).getNamePattern())
-        .isEqualTo(ASTERISK_BOOK_PATH);
-    // Lists.newArrayList(shelfFlattening.getFlattenedFields());
-    // assertThat(shelfFlattening.getFlattenedFields())
+    assertThat(((ProtoTypeRef) bookConfig.getField().getType()).getProtoType().getMessageType())
+        .isEqualTo(bookType);
   }
 }

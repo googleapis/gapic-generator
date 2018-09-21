@@ -20,7 +20,6 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
@@ -267,43 +266,16 @@ public abstract class FieldConfig {
     }
   }
 
-  private static Function<FieldConfig, FieldModel> selectFieldFunction() {
-    return new Function<FieldConfig, FieldModel>() {
-      @Override
-      public FieldModel apply(FieldConfig fieldConfig) {
-        return fieldConfig.getField();
-      }
-    };
-  }
-
-  private static Function<Field, FieldModel> createFieldTypeFunction() {
-    return new Function<Field, FieldModel>() {
-      @Override
-      public FieldModel apply(Field field) {
-        return new ProtoField(field);
-      }
-    };
-  }
-
-  private static Function<FieldConfig, String> selectFieldLongNameFunction() {
-    return new Function<FieldConfig, String>() {
-      @Override
-      public String apply(FieldConfig fieldConfig) {
-        return fieldConfig.getField().getFullName();
-      }
-    };
-  }
-
   public static Iterable<FieldModel> toFieldTypeIterable(Iterable<FieldConfig> fieldConfigs) {
-    return Iterables.transform(fieldConfigs, selectFieldFunction());
+    return Iterables.transform(fieldConfigs, FieldConfig::getField);
   }
 
   public static Iterable<FieldModel> toFieldTypeIterableFromField(Iterable<Field> fieldConfigs) {
-    return Iterables.transform(fieldConfigs, createFieldTypeFunction());
+    return Iterables.transform(fieldConfigs, ProtoField::new);
   }
 
   public static ImmutableMap<String, FieldConfig> toFieldConfigMap(
       Iterable<FieldConfig> fieldConfigs) {
-    return Maps.uniqueIndex(fieldConfigs, selectFieldLongNameFunction());
+    return Maps.uniqueIndex(fieldConfigs, f -> f.getField().getFullName());
   }
 }
