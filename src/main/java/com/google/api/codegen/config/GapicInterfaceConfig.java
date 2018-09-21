@@ -53,7 +53,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static final String SERVICE_ADDRESS_PARAM = "service_address";
   private static final String SCOPES_PARAM = "scopes";
   private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
-      ImmutableSet.<String>of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
+      ImmutableSet.of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
 
   private static final ProtoMethodTransformer configUtils = new ProtoMethodTransformer();
 

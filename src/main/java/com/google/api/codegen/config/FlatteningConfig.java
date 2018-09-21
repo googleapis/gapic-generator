@@ -40,6 +40,7 @@ import javax.annotation.Nullable;
 /** FlatteningConfig represents a specific flattening configuration for a method. */
 @AutoValue
 public abstract class FlatteningConfig {
+
   // Maps the name of the parameter in this flattening to its FieldConfig.
   public abstract ImmutableMap<String, FieldConfig> getFlattenedFieldConfigs();
 
@@ -264,7 +265,6 @@ public abstract class FlatteningConfig {
       if (!Strings.isNullOrEmpty(resourceNameType)) {
         resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
       }
-      // TODO(andrealin): handle resource names in param.
       FieldConfig fieldConfig =
           FieldConfig.createMessageFieldConfig(
               messageConfigs, resourceNameConfigs, parameterField, resourceNameTreatment);

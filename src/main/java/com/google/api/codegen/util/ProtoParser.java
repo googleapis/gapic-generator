@@ -93,6 +93,7 @@ public class ProtoParser {
         .build();
   }
 
+  /** Return the names of required parameters of a method. */
   public static List<String> getRequiredFields(Method method) {
     MessageType inputMessage = method.getInputMessage();
     return inputMessage

@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
+
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -127,10 +129,14 @@ public abstract class GapicMethodConfig extends MethodConfig {
             methodConfigProto, diagCollector, retryParamsConfigNames);
     error |= (retryParamsName == null);
 
-    Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
-    if (timeout.toMillis() <= 0) {
-      timeout = Duration.ofMillis(ProtoMethodTransformer.getTimeoutMillis(methodModel));
+    long timeoutMillis = ProtoMethodTransformer.getTimeoutMillis(methodModel);
+    if (timeoutMillis <= 0) {
+      timeoutMillis = methodConfigProto.getTimeoutMillis();
     }
+    if (timeoutMillis <= 0) {
+      timeoutMillis = DEFAULT_MAX_RETRY_DELAY;
+    }
+    Duration timeout = Duration.ofMillis(timeoutMillis);
     if (timeout.toMillis() <= 0) {
       diagCollector.addDiag(
           Diag.error(
@@ -140,8 +146,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       error = true;
     }
 
-    boolean hasRequestObjectMethod = configUtils.isRequestObjectMethod(methodModel);
-    hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
+    boolean hasRequestObjectMethod =
+        configUtils.isRequestObjectMethod(methodModel, flattening, methodConfigProto);
     if (hasRequestObjectMethod && method.getRequestStreaming()) {
       diagCollector.addDiag(
           Diag.error(

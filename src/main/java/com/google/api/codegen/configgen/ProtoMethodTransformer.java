@@ -17,7 +17,9 @@ package com.google.api.codegen.configgen;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
 
 import com.google.api.BackendRule;
+import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.tools.framework.model.Model;
@@ -38,7 +40,7 @@ public class ProtoMethodTransformer implements MethodTransformer {
 
   @Override
   public String getTimeoutMillis(MethodModel method) {
-    return String.valueOf(getTimeoutMillis((ProtoMethodModel) method));
+    return String.valueOf(getTimeoutMillisOrDefault((ProtoMethodModel) method));
   }
 
   public static long getTimeoutMillis(ProtoMethodModel method) {
@@ -48,17 +50,42 @@ public class ProtoMethodTransformer implements MethodTransformer {
         return (long) Math.ceil(backendRule.getDeadline() * MILLIS_PER_SECOND);
       }
     }
-    return DEFAULT_MAX_RETRY_DELAY;
+    return -1;
+  }
+
+  /** Get the timeout value from the method settings, or return a default value if not found. */
+  public static long getTimeoutMillisOrDefault(ProtoMethodModel methodModel) {
+    long timeoutMillis = getTimeoutMillis(methodModel);
+    if (timeoutMillis <= 0) {
+      return DEFAULT_MAX_RETRY_DELAY;
+    }
+    return timeoutMillis;
   }
 
   @Override
   public boolean isRequestObjectMethod(MethodModel method) {
-    // use all fields for the following check; if there are ignored fields for flattening
+    // Use all fields for the following check; if there are ignored fields for flattening
     // purposes, the caller still needs a way to set them (by using the request object method).
     List<String> parameterList = getParameterList(method);
     int fieldCount = Iterables.size(method.getInputFields());
     return (fieldCount > REQUEST_OBJECT_METHOD_THRESHOLD || fieldCount != parameterList.size())
         && !method.getRequestStreaming();
+  }
+
+  public boolean isRequestObjectMethod(
+      MethodModel method,
+      List<FlatteningConfig> flatteningConfigs,
+      MethodConfigProto methodConfigProto) {
+    return
+    // Methods with few parameters can have a request object.
+    isRequestObjectMethod(method)
+        // Code generators implementing overloads must provide them in addition to the
+        // implementation taking the request object outright (to satisfy the requirement that
+        // adding an overload is always non-breaking).
+        || (flatteningConfigs != null && !flatteningConfigs.isEmpty())
+        // If the non-empty GAPIC config says so.
+        || (!methodConfigProto.equals(MethodConfigProto.getDefaultInstance())
+            && methodConfigProto.getRequestObjectMethod());
   }
 
   @Override
