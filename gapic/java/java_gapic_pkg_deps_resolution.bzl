@@ -99,11 +99,11 @@ def _reconstruct_artifact_id(file, group_overrides = {}):
 
     The aforementioned bazel documentation link: https://docs.bazel.build/versions/master/be/workspace.html#maven_jar
 
-    The implementation apporach is dictated by the fact that maven_jar rule and corresponding java_*
-    bazel rules drop the original artifact information (after downloading the jar is completelly
+    The implementation approach is dictated by the fact that maven_jar rule and corresponding java_*
+    bazel rules drop the original artifact information (after downloading the jar is completely
     "demavenized"). Also there is really no good way of retreiving the value of the "artifact"
     attribute value (passed to maven_jar rule) during analysis phase (note, native.existing_rule()
-    is not available durin analysis phase).
+    is not available during analysis phase).
 
     There is no support for regular expressions in Starlark, so all the string shenanigans are done
     the "old school" way.

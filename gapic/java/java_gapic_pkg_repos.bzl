@@ -2,7 +2,7 @@
 _GAX_VERSION = "1.31.0"
 _GRPC_VERSION = "1.13.1"
 _COMMON_PROTOS_VERSION = "1.12.0"
-_AUTH_AERSION = "0.11.0"
+_AUTH_VERSION = "0.11.0"
 
 # Generated libraries direct dependencies
 def java_gapic_direct_repositories(
@@ -167,13 +167,13 @@ def com_google_api_grpc_grpc_google_common_protos():
 def com_google_auth_google_auth_library_oauth2_http():
     native.maven_jar(
         name = "com_google_auth_google_auth_library_oauth2_http",
-        artifact = "com.google.auth:google-auth-library-oauth2-http:%s" % _AUTH_AERSION,
+        artifact = "com.google.auth:google-auth-library-oauth2-http:%s" % _AUTH_VERSION,
     )
 
 def com_google_auth_google_auth_library_credentials():
     native.maven_jar(
         name = "com_google_auth_google_auth_library_credentials",
-        artifact = "com.google.auth:google-auth-library-credentials:%s" % _AUTH_AERSION,
+        artifact = "com.google.auth:google-auth-library-credentials:%s" % _AUTH_VERSION,
     )
 
 def io_opencensus_opencensus_api():

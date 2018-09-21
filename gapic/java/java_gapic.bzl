@@ -9,9 +9,9 @@ def _java_gapic_srcjar_impl(ctx):
     output_dir_name = ctx.label.name
     output_dir_path = "%s/%s" % (output_main.dirname, output_dir_name)
 
-    # Note the script is more complicated thant it intuitively should be because of limitations
+    # Note the script is more complicated than it intuitively should be because of limitations
     # inherent to bazel execution environment: no absolute paths allowed, the generated artifacts
-    # must ensure uniquness within a build.
+    # must ensure uniqueness within a build.
     script = """
     unzip -q {gapic_srcjar} -d {output_dir_path}
     echo '--replace' > {output_dir_path}/{output_dir_name}.txt
@@ -19,8 +19,8 @@ def _java_gapic_srcjar_impl(ctx):
     {formatter} @{output_dir_path}/{output_dir_name}.txt
     pushd .
     cd {output_dir_path}
-    cd src/main/java && zip -q -r ../../../{output_dir_name}.srcjar ./* && cd ../../..
-    cd src/test/java && zip -q -r ../../../{output_dir_name}-tests.srcjar ./* && cd ../../..
+    cd src/main/java && zip -q -r ../../../{output_dir_name}.srcjar ./* && cd -
+    cd src/test/java && zip -q -r ../../../{output_dir_name}-tests.srcjar ./* && cd -
     popd
     mv {output_dir_path}/{output_dir_name}.srcjar {output_main}
     mv {output_dir_path}/{output_dir_name}-tests.srcjar {output_test}

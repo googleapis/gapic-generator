@@ -29,7 +29,6 @@ gapic_srcjar = rule(
         "src": attr.label(
             allow_single_file = True,
             mandatory = True,
-#            providers = [["custom_proto", "proto"]],
         ),
         "artifact_type": attr.string(mandatory = False, default = "GAPIC_CODE"),
         "language": attr.string(mandatory = False, default = "java"),
