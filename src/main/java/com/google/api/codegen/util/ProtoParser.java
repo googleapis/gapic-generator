@@ -78,7 +78,7 @@ public class ProtoParser {
   }
 
   /* Return a list of method signatures, aka flattenings, specified on a given method.
-  * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
+   * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
   public List<MethodSignature> getMethodSignatures(ProtoMethodModel method) {
     MethodSignature methodSignature =
         method

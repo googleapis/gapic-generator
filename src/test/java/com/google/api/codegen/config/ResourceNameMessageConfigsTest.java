@@ -39,17 +39,14 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 public class ResourceNameMessageConfigsTest {
@@ -251,47 +248,46 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(bookField.getType()).thenReturn(TypeRef.of(bookType));
     Mockito.when(bookField.getParent()).thenReturn(createShelvesRequest);
     Mockito.when(bookField.getSimpleName()).thenReturn("book");
-    ProtoField bookFieldModel = new ProtoField(bookField);
     Field nameField = Mockito.mock(Field.class);
     Mockito.when(nameField.getParent()).thenReturn(createShelvesRequest);
     Mockito.when(createShelvesRequest.getFullName()).thenReturn("library.CreateShelvesRequest");
     Mockito.when(nameField.getType()).thenReturn(TypeRef.fromPrimitiveName("string"));
     Mockito.when(nameField.getSimpleName()).thenReturn("name");
-    ProtoField nameFieldModel = new ProtoField(nameField);
     Mockito.when(createShelvesRequest.lookupField("book")).thenReturn(bookField);
     Mockito.when(createShelvesRequest.lookupField("name")).thenReturn(nameField);
 
     // ProtoFile contributes flattenings {["name", "book"], ["name"]}.
-    Mockito.when(protoParser.getMethodSignatures(methodModel)).thenReturn(
-        Arrays.asList(
-            MethodSignature.newBuilder()
-                .addFields("name")
-                .addFields("book").build(),
-            MethodSignature.newBuilder()
-                .addFields("name").build()));
+    Mockito.when(protoParser.getMethodSignatures(methodModel))
+        .thenReturn(
+            Arrays.asList(
+                MethodSignature.newBuilder().addFields("name").addFields("book").build(),
+                MethodSignature.newBuilder().addFields("name").build()));
 
     String flatteningConfigName = "flatteningGroupName";
     // Gapic config contributes flattenings {["book"]}.
-    MethodConfigProto methodConfigProto = MethodConfigProto.newBuilder()
-        .setName(createShelfMethodName)
-        .setFlattening(
-            FlatteningConfigProto.newBuilder()
-                .addGroups(
-                    FlatteningGroupProto.newBuilder()
-                        .addAllParameters(Arrays.asList("book"))
-                        .setFlatteningGroupName(flatteningConfigName)))
-        .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
-        .build();
-    InterfaceConfigProto interfaceConfigProto = configProto.toBuilder()
-        .getInterfaces(0).toBuilder()
-            .addMethods(methodConfigProto).build();
+    MethodConfigProto methodConfigProto =
+        MethodConfigProto.newBuilder()
+            .setName(createShelfMethodName)
+            .setFlattening(
+                FlatteningConfigProto.newBuilder()
+                    .addGroups(
+                        FlatteningGroupProto.newBuilder()
+                            .addAllParameters(Arrays.asList("book"))
+                            .setFlatteningGroupName(flatteningConfigName)))
+            .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
+            .build();
+    InterfaceConfigProto interfaceConfigProto =
+        configProto.toBuilder().getInterfaces(0).toBuilder().addMethods(methodConfigProto).build();
 
-    configProto = configProto.toBuilder()
-        .setInterfaces(0, interfaceConfigProto)
-        .addResourceNameGeneration(ResourceNameMessageConfigProto.newBuilder()
-            .setMessageName("CreateShelvesRequest")
-            .putFieldEntityMap("name", "shelf"))
-        .build();
+    configProto =
+        configProto
+            .toBuilder()
+            .setInterfaces(0, interfaceConfigProto)
+            .addResourceNameGeneration(
+                ResourceNameMessageConfigProto.newBuilder()
+                    .setMessageName("CreateShelvesRequest")
+                    .putFieldEntityMap("name", "shelf"))
+            .build();
 
     DiagCollector diagCollector = new BoundedDiagCollector();
     ResourceNameMessageConfigs messageConfigs =
@@ -301,25 +297,30 @@ public class ResourceNameMessageConfigsTest {
         GapicProductConfig.createResourceNameConfigs(
             diagCollector, configProto, sourceProtoFiles, TargetLanguage.CSHARP, protoParser);
 
-    List<FlatteningConfig> flatteningConfigs = FlatteningConfig.createFlatteningConfigs(
-        diagCollector,
-        messageConfigs,
-        resourceNameConfigs,
-        methodConfigProto,
-        methodModel,
-        protoParser);
+    List<FlatteningConfig> flatteningConfigs =
+        FlatteningConfig.createFlatteningConfigs(
+            diagCollector,
+            messageConfigs,
+            resourceNameConfigs,
+            methodConfigProto,
+            methodModel,
+            protoParser);
     assertThat(flatteningConfigs).isNotNull();
     assertThat(flatteningConfigs.size()).isEqualTo(3);
 
-    Optional<FlatteningConfig> flatteningConfigFromGapicConfig = flatteningConfigs.stream()
-        .filter(f -> flatteningConfigName.equals(f.getFlatteningName())).findAny();
+    // Check the flattening from the Gapic config.
+    Optional<FlatteningConfig> flatteningConfigFromGapicConfig =
+        flatteningConfigs
+            .stream()
+            .filter(f -> flatteningConfigName.equals(f.getFlatteningName()))
+            .findAny();
     assertThat(flatteningConfigFromGapicConfig.isPresent()).isTrue();
     List<String> paramsFromGapicConfigFlattening = new ArrayList<>();
-    flatteningConfigFromGapicConfig.get().getFlattenedFields()
+    flatteningConfigFromGapicConfig
+        .get()
+        .getFlattenedFields()
         .forEach(f -> paramsFromGapicConfigFlattening.add(f.getSimpleName()));
     assertThat(paramsFromGapicConfigFlattening).isEqualTo(Arrays.asList("book"));
-
-
     // assertThat(flatteningConfigs.get(0))
   }
 }
