@@ -16,11 +16,13 @@ package com.google.api.codegen.config;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.MethodSignature;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.codegen.InterfaceConfigProto;
+import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.util.ProtoParser;
@@ -29,14 +31,17 @@ import com.google.api.tools.framework.model.Diag.Kind;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 public class ResourceNameMessageConfigsTest {
@@ -223,15 +228,51 @@ public class ResourceNameMessageConfigsTest {
   }
 
   @Test
-  public void testCreateFlatteningFromProtoFile() {
-    DiagCollector diagCollector = new BoundedDiagCollector();
-    // FlatteningConfig flatteningConfig = FlatteningConfig.createFlatteningConfigs(diagCollector);
-  }
+  public void testCreateFlattenings() {
+    Method createShelvesMethod = Mockito.mock(Method.class);
+    MessageType createShelvesRequest = Mockito.mock(MessageType.class);
+    Mockito.when(createShelvesMethod.getInputType()).thenReturn(TypeRef.of(createShelvesRequest));
+    ProtoMethodModel methodModel = new ProtoMethodModel(createShelvesMethod);
+    Mockito.when(protoParser.getMethodSignatures(methodModel)).thenReturn(
+        Arrays.asList(
+            MethodSignature.newBuilder()
+                .addFields("name")
+                .addFields("book")
+                .addAdditionalSignatures(
+                    MethodSignature.newBuilder()
+                        .addFields("name")).build()
+            ));
+    // A definition of a client library method signature.
+    // message MethodSignature {
+    //   // The list of fields which are considered to be part of the signature,
+    //   // in the order in which they are expected to appear.
+    //   repeated string fields = 1;
+    //
+    //   // The name of the function, if it should intentionally differ from the
+    //   // name of the RPC.
+    //   string function_name = 2;
+    //
+    //   // Additional signatures also applicable to the method.
+    //   repeated MethodSignature additional_signatures = 3;
+    // }
 
-  @Test
-  public void testCreateFlatteningFromProtoFileAndGapicConfig() {
-    // MethodConfig.createFlatteningConfigs();
     DiagCollector diagCollector = new BoundedDiagCollector();
-    // FlatteningConfig flatteningConfig = FlatteningConfig.createFlatteningConfigs(diagCollector);
+    ResourceNameMessageConfigs messageConfigs =
+        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
+            sourceProtoFiles, diagCollector, configProto, DEFAULT_PACKAGE, protoParser);
+    Map<String, ResourceNameConfig> resourceNameConfigs =
+        GapicProductConfig.createResourceNameConfigs(
+            diagCollector, configProto, sourceProtoFiles, TargetLanguage.CSHARP, protoParser);
+    MethodConfigProto methodConfigProto = MethodConfigProto.newBuilder()
+        .
+        .build();
+    FlatteningConfig flatteningConfig = FlatteningConfig.createFlatteningConfigs(
+        diagCollector,
+        messageConfigs,
+        resourceNameConfigs,
+        methodConfigProto,
+        );
+    // MethodConfigProto methodConfigProto,
+    // MethodModel methodModel
   }
 }
