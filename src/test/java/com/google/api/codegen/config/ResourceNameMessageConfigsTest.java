@@ -225,13 +225,13 @@ public class ResourceNameMessageConfigsTest {
   @Test
   public void testCreateFlatteningFromProtoFile() {
     DiagCollector diagCollector = new BoundedDiagCollector();
-    FlatteningConfig flatteningConfig = FlatteningConfig.createFlattening(diagCollector)
+    // FlatteningConfig flatteningConfig = FlatteningConfig.createFlatteningConfigs(diagCollector);
   }
 
   @Test
   public void testCreateFlatteningFromProtoFileAndGapicConfig() {
-    // MethodConfig.createFlattening();
+    // MethodConfig.createFlatteningConfigs();
     DiagCollector diagCollector = new BoundedDiagCollector();
-    FlatteningConfig flatteningConfig = FlatteningConfig.createFlattening(diagCollector)
+    // FlatteningConfig flatteningConfig = FlatteningConfig.createFlatteningConfigs(diagCollector);
   }
 }
