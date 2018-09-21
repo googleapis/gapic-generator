@@ -2762,14 +2762,14 @@ try {
     foreach ($requests as $request) {
         $stream->write($request);
         // if required, read a single response from the stream
-        $element = $stream->read();
-        // doSomethingWith($element)
+        $responseItem = $stream->read();
+        printf("%s" . PHP_EOL, $responseItem);
     }
     $stream->closeWrite();
-    $element = $stream->read();
-    while (!is_null($element)) {
-        // doSomethingWith($element)
-        $element = $stream->read();
+    $responseItem = $stream->read();
+    while (!is_null($responseItem)) {
+        printf("%s" . PHP_EOL, $responseItem);
+        $responseItem = $stream->read();
     }
 } finally {
     $libraryServiceClient->close();
@@ -2817,8 +2817,8 @@ try {
     $requests = [$request];
     $stream = $libraryServiceClient->discussBook();
     $stream->writeAll($requests);
-    foreach ($stream->closeWriteAndReadAll() as $element) {
-        // doSomethingWith($element);
+    foreach ($stream->closeWriteAndReadAll() as $responseItem) {
+        printf("%s" . PHP_EOL, $responseItem);
     }
 } finally {
     $libraryServiceClient->close();
@@ -2862,8 +2862,9 @@ $shelves = [$shelvesElement];
 try {
     // Iterate through all elements
     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
-    foreach ($pagedResponse->iterateAllElements() as $element) {
-        // doSomethingWith($element);
+    foreach ($pagedResponse->iterateAllElements() as $responseItem) {
+        $book = $responseItem;
+        printf("Here's a related book: %s" . PHP_EOL, $book);
     }
 } finally {
     $libraryServiceClient->close();
@@ -2908,8 +2909,9 @@ try {
     // Iterate over pages of elements
     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
     foreach ($pagedResponse->iteratePages() as $page) {
-        foreach ($page as $element) {
-            // doSomethingWith($element);
+        foreach ($page as $responseItem) {
+            $book = $responseItem;
+            printf("Here's a related book: %s" . PHP_EOL, $book);
         }
     }
 } finally {
@@ -2959,8 +2961,8 @@ try {
         $newOperationResponse->reload();
     }
     if ($newOperationResponse->operationSucceeded()) {
-      $result = $newOperationResponse->getResult();
-      // doSomethingWith($result)
+      $response = $newOperationResponse->getResult();
+      printf("%s" . PHP_EOL, $response);
     } else {
       $error = $newOperationResponse->getError();
       // handleError($error)
@@ -3005,8 +3007,8 @@ try {
     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
     $operationResponse->pollUntilComplete();
     if ($operationResponse->operationSucceeded()) {
-        $result = $operationResponse->getResult();
-        // doSomethingWith($result)
+        $response = $operationResponse->getResult();
+        printf("%s" . PHP_EOL, $response);
     } else {
         $error = $operationResponse->getError();
         // handleError($error)
@@ -3058,8 +3060,8 @@ try {
     foreach ($requests as $request) {
         $stream->write($request);
     }
-    $result = $stream->readResponse();
-    // doSomethingWith($result)
+    $response = $stream->readResponse();
+    printf("%s" . PHP_EOL, $response);
 } finally {
     $libraryServiceClient->close();
 }
@@ -3104,8 +3106,8 @@ try {
     // Write data to server and wait for a response
     $requests = [$request];
     $stream = $libraryServiceClient->monologAboutBook();
-    $result = $stream->writeAllAndReadResponse($requests);
-    // doSomethingWith($result)
+    $response = $stream->writeAllAndReadResponse($requests);
+    printf("%s" . PHP_EOL, $response);
 } finally {
     $libraryServiceClient->close();
 }
@@ -3155,6 +3157,11 @@ $seriesUuid->setSeriesString($seriesString);
 
 try {
     $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+    foreach ($response->getBookNames() as $title) {
+        printf("Title: %s" . PHP_EOL, $title);
+    }
+    printf("That's all!" . PHP_EOL);
+    printf("series_uuid: %s" . PHP_EOL, $response->getSeriesUuid()->getSeriesBytes());
 } finally {
     $libraryServiceClient->close();
 }
@@ -3200,6 +3207,7 @@ $edition = 2;
 
 try {
     $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+    printf("%s" . PHP_EOL, $response);
 } finally {
     $libraryServiceClient->close();
 }
@@ -3239,8 +3247,8 @@ $name = 'BASIC';
 try {
     // Read all responses until the stream is complete
     $stream = $libraryServiceClient->streamBooks($name);
-    foreach ($stream->readAll() as $element) {
-        // doSomethingWith($element);
+    foreach ($stream->readAll() as $responseItem) {
+        printf("%s" . PHP_EOL, $responseItem);
     }
 } finally {
     $libraryServiceClient->close();
@@ -3279,8 +3287,8 @@ $libraryServiceClient = new LibraryServiceClient();
 try {
     // Read all responses until the stream is complete
     $stream = $libraryServiceClient->streamShelves();
-    foreach ($stream->readAll() as $element) {
-        // doSomethingWith($element);
+    foreach ($stream->readAll() as $responseItem) {
+        printf("%s" . PHP_EOL, $responseItem);
     }
 } finally {
     $libraryServiceClient->close();
