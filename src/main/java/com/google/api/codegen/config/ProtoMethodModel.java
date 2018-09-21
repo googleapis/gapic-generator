@@ -209,7 +209,7 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public Iterable<ProtoField> getResourceNameInputFields() {
+  public List<ProtoField> getResourceNameInputFields() {
     return new ArrayList<>();
   }
 
