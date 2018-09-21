@@ -43,27 +43,32 @@
 
 
     @end
-    @if sampleFile.extraInfo.hasMissingDefaultOptions
-        $options = [
-            @if sampleFile.extraInfo.missingDefaultServiceAddress
-                'serviceAddress' => 'my-service-address',
-            @end
-            @if sampleFile.extraInfo.missingDefaultServiceScopes
-                'credentialsConfig' => [
-                    'scopes' => ['my-service-scope'],
-                ],
-            @end
-            ];
-        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
+    {@apiMethod.name}
+    {@sample.initCode.argDefaultParams}
+    {@sample.initCode.argDefaultLines}
+    function sample_{@apiMethod.name}({@formalArgs(sample.initCode.argDefaultParams)})
+    {
+        @if sampleFile.extraInfo.hasMissingDefaultOptions
+            $options = [
+                @if sampleFile.extraInfo.missingDefaultServiceAddress
+                    'serviceAddress' => 'my-service-address',
+                @end
+                @if sampleFile.extraInfo.missingDefaultServiceScopes
+                    'credentialsConfig' => [
+                        'scopes' => ['my-service-scope'],
+                    ],
+                @end
+                ];
+            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
 
 
-    @else
-        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
+        @else
+            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
 
 
-    @end
-    @if sample.initCode.lines
-        {@initCode(sample.initCode, apiMethod.apiVariableName)}
+        @end
+        @if sample.initCode.lines
+            {@initCode(sample.initCode, apiMethod.apiVariableName)}
 
 
     @end
@@ -92,15 +97,47 @@
         @default
             $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
         @end
-    } finally {
-        @if sampleFile.extraInfo.hasMissingDefaultOptions
-            if (isset(${@apiMethod.apiVariableName})) {
+        try {
+            @switch sample.callingForm
+            @case "LongRunningRequest"
+                {@longRunningSampleCode(apiMethod)}
+            @case "LongRunningRequestAsync"
+                {@longRunningAsyncSampleCode(apiMethod)}
+            @case "Request"
+                {@requestSampleCode(apiMethod)}
+            @case "RequestPaged"
+                {@pagedSampleCode(apiMethod)}
+            @case "RequestPagedAll"
+                {@pagedAllSampleCode(apiMethod)}
+            @case "RequestStreamingBidi"
+                {@bidiStreamingSampleCode(apiMethod)}
+            @case "RequestStreamingBidiAsync"
+                {@bidiStreamingAsyncSampleCode(apiMethod)}
+            @case "RequestStreamingClient"
+                {@clientStreamingSampleCode(apiMethod)}
+            @case "RequestStreamingClientAsync"
+                {@clientStreamingAsyncSampleCode(apiMethod)}
+            @case "RequestStreamingServer"
+                {@serverStreamingSampleCode(apiMethod)}
+            @default
+                $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+            @end
+        } finally {
+            @if sampleFile.extraInfo.hasMissingDefaultOptions
+                if (isset(${@apiMethod.apiVariableName})) {
+                    ${@apiMethod.apiVariableName}->close();
+                }
+            @else
                 ${@apiMethod.apiVariableName}->close();
-            }
-        @else
-            ${@apiMethod.apiVariableName}->close();
-        @end
+            @end
+        }
     }
+@end
+
+@private formalArgs(sampleArgs)
+  @join param : sampleArgs on ", "
+    {@param.identifier}
+  @end
 @end
 
 @private methodCallSampleCode(apiMethod)
