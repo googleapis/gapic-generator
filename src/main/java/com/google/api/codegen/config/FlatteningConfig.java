@@ -56,7 +56,8 @@ public abstract class FlatteningConfig {
         messageConfigs,
         resourceNameConfigs,
         methodConfigProto,
-        methodModel);
+        methodModel,
+        new ProtoParser());
   }
 
   @VisibleForTesting
