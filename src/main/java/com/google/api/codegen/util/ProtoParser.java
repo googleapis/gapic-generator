@@ -23,11 +23,18 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
+import com.google.longrunning.OperationTypes;
+import com.google.longrunning.OperationsProto;
 import com.google.protobuf.Api;
 import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
+  private static ProtoParser protoParser = new ProtoParser();
+
+  public static ProtoParser getProtoParser() {
+    return protoParser;
+  }
 
   /** Return the path, e.g. "shelves/*" for a resource field. Return null if no path found. */
   public String getResourcePath(Field element) {
@@ -55,6 +62,11 @@ public class ProtoParser {
   /** Return the entity name, e.g. "shelf" for a resource field. */
   public static String getResourceEntityName(Field field) {
     return field.getParent().getSimpleName().toLowerCase();
+  }
+
+  /** Get long running settings. */
+  public OperationTypes getLongRunningOperation(Method method) {
+    return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
   }
 
   @Nullable
