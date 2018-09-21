@@ -20,7 +20,6 @@ import com.google.api.Resource;
 import com.google.api.Retry;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.configgen.transformer.LanguageTransformer;
-import com.google.api.resourcenames.ResourceNameType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;

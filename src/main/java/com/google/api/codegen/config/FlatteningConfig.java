@@ -105,7 +105,12 @@ public abstract class FlatteningConfig {
         }
         FlatteningConfig groupConfig =
             FlatteningConfig.createFlatteningFromProtoFile(
-                diagCollector, messageConfigs, resourceNameConfigs, signature, methodModel, protoParser);
+                diagCollector,
+                messageConfigs,
+                resourceNameConfigs,
+                signature,
+                methodModel,
+                protoParser);
         if (groupConfig == null) {
           missing = true;
         } else {
@@ -260,8 +265,9 @@ public abstract class FlatteningConfig {
         resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
       }
       // TODO(andrealin): handle resource names in param.
-      FieldConfig fieldConfig =  FieldConfig.createMessageFieldConfig(
-          messageConfigs, resourceNameConfigs, parameterField, resourceNameTreatment);
+      FieldConfig fieldConfig =
+          FieldConfig.createMessageFieldConfig(
+              messageConfigs, resourceNameConfigs, parameterField, resourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }
     return new AutoValue_FlatteningConfig(

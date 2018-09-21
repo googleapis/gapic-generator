@@ -40,10 +40,8 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -305,13 +303,14 @@ public class ResourceNameMessageConfigsTest {
             diagCollector, configProto, sourceProtoFiles, TargetLanguage.CSHARP, protoParser);
 
     List<FlatteningConfig> flatteningConfigs =
-        new ArrayList<>(FlatteningConfig.createFlatteningConfigs(
-            diagCollector,
-            messageConfigs,
-            resourceNameConfigs,
-            methodConfigProto,
-            methodModel,
-            protoParser));
+        new ArrayList<>(
+            FlatteningConfig.createFlatteningConfigs(
+                diagCollector,
+                messageConfigs,
+                resourceNameConfigs,
+                methodConfigProto,
+                methodModel,
+                protoParser));
     assertThat(flatteningConfigs).isNotNull();
     assertThat(flatteningConfigs.size()).isEqualTo(3);
 
@@ -323,13 +322,15 @@ public class ResourceNameMessageConfigsTest {
             .findAny();
     assertThat(flatteningConfigFromGapicConfig.isPresent()).isTrue();
     Map<String, FieldConfig> paramsFromGapicConfigFlattening =
-        flatteningConfigFromGapicConfig
-            .get().getFlattenedFieldConfigs();
+        flatteningConfigFromGapicConfig.get().getFlattenedFieldConfigs();
     assertThat(paramsFromGapicConfigFlattening.size()).isEqualTo(1);
     assertThat(paramsFromGapicConfigFlattening.get("book").getField().getSimpleName())
         .isEqualTo("book");
-    assertThat(((ProtoField) paramsFromGapicConfigFlattening.get("book").getField())
-        .getType().getProtoType().getMessageType())
+    assertThat(
+            ((ProtoField) paramsFromGapicConfigFlattening.get("book").getField())
+                .getType()
+                .getProtoType()
+                .getMessageType())
         .isEqualTo(bookType);
 
     flatteningConfigs.remove(flatteningConfigFromGapicConfig.get());
@@ -349,7 +350,8 @@ public class ResourceNameMessageConfigsTest {
     assertThat(Iterables.size(shelfAndBookFlattening.getFlattenedFields())).isEqualTo(2);
 
     FieldConfig nameConfig2 = shelfAndBookFlattening.getFlattenedFieldConfigs().get("name");
-    assertThat(nameConfig2.getResourceNameTreatment()).isEqualTo(ResourceNameTreatment.STATIC_TYPES);
+    assertThat(nameConfig2.getResourceNameTreatment())
+        .isEqualTo(ResourceNameTreatment.STATIC_TYPES);
     assertThat(((SingleResourceNameConfig) nameConfig2.getResourceNameConfig()).getNamePattern())
         .isEqualTo(ASTERISK_SHELF_PATH);
 
