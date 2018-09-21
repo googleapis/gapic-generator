@@ -20,6 +20,7 @@ import com.google.api.Resource;
 import com.google.api.Retry;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.configgen.transformer.LanguageTransformer;
+import com.google.api.resourcenames.ResourceNameType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -120,6 +121,11 @@ public class ProtoParser {
   /** Return the extra retry codes for the given method. */
   public Retry getRetry(Method method) {
     return method.getDescriptor().getMethodAnnotation(AnnotationsProto.retry);
+  }
+
+  /** Return the extra retry codes for the given method. */
+  public String getResourceType(Field field) {
+    return (String) field.getOptionFields().get(AnnotationsProto.resourceType.getDescriptor());
   }
 
   /** Return whether the method has the HttpRule for GET. */

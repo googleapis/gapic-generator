@@ -66,10 +66,6 @@ public abstract class FieldConfig {
         field, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
   }
 
-  static FieldConfig createFieldConfig(FieldModel field) {
-    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
-  }
-
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
   public static FieldConfig createDefaultFieldConfig(FieldModel field) {
     return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);

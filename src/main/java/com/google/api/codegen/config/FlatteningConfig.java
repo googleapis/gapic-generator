@@ -26,6 +26,7 @@ import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -39,6 +40,7 @@ import javax.annotation.Nullable;
 /** FlatteningConfig represents a specific flattening configuration for a method. */
 @AutoValue
 public abstract class FlatteningConfig {
+  // Maps the name of the parameter in this flattening to its FieldConfig.
   public abstract ImmutableMap<String, FieldConfig> getFlattenedFieldConfigs();
 
   @Nullable
@@ -103,7 +105,7 @@ public abstract class FlatteningConfig {
         }
         FlatteningConfig groupConfig =
             FlatteningConfig.createFlatteningFromProtoFile(
-                diagCollector, messageConfigs, resourceNameConfigs, signature, methodModel);
+                diagCollector, messageConfigs, resourceNameConfigs, signature, methodModel, protoParser);
         if (groupConfig == null) {
           missing = true;
         } else {
@@ -212,7 +214,8 @@ public abstract class FlatteningConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodSignature methodSignature,
-      MethodModel method) {
+      MethodModel method,
+      ProtoParser protoParser) {
 
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
     Set<String> oneofNames = new HashSet<>();
@@ -250,8 +253,15 @@ public abstract class FlatteningConfig {
         oneofNames.add(oneofName);
       }
 
+      ResourceNameTreatment resourceNameTreatment = ResourceNameTreatment.NONE;
+      String resourceNameType =
+          protoParser.getResourceType(((ProtoField) parameterField).getProtoField());
+      if (!Strings.isNullOrEmpty(resourceNameType)) {
+        resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
+      }
       // TODO(andrealin): handle resource names in param.
-      FieldConfig fieldConfig = FieldConfig.createDefaultFieldConfig(parameterField);
+      FieldConfig fieldConfig =  FieldConfig.createMessageFieldConfig(
+          messageConfigs, resourceNameConfigs, parameterField, resourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }
     return new AutoValue_FlatteningConfig(

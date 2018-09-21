@@ -39,8 +39,12 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +70,7 @@ public class ResourceNameMessageConfigsTest {
   private static final String SIMPLE_BOOK_PATH = "shelves/{shelf_id}/books/{book_id}";
   private static final String SIMPLE_ARCHIVED_BOOK_PATH =
       "archives/{archive_path}/books/{book_id=**}";
-  private static final String ASTERISK_SHELF_PATH = "shelves/{shelf_id}";
+  private static final String ASTERISK_SHELF_PATH = "shelves/*";
   private static final String ASTERISK_BOOK_PATH = "bookShelves/*";
 
   @BeforeClass
@@ -256,6 +260,9 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(createShelvesRequest.lookupField("book")).thenReturn(bookField);
     Mockito.when(createShelvesRequest.lookupField("name")).thenReturn(nameField);
 
+    Mockito.when(protoParser.getResourceType(bookField)).thenReturn("library.Book");
+    Mockito.when(protoParser.getResourceType(nameField)).thenReturn("library.Shelf");
+
     // ProtoFile contributes flattenings {["name", "book"], ["name"]}.
     Mockito.when(protoParser.getMethodSignatures(methodModel))
         .thenReturn(
@@ -298,13 +305,13 @@ public class ResourceNameMessageConfigsTest {
             diagCollector, configProto, sourceProtoFiles, TargetLanguage.CSHARP, protoParser);
 
     List<FlatteningConfig> flatteningConfigs =
-        FlatteningConfig.createFlatteningConfigs(
+        new ArrayList<>(FlatteningConfig.createFlatteningConfigs(
             diagCollector,
             messageConfigs,
             resourceNameConfigs,
             methodConfigProto,
             methodModel,
-            protoParser);
+            protoParser));
     assertThat(flatteningConfigs).isNotNull();
     assertThat(flatteningConfigs.size()).isEqualTo(3);
 
@@ -315,12 +322,42 @@ public class ResourceNameMessageConfigsTest {
             .filter(f -> flatteningConfigName.equals(f.getFlatteningName()))
             .findAny();
     assertThat(flatteningConfigFromGapicConfig.isPresent()).isTrue();
-    List<String> paramsFromGapicConfigFlattening = new ArrayList<>();
-    flatteningConfigFromGapicConfig
-        .get()
-        .getFlattenedFields()
-        .forEach(f -> paramsFromGapicConfigFlattening.add(f.getSimpleName()));
-    assertThat(paramsFromGapicConfigFlattening).isEqualTo(Arrays.asList("book"));
-    // assertThat(flatteningConfigs.get(0))
+    Map<String, FieldConfig> paramsFromGapicConfigFlattening =
+        flatteningConfigFromGapicConfig
+            .get().getFlattenedFieldConfigs();
+    assertThat(paramsFromGapicConfigFlattening.size()).isEqualTo(1);
+    assertThat(paramsFromGapicConfigFlattening.get("book").getField().getSimpleName())
+        .isEqualTo("book");
+    assertThat(((ProtoField) paramsFromGapicConfigFlattening.get("book").getField())
+        .getType().getProtoType().getMessageType())
+        .isEqualTo(bookType);
+
+    flatteningConfigs.remove(flatteningConfigFromGapicConfig.get());
+
+    // Check the flattenings from the protofile annotations.
+    flatteningConfigs.sort(Comparator.comparingInt(c -> Iterables.size(c.getFlattenedFields())));
+
+    FlatteningConfig shelfFlattening = flatteningConfigs.get(0);
+    assertThat(Iterables.size(shelfFlattening.getFlattenedFields())).isEqualTo(1);
+
+    FieldConfig nameConfig = shelfFlattening.getFlattenedFieldConfigs().get("name");
+    assertThat(nameConfig.getResourceNameTreatment()).isEqualTo(ResourceNameTreatment.STATIC_TYPES);
+    assertThat(((SingleResourceNameConfig) nameConfig.getResourceNameConfig()).getNamePattern())
+        .isEqualTo(ASTERISK_SHELF_PATH);
+
+    FlatteningConfig shelfAndBookFlattening = flatteningConfigs.get(1);
+    assertThat(Iterables.size(shelfAndBookFlattening.getFlattenedFields())).isEqualTo(2);
+
+    FieldConfig nameConfig2 = shelfAndBookFlattening.getFlattenedFieldConfigs().get("name");
+    assertThat(nameConfig2.getResourceNameTreatment()).isEqualTo(ResourceNameTreatment.STATIC_TYPES);
+    assertThat(((SingleResourceNameConfig) nameConfig2.getResourceNameConfig()).getNamePattern())
+        .isEqualTo(ASTERISK_SHELF_PATH);
+
+    FieldConfig bookConfig = shelfAndBookFlattening.getFlattenedFieldConfigs().get("book");
+    assertThat(bookConfig.getResourceNameTreatment()).isEqualTo(ResourceNameTreatment.STATIC_TYPES);
+    assertThat(((SingleResourceNameConfig) bookConfig.getResourceNameConfig()).getNamePattern())
+        .isEqualTo(ASTERISK_BOOK_PATH);
+    // Lists.newArrayList(shelfFlattening.getFlattenedFields());
+    // assertThat(shelfFlattening.getFlattenedFields())
   }
 }
