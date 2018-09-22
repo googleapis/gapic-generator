@@ -15,6 +15,7 @@
 package com.google.api.codegen.protoannotations;
 
 import static com.google.api.codegen.ArtifactType.GAPIC_CODE;
+import static com.google.api.codegen.ArtifactType.LEGACY_GAPIC_AND_PACKAGE;
 
 import com.google.api.codegen.ArtifactType;
 import com.google.api.codegen.CodegenTestUtil;
@@ -33,7 +34,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
-  private static final ArtifactType ARTIFACT_TYPE = GAPIC_CODE;
+  private static final ArtifactType ARTIFACT_TYPE = LEGACY_GAPIC_AND_PACKAGE;
 
   private final String apiName;
 
@@ -45,8 +46,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       String apiName,
       String baseline,
       String protoPackage) {
-    //    super(language, null, null, snippetName, baseline);
-    super(language, null, null, snippetName, baseline, protoPackage);
+    super(language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline, protoPackage);
 
     this.apiName = apiName;
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
@@ -55,15 +55,13 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
   @Parameters(name = "{3}")
   public static List<Object[]> testedConfigs() {
-    //    return new LinkedList<>();
-    // TODO(andrealin): Implement parsing proto-annotations.
     return Arrays.asList(
         GapicTestBase2.createTestConfig(
-            TargetLanguage.GO, null, null, "library", "google.example.library.v1", ARTIFACT_TYPE),
+            TargetLanguage.GO, new String[] {"library_gapic.yaml"}, null, "library", "google.example.library.v1", ARTIFACT_TYPE),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
-            null,
-            null,
+            new String[] {"library_gapic.yaml"},
+            "library_pkg2.yaml",
             "library",
             "google.example.library.v1",
             ARTIFACT_TYPE));
