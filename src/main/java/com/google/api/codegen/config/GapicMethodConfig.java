@@ -23,6 +23,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoParser;
@@ -126,6 +127,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
     error |= (retryParamsName == null);
 
     Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
+    if (timeout.toMillis() <= 0) {
+      timeout = Duration.ofMillis(ProtoMethodTransformer.getTimeoutMillis(methodModel));
+    }
     if (timeout.toMillis() <= 0) {
       diagCollector.addDiag(
           Diag.error(
