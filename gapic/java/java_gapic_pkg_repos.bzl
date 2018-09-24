@@ -1,4 +1,5 @@
 # The versions which are most likely to be updated frequently
+_PROTOBUF_VERSION = "3.6.1"
 _GAX_VERSION = "1.31.0"
 _GRPC_VERSION = "1.13.1"
 _COMMON_PROTOS_VERSION = "1.12.0"
@@ -119,7 +120,7 @@ def junit_junit():
 def com_google_protobuf_protobuf_java():
     native.maven_jar(
         name = "com_google_protobuf_protobuf_java",
-        artifact = "com.google.protobuf:protobuf-java:3.6.0",
+        artifact = "com.google.protobuf:protobuf-java:" + _PROTOBUF_VERSION,
     )
 
 def io_grpc_grpc_core():

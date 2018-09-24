@@ -49,10 +49,9 @@ def _java_gapic_build_resources_pkg_impl(ctx):
         cp $templ {package_dir_path}/
     done
     chmod 644 {package_dir_path}/*
-    pushd .
     cd {package_dir_path}
     tar -zchpf {package_dir}.tar.gz {package_dir_expr}
-    popd
+    cd -
     mv {package_dir_path}/{package_dir}.tar.gz {pkg}
     """.format(
         templates = " ".join(["'%s'" % f.path for f in expanded_templates]),
@@ -109,10 +108,9 @@ def _java_gapic_srcs_pkg_impl(ctx):
         unzip -q -o $test_src -d {package_dir_path}/src/test/java
         rm -r -f {package_dir_path}/src/test/java/META-INF
     done
-    pushd .
     cd {package_dir_path}
     tar -zchpf {package_dir}.tar.gz {package_dir_expr}
-    popd
+    cd -
     mv {package_dir_path}/{package_dir}.tar.gz {pkg}
     """.format(
         srcs = " ".join(["'%s'" % f.path for f in srcs]),
@@ -139,46 +137,70 @@ java_gapic_srcs_pkg = rule(
     implementation = _java_gapic_srcs_pkg_impl,
 )
 
-def java_gapic_proto_gradle_pkg(name, group, version, deps, classifier = None, test_deps = None):
+def java_gapic_proto_gradle_pkg(
+        name,
+        deps,
+        test_deps = None,
+        visibility = None,
+        group = "com.google.api.grpc",
+        version = "0.0.0-SNAPSHOT",
+        classifier = ""):
     _java_gapic_gradle_pkg(
         name = name,
         pkg_type = "proto",
-        group = group,
-        version = version,
         deps = deps + [
             "@com_google_protobuf_protobuf_java//jar",
             "@com_google_api_grpc_proto_google_common_protos//jar",
         ],
-        classifier = classifier,
         test_deps = test_deps,
+        visibility = visibility,
+        group = group,
+        version = version,
+        classifier = classifier,
     )
 
-def java_gapic_grpc_gradle_pkg(name, group, version, deps, classifier = None, test_deps = None):
+def java_gapic_grpc_gradle_pkg(
+        name,
+        deps,
+        test_deps = None,
+        visibility = None,
+        group = "com.google.api.grpc",
+        version = "0.0.0-SNAPSHOT",
+        classifier = ""):
     _java_gapic_gradle_pkg(
         name = name,
         pkg_type = "grpc",
-        group = group,
-        version = version,
         deps = deps + [
             "@io_grpc_grpc_protobuf//jar",
             "@io_grpc_grpc_stub//jar",
         ],
-        classifier = classifier,
         test_deps = test_deps,
+        visibility = visibility,
+        group = group,
+        version = version,
+        classifier = classifier,
     )
 
-def java_gapic_client_gradle_pkg(name, group, version, deps, classifier = None, test_deps = None):
+def java_gapic_client_gradle_pkg(
+        name,
+        deps,
+        test_deps = None,
+        visibility = None,
+        group = "com.google.cloud",
+        version = "0.0.0-SNAPSHOT",
+        classifier = ""):
     _java_gapic_gradle_pkg(
         name = name,
         pkg_type = "client",
+        deps = deps,
+        test_deps = test_deps,
+        visibility = visibility,
         group = group,
         version = version,
-        deps = deps,
         classifier = classifier,
-        test_deps = test_deps,
     )
 
-def java_gapic_assembly_pkg(name, deps):
+def java_gapic_assembly_gradle_pkg(name, deps, visibility = None):
     resource_target_name = "%s-resources" % name
     settings_tmpl_label = Label("//gapic/java:resources/gradle/settings.gradle.tmpl")
     build_tmpl_label = Label("//gapic/java:resources/gradle/assembly.gradle.tmpl")
@@ -202,6 +224,7 @@ def java_gapic_assembly_pkg(name, deps):
             resource_target_name,
         ] + deps,
         package_dir = name,
+        visibility = visibility,
     )
 
 #
@@ -229,12 +252,12 @@ def _construct_package_dir_paths(attr_package_dir, out_pkg, label_name):
 def _java_gapic_gradle_pkg(
         name,
         pkg_type,
-        group,
-        version,
         deps,
-        classifier = None,
+        visibility = None,
         test_deps = None,
-        visibility = None):
+        group = "",
+        version = "",
+        classifier = None):
     resource_target_name = "%s-resources" % name
     template_label = Label("//gapic/java:resources/gradle/%s.gradle.tmpl" % pkg_type)
     java_gapic_build_resources_pkg(
@@ -265,6 +288,7 @@ def _java_gapic_gradle_pkg(
         deps = deps,
         test_deps = test_deps,
         package_dir = name,
+        visibility = visibility,
     )
 
     pkg_tar(
@@ -274,4 +298,5 @@ def _java_gapic_gradle_pkg(
             resource_target_name,
             srcs_pkg_target_name,
         ],
+        visibility = visibility,
     )

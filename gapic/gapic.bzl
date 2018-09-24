@@ -86,7 +86,7 @@ def _proto_custom_library_impl(ctx):
         ["-I{0}={1}".format(_path_ignoring_repository(imp), imp.path) for imp in imports] + \
         [_path_ignoring_repository(src) for src in srcs]
 
-    print("%s: `%s %s`" % (ctx.label, protoc.path, " ".join(arguments)))
+#    print("%s: `%s %s`" % (ctx.label, protoc.path, " ".join(arguments)))
     inputs = depset(transitive = [srcs, imports, depset(direct = extra_inputs)])
     ctx.actions.run(
         inputs = inputs,
