@@ -35,6 +35,8 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class ProtoParserTest {
+  private static String[] protoFiles = {"library.proto"};
+
   @ClassRule public static TemporaryFolder tempDir = new TemporaryFolder();
   private static Model model;
   private static TestDataLocator testDataLocator;
@@ -54,7 +56,7 @@ public class ProtoParserTest {
 
     testDataLocator = TestDataLocator.create(GapicCodeGeneratorAnnotationsTest.class);
     testDataLocator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
-    String[] protoFiles = {"library.proto"};
+
     model = CodegenTestUtil.readModel(testDataLocator, tempDir, protoFiles, new String[0]);
 
     libraryProtoFile =
@@ -94,8 +96,14 @@ public class ProtoParserTest {
   }
 
   @Test
-  public void testGetPackageName() {
+  public void testGetPackageNameFromProtoFile() {
     assertThat(ProtoParser.getPackageName(model)).isEqualTo("google.example.library.v1");
+  }
+
+  @Test
+  public void testGetPackageNameFromEmptyProtoFiles() {
+    Model modelWithNoRoots = CodegenTestUtil.readModel(testDataLocator, tempDir, protoFiles, new String[0]);
+    assertThat(ProtoParser.getPackageName(modelWithNoRoots)).isNull();
   }
 
   /** Return the entity name, e.g. "shelf" for a resource field. */

@@ -21,11 +21,12 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.base.Strings;
 import com.google.longrunning.OperationTypes;
 import com.google.longrunning.OperationsProto;
 import com.google.protobuf.Api;
+import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -56,14 +57,14 @@ public class ProtoParser {
       if (apiInterface != null) {
         return apiInterface.getFile().getFullName();
       }
+      return null;
     } else {
-      ProtoFile root = (ProtoFile) model.getRoots().iterator().next();
-      if (root == null) {
-        return null;
+      Iterator<ProtoElement> rootsIterator = model.getRoots().iterator();
+      if (rootsIterator.hasNext()) {
+        return rootsIterator.next().getFullName();
       }
-      return root.getFullName();
+      return null;
     }
-    return null;
   }
 
   /** Return the entity name, e.g. "shelf" for a resource field. */
