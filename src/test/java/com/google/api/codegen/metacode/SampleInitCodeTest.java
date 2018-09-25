@@ -31,23 +31,23 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class SampleInitCodeTest {
 
-  @ClassRule public static TemporaryFolder tempDir = new TemporaryFolder();
+  @Rule public TemporaryFolder tempDir = new TemporaryFolder();
 
-  private static TestDataLocator testDataLocator;
-  private static TestConfig testConfig;
-  private static Model model;
-  private static Interface apiInterface;
-  private static Method method;
+  private TestDataLocator testDataLocator;
+  private TestConfig testConfig;
+  private Model model;
+  private Interface apiInterface;
+  private Method method;
 
-  @BeforeClass
-  public static void setupClass() {
+  @Before
+  public void setupClass() {
     List<String> protoFiles = Lists.newArrayList("myproto.proto");
     List<String> yamlFiles = Lists.newArrayList("myproto.yaml");
     testDataLocator = TestDataLocator.create(SampleInitCodeTest.class);

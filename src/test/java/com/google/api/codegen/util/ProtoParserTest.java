@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.protoannotations;
+package com.google.api.codegen.util;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.Retry;
 import com.google.api.codegen.CodegenTestUtil;
-import com.google.api.codegen.util.ProtoParser;
+import com.google.api.codegen.protoannotations.GapicCodeGeneratorAnnotationsTest;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -43,6 +43,7 @@ public class ProtoParserTest {
   private static Interface libraryService;
   private static Method deleteShelfMethod;
   private static Method getBigBookMethod;
+  private static MessageType book;
 
   // Object under test.
   private static ProtoParser protoParser = ProtoParser.getProtoParser();
@@ -51,7 +52,7 @@ public class ProtoParserTest {
   public static void startUp() {
     // Load and parse protofile.
 
-    testDataLocator = TestDataLocator.create(ProtoParserTest.class);
+    testDataLocator = TestDataLocator.create(GapicCodeGeneratorAnnotationsTest.class);
     testDataLocator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
     String[] protoFiles = {"library.proto"};
     model = CodegenTestUtil.readModel(testDataLocator, tempDir, protoFiles, new String[0]);
@@ -65,7 +66,7 @@ public class ProtoParserTest {
             .get();
 
     model.addRoot(libraryProtoFile);
-    MessageType book =
+    book =
         libraryProtoFile
             .getMessages()
             .stream()
@@ -83,6 +84,13 @@ public class ProtoParserTest {
   @Test
   public void testGetResourcePath() {
     assertThat(protoParser.getResourcePath(bookNameField)).isEqualTo("shelves/*/books/*");
+  }
+
+  @Test
+  public void testGetEmptyResourcePath() {
+    Field authorBookField =
+        book.getFields().stream().filter(f -> f.getSimpleName().equals("author")).findFirst().get();
+    assertThat(protoParser.getResourcePath(authorBookField)).isNull();
   }
 
   @Test
