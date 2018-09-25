@@ -156,7 +156,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     ApiModel model = context.getApiModel();
-    xapiClass.serviceAddress(context.getDefaultHost());
+    xapiClass.serviceAddress(context.getServiceAddress());
     xapiClass.servicePort(model.getServicePort());
     xapiClass.serviceTitle(model.getTitle());
     xapiClass.authScopes(model.getAuthScopes());

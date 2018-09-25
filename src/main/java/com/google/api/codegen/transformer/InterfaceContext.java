@@ -80,5 +80,5 @@ public interface InterfaceContext extends TransformationContext {
   @Override
   ImportTypeTable getImportTypeTable();
 
-  String getDefaultHost();
+  String getServiceAddress();
 }

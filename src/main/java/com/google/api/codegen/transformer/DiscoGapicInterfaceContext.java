@@ -330,7 +330,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  public String getDefaultHost() {
+  public String getServiceAddress() {
     return getDocument().baseUrl();
   }
 }

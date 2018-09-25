@@ -89,7 +89,7 @@ public class ProtoParser {
   }
 
   /** The hostname for this service (e.g. "foo.googleapis.com"). */
-  public static String getDefaultHost(Interface service) {
+  public static String getServiceAddress(Interface service) {
     return service.getProto().getOptions().getExtension(AnnotationsProto.defaultHost);
   }
 

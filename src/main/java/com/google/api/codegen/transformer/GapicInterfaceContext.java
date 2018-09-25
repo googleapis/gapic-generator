@@ -329,8 +329,8 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  public String getDefaultHost() {
-    String hostFromProtoFile = ProtoParser.getDefaultHost(getInterface());
+  public String getServiceAddress() {
+    String hostFromProtoFile = ProtoParser.getServiceAddress(getInterface());
     if (!Strings.isNullOrEmpty(hostFromProtoFile)) {
       return hostFromProtoFile;
     }
