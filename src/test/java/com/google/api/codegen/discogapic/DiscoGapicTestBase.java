@@ -12,15 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.CodegenTestUtil;
+import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.common.TargetLanguage;
-import com.google.api.codegen.discogapic.DiscoGapicGeneratorApp;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
-import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.io.Files;
 import com.google.protobuf.MessageOrBuilder;
@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -50,8 +49,6 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   @Nullable private final String packageConfigFileName;
   protected ConfigProto config;
   private List<CodeGenerator<?>> discoGapicGenerators;
-  private final TestDataLocator testDataLocator =
-      new MixedPathTestDataLocator(this.getClass(), Paths.get("src", "test", "java").toString());
 
   public DiscoGapicTestBase(
       TargetLanguage language,
@@ -65,20 +62,16 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
     this.gapicConfigFileNames = gapicConfigFileNames;
     this.packageConfigFileName = packageConfigFileName;
 
-    for (String fileName : gapicConfigFileNames) {
-      // TODO: fix non-final method (getTestDataLocator()) invocation in constructor.
-      // This does not allow us to properly override getTestDataLocator() in subclasses of this
-      // abstract class, while getTestDataLocator() was designed specifically for this purpose.
-      this.gapicConfigFilePaths.add(getTestDataLocator().findTestData(fileName).getFile());
-    }
-  }
-
-  @Override
-  protected TestDataLocator getTestDataLocator() {
-    return this.testDataLocator;
+    String dir = language.toString().toLowerCase();
+    getTestDataLocator().addTestDataSource(getClass(), "testdata");
+    getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
   }
 
   protected void setupDiscovery() {
+    for (String fileName : gapicConfigFileNames) {
+      this.gapicConfigFilePaths.add(getTestDataLocator().findTestData(fileName).getFile());
+    }
+
     try {
       discoGapicGenerators =
           DiscoGapicGeneratorApp.getGenerators(

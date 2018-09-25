@@ -15,8 +15,8 @@
 package com.google.api.codegen.protoannotations;
 
 import com.google.api.codegen.CodegenTestUtil;
-import com.google.api.codegen.GapicTestBase2;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.gapic.GapicTestBase2;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
