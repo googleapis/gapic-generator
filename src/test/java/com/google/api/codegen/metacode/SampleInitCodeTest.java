@@ -38,8 +38,7 @@ import org.junit.rules.TemporaryFolder;
 
 public class SampleInitCodeTest {
 
-  @ClassRule
-  public static TemporaryFolder tempDir = new TemporaryFolder();
+  @ClassRule public static TemporaryFolder tempDir = new TemporaryFolder();
 
   private static TestDataLocator testDataLocator;
   private static TestConfig testConfig;
