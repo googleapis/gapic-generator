@@ -43,10 +43,7 @@
 
 
     @end
-    {@apiMethod.name}
-    {@sample.initCode.argDefaultParams}
-    {@sample.initCode.argDefaultLines}
-    function sample_{@apiMethod.name}({@formalArgs(sample.initCode.argDefaultParams)})
+    function {@sample.sampleFunctionName}({@formalArgs(sample.initCode.argDefaultParams)})
     {
         @if sampleFile.extraInfo.hasMissingDefaultOptions
             $options = [
@@ -61,64 +58,36 @@
                 ];
             ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
 
-
         @else
             ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
-
 
         @end
         @if sample.initCode.lines
             {@initCode(sample.initCode, apiMethod.apiVariableName)}
 
-
-    @end
-    try {
-        @switch sample.callingForm
-        @case "LongRunningRequest"
-            {@longRunningSampleCode(sample, apiMethod)}
-        @case "LongRunningRequestAsync"
-            {@longRunningAsyncSampleCode(sample, apiMethod)}
-        @case "Request"
-            {@requestSampleCode(sample, apiMethod)}
-        @case "RequestPaged"
-            {@pagedSampleCode(sample, apiMethod)}
-        @case "RequestPagedAll"
-            {@pagedAllSampleCode(sample, apiMethod)}
-        @case "RequestStreamingBidi"
-            {@bidiStreamingSampleCode(sample, apiMethod)}
-        @case "RequestStreamingBidiAsync"
-            {@bidiStreamingAsyncSampleCode(sample, apiMethod)}
-        @case "RequestStreamingClient"
-            {@clientStreamingSampleCode(sample, apiMethod)}
-        @case "RequestStreamingClientAsync"
-            {@clientStreamingAsyncSampleCode(sample, apiMethod)}
-        @case "RequestStreamingServer"
-            {@serverStreamingSampleCode(sample, apiMethod)}
-        @default
-            $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
         @end
         try {
             @switch sample.callingForm
             @case "LongRunningRequest"
-                {@longRunningSampleCode(apiMethod)}
+                {@longRunningSampleCode(sample, apiMethod)}
             @case "LongRunningRequestAsync"
-                {@longRunningAsyncSampleCode(apiMethod)}
+                {@longRunningAsyncSampleCode(sample, apiMethod)}
             @case "Request"
-                {@requestSampleCode(apiMethod)}
+                {@requestSampleCode(sample, apiMethod)}
             @case "RequestPaged"
-                {@pagedSampleCode(apiMethod)}
+                {@pagedSampleCode(sample, apiMethod)}
             @case "RequestPagedAll"
-                {@pagedAllSampleCode(apiMethod)}
+                {@pagedAllSampleCode(sample, apiMethod)}
             @case "RequestStreamingBidi"
-                {@bidiStreamingSampleCode(apiMethod)}
+                {@bidiStreamingSampleCode(sample, apiMethod)}
             @case "RequestStreamingBidiAsync"
-                {@bidiStreamingAsyncSampleCode(apiMethod)}
+                {@bidiStreamingAsyncSampleCode(sample, apiMethod)}
             @case "RequestStreamingClient"
-                {@clientStreamingSampleCode(apiMethod)}
+                {@clientStreamingSampleCode(sample, apiMethod)}
             @case "RequestStreamingClientAsync"
-                {@clientStreamingAsyncSampleCode(apiMethod)}
+                {@clientStreamingAsyncSampleCode(sample, apiMethod)}
             @case "RequestStreamingServer"
-                {@serverStreamingSampleCode(apiMethod)}
+                {@serverStreamingSampleCode(sample, apiMethod)}
             @default
                 $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
             @end
@@ -132,12 +101,37 @@
             @end
         }
     }
+
+    {@optsArray(sample.initCode.argDefaultParams)}
+
+    $options = getopt('', $opts);
+
+    @if sample.initCode.argDefaultParams
+        @join param : sample.initCode.argDefaultParams
+            {@variable(param.identifier)} == $options['{@param.identifier}'] ?? {@renderInitValue(param.initValue, param.identifier)};
+        @end
+
+
+    @end
+    {@sample.sampleFunctionName}({@formalArgs(sample.initCode.argDefaultParams)});
 @end
 
 @private formalArgs(sampleArgs)
   @join param : sampleArgs on ", "
-    {@param.identifier}
+    {@variable(@param.identifier)}
   @end
+@end
+
+@private optsArray(sampleArgs)
+    @if sampleArgs.size
+        $opts = [
+            @join param : sampleArgs
+            '{@param.identifier}::',
+            @end
+        ];
+    @else
+        $opts = [];
+    @end
 @end
 
 @private methodCallSampleCode(apiMethod)
