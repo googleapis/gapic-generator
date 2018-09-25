@@ -74,7 +74,7 @@ public class DiscoConfigGeneratorApp extends GenericToolDriverBase {
   }
 
   /** Initializes the Discovery document document. */
-  public static Document setupDocument(String discoveryDocPath, DiagCollector diagCollector) {
+  private Document setupDocument(String discoveryDocPath, DiagCollector diagCollector) {
     // Prevent INFO messages from polluting the log.
     Logger.getLogger("").setLevel(Level.WARNING);
 
