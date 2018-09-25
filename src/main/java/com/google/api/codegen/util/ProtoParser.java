@@ -17,7 +17,6 @@ package com.google.api.codegen.util;
 import com.google.api.AnnotationsProto;
 import com.google.api.Resource;
 import com.google.api.Retry;
-import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -75,13 +74,6 @@ public class ProtoParser {
   /** Get long running settings. */
   public OperationTypes getLongRunningOperation(Method method) {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
-  }
-
-  @Nullable
-  public static String getFormattedPackageName(String language, String basePackageName) {
-    LanguageTransformer.LanguageFormatter formatter =
-        LanguageTransformer.LANGUAGE_FORMATTERS.get(language.toLowerCase());
-    return formatter.getFormattedPackageName(basePackageName);
   }
 
   /** Return the extra retry codes for the given method. */

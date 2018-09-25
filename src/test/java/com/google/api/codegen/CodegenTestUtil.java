@@ -34,7 +34,7 @@ public class CodegenTestUtil {
   public static Model readModel(
       TestDataLocator locator, TemporaryFolder tempDir, String[] protoFiles, String[] yamlFiles) {
     TestConfig testConfig =
-        new TestConfig(locator, tempDir.getRoot().getPath(), Arrays.asList(protoFiles));
+        new GapicTestConfig(locator, tempDir.getRoot().getPath(), Arrays.asList(protoFiles));
     Model model = testConfig.createModel(Arrays.asList(yamlFiles));
     StandardSetup.registerStandardProcessors(model);
     StandardSetup.registerStandardConfigAspects(model);

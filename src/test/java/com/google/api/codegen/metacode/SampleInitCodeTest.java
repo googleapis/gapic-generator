@@ -17,7 +17,6 @@ package com.google.api.codegen.metacode;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
 
-import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -32,17 +31,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class SampleInitCodeTest {
 
-  @ClassRule
-  public static TemporaryFolder tempDir = new TemporaryFolder();
+  @ClassRule public static TemporaryFolder tempDir = new TemporaryFolder();
 
   private static TestDataLocator testDataLocator;
   private static TestConfig testConfig;
