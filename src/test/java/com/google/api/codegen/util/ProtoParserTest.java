@@ -102,7 +102,8 @@ public class ProtoParserTest {
 
   @Test
   public void testGetPackageNameFromEmptyProtoFiles() {
-    Model modelWithNoRoots = CodegenTestUtil.readModel(testDataLocator, tempDir, protoFiles, new String[0]);
+    Model modelWithNoRoots =
+        CodegenTestUtil.readModel(testDataLocator, tempDir, protoFiles, new String[0]);
     assertThat(ProtoParser.getPackageName(modelWithNoRoots)).isNull();
   }
 
