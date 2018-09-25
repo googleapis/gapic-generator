@@ -36,24 +36,25 @@ public class ServiceConfigTest {
   private static final Interface libraryService = Mockito.mock(Interface.class);
   private static final Interface foodService = Mockito.mock(Interface.class);
 
+  private static final AuthenticationRule scopes1 =
+      AuthenticationRule.newBuilder()
+          .setOauth(
+              OAuthRequirements.newBuilder()
+                  .setCanonicalScopes(
+                      "https://www.googleapis.com/auth/calendar,\n"
+                          + "https://www.googleapis.com/auth/calendar.read"))
+          .build();
+  private static final AuthenticationRule scopes2 =
+      AuthenticationRule.newBuilder()
+          .setOauth(
+              OAuthRequirements.newBuilder()
+                  .setCanonicalScopes(
+                      "https://www.googleapis.com/auth/default, "
+                          + "https://www.googleapis.com/auth/pumpkin"))
+          .build();
   private static final Service serviceYaml =
       Service.newBuilder()
-          .setAuthentication(
-              Authentication.newBuilder()
-                  .addRules(
-                      AuthenticationRule.newBuilder()
-                          .setOauth(
-                              OAuthRequirements.newBuilder()
-                                  .setCanonicalScopes(
-                                      "https://www.googleapis.com/auth/calendar,\n"
-                                          + "https://www.googleapis.com/auth/calendar.read")))
-                  .addRules(
-                      AuthenticationRule.newBuilder()
-                          .setOauth(
-                              OAuthRequirements.newBuilder()
-                                  .setCanonicalScopes(
-                                      "https://www.googleapis.com/auth/default, "
-                                          + "https://www.googleapis.com/auth/pumpkin"))))
+          .setAuthentication(Authentication.newBuilder().addRules(scopes1).addRules(scopes2))
           .build();
 
   @BeforeClass
