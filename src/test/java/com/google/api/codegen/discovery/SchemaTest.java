@@ -28,7 +28,7 @@ import org.junit.Test;
 public class SchemaTest {
   @Test
   public void testSchemaFromJson() throws IOException {
-    String file = "src/test/java/com/google/api/codegen/discoverytestdata/graph.json";
+    String file = "src/test/java/com/google/api/codegen/discovery/testdata/graph.json";
     Reader reader = new InputStreamReader(new FileInputStream(new File(file)));
 
     ObjectMapper mapper = new ObjectMapper();
