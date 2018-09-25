@@ -273,4 +273,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   public String getApiSampleFileName(String className) {
     return className + ".php";
   }
+
+  @Override
+  public String getPrintSpec(String spec) {
+    return spec;
+  }
 }

@@ -206,6 +206,31 @@ anchor_run_php: &anchor_run_php
         <<: *anchor_check_generation
     - run:
         <<: *anchor_run_decrypt
+    - restore_cache:
+       keys:
+       - pecl-grpc-v1.15.0
+       - pecl-grpc-
+    - run:
+        name: Copy restored extensions into extensions directory
+        command: |
+          mkdir -p /tmp/pecl-grpc-cache
+          sudo cp -r /tmp/pecl-grpc-cache/. /usr/local/lib/php/extensions/no-debug-non-zts-20170718/
+    - run:
+        name: Install grpc pecl extension if grpc.so is missing
+        command: |
+          if [ ! -f /usr/local/lib/php/extensions/no-debug-non-zts-20170718/grpc.so ]; then
+              sudo apt-get install -y zlib1g-dev
+              sudo pecl install grpc
+          fi
+          sudo echo 'extension="grpc.so"' | sudo tee -a /usr/local/etc/php/php.ini > /dev/null
+        when: always
+    - run:
+        name: Copy pecl extensions to pecl-cache directory
+        command: sudo cp -r /usr/local/lib/php/extensions/no-debug-non-zts-20170718/. /tmp/pecl-grpc-cache/
+    - save_cache:
+        key: pecl-grpc-v1.15.0
+        paths:
+          - /tmp/pecl-grpc-cache
     - run:
         name: Prepare to test Pubsub
         command: |
@@ -234,6 +259,28 @@ anchor_run_php: &anchor_run_php
     - run:
         name: Test PHP Logging client
         <<: *anchor_test_php
+    - run:
+        name: Prepare to test Showcase.
+        command: |
+          echo 'export TEST_API="showcase-v1alpha1"' >> $BASH_ENV
+          echo 'export KEY_REQUIRED=false' >> $BASH_ENV
+    - run:
+        name: Test Showcase Generated Unit Tests.
+        <<: *anchor_test_php
+    - run:
+        name: Run Showcase Server.
+        command: |
+          curl --location https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-linux-amd64 \
+               --output showcase-server
+          chmod a+x showcase-server
+          ./showcase-server
+        background: true
+    - run:
+        name: Run Showcase Integration Tests
+        command: |
+          cd workspace/gapic-generator/showcase/php
+          composer update
+          vendor/bin/phpunit
 
 # Test a NodeJS client if generation succeeded.
 anchor_test_nodejs_client: &anchor_test_nodejs_client
@@ -266,8 +313,7 @@ jobs:
       - run:
           name: Checkout googleapis
           command: |
-            mkdir -p googleapis
-            git clone https://github.com/googleapis/googleapis.git googleapis
+            git clone --single-branch https://github.com/googleapis/googleapis.git googleapis
       - run:
           name: Setup showcase protos.
           command: |
@@ -282,7 +328,7 @@ jobs:
           command: |
             export RUNNING_IN_ARTMAN_DOCKER=True
             rm -rf gapic-generator/.git/
-            gapic-generator/gradlew -p gapic-generator fatJar createToolPaths install build -x test -x javadoc
+            gapic-generator/gradlew -p gapic-generator fatJar createToolPaths
       - persist_to_workspace:
           # Save the toolkit and googleapis installations in workspace for later CircleCI jobs.
           root: /tmp/workspace
@@ -320,7 +366,7 @@ jobs:
             - reports/gapic-generator
   generate-clients:
     docker:
-      - image: googleapis/artman:0.15.4
+      - image: googleapis/artman:0.15.5
     working_directory: /tmp/
     environment:
       <<: *anchor_artman_vars
@@ -367,7 +413,7 @@ jobs:
                 google/showcase/artman_showcase.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR} \
-                --languages=ruby \
+                --languages ruby php \
                 --root-dir=/tmp/workspace/showcase-protos
           when: always
       - store_artifacts:
@@ -444,6 +490,7 @@ jobs:
       LANGUAGE: php
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
       TESTS_DIR: tests/Unit # Only run unit tests here.
+      SHOWCASE_VERSION: 0.0.4
       <<: *anchor_artman_vars
       <<: *anchor_auth_vars
     docker:
@@ -454,6 +501,7 @@ jobs:
       LANGUAGE: php
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
       TESTS_DIR: tests # Only run unit tests here.
+      SHOWCASE_VERSION: 0.0.4
       <<: *anchor_artman_vars
       <<: *anchor_auth_vars
     docker:
