@@ -28,6 +28,7 @@ anchor_run_decrypt: &anchor_run_decrypt
     fi
 
 anchor_check_generation: &anchor_check_generation
+  name: Check client generation
   command: |
     # Generation for a language failed if there exists a [language].log
     # which was outputted by generate_clients.py upon failure.
@@ -97,7 +98,7 @@ anchor_test_ruby_client: &anchor_test_ruby_client
     then
       cd ${RUBY_GEN_DIR}/google-cloud-${TEST_API}
       bundle update
-      ${TEST_RUBY_COMMAND}
+      bundle exec rake test
     else
       echo "Ruby ${TEST_API} library was not generated."
       exit 1
@@ -105,7 +106,6 @@ anchor_test_ruby_client: &anchor_test_ruby_client
   when: always
 
 anchor_run_ruby: &anchor_run_ruby
-  # Set var TEST_RUBY_COMMAND for each job this anchor is used in.
   working_directory: /tmp/
   docker:
     - image: circleci/ruby:2.4-node
