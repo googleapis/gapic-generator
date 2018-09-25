@@ -146,16 +146,11 @@
 @end
 
 @private lroSampleCode(apiMethod, sample)
-  response = {@methodCallSampleCode(apiMethod, sample.initCode)}
+  operation = {@methodCallSampleCode(apiMethod, sample.initCode)}
 
-  def callback(operation_future):
-      @# Handle result.
-      result = operation_future.result()
+  print('Waiting for operation to complete...')
+  response = operation.result()
 
-  response.add_done_callback(callback)
-
-  @# Handle metadata.
-  metadata = response.metadata()
   {@processResponse(sample)}
 @end
 
