@@ -109,7 +109,7 @@ anchor_run_ruby: &anchor_run_ruby
   working_directory: /tmp/
   docker:
     - image: circleci/ruby:2.4-node
-    - image: gcr.io/gapic-showcase/gapic-showcase:0.0.6
+    - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
   environment:
     LANGUAGE: ruby
     RUBY_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/
@@ -290,7 +290,7 @@ jobs:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
     environment:
-      SHOWCASE_VERSION: 0.0.6
+      SHOWCASE_VERSION: 0.0.7
     steps:
       - checkout:
           path: gapic-generator
@@ -478,7 +478,7 @@ jobs:
       <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
-      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.6
+      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
   php-7.2-system-test:
     <<: *anchor_run_php
     environment:
