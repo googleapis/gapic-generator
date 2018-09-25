@@ -12,9 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.configgen;
 
-import com.google.api.codegen.configgen.CollectionPattern;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.LiteralSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.PathSegment;

@@ -4300,16 +4300,11 @@ def sample_get_big_book():
 
   name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
-  response = client.get_big_book(name)
+  operation = client.get_big_book(name)
 
-  def callback(operation_future):
-      # Handle result.
-      result = operation_future.result()
+  print('Waiting for operation to complete...')
+  response = operation.result()
 
-  response.add_done_callback(callback)
-
-  # Handle metadata.
-  metadata = response.metadata()
   print(response)
 
   # [END hopper_core]

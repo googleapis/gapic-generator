@@ -12,11 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.configgen;
 
-import com.google.api.codegen.configgen.GapicConfigGeneratorApp;
+import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
-import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.Lists;
 import java.io.File;
@@ -27,14 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ConfigGenerationTest extends ConfigBaselineTestCase {
-
-  private final TestDataLocator testDataLocator =
-      new MixedPathTestDataLocator(this.getClass(), Paths.get("src", "test", "java").toString());
-
-  @Override
-  protected TestDataLocator getTestDataLocator() {
-    return this.testDataLocator;
-  }
 
   @Override
   protected String baselineFileName() {
@@ -64,8 +55,9 @@ public class ConfigGenerationTest extends ConfigBaselineTestCase {
 
   @Before
   public void setup() {
-    getTestDataLocator().addTestDataSource(getClass(), "testsrc/common");
-    getTestDataLocator().addTestDataSource(getClass(), "testsrc/libraryproto");
+    getTestDataLocator().addTestDataSource(getClass(), "testdata");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
   }
 
   @Test

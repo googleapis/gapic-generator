@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.common.collect.ImmutableList;
@@ -50,18 +50,18 @@ public class JavaDiscoGapicGeneratorTest extends DiscoGapicTestBase {
     File dir =
         new File(
             System.getProperty("user.dir"),
-            "src/test/java/com/google/api/codegen/testdata/discogapic");
+            "src/test/java/com/google/api/codegen/discogapic/testdata");
     ImmutableList.Builder<Object[]> builder = ImmutableList.<Object[]>builder();
     for (File file : dir.listFiles(new DiscoveryFile("simplecompute"))) {
       String fileName = file.getName();
       builder.add(
           new Object[] {
             "java_" + fileName,
-            "discogapic/" + fileName,
+            "testdata/" + fileName,
             new String[] {
-              "com/google/api/codegen/testdata/simplecompute_gapic.yaml",
+              "com/google/api/codegen/discogapic/testdata/simplecompute_gapic.yaml",
             },
-            "com/google/api/codegen/testdata/simplecompute_pkg2.yaml"
+            "com/google/api/codegen/discogapic/testdata/simplecompute_pkg2.yaml"
           });
     }
     return builder.build();
@@ -69,7 +69,7 @@ public class JavaDiscoGapicGeneratorTest extends DiscoGapicTestBase {
 
   @Before
   public void putTestDirectory() {
-    getTestDataLocator().addTestDataSource(this.getClass(), "testdata/discogapic/java");
+    getTestDataLocator().addTestDataSource(this.getClass(), "testdata/java");
   }
 
   // Tests
