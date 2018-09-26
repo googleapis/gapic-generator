@@ -101,19 +101,26 @@
             @end
         }
     }
-
-    {@optsArray(sample.initCode.argDefaultParams)}
-
-    $options = getopt('', $opts);
-
-    @if sample.initCode.argDefaultParams
-        @join param : sample.initCode.argDefaultParams
-            {@variable(param.identifier)} == $options['{@param.identifier}'] ?? {@renderInitValue(param.initValue, param.identifier)};
-        @end
-
-
-    @end
+    {@processCliArguments(sample)}
     {@sample.sampleFunctionName}({@formalArgs(sample.initCode.argDefaultParams)});
+@end
+
+@private processCliArguments(sample)
+    @if sample.initCode.argDefaultParams.size
+
+        {@optsArray(sample.initCode.argDefaultParams)}
+        {@defaultOptionsArray(sample.initCode.argDefaultParams)}
+        $options = getopt('', $opts);
+        $options += $defaultOptions;
+
+        @if sample.initCode.argDefaultParams
+            @join param : sample.initCode.argDefaultParams
+                {@variable(param.identifier)} = $options['{@param.identifier}'];
+            @end
+
+
+        @end
+    @end
 @end
 
 @private formalArgs(sampleArgs)
@@ -123,15 +130,21 @@
 @end
 
 @private optsArray(sampleArgs)
-    @if sampleArgs.size
-        $opts = [
-            @join param : sampleArgs
+    $opts = [
+        @join param : sampleArgs
             '{@param.identifier}::',
-            @end
-        ];
-    @else
-        $opts = [];
-    @end
+        @end
+    ];
+
+@end
+
+@private defaultOptionsArray(sampleArgs)
+    $defaultOptions = [
+        @join param : sampleArgs
+            '{@param.identifier}' => {@renderInitValue(param.initValue, param.identifier)},
+        @end
+    ];
+
 @end
 
 @private methodCallSampleCode(apiMethod)
