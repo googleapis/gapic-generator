@@ -72,7 +72,7 @@ public class ProtoApiModelScopesTest {
   }
 
   @Test
-  public void testServiceConfigFromProtoFile() {
+  public void testGetAuthScopes() {
     List<ProtoInterfaceModel> interfaces =
         Arrays.asList(
             new ProtoInterfaceModel(libraryService), new ProtoInterfaceModel(foodService));
