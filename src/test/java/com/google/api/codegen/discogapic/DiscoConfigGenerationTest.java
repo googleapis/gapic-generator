@@ -12,10 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.configgen.DiscoConfigGeneratorApp;
-import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.tools.ToolOptions;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -25,8 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DiscoConfigGenerationTest extends DiscoConfigBaselineTestCase {
-  private final TestDataLocator testDataLocator =
-      new MixedPathTestDataLocator(this.getClass(), Paths.get("src", "test", "java").toString());
 
   @Override
   protected String baselineFileName() {
@@ -37,11 +34,6 @@ public class DiscoConfigGenerationTest extends DiscoConfigBaselineTestCase {
   protected boolean suppressDiagnosis() {
     // Suppress linter warnings
     return true;
-  }
-
-  @Override
-  protected TestDataLocator getTestDataLocator() {
-    return this.testDataLocator;
   }
 
   @Override
@@ -58,7 +50,7 @@ public class DiscoConfigGenerationTest extends DiscoConfigBaselineTestCase {
 
   @Before
   public void setup() {
-    getTestDataLocator().addTestDataSource(getClass(), "testdata/discogapic");
+    getTestDataLocator().addTestDataSource(getClass(), "testdata");
   }
 
   @Test
