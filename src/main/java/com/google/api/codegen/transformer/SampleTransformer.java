@@ -255,6 +255,8 @@ public class SampleTransformer {
                         methodContext.getMethodModel().getSimpleName(),
                         form,
                         valueSet.getId()))
+                .sampleFunctionName(
+                    methodContext.getNamer().getSampleFunctionName(methodContext.getMethodModel()))
                 .build());
       }
     }

@@ -23,7 +23,5 @@ public interface MethodTransformer {
 
   String getTimeoutMillis(MethodModel method);
 
-  boolean isRequestObjectMethod(MethodModel method);
-
   List<String> getParameterList(MethodModel method);
 }
