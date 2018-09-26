@@ -135,16 +135,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
       error = true;
     }
 
-    boolean hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
-    if (hasRequestObjectMethod && method.getRequestStreaming()) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "request_object_method incompatible with streaming method %s",
-              method.getFullName()));
-      error = true;
-    }
-
     ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
 
@@ -223,7 +213,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
           optionalFieldConfigs,
           defaultResourceNameTreatment,
           batching,
-          hasRequestObjectMethod,
           fieldNamePatterns,
           sampleCodeInitFields,
           sampleSpec,
