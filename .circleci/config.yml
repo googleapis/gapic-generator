@@ -397,7 +397,7 @@ jobs:
                 google/showcase/artman_showcase.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR} \
-                --languages php ruby \
+                --languages nodejs php ruby \
                 --root-dir=/tmp/workspace/showcase-protos
           when: always
       - store_artifacts:
@@ -497,12 +497,28 @@ jobs:
       <<: *anchor_artman_vars
     docker:
       - image: circleci/node:8-stretch-browsers
+      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
     steps:
       - attach_workspace:
           at: workspace
       - run:
           name: Verify all NodeJS generation succeeded
           <<: *anchor_check_generation
+      - run:
+          name: Test Showcase
+          command: |
+            cd ${NODEJS_GEN_DIR}/showcase-v1alpha2
+            npm install
+            # The following step must be done since the new api annotations are not
+            # in the nodejs proto files repository.
+            cp -rf /tmp/workspace/showcase-protos/* node_modules/google-proto-files
+            npm test
+      - run:
+          name: Run Showcase integration tests
+          command: |
+            cd workspace/gapic-generator/showcase/nodejs
+            npm install
+            npm test
       - run:
           name: Prepare to test Pubsub
           command: |
