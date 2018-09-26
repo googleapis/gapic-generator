@@ -29,7 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class ServiceConfigTest {
+public class ProtoApiModelScopesTest {
   private static final Model protoModel = Mockito.mock(Model.class);
   private static final ProtoApiModel apiModel = new ProtoApiModel(protoModel);
   private static final ProtoParser protoParser = Mockito.mock(ProtoParser.class);
