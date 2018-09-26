@@ -42,7 +42,7 @@ class ShowcaseIntegrationTest extends TestCase
     private static $grpcClient;
 
     /**
-     * @param Google\Showcase\V1alpha1\EchoClient $client
+     * @param Google\Showcase\V1alpha2\EchoClient $client
      * @throws ApiException
      * @dataProvider clientProvider
      */
@@ -58,7 +58,7 @@ class ShowcaseIntegrationTest extends TestCase
     }
 
     /**
-     * @param Google\Showcase\V1alpha1\EchoClient $client
+     * @param Google\Showcase\V1alpha2\EchoClient $client
      * @expectedException \Google\ApiCore\ApiException
      * @dataProvider clientProvider
      */
@@ -78,14 +78,14 @@ class ShowcaseIntegrationTest extends TestCase
     }
 
     /**
-     * @return \Google\Showcase\V1alpha1\EchoClient[]
+     * @return \Google\Showcase\V1alpha2\EchoClient[]
      * @throws \Google\ApiCore\ValidationException
      */
     public function clientProvider()
     {
         try {
             if (empty(self::$grpcClient)) {
-                self::$grpcClient = new \Google\Showcase\V1alpha1\EchoClient([
+                self::$grpcClient = new \Google\Showcase\V1alpha2\EchoClient([
                     'serviceAddress' => 'localhost:7469',
                     'transport' => 'grpc',
                     'transportConfig' => [
