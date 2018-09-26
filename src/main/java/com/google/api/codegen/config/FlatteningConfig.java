@@ -99,8 +99,7 @@ public abstract class FlatteningConfig {
     // Get flattenings from protofile annotations, let these override flattenings from GAPIC config.
     if (methodModel instanceof ProtoMethodModel) {
       ProtoMethodModel protoMethodModel = (ProtoMethodModel) methodModel;
-      List<MethodSignature> methodSignatures =
-          protoParser.getMethodSignatures(protoMethodModel);
+      List<MethodSignature> methodSignatures = protoParser.getMethodSignatures(protoMethodModel);
       for (MethodSignature signature : methodSignatures) {
         if (signature.getFieldsCount() == 0) {
           break;
@@ -261,8 +260,7 @@ public abstract class FlatteningConfig {
       }
 
       ResourceNameTreatment resourceNameTreatment = ResourceNameTreatment.NONE;
-      String resourceNameType =
-          protoParser.getResourceType(parameterField.getProtoField());
+      String resourceNameType = protoParser.getResourceType(parameterField.getProtoField());
       if (!Strings.isNullOrEmpty(resourceNameType)) {
         resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
       }
