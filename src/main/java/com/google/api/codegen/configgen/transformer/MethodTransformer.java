@@ -27,7 +27,6 @@ import com.google.api.codegen.configgen.viewmodel.PageStreamingRequestView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingView;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterators;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -87,11 +86,7 @@ public class MethodTransformer {
     }
 
     methodView.requiredFields(parameters);
-    // use all fields for the following check; if there are ignored fields for flattening
-    // purposes, the caller still needs a way to set them (by using the request object method).
-    methodView.requestObjectMethod(
-        (Iterators.size(inputFields.iterator()) != parameterList.size())
-            && !method.getRequestStreaming());
+
     methodView.resourceNameTreatment(helperTransformer.getResourceNameTreatment(method));
   }
 
