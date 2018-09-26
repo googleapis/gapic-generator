@@ -7,19 +7,19 @@ config_schema_version: 1.0.0
 # The settings of generated code in a specific language.
 language_settings:
   java:
-    package_name: com.google.showcase.v1alpha1
+    package_name: com.google.showcase.v1alpha2
   python:
-    package_name: google.showcase_v1alpha1.gapic
+    package_name: google.showcase_v1alpha2.gapic
   go:
-    package_name: google.com/go/showcase/apiv1alpha1
+    package_name: google.com/go/showcase/apiv1alpha2
   csharp:
-    package_name: Google.Showcase.V1alpha1
+    package_name: Google.Showcase.V1alpha2
   ruby:
-    package_name: Google::Showcase::V1alpha1
+    package_name: Google::Showcase::V1alpha2
   php:
-    package_name: Google\Showcase\V1alpha1
+    package_name: Google\Showcase\V1alpha2
   nodejs:
-    package_name: showcase.v1alpha1
+    package_name: showcase.v1alpha2
 # The configuration for the license header to put on generated files.
 license_header:
   # The file containing the copyright line(s).
@@ -29,7 +29,7 @@ license_header:
 # A list of API interface configurations.
 interfaces:
   # The fully qualified name of the API interface.
-- name: google.showcase.v1alpha1.Echo
+- name: google.showcase.v1alpha2.Echo
   # A list of resource collection configurations.
   # Consists of a name_pattern and an entity_name.
   # The name_pattern is a pattern to describe the names of the resources of this
@@ -74,10 +74,6 @@ interfaces:
   #   required_fields - Fields that are always required for a request to be
   #   valid.
   #
-  #   request_object_method - Turns on or off the generation of a method whose
-  #   sole parameter is a request object. Not all languages will generate this
-  #   method.
-  #
   #   resource_name_treatment - An enum that specifies how to treat the resource
   #   name formats defined in the field_name_patterns and
   #   response_field_name_patterns fields.
@@ -118,7 +114,6 @@ interfaces:
   #   the call is retrying, refer to retry_params_name instead.
   methods:
   - name: Echo
-    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -128,17 +123,14 @@ interfaces:
       - parameters:
         - content
         - error
-    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
   - name: Collect
-    request_object_method: false
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
   - name: Chat
-    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -149,7 +141,6 @@ interfaces:
         - response_delay
     required_fields:
     - response_delay
-    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -158,10 +149,8 @@ interfaces:
       groups:
       - parameters:
         - max_response
-        - page_size_override
     required_fields:
     - max_response
-    request_object_method: true
     page_streaming:
       request:
         page_size_field: page_size

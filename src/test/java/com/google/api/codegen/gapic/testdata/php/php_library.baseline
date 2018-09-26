@@ -2747,33 +2747,38 @@ return [
 /*
 use \Google\Example\Library\V1\DiscussBookRequest;
 
-$libraryServiceClient = new LibraryServiceClient();
+function sampleDiscussBook()
+{
+    $libraryServiceClient = new LibraryServiceClient();
 
-$name = 'BASIC';
-$request = new DiscussBookRequest();
-$request->setName($name);
+    $name = 'BASIC';
+    $request = new DiscussBookRequest();
+    $request->setName($name);
 
-try {
-    // Write requests individually, making read() calls if
-    // required. Call closeWrite() once writes are complete, and read the
-    // remaining responses from the server.
-    $requests = [$request];
-    $stream = $libraryServiceClient->discussBook();
-    foreach ($requests as $request) {
-        $stream->write($request);
-        // if required, read a single response from the stream
+    try {
+        // Write requests individually, making read() calls if
+        // required. Call closeWrite() once writes are complete, and read the
+        // remaining responses from the server.
+        $requests = [$request];
+        $stream = $libraryServiceClient->discussBook();
+        foreach ($requests as $request) {
+            $stream->write($request);
+            // if required, read a single response from the stream
+            $responseItem = $stream->read();
+            printf("%s" . PHP_EOL, $responseItem);
+        }
+        $stream->closeWrite();
         $responseItem = $stream->read();
-        printf("%s" . PHP_EOL, $responseItem);
+        while (!is_null($responseItem)) {
+            printf("%s" . PHP_EOL, $responseItem);
+            $responseItem = $stream->read();
+        }
+    } finally {
+        $libraryServiceClient->close();
     }
-    $stream->closeWrite();
-    $responseItem = $stream->read();
-    while (!is_null($responseItem)) {
-        printf("%s" . PHP_EOL, $responseItem);
-        $responseItem = $stream->read();
-    }
-} finally {
-    $libraryServiceClient->close();
 }
+
+sampleDiscussBook();
 */
 // [END turing_prog_request_streaming_bidi_async_core]
 
@@ -2805,24 +2810,29 @@ try {
 /*
 use \Google\Example\Library\V1\DiscussBookRequest;
 
-$libraryServiceClient = new LibraryServiceClient();
+function sampleDiscussBook()
+{
+    $libraryServiceClient = new LibraryServiceClient();
 
-$name = 'BASIC';
-$request = new DiscussBookRequest();
-$request->setName($name);
+    $name = 'BASIC';
+    $request = new DiscussBookRequest();
+    $request->setName($name);
 
-try {
-    // Write all requests to the server, then read all responses until the
-    // stream is complete
-    $requests = [$request];
-    $stream = $libraryServiceClient->discussBook();
-    $stream->writeAll($requests);
-    foreach ($stream->closeWriteAndReadAll() as $responseItem) {
-        printf("%s" . PHP_EOL, $responseItem);
+    try {
+        // Write all requests to the server, then read all responses until the
+        // stream is complete
+        $requests = [$request];
+        $stream = $libraryServiceClient->discussBook();
+        $stream->writeAll($requests);
+        foreach ($stream->closeWriteAndReadAll() as $responseItem) {
+            printf("%s" . PHP_EOL, $responseItem);
+        }
+    } finally {
+        $libraryServiceClient->close();
     }
-} finally {
-    $libraryServiceClient->close();
 }
+
+sampleDiscussBook();
 */
 // [END turing_prog_request_streaming_bidi_core]
 
@@ -2852,23 +2862,28 @@ try {
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-$libraryServiceClient = new LibraryServiceClient();
+function sampleFindRelatedBooks()
+{
+    $libraryServiceClient = new LibraryServiceClient();
 
-$namesElement = 'Odyssey';
-$names = [$namesElement];
-$shelvesElement = 'Classics';
-$shelves = [$shelvesElement];
+    $namesElement = 'Odyssey';
+    $names = [$namesElement];
+    $shelvesElement = 'Classics';
+    $shelves = [$shelvesElement];
 
-try {
-    // Iterate through all elements
-    $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
-    foreach ($pagedResponse->iterateAllElements() as $responseItem) {
-        $book = $responseItem;
-        printf("Here's a related book: %s" . PHP_EOL, $book);
+    try {
+        // Iterate through all elements
+        $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
+        foreach ($pagedResponse->iterateAllElements() as $responseItem) {
+            $book = $responseItem;
+            printf("Here's a related book: %s" . PHP_EOL, $book);
+        }
+    } finally {
+        $libraryServiceClient->close();
     }
-} finally {
-    $libraryServiceClient->close();
 }
+
+sampleFindRelatedBooks();
 */
 // [END sample_core]
 
@@ -2898,25 +2913,30 @@ try {
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-$libraryServiceClient = new LibraryServiceClient();
+function sampleFindRelatedBooks()
+{
+    $libraryServiceClient = new LibraryServiceClient();
 
-$namesElement = 'Odyssey';
-$names = [$namesElement];
-$shelvesElement = 'Classics';
-$shelves = [$shelvesElement];
+    $namesElement = 'Odyssey';
+    $names = [$namesElement];
+    $shelvesElement = 'Classics';
+    $shelves = [$shelvesElement];
 
-try {
-    // Iterate over pages of elements
-    $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
-    foreach ($pagedResponse->iteratePages() as $page) {
-        foreach ($page as $responseItem) {
-            $book = $responseItem;
-            printf("Here's a related book: %s" . PHP_EOL, $book);
+    try {
+        // Iterate over pages of elements
+        $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
+        foreach ($pagedResponse->iteratePages() as $page) {
+            foreach ($page as $responseItem) {
+                $book = $responseItem;
+                printf("Here's a related book: %s" . PHP_EOL, $book);
+            }
         }
+    } finally {
+        $libraryServiceClient->close();
     }
-} finally {
-    $libraryServiceClient->close();
 }
+
+sampleFindRelatedBooks();
 */
 // [END sample_core]
 
@@ -2946,30 +2966,35 @@ try {
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-$libraryServiceClient = new LibraryServiceClient();
+function sampleGetBigBook()
+{
+    $libraryServiceClient = new LibraryServiceClient();
 
-$formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
 
-try {
-    // start the operation, keep the operation name, and resume later
-    $operationResponse = $libraryServiceClient->getBigBook($formattedName);
-    $operationName = $operationResponse->getName();
-    // ... do other work
-    $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigBook');
-    while (!$newOperationResponse->isDone()) {
+    try {
+        // start the operation, keep the operation name, and resume later
+        $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+        $operationName = $operationResponse->getName();
         // ... do other work
-        $newOperationResponse->reload();
+        $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigBook');
+        while (!$newOperationResponse->isDone()) {
+            // ... do other work
+            $newOperationResponse->reload();
+        }
+        if ($newOperationResponse->operationSucceeded()) {
+          $response = $newOperationResponse->getResult();
+          printf("%s" . PHP_EOL, $response);
+        } else {
+          $error = $newOperationResponse->getError();
+          // handleError($error)
+        }
+    } finally {
+        $libraryServiceClient->close();
     }
-    if ($newOperationResponse->operationSucceeded()) {
-      $response = $newOperationResponse->getResult();
-      printf("%s" . PHP_EOL, $response);
-    } else {
-      $error = $newOperationResponse->getError();
-      // handleError($error)
-    }
-} finally {
-    $libraryServiceClient->close();
 }
+
+sampleGetBigBook();
 */
 // [END hopper_core]
 
@@ -2999,23 +3024,28 @@ try {
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-$libraryServiceClient = new LibraryServiceClient();
+function sampleGetBigBook()
+{
+    $libraryServiceClient = new LibraryServiceClient();
 
-$formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
 
-try {
-    $operationResponse = $libraryServiceClient->getBigBook($formattedName);
-    $operationResponse->pollUntilComplete();
-    if ($operationResponse->operationSucceeded()) {
-        $response = $operationResponse->getResult();
-        printf("%s" . PHP_EOL, $response);
-    } else {
-        $error = $operationResponse->getError();
-        // handleError($error)
+    try {
+        $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+        $operationResponse->pollUntilComplete();
+        if ($operationResponse->operationSucceeded()) {
+            $response = $operationResponse->getResult();
+            printf("%s" . PHP_EOL, $response);
+        } else {
+            $error = $operationResponse->getError();
+            // handleError($error)
+        }
+    } finally {
+        $libraryServiceClient->close();
     }
-} finally {
-    $libraryServiceClient->close();
 }
+
+sampleGetBigBook();
 */
 // [END hopper_core]
 
@@ -3047,24 +3077,29 @@ try {
 /*
 use \Google\Example\Library\V1\DiscussBookRequest;
 
-$libraryServiceClient = new LibraryServiceClient();
+function sampleMonologAboutBook()
+{
+    $libraryServiceClient = new LibraryServiceClient();
 
-$name = 'BASIC';
-$request = new DiscussBookRequest();
-$request->setName($name);
+    $name = 'BASIC';
+    $request = new DiscussBookRequest();
+    $request->setName($name);
 
-try {
-    // Write data as it becomes available, then wait for a response
-    $requests = [$request];
-    $stream = $libraryServiceClient->monologAboutBook();
-    foreach ($requests as $request) {
-        $stream->write($request);
+    try {
+        // Write data as it becomes available, then wait for a response
+        $requests = [$request];
+        $stream = $libraryServiceClient->monologAboutBook();
+        foreach ($requests as $request) {
+            $stream->write($request);
+        }
+        $response = $stream->readResponse();
+        printf("%s" . PHP_EOL, $response);
+    } finally {
+        $libraryServiceClient->close();
     }
-    $response = $stream->readResponse();
-    printf("%s" . PHP_EOL, $response);
-} finally {
-    $libraryServiceClient->close();
 }
+
+sampleMonologAboutBook();
 */
 // [END sample_core]
 
@@ -3096,21 +3131,26 @@ try {
 /*
 use \Google\Example\Library\V1\DiscussBookRequest;
 
-$libraryServiceClient = new LibraryServiceClient();
+function sampleMonologAboutBook()
+{
+    $libraryServiceClient = new LibraryServiceClient();
 
-$name = 'BASIC';
-$request = new DiscussBookRequest();
-$request->setName($name);
+    $name = 'BASIC';
+    $request = new DiscussBookRequest();
+    $request->setName($name);
 
-try {
-    // Write data to server and wait for a response
-    $requests = [$request];
-    $stream = $libraryServiceClient->monologAboutBook();
-    $response = $stream->writeAllAndReadResponse($requests);
-    printf("%s" . PHP_EOL, $response);
-} finally {
-    $libraryServiceClient->close();
+    try {
+        // Write data to server and wait for a response
+        $requests = [$request];
+        $stream = $libraryServiceClient->monologAboutBook();
+        $response = $stream->writeAllAndReadResponse($requests);
+        printf("%s" . PHP_EOL, $response);
+    } finally {
+        $libraryServiceClient->close();
+    }
 }
+
+sampleMonologAboutBook();
 */
 // [END sample_core]
 
@@ -3144,27 +3184,48 @@ use \Google\Example\Library\V1\Book;
 use \Google\Example\Library\V1\SeriesUuid;
 use \Google\Example\Library\V1\Shelf;
 
-$libraryServiceClient = new LibraryServiceClient();
+function samplePublishSeries($name, $edition)
+{
+    $libraryServiceClient = new LibraryServiceClient();
 
-// $name = 'Math';
-// $edition = 123;
-$shelf = new Shelf();
-$shelf->setName($name);
-$books = [];
-$seriesString = 'xyz3141592654';
-$seriesUuid = new SeriesUuid();
-$seriesUuid->setSeriesString($seriesString);
+    // $name = 'Math';
+    // $edition = 123;
+    $shelf = new Shelf();
+    $shelf->setName($name);
+    $books = [];
+    $seriesString = 'xyz3141592654';
+    $seriesUuid = new SeriesUuid();
+    $seriesUuid->setSeriesString($seriesString);
 
-try {
-    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
-    foreach ($response->getBookNames() as $title) {
-        printf("Title: %s" . PHP_EOL, $title);
+    try {
+        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        foreach ($response->getBookNames() as $title) {
+            printf("Title: %s" . PHP_EOL, $title);
+        }
+        printf("That's all!" . PHP_EOL);
+        printf("series_uuid: %s" . PHP_EOL, $response->getSeriesUuid()->getSeriesBytes());
+    } finally {
+        $libraryServiceClient->close();
     }
-    printf("That's all!" . PHP_EOL);
-    printf("series_uuid: %s" . PHP_EOL, $response->getSeriesUuid()->getSeriesBytes());
-} finally {
-    $libraryServiceClient->close();
 }
+
+$opts = [
+    'name::',
+    'edition::',
+];
+
+$defaultOptions = [
+    'name' => 'Math',
+    'edition' => 123,
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$name = $options['name'];
+$edition = $options['edition'];
+
+samplePublishSeries($name, $edition);
 */
 // [END canonical_core]
 
@@ -3198,19 +3259,24 @@ use \Google\Example\Library\V1\Book;
 use \Google\Example\Library\V1\SeriesUuid;
 use \Google\Example\Library\V1\Shelf;
 
-$libraryServiceClient = new LibraryServiceClient();
+function samplePublishSeries()
+{
+    $libraryServiceClient = new LibraryServiceClient();
 
-$shelf = new Shelf();
-$books = [];
-$seriesUuid = new SeriesUuid();
-$edition = 2;
+    $shelf = new Shelf();
+    $books = [];
+    $seriesUuid = new SeriesUuid();
+    $edition = 2;
 
-try {
-    $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
-    printf("%s" . PHP_EOL, $response);
-} finally {
-    $libraryServiceClient->close();
+    try {
+        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        printf("%s" . PHP_EOL, $response);
+    } finally {
+        $libraryServiceClient->close();
+    }
 }
+
+samplePublishSeries();
 */
 // [END canonical_core]
 
@@ -3240,19 +3306,24 @@ try {
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-$libraryServiceClient = new LibraryServiceClient();
+function sampleStreamBooks()
+{
+    $libraryServiceClient = new LibraryServiceClient();
 
-$name = 'BASIC';
+    $name = 'BASIC';
 
-try {
-    // Read all responses until the stream is complete
-    $stream = $libraryServiceClient->streamBooks($name);
-    foreach ($stream->readAll() as $responseItem) {
-        printf("%s" . PHP_EOL, $responseItem);
+    try {
+        // Read all responses until the stream is complete
+        $stream = $libraryServiceClient->streamBooks($name);
+        foreach ($stream->readAll() as $responseItem) {
+            printf("%s" . PHP_EOL, $responseItem);
+        }
+    } finally {
+        $libraryServiceClient->close();
     }
-} finally {
-    $libraryServiceClient->close();
 }
+
+sampleStreamBooks();
 */
 // [END lovelace_core]
 
@@ -3282,17 +3353,22 @@ try {
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-$libraryServiceClient = new LibraryServiceClient();
+function sampleStreamShelves()
+{
+    $libraryServiceClient = new LibraryServiceClient();
 
-try {
-    // Read all responses until the stream is complete
-    $stream = $libraryServiceClient->streamShelves();
-    foreach ($stream->readAll() as $responseItem) {
-        printf("%s" . PHP_EOL, $responseItem);
+    try {
+        // Read all responses until the stream is complete
+        $stream = $libraryServiceClient->streamShelves();
+        foreach ($stream->readAll() as $responseItem) {
+            printf("%s" . PHP_EOL, $responseItem);
+        }
+    } finally {
+        $libraryServiceClient->close();
     }
-} finally {
-    $libraryServiceClient->close();
 }
+
+sampleStreamShelves();
 */
 // [END sample_core]
 

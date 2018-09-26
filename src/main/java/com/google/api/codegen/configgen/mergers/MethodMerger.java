@@ -53,8 +53,6 @@ public class MethodMerger {
           + "  Consists of groups, which each represent a list of parameters to be "
           + "flattened. Each parameter listed must be a field of the request message.\n\n"
           + "  required_fields - Fields that are always required for a request to be valid.\n\n"
-          + "  request_object_method - Turns on or off the generation of a method whose sole "
-          + "parameter is a request object. Not all languages will generate this method.\n\n"
           + "  resource_name_treatment - An enum that specifies how to treat the resource name "
           + "formats defined in the field_name_patterns and response_field_name_patterns fields.\n"
           + "  UNSET: default value\n"
@@ -158,15 +156,7 @@ public class MethodMerger {
       prevNode.insertNext(requiredFieldsNode);
       prevNode = requiredFieldsNode;
     }
-
-    boolean requestObjectMethod = methodTransformer.isRequestObjectMethod(method);
-    ConfigNode requestObjectMethodNode =
-        FieldConfigNode.createStringPair(
-            NodeFinder.getNextLine(prevNode),
-            "request_object_method",
-            String.valueOf(requestObjectMethod));
-    prevNode.insertNext(requestObjectMethodNode);
-    return requestObjectMethodNode;
+    return prevNode;
   }
 
   private ConfigNode generateLongRunningNode(ConfigNode prevNode, MethodModel methodModel) {

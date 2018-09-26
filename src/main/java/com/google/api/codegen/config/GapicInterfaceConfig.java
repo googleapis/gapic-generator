@@ -241,8 +241,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfig,
-              retryParamsConfigNames,
-              configUtils);
+              retryParamsConfigNames);
       if (methodConfig == null) {
         continue;
       }
@@ -265,8 +264,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfig,
-              retryParamsConfigNames,
-              configUtils);
+              retryParamsConfigNames);
       if (methodConfig == null) {
         continue;
       }

@@ -36,6 +36,9 @@ public abstract class MethodSampleView {
   /** The region tag to be used for this sample. */
   public abstract String regionTag();
 
+  /** The name of the sample function. */
+  public abstract String sampleFunctionName();
+
   public static Builder newBuilder() {
     return new AutoValue_MethodSampleView.Builder();
   }
@@ -51,6 +54,8 @@ public abstract class MethodSampleView {
     public abstract Builder outputs(ImmutableList<OutputView> val);
 
     public abstract Builder regionTag(String val);
+
+    public abstract Builder sampleFunctionName(String val);
 
     public abstract MethodSampleView build();
   }

@@ -765,12 +765,8 @@ public class StaticLangApiMethodTransformer {
 
     RequestObjectMethodDetailView.Builder detailBuilder =
         RequestObjectMethodDetailView.newBuilder();
-    if (context.getMethodConfig().hasRequestObjectMethod()) {
-      detailBuilder.accessModifier(
-          context.getNamer().getVisiblityKeyword(context.getMethodConfig().getVisibility()));
-    } else {
-      detailBuilder.accessModifier(context.getNamer().getPrivateAccessModifier());
-    }
+    detailBuilder.accessModifier(
+        context.getNamer().getVisiblityKeyword(context.getMethodConfig().getVisibility()));
     detailBuilder.callableMethodName(callableMethodName);
     methodViewBuilder.requestObjectMethod(detailBuilder.build());
   }

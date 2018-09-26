@@ -70,8 +70,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
-      ImmutableSet<String> retryParamsConfigNames,
-      ProtoMethodTransformer configUtils) {
+      ImmutableSet<String> retryParamsConfigNames) {
 
     boolean error = false;
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
@@ -143,17 +142,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
               SimpleLocation.TOPLEVEL,
               "Default timeout not found or has invalid value (in method %s)",
               methodModel.getFullName()));
-      error = true;
-    }
-
-    boolean hasRequestObjectMethod =
-        configUtils.isRequestObjectMethod(methodModel, flattening, methodConfigProto);
-    if (hasRequestObjectMethod && method.getRequestStreaming()) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "request_object_method incompatible with streaming method %s",
-              method.getFullName()));
       error = true;
     }
 
@@ -242,7 +230,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
           optionalFieldConfigs,
           defaultResourceNameTreatment,
           batching,
-          hasRequestObjectMethod,
           fieldNamePatterns,
           sampleCodeInitFields,
           sampleSpec,
