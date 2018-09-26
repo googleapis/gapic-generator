@@ -19,7 +19,6 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.common.TargetLanguage;
-import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -54,8 +53,6 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static final String SCOPES_PARAM = "scopes";
   private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
       ImmutableSet.of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
-
-  private static final ProtoMethodTransformer configUtils = new ProtoMethodTransformer();
 
   public Interface getInterface() {
     return getInterfaceModel().getInterface();

@@ -98,8 +98,9 @@ public abstract class FlatteningConfig {
 
     // Get flattenings from protofile annotations, let these override flattenings from GAPIC config.
     if (methodModel instanceof ProtoMethodModel) {
+      ProtoMethodModel protoMethodModel = (ProtoMethodModel) methodModel;
       List<MethodSignature> methodSignatures =
-          protoParser.getMethodSignatures((ProtoMethodModel) methodModel);
+          protoParser.getMethodSignatures(protoMethodModel);
       for (MethodSignature signature : methodSignatures) {
         if (signature.getFieldsCount() == 0) {
           break;
@@ -110,7 +111,7 @@ public abstract class FlatteningConfig {
                 messageConfigs,
                 resourceNameConfigs,
                 signature,
-                methodModel,
+                protoMethodModel,
                 protoParser);
         if (groupConfig == null) {
           missing = true;
@@ -220,7 +221,7 @@ public abstract class FlatteningConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodSignature methodSignature,
-      MethodModel method,
+      ProtoMethodModel method,
       ProtoParser protoParser) {
 
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
@@ -230,7 +231,7 @@ public abstract class FlatteningConfig {
     List<String> flattenedParams = Lists.newArrayList(methodSignature.getFieldsList());
     for (String parameter : flattenedParams) {
 
-      FieldModel parameterField = method.getInputField(parameter);
+      ProtoField parameterField = method.getInputField(parameter);
       if (parameterField == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -261,7 +262,7 @@ public abstract class FlatteningConfig {
 
       ResourceNameTreatment resourceNameTreatment = ResourceNameTreatment.NONE;
       String resourceNameType =
-          protoParser.getResourceType(((ProtoField) parameterField).getProtoField());
+          protoParser.getResourceType(parameterField.getProtoField());
       if (!Strings.isNullOrEmpty(resourceNameType)) {
         resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
       }
