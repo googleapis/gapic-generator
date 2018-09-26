@@ -56,6 +56,8 @@ public class ProtoParser {
     } else {
       Iterator<ProtoElement> rootsIterator = model.getRoots().iterator();
       if (rootsIterator.hasNext()) {
+        // getFullName() will return the package name of the first root.
+        // Roots must have been added to the model prior to this method call.
         return rootsIterator.next().getFullName();
       }
       return null;
