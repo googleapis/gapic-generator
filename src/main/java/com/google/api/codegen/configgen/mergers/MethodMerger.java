@@ -25,7 +25,6 @@ import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
-import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +34,6 @@ public class MethodMerger {
   // Do not apply flattening if the parameter count exceeds the threshold.
   // TODO(garrettjones): Investigate a more intelligent way to handle this.
   private static final int FLATTENING_THRESHOLD = 4;
-
-  private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
 
   // Default LRO values.
   private static final String LRO_TOTAL_POLL_TIMEOUT = "300000";
@@ -58,8 +55,6 @@ public class MethodMerger {
           + "  Consists of groups, which each represent a list of parameters to be "
           + "flattened. Each parameter listed must be a field of the request message.\n\n"
           + "  required_fields - Fields that are always required for a request to be valid.\n\n"
-          + "  request_object_method - Turns on or off the generation of a method whose sole "
-          + "parameter is a request object. Not all languages will generate this method.\n\n"
           + "  resource_name_treatment - An enum that specifies how to treat the resource name "
           + "formats defined in the field_name_patterns and response_field_name_patterns fields.\n"
           + "  UNSET: default value\n"
@@ -170,19 +165,7 @@ public class MethodMerger {
       prevNode = requiredFieldsNode;
     }
 
-    // use all fields for the following check; if there are ignored fields for flattening
-    // purposes, the caller still needs a way to set them (by using the request object method).
-    int fieldCount = Iterables.size(method.getInputFields());
-    boolean requestObjectMethod =
-        (fieldCount > REQUEST_OBJECT_METHOD_THRESHOLD || fieldCount != parameterList.size())
-            && !method.getRequestStreaming();
-    ConfigNode requestObjectMethodNode =
-        FieldConfigNode.createStringPair(
-            NodeFinder.getNextLine(prevNode),
-            "request_object_method",
-            String.valueOf(requestObjectMethod));
-    prevNode.insertNext(requestObjectMethodNode);
-    return requestObjectMethodNode;
+    return prevNode;
   }
 
   private ConfigNode generateLongRunningNode(ConfigNode prevNode, MethodModel methodModel) {
