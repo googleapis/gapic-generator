@@ -47,8 +47,6 @@ public class MethodTransformer {
   // TODO(shinfan): Investigate a more intelligent way to handle this.
   private static final int FLATTENING_THRESHOLD = 4;
 
-  private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
-
   public List<MethodView> generateMethods(
       InterfaceModel apiInterface, Map<String, String> collectionNameMap) {
     ImmutableList.Builder<MethodView> methods = ImmutableList.builder();
@@ -92,8 +90,7 @@ public class MethodTransformer {
     // use all fields for the following check; if there are ignored fields for flattening
     // purposes, the caller still needs a way to set them (by using the request object method).
     methodView.requestObjectMethod(
-        (Iterators.size(inputFields.iterator()) > REQUEST_OBJECT_METHOD_THRESHOLD
-                || Iterators.size(inputFields.iterator()) != parameterList.size())
+        (Iterators.size(inputFields.iterator()) != parameterList.size())
             && !method.getRequestStreaming());
     methodView.resourceNameTreatment(helperTransformer.getResourceNameTreatment(method));
   }
