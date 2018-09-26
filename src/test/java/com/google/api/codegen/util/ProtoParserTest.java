@@ -95,18 +95,6 @@ public class ProtoParserTest {
     assertThat(protoParser.getResourcePath(authorBookField)).isNull();
   }
 
-  @Test
-  public void testGetPackageNameFromProtoFile() {
-    assertThat(protoParser.getPackageName(model)).isEqualTo("google.example.library.v1");
-  }
-
-  @Test
-  public void testGetPackageNameFromEmptyProtoFiles() {
-    Model modelWithNoRoots =
-        CodegenTestUtil.readModel(testDataLocator, tempDir, protoFiles, new String[0]);
-    assertThat(protoParser.getPackageName(modelWithNoRoots)).isNull();
-  }
-
   /** Return the entity name, e.g. "shelf" for a resource field. */
   @Test
   public void getResourceEntityName() {

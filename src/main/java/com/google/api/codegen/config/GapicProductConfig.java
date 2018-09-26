@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -185,7 +186,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
-      String basePackageName = protoParser.getPackageName(model);
+      String basePackageName =
+          Optional.ofNullable(protoPackage).orElse(protoParser.getPackageName(model));
       clientPackageName =
           LanguageTransformer.getFormattedPackageName(language.name(), basePackageName);
     } else {
