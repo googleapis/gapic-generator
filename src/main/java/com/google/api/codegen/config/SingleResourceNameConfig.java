@@ -115,7 +115,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
       return null;
     }
-    String entityId = ProtoParser.getResourceEntityName(resourceField);
+    String entityId = protoParser.getResourceEntityName(resourceField);
     String entityName = entityId;
     String commonResourceName = null;
     return new AutoValue_SingleResourceNameConfig(

@@ -60,7 +60,7 @@ public class ProtoApiModel implements ApiModel {
 
   @Override
   public List<String> getAuthScopes() {
-    return getAuthScopes(ProtoParser.getProtoParser(), getInterfaces());
+    return getAuthScopes(new ProtoParser(), getInterfaces());
   }
 
   @VisibleForTesting

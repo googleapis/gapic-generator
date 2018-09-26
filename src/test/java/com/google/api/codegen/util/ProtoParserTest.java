@@ -48,7 +48,7 @@ public class ProtoParserTest {
   private static MessageType book;
 
   // Object under test.
-  private static ProtoParser protoParser = ProtoParser.getProtoParser();
+  private static ProtoParser protoParser = new ProtoParser();
 
   @BeforeClass
   public static void startUp() {
@@ -97,20 +97,20 @@ public class ProtoParserTest {
 
   @Test
   public void testGetPackageNameFromProtoFile() {
-    assertThat(ProtoParser.getPackageName(model)).isEqualTo("google.example.library.v1");
+    assertThat(protoParser.getPackageName(model)).isEqualTo("google.example.library.v1");
   }
 
   @Test
   public void testGetPackageNameFromEmptyProtoFiles() {
     Model modelWithNoRoots =
         CodegenTestUtil.readModel(testDataLocator, tempDir, protoFiles, new String[0]);
-    assertThat(ProtoParser.getPackageName(modelWithNoRoots)).isNull();
+    assertThat(protoParser.getPackageName(modelWithNoRoots)).isNull();
   }
 
   /** Return the entity name, e.g. "shelf" for a resource field. */
   @Test
   public void getResourceEntityName() {
-    assertThat(ProtoParser.getResourceEntityName(bookNameField)).isEqualTo("book");
+    assertThat(protoParser.getResourceEntityName(bookNameField)).isEqualTo("book");
   }
 
   @Test
@@ -141,7 +141,7 @@ public class ProtoParserTest {
 
   @Test
   public void testGetServiceAddress() {
-    String defaultHost = ProtoParser.getServiceAddress(libraryService);
+    String defaultHost = protoParser.getServiceAddress(libraryService);
     assertThat(defaultHost).isEqualTo("library-example.googleapis.com");
   }
 

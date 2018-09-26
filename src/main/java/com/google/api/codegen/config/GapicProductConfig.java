@@ -185,7 +185,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
-      String basePackageName = ProtoParser.getPackageName(model);
+      String basePackageName = protoParser.getPackageName(model);
       clientPackageName =
           LanguageTransformer.getFormattedPackageName(language.name(), basePackageName);
     } else {
@@ -200,7 +200,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             messageConfigs,
             resourceNameConfigs,
             model.getSymbolTable(),
-            language);
+            language,
+            protoParser);
 
     ImmutableList<String> copyrightLines = null;
     ImmutableList<String> licenseLines = null;
@@ -362,7 +363,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable,
-      TargetLanguage language) {
+      TargetLanguage language,
+      ProtoParser protoParser) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
@@ -385,7 +387,8 @@ public abstract class GapicProductConfig implements ProductConfig {
               apiInterface,
               interfaceNameOverride,
               messageConfigs,
-              resourceNameConfigs);
+              resourceNameConfigs,
+              protoParser);
       if (interfaceConfig == null) {
         continue;
       }

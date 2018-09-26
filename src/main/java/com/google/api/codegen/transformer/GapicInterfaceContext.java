@@ -48,6 +48,7 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class GapicInterfaceContext implements InterfaceContext {
   private ImmutableList<MethodModel> interfaceMethods;
+  private ProtoParser protoParser = new ProtoParser();
 
   public static GapicInterfaceContext create(
       Interface apiInterface,
@@ -330,7 +331,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
 
   @Override
   public String getServiceAddress() {
-    String hostFromProtoFile = ProtoParser.getServiceAddress(getInterface());
+    String hostFromProtoFile = protoParser.getServiceAddress(getInterface());
     if (!Strings.isNullOrEmpty(hostFromProtoFile)) {
       return hostFromProtoFile;
     }
