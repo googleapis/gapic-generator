@@ -79,7 +79,15 @@ def java_resource_name_proto_library(name, deps, gapic_yaml, visibility = None):
         visibility = visibility,
     )
 
-def java_gapic_library(name, src, deps, test_deps, gapic_yaml, service_yaml, visibility = None):
+def java_gapic_library_raw(
+        name,
+        src,
+        gapic_yaml,
+        service_yaml,
+        deps,
+        test_deps,
+        artifact_type,
+        visibility):
     srcjar_target_name = "%s_srcjar" % name
     srcjar_raw_target_name = "%s_raw" % srcjar_target_name
     test_library_target_name = "%s_test" % name
@@ -90,6 +98,7 @@ def java_gapic_library(name, src, deps, test_deps, gapic_yaml, service_yaml, vis
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
         visibility = visibility,
+        artifact_type = artifact_type,
     )
 
     java_gapic_srcjar(
@@ -98,45 +107,97 @@ def java_gapic_library(name, src, deps, test_deps, gapic_yaml, service_yaml, vis
         visibility = visibility,
     )
 
-    lib_deps = [
-        "@com_google_protobuf_protobuf_java//jar",
-#        "@com_google_api_api_common//jar",
-        "@com_google_api_gax//jar",
-        "@com_google_api_gax_grpc//jar",
-        "@com_google_guava_guava//jar",
-        "@io_grpc_grpc_core//jar",
-        "@io_grpc_grpc_protobuf//jar",
-        "@com_google_code_findbugs_jsr305//jar",
-        "@org_threeten_threetenbp//jar",
-        "@io_opencensus_opencensus_api//jar",
-        "@com_google_auth_google_auth_library_credentials//jar",
-        "@com_google_auth_google_auth_library_oauth2_http//jar",
-        "@com_google_http_client_google_http_client//jar",
-        "@com_google_api_grpc_proto_google_common_protos//jar",
-    ]
-
     native.java_library(
         name = name,
         srcs = [":%s.srcjar" % srcjar_target_name],
-        deps = deps + lib_deps,
+        deps = deps,
         visibility = visibility,
     )
-
-    test_lib_deps = [
-        "@com_google_api_gax_grpc_testlib//jar",
-        "@com_google_api_gax_testlib//jar",
-        "@com_google_code_gson_gson//jar",
-        "@io_grpc_grpc_auth//jar",
-        "@io_grpc_grpc_netty_shaded//jar",
-        "@io_grpc_grpc_stub//jar",
-        "@io_opencensus_opencensus_contrib_grpc_metrics//jar",
-        "@com_google_api_grpc_grpc_google_common_protos//jar",
-        "@junit_junit//jar",
-    ]
 
     native.java_library(
         name = test_library_target_name,
         srcs = [":%s-test.srcjar" % srcjar_target_name],
-        deps = [":%s" % name] + deps + lib_deps + test_deps + test_lib_deps,
+        deps = [":%s" % name] + deps + test_deps,
+        visibility = visibility,
+    )
+
+def java_gapic_library(
+        name,
+        src,
+        gapic_yaml,
+        service_yaml,
+        deps = [],
+        test_deps = [],
+        visibility = None):
+    java_gapic_library_raw(
+        name = name,
+        src = src,
+        deps = deps + [
+            "@com_google_protobuf_protobuf_java//jar",
+            "@com_google_api_api_common//jar",
+            "@com_google_api_gax//jar",
+            "@com_google_api_gax_grpc//jar",
+            "@com_google_guava_guava//jar",
+            "@io_grpc_grpc_core//jar",
+            "@io_grpc_grpc_protobuf//jar",
+            "@com_google_code_findbugs_jsr305//jar",
+            "@org_threeten_threetenbp//jar",
+            "@io_opencensus_opencensus_api//jar",
+            "@com_google_auth_google_auth_library_credentials//jar",
+            "@com_google_auth_google_auth_library_oauth2_http//jar",
+            "@com_google_http_client_google_http_client//jar",
+            "@com_google_api_grpc_proto_google_common_protos//jar",
+        ],
+        test_deps = test_deps + [
+            "@com_google_api_gax_grpc_testlib//jar",
+            "@com_google_api_gax_testlib//jar",
+            "@com_google_code_gson_gson//jar",
+            "@io_grpc_grpc_auth//jar",
+            "@io_grpc_grpc_netty_shaded//jar",
+            "@io_grpc_grpc_stub//jar",
+            "@io_opencensus_opencensus_contrib_grpc_metrics//jar",
+            "@com_google_api_grpc_grpc_google_common_protos//jar",
+            "@junit_junit//jar",
+        ],
+        gapic_yaml = gapic_yaml,
+        service_yaml = service_yaml,
+        artifact_type = "GAPIC_CODE",
+        visibility = visibility,
+    )
+
+def java_discogapic_library(
+        name,
+        src,
+        gapic_yaml,
+        deps = [],
+        test_deps = [],
+        visibility = None):
+    java_gapic_library_raw(
+        name = name,
+        src = src,
+        deps = deps + [
+            "@com_google_protobuf_protobuf_java//jar",
+            "@com_google_api_api_common//jar",
+            "@com_google_api_gax//jar",
+            "@com_google_api_gax_httpjson//jar",
+            "@com_google_guava_guava//jar",
+            "@com_google_code_findbugs_jsr305//jar",
+            "@org_threeten_threetenbp//jar",
+            "@io_opencensus_opencensus_api//jar",
+            "@com_google_auth_google_auth_library_credentials//jar",
+            "@com_google_auth_google_auth_library_oauth2_http//jar",
+            "@com_google_http_client_google_http_client//jar",
+        ],
+        test_deps = test_deps + [
+            "@com_google_api_gax_httpjson_testlib//jar",
+            "@com_google_http_client_google_http_client_jackson2//jar",
+            "@com_fasterxml_jackson_core_jackson_core//jar",
+            "@com_google_api_gax_testlib//jar",
+            "@com_google_code_gson_gson//jar",
+            "@junit_junit//jar",
+        ],
+        gapic_yaml = gapic_yaml,
+        service_yaml = None,
+        artifact_type = "DISCOGAPIC_CODE",
         visibility = visibility,
     )

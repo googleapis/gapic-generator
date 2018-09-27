@@ -1,20 +1,32 @@
 def _gapic_srcjar_impl(ctx):
     output = ctx.outputs.output
     optional_arguments = []
+    optional_action_inputs = []
+
+    if ctx.file.service_yaml:
+        optional_arguments.append("--service_yaml=%s" % ctx.file.service_yaml.path)
+        optional_action_inputs.append(ctx.file.service_yaml)
     if ctx.attr.package_yaml2:
         optional_arguments.append("--package_yaml2=%s" % ctx.file.package_yaml2.path)
+        optional_action_inputs.append(ctx.file.package_yaml2)
 
-    arguments = optional_arguments + [
+    if ctx.attr.artifact_type.find("DISCOGAPIC") >= 0:
+        optional_arguments.append("--discovery_doc=%s" % ctx.file.src.path)
+    else:
+        if not ctx.attr.service_yaml:
+            fail("Missing mandatory attribute `service_yaml`")
+        optional_arguments.append("--descriptor_set=%s" % ctx.file.src.path)
+
+    arguments = [
         ctx.attr.artifact_type,
         "--language=%s" % ctx.attr.language,
-        "--service_yaml=%s" % ctx.file.service_yaml.path,
         "--gapic_yaml=%s" % ctx.file.gapic_yaml.path,
         "--output=%s" % output.path,
-    ] + ["--descriptor_set=%s" % ctx.file.src.path]
-    gapic_generator = ctx.executable.gapic_generator
+    ] + optional_arguments
 
+    gapic_generator = ctx.executable.gapic_generator
     ctx.actions.run(
-        inputs = [ctx.file.src] + [ctx.file.service_yaml, ctx.file.gapic_yaml],
+        inputs = [ctx.file.src, ctx.file.gapic_yaml] + optional_action_inputs,
         outputs = [output],
         arguments = arguments,
         progress_message = "%s: `%s %s`" % (ctx.label, gapic_generator.path, " ".join(arguments)),
@@ -30,10 +42,10 @@ gapic_srcjar = rule(
             allow_single_file = True,
             mandatory = True,
         ),
+        "gapic_yaml": attr.label(mandatory = True, allow_single_file = True),
         "artifact_type": attr.string(mandatory = False, default = "GAPIC_CODE"),
         "language": attr.string(mandatory = False, default = "java"),
-        "service_yaml": attr.label(mandatory = True, allow_single_file = True),
-        "gapic_yaml": attr.label(mandatory = True, allow_single_file = True),
+        "service_yaml": attr.label(mandatory = False, allow_single_file = True),
         "package_yaml2": attr.label(mandatory = False),
         "gapic_generator": attr.label(
             default = Label("//:gapic_generator"),
@@ -86,7 +98,7 @@ def _proto_custom_library_impl(ctx):
         ["-I{0}={1}".format(_path_ignoring_repository(imp), imp.path) for imp in imports] + \
         [_path_ignoring_repository(src) for src in srcs]
 
-#    print("%s: `%s %s`" % (ctx.label, protoc.path, " ".join(arguments)))
+    # print("%s: `%s %s`" % (ctx.label, protoc.path, " ".join(arguments)))
     inputs = depset(transitive = [srcs, imports, depset(direct = extra_inputs)])
     ctx.actions.run(
         inputs = inputs,

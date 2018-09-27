@@ -1,25 +1,33 @@
 # The versions which are most likely to be updated frequently
 _PROTOBUF_VERSION = "3.6.1"
-_GAX_VERSION = "1.31.0"
+_GAX_VERSION = "1.32.0"
+_GAX_BETA_VERSION = "0.49.0"
 _GRPC_VERSION = "1.13.1"
-_COMMON_PROTOS_VERSION = "1.12.0"
+_COMMON_PROTOS_VERSION = "1.13.0-pre1"
 _AUTH_VERSION = "0.11.0"
+_HTTP_CLIENT_VERSION = "1.24.1"
 
 # Generated libraries direct dependencies
 def java_gapic_direct_repositories(
         omit_com_google_api_gax = False,
         omit_com_google_api_gax_grpc = False,
+        omit_com_google_api_gax_httpjson = False,
         omit_com_google_api_gax_testlib = False,
         omit_com_google_api_gax_grpc_testlib = False,
+        omit_com_google_api_gax_httpjson_testlib = False,
         omit_junit_junit = False):
     if not omit_com_google_api_gax:
         com_google_api_gax()
     if not omit_com_google_api_gax_grpc:
         com_google_api_gax_grpc()
+    if not omit_com_google_api_gax_httpjson:
+        com_google_api_gax_httpjson()
     if not omit_com_google_api_gax_testlib:
         com_google_api_gax_testlib()
     if not omit_com_google_api_gax_grpc_testlib:
         com_google_api_gax_grpc_testlib()
+    if not omit_com_google_api_gax_httpjson_testlib:
+        com_google_api_gax_httpjson_testlib()
     if not omit_junit_junit:
         junit_junit()
 
@@ -43,9 +51,11 @@ def java_gapic_gax_repositories(
         omit_com_google_code_findbugs_jsr305 = False,
         omit_com_google_api_api_common = False,
         omit_org_threeten_threetenbp = False,
-        omit_com_google_http_client_google_http_client = False,
         omit_com_google_api_grpc_grpc_google_iam_v1 = False,
-        omit_com_google_api_grpc_proto_google_iam_v1 = False):
+        omit_com_google_api_grpc_proto_google_iam_v1 = False,
+        omit_com_google_http_client_google_http_client = False,
+        omit_com_google_http_client_google_http_client_jackson2 = False,
+        omit_com_fasterxml_jackson_core_jackson_core = False):
     if not omit_com_google_protobuf_protobuf_java:
         com_google_protobuf_protobuf_java()
     if not omit_io_grpc_grpc_core:
@@ -80,12 +90,16 @@ def java_gapic_gax_repositories(
         com_google_api_api_common()
     if not omit_org_threeten_threetenbp:
         org_threeten_threetenbp()
-    if not omit_com_google_http_client_google_http_client:
-        com_google_http_client_google_http_client()
     if not omit_com_google_api_grpc_grpc_google_iam_v1:
         com_google_api_grpc_grpc_google_iam_v1()
     if not omit_com_google_api_grpc_proto_google_iam_v1:
         com_google_api_grpc_proto_google_iam_v1()
+    if not omit_com_google_http_client_google_http_client:
+        com_google_http_client_google_http_client()
+    if not omit_com_google_http_client_google_http_client_jackson2:
+        com_google_http_client_google_http_client_jackson2()
+    if not omit_com_fasterxml_jackson_core_jackson_core:
+        com_fasterxml_jackson_core_jackson_core()
 
 def com_google_api_gax():
     native.maven_jar(
@@ -99,6 +113,12 @@ def com_google_api_gax_grpc():
         artifact = "com.google.api:gax-grpc:%s" % _GAX_VERSION,
     )
 
+def com_google_api_gax_httpjson():
+    native.maven_jar(
+        name = "com_google_api_gax_httpjson",
+        artifact = "com.google.api:gax-httpjson:%s" % _GAX_BETA_VERSION,
+    )
+
 def com_google_api_gax_testlib():
     native.maven_jar(
         name = "com_google_api_gax_testlib",
@@ -109,6 +129,12 @@ def com_google_api_gax_grpc_testlib():
     native.maven_jar(
         name = "com_google_api_gax_grpc_testlib",
         artifact = "com.google.api:gax-grpc:jar:testlib:%s" % _GAX_VERSION,
+    )
+
+def com_google_api_gax_httpjson_testlib():
+    native.maven_jar(
+        name = "com_google_api_gax_httpjson_testlib",
+        artifact = "com.google.api:gax-httpjson:jar:testlib:%s" % _GAX_BETA_VERSION,
     )
 
 def junit_junit():
@@ -219,12 +245,6 @@ def org_threeten_threetenbp():
         artifact = "org.threeten:threetenbp:1.3.3",
     )
 
-def com_google_http_client_google_http_client():
-    native.maven_jar(
-        name = "com_google_http_client_google_http_client",
-        artifact = "com.google.http-client:google-http-client:1.24.1",
-    )
-
 def com_google_api_grpc_grpc_google_iam_v1():
     native.maven_jar(
         name = "com_google_api_grpc_grpc_google_iam_v1",
@@ -235,4 +255,22 @@ def com_google_api_grpc_proto_google_iam_v1():
     native.maven_jar(
         name = "com_google_api_grpc_proto_google_iam_v1",
         artifact = "com.google.api.grpc:proto-google-iam-v1:0.12.0"
+    )
+
+def com_google_http_client_google_http_client():
+    native.maven_jar(
+        name = "com_google_http_client_google_http_client",
+        artifact = "com.google.http-client:google-http-client:%s" % _HTTP_CLIENT_VERSION,
+    )
+
+def com_google_http_client_google_http_client_jackson2():
+    native.maven_jar(
+        name = "com_google_http_client_google_http_client_jackson2",
+        artifact = "com.google.http-client:google-http-client-jackson2:%s" % _HTTP_CLIENT_VERSION,
+    )
+
+def com_fasterxml_jackson_core_jackson_core():
+    native.maven_jar(
+        name = "com_fasterxml_jackson_core_jackson_core",
+        artifact = "com.fasterxml.jackson.core:jackson-core:2.9.2",
     )

@@ -41,8 +41,8 @@ def _java_gapic_build_resources_pkg_impl(ctx):
     # which is not at all what we need for build files). There is no bazel built-in way to change
     # the generated files permissions, also the actual files accessible by the script are symlinks
     # and `chmod`, when applied to a directory, does not change the attributes of symlink targets
-    # inside the directory. Chaning the symlink targets permissions is also not an option, because
-    # they are on read-only file system.
+    # inside the directory. Chaning the symlink target's permissions is also not an option, because
+    # they are on a read-only file system.
     script = """
     mkdir -p {package_dir_path}
     for templ in {templates}; do
@@ -268,6 +268,7 @@ def _java_gapic_gradle_pkg(
         artifact_group_overrides = {
             "javax.annotation-api": "javax.annotation",
             "google-http-client": "com.google.http-client",
+            "google-http-client-jackson2": "com.google.http-client",
         },
         templates = {
             template_label: "build.gradle",
