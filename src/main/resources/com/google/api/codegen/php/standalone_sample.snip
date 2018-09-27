@@ -1,11 +1,7 @@
 @extends "php/common.snip"
 
 @snippet generate(sampleFile)
-    @let apiMethod = sampleFile.libraryMethod
-        @let sample = apiMethod.samples.get(0)
-            {@standaloneSample(sampleFile, apiMethod, sample)}
-        @end
-    @end
+    {@standaloneSample(sampleFile, sampleFile.libraryMethod, sampleFile.libraryMethod.samples.get(0))}
 @end
 
 # The structure of this should be parallel to that of method_sample.snip:@incodeSampleCall
@@ -13,7 +9,9 @@
     <?php
     {@license(sampleFile.fileHeader)}
 
-    {@generatedSampleWarning(sample)}
+    /*
+     * DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+     */
 
     // [START {@sample.regionTag}]
     namespace {@sampleFile.fileHeader.packageName};
@@ -423,10 +421,4 @@
     @join field : accessors on ""
         ->{@field}()
     @end
-@end
-
-@private generatedSampleWarning(sample)
-    /*
-     * DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
-     */
 @end
