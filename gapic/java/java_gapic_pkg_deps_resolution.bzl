@@ -169,7 +169,7 @@ def _reconstruct_artifact_id(file, group_overrides = {}):
                 # name is recognized as a group name, where each '.' is replaced with '_'
                 art_name_index = artifact_dir.rfind(underscore_artifact_name)
                 artifact_id[0] = artifact_dir[:art_name_index - 1].replace("_", ".")
-    print(artifact_id)
+
     return tuple(artifact_id)
 
 
