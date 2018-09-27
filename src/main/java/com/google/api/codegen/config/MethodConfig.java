@@ -63,8 +63,6 @@ public abstract class MethodConfig {
   @Nullable
   public abstract BatchingConfig getBatching();
 
-  public abstract boolean hasRequestObjectMethod();
-
   public abstract ImmutableMap<String, String> getFieldNamePatterns();
 
   public abstract List<String> getSampleCodeInitFields();

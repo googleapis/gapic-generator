@@ -28,6 +28,7 @@ anchor_run_decrypt: &anchor_run_decrypt
     fi
 
 anchor_check_generation: &anchor_check_generation
+  name: Check client generation
   command: |
     # Generation for a language failed if there exists a [language].log
     # which was outputted by generate_clients.py upon failure.
@@ -97,7 +98,7 @@ anchor_test_ruby_client: &anchor_test_ruby_client
     then
       cd ${RUBY_GEN_DIR}/google-cloud-${TEST_API}
       bundle update
-      ${TEST_RUBY_COMMAND}
+      bundle exec rake test
     else
       echo "Ruby ${TEST_API} library was not generated."
       exit 1
@@ -105,14 +106,13 @@ anchor_test_ruby_client: &anchor_test_ruby_client
   when: always
 
 anchor_run_ruby: &anchor_run_ruby
-  # Set var TEST_RUBY_COMMAND for each job this anchor is used in.
   working_directory: /tmp/
   docker:
     - image: circleci/ruby:2.4-node
+    - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
   environment:
     LANGUAGE: ruby
     RUBY_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/
-    SHOWCASE_VERSION: 0.0.4
     <<: *anchor_artman_vars
   steps:
     - attach_workspace:
@@ -161,14 +161,6 @@ anchor_run_ruby: &anchor_run_ruby
           git commit -m "init"
           gem build google-showcase.gemspec
           gem install google-showcase-0.1.0.gem
-    - run:
-        name: Run Showcase Server.
-        command: |
-          curl --location https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-linux-amd64 \
-               --output showcase-server
-          chmod a+x showcase-server
-          ./showcase-server
-        background: true
     - run:
         name: Run Showcase Integration Tests
         command: |
@@ -262,19 +254,11 @@ anchor_run_php: &anchor_run_php
     - run:
         name: Prepare to test Showcase.
         command: |
-          echo 'export TEST_API="showcase-v1alpha1"' >> $BASH_ENV
+          echo 'export TEST_API="showcase-v1alpha2"' >> $BASH_ENV
           echo 'export KEY_REQUIRED=false' >> $BASH_ENV
     - run:
         name: Test Showcase Generated Unit Tests.
         <<: *anchor_test_php
-    - run:
-        name: Run Showcase Server.
-        command: |
-          curl --location https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-linux-amd64 \
-               --output showcase-server
-          chmod a+x showcase-server
-          ./showcase-server
-        background: true
     - run:
         name: Run Showcase Integration Tests
         command: |
@@ -306,7 +290,7 @@ jobs:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
     environment:
-      SHOWCASE_VERSION: 0.0.4
+      SHOWCASE_VERSION: 0.0.7
     steps:
       - checkout:
           path: gapic-generator
@@ -317,11 +301,11 @@ jobs:
       - run:
           name: Setup showcase protos.
           command: |
-            curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-protos.tar.gz | tar xz
-            mv gapic-showcase-v1alpha1-${SHOWCASE_VERSION}-protos showcase-protos
+            mkdir showcase-protos
+            curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-${SHOWCASE_VERSION}-protos.tar.gz | tar -C showcase-protos -xz
             TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc"
             cp ${TEST_SRC}/showcase.yaml showcase-protos/google/showcase/
-            cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos/google/showcase/v1alpha1/
+            cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos/google/showcase/v1alpha2/
             cp ${TEST_SRC}/artman_showcase.yaml showcase-protos/google/showcase/
       - run:
           name: Build and install local toolkit
@@ -366,7 +350,7 @@ jobs:
             - reports/gapic-generator
   generate-clients:
     docker:
-      - image: googleapis/artman:0.15.4
+      - image: googleapis/artman:0.15.5
     working_directory: /tmp/
     environment:
       <<: *anchor_artman_vars
@@ -413,7 +397,7 @@ jobs:
                 google/showcase/artman_showcase.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR} \
-                --languages ruby php \
+                --languages nodejs php ruby \
                 --root-dir=/tmp/workspace/showcase-protos
           when: always
       - store_artifacts:
@@ -426,7 +410,7 @@ jobs:
           paths:
             - gapic-generator/artman-genfiles
             - reports
-  verify-and-test-java-openjdk8:
+  java-openjdk8-test:
     working_directory: /tmp/
     environment:
       LANGUAGE: java
@@ -454,7 +438,7 @@ jobs:
           path: /tmp/workspace/reports
       - store_artifacts:
           path: /tmp/workspace/reports
-  verify-and-test-python:
+  python-test:
     environment:
       LANGUAGE: python
       <<: *anchor_artman_vars
@@ -464,7 +448,7 @@ jobs:
         nox --session \"unit(py='3.5')\";
         nox --session \"unit(py='3.6')\";"
     <<: *anchor_verify_and_test_python
-  verify-and-test-system-python:
+  python-system-test:
     environment:
       <<: *anchor_auth_vars
       LANGUAGE: python
@@ -475,38 +459,37 @@ jobs:
         nox --session \"unit(py='3.5')\";
         nox --session \"unit(py='3.6')\";"
     <<: *anchor_verify_and_test_python
-  verify-and-test-ruby-2.4:
+  ruby-2.4-test:
     environment:
       RUBY_TEST_COMMAND: "bundle exec rake test"
     <<: *anchor_run_ruby
-  verify-and-test-system-ruby-2.4:
+  ruby-2.4-system-test:
     environment:
       RUBY_TEST_COMMAND: "bundle exec rake acceptance"
       <<: *anchor_auth_vars
     <<: *anchor_run_ruby
-  verify-and-test-php-7.2:
+  php-7.2-test:
     <<: *anchor_run_php
     environment:
       LANGUAGE: php
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
       TESTS_DIR: tests/Unit # Only run unit tests here.
-      SHOWCASE_VERSION: 0.0.4
       <<: *anchor_artman_vars
       <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
-  verify-and-test-system-php-7.2:
+      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+  php-7.2-system-test:
     <<: *anchor_run_php
     environment:
       LANGUAGE: php
       PHP_CLIENTS_DIR: /tmp/workspace/gapic-generator/artman-genfiles/php
       TESTS_DIR: tests # Only run unit tests here.
-      SHOWCASE_VERSION: 0.0.4
       <<: *anchor_artman_vars
       <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
-  verify-and-test-nodejs-8:
+  nodejs-8-test:
     working_directory: /tmp/
     environment:
       LANGUAGE: nodejs
@@ -514,12 +497,28 @@ jobs:
       <<: *anchor_artman_vars
     docker:
       - image: circleci/node:8-stretch-browsers
+      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
     steps:
       - attach_workspace:
           at: workspace
       - run:
           name: Verify all NodeJS generation succeeded
           <<: *anchor_check_generation
+      - run:
+          name: Test Showcase
+          command: |
+            cd ${NODEJS_GEN_DIR}/showcase-v1alpha2
+            npm install
+            # The following step must be done since the new api annotations are not
+            # in the nodejs proto files repository.
+            cp -rf /tmp/workspace/showcase-protos/* node_modules/google-proto-files
+            npm test
+      - run:
+          name: Run Showcase integration tests
+          command: |
+            cd workspace/gapic-generator/showcase/nodejs
+            npm install
+            npm test
       - run:
           name: Prepare to test Pubsub
           command: |
@@ -544,7 +543,8 @@ jobs:
       - run:
           name: Test Node Logging client
           <<: *anchor_test_nodejs_client
-  verify-and-test-go-1.10:
+
+  go-1.10-test:
     working_directory: /tmp/
     environment:
       LANGUAGE: go
@@ -616,35 +616,35 @@ workflows:
       - generate-clients:
           requires:
             - install-gapic-generator
-      - verify-and-test-java-openjdk8:
+      - java-openjdk8-test:
           requires:
             - generate-clients
-      - verify-and-test-python:
+      - python-test:
           requires:
             - generate-clients
-      - verify-and-test-ruby-2.4:
+      - ruby-2.4-test:
           requires:
             - generate-clients
-      - verify-and-test-system-python:
-          requires:
-            - generate-clients
-          filters:
-            branches:
-              only: master
-      - verify-and-test-system-ruby-2.4:
+      - python-system-test:
           requires:
             - generate-clients
           filters:
             branches:
               only: master
-      - verify-and-test-php-7.2:
+      - ruby-2.4-system-test:
+          requires:
+            - generate-clients
+          filters:
+            branches:
+              only: master
+      - php-7.2-test:
           requires:
             - generate-clients
       # TODO: Other php versions
-      - verify-and-test-go-1.10:
+      - go-1.10-test:
           requires:
             - generate-clients
-      - verify-and-test-nodejs-8:
+      - nodejs-8-test:
           requires:
             - generate-clients
 

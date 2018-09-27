@@ -31,7 +31,7 @@
 
     @end
 
-    def sample_{@apiMethod.name}({@formalArgs(sample.initCode.argDefaultParams)}):
+    def {@sample.sampleFunctionName}({@formalArgs(sample.initCode.argDefaultParams)}):
       """{@sample.valueSet.description}"""
 
       @# [START {@sample.regionTag}_core]
@@ -83,7 +83,7 @@
     @end
     args = parser.parse_args()
 
-    sample_{@apiMethod.name}({@actualArgs(sample.initCode.argDefaultParams)})
+    {@sample.sampleFunctionName}({@actualArgs(sample.initCode.argDefaultParams)})
 
   if __name__ == '__main__':
     main()
@@ -146,16 +146,11 @@
 @end
 
 @private lroSampleCode(apiMethod, sample)
-  response = {@methodCallSampleCode(apiMethod, sample.initCode)}
+  operation = {@methodCallSampleCode(apiMethod, sample.initCode)}
 
-  def callback(operation_future):
-      @# Handle result.
-      result = operation_future.result()
+  print('Waiting for operation to complete...')
+  response = operation.result()
 
-  response.add_done_callback(callback)
-
-  @# Handle metadata.
-  metadata = response.metadata()
   {@processResponse(sample)}
 @end
 
