@@ -14,13 +14,16 @@
  */
 package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.ArtifactType;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.MixedPathTestDataLocator;
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
+import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.io.Files;
 import com.google.protobuf.MessageOrBuilder;
@@ -28,6 +31,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -49,6 +53,8 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   @Nullable private final String packageConfigFileName;
   protected ConfigProto config;
   private List<CodeGenerator<?>> discoGapicGenerators;
+  private final TestDataLocator testDataLocator =
+      new MixedPathTestDataLocator(this.getClass(), Paths.get("src", "test", "java").toString());
 
   public DiscoGapicTestBase(
       TargetLanguage language,
@@ -65,6 +71,11 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
     String dir = language.toString().toLowerCase();
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
     getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
+  }
+
+  @Override
+  protected TestDataLocator getTestDataLocator() {
+    return this.testDataLocator;
   }
 
   protected void setupDiscovery() {
