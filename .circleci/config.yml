@@ -397,7 +397,7 @@ jobs:
                 google/showcase/artman_showcase.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR} \
-                --languages nodejs php ruby \
+                --languages go nodejs php ruby \
                 --root-dir=/tmp/workspace/showcase-protos
           when: always
       - store_artifacts:
@@ -552,6 +552,7 @@ jobs:
       GOPATH: /tmp/go
     docker:
       - image: circleci/golang:1.10
+      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
     steps:
       - attach_workspace:
           at: workspace
@@ -584,10 +585,7 @@ jobs:
           command: |
             cd /tmp/workspace/gapic-generator/artman-genfiles
             for d in gapi-cloud-*; do
-              cp -r $d/cloud.google.com/ $GOPATH/src
-            done
-            for d in go/*; do
-              cp -r $d/google.golang.org $GOPATH/src
+              cp -r $d/* $GOPATH/src
             done
       - run:
           name: Test Pubsub.
@@ -601,6 +599,11 @@ jobs:
           name: Test Speech
           command: go test cloud.google.com/go/speech/apiv1
           when: always
+      - run:
+          name: Run Showcase Integration Tests
+          command: |
+            cd /tmp/workspace/gapic-generator/showcase/go
+            go test .
   # TODO: test other language clients.
 
 # ======================= WORKFLOWS =======================
