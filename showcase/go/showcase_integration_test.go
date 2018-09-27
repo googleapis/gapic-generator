@@ -194,9 +194,9 @@ func TestWait_timeout(t *testing.T) {
 		},
 	}
 	ctx, _ := context.WithTimeout(context.Background(), 20*time.Millisecond)
-	resp, _ := client.Wait(ctx, req)
+	resp, err := client.Wait(ctx, req)
 
-	if resp != nil {
+	if err == nil {
 		t.Errorf("Wait() = %v, want error", resp)
 	}
 }
