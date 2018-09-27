@@ -31,23 +31,23 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class SampleInitCodeTest {
 
-  @Rule public TemporaryFolder tempDir = new TemporaryFolder();
+  @ClassRule public static TemporaryFolder tempDir = new TemporaryFolder();
 
-  private TestDataLocator testDataLocator;
-  private TestConfig testConfig;
-  private Model model;
-  private Interface apiInterface;
-  private Method method;
+  private static TestDataLocator testDataLocator;
+  private static TestConfig testConfig;
+  private static Model model;
+  private static Interface apiInterface;
+  private static Method method;
 
-  @Before
-  public void setupClass() {
+  @BeforeClass
+  public static void setupClass() {
     List<String> protoFiles = Lists.newArrayList("myproto.proto");
     List<String> yamlFiles = Lists.newArrayList("myproto.yaml");
     testDataLocator = TestDataLocator.create(SampleInitCodeTest.class);
@@ -70,7 +70,7 @@ public class SampleInitCodeTest {
   // TODO(pongad): Consider using createTree everywhere.
 
   @Test
-  public void testSimpleField() throws Exception {
+  public void testSimpleField() {
     String fieldSpec = "myfield";
 
     InitCodeNode expectedStructure = InitCodeNode.newRoot();
@@ -83,7 +83,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testEmbeddedField() throws Exception {
+  public void testEmbeddedField() {
     String fieldSpec = "myobj.myfield";
 
     InitCodeNode innerStructure = InitCodeNode.create("myfield");
@@ -100,7 +100,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testListField() throws Exception {
+  public void testListField() {
     String fieldSpec = "mylist[0]";
 
     InitCodeNode innerStructure = InitCodeNode.create("0");
@@ -116,7 +116,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testMapField() throws Exception {
+  public void testMapField() {
     String fieldSpec = "mymap{key}";
 
     InitCodeNode innerStructure = InitCodeNode.create("key");
@@ -132,7 +132,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testNestedListField() throws Exception {
+  public void testNestedListField() {
     String fieldSpec = "mylist[0][0]";
 
     InitCodeNode innerList = InitCodeNode.create("0");
@@ -150,7 +150,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testFormattedField() throws Exception {
+  public void testFormattedField() {
     String fieldSpec = "name%entity";
 
     InitValueConfig initValueConfig = InitValueConfig.create("test-api", null);
@@ -167,7 +167,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testFormattedFieldWithValues() throws Exception {
+  public void testFormattedFieldWithValues() {
     List<String> fieldSpecs =
         Arrays.asList("formatted_field%entity1=test1", "formatted_field%entity2=test2");
 
@@ -190,7 +190,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testNestedMixedField() throws Exception {
+  public void testNestedMixedField() {
     String fieldSpec = "mylist[0]{key}";
 
     InitCodeNode innerMap = InitCodeNode.create("key");
@@ -209,7 +209,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testAssignment() throws Exception {
+  public void testAssignment() {
     String fieldSpec = "myfield=\"default\"";
 
     InitCodeNode outerStructure =
@@ -226,7 +226,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testListEmbeddedField() throws Exception {
+  public void testListEmbeddedField() {
     String fieldSpec = "mylist[0].myfield";
 
     InitCodeNode innerStructure = InitCodeNode.create("myfield");
@@ -245,7 +245,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testEmbeddedFieldList() throws Exception {
+  public void testEmbeddedFieldList() {
     String fieldSpec = "myfield.mylist[0]";
 
     InitCodeNode innerList = InitCodeNode.create("0");
@@ -265,75 +265,75 @@ public class SampleInitCodeTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testFormattedFieldBadField() throws Exception {
+  public void testFormattedFieldBadField() {
     // Error because `name` is not configured to be a resource name field.
     String fieldSpec = "name%entity";
     FieldStructureParser.parse(InitCodeNode.newRoot(), fieldSpec);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testFormattedFieldBadFieldWithValue() throws Exception {
+  public void testFormattedFieldBadFieldWithValue() {
     // Error because `name` is not configured to be a resource name field.
     String fieldSpec = "name%entity=test";
     FieldStructureParser.parse(InitCodeNode.newRoot(), fieldSpec);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testListFieldBadIndex() throws Exception {
+  public void testListFieldBadIndex() {
     List<String> fieldSpecs = Arrays.asList("mylist[1]");
     InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testListFieldIndexGap() throws Exception {
+  public void testListFieldIndexGap() {
     List<String> fieldSpecs = Arrays.asList("mylist[0]", "mylist[2]");
     InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testListFieldMismatchedListThenField() throws Exception {
+  public void testListFieldMismatchedListThenField() {
     List<String> fieldSpecs = Arrays.asList("myfield[0]", "myfield.subfield");
     InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testListFieldMismatchedFieldThenList() throws Exception {
+  public void testListFieldMismatchedFieldThenList() {
     List<String> fieldSpecs = Arrays.asList("myfield.subfield", "myfield[0]");
     InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testBadField() throws Exception {
+  public void testBadField() {
     List<String> fieldSpecs = Arrays.asList("notafield");
     InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testBadSubField() throws Exception {
+  public void testBadSubField() {
     List<String> fieldSpecs = Arrays.asList("myfield.notafield");
     InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testMapFieldBadStringIndexUnclosedDoubleQuotes() throws Exception {
+  public void testMapFieldBadStringIndexUnclosedDoubleQuotes() {
     List<String> fieldSpecs = Arrays.asList("stringmap{\"key}");
     InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testMapFieldBadStringIndexUnclosedSingleQuotes() throws Exception {
+  public void testMapFieldBadStringIndexUnclosedSingleQuotes() {
     List<String> fieldSpecs = Arrays.asList("stringmap{'key}");
     InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testMapFieldBadIntIndex() throws Exception {
+  public void testMapFieldBadIntIndex() {
     List<String> fieldSpecs = Arrays.asList("intmap{\"key\"}");
     InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test
-  public void testMultipleFields() throws Exception {
+  public void testMultipleFields() {
     List<String> fieldSpecs =
         Arrays.asList("mylist", "myfield", "secondfield", "stringmap", "intmap");
 
@@ -345,7 +345,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testMultipleListEntries() throws Exception {
+  public void testMultipleListEntries() {
     List<String> fieldSpecs = Arrays.asList("mylist[0]", "mylist[1]");
 
     InitCodeNode rootNode =
@@ -356,7 +356,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testMultipleMapEntries() throws Exception {
+  public void testMultipleMapEntries() {
     List<String> fieldSpecs =
         Arrays.asList("stringmap{\"key1\"}", "stringmap{\"key2\"}", "intmap{123}", "intmap{456}");
 
@@ -368,7 +368,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testMultipleFormattedEntries() throws Exception {
+  public void testMultipleFormattedEntries() {
     List<String> fieldSpecs =
         Arrays.asList(
             "formatted_field%entity1", "formatted_field%entity2", "formatted_field%entity3");
@@ -388,7 +388,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testListEmbeddedMultipleFields() throws Exception {
+  public void testListEmbeddedMultipleFields() {
     List<String> fieldSpecs = Arrays.asList("mylist[0].subfield", "mylist[0].subsecondfield");
 
     InitCodeNode rootNode =
@@ -399,7 +399,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testCompoundingStructure() throws Exception {
+  public void testCompoundingStructure() {
     List<String> fieldSpecs = Arrays.asList("myfield", "myfield.subfield");
 
     InitCodeNode rootNode =
@@ -410,7 +410,7 @@ public class SampleInitCodeTest {
   }
 
   @Test
-  public void testCompoundingStructureList() throws Exception {
+  public void testCompoundingStructureList() {
     List<String> fieldSpecs = Arrays.asList("mylist", "mylist[0]", "mylist[0].subfield");
 
     InitCodeNode rootNode =

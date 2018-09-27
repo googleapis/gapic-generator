@@ -14,13 +14,12 @@
  */
 package com.google.api.codegen.protoannotations;
 
-import static com.google.api.codegen.ArtifactType.GAPIC_CODE;
 import static com.google.api.codegen.ArtifactType.LEGACY_GAPIC_AND_PACKAGE;
 
 import com.google.api.codegen.ArtifactType;
 import com.google.api.codegen.CodegenTestUtil;
-import com.google.api.codegen.GapicTestBase2;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.gapic.GapicTestBase2;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
@@ -46,10 +45,13 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       String apiName,
       String baseline,
       String protoPackage) {
-    super(language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline, protoPackage);
+    super(
+        language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline, protoPackage);
 
     this.apiName = apiName;
+    // Use the library.proto contained in this test package's testdata.
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
+    // Use the common yaml files from the codegen test package's testsrc/common.
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
   }
 
@@ -57,7 +59,12 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
   public static List<Object[]> testedConfigs() {
     return Arrays.asList(
         GapicTestBase2.createTestConfig(
-            TargetLanguage.GO, new String[] {"library_gapic.yaml"}, null, "library", "google.example.library.v1", ARTIFACT_TYPE),
+            TargetLanguage.GO,
+            new String[] {"library_gapic.yaml"},
+            null,
+            "library",
+            "google.example.library.v1",
+            ARTIFACT_TYPE),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"library_gapic.yaml"},
