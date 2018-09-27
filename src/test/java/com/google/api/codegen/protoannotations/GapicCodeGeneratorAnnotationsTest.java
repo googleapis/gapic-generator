@@ -33,6 +33,8 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
+  // TODO(andrealin): Change this to GAPIC_CODE when proto annotations are fully supported and
+  // yaml files are no longer required.
   private static final ArtifactType ARTIFACT_TYPE = LEGACY_GAPIC_AND_PACKAGE;
 
   private final String apiName;
@@ -51,8 +53,10 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
     this.apiName = apiName;
     // Use the library.proto contained in this test package's testdata.
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
+
     // Use the common yaml files from the codegen test package's testsrc/common.
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    // TODO(andrealin): Remove dependency on yaml files when proto annotations fully supported.
   }
 
   @Parameters(name = "{3}")
