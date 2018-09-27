@@ -30,6 +30,11 @@ license_header:
   copyright_file: copyright-google.txt
   license_file: license-header-apache-2.0.txt
 collections:
+<<<<<<< HEAD
+=======
+  - name_pattern: shelves/{shelf_id}
+    entity_name: shelf
+>>>>>>> master
   # This pattern is present here and not in the interface configuration to test
   # the restriction of generated parse/format methods
   - name_pattern: archives/{archive_path}/books/{book_id=**}
@@ -68,6 +73,35 @@ interfaces:
     rpc_timeout_multiplier: 1.3
     max_rpc_timeout_millis: 3000
     total_timeout_millis: 30000
+<<<<<<< HEAD
+=======
+  collections:
+  - name_pattern: shelves/{shelf_id}
+    entity_name: shelf
+  - name_pattern: shelves/{shelf_id}/books/{book_id}
+    entity_name: book
+    language_overrides:
+    - language: java
+      entity_name: shelf_book
+  # To test the case that entity name / variable which happens to be
+  # a language keyword. See: https://github.com/googleapis/toolkit/issues/618
+  - name_pattern: shelves/{shelf}/books/{book}/returns/{return}
+    entity_name: return
+  - name_pattern: projects/{project}
+    entity_name: project
+    language_overrides:
+    - language: csharp
+      common_resource_name: Google.Api.Gax.ResourceNames.ProjectName
+    - language: java
+      common_resource_name: com.google.cloud.ProjectName
+  smoke_test:
+    method: UpdateBook
+    init_fields:
+      - name%shelf_id="testShelf-$RANDOM"
+      - name%book_id=$PROJECT_ID
+      - book . rating=GOOD
+    flattening_group_name: update_book_2
+>>>>>>> master
   methods:
   - name: CreateShelf
     flattening:
@@ -79,24 +113,48 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 1000
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+>>>>>>> master
   - name: GetShelf
     flattening:
       groups:
       - parameters:
         - name
+<<<<<<< HEAD
       - parameters:
         - name
         - message
+=======
+        parameter_resource_name_treatment:
+          name: STATIC_TYPES
+      - parameters:
+        - name
+        - message
+        parameter_resource_name_treatment:
+          name: VALIDATE
+>>>>>>> master
       - parameters:
         - name
         - message
         - string_builder
+<<<<<<< HEAD
+=======
+        parameter_resource_name_treatment:
+          name: NONE
+>>>>>>> master
     required_fields:
       - name
       - options
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 2000
+<<<<<<< HEAD
+=======
+    field_name_patterns:
+      name: shelf
+>>>>>>> master
   - name: ListShelves
     flattening:
       groups:
@@ -120,6 +178,12 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 4000
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: shelf
+>>>>>>> master
   - name: MergeShelves
     flattening:
       groups:
@@ -132,6 +196,13 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 5000
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: shelf
+      other_shelf_name: shelf
+>>>>>>> master
   - name: CreateBook
     flattening:
       groups:
@@ -144,6 +215,13 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 6000
+<<<<<<< HEAD
+=======
+    # Test resource_name_treatment set to NONE with field_name_patterns
+    resource_name_treatment: NONE
+    field_name_patterns:
+      name: shelf
+>>>>>>> master
     header_request_params:
     - name
     - book.read
@@ -175,6 +253,10 @@ interfaces:
           - edition
           - shelf.name
         subresponse_field: book_names
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+>>>>>>> master
     sample_code_init_fields:
     - series_uuid.series_string=foobar
     sample_value_sets:
@@ -242,6 +324,12 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 8000
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book
+>>>>>>> master
     sample_value_sets:
     - id: not_here
       title: "Non-existent book"
@@ -271,6 +359,12 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: shelf
+>>>>>>> master
     sample_code_init_fields:
     # Set the sample_code_init_field for an optional field
     - filter="book-filter-string"
@@ -285,6 +379,12 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     # leaving commented out to test the default
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book
+>>>>>>> master
   - name: UpdateBook
     flattening:
       groups:
@@ -305,6 +405,12 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book
+>>>>>>> master
   - name: MoveBook
     flattening:
       groups:
@@ -317,6 +423,13 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 10000
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book
+      other_shelf_name: shelf
+>>>>>>> master
   - name: ListStrings
     flattening:
       groups:
@@ -333,6 +446,12 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: "*"
+>>>>>>> master
   - name: AddComments
     flattening:
       groups:
@@ -355,6 +474,13 @@ interfaces:
         batched_field: comments
         discriminator_fields:
           - name
+<<<<<<< HEAD
+=======
+    # Test resource_name_treatment unset, so using default
+    # resource_name_treatment: VALIDATE
+    field_name_patterns:
+      name: book
+>>>>>>> master
     sample_code_init_fields:
       - comments[0].comment
       - comments[0].stage
@@ -369,6 +495,12 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: archived_book
+>>>>>>> master
   - name: GetBookFromAnywhere
     flattening:
       groups:
@@ -381,6 +513,13 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book_oneof
+      alt_book_name: book
+>>>>>>> master
   - name: GetBookFromAbsolutelyAnywhere
     flattening:
       groups:
@@ -391,6 +530,12 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book_oneof
+>>>>>>> master
   - name: UpdateBookIndex
     flattening:
       groups:
@@ -402,9 +547,18 @@ interfaces:
     - name
     - index_name
     - index_map
+<<<<<<< HEAD
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
+=======
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    field_name_patterns:
+      name: book
+>>>>>>> master
     sample_code_init_fields:
       - index_name="default index"
       - index_map{"default_key"}
@@ -433,6 +587,10 @@ interfaces:
       - calling_forms: ".*"
         value_sets: ".*"
   - name: StreamBooks
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+>>>>>>> master
     flattening:
       groups:
       - parameters:
@@ -542,6 +700,10 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 3000
+<<<<<<< HEAD
+=======
+    resource_name_treatment: STATIC_TYPES
+>>>>>>> master
     sample_code_init_fields:
     - names[0]
     # TODO(michaelbausor): support %-entity notation for list elements
@@ -582,8 +744,16 @@ interfaces:
     required_fields:
     - resource
     - tag
+<<<<<<< HEAD
     retry_codes_name: non_idempotent
     retry_params_name: default
+=======
+    resource_name_treatment: VALIDATE
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      resource: book
+>>>>>>> master
     timeout_millis: 60000
     surface_treatments:
     - include_languages:
@@ -598,8 +768,16 @@ interfaces:
     required_fields:
     - resource
     - label
+<<<<<<< HEAD
     retry_codes_name: non_idempotent
     retry_params_name: default
+=======
+    resource_name_treatment: VALIDATE
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      resource: book
+>>>>>>> master
     timeout_millis: 60000
     reroute_to_grpc_interface: google.tagger.v1.Labeler
     surface_treatments:
@@ -615,8 +793,16 @@ interfaces:
         - name
     required_fields:
     - name
+<<<<<<< HEAD
     retry_codes_name: non_idempotent
     retry_params_name: default
+=======
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book
+>>>>>>> master
     timeout_millis: 60000
     long_running:
       return_type: google.example.library.v1.Book
@@ -648,8 +834,16 @@ interfaces:
         - name
     required_fields:
     - name
+<<<<<<< HEAD
     retry_codes_name: non_idempotent
     retry_params_name: default
+=======
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book
+>>>>>>> master
     timeout_millis: 60000
     long_running:
       return_type: google.protobuf.Empty
@@ -752,8 +946,19 @@ interfaces:
     - required_repeated_fixed32
     - required_repeated_fixed64
     - required_map
+<<<<<<< HEAD
     retry_codes_name: non_idempotent
     retry_params_name: default
+=======
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      required_repeated_resource_name: book
+      required_repeated_resource_name_oneof: book_oneof
+      optional_repeated_resource_name: book
+      optional_repeated_resource_name_oneof: book_oneof
+>>>>>>> master
     timeout_millis: 60000
 resource_name_generation:
 - message_name: Book
@@ -828,9 +1033,22 @@ resource_name_generation:
   field_entity_map:
     required_singular_resource_name: book
     required_singular_resource_name_oneof: book_oneof
+<<<<<<< HEAD
     required_repeated_resource_name: book
     required_repeated_resource_name_oneof: book_oneof
     optional_singular_resource_name: book
     optional_singular_resource_name_oneof: book_oneof
     optional_repeated_resource_name: book
     optional_repeated_resource_name_oneof: book_oneof
+=======
+    required_singular_resource_name_common: project
+    required_repeated_resource_name: book
+    required_repeated_resource_name_oneof: book_oneof
+    required_repeated_resource_name_common: project
+    optional_singular_resource_name: book
+    optional_singular_resource_name_oneof: book_oneof
+    optional_singular_resource_name_common: project
+    optional_repeated_resource_name: book
+    optional_repeated_resource_name_oneof: book_oneof
+    optional_repeated_resource_name_common: project
+>>>>>>> master

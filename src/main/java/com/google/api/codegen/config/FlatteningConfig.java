@@ -91,12 +91,16 @@ public abstract class FlatteningConfig {
         oneofNames.add(oneofName);
       }
 
-
       ResourceNameTreatment defaultResourceNameTreatment =
           methodConfigProto.getResourceNameTreatment();
-      if ((method  instanceof ProtoMethodModel) &&
-          (((ProtoMethodModel) method).getProtoMethod().getInputType().getMessageType().getFields().stream().anyMatch(f ->
-              !Strings.isNullOrEmpty(ProtoParser.getResourceType(f))))) {
+      if ((method instanceof ProtoMethodModel)
+          && (((ProtoMethodModel) method)
+              .getProtoMethod()
+              .getInputType()
+              .getMessageType()
+              .getFields()
+              .stream()
+              .anyMatch(f -> !Strings.isNullOrEmpty(ProtoParser.getResourceType(f))))) {
         defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
       }
       if (!parameterField.mayBeInResourceName()) {
