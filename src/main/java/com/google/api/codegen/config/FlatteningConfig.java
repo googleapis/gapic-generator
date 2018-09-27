@@ -18,11 +18,13 @@ import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.configgen.transformer.DiscoveryMethodTransformer;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.HashSet;
@@ -89,8 +91,14 @@ public abstract class FlatteningConfig {
         oneofNames.add(oneofName);
       }
 
+
       ResourceNameTreatment defaultResourceNameTreatment =
           methodConfigProto.getResourceNameTreatment();
+      if ((method  instanceof ProtoMethodModel) &&
+          (((ProtoMethodModel) method).getProtoMethod().getInputType().getMessageType().getFields().stream().anyMatch(f ->
+              !Strings.isNullOrEmpty(ProtoParser.getResourceType(f))))) {
+        defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
+      }
       if (!parameterField.mayBeInResourceName()) {
         defaultResourceNameTreatment = ResourceNameTreatment.NONE;
       }

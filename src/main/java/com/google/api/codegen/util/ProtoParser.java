@@ -64,6 +64,10 @@ public class ProtoParser {
     return field.getParent().getSimpleName().toLowerCase();
   }
 
+  public static String getResourceType(Field field) {
+    return (String) field.getOptionFields().get(AnnotationsProto.resourceType.getDescriptor());
+  }
+
   /** Get long running settings. */
   public OperationTypes getLongRunningOperation(Method method) {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);

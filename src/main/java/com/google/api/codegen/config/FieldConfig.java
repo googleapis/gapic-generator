@@ -157,7 +157,9 @@ public abstract class FieldConfig {
       }
     }
 
-    validate(messageConfigs, field, treatment, flattenedFieldResourceNameConfig);
+    if (treatment != null) {
+      validate(messageConfigs, field, treatment, flattenedFieldResourceNameConfig);
+    }
 
     return createFieldConfig(
         field, treatment, flattenedFieldResourceNameConfig, messageFieldResourceNameConfig);
@@ -247,6 +249,7 @@ public abstract class FieldConfig {
       ResourceNameConfig resourceNameConfig) {
     switch (treatment) {
       case NONE:
+      case UNSET_TREATMENT:
         break;
       case STATIC_TYPES:
         if (messageConfigs == null || !messageConfigs.fieldHasResourceName(field)) {
@@ -264,7 +267,6 @@ public abstract class FieldConfig {
                   + field.getFullName());
         }
         break;
-      case UNSET_TREATMENT:
       case UNRECOGNIZED:
       default:
         throw new IllegalArgumentException("Unrecognized resource name type: " + treatment);

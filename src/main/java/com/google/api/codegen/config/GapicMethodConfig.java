@@ -144,6 +144,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     ResourceNameTreatment defaultResourceNameTreatment =
         methodConfigProto.getResourceNameTreatment();
+    if (method.getInputType().getMessageType().getFields().stream().anyMatch(f ->
+        !Strings.isNullOrEmpty(ProtoParser.getResourceType(f)))) {
+      defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
+    }
     if (defaultResourceNameTreatment == null
         || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
