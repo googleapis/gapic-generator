@@ -127,32 +127,61 @@ def _reconstruct_artifact_id(file, group_overrides = {}):
     if basename.endswith("-ijar") or basename.endswith("-hjar"):
         basename = basename[:-len("-ijar")]
 
-    artifact_id = ["", "", "", ""]  # representing [group, name, version, classifier]
-    basename_len = len(basename)
-    for i in range(1, basename_len):
+    # Representing [group, name, version, classifier]
+    artifact_id = ["", "", "", ""]
+    # Meven splits artifact name version and classifier with '-'
+    chunks = basename.split("-")
+    for i in range(0, len(chunks)):
         if not artifact_id[1]:
-            if basename[i].isdigit() and not basename[i - 1].isalnum():
-                artifact_id[1] = basename[0:i - 1]
-        elif not artifact_id[2]:
-            if i == basename_len - 1:
-                artifact_id[2] = basename[len(artifact_id[1]) + 1:i + 1]
-            elif not basename[i].isdigit() and not basename[i] == ".":
-                artifact_id[2] = basename[len(artifact_id[1]) + 1:i]
-        else:
-            artifact_id[3] = basename[i:]
-            break
+            # Find first chunk, which contains only digits and dots, recognize this as the beginning
+            # of the version portion of artifact id.
+            if _possibly_artifact_id_version_chunk(chunks[i]):
+                artifact_id[1] = "-".join(chunks[0:i])
+                artifact_id[2] = chunks[i]
+        elif not artifact_id[3]:
+            # Everything, which comes after version chunk and does not have digits in it is
+            # recognized as a classifier chunk, otherwise (if there is at least one digit) it is
+            # recognized as a continuation of the version and appended to the artifact version
+            # portion accordingly.
+            if _possibly_artifact_id_classifier_chunk(chunks[i]):
+                artifact_id[3] = "-".join(chunks[i: len(chunks)])
+                break
+            else:
+                artifact_id[2] = "-".join([artifact_id[2], chunks[i]])
 
-    # Reconstruction `group` portion from dirname (full path to dependency jar)
+    # Reconstructing `group` portion from dirname (full path to dependency jar). This assumes that
+    # maven_jar's target names follow official naming best practices.
     if artifact_id[1]:
         if group_overrides.get(artifact_id[1]):
+            # Simply use overriden (manually specified) group name for the artifact name, if provided
             artifact_id[0] = group_overrides.get(artifact_id[1])
         else:
+            # Try to reconstruct the group name from the jar's file path.
+            # The path contains the maven_jar's target name as one of its folder names, this is what
+            # we are interested in here.
             underscore_artifact_name = artifact_id[1].replace("-", "_")
             art_name_index = dirname.rfind(underscore_artifact_name)
             if art_name_index >= 0:
                 left_index = dirname.rfind("/", end = art_name_index) + 1
                 right_index = dirname.find("/", start = art_name_index)
                 artifact_dir = dirname[left_index:right_index]
+                # Everything, which stands to the left of the artifact-name in maven_jar's target
+                # name is recognized as a group name, where each '.' is replaced with '_'
                 art_name_index = artifact_dir.rfind(underscore_artifact_name)
                 artifact_id[0] = artifact_dir[:art_name_index - 1].replace("_", ".")
+    print(artifact_id)
     return tuple(artifact_id)
+
+
+def _possibly_artifact_id_version_chunk(chunk):
+    for j in range(0, len(chunk)):
+        if not chunk[j].isdigit() and chunk[j] != '.':
+            return False
+    return True
+
+
+def _possibly_artifact_id_classifier_chunk(chunk):
+    for j in range(0, len(chunk)):
+        if chunk[j].isdigit():
+            return False
+    return True
