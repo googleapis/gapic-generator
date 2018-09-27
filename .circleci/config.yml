@@ -582,11 +582,7 @@ jobs:
             rm -rf pubsub
       - run:
           name: Copy over generated clients
-          command: |
-            cd /tmp/workspace/gapic-generator/artman-genfiles
-            for d in gapi-cloud-*; do
-              cp -r $d/* $GOPATH/src
-            done
+          command: cp -r /tmp/workspace/gapic-generator/artman-genfiles/gapi-cloud-*/* $GOPATH/src
       - run:
           name: Test Pubsub.
           command: go test cloud.google.com/go/pubsub/apiv1

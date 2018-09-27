@@ -22,10 +22,12 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"time"
 
 	showcase "cloud.google.com/go/showcase/apiv1alpha2"
 	durationpb "github.com/golang/protobuf/ptypes/duration"
 	genprotopb "github.com/googleapis/gapic-showcase/server/genproto"
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc"
@@ -52,6 +54,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestEcho(t *testing.T) {
+	t.Parallel()
 	content := "hello world!"
 	req := &genprotopb.EchoRequest{
 		Response: &genprotopb.EchoRequest_Content{
@@ -64,32 +67,31 @@ func TestEcho(t *testing.T) {
 		t.Fatal(err)
 	}
 	if resp.GetContent() != req.GetContent() {
-		t.Errorf(
-			"Echo did not receive expected value. Got %s, Wanted %s",
-			resp.GetContent(),
-			req.GetContent())
+		t.Errorf("Echo() = %q, want %q", resp.GetContent(), content)
 	}
 }
 
 func TestEcho_error(t *testing.T) {
+	t.Parallel()
 	val := codes.Canceled
 	req := &genprotopb.EchoRequest{
 		Response: &genprotopb.EchoRequest_Error{
 			Error: &spb.Status{Code: int32(val)},
 		},
 	}
-	_, err := client.Echo(context.Background(), req)
+	resp, err := client.Echo(context.Background(), req)
 
-	if err == nil {
-		t.Errorf("Echo called with code %d did not return an error.", val)
+	if resp != nil {
+		t.Errorf("Echo() = %v, wanted error %d", resp, val)
 	}
 	status, _ := status.FromError(err)
 	if status.Code() != val {
-		t.Errorf("Echo called with code %d returned an error with code %d", val, status.Code())
+		t.Errorf("Echo() errors with %d, want %d", status.Code(), val)
 	}
 }
 
 func TestExpand(t *testing.T) {
+	t.Parallel()
 	content := "The rain in Spain stays mainly on the plain!"
 	req := &genprotopb.ExpandRequest{Content: content}
 	s, err := client.Expand(context.Background(), req)
@@ -109,11 +111,12 @@ func TestExpand(t *testing.T) {
 	}
 	got := strings.Join(resps, " ")
 	if content != got {
-		t.Errorf("Expand expected %s but got %s", content, got)
+		t.Errorf("Expand() = %q, want %q", got, content)
 	}
 }
 
 func TestCollect(t *testing.T) {
+	t.Parallel()
 	content := "The rain in Spain stays mainly on the plain!"
 	s, err := client.Collect(context.Background())
 	if err != nil {
@@ -126,12 +129,16 @@ func TestCollect(t *testing.T) {
 	}
 
 	resp, err := s.CloseAndRecv()
+	if err != nil {
+		t.Fatal(err)
+	}
 	if content != resp.GetContent() {
-		t.Errorf("Collect failed, expected %s, got %s", content, resp.GetContent())
+		t.Errorf("Collect() = %q, want %q", resp.GetContent(), content)
 	}
 }
 
 func TestChat(t *testing.T) {
+	t.Parallel()
 	content := "The rain in Spain stays mainly on the plain!"
 	s, err := client.Chat(context.Background())
 	if err != nil {
@@ -155,14 +162,15 @@ func TestChat(t *testing.T) {
 	}
 	got := strings.Join(resps, " ")
 	if content != got {
-		t.Errorf("Chat expected %s but got %s", content, got)
+		t.Errorf("Chat() = %q, want %q", got, content)
 	}
 }
 
 func TestWait(t *testing.T) {
+	t.Parallel()
 	content := "hello world!"
 	req := &genprotopb.WaitRequest{
-		ResponseDelay: &durationpb.Duration{Seconds: 2},
+		ResponseDelay: &durationpb.Duration{Nanos: 100},
 		Response: &genprotopb.WaitRequest_Success{
 			Success: &genprotopb.WaitResponse{Content: content},
 		},
@@ -172,25 +180,44 @@ func TestWait(t *testing.T) {
 		t.Fatal(err)
 	}
 	if resp.GetContent() != content {
-		t.Errorf(
-			"Wait did not receive expected value. Got %s, Wanted %s",
-			resp.GetContent(),
-			content)
+		t.Errorf("Wait() = %q, want %q", resp.GetContent(), content)
 	}
 }
 
+func TestWait_timeout(t *testing.T) {
+	t.Parallel()
+	content := "hello world!"
+	req := &genprotopb.WaitRequest{
+		ResponseDelay: &durationpb.Duration{Seconds: 1},
+		Response: &genprotopb.WaitRequest_Success{
+			Success: &genprotopb.WaitResponse{Content: content},
+		},
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 20*time.Millisecond)
+	resp, _ := client.Wait(ctx, req)
+
+	if resp != nil {
+		t.Errorf("Wait() = %v, want error", resp)
+	}
+}
+
+
 func TestPagination(t *testing.T) {
+	t.Parallel()
 	req := &genprotopb.PaginationRequest{PageSize: 5, MaxResponse: 20}
 	iter := client.Pagination(context.Background(), req)
 
 	expected := int32(0)
 	for {
 		i, err := iter.Next()
-		if err != nil {
+		if err == iterator.Done {
 			break
 		}
+		if err != nil {
+			t.Fatal(err)
+		}
 		if i != expected {
-			t.Errorf("Pagination expected val %d, got %d", expected, i)
+			t.Errorf("Chat() = %d, want %d", i, expected)
 		}
 		expected++
 	}
