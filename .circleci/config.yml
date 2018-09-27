@@ -303,6 +303,12 @@ jobs:
           command: |
             mkdir showcase-protos
             curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-${SHOWCASE_VERSION}-protos.tar.gz | tar -C showcase-protos -xz
+
+            # Replace localhost:7469 with localhost in echo.proto.
+            sed -i 's/localhost:7469/localhost/g' showcase-protos/google/showcase/v1alpha2/echo.proto
+            # Visually verify that echo.proto was changed to "localhost"
+            grep -r "localhost" .
+
             TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc"
             cp ${TEST_SRC}/showcase.yaml showcase-protos/google/showcase/
             cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos/google/showcase/v1alpha2/
