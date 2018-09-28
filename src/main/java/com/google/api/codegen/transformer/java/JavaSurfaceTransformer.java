@@ -435,8 +435,8 @@ public class JavaSurfaceTransformer {
             namer.getApiStubInterfaceName(context.getInterfaceConfig())));
     String name = namer.getApiStubSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
-    xsettingsClass.serviceAddress(model.getServiceAddress());
-    xsettingsClass.servicePort(model.getServicePort());
+    xsettingsClass.serviceAddress(context.getNamer().getServiceHostname(model.getServiceAddress()));
+    xsettingsClass.servicePort(context.getNamer().getServicePort(model.getServiceAddress()));
     xsettingsClass.authScopes(model.getAuthScopes());
     if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
       xsettingsClass.useDefaultServicePortInEndpoint(false);
@@ -952,8 +952,8 @@ public class JavaSurfaceTransformer {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ApiModel model = context.getApiModel();
-    settingsDoc.serviceAddress(model.getServiceAddress());
-    settingsDoc.servicePort(model.getServicePort());
+    settingsDoc.serviceAddress(context.getNamer().getServiceHostname(model.getServiceAddress()));
+    settingsDoc.servicePort(context.getNamer().getServicePort(model.getServiceAddress()));
     settingsDoc.transportProtocol(productConfig.getTransportProtocol());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());

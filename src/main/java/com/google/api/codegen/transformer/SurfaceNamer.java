@@ -69,6 +69,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   private final String packageName;
   private final NameFormatter nameFormatter;
 
+  private static final int DEFAULT_PORT = 443;
+
   /** Represents a kind of test. */
   public enum TestKind {
     UNIT,
@@ -1638,5 +1640,32 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getToStringMethod() {
     return getNotImplementedString("SurfaceNamer.getToStringMethod");
+  }
+
+  public Integer getServicePort(String serviceAddress) {
+    int beforePortIndex = serviceAddress.lastIndexOf(":");
+    if (beforePortIndex < 0) {
+      return DEFAULT_PORT;
+    }
+    String portString = serviceAddress.substring(beforePortIndex);
+    try {
+      return Integer.valueOf(portString);
+    } catch (NumberFormatException e) {
+      return DEFAULT_PORT;
+    }
+  }
+
+  public String getServiceHostname(String serviceAddress) {
+    int beforePortIndex = serviceAddress.lastIndexOf(":");
+    if (beforePortIndex < 0) {
+      return serviceAddress;
+    }
+    String portString = serviceAddress.substring(beforePortIndex);
+    try {
+      Integer port = Integer.valueOf(portString);
+      return serviceAddress.substring(0, beforePortIndex);
+    } catch (NumberFormatException e) {
+      return serviceAddress;
+    }
   }
 }

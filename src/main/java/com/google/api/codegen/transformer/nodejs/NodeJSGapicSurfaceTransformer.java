@@ -135,8 +135,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     ApiModel model = context.getApiModel();
-    xapiClass.serviceAddress(model.getServiceAddress());
-    xapiClass.servicePort(model.getServicePort());
+    xapiClass.serviceAddress(context.getNamer().getServiceHostname(model.getServiceAddress()));
+    xapiClass.servicePort(context.getNamer().getServicePort(model.getServiceAddress()));
     xapiClass.serviceTitle(model.getTitle());
     xapiClass.authScopes(model.getAuthScopes());
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());

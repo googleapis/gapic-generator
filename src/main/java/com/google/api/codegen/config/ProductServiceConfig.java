@@ -30,7 +30,7 @@ import java.util.TreeSet;
  */
 public class ProductServiceConfig {
   /** Return the service address. */
-  public String getServiceAddress(Model model) {
+  public String getServiceHostname(Model model) {
     return model.getServiceConfig().getName();
   }
 
