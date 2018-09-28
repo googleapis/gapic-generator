@@ -17,11 +17,11 @@ package com.google.api.codegen.util;
 import com.google.api.AnnotationsProto;
 import com.google.api.Resource;
 import com.google.api.Retry;
-import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.longrunning.OperationTypes;
 import com.google.longrunning.OperationsProto;
@@ -60,10 +60,36 @@ public class ProtoParser {
   }
 
   /** Return the entity name, e.g. "shelf" for a resource field. */
+  public static String getResourceMessage(Field field) {
+    String resourceName =
+        (String) field.getOptionFields().get(AnnotationsProto.resourceType.getDescriptor());
+    if (!Strings.isNullOrEmpty(resourceName)) {
+      if (field.getType().isMessage()
+          && resourceName.equals(field.getType().getMessageType().getFullName())) {
+        // We don't care if the resource type of the field is the field itself.
+        return null;
+      }
+      TypeRef resourceType = field.getModel().getSymbolTable().lookupType(resourceName);
+      if (resourceType == null) {
+        return resourceName;
+      }
+      return resourceType.getMessageType().getSimpleName().toLowerCase();
+    }
+    // return field.getParent().getFullName();
+    return null;
+  }
+
+  /** Return the entity name, e.g. "shelf" for a resource field. */
   public static String getResourceEntityName(Field field) {
+    Resource resource =
+        (Resource) field.getOptionFields().get(AnnotationsProto.resource.getDescriptor());
+    if (resource != null && !Strings.isNullOrEmpty(resource.getBaseName())) {
+      return resource.getBaseName();
+    }
     return field.getParent().getSimpleName().toLowerCase();
   }
 
+  // TODO(andrealin): Remove this
   public static String getResourceType(Field field) {
     return (String) field.getOptionFields().get(AnnotationsProto.resourceType.getDescriptor());
   }
@@ -71,13 +97,6 @@ public class ProtoParser {
   /** Get long running settings. */
   public OperationTypes getLongRunningOperation(Method method) {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
-  }
-
-  @Nullable
-  public static String getFormattedPackageName(String language, String basePackageName) {
-    LanguageTransformer.LanguageFormatter formatter =
-        LanguageTransformer.LANGUAGE_FORMATTERS.get(language.toLowerCase());
-    return formatter.getFormattedPackageName(basePackageName);
   }
 
   /** Return the extra retry codes for the given method. */

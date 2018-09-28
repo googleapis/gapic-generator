@@ -100,7 +100,7 @@ public abstract class FlatteningConfig {
               .getMessageType()
               .getFields()
               .stream()
-              .anyMatch(f -> !Strings.isNullOrEmpty(ProtoParser.getResourceType(f))))) {
+              .anyMatch(f -> !Strings.isNullOrEmpty(ProtoParser.getResourceMessage(f))))) {
         defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
       }
       if (!parameterField.mayBeInResourceName()) {

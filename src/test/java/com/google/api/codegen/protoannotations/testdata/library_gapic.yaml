@@ -29,11 +29,6 @@ language_settings:
 license_header:
   copyright_file: copyright-google.txt
   license_file: license-header-apache-2.0.txt
-collections:
-  # This pattern is present here and not in the interface configuration to test
-  # the restriction of generated parse/format methods
-  - name_pattern: archives/{archive_path}/books/{book_id=**}
-    entity_name: archived_book
 fixed_resource_name_values:
   - entity_name: deleted_book
     fixed_value: _deleted-book_
@@ -41,7 +36,6 @@ collection_oneofs:
   - oneof_name: book_oneof
     collection_names:
     - book
-    - archived_book
     - deleted_book
 interfaces:
 - name: google.example.library.v1.LibraryService
@@ -759,10 +753,6 @@ resource_name_generation:
 - message_name: Book
   field_entity_map:
     name: book
-# Test using fully qualified name
-- message_name: google.example.library.v1.BookFromArchive
-  field_entity_map:
-    name: archived_book
 - message_name: BookFromAnywhere
   field_entity_map:
     name: book_oneof
@@ -804,9 +794,6 @@ resource_name_generation:
 - message_name: ListStringsResponse
   field_entity_map:
     strings: "*"
-- message_name: GetBookFromArchiveRequest
-  field_entity_map:
-    name: archived_book
 - message_name: GetBookFromAnywhereRequest
   field_entity_map:
     name: book_oneof

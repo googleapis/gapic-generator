@@ -15,9 +15,12 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ResourceNameMessageConfigProto;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 /** Configuration of the resource name types for fields of a single message. */
@@ -43,12 +46,27 @@ public abstract class ResourceNameMessageConfig {
     return new AutoValue_ResourceNameMessageConfig(fullyQualifiedMessageName, fieldEntityMap);
   }
 
-  public static ResourceNameMessageConfig createResourceNameMessageConfig(Field field) {
-    String messageName = field.getParent().getFullName();
-    ImmutableMap<String, String> fieldEntityMap =
-        ImmutableMap.of(field.getSimpleName(), field.getParent().getSimpleName().toLowerCase());
-
-    return new AutoValue_ResourceNameMessageConfig(messageName, fieldEntityMap);
+  public static ResourceNameMessageConfig createResourceNameMessageConfig(MessageType message) {
+    ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+    ProtoParser protoParser = new ProtoParser();
+    for (Field field : message.getFields()) {
+      String resourcePath = protoParser.getResourcePath(field);
+      if (!Strings.isNullOrEmpty(resourcePath)) {
+        builder.put(field.getSimpleName(), field.getParent().getSimpleName().toLowerCase());
+        continue;
+      }
+      String resourceType = ProtoParser.getResourceMessage(field);
+      if (!Strings.isNullOrEmpty(resourceType)) {
+        builder.put(field.getSimpleName(), resourceType);
+      }
+    }
+    ImmutableMap<String, String> fieldEntityMap = builder.build();
+    if (fieldEntityMap.isEmpty()) {
+      // Return a null config when no fields were resource types; this is so empty proto annotations
+      // don't override the GAPIC config resource name configs.
+      return null;
+    }
+    return new AutoValue_ResourceNameMessageConfig(message.getFullName(), fieldEntityMap);
   }
 
   public static String getFullyQualifiedMessageName(String defaultPackage, String messageName) {
