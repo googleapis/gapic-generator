@@ -89,10 +89,6 @@ public class ShowcaseTransportChannelProvider implements TransportChannelProvide
     GrpcHeaderInterceptor headerInterceptor =
         new GrpcHeaderInterceptor(headerProvider.getHeaders());
 
-    // not exposed - can't test
-    //  GrpcMetadataHandlerInterceptor metadataHandlerInterceptor =
-    //          new GrpcMetadataHandlerInterceptor();
-
     ManagedChannelBuilder builder =
         ManagedChannelBuilder.forAddress(host, port)
             .usePlaintext()
