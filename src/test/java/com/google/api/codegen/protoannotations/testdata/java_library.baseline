@@ -113,10 +113,10 @@ import com.google.api.gax.rpc.PageContext;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
@@ -1813,7 +1813,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = BookName.format("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1823,7 +1823,42 @@ public class LibraryClient implements BackgroundResource {
    *     .setAlignment(alignment)
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
-   *   libraryClient.addComments(formattedName, comments);
+   *   libraryClient.addComments(name, comments);
+   * }
+   * </code></pre>
+   *
+   * @param name
+   * @param comments
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void addComments(BookName name, List<Comment> comments) {
+
+    AddCommentsRequest request =
+        AddCommentsRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .addAllComments(comments)
+        .build();
+    addComments(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds comments to a book
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
+   *   ByteString comment = ByteString.copyFromUtf8("");
+   *   Comment.Stage stage = Comment.Stage.UNSET;
+   *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
+   *   Comment commentsElement = Comment.newBuilder()
+   *     .setComment(comment)
+   *     .setStage(stage)
+   *     .setAlignment(alignment)
+   *     .build();
+   *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
+   *   libraryClient.addComments(name.toString(), comments);
    * }
    * </code></pre>
    *
@@ -1848,7 +1883,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = BookName.format("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1859,7 +1894,7 @@ public class LibraryClient implements BackgroundResource {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .addAllComments(comments)
    *     .build();
    *   libraryClient.addComments(request);
@@ -1880,7 +1915,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = BookName.format("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1891,7 +1926,7 @@ public class LibraryClient implements BackgroundResource {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .addAllComments(comments)
    *     .build();
    *   ApiFuture&lt;Void&gt; future = libraryClient.addCommentsCallable().futureCall(request);
@@ -2153,7 +2188,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = BookName.of("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2175,7 +2210,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = BookName.of("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2364,9 +2399,9 @@ public class LibraryClient implements BackgroundResource {
    *   BidiStream&lt;DiscussBookRequest, Comment&gt; bidiStream =
    *       libraryClient.discussBookCallable().call();
    *
-   *   String name = "";
+   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(name.toString())
    *     .build();
    *   bidiStream.send(request);
    *   for (Comment response : bidiStream) {
@@ -2407,9 +2442,9 @@ public class LibraryClient implements BackgroundResource {
    *   ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
    *       libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
    *
-   *   String name = "";
+   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(name.toString())
    *     .build();
    *   requestObserver.onNext(request);
    * }
@@ -7402,11 +7437,11 @@ public class FindRelatedBooksRequestPagedOdyssey {
     // [START sample_core]
     BookName namesElement = BookName.of("[SHELF]", "[BOOK]");
     List<BookName> names = Arrays.asList(namesElement);
-    ShelfName shelvesElement = ShelfName.of("[BOOK_SHELF]");
-    List<ShelfName> shelves = Arrays.asList(shelvesElement);
+    String shelvesElement = "Classics";
+    List<String> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
       .addAllNames(BookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
+      .addAllShelves(shelves)
       .build();
     for (BookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsBookName()) {
       BookName book = responseItem;
@@ -7444,11 +7479,11 @@ public class FindRelatedBooksCallableCallableListOdyssey {
     // [START sample_core]
     BookName namesElement = BookName.of("[SHELF]", "[BOOK]");
     List<BookName> names = Arrays.asList(namesElement);
-    ShelfName shelvesElement = ShelfName.of("[BOOK_SHELF]");
-    List<ShelfName> shelves = Arrays.asList(shelvesElement);
+    String shelvesElement = "Classics";
+    List<String> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
       .addAllNames(BookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
+      .addAllShelves(shelves)
       .build();
     while (true) {
       FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
@@ -7495,11 +7530,11 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
     // [START sample_core]
     BookName namesElement = BookName.of("[SHELF]", "[BOOK]");
     List<BookName> names = Arrays.asList(namesElement);
-    ShelfName shelvesElement = ShelfName.of("[BOOK_SHELF]");
-    List<ShelfName> shelves = Arrays.asList(shelvesElement);
+    String shelvesElement = "Classics";
+    List<String> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
       .addAllNames(BookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
+      .addAllShelves(shelves)
       .build();
     ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
 

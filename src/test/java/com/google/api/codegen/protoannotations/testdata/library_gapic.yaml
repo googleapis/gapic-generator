@@ -29,6 +29,13 @@ language_settings:
 license_header:
   copyright_file: copyright-google.txt
   license_file: license-header-apache-2.0.txt
+collections:
+  - name_pattern: shelves/{shelf_id}
+    entity_name: shelf
+  # This pattern is present here and not in the interface configuration to test
+  # the restriction of generated parse/format methods
+  - name_pattern: archives/{archive_path}/books/{book_id=**}
+    entity_name: archived_book
 fixed_resource_name_values:
   - entity_name: deleted_book
     fixed_value: _deleted-book_
@@ -36,6 +43,7 @@ collection_oneofs:
   - oneof_name: book_oneof
     collection_names:
     - book
+    - archived_book
     - deleted_book
 interfaces:
 - name: google.example.library.v1.LibraryService
@@ -78,13 +86,19 @@ interfaces:
       groups:
       - parameters:
         - name
+        parameter_resource_name_treatment:
+          name: STATIC_TYPES
       - parameters:
         - name
         - message
+        parameter_resource_name_treatment:
+          name: VALIDATE
       - parameters:
         - name
         - message
         - string_builder
+        parameter_resource_name_treatment:
+          name: NONE
     required_fields:
       - name
       - options
@@ -363,6 +377,9 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: archived_book
   - name: GetBookFromAnywhere
     flattening:
       groups:
@@ -427,6 +444,7 @@ interfaces:
       - calling_forms: ".*"
         value_sets: ".*"
   - name: StreamBooks
+    resource_name_treatment: STATIC_TYPES
     flattening:
       groups:
       - parameters:
@@ -536,6 +554,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 3000
+    resource_name_treatment: STATIC_TYPES
     sample_code_init_fields:
     - names[0]
     # TODO(michaelbausor): support %-entity notation for list elements
@@ -592,8 +611,11 @@ interfaces:
     required_fields:
     - resource
     - label
+    resource_name_treatment: VALIDATE
     retry_codes_name: non_idempotent
     retry_params_name: default
+    field_name_patterns:
+      resource: book
     timeout_millis: 60000
     reroute_to_grpc_interface: google.tagger.v1.Labeler
     surface_treatments:
@@ -746,13 +768,23 @@ interfaces:
     - required_repeated_fixed32
     - required_repeated_fixed64
     - required_map
+    resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
+    field_name_patterns:
+      required_repeated_resource_name: book
+      required_repeated_resource_name_oneof: book_oneof
+      optional_repeated_resource_name: book
+      optional_repeated_resource_name_oneof: book_oneof
     timeout_millis: 60000
 resource_name_generation:
 - message_name: Book
   field_entity_map:
     name: book
+# Test using fully qualified name
+- message_name: google.example.library.v1.BookFromArchive
+  field_entity_map:
+    name: archived_book
 - message_name: BookFromAnywhere
   field_entity_map:
     name: book_oneof
@@ -794,6 +826,9 @@ resource_name_generation:
 - message_name: ListStringsResponse
   field_entity_map:
     strings: "*"
+- message_name: GetBookFromArchiveRequest
+  field_entity_map:
+    name: archived_book
 - message_name: GetBookFromAnywhereRequest
   field_entity_map:
     name: book_oneof

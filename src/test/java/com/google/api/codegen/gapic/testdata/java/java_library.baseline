@@ -482,10 +482,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   String name = "";
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
-   *   Shelf response = libraryClient.getShelf(formattedName, message, stringBuilder);
+   *   Shelf response = libraryClient.getShelf(name, message, stringBuilder);
    * }
    * </code></pre>
    *
@@ -7388,13 +7388,13 @@ public class FindRelatedBooksRequestPagedOdyssey {
 public class FindRelatedBooksCallableCallableListOdyssey {
   public static void main(String[] args) {
     // [START sample_core]
-    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    List<ShelfBookName> names = Arrays.asList(namesElement);
-    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-    List<ShelfName> shelves = Arrays.asList(shelvesElement);
+    BookName namesElement = BookName.of("[SHELF]", "[BOOK]");
+    List<BookName> names = Arrays.asList(namesElement);
+    String shelvesElement = "Classics";
+    List<String> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(ShelfBookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
+      .addAllNames(BookName.toStringList(names))
+      .addAllShelves(shelves)
       .build();
     while (true) {
       FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
