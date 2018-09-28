@@ -45,3 +45,30 @@ def showcase(session, py):
 
     # Run py.test against the unit tests.
     session.run('py.test', '--quiet', 'tests')
+
+
+@nox.session
+@nox.parametrize('py', ['2.7', '3.5', '3.6', '3.7'])
+def unit(session, py):
+    """Run the unit test suite."""
+
+    # Run unit tests against all supported versions of Python.
+    if py != 'default':
+        session.interpreter = 'python{}'.format(py)
+
+    # Set the virtualenv directory name.
+    session.virtualenv_dirname = 'unit-' + py
+
+    # Install all test dependencies, then install this package in-place.
+    session.install('pytest')
+    session.install('--pre', 'googleapis-common-protos')
+    session.install(
+        '-e',
+        os.path.join('..', '..', 'artman-genfiles', 'python',
+                     'showcase-v1alpha2'))
+
+    # Run py.test against the unit tests.
+    session.run(
+        'py.test', '--quiet',
+        os.path.join('..', '..', 'artman-genfiles', 'python',
+                     'showcase-v1alpha2', 'tests', 'unit'))
