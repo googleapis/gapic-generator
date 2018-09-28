@@ -6,6 +6,7 @@ load(
     "construct_gradle_build_deps_subs",
     "get_dynamic_subsitution_func",
     "is_source_dependency",
+    "is_proto_dependency",
 )
 
 def _java_gapic_build_resources_pkg_impl(ctx):
@@ -83,9 +84,12 @@ java_gapic_build_resources_pkg = rule(
 
 def _java_gapic_srcs_pkg_impl(ctx):
     srcs = []
+    proto_srcs = []
     for src_dep in ctx.attr.deps:
         if is_source_dependency(src_dep):
             srcs.extend(src_dep.java.source_jars.to_list())
+        if is_proto_dependency(src_dep):
+            proto_srcs.extend(src_dep.proto.check_deps_sources.to_list())
 
     test_srcs = []
     for test_src_dep in ctx.attr.test_deps:
@@ -103,6 +107,10 @@ def _java_gapic_srcs_pkg_impl(ctx):
         unzip -q -o $src -d {package_dir_path}/src/main/java
         rm -r -f {package_dir_path}/src/main/java/META-INF
     done
+    for proto_src in {proto_srcs}; do
+        mkdir -p {package_dir_path}/src/main/proto
+        cp -f --parents $proto_src {package_dir_path}/src/main/proto
+    done
     for test_src in {test_srcs}; do
         mkdir -p {package_dir_path}/src/test/java
         unzip -q -o $test_src -d {package_dir_path}/src/test/java
@@ -114,6 +122,7 @@ def _java_gapic_srcs_pkg_impl(ctx):
     mv {package_dir_path}/{package_dir}.tar.gz {pkg}
     """.format(
         srcs = " ".join(["'%s'" % f.path for f in srcs]),
+        proto_srcs = " ".join(["'%s'" % f.path for f in proto_srcs]),
         test_srcs = " ".join(["'%s'" % f.path for f in test_srcs]),
         package_dir_path = paths.package_dir_path,
         package_dir = paths.package_dir,
@@ -122,7 +131,7 @@ def _java_gapic_srcs_pkg_impl(ctx):
     )
 
     ctx.actions.run_shell(
-        inputs = srcs + test_srcs,
+        inputs = srcs + proto_srcs + test_srcs,
         command = script,
         outputs = [ctx.outputs.pkg],
     )
@@ -253,6 +262,7 @@ def _java_gapic_gradle_pkg(
         name,
         pkg_type,
         deps,
+        pkg_deps = [],
         visibility = None,
         test_deps = None,
         group = "",
@@ -298,6 +308,6 @@ def _java_gapic_gradle_pkg(
         deps = [
             resource_target_name,
             srcs_pkg_target_name,
-        ],
+        ] + pkg_deps,
         visibility = visibility,
     )

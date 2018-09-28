@@ -42,6 +42,9 @@ def is_java_dependency(dep):
 def is_source_dependency(dep):
     return is_java_dependency(dep) and hasattr(dep.java, "source_jars") and dep.label.package != "jar"
 
+def is_proto_dependency(dep):
+    return hasattr(dep, "proto")
+
 def is_gapic_pkg_dependency(dep):
     files_list = dep.files.to_list();
     if not files_list or len(files_list) != 1 or \
