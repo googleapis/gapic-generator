@@ -17,6 +17,7 @@ import grpc
 import pytest
 
 from google import showcase_v1alpha2
+from google.api_core import exceptions
 from google.rpc import status_pb2
 from google.showcase_v1alpha2.proto import echo_pb2
 from google.showcase_v1alpha2.gapic.transports import echo_grpc_transport
@@ -33,7 +34,7 @@ class TestEchoClient(object):
         assert content == response.content
 
     def test_echo_exception(self):
-        with pytest.raises(Exception):
+        with pytest.raises(exceptions.InternalServerError):
             self.client.echo(
                 error=status_pb2.Status(code=13, message='error!!!'))
 
@@ -65,7 +66,7 @@ class TestEchoClient(object):
     def test_wait(self):
         content = 'hello world'
         response = self.client.wait(
-            response_delay={'seconds': 2}, success={'content': content})
+            response_delay={'nanos': 500 }, success={'content': content})
         assert content == response.content
 
     def test_pagination(self):
