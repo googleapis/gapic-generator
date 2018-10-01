@@ -52,7 +52,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static final String SERVICE_ADDRESS_PARAM = "service_address";
   private static final String SCOPES_PARAM = "scopes";
   private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
-      ImmutableSet.<String>of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
+      ImmutableSet.of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
 
   public Interface getInterface() {
     return getInterfaceModel().getInterface();
@@ -110,7 +110,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       Interface apiInterface,
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      ProtoParser protoParser) {
 
     RetryCodesConfig retryCodesConfig =
         RetryCodesConfig.create(
@@ -131,7 +132,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfig,
-              retrySettingsDefinition.keySet());
+              retrySettingsDefinition.keySet(),
+              protoParser);
       if (methodConfigMap == null) {
         diagCollector.addDiag(
             Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
@@ -144,7 +146,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
         createSmokeTestConfig(diagCollector, apiInterface, interfaceConfigProto);
 
     ImmutableList<String> requiredConstructorParams =
-        ImmutableList.<String>copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
+        ImmutableList.copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
     for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
       if (!CONSTRUCTOR_PARAMS.contains(param)) {
         diagCollector.addDiag(
@@ -213,7 +215,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      ProtoParser protoParser) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
 
     // Keep track of the MethodConfigProtos encountered.
@@ -238,7 +241,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfig,
-              retryParamsConfigNames);
+              retryParamsConfigNames,
+              protoParser);
       if (methodConfig == null) {
         continue;
       }
@@ -261,7 +265,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfig,
-              retryParamsConfigNames);
+              retryParamsConfigNames,
+              protoParser);
       if (methodConfig == null) {
         continue;
       }

@@ -76,7 +76,7 @@ public abstract class ResourceNameMessageConfigs {
     for (ProtoFile protoFile : protoFiles) {
       for (MessageType message : protoFile.getMessages()) {
         ResourceNameMessageConfig resourceNameMessageConfig =
-            ResourceNameMessageConfig.createResourceNameMessageConfig(message);
+            ResourceNameMessageConfig.createResourceNameMessageConfig(message, protoParser);
         if (resourceNameMessageConfig != null) {
           builder.put(message.getFullName(), resourceNameMessageConfig);
         }

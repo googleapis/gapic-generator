@@ -17,14 +17,18 @@ package com.google.api.codegen.configgen;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
 
 import com.google.api.BackendRule;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.tools.framework.model.Model;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /** MethodTransformer implementation for proto Methods. */
 public class ProtoMethodTransformer implements MethodTransformer {
   private static final PagingParameters PAGING_PARAMETERS = new ProtoPagingParameters();
   private static final int MILLIS_PER_SECOND = 1000;
+  private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
 
   @Override
   public boolean isIgnoredParameter(String parameter) {
@@ -33,7 +37,7 @@ public class ProtoMethodTransformer implements MethodTransformer {
 
   @Override
   public String getTimeoutMillis(MethodModel method) {
-    return String.valueOf(getTimeoutMillis((ProtoMethodModel) method));
+    return String.valueOf(getTimeoutMillisOrDefault((ProtoMethodModel) method));
   }
 
   public static long getTimeoutMillis(ProtoMethodModel method) {
@@ -43,6 +47,25 @@ public class ProtoMethodTransformer implements MethodTransformer {
         return (long) Math.ceil(backendRule.getDeadline() * MILLIS_PER_SECOND);
       }
     }
-    return DEFAULT_MAX_RETRY_DELAY;
+    return -1;
+  }
+
+  /** Get the timeout value from the method settings, or return a default value if not found. */
+  public static long getTimeoutMillisOrDefault(ProtoMethodModel methodModel) {
+    long timeoutMillis = getTimeoutMillis(methodModel);
+    if (timeoutMillis <= 0) {
+      return DEFAULT_MAX_RETRY_DELAY;
+    }
+    return timeoutMillis;
+  }
+
+  @Override
+  public List<String> getParameterList(MethodModel method) {
+    return method
+        .getInputFields()
+        .stream()
+        .filter(f -> f.getOneof() == null && !isIgnoredParameter(f.getSimpleName()))
+        .map(FieldModel::getSimpleName)
+        .collect(Collectors.toList());
   }
 }

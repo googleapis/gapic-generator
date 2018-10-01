@@ -46,16 +46,16 @@ public abstract class ResourceNameMessageConfig {
     return new AutoValue_ResourceNameMessageConfig(fullyQualifiedMessageName, fieldEntityMap);
   }
 
-  public static ResourceNameMessageConfig createResourceNameMessageConfig(MessageType message) {
+  public static ResourceNameMessageConfig createResourceNameMessageConfig(
+      MessageType message, ProtoParser protoParser) {
     ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-    ProtoParser protoParser = new ProtoParser();
     for (Field field : message.getFields()) {
       String resourcePath = protoParser.getResourcePath(field);
       if (!Strings.isNullOrEmpty(resourcePath)) {
         builder.put(field.getSimpleName(), field.getParent().getSimpleName().toLowerCase());
         continue;
       }
-      String resourceType = ProtoParser.getResourceMessage(field);
+      String resourceType = protoParser.getResourceMessage(field);
       if (!Strings.isNullOrEmpty(resourceType)) {
         builder.put(field.getSimpleName(), resourceType);
       }

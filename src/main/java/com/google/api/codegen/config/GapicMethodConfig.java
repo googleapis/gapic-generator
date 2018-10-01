@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
+
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -68,7 +70,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      ProtoParser protoParser) {
 
     boolean error = false;
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
@@ -102,7 +105,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
-          createFlattening(
+          FlatteningConfig.createFlatteningConfigs(
               diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
       if (flattening == null) {
         error = true;
@@ -126,7 +129,14 @@ public abstract class GapicMethodConfig extends MethodConfig {
             methodConfigProto, diagCollector, retryParamsConfigNames);
     error |= (retryParamsName == null);
 
-    Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
+    long timeoutMillis = ProtoMethodTransformer.getTimeoutMillis(methodModel);
+    if (timeoutMillis <= 0) {
+      timeoutMillis = methodConfigProto.getTimeoutMillis();
+    }
+    if (timeoutMillis <= 0) {
+      timeoutMillis = DEFAULT_MAX_RETRY_DELAY;
+    }
+    Duration timeout = Duration.ofMillis(timeoutMillis);
     if (timeout.toMillis() <= 0) {
       timeout = Duration.ofMillis(ProtoMethodTransformer.getTimeoutMillis(methodModel));
     }
@@ -149,12 +159,17 @@ public abstract class GapicMethodConfig extends MethodConfig {
         .getMessageType()
         .getFields()
         .stream()
-        .anyMatch(f -> !Strings.isNullOrEmpty(ProtoParser.getResourceMessage(f)))) {
+        .anyMatch(f -> !Strings.isNullOrEmpty(protoParser.getResourceMessage(f)))) {
       defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
     }
     if (defaultResourceNameTreatment == null
         || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
+    }
+
+    List<String> requiredFields = ProtoParser.getRequiredFields(method);
+    if (requiredFields.isEmpty() && methodConfigProto != null) {
+      requiredFields = methodConfigProto.getRequiredFieldsList();
     }
 
     ImmutableList<FieldConfig> requiredFieldConfigs =
@@ -164,8 +179,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getRequiredFields(
-                diagCollector, methodModel, methodConfigProto.getRequiredFieldsList()));
+            getRequiredFields(diagCollector, methodModel, requiredFields));
 
     ImmutableList<FieldConfig> optionalFieldConfigs =
         createFieldNameConfigs(

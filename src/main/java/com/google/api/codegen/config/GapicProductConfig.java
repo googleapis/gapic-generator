@@ -414,6 +414,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
     }
 
+    ProtoParser protoParser = new ProtoParser();
     // Parse proto file for interfaces.
     for (ProtoFile file : sourceProtos) {
       if (file.getProto().getServiceList().size() == 0) continue;
@@ -440,7 +441,8 @@ public abstract class GapicProductConfig implements ProductConfig {
                 apiInterface,
                 interfaceNameOverride,
                 messageConfigs,
-                resourceNameConfigs);
+                resourceNameConfigs,
+                protoParser);
         if (interfaceConfig == null) {
           continue;
         }
