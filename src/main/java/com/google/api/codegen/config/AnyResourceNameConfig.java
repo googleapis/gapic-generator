@@ -60,4 +60,9 @@ public class AnyResourceNameConfig implements ResourceNameConfig {
   public ProtoFile getAssignedProtoFile() {
     return null;
   }
+
+  @Override
+  public ConfigSource getConfigSource() {
+    return ConfigSource.NONE;
+  }
 }

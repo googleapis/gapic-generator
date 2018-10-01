@@ -65,6 +65,7 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
       return null;
     }
 
-    return new AutoValue_FixedResourceNameConfig(entityName, entityName, fixedValue, file);
+    return new AutoValue_FixedResourceNameConfig(
+        entityName, entityName, ConfigSource.GAPIC_CONFIG, fixedValue, file);
   }
 }

@@ -74,7 +74,13 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       }
     }
     return new AutoValue_SingleResourceNameConfig(
-        namePattern, nameTemplate, entityId, entityName, commonResourceName, file);
+        ConfigSource.GAPIC_CONFIG,
+        namePattern,
+        nameTemplate,
+        entityId,
+        entityName,
+        commonResourceName,
+        file);
   }
 
   // Wrapper for PathTemplate.create().
@@ -119,7 +125,13 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     String entityName = entityId;
     String commonResourceName = null;
     return new AutoValue_SingleResourceNameConfig(
-        namePattern, nameTemplate, entityId, entityName, commonResourceName, file);
+        ConfigSource.PROTO_FILE,
+        namePattern,
+        nameTemplate,
+        entityId,
+        entityName,
+        commonResourceName,
+        file);
   }
 
   /** Returns the name pattern for the resource name config. */

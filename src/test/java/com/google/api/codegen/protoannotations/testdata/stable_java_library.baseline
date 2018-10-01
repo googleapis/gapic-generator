@@ -1745,7 +1745,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   for (String element : libraryClient.listStrings(request).iterateAll()) {
+   *   for (ResourceName element : libraryClient.listStrings(request).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1769,7 +1769,7 @@ public class LibraryClient implements BackgroundResource {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   ApiFuture&lt;ListStringsPagedResponse&gt; future = libraryClient.listStringsPagedCallable().futureCall(request);
    *   // Do something
-   *   for (String element : future.get().iterateAll()) {
+   *   for (ResourceName element : future.get().iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1789,7 +1789,7 @@ public class LibraryClient implements BackgroundResource {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   while (true) {
    *     ListStringsResponse response = libraryClient.listStringsCallable().call(request);
-   *     for (String element : response.getStringsList()) {
+   *     for (ResourceName element : UntypedResourceName.parseList(response.getStringsList())) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -10035,7 +10035,7 @@ public class LibrarySmokeTest {
   public static void main(String args[]) {
     Logger.getLogger("").setLevel(Level.WARNING);
     try {
-      executeNoCatch();
+      executeNoCatch(getProjectId());
       System.out.println("OK");
     } catch (Exception e) {
       System.err.println("Failed with exception:");
@@ -10044,9 +10044,9 @@ public class LibrarySmokeTest {
     }
   }
 
-  public static void executeNoCatch() throws Exception {
+  public static void executeNoCatch(String projectId) throws Exception {
     try (LibraryClient client = LibraryClient.create()) {
-      BookName name = BookName.of("[SHELF]", "[BOOK]");
+      BookName name = BookName.of("testShelf-" + System.currentTimeMillis(), projectId);
       String optionalFoo = "";
       Book.Rating rating = Book.Rating.GOOD;
       Book book = Book.newBuilder()

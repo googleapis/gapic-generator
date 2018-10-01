@@ -94,7 +94,8 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       return null;
     }
 
-    return new AutoValue_ResourceNameOneofConfig(oneofName, oneofName, configList, file);
+    return new AutoValue_ResourceNameOneofConfig(
+        oneofName, ConfigSource.GAPIC_CONFIG, oneofName, configList, file);
   }
 
   @Override
