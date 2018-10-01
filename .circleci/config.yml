@@ -68,6 +68,7 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
     # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
     # https://github.com/googleapis/gapic-generator/issues/2237
     - image: googleapis/nox:0.17.0
+    - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
   steps:
     - attach_workspace:
         at: workspace
@@ -77,16 +78,30 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
         <<: *anchor_check_generation
     # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
     - run:
-        name: Prepare for Pubsub testing.
+        name: Run Showcase Generated Unit Tests.
         command: |
-          echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
+          nox --session "unit(py='2.7')" \
+              --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
+          nox --session "unit(py='3.6')" \
+              --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
+        when: always
+    - run:
+        name: Run Showcase Integration Tests.
+        command: |
+          nox --session "showcase(py='2.7')" \
+              --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
+          nox --session "showcase(py='3.6')" \
+              --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
+        when: always
+    - run:
+        name: Prepare for Pubsub testing.
+        command: echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
     - run:
         name: Test Pubsub.
         <<: *anchor_test_python_client
     - run:
         name: Prepare for Speech testing.
-        command: |
-          echo 'export TEST_API="speech-v1"' >> $BASH_ENV
+        command: echo 'export TEST_API="speech-v1"' >> $BASH_ENV
     - run:
         name: Test Speech.
         <<: *anchor_test_python_client
@@ -303,10 +318,27 @@ jobs:
           command: |
             mkdir showcase-protos
             curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-${SHOWCASE_VERSION}-protos.tar.gz | tar -C showcase-protos -xz
-            TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc"
+            TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc/showcase"
             cp ${TEST_SRC}/showcase.yaml showcase-protos/google/showcase/
             cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos/google/showcase/v1alpha2/
             cp ${TEST_SRC}/artman_showcase.yaml showcase-protos/google/showcase/
+      # The following showcase protos are used for java showcase tests. The
+      # common protos that google-gax depends on does not have the new client
+      # annotations so any protos that are using them will not compile. This
+      # step uses a patched version of echo.proto that does not have those
+      # annoations.
+      - run:
+          name: Setup patched showcase protos.
+          command: |
+            mkdir showcase-protos-patched
+            curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-${SHOWCASE_VERSION}-protos.tar.gz | tar -C showcase-protos-patched -xz
+            TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc/showcase"
+            cp ${TEST_SRC}/showcase.yaml showcase-protos-patched/google/showcase/
+            cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos-patched/google/showcase/v1alpha2/
+            cp ${TEST_SRC}/artman_showcase.yaml showcase-protos-patched/google/showcase/
+            cp ${TEST_SRC}/echo.proto showcase-protos-patched/google/showcase/v1alpha2
+            rm showcase-protos-patched/google/showcase/v1alpha2/testing.proto
+
       - run:
           name: Build and install local toolkit
           command: |
@@ -320,6 +352,7 @@ jobs:
             - gapic-generator
             - googleapis
             - showcase-protos
+            - showcase-protos-patched
   test-gapic-generator:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -397,9 +430,26 @@ jobs:
                 google/showcase/artman_showcase.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR} \
-                --languages go nodejs php ruby \
+                --languages go nodejs php python ruby \
                 --root-dir=/tmp/workspace/showcase-protos
           when: always
+      # Java needs to use the patched showcase dir since showcase contains
+      # the new annotations. Protos using those new annotations will not
+      # compile. This lets us use a patched version of the echo.proto that
+      # does not contain the new client annotations.
+      #
+      # TODO(landrito): remove this once the new annotations are released
+      # and depended upon by google-gax.
+      - run:
+          name: Generate Java Showcase Library
+          command: |
+            cd workspace/gapic-generator
+            python generate_clients.py \
+                google/showcase/artman_showcase.yaml \
+                --user-config=.circleci/artman_config.yaml \
+                --log-dir=${ARTMAN_REPORTS_DIR} \
+                --languages java \
+                --root-dir=/tmp/workspace/showcase-protos-patched
       - store_artifacts:
           path: /tmp/workspace/reports
       - store_artifacts:
@@ -417,6 +467,7 @@ jobs:
       <<: *anchor_artman_vars
     docker:
       - image: circleci/openjdk:8-jdk
+      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
     steps:
       - attach_workspace:
           at: workspace
@@ -434,6 +485,18 @@ jobs:
           command: |
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} /tmp/workspace/reports/ \;
           when: always
+      - run:
+          name: Install the generated showcase library
+          command: |
+            cd workspace/gapic-generator/artman-genfiles/java
+            ./gradlew install -p gapic-google-cloud-showcase-v1alpha2
+            ./gradlew install -p proto-google-showcase-v1alpha2
+            ./gradlew install -p grpc-google-showcase-v1alpha2
+      - run:
+          name: Run Showcase Integration Tests
+          command: |
+            cd workspace/gapic-generator/showcase/java
+            ./gradlew cleanTest check
       - store_test_results:
           path: /tmp/workspace/reports
       - store_artifacts:
