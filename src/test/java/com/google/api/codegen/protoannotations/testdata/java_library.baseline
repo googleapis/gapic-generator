@@ -1248,58 +1248,6 @@ public class LibraryClient implements BackgroundResource {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[BOOK_SHELF]");
    *   String filter = "book-filter-string";
-   *   for (Book element : libraryClient.listBooks(name, filter).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param name The name of the shelf whose books we'd like to list.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListBooksPagedResponse listBooks(ShelfName name) {
-    ListBooksRequest request =
-        ListBooksRequest.newBuilder()
-        .setName(name == null ? null : name.toString())
-        .build();
-    return listBooks(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Lists books in a shelf.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfName name = ShelfName.of("[BOOK_SHELF]");
-   *   String filter = "book-filter-string";
-   *   for (Book element : libraryClient.listBooks(name.toString(), filter).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param name The name of the shelf whose books we'd like to list.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListBooksPagedResponse listBooks(String name) {
-    ListBooksRequest request =
-        ListBooksRequest.newBuilder()
-        .setName(name)
-        .build();
-    return listBooks(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Lists books in a shelf.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfName name = ShelfName.of("[BOOK_SHELF]");
-   *   String filter = "book-filter-string";
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setName(name.toString())
    *     .setFilter(filter)
@@ -8897,55 +8845,6 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void listBooksExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockLibraryService.addException(exception);
-
-    try {
-      ShelfName name = ShelfName.of("[BOOK_SHELF]");
-      String filter = "book-filter-string";
-
-      client.listBooks(name, filter);
-      Assert.fail("No exception raised");
-    } catch (InvalidArgumentException e) {
-      // Expected exception
-    }
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void listBooksTest2() {
-    String nextPageToken = "";
-    Book booksElement = Book.newBuilder().build();
-    List<Book> books = Arrays.asList(booksElement);
-    ListBooksResponse expectedResponse = ListBooksResponse.newBuilder()
-      .setNextPageToken(nextPageToken)
-      .addAllBooks(books)
-      .build();
-    mockLibraryService.addResponse(expectedResponse);
-
-    ShelfName name = ShelfName.of("[BOOK_SHELF]");
-    String filter = "book-filter-string";
-
-    ListBooksPagedResponse pagedListResponse = client.listBooks(name, filter);
-
-    List<Book> resources = Lists.newArrayList(pagedListResponse.iterateAll());
-    Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getBooksList().get(0), resources.get(0));
-
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
-    Assert.assertEquals(1, actualRequests.size());
-    ListBooksRequest actualRequest = (ListBooksRequest)actualRequests.get(0);
-
-    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void listBooksExceptionTest2() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
