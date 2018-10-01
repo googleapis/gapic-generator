@@ -141,7 +141,13 @@ service LibraryService {
   rpc UpdateBook(UpdateBookRequest) returns (Book) {
     option (google.api.http) = { put: "/v1/{name=bookShelves/*/books/*}" body: "book" };
     option (google.api.method_signature) = {
-      fields: ["name", "book", "update_mask"]
+      fields: ["name", "book"]
+      // TODO(andrealin): parse function_name attributes.
+      function_name: "update_book_1"
+      additional_signatures: [
+        {fields: ["name", "optional_foo", "book", "update_mask", "physical_mask"]
+        function_name: "update_book_2"}
+      ]
     };
   }
 
@@ -627,9 +633,7 @@ message UpdateBookRequest {
   ];
 
   // A field mask to apply, rendered as an HTTP parameter.
-  google.protobuf.FieldMask update_mask = 4 [
-    (google.api.required) = true
-  ];
+  google.protobuf.FieldMask update_mask = 4;
 
   // To test Python import clash resolution.
   google.example.library.v1.FieldMask physical_mask = 5;

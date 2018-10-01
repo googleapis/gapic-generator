@@ -1549,71 +1549,9 @@ public class LibraryClient implements BackgroundResource {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   Book book = Book.newBuilder().build();
-   *   FieldMask updateMask = FieldMask.newBuilder().build();
-   *   Book response = libraryClient.updateBook(name, book, updateMask);
-   * }
-   * </code></pre>
-   *
-   * @param name The name of the book to update.
-   * @param book The book to update with.
-   * @param updateMask A field mask to apply, rendered as an HTTP parameter.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final Book updateBook(BookName name, Book book, FieldMask updateMask) {
-
-    UpdateBookRequest request =
-        UpdateBookRequest.newBuilder()
-        .setName(name == null ? null : name.toString())
-        .setBook(book)
-        .setUpdateMask(updateMask)
-        .build();
-    return updateBook(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Updates a book.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
-   *   Book book = Book.newBuilder().build();
-   *   FieldMask updateMask = FieldMask.newBuilder().build();
-   *   Book response = libraryClient.updateBook(name.toString(), book, updateMask);
-   * }
-   * </code></pre>
-   *
-   * @param name The name of the book to update.
-   * @param book The book to update with.
-   * @param updateMask A field mask to apply, rendered as an HTTP parameter.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final Book updateBook(String name, Book book, FieldMask updateMask) {
-
-    UpdateBookRequest request =
-        UpdateBookRequest.newBuilder()
-        .setName(name)
-        .setBook(book)
-        .setUpdateMask(updateMask)
-        .build();
-    return updateBook(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Updates a book.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
-   *   Book book = Book.newBuilder().build();
-   *   FieldMask updateMask = FieldMask.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .setBook(book)
-   *     .setUpdateMask(updateMask)
    *     .build();
    *   Book response = libraryClient.updateBook(request);
    * }
@@ -1635,11 +1573,9 @@ public class LibraryClient implements BackgroundResource {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   Book book = Book.newBuilder().build();
-   *   FieldMask updateMask = FieldMask.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .setBook(book)
-   *     .setUpdateMask(updateMask)
    *     .build();
    *   ApiFuture&lt;Book&gt; future = libraryClient.updateBookCallable().futureCall(request);
    *   // Do something
@@ -9001,60 +8937,6 @@ public class LibraryClientTest {
       com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
 
       client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
-      Assert.fail("No exception raised");
-    } catch (InvalidArgumentException e) {
-      // Expected exception
-    }
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void updateBookTest3() {
-    BookName name2 = BookName.of("[SHELF]", "[BOOK]");
-    String author = "author-1406328437";
-    String title = "title110371416";
-    boolean read = true;
-    Book expectedResponse = Book.newBuilder()
-      .setName(name2.toString())
-      .setAuthor(author)
-      .setTitle(title)
-      .setRead(read)
-      .build();
-    mockLibraryService.addResponse(expectedResponse);
-
-    BookName name = BookName.of("[SHELF]", "[BOOK]");
-    Book book = Book.newBuilder().build();
-    FieldMask updateMask = FieldMask.newBuilder().build();
-
-    Book actualResponse =
-        client.updateBook(name, book, updateMask);
-    Assert.assertEquals(expectedResponse, actualResponse);
-
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
-    Assert.assertEquals(1, actualRequests.size());
-    UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
-
-    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
-    Assert.assertEquals(book, actualRequest.getBook());
-    Assert.assertEquals(updateMask, actualRequest.getUpdateMask());
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void updateBookExceptionTest3() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockLibraryService.addException(exception);
-
-    try {
-      BookName name = BookName.of("[SHELF]", "[BOOK]");
-      Book book = Book.newBuilder().build();
-      FieldMask updateMask = FieldMask.newBuilder().build();
-
-      client.updateBook(name, book, updateMask);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
