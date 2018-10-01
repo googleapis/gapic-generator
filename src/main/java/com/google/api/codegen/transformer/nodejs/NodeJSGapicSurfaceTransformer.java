@@ -21,6 +21,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TypeModel;
@@ -82,6 +83,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private final BatchingTransformer batchingTransformer = new BatchingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final PackageMetadataConfig packageConfig;
+  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   public NodeJSGapicSurfaceTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
@@ -135,8 +137,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     ApiModel model = context.getApiModel();
-    xapiClass.serviceAddress(context.getServiceAddress());
-    xapiClass.servicePort(model.getServicePort());
+    xapiClass.serviceHostname(productServiceConfig.getServiceHostname(context.getServiceAddress()));
+    xapiClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
     xapiClass.serviceTitle(model.getTitle());
     xapiClass.authScopes(model.getAuthScopes());
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());

@@ -92,12 +92,6 @@ public class DiscoApiModel implements ApiModel {
     return document;
   }
 
-  /** Return the service port. */
-  @Override
-  public Integer getServicePort() {
-    return 443;
-  }
-
   @Override
   public String getTitle() {
     return document.title();

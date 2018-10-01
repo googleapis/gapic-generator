@@ -61,7 +61,7 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
   public abstract ServiceDocView serviceDoc();
 
-  public abstract String serviceAddress();
+  public abstract String serviceHostname();
 
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptorClasses();
 
@@ -108,7 +108,7 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
     public abstract Builder serviceDoc(ServiceDocView val);
 
-    public abstract Builder serviceAddress(String val);
+    public abstract Builder serviceHostname(String val);
 
     public abstract Builder servicePort(Integer val);
 

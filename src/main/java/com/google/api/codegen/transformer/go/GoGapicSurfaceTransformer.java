@@ -23,6 +23,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductConfig;
+import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -88,6 +89,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
+  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   private final GapicCodePathMapper pathMapper;
 
@@ -176,8 +178,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     }
     view.lroDetailViews(new ArrayList<>(lros.values()));
 
-    view.serviceAddress(context.getServiceAddress());
-    view.servicePort(model.getServicePort());
+    view.serviceHostname(productServiceConfig.getServiceHostname(context.getServiceAddress()));
+    view.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
 
     view.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
