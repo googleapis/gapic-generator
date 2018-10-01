@@ -93,11 +93,6 @@ public class DiscoApiModel implements ApiModel {
   }
 
   @Override
-  public String getServiceAddress() {
-    return document.baseUrl();
-  }
-
-  @Override
   public String getTitle() {
     return document.title();
   }

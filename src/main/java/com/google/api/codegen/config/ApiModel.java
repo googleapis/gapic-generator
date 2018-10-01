@@ -29,9 +29,6 @@ public interface ApiModel {
 
   DiagCollector getDiagCollector();
 
-  /** Return the service address. */
-  String getServiceAddress();
-
   String getTitle();
 
   /** Return a list of scopes for authentication. */
