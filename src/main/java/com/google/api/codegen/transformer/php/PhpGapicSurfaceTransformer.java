@@ -85,6 +85,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
       new FileHeaderTransformer(new PhpImportSectionTransformer());
   private final PhpMethodViewGenerator methodGenerator =
       new PhpMethodViewGenerator(apiMethodTransformer);
+  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   private static final String API_TEMPLATE_FILENAME = "php/partial_veneer_client.snip";
   private static final String API_IMPL_TEMPLATE_FILENAME = "php/client_impl.snip";
@@ -158,10 +159,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     apiImplClass.protoFilename(context.getInterface().getFile().getSimpleName());
     String implName = namer.getApiWrapperClassImplName(context.getInterfaceConfig());
     apiImplClass.name(implName);
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    apiImplClass.serviceAddress(
-        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
-    apiImplClass.servicePort(productServiceConfig.getServicePort());
+    String serviceAddress = context.getModel().getServiceConfig().getName();
+    apiImplClass.serviceHostname(productServiceConfig.getServiceHostname(serviceAddress));
+    apiImplClass.servicePort(productServiceConfig.getServicePort(serviceAddress));
     apiImplClass.serviceTitle(productServiceConfig.getTitle(context.getInterface().getModel()));
     apiImplClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface().getModel()));
 
