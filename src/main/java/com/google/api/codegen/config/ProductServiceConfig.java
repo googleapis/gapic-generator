@@ -31,11 +31,7 @@ import java.util.TreeSet;
 public class ProductServiceConfig {
   private static final int DEFAULT_PORT = 443;
 
-  /** Return the service address. */
-  public String getServiceAddress(Model model) {
-    return model.getServiceConfig().getName();
-  }
-
+  /** Return the service address port, or the default port if one was not specified. */
   public Integer getServicePort(String serviceAddress) {
     int colonIndex = serviceAddress.lastIndexOf(":");
     if (colonIndex < 0) {
@@ -49,6 +45,7 @@ public class ProductServiceConfig {
     }
   }
 
+  /** Return the service address hostname. */
   public String getServiceHostname(String serviceAddress) {
     int colonIndex = serviceAddress.lastIndexOf(":");
     if (colonIndex < 0) {
