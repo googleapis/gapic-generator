@@ -1,3 +1,81 @@
+============== file: ../build.gradle ==============
+Static or binary file content is not shown.
+============== file: ../gradle/wrapper/gradle-wrapper.jar ==============
+Static or binary file content is not shown.
+============== file: ../gradle/wrapper/gradle-wrapper.properties ==============
+Static or binary file content is not shown.
+============== file: ../gradlew ==============
+Static or binary file content is not shown.
+============== file: ../gradlew.bat ==============
+Static or binary file content is not shown.
+============== file: ../settings.gradle ==============
+Static or binary file content is not shown.
+============== file: build.gradle ==============
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+apply plugin: 'java'
+
+description = 'GAPIC library for google-cloud-library-v1'
+group = 'com.google.cloud'
+version = '0.0.0-SNAPSHOT'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+
+dependencies {
+  compile 'com.google.api:gax:1.0.0'
+  testCompile 'com.google.api:gax:1.0.0:testlib'
+  compile 'com.google.api:gax-grpc:0.18.0'
+  testCompile 'com.google.api:gax-grpc:0.18.0:testlib'
+  testCompile 'io.grpc:grpc-netty-shaded:1.9.0'
+  testCompile 'junit:junit:4.12'
+  // Remove this line if you are bundling your proto-generated classes together with your client classes
+  compile project(':proto-google-cloud-library-v1')
+  // Remove this line if you are bundling your proto-generated classes together with your client classes
+  testCompile project(':grpc-google-cloud-library-v1')
+  testCompile 'com.google.api.grpc:grpc-google-some-test-package-v1:0.0.0'
+}
+
+task smokeTest(type: Test) {
+  filter {
+    includeTestsMatching "*SmokeTest"
+    setFailOnNoMatchingTests false
+  }
+}
+
+test {
+  exclude "**/*SmokeTest*"
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir 'src/main/java'
+    }
+  }
+}
+
+clean {
+  delete 'all-jars'
+}
+
+task allJars(type: Copy) {
+  dependsOn test, jar
+  into 'all-jars'
+  // Replace with `from configurations.testRuntime, jar` to include test dependencies
+  from configurations.runtime, jar
+}
 ============== file: src/main/java/com/google/gcloud/pubsub/v1/LibraryClient.java ==============
 /*
  * Copyright 2018 Google LLC
@@ -296,7 +374,7 @@ public class LibraryClient implements BackgroundResource {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  private final Shelf createShelf(CreateShelfRequest request) {
+  public final Shelf createShelf(CreateShelfRequest request) {
     return createShelfCallable().call(request);
   }
 
@@ -514,7 +592,7 @@ public class LibraryClient implements BackgroundResource {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  private final ListShelvesPagedResponse listShelves(ListShelvesRequest request) {
+  public final ListShelvesPagedResponse listShelves(ListShelvesRequest request) {
     return listShelvesPagedCallable()
         .call(request);
   }
@@ -632,7 +710,7 @@ public class LibraryClient implements BackgroundResource {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  private final void deleteShelf(DeleteShelfRequest request) {
+  public final void deleteShelf(DeleteShelfRequest request) {
     deleteShelfCallable().call(request);
   }
 
@@ -999,7 +1077,7 @@ public class LibraryClient implements BackgroundResource {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  private final Book getBook(GetBookRequest request) {
+  public final Book getBook(GetBookRequest request) {
     return getBookCallable().call(request);
   }
 
@@ -1230,7 +1308,7 @@ public class LibraryClient implements BackgroundResource {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  private final void deleteBook(DeleteBookRequest request) {
+  public final void deleteBook(DeleteBookRequest request) {
     deleteBookCallable().call(request);
   }
 
@@ -1619,7 +1697,7 @@ public class LibraryClient implements BackgroundResource {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  private final ListStringsPagedResponse listStrings(ListStringsRequest request) {
+  public final ListStringsPagedResponse listStrings(ListStringsRequest request) {
     return listStringsPagedCallable()
         .call(request);
   }
@@ -1835,7 +1913,7 @@ public class LibraryClient implements BackgroundResource {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  private final BookFromArchive getBookFromArchive(GetBookFromArchiveRequest request) {
+  public final BookFromArchive getBookFromArchive(GetBookFromArchiveRequest request) {
     return getBookFromArchiveCallable().call(request);
   }
 
@@ -1936,7 +2014,7 @@ public class LibraryClient implements BackgroundResource {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  private final BookFromAnywhere getBookFromAnywhere(GetBookFromAnywhereRequest request) {
+  public final BookFromAnywhere getBookFromAnywhere(GetBookFromAnywhereRequest request) {
     return getBookFromAnywhereCallable().call(request);
   }
 
@@ -2029,7 +2107,7 @@ public class LibraryClient implements BackgroundResource {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  private final BookFromAnywhere getBookFromAbsolutelyAnywhere(GetBookFromAbsolutelyAnywhereRequest request) {
+  public final BookFromAnywhere getBookFromAbsolutelyAnywhere(GetBookFromAbsolutelyAnywhereRequest request) {
     return getBookFromAbsolutelyAnywhereCallable().call(request);
   }
 
@@ -2336,7 +2414,7 @@ public class LibraryClient implements BackgroundResource {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  private final FindRelatedBooksPagedResponse findRelatedBooks(FindRelatedBooksRequest request) {
+  public final FindRelatedBooksPagedResponse findRelatedBooks(FindRelatedBooksRequest request) {
     return findRelatedBooksPagedCallable()
         .call(request);
   }
@@ -6563,87 +6641,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       definitions.put(
           "non_idempotent",
           ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "createshelf_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "getshelf_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
-          "listshelves_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
-          "deleteshelf_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "mergeshelves_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "createbook_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "publishseries_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "getbook_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
-          "listbooks_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
-          "deletebook_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "updatebook_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "movebook_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "liststrings_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
-          "addcomments_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "getbookfromarchive_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
-          "getbookfromanywhere_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
-          "getbookfromabsolutelyanywhere_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "updatebookindex_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "streamshelves_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "streambooks_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "discussbook_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "monologaboutbook_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "findrelatedbooks_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
-          "addtag_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "getbigbook_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
-          "getbignothing_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
-          "testoptionalrequiredflatteningparams_retry_code",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
       RETRYABLE_CODE_DEFINITIONS = definitions.build();
     }
 
@@ -6782,27 +6779,27 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private static Builder initDefaults(Builder builder) {
 
       builder.createShelfSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("createshelf_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getShelfSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("getshelf_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.listShelvesSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("listshelves_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.deleteShelfSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("deleteshelf_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.mergeShelvesSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("mergeshelves_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.createBookSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("createbook_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.publishSeriesSettings().setBatchingSettings(
@@ -6816,31 +6813,31 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
               .build())
           .build());
       builder.publishSeriesSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("publishseries_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBookSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("getbook_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.listBooksSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("listbooks_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.deleteBookSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("deletebook_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.updateBookSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("updatebook_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.moveBookSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("movebook_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.listStringsSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("liststrings_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.addCommentsSettings().setBatchingSettings(
@@ -6854,39 +6851,39 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
               .build())
           .build());
       builder.addCommentsSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("addcomments_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBookFromArchiveSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("getbookfromarchive_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBookFromAnywhereSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("getbookfromanywhere_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBookFromAbsolutelyAnywhereSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("getbookfromabsolutelyanywhere_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.updateBookIndexSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("updatebookindex_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.streamShelvesSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("streamshelves_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.streamBooksSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("streambooks_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.findRelatedBooksSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("findrelatedbooks_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.addTagSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("addtag_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.addLabelSettings()
@@ -6894,15 +6891,15 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBigBookSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("getbigbook_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBigNothingSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("getbignothing_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.testOptionalRequiredFlatteningParamsSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("testoptionalrequiredflatteningparams_retry_code"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
       builder
           .getBigBookOperationSettings()
@@ -7274,8 +7271,8 @@ public class DiscussBookCallableCallableStreamingBidiProg {
       .setName(name)
       .build();
     bidiStream.send(request);
-    for (Comment response : bidiStream) {
-      System.out.println(response);
+    for (Comment responseItem : bidiStream) {
+      System.out.println(responseItem);
     }
     // [END turing_prog_callable_streaming_bidi_core]
   }
@@ -7315,8 +7312,8 @@ public class FindRelatedBooksFlattenedPagedOdyssey {
 
     // Do something
 
-    for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
-      ShelfBookName book = element;
+    for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
+      ShelfBookName book = responseItem;
       System.out.printf("Here's a related book: %s\n", book);
     }
     // [END sample_core]
@@ -7357,8 +7354,8 @@ public class FindRelatedBooksRequestPagedOdyssey {
       .addAllNames(ShelfBookName.toStringList(names))
       .addAllShelves(ShelfName.toStringList(shelves))
       .build();
-    for (ShelfBookName element : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
-      ShelfBookName book = element;
+    for (ShelfBookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
+      ShelfBookName book = responseItem;
       System.out.printf("Here's a related book: %s\n", book);
     }
     // [END sample_core]
@@ -7401,8 +7398,8 @@ public class FindRelatedBooksCallableCallableListOdyssey {
       .build();
     while (true) {
       FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-      for (ShelfBookName element : ShelfBookName.parseList(response.getNamesList())) {
-        ShelfBookName book = element;
+      for (ShelfBookName responseItem : ShelfBookName.parseList(response.getNamesList())) {
+        ShelfBookName book = responseItem;
         System.out.printf("Here's a related book: %s\n", book);
       }
       String nextPageToken = response.getNextPageToken();
@@ -7454,8 +7451,8 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
 
     // Do something
 
-    for (ShelfBookName element : future.get().iterateAllAsShelfBookName()) {
-      ShelfBookName book = element;
+    for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
+      ShelfBookName book = responseItem;
       System.out.printf("Here's a related book: %s\n", book);
     }
     // [END sample_core]
@@ -7684,7 +7681,7 @@ public class MonologAboutBookCallableCallableStreamingClientProg {
 //         className: "PublishSeriesFlattenedPiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeries" of type "FlattenedMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
@@ -7693,11 +7690,11 @@ public class PublishSeriesFlattenedPiVersion {
   public static void main(String[] args) {
     // [START canonical_core]
     // String name = "Math";
+    // int edition = 123;
     Shelf shelf = Shelf.newBuilder()
       .setName(name)
       .build();
     List<Book> books = new ArrayList<>();
-    int edition = 0;
     String seriesString = "xyz3141592654";
     SeriesUuid seriesUuid = SeriesUuid.newBuilder()
       .setSeriesString(seriesString)
@@ -7707,6 +7704,7 @@ public class PublishSeriesFlattenedPiVersion {
       System.out.printf("Title: %s\n", title);
     }
     System.out.println("That's all!");
+    System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
     // [END canonical_core]
   }
 }
@@ -7765,7 +7763,7 @@ public class PublishSeriesFlattenedSecondEdition {
 //         className: "PublishSeriesRequestPiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeries" of type "RequestObjectMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
@@ -7774,6 +7772,7 @@ public class PublishSeriesRequestPiVersion {
   public static void main(String[] args) {
     // [START canonical_core]
     // String name = "Math";
+    // int edition = 123;
     Shelf shelf = Shelf.newBuilder()
       .setName(name)
       .build();
@@ -7786,12 +7785,14 @@ public class PublishSeriesRequestPiVersion {
       .setShelf(shelf)
       .addAllBooks(books)
       .setSeriesUuid(seriesUuid)
+      .setEdition(edition)
       .build();
     PublishSeriesResponse response = libraryClient.publishSeries(request);
     for (String title : response.getBookNamesList()) {
       System.out.printf("Title: %s\n", title);
     }
     System.out.println("That's all!");
+    System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
     // [END canonical_core]
   }
 }
@@ -7856,7 +7857,7 @@ public class PublishSeriesRequestSecondEdition {
 //         className: "PublishSeriesCallableCallablePiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654]
+//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeriesCallable" of type "CallableMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
@@ -7865,6 +7866,7 @@ public class PublishSeriesCallableCallablePiVersion {
   public static void main(String[] args) {
     // [START canonical_core]
     // String name = "Math";
+    // int edition = 123;
     Shelf shelf = Shelf.newBuilder()
       .setName(name)
       .build();
@@ -7877,6 +7879,7 @@ public class PublishSeriesCallableCallablePiVersion {
       .setShelf(shelf)
       .addAllBooks(books)
       .setSeriesUuid(seriesUuid)
+      .setEdition(edition)
       .build();
     ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
 
@@ -7887,6 +7890,7 @@ public class PublishSeriesCallableCallablePiVersion {
       System.out.printf("Title: %s\n", title);
     }
     System.out.println("That's all!");
+    System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
     // [END canonical_core]
   }
 }
@@ -7969,8 +7973,8 @@ public class StreamBooksCallableCallableStreamingServerProg {
       .build();
 
     ServerStream<Book> stream = libraryClient.streamBooksCallable().call(request);
-    for (Book response : stream) {
-      System.out.println(response);
+    for (Book responseItem : stream) {
+      System.out.println(responseItem);
     }
     // [END babbage_core]
   }
@@ -8005,8 +8009,8 @@ public class StreamShelvesCallableCallableStreamingServerEmpty {
     StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
 
     ServerStream<StreamShelvesResponse> stream = libraryClient.streamShelvesCallable().call(request);
-    for (StreamShelvesResponse response : stream) {
-      System.out.println(response);
+    for (StreamShelvesResponse responseItem : stream) {
+      System.out.println(responseItem);
     }
     // [END sample_core]
   }
@@ -9898,6 +9902,83 @@ public class LibraryClientTest {
     }
   }
 
+}
+============== file: src/test/java/com/google/gcloud/pubsub/v1/LibrarySmokeTest.java ==============
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.gcloud.pubsub.v1;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.Book.Rating;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.UpdateBookRequest;
+import com.google.protobuf.FieldMask;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.junit.Test;
+
+@javax.annotation.Generated("by GAPIC")
+public class LibrarySmokeTest {
+  private static final String PROJECT_ENV_NAME = "GOOGLE_CLOUD_PROJECT";
+  private static final String LEGACY_PROJECT_ENV_NAME = "GCLOUD_PROJECT";
+
+  @Test
+  public void run() {
+    main(null);
+  }
+
+  public static void main(String args[]) {
+    Logger.getLogger("").setLevel(Level.WARNING);
+    try {
+      executeNoCatch(getProjectId());
+      System.out.println("OK");
+    } catch (Exception e) {
+      System.err.println("Failed with exception:");
+      e.printStackTrace(System.err);
+      System.exit(1);
+    }
+  }
+
+  public static void executeNoCatch(String projectId) throws Exception {
+    try (LibraryClient client = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("testShelf-" + System.currentTimeMillis(), projectId);
+      String optionalFoo = "";
+      Book.Rating rating = Book.Rating.GOOD;
+      Book book = Book.newBuilder()
+        .setRating(rating)
+        .build();
+      FieldMask updateMask = FieldMask.newBuilder().build();
+      com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
+
+      Book response = client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
+    }
+  }
+
+  private static String getProjectId() {
+    String projectId = System.getProperty(PROJECT_ENV_NAME, System.getenv(PROJECT_ENV_NAME));
+    if (projectId == null) {
+      projectId = System.getProperty(LEGACY_PROJECT_ENV_NAME, System.getenv(LEGACY_PROJECT_ENV_NAME));
+    }
+    Preconditions.checkArgument(projectId != null, "A project ID is required.");
+    return projectId;
+  }
 }
 ============== file: src/test/java/com/google/gcloud/pubsub/v1/MockLabeler.java ==============
 /*
