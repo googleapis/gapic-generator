@@ -30,7 +30,7 @@ public abstract class StaticLangStubSettingsView {
 
   public abstract String name();
 
-  public abstract String serviceAddress();
+  public abstract String serviceHostname();
 
   public abstract Integer servicePort();
 
@@ -129,7 +129,7 @@ public abstract class StaticLangStubSettingsView {
 
     public abstract Builder name(String val);
 
-    public abstract Builder serviceAddress(String val);
+    public abstract Builder serviceHostname(String val);
 
     public abstract Builder servicePort(Integer val);
 

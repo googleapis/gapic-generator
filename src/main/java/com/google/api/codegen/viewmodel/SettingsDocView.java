@@ -19,7 +19,7 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class SettingsDocView {
-  public abstract String serviceAddress();
+  public abstract String serviceHostname();
 
   public abstract Integer servicePort();
 
@@ -45,7 +45,7 @@ public abstract class SettingsDocView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder serviceAddress(String val);
+    public abstract Builder serviceHostname(String val);
 
     public abstract Builder servicePort(Integer val);
 

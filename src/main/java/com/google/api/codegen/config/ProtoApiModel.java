@@ -50,12 +50,6 @@ public class ProtoApiModel implements ApiModel {
     return protoModel.getServiceConfig().getName();
   }
 
-  /** Return the service port. TODO(cbao): Read the port from config. */
-  @Override
-  public Integer getServicePort() {
-    return 443;
-  }
-
   @Override
   public String getTitle() {
     return protoModel.getServiceConfig().getTitle();
