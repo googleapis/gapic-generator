@@ -24,6 +24,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -88,6 +89,7 @@ public class JavaSurfaceTransformer {
       new FileHeaderTransformer(importSectionTransformer);
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
       new RetryDefinitionsTransformer();
+  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   private static final String API_TEMPLATE_FILENAME = "java/main.snip";
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
@@ -389,7 +391,7 @@ public class JavaSurfaceTransformer {
 
     xsettingsClass.name(name);
     xsettingsClass.releaseLevelAnnotation(stubSettingsView.releaseLevelAnnotation());
-    xsettingsClass.serviceAddress(stubSettingsView.serviceAddress());
+    xsettingsClass.serviceHostname(stubSettingsView.serviceHostname());
     xsettingsClass.servicePort(stubSettingsView.servicePort());
     xsettingsClass.authScopes(stubSettingsView.authScopes());
 
@@ -435,8 +437,9 @@ public class JavaSurfaceTransformer {
             namer.getApiStubInterfaceName(context.getInterfaceConfig())));
     String name = namer.getApiStubSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
-    xsettingsClass.serviceAddress(context.getNamer().getServiceHostname(model.getServiceAddress()));
-    xsettingsClass.servicePort(context.getNamer().getServicePort(model.getServiceAddress()));
+    xsettingsClass.serviceHostname(
+        productServiceConfig.getServiceHostname(model.getServiceAddress()));
+    xsettingsClass.servicePort(productServiceConfig.getServicePort(model.getServiceAddress()));
     xsettingsClass.authScopes(model.getAuthScopes());
     if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
       xsettingsClass.useDefaultServicePortInEndpoint(false);
@@ -952,8 +955,8 @@ public class JavaSurfaceTransformer {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ApiModel model = context.getApiModel();
-    settingsDoc.serviceAddress(context.getNamer().getServiceHostname(model.getServiceAddress()));
-    settingsDoc.servicePort(context.getNamer().getServicePort(model.getServiceAddress()));
+    settingsDoc.serviceHostname(productServiceConfig.getServiceHostname(model.getServiceAddress()));
+    settingsDoc.servicePort(productServiceConfig.getServicePort(model.getServiceAddress()));
     settingsDoc.transportProtocol(productConfig.getTransportProtocol());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());

@@ -159,9 +159,10 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     String implName = namer.getApiWrapperClassImplName(context.getInterfaceConfig());
     apiImplClass.name(implName);
     ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    apiImplClass.serviceAddress(
-        productServiceConfig.getServiceHostname(context.getInterface().getModel()));
-    apiImplClass.servicePort(productServiceConfig.getServicePort());
+    String serviceAddress =
+        productServiceConfig.getServiceAddress(context.getInterface().getModel());
+    apiImplClass.serviceHostname(productServiceConfig.getServiceHostname(serviceAddress));
+    apiImplClass.servicePort(productServiceConfig.getServicePort(serviceAddress));
     apiImplClass.serviceTitle(productServiceConfig.getTitle(context.getInterface().getModel()));
     apiImplClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface().getModel()));
 

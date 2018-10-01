@@ -24,6 +24,7 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
@@ -99,6 +100,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
       new RetryDefinitionsTransformer();
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
+  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   public CSharpGapicClientTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
@@ -346,8 +348,9 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     String name = context.getNamer().getApiSettingsClassName(context.getInterfaceConfig());
     settingsClass.name(name);
     ApiModel model = context.getApiModel();
-    settingsClass.serviceAddress(context.getNamer().getServiceHostname(model.getServiceAddress()));
-    settingsClass.servicePort(context.getNamer().getServicePort(model.getServiceAddress()));
+    settingsClass.serviceHostname(
+        productServiceConfig.getServiceHostname(model.getServiceAddress()));
+    settingsClass.servicePort(productServiceConfig.getServicePort(model.getServiceAddress()));
     settingsClass.authScopes(model.getAuthScopes());
     settingsClass.callSettings(generateCallSettings(context));
     settingsClass.pageStreamingDescriptors(
@@ -516,8 +519,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ApiModel model = context.getApiModel();
-    settingsDoc.serviceAddress(context.getNamer().getServiceHostname(model.getServiceAddress()));
-    settingsDoc.servicePort(context.getNamer().getServicePort(model.getServiceAddress()));
+    settingsDoc.serviceHostname(productServiceConfig.getServiceHostname(model.getServiceAddress()));
+    settingsDoc.servicePort(productServiceConfig.getServicePort(model.getServiceAddress()));
     settingsDoc.exampleApiMethodName(""); // Unused in C#
     settingsDoc.exampleApiMethodSettingsGetter(""); // Unused in C#
     settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));

@@ -29,14 +29,38 @@ import java.util.TreeSet;
  * <p>The scope of this configuration is at the product level, and covers multiple API interfaces.
  */
 public class ProductServiceConfig {
+  private static final int DEFAULT_PORT = 443;
+
   /** Return the service address. */
-  public String getServiceHostname(Model model) {
+  public String getServiceAddress(Model model) {
     return model.getServiceConfig().getName();
   }
 
-  /** Return the service port. TODO(cbao): Read the port from config. */
-  public Integer getServicePort() {
-    return 443;
+  public Integer getServicePort(String serviceAddress) {
+    int colonIndex = serviceAddress.lastIndexOf(":");
+    if (colonIndex < 0) {
+      return DEFAULT_PORT;
+    }
+    String portString = serviceAddress.substring(colonIndex + 1);
+    try {
+      return Integer.valueOf(portString);
+    } catch (NumberFormatException e) {
+      return DEFAULT_PORT;
+    }
+  }
+
+  public String getServiceHostname(String serviceAddress) {
+    int colonIndex = serviceAddress.lastIndexOf(":");
+    if (colonIndex < 0) {
+      return serviceAddress;
+    }
+    String portString = serviceAddress.substring(colonIndex + 1);
+    try {
+      Integer port = Integer.valueOf(portString);
+      return serviceAddress.substring(0, colonIndex);
+    } catch (NumberFormatException e) {
+      return serviceAddress;
+    }
   }
 
   public String getTitle(Model model) {
