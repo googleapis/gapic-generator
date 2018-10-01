@@ -109,7 +109,7 @@ service LibraryService {
   rpc PublishSeries(PublishSeriesRequest) returns (PublishSeriesResponse) {
     option (google.api.http) = { post: "/v1:publish" body: "*" };
     option (google.api.method_signature) = {
-      fields: ["shelf", "books"]
+      fields: ["shelf", "books", "edition", "series_uuid"]
     };
   }
 
@@ -540,7 +540,8 @@ message PublishSeriesRequest {
   }
 
   // Uniquely identifies the series to the publishing house.
-  SeriesUuid series_uuid = 5;
+  SeriesUuid series_uuid = 5 [
+    (google.api.required) = true];
 }
 
 message SeriesUuid {
