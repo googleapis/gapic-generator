@@ -18,9 +18,11 @@ import com.google.api.Authentication;
 import com.google.api.AuthenticationRule;
 import com.google.api.Service;
 import com.google.api.codegen.gapic.ProtoModels;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Type;
 import java.util.ArrayList;
@@ -46,24 +48,22 @@ public class ProtoApiModel implements ApiModel {
   }
 
   @Override
-  public String getServiceAddress() {
-    return protoModel.getServiceConfig().getName();
-  }
-
-  /** Return the service port. TODO(cbao): Read the port from config. */
-  @Override
-  public Integer getServicePort() {
-    return 443;
-  }
-
-  @Override
   public String getTitle() {
     return protoModel.getServiceConfig().getTitle();
   }
 
   @Override
   public List<String> getAuthScopes() {
+    return getAuthScopes(new ProtoParser(), getInterfaces());
+  }
+
+  @VisibleForTesting
+  List<String> getAuthScopes(ProtoParser protoParser, List<ProtoInterfaceModel> interfaces) {
     Set<String> result = new TreeSet<>();
+
+    // Get scopes from protofile.
+    interfaces.forEach(i -> result.addAll(protoParser.getAuthScopes(i.getInterface())));
+
     Service config = protoModel.getServiceConfig();
     Authentication auth = config.getAuthentication();
     for (AuthenticationRule rule : auth.getRulesList()) {

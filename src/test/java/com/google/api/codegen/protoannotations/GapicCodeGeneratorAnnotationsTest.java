@@ -40,7 +40,6 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       String apiName,
       String baseline,
       String protoPackage) {
-    //    super(language, null, null, snippetName, baseline);
     super(language, null, null, snippetName, baseline, protoPackage);
 
     this.apiName = apiName;
