@@ -21,6 +21,7 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
+import com.google.api.codegen.viewmodel.AccessorView;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -255,7 +256,7 @@ class OutputTransformer {
     }
 
     int token;
-    ImmutableList.Builder<String> accessors = ImmutableList.builder();
+    ImmutableList.Builder<AccessorView> accessors = ImmutableList.builder();
     while ((token = config.scan()) != Scanner.EOF) {
       if (token == '.') {
         // TODO(hzyi): add support for accessing fields of resource name types
@@ -295,7 +296,10 @@ class OutputTransformer {
                 fieldName);
 
         type = field.getType();
-        accessors.add(context.getNamer().getFieldGetFunctionName(field));
+        accessors.add(
+            AccessorView.MemberView.newBuilder()
+                .member(context.getNamer().getFieldGetFunctionName(field))
+                .build());
       } else if (token == '[') {
         Preconditions.checkArgument(
             type.isRepeated() && !type.isMap(),
@@ -303,7 +307,21 @@ class OutputTransformer {
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
             config.input());
-        throw new UnsupportedOperationException("array indexing not supported yet");
+        Preconditions.checkArgument(
+            config.scan() == Scanner.INT,
+            "%s:%s: expected int in index expression: %s",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId(),
+            config.input());
+
+        accessors.add(AccessorView.IndexView.newBuilder().index(config.tokenStr()).build());
+
+        Preconditions.checkArgument(
+            config.scan() == ']',
+            "%s:%s: expected ']': %s",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId(),
+            config.input());
       } else {
         throw new IllegalArgumentException(
             String.format(

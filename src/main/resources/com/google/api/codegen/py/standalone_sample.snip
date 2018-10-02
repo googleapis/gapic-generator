@@ -269,6 +269,11 @@
 
 @private accessor(accessors)
   @join field : accessors on ""
-    .{@field}
+    @switch field.kind
+    @case "MEMBER"
+      .{@field.member}
+    @case "INDEX"
+      [{@field.index}]
+    @end
   @end
 @end

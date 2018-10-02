@@ -2,19 +2,19 @@
 @extends "java/initcode.snip"
 
 #FIXME: currently the variable of output of an api call is hardcoded to "response"
-# and "response_item". We should fix it by saving the variable name in the view model  
+# and "response_item". We should fix it by saving the variable name in the view model
 @snippet generate(sampleFile)
   //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "{@sampleFile.classView.name}" ]
   //// STUB standalone sample "{@sampleFile.classView.name}" /////
 
   // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-   
+
   @let apiMethod = sampleFile.classView.libraryMethod, \
        sample = apiMethod.samples.get(0)
     // [START {@sample.regionTag}]
 
     // FIXME: Insert here boilerplate code not directly related to the method call itself.
-       
+
     //      calling form: "{@sample.callingForm.toString}"
     //        region tag: "{@sample.regionTag}"
     //         className: "{@sampleFile.classView.name}"
@@ -53,7 +53,7 @@
     {@syncMethodSampleCode(apiMethod, sample)}
     {@processResponse(sample)}
   @case "FlattenedPaged"
-    {@pagedCallableMethodSampleCode(apiMethod, sample)}      
+    {@pagedCallableMethodSampleCode(apiMethod, sample)}
   @case "Callable"
     {@callableMethodSampleCode(apiMethod, sample)}
     {@processResponse(sample)}
@@ -62,7 +62,7 @@
   @case "CallablePaged"
     {@pagedCallableMethodSampleCode(apiMethod, sample)}
   @case "CallableStreamingBidi"
-    {@bidiStreamingCallableSampleCode(apiMethod, sample)} 
+    {@bidiStreamingCallableSampleCode(apiMethod, sample)}
   @case "CallableStreamingClient"
     {@clientStreamingCallableSampleCode(apiMethod, sample)}
   @case "CallableStreamingServer"
@@ -81,7 +81,7 @@
   @end
 @end
 
-# The snippets are modified versions of those in method_sample.snip 
+# The snippets are modified versions of those in method_sample.snip
 # since standalone samples can perform more sophisticated response handling
 @private pagedIterableMethodSampleCode(apiMethod, sample)
   {@initCode(sample.initCode)}
@@ -162,7 +162,7 @@
   OperationFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
 
   // Do something
-  
+
   {@apiMethod.responseTypeName} response = future.get();
 @end
 
@@ -284,7 +284,12 @@
 
 @private accessor(accessors)
   @join field : accessors on ""
-    .{@field}()
+    @switch field.kind
+    @case "MEMBER"
+      .{@field.member}()
+    @case "INDEX"
+      .get({@field.index})
+    @end
   @end
 @end
 
