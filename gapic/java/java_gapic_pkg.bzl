@@ -98,7 +98,7 @@ def _java_gapic_srcs_pkg_impl(ctx):
 
     paths = _construct_package_dir_paths(ctx.attr.package_dir, ctx.outputs.pkg, ctx.label.name)
 
-    # Note the script is more complicated thant it intuitively should be because of limitations
+    # Note the script is more complicated than it intuitively should be because of limitations
     # inherent to bazel execution environment: no absolute paths allowed, the generated artifacts
     # must ensure uniqueness within a build.
     script = """
@@ -149,10 +149,10 @@ java_gapic_srcs_pkg = rule(
 def java_gapic_proto_gradle_pkg(
         name,
         deps,
+        group,
+        version,
         test_deps = None,
         visibility = None,
-        group = "com.google.api.grpc",
-        version = "0.0.0-SNAPSHOT",
         classifier = ""):
     _java_gapic_gradle_pkg(
         name = name,
@@ -170,11 +170,11 @@ def java_gapic_proto_gradle_pkg(
 
 def java_gapic_grpc_gradle_pkg(
         name,
+        group,
+        version,
         deps,
         test_deps = None,
         visibility = None,
-        group = "com.google.api.grpc",
-        version = "0.0.0-SNAPSHOT",
         classifier = ""):
     _java_gapic_gradle_pkg(
         name = name,
@@ -192,11 +192,11 @@ def java_gapic_grpc_gradle_pkg(
 
 def java_gapic_client_gradle_pkg(
         name,
+        group,
+        version,
         deps,
         test_deps = None,
         visibility = None,
-        group = "com.google.cloud",
-        version = "0.0.0-SNAPSHOT",
         classifier = ""):
     _java_gapic_gradle_pkg(
         name = name,
@@ -209,7 +209,7 @@ def java_gapic_client_gradle_pkg(
         classifier = classifier,
     )
 
-def java_gapic_assembly_gradle_pkg(name, deps, visibility = None):
+def java_gapic_assembly_gradle_raw_pkg(name, deps, visibility = None):
     resource_target_name = "%s-resources" % name
     settings_tmpl_label = Label("//gapic/java:resources/gradle/settings.gradle.tmpl")
     build_tmpl_label = Label("//gapic/java:resources/gradle/assembly.gradle.tmpl")
@@ -234,6 +234,54 @@ def java_gapic_assembly_gradle_pkg(name, deps, visibility = None):
         ] + deps,
         package_dir = name,
         visibility = visibility,
+    )
+
+def java_gapic_assembly_gradle_pkg(
+    name,
+    client_group,
+    version,
+    client_deps,
+    client_test_deps,
+    grpc_group = None,
+    proto_deps = None,
+    grpc_deps = None,
+    visibility = None):
+
+    proto_target = "proto-%s" % name
+    proto_target_dep = []
+    grpc_target = "grpc-%s" % name
+    grpc_target_dep = []
+    client_target = "gapic-%s" % name
+
+    if proto_deps:
+        java_gapic_proto_gradle_pkg(
+            name = proto_target,
+            deps = proto_deps,
+            group = grpc_group,
+            version = version,
+        )
+        proto_target_dep = [":%s" % proto_target]
+
+    if grpc_deps:
+        java_gapic_grpc_gradle_pkg(
+            name = grpc_target,
+            deps = proto_target_dep + grpc_deps,
+            group = grpc_group,
+            version = version,
+        )
+        grpc_target_dep = ["%s" % grpc_target]
+
+    java_gapic_client_gradle_pkg(
+        name = client_target,
+        deps = proto_target_dep + client_deps,
+        test_deps = grpc_target_dep + client_test_deps,
+        group = client_group,
+        version = version,
+    )
+
+    java_gapic_assembly_gradle_raw_pkg(
+        name = name,
+        deps = proto_target_dep + grpc_target_dep + [":%s" % client_target]
     )
 
 #

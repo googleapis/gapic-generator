@@ -156,7 +156,7 @@ def _reconstruct_artifact_id(file, group_overrides = {}):
     # maven_jar's target names follow official naming best practices.
     if artifact_id[1]:
         if group_overrides.get(artifact_id[1]):
-            # Simply use overriden (manually specified) group name for the artifact name, if provided
+            # Simply use overridden (manually specified) group name for the artifact name, if provided
             artifact_id[0] = group_overrides.get(artifact_id[1])
         else:
             # Try to reconstruct the group name from the jar's file path.
