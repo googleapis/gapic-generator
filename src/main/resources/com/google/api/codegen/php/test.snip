@@ -128,14 +128,14 @@
         {@responseAssertStreaming(test.grpcStreamingView)}
 
         $createStreamRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($createStreamRequests));
+        $this->assertCount(1, $createStreamRequests);
         $streamFuncCall = $createStreamRequests[0]->getFuncCall();
         $streamRequestObject = $createStreamRequests[0]->getRequestObject();
         $this->assertSame('{@test.grpcStubCallString}', $streamFuncCall);
         $this->assertNull($streamRequestObject);
 
         $callObjects = $transport->popCallObjects();
-        $this->assertSame(1, count($callObjects));
+        $this->assertCount(1, $callObjects);
         $bidiCall = $callObjects[0];
 
         $writeRequests = $bidiCall->popReceivedCalls();
@@ -305,7 +305,7 @@
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         @join pageStreamingResponseView : test.pageStreamingResponseViews
             ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
-            $this->assertSame(1, count(${@pageStreamingResponseView.resourcesVarName}));
+            $this->assertCount(1, ${@pageStreamingResponseView.resourcesVarName});
             $this->assertEquals($expectedResponse->{@pageStreamingResponseView.resourcesFieldGetterName}()[0], ${@pageStreamingResponseView.resourcesVarName}[0]);
         @end
 
@@ -406,9 +406,9 @@
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
         $apiRequestsEmpty = $transport->popReceivedCalls();
-        $this->assertSame(0, count($apiRequestsEmpty));
+        $this->assertCount(0, $apiRequestsEmpty);
         $operationsRequests = $operationsTransport->popReceivedCalls();
-        $this->assertSame(1, count($operationsRequests));
+        $this->assertCount(1, $operationsRequests);
 
         $actualOperationsFuncCall = $operationsRequests[0]->getFuncCall();
         $actualOperationsRequestObject = $operationsRequests[0]->getRequestObject();
@@ -508,7 +508,7 @@
 
 @private singleCallSuccessAsserts(test)
     $actualRequests = $transport->popReceivedCalls();
-    $this->assertSame(1, count($actualRequests));
+    $this->assertCount(1, $actualRequests);
     $actualFuncCall = $actualRequests[0]->getFuncCall();
     $actualRequestObject = $actualRequests[0]->getRequestObject();
     $this->assertSame('{@test.grpcStubCallString}', $actualFuncCall);
@@ -529,9 +529,9 @@
 
 @private lroCallSuccessAsserts(test)
     $apiRequests = $transport->popReceivedCalls();
-    $this->assertSame(1, count($apiRequests));
+    $this->assertCount(1, $apiRequests);
     $operationsRequestsEmpty = $operationsTransport->popReceivedCalls();
-    $this->assertSame(0, count($operationsRequestsEmpty));
+    $this->assertCount(0, $operationsRequestsEmpty);
 
     $actualApiFuncCall = $apiRequests[0]->getFuncCall();
     $actualApiRequestObject = $apiRequests[0]->getRequestObject();

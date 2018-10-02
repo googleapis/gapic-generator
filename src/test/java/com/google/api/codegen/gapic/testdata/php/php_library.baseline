@@ -3585,7 +3585,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->createShelf($shelf);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/CreateShelf', $actualFuncCall);
@@ -3663,7 +3663,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->getShelf($formattedName, $options);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetShelf', $actualFuncCall);
@@ -3740,11 +3740,11 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->listShelves();
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertSame(1, count($resources));
+        $this->assertCount(1, $resources);
         $this->assertEquals($expectedResponse->getShelves()[0], $resources[0]);
 
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/ListShelves', $actualFuncCall);
@@ -3807,7 +3807,7 @@ class LibraryServiceClientTest extends GeneratedTest
 
         $client->deleteShelf($formattedName);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/DeleteShelf', $actualFuncCall);
@@ -3885,7 +3885,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->mergeShelves($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/MergeShelves', $actualFuncCall);
@@ -3969,7 +3969,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->createBook($formattedName, $book);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/CreateBook', $actualFuncCall);
@@ -4051,7 +4051,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->publishSeries($shelf, $books, $seriesUuid);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/PublishSeries', $actualFuncCall);
@@ -4140,7 +4140,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->getBook($formattedName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBook', $actualFuncCall);
@@ -4217,11 +4217,11 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->listBooks($formattedName, ['filter' => $filter]);
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertSame(1, count($resources));
+        $this->assertCount(1, $resources);
         $this->assertEquals($expectedResponse->getBooks()[0], $resources[0]);
 
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/ListBooks', $actualFuncCall);
@@ -4291,7 +4291,7 @@ class LibraryServiceClientTest extends GeneratedTest
 
         $client->deleteBook($formattedName);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/DeleteBook', $actualFuncCall);
@@ -4371,7 +4371,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->updateBook($formattedName, $book);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/UpdateBook', $actualFuncCall);
@@ -4455,7 +4455,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->moveBook($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/MoveBook', $actualFuncCall);
@@ -4532,11 +4532,11 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->listStrings();
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertSame(1, count($resources));
+        $this->assertCount(1, $resources);
         $this->assertEquals($expectedResponse->getStrings()[0], $resources[0]);
 
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/ListStrings', $actualFuncCall);
@@ -4607,7 +4607,7 @@ class LibraryServiceClientTest extends GeneratedTest
 
         $client->addComments($formattedName, $comments);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/AddComments', $actualFuncCall);
@@ -4697,7 +4697,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->getBookFromArchive($formattedName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromArchive', $actualFuncCall);
@@ -4777,7 +4777,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromAnywhere', $actualFuncCall);
@@ -4860,7 +4860,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->getBookFromAbsolutelyAnywhere($formattedName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromAbsolutelyAnywhere', $actualFuncCall);
@@ -4933,7 +4933,7 @@ class LibraryServiceClientTest extends GeneratedTest
 
         $client->updateBookIndex($formattedName, $indexName, $indexMap);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/UpdateBookIndex', $actualFuncCall);
@@ -5035,7 +5035,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertEquals($expectedResources, $responses);
 
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/StreamShelves', $actualFuncCall);
@@ -5144,7 +5144,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertEquals($expectedResponses, $responses);
 
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/StreamBooks', $actualFuncCall);
@@ -5259,14 +5259,14 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertEquals($expectedResponses, $responses);
 
         $createStreamRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($createStreamRequests));
+        $this->assertCount(1, $createStreamRequests);
         $streamFuncCall = $createStreamRequests[0]->getFuncCall();
         $streamRequestObject = $createStreamRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/DiscussBook', $streamFuncCall);
         $this->assertNull($streamRequestObject);
 
         $callObjects = $transport->popCallObjects();
-        $this->assertSame(1, count($callObjects));
+        $this->assertCount(1, $callObjects);
         $bidiCall = $callObjects[0];
 
         $writeRequests = $bidiCall->popReceivedCalls();
@@ -5346,11 +5346,11 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->findRelatedBooks($names, $shelves);
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertSame(1, count($resources));
+        $this->assertCount(1, $resources);
         $this->assertEquals($expectedResponse->getNames()[0], $resources[0]);
 
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/FindRelatedBooks', $actualFuncCall);
@@ -5426,7 +5426,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->addTag($formattedResource, $tag);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/AddTag', $actualFuncCall);
@@ -5502,7 +5502,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->addLabel($formattedResource, $label);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.tagger.v1.Labeler/AddLabel', $actualFuncCall);
@@ -5605,9 +5605,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
         $apiRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($apiRequests));
+        $this->assertSame(1, $apiRequests));
         $operationsRequestsEmpty = $operationsTransport->popReceivedCalls();
-        $this->assertSame(0, count($operationsRequestsEmpty));
+        $this->assertCount(0, $operationsRequestsEmpty);
 
         $actualApiFuncCall = $apiRequests[0]->getFuncCall();
         $actualApiRequestObject = $apiRequests[0]->getRequestObject();
@@ -5625,9 +5625,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
         $apiRequestsEmpty = $transport->popReceivedCalls();
-        $this->assertSame(0, count($apiRequestsEmpty));
+        $this->assertCount(0, $apiRequestsEmpty);
         $operationsRequests = $operationsTransport->popReceivedCalls();
-        $this->assertSame(1, count($operationsRequests));
+        $this->assertCount(1, $operationsRequests);
 
         $actualOperationsFuncCall = $operationsRequests[0]->getFuncCall();
         $actualOperationsRequestObject = $operationsRequests[0]->getRequestObject();
@@ -5743,9 +5743,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
         $apiRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($apiRequests));
+        $this->assertCount(1, $apiRequests);
         $operationsRequestsEmpty = $operationsTransport->popReceivedCalls();
-        $this->assertSame(0, count($operationsRequestsEmpty));
+        $this->assertCount(0, $operationsRequestsEmpty);
 
         $actualApiFuncCall = $apiRequests[0]->getFuncCall();
         $actualApiRequestObject = $apiRequests[0]->getRequestObject();
@@ -5763,9 +5763,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
         $apiRequestsEmpty = $transport->popReceivedCalls();
-        $this->assertSame(0, count($apiRequestsEmpty));
+        $this->assertCount(0, $apiRequestsEmpty);
         $operationsRequests = $operationsTransport->popReceivedCalls();
-        $this->assertSame(1, count($operationsRequests));
+        $this->assertCount(1, $operationsRequests);
 
         $actualOperationsFuncCall = $operationsRequests[0]->getFuncCall();
         $actualOperationsRequestObject = $operationsRequests[0]->getRequestObject();
@@ -5889,7 +5889,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $response = $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
+        $this->assertCount(1, $actualRequests);
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/TestOptionalRequiredFlatteningParams', $actualFuncCall);
