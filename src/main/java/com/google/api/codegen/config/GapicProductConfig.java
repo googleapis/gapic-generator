@@ -26,6 +26,7 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
+import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -556,6 +557,9 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
 
+    List<PathTemplate> pathTemplatesFromConfig = singleResourceNameConfigsMap
+        .values().stream().map(SingleResourceNameConfig::getNameTemplate)
+        .collect(Collectors.toList());
     LinkedHashMap<String, SingleResourceNameConfig> resourceConfigsFromProtoFile =
         new LinkedHashMap<>();
     // Collect the ResourceNameConfigs from proto annotations.
@@ -565,7 +569,7 @@ public abstract class GapicProductConfig implements ProductConfig {
           String resourcePath = protoParser.getResourcePath(field);
           if (resourcePath != null) {
             createSingleResourceNameConfig(
-                diagCollector, field, resourceConfigsFromProtoFile, protoFile, protoParser);
+                diagCollector, field, pathTemplatesFromConfig, resourceConfigsFromProtoFile, protoFile, protoParser);
           }
         }
       }
@@ -631,11 +635,12 @@ public abstract class GapicProductConfig implements ProductConfig {
   private static void createSingleResourceNameConfig(
       DiagCollector diagCollector,
       Field field,
+      List<PathTemplate> pathTemplatesFromConfig,
       LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap,
       ProtoFile file,
       ProtoParser protoParser) {
     SingleResourceNameConfig singleResourceNameConfig =
-        SingleResourceNameConfig.createSingleResourceName(diagCollector, field, file, protoParser);
+        SingleResourceNameConfig.createSingleResourceName(diagCollector, field, pathTemplatesFromConfig, file, protoParser);
     if (singleResourceNameConfig == null) {
       return;
     }
