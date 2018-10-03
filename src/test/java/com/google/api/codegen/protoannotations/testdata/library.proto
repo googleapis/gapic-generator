@@ -189,7 +189,7 @@ service LibraryService {
   rpc GetBookFromAnywhere(GetBookFromAnywhereRequest) returns (BookFromAnywhere) {
     option (google.api.http) = { get: "/v1/{name=archives/*/books/**}"};
     option (google.api.method_signature) = {
-      fields: ["name"]
+      fields: ["name", "alt_book_name"]
     };
   }
 
@@ -246,7 +246,7 @@ service LibraryService {
   rpc FindRelatedBooks(FindRelatedBooksRequest) returns (FindRelatedBooksResponse) {
     option (google.api.http) = { get: "/v1/bookShelves" };
     option (google.api.method_signature) = {
-      fields: ["names"]
+      fields: ["names", "shelves"]
     };
   }
 
@@ -721,6 +721,7 @@ message GetBookFromAnywhereRequest {
   // An alternate book name, used to test restricting flattened field to a
   // single resource name type in a oneof.
   string alt_book_name = 2 [
+    (google.api.required) = true,
     (google.api.resource_type) = "google.example.library.v1.Book"];
 }
 
@@ -765,7 +766,9 @@ message FindRelatedBooksRequest {
   repeated string names = 1 [
     (google.api.required) = true,
     (google.api.resource_type) = "google.example.library.v1.Book"];
-  repeated string shelves = 2;
+  repeated string shelves = 2 [
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Shelf"];
   int32 page_size = 4;
   string page_token = 5;
 }

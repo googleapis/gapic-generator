@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
+import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -92,6 +93,13 @@ public abstract class PageStreamingConfig {
     FieldModel resourcesField = method.getOutputField(resourcesFieldName);
     FieldConfig resourcesFieldConfig;
 
+    ResourceNameTreatment resourceNameTreatment;
+    // if (resourcesField != null && resourcesField.mayBeInResourceName()) {
+    //   resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
+    // } else {
+    resourceNameTreatment = methodConfigProto.getResourceNameTreatment();
+    // }
+
     if (resourcesField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -104,10 +112,7 @@ public abstract class PageStreamingConfig {
     } else {
       resourcesFieldConfig =
           FieldConfig.createMessageFieldConfig(
-              messageConfigs,
-              resourceNameConfigs,
-              resourcesField,
-              methodConfigProto.getResourceNameTreatment());
+              messageConfigs, resourceNameConfigs, resourcesField, resourceNameTreatment);
     }
 
     if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {

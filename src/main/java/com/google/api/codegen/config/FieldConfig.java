@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.config.ResourceNameConfig.ConfigSource;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -132,6 +133,11 @@ public abstract class FieldConfig {
         ResourceNameOneofConfig oneofConfig =
             (ResourceNameOneofConfig) messageFieldResourceNameConfig;
         ok = oneofConfig.getResourceNameConfigs().contains(flattenedFieldResourceNameConfig);
+      } else if (messageFieldResourceNameConfig.getConfigSource() == ConfigSource.PROTO_FILE
+          && flattenedFieldResourceNameConfig.getConfigSource() == ConfigSource.GAPIC_CONFIG) {
+        // Use the proto file resource config for the flattening, to override the GAPIC config.
+        flattenedFieldResourceNameConfig = messageFieldResourceNameConfig;
+        ok = true;
       }
       if (!ok) {
         Diag error =

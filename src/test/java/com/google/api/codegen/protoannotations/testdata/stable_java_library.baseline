@@ -116,7 +116,6 @@ import com.google.api.pathtemplate.PathTemplate;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
@@ -1744,8 +1743,11 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   for (ResourceName element : libraryClient.listStrings(request).iterateAllAsResourceName()) {
+   *   String name = "";
+   *   ListStringsRequest request = ListStringsRequest.newBuilder()
+   *     .setName(name)
+   *     .build();
+   *   for (String element : libraryClient.listStrings(request).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1946,7 +1948,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
+   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   BookFromArchive response = libraryClient.getBookFromArchive(name);
    * }
    * </code></pre>
@@ -1954,7 +1956,7 @@ public class LibraryClient implements BackgroundResource {
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final BookFromArchive getBookFromArchive(ArchivedBookName name) {
+  public final BookFromArchive getBookFromArchive(BookName name) {
 
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
@@ -1970,7 +1972,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
+   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   BookFromArchive response = libraryClient.getBookFromArchive(name.toString());
    * }
    * </code></pre>
@@ -1994,7 +1996,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
+   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2016,7 +2018,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
+   *   BookName name = BookName.of("[SHELF]", "[BOOK]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -7437,11 +7439,11 @@ public class FindRelatedBooksRequestPagedOdyssey {
     // [START sample_core]
     BookName namesElement = BookName.of("[SHELF]", "[BOOK]");
     List<BookName> names = Arrays.asList(namesElement);
-    String shelvesElement = "Classics";
-    List<String> shelves = Arrays.asList(shelvesElement);
+    ShelfName shelvesElement = ShelfName.of("[BOOK_SHELF]");
+    List<ShelfName> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
       .addAllNames(BookName.toStringList(names))
-      .addAllShelves(shelves)
+      .addAllShelves(ShelfName.toStringList(shelves))
       .build();
     for (BookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsBookName()) {
       BookName book = responseItem;
@@ -7479,11 +7481,11 @@ public class FindRelatedBooksCallableCallableListOdyssey {
     // [START sample_core]
     BookName namesElement = BookName.of("[SHELF]", "[BOOK]");
     List<BookName> names = Arrays.asList(namesElement);
-    String shelvesElement = "Classics";
-    List<String> shelves = Arrays.asList(shelvesElement);
+    ShelfName shelvesElement = ShelfName.of("[BOOK_SHELF]");
+    List<ShelfName> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
       .addAllNames(BookName.toStringList(names))
-      .addAllShelves(shelves)
+      .addAllShelves(ShelfName.toStringList(shelves))
       .build();
     while (true) {
       FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
@@ -7530,11 +7532,11 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
     // [START sample_core]
     BookName namesElement = BookName.of("[SHELF]", "[BOOK]");
     List<BookName> names = Arrays.asList(namesElement);
-    String shelvesElement = "Classics";
-    List<String> shelves = Arrays.asList(shelvesElement);
+    ShelfName shelvesElement = ShelfName.of("[BOOK_SHELF]");
+    List<ShelfName> shelves = Arrays.asList(shelvesElement);
     FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
       .addAllNames(BookName.toStringList(names))
-      .addAllShelves(shelves)
+      .addAllShelves(ShelfName.toStringList(shelves))
       .build();
     ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
 
