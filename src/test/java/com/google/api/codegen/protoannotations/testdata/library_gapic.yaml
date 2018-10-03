@@ -70,6 +70,32 @@ interfaces:
     rpc_timeout_multiplier: 1.3
     max_rpc_timeout_millis: 3000
     total_timeout_millis: 30000
+  collections:
+  - name_pattern: shelves/{shelf_id}
+    entity_name: shelf
+  - name_pattern: shelves/{shelf_id}/books/{book_id}
+    entity_name: book
+    language_overrides:
+    - language: java
+      entity_name: shelf_book
+  # To test the case that entity name / variable which happens to be
+  # a language keyword. See: https://github.com/googleapis/toolkit/issues/618
+  - name_pattern: shelves/{shelf}/books/{book}/returns/{return}
+    entity_name: return
+  - name_pattern: projects/{project}
+    entity_name: project
+    language_overrides:
+    - language: csharp
+      common_resource_name: Google.Api.Gax.ResourceNames.ProjectName
+    - language: java
+      common_resource_name: com.google.cloud.ProjectName
+  smoke_test:
+    method: UpdateBook
+    init_fields:
+      - name%shelf_id="testShelf-$RANDOM"
+      - name%book_id=$PROJECT_ID
+      - book . rating=GOOD
+    flattening_group_name: update_book_2
   methods:
   - name: CreateShelf
     flattening:
@@ -183,6 +209,7 @@ interfaces:
           - edition
           - shelf.name
         subresponse_field: book_names
+    resource_name_treatment: STATIC_TYPES
     sample_code_init_fields:
     - series_uuid.series_string=foobar
     sample_value_sets:
@@ -313,6 +340,9 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book
   - name: MoveBook
     flattening:
       groups:
@@ -595,7 +625,6 @@ interfaces:
     required_fields:
     - resource
     - tag
-    resource_name_treatment: VALIDATE
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
