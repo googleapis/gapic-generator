@@ -28,6 +28,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ListMultimap;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -83,8 +84,8 @@ public abstract class ResourceNameMessageConfigs {
       }
     }
 
-    ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap =
-        ImmutableMap.copyOf(builder);
+    ImmutableSortedMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap =
+        ImmutableSortedMap.copyOf(builder);
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
     Set<String> seenProtoFiles = new HashSet<>();
