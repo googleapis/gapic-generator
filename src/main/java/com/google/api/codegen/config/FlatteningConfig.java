@@ -179,9 +179,9 @@ public abstract class FlatteningConfig {
 
       ResourceNameTreatment defaultResourceNameTreatment =
           methodConfigProto.getResourceNameTreatment();
-      if (!method.getResourceNameInputFields().isEmpty()) {
-        defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
-      }
+      // if (!method.getResourceNameInputFields().isEmpty()) {
+      //   defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
+      // }
       if (!parameterField.mayBeInResourceName()) {
         defaultResourceNameTreatment = ResourceNameTreatment.NONE;
       }

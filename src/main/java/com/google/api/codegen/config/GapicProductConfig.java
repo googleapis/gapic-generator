@@ -222,6 +222,7 @@ public abstract class GapicProductConfig implements ProductConfig {
             model.getDiagReporter().getDiagCollector(),
             configProto,
             sourceProtos,
+            defaultPackage,
             settings,
             messageConfigs,
             resourceNameConfigs,
@@ -389,6 +390,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       DiagCollector diagCollector,
       ConfigProto configProto,
       List<ProtoFile> sourceProtos,
+      String defaultPackageName,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
@@ -437,6 +439,7 @@ public abstract class GapicProductConfig implements ProductConfig {
             GapicInterfaceConfig.createInterfaceConfig(
                 diagCollector,
                 language,
+                defaultPackageName,
                 interfaceConfigProto,
                 apiInterface,
                 interfaceNameOverride,

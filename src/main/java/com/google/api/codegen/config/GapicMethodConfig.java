@@ -32,6 +32,7 @@ import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
@@ -65,6 +66,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   static GapicMethodConfig createMethodConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
+      String defaultPackageName,
       MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
@@ -160,7 +162,13 @@ public abstract class GapicMethodConfig extends MethodConfig {
         .getFields()
         .stream()
         .anyMatch(f -> !Strings.isNullOrEmpty(protoParser.getResourceMessage(f)))) {
-      defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
+      String methodInputPackageName =
+          ((ProtoFile) method.getInputType().getMessageType().getParent()).getProto().getPackage();
+      if (!defaultPackageName.equals(methodInputPackageName)) {
+        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
+      } else {
+        defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
+      }
     }
     if (defaultResourceNameTreatment == null
         || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
