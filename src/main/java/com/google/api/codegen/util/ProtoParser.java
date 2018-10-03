@@ -17,7 +17,6 @@ package com.google.api.codegen.util;
 import com.google.api.AnnotationsProto;
 import com.google.api.Resource;
 import com.google.api.Retry;
-import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -26,15 +25,11 @@ import com.google.common.base.Strings;
 import com.google.longrunning.OperationTypes;
 import com.google.longrunning.OperationsProto;
 import com.google.protobuf.Api;
+import java.util.List;
 import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
-  private static ProtoParser protoParser = new ProtoParser();
-
-  public static ProtoParser getProtoParser() {
-    return protoParser;
-  }
 
   /** Return the path, e.g. "shelves/*" for a resource field. Return null if no path found. */
   public String getResourcePath(Field element) {
@@ -48,7 +43,7 @@ public class ProtoParser {
 
   /** Returns a base package name for an API's client. */
   @Nullable
-  public static String getPackageName(Model model) {
+  public String getPackageName(Model model) {
     if (model.getServiceConfig().getApisCount() > 0) {
       Api api = model.getServiceConfig().getApis(0);
       Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
@@ -60,20 +55,13 @@ public class ProtoParser {
   }
 
   /** Return the entity name, e.g. "shelf" for a resource field. */
-  public static String getResourceEntityName(Field field) {
+  public String getResourceEntityName(Field field) {
     return field.getParent().getSimpleName().toLowerCase();
   }
 
   /** Get long running settings. */
   public OperationTypes getLongRunningOperation(Method method) {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
-  }
-
-  @Nullable
-  public static String getFormattedPackageName(String language, String basePackageName) {
-    LanguageTransformer.LanguageFormatter formatter =
-        LanguageTransformer.LANGUAGE_FORMATTERS.get(language.toLowerCase());
-    return formatter.getFormattedPackageName(basePackageName);
   }
 
   /** Return the extra retry codes for the given method. */
@@ -85,5 +73,15 @@ public class ProtoParser {
   public boolean isHttpGetMethod(Method method) {
     return !Strings.isNullOrEmpty(
         method.getDescriptor().getMethodAnnotation(AnnotationsProto.http).getGet());
+  }
+
+  /** The hostname for this service (e.g. "foo.googleapis.com"). */
+  public String getServiceAddress(Interface service) {
+    return service.getProto().getOptions().getExtension(AnnotationsProto.defaultHost);
+  }
+
+  /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
+  public List<String> getAuthScopes(Interface service) {
+    return service.getProto().getOptions().getExtension(AnnotationsProto.oauth).getScopesList();
   }
 }

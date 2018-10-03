@@ -194,7 +194,7 @@ type CallOptions struct {
 
 func defaultClientOptions() []option.ClientOption {
     return []option.ClientOption{
-        option.WithEndpoint("library-example.googleapis.com:443"),
+        option.WithEndpoint("library-example.googleapis.com:1234"),
         option.WithScopes(DefaultAuthScopes()...),
     }
 }
@@ -3604,6 +3604,9 @@ func TestLibraryServiceMonologAboutBook(t *testing.T) {
     if err != nil {
         t.Fatal(err)
     }
+    if err := stream.Send(request); err != nil {
+        t.Fatal(err)
+    }
     resp, err := stream.CloseAndRecv()
 
     if err != nil {
@@ -3635,6 +3638,9 @@ func TestLibraryServiceMonologAboutBookError(t *testing.T) {
 
     stream, err := c.MonologAboutBook(context.Background())
     if err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.Send(request); err != nil {
         t.Fatal(err)
     }
     resp, err := stream.CloseAndRecv()

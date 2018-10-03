@@ -18,6 +18,7 @@ import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ConfigYamlReader;
 import com.google.api.codegen.configgen.MessageGenerator;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
+import com.google.api.codegen.gapic.GapicTestConfig;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -34,7 +35,7 @@ public class CodegenTestUtil {
   public static Model readModel(
       TestDataLocator locator, TemporaryFolder tempDir, String[] protoFiles, String[] yamlFiles) {
     TestConfig testConfig =
-        new TestConfig(locator, tempDir.getRoot().getPath(), Arrays.asList(protoFiles));
+        new GapicTestConfig(locator, tempDir.getRoot().getPath(), Arrays.asList(protoFiles));
     Model model = testConfig.createModel(Arrays.asList(yamlFiles));
     StandardSetup.registerStandardProcessors(model);
     StandardSetup.registerStandardConfigAspects(model);
