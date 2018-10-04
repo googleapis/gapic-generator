@@ -155,8 +155,12 @@ public class ProtoParserTest {
             .findFirst()
             .get();
     Field shelves =
-        listShelvesResponse.getFields().stream()
-            .filter(f -> f.getSimpleName().equals("shelves")).findFirst().get();
+        listShelvesResponse
+            .getFields()
+            .stream()
+            .filter(f -> f.getSimpleName().equals("shelves"))
+            .findFirst()
+            .get();
     String shelfType = protoParser.getResourceType(shelves);
     assertThat(shelfType).isEqualTo("google.example.library.v1.Shelf");
   }
@@ -165,8 +169,12 @@ public class ProtoParserTest {
   public void testGetMethodSignatures() {
     Method getShelfMethod =
         libraryProtoFile
-            .getInterfaces().stream().filter(i -> i.lookupMethod("GetShelf") != null)
-            .findFirst().get().lookupMethod("GetShelf");
+            .getInterfaces()
+            .stream()
+            .filter(i -> i.lookupMethod("GetShelf") != null)
+            .findFirst()
+            .get()
+            .lookupMethod("GetShelf");
     List<MethodSignature> getShelfFlattenings = protoParser.getMethodSignatures(getShelfMethod);
     assertThat(getShelfFlattenings.size()).isEqualTo(2);
 
