@@ -131,7 +131,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfig,
-              retrySettingsDefinition.keySet());
+              retrySettingsDefinition.keySet(),
+              protoParser);
       if (methodConfigMap == null) {
         diagCollector.addDiag(
             Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
@@ -213,7 +214,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      ProtoParser protoParser) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
 
     // Keep track of the MethodConfigProtos encountered.
@@ -238,7 +240,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfig,
-              retryParamsConfigNames);
+              retryParamsConfigNames,
+              protoParser);
       if (methodConfig == null) {
         continue;
       }
@@ -261,7 +264,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfig,
-              retryParamsConfigNames);
+              retryParamsConfigNames,
+              protoParser);
       if (methodConfig == null) {
         continue;
       }

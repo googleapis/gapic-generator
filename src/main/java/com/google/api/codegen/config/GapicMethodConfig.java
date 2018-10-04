@@ -70,7 +70,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      ProtoParser protoParser) {
 
     boolean error = false;
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
@@ -155,7 +156,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
     }
 
-    List<String> requiredFields = ProtoParser.getRequiredFields(method);
+    List<String> requiredFields = protoParser.getRequiredFields(method);
     if (requiredFields.isEmpty() && methodConfigProto != null) {
       requiredFields = methodConfigProto.getRequiredFieldsList();
     }

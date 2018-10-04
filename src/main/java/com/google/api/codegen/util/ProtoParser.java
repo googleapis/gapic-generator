@@ -19,7 +19,6 @@ import com.google.api.MethodSignature;
 import com.google.api.Resource;
 import com.google.api.Retry;
 import com.google.api.codegen.config.ProtoMethodModel;
-import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -87,30 +86,22 @@ public class ProtoParser {
         .build();
   }
 
-  // TODO(andrealin): remove all "static" from this file, and test methods in ProtoParserTest.java
   /** Return the names of required parameters of a method. */
-  public static List<String> getRequiredFields(Method method) {
+  public List<String> getRequiredFields(Method method) {
     MessageType inputMessage = method.getInputMessage();
     return inputMessage
         .getFields()
         .stream()
-        .filter(ProtoParser::isFieldRequired)
+        .filter(this::isFieldRequired)
         .map(Field::getSimpleName)
         .collect(Collectors.toList());
   }
 
   /** Returns if a field is required, according to the proto annotations. */
-  public static boolean isFieldRequired(Field field) {
+  private boolean isFieldRequired(Field field) {
     return Optional.ofNullable(
             (Boolean) field.getOptionFields().get(AnnotationsProto.required.getDescriptor()))
         .orElse(false);
-  }
-
-  @Nullable
-  public static String getFormattedPackageName(String language, String basePackageName) {
-    LanguageTransformer.LanguageFormatter formatter =
-        LanguageTransformer.LANGUAGE_FORMATTERS.get(language.toLowerCase());
-    return formatter.getFormattedPackageName(basePackageName);
   }
 
   /** Return the extra retry codes for the given method. */

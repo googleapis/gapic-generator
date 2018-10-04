@@ -28,6 +28,7 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.longrunning.OperationTypes;
 import com.google.rpc.Code;
+import java.util.Collections;
 import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -131,6 +132,16 @@ public class ProtoParserTest {
   public void testGetServiceAddress() {
     String defaultHost = protoParser.getServiceAddress(libraryService);
     assertThat(defaultHost).isEqualTo("library-example.googleapis.com");
+  }
+
+  @Test
+  public void testGetRequiredFields() {
+    Method publishSeriesMethod = libraryService.lookupMethod("PublishSeries");
+    List<String> requiredFields = protoParser.getRequiredFields(publishSeriesMethod);
+    Collections.sort(requiredFields);
+    assertThat(requiredFields.size()).isEqualTo(2);
+    assertThat(requiredFields.get(0)).isEqualTo("books");
+    assertThat(requiredFields.get(1)).isEqualTo("shelf");
   }
 
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
