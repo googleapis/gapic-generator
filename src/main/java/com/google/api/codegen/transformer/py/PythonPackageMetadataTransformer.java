@@ -288,7 +288,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
   }
 
   private String docsGapicPath(String apiVersion) {
-    return String.format("gapic/%s", apiVersion.toLowerCase());
+    return String.format("rules_gapic/%s", apiVersion.toLowerCase());
   }
 
   // Generates methods used as examples for the README.md file.

@@ -187,14 +187,14 @@ public class LanguageTransformer {
       for (String n : names) {
         if (VersionMatcher.isVersion(n)) {
           collector.add(String.format("%s_%s", collector.removeLast(), n));
-          collector.add("gapic");
+          collector.add("rules_gapic");
           found = true;
         } else {
           collector.add(n);
         }
       }
       if (!found) {
-        collector.add("gapic");
+        collector.add("rules_gapic");
       }
       return Joiner.on('.').join(collector);
     }

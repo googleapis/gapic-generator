@@ -211,8 +211,8 @@ def java_gapic_client_gradle_pkg(
 
 def java_gapic_assembly_gradle_raw_pkg(name, deps, visibility = None):
     resource_target_name = "%s-resources" % name
-    settings_tmpl_label = Label("//gapic/java:resources/gradle/settings.gradle.tmpl")
-    build_tmpl_label = Label("//gapic/java:resources/gradle/assembly.gradle.tmpl")
+    settings_tmpl_label = Label("//rules_gapic/java:resources/gradle/settings.gradle.tmpl")
+    build_tmpl_label = Label("//rules_gapic/java:resources/gradle/assembly.gradle.tmpl")
     java_gapic_build_configs_pkg(
         name = resource_target_name,
         deps = deps,
@@ -229,7 +229,7 @@ def java_gapic_assembly_gradle_raw_pkg(name, deps, visibility = None):
         name = name,
         extension = "tar.gz",
         deps = [
-            "@com_google_api_codegen//gapic/java:gradlew",
+            Label("//rules_gapic/java:gradlew"),
             resource_target_name,
         ] + deps,
         package_dir = name,
@@ -317,7 +317,7 @@ def _java_gapic_gradle_pkg(
         version = "",
         classifier = None):
     resource_target_name = "%s-resources" % name
-    template_label = Label("//gapic/java:resources/gradle/%s.gradle.tmpl" % pkg_type)
+    template_label = Label("//rules_gapic/java:resources/gradle/%s.gradle.tmpl" % pkg_type)
     java_gapic_build_configs_pkg(
         name = resource_target_name,
         deps = deps,

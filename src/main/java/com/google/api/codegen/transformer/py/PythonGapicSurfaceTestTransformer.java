@@ -139,7 +139,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
           surfacePackageNamer.classFileNameBase(Name.upperCamel(testClassName).join(version))
               + ".py";
       String outputPath =
-          Joiner.on(File.separator).join("tests", "unit", "gapic", version, filename);
+          Joiner.on(File.separator).join("tests", "unit", "rules_gapic", version, filename);
       ImportSectionView importSection = importSectionTransformer.generateTestImportSection(context);
       models.add(
           ClientTestFileView.newBuilder()
@@ -265,7 +265,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     String version = packageConfig.apiVersion();
     String filename = namer.classFileNameBase(Name.upperCamel(name).join(version)) + ".py";
     String outputPath =
-        Joiner.on(File.separator).join("tests", "system", "gapic", version, filename);
+        Joiner.on(File.separator).join("tests", "system", "rules_gapic", version, filename);
 
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     FlatteningConfig flatteningGroup =

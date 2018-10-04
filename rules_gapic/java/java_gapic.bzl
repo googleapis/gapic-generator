@@ -1,4 +1,4 @@
-load("//gapic:gapic.bzl", "gapic_srcjar", "proto_custom_library")
+load("//rules_gapic:gapic.bzl", "gapic_srcjar", "proto_custom_library")
 
 def _java_gapic_srcjar_impl(ctx):
     gapic_srcjar = ctx.file.gapic_srcjar
