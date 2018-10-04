@@ -9,7 +9,7 @@ load(
     "is_proto_dependency",
 )
 
-def _java_gapic_build_resources_pkg_impl(ctx):
+def _java_gapic_build_configs_pkg_impl(ctx):
     expanded_templates = []
     deps_struct = construct_dep_strings(
         ctx.attr.deps,
@@ -68,7 +68,7 @@ def _java_gapic_build_resources_pkg_impl(ctx):
         outputs = [ctx.outputs.pkg],
     )
 
-java_gapic_build_resources_pkg = rule(
+java_gapic_build_configs_pkg = rule(
     attrs = {
         "deps": attr.label_list(mandatory = True, non_empty = True),
         "test_deps": attr.label_list(mandatory = False, allow_empty = True),
@@ -79,7 +79,7 @@ java_gapic_build_resources_pkg = rule(
         "dynamic_substitutions": attr.label_keyed_string_dict(mandatory = False, allow_files = True),
     },
     outputs = {"pkg": "%{name}.tar.gz"},
-    implementation = _java_gapic_build_resources_pkg_impl,
+    implementation = _java_gapic_build_configs_pkg_impl,
 )
 
 def _java_gapic_srcs_pkg_impl(ctx):
@@ -213,7 +213,7 @@ def java_gapic_assembly_gradle_raw_pkg(name, deps, visibility = None):
     resource_target_name = "%s-resources" % name
     settings_tmpl_label = Label("//gapic/java:resources/gradle/settings.gradle.tmpl")
     build_tmpl_label = Label("//gapic/java:resources/gradle/assembly.gradle.tmpl")
-    java_gapic_build_resources_pkg(
+    java_gapic_build_configs_pkg(
         name = resource_target_name,
         deps = deps,
         templates = {
@@ -318,7 +318,7 @@ def _java_gapic_gradle_pkg(
         classifier = None):
     resource_target_name = "%s-resources" % name
     template_label = Label("//gapic/java:resources/gradle/%s.gradle.tmpl" % pkg_type)
-    java_gapic_build_resources_pkg(
+    java_gapic_build_configs_pkg(
         name = resource_target_name,
         deps = deps,
         test_deps = test_deps,
