@@ -36,10 +36,10 @@ option (google.api.metadata) = {
 // resource model:
 //
 // - The API has a collection of [Shelf][google.example.library.v1.Shelf]
-//   resources, named ``bookShelves/*``
+//   resources, named ``shelves/*``
 //
 // - Each Shelf has a collection of [Book][google.example.library.v1.Book]
-//   resources, named `bookShelves/*/books/*`
+//   resources, named `shelves/*/books/*`
 //
 // Check out [cloud docs!](/library/example/link).
 // This is [not a cloud link](http://www.google.com).
@@ -297,12 +297,25 @@ service LibraryService {
 // Message comment may include special characters: <>&"`'@.
 message Book {
   // The resource name of the book.
-  // Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+  // Book names have the form `shelves/{shelf_id}/books/{book_id}`.
   // Message field comment may include special characters: <>&"`'@.
   string name = 1 [
     (google.api.required) = true,
-    // TODO(andrealin): turn this into a resource_set
-    (google.api.resource).path = "shelves/*/books/*"
+    (google.api.resource_set) = {
+      base_name: "book_oneof"
+      resources: [
+        {
+          base_name: "book"
+          path : "shelves/*/books/*"
+        },{
+          base_name: "archived_book"
+          path : "archives/*/books/*"
+        },{
+          base_name: "deleted_book"
+          path : "_deleted-book_"
+        }
+      ]
+    }
     // TODO(andrealin): handle Resource.base_name
   ];
 
@@ -423,7 +436,7 @@ message SomeMessage2 {
 // A Shelf contains a collection of books with a theme.
 message Shelf {
   // The resource name of the shelf.
-  // Shelf names have the form `bookShelves/{shelf_id}`.
+  // Shelf names have the form `shelves/{shelf_id}`.
   string name = 1 [
     (google.api.required) = true,
     (google.api.resource).path = "shelves/*"];
