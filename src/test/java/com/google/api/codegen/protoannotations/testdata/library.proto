@@ -163,7 +163,10 @@ service LibraryService {
   rpc ListStrings(ListStringsRequest) returns (ListStringsResponse) {
     option (google.api.http) = { get: "/v1/strings" };
     option (google.api.method_signature) = {
-      fields: ["name"]
+      fields: []
+      additional_signatures: [
+        {fields: ["name"]}
+      ]
     };
   }
 
@@ -357,8 +360,7 @@ message BookFromArchive {
   // The resource name of the book.
   // Book names have the form `archives/{archive_id}/books/{book_id}`.
   string name = 1 [
-    (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.required) = true];
 
   // The name of the book author.
   string author = 2;
@@ -418,7 +420,7 @@ message Shelf {
   // Shelf names have the form `bookShelves/{shelf_id}`.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource).path = "bookShelves/*"];
+    (google.api.resource).path = "shelves/*"];
 
   // The theme of the shelf
   string theme = 2;
@@ -613,8 +615,7 @@ message ListBooksResponse {
 message StreamBooksRequest {
   // The name of the shelf whose books we'd like to list.
   string name = 1 [
-    (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Shelf"];
+    (google.api.required) = true];
 }
 
 // Request message for LibraryService.UpdateBook.
@@ -706,8 +707,7 @@ message Comment {
 message GetBookFromArchiveRequest {
   // The name of the book to retrieve.
   string name = 1 [
-    (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.required) = true];
 }
 
 // Request message for LibraryService.GetBookFromAnywhere.
@@ -753,8 +753,7 @@ message DiscussBookRequest {
   // of the stream and this is not specified, the name in the previous
   // message will be reused.
   string name = 1 [
-    (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.required) = true];
 
   // The new comment.
   Comment comment = 2;
