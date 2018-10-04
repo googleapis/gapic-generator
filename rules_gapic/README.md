@@ -1,4 +1,4 @@
-## GAPIC generator [Bazel](https://www.bazel.build/) integration 
+## GAPIC Generator [Bazel](https://www.bazel.build/) Integration 
 
 ### Requirements
 
