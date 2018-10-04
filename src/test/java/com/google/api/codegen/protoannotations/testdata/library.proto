@@ -85,6 +85,9 @@ service LibraryService {
     option (google.api.method_signature) = {
       fields: ["name"]
     };
+    option (google.api.retry) = {
+      codes: [UNAVAILABLE, DEADLINE_EXCEEDED]
+    };
   }
 
   // Merges two shelves by adding all books from the shelf named

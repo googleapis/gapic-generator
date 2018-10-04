@@ -211,7 +211,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
       String basePackageName =
-          Optional.ofNullable(protoPackage).orElse(ProtoParser.getPackageName(model));
+          Optional.ofNullable(protoPackage).orElse(protoParser.getPackageName(model));
       clientPackageName =
           LanguageTransformer.getFormattedPackageName(language.name(), basePackageName);
     } else {
@@ -228,7 +228,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             messageConfigs,
             resourceNameConfigs,
             model.getSymbolTable(),
-            language);
+            language,
+            protoParser);
 
     ImmutableList<String> copyrightLines = null;
     ImmutableList<String> licenseLines = null;
@@ -396,7 +397,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable,
-      TargetLanguage language) {
+      TargetLanguage language,
+      ProtoParser protoParser) {
     // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
@@ -417,7 +419,6 @@ public abstract class GapicProductConfig implements ProductConfig {
       interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
     }
 
-    ProtoParser protoParser = new ProtoParser();
     // Parse proto file for interfaces.
     for (ProtoFile file : sourceProtos) {
       if (file.getProto().getServiceList().size() == 0) continue;
@@ -557,9 +558,12 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
 
-    List<PathTemplate> pathTemplatesFromConfig = singleResourceNameConfigsMap
-        .values().stream().map(SingleResourceNameConfig::getNameTemplate)
-        .collect(Collectors.toList());
+    List<PathTemplate> pathTemplatesFromConfig =
+        singleResourceNameConfigsMap
+            .values()
+            .stream()
+            .map(SingleResourceNameConfig::getNameTemplate)
+            .collect(Collectors.toList());
     LinkedHashMap<String, SingleResourceNameConfig> resourceConfigsFromProtoFile =
         new LinkedHashMap<>();
     // Collect the ResourceNameConfigs from proto annotations.
@@ -569,7 +573,12 @@ public abstract class GapicProductConfig implements ProductConfig {
           String resourcePath = protoParser.getResourcePath(field);
           if (resourcePath != null) {
             createSingleResourceNameConfig(
-                diagCollector, field, pathTemplatesFromConfig, resourceConfigsFromProtoFile, protoFile, protoParser);
+                diagCollector,
+                field,
+                pathTemplatesFromConfig,
+                resourceConfigsFromProtoFile,
+                protoFile,
+                protoParser);
           }
         }
       }
@@ -640,7 +649,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       ProtoFile file,
       ProtoParser protoParser) {
     SingleResourceNameConfig singleResourceNameConfig =
-        SingleResourceNameConfig.createSingleResourceName(diagCollector, field, pathTemplatesFromConfig, file, protoParser);
+        SingleResourceNameConfig.createSingleResourceName(
+            diagCollector, field, pathTemplatesFromConfig, file, protoParser);
     if (singleResourceNameConfig == null) {
       return;
     }

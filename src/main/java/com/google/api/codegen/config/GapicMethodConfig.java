@@ -175,7 +175,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
     }
 
-    List<String> requiredFields = ProtoParser.getRequiredFields(method);
+    List<String> requiredFields = protoParser.getRequiredFields(method);
     if (requiredFields.isEmpty() && methodConfigProto != null) {
       requiredFields = methodConfigProto.getRequiredFieldsList();
     }
@@ -224,10 +224,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            method,
-            diagCollector,
-            methodConfigProto.getLongRunning(),
-            ProtoParser.getProtoParser());
+            method, diagCollector, methodConfigProto.getLongRunning(), new ProtoParser());
     if (diagCollector.getErrorCount() > 0) {
       error = true;
     }

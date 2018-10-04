@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
-import org.checkerframework.checker.nullness.Opt;
 
 /** SingleResourceNameConfig represents the collection configuration for a method. */
 @AutoValue
@@ -113,8 +112,11 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
    */
   @Nullable
   public static SingleResourceNameConfig createSingleResourceName(
-      DiagCollector diagCollector, Field resourceField, List<PathTemplate> pathTemplatesFromConfig,
-      ProtoFile file, ProtoParser protoParser) {
+      DiagCollector diagCollector,
+      Field resourceField,
+      List<PathTemplate> pathTemplatesFromConfig,
+      ProtoFile file,
+      ProtoParser protoParser) {
     String namePattern = protoParser.getResourcePath(resourceField);
     PathTemplate nameTemplate;
 
@@ -124,17 +126,22 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       // If the proto annotation path template is effectively the same path template,
       // irrespective of wildcards, as one from the gapic config CollectionConfigProto,
       // then use the GAPIC config path template.
-      Optional<PathTemplate> pathTemplateFromConfig = pathTemplatesFromConfig
-          .stream()
-          .filter(template -> template.withoutVars().toString()
-              .equals(pathTemplate.withoutVars().toString()))
-          .findAny();
+      Optional<PathTemplate> pathTemplateFromConfig =
+          pathTemplatesFromConfig
+              .stream()
+              .filter(
+                  template ->
+                      template
+                          .withoutVars()
+                          .toString()
+                          .equals(pathTemplate.withoutVars().toString()))
+              .findAny();
       nameTemplate = pathTemplateFromConfig.orElse(pathTemplate);
     } catch (ValidationException e) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
       return null;
     }
-    String entityId = ProtoParser.getResourceEntityName(resourceField);
+    String entityId = protoParser.getResourceEntityName(resourceField);
     String entityName = entityId;
     String commonResourceName = null;
     return new AutoValue_SingleResourceNameConfig(
