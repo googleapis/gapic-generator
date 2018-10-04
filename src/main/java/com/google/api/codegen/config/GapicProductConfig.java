@@ -23,6 +23,7 @@ import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -44,6 +45,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -184,8 +186,10 @@ public abstract class GapicProductConfig implements ProductConfig {
         configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
-      String basePackageName = ProtoParser.getPackageName(model);
-      clientPackageName = ProtoParser.getFormattedPackageName(language.name(), basePackageName);
+      String basePackageName =
+          Optional.ofNullable(protoPackage).orElse(protoParser.getPackageName(model));
+      clientPackageName =
+          LanguageTransformer.getFormattedPackageName(language.name(), basePackageName);
     } else {
       clientPackageName = settings.getPackageName();
     }
@@ -198,7 +202,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             messageConfigs,
             resourceNameConfigs,
             model.getSymbolTable(),
-            language);
+            language,
+            protoParser);
 
     ImmutableList<String> copyrightLines = null;
     ImmutableList<String> licenseLines = null;
@@ -360,7 +365,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable,
-      TargetLanguage language) {
+      TargetLanguage language,
+      ProtoParser protoParser) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
@@ -383,7 +389,8 @@ public abstract class GapicProductConfig implements ProductConfig {
               apiInterface,
               interfaceNameOverride,
               messageConfigs,
-              resourceNameConfigs);
+              resourceNameConfigs,
+              protoParser);
       if (interfaceConfig == null) {
         continue;
       }

@@ -20,6 +20,7 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
@@ -90,6 +91,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final BatchingTransformer batchingTransformer = new BatchingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   public RubyGapicSurfaceTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
@@ -156,8 +158,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     ApiModel model = context.getApiModel();
-    xapiClass.serviceAddress(model.getServiceAddress());
-    xapiClass.servicePort(model.getServicePort());
+    xapiClass.serviceHostname(productServiceConfig.getServiceHostname(context.getServiceAddress()));
+    xapiClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
     xapiClass.serviceTitle(model.getTitle());
     xapiClass.authScopes(model.getAuthScopes());
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
