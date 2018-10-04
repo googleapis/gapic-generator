@@ -322,6 +322,8 @@ class OutputTransformer {
             context.getMethodModel().getSimpleName(),
             valueSet.getId(),
             config.input());
+      } else if (token == '{') {
+        throw new UnsupportedOperationException("map indexing not supported yet");
       } else {
         throw new IllegalArgumentException(
             String.format(
