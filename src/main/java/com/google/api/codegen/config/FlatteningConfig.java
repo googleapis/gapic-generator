@@ -72,7 +72,6 @@ public abstract class FlatteningConfig {
       MethodConfigProto methodConfigProto,
       MethodModel methodModel,
       ProtoParser protoParser) {
-    boolean missing = false;
     // Enforce unique flattening configs, in case proto annotations overlaps with configProto
     // flattening.
     Map<String, FlatteningConfig> flatteningConfigs = new LinkedHashMap<>();
@@ -86,13 +85,11 @@ public abstract class FlatteningConfig {
               methodConfigProto,
               flatteningGroup,
               methodModel);
-      if (groupConfig == null) {
-        missing = true;
-      } else {
+      if (groupConfig != null) {
         flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
       }
     }
-    if (missing) {
+    if (diagCollector.hasErrors()) {
       return null;
     }
 
@@ -112,13 +109,11 @@ public abstract class FlatteningConfig {
                 signature,
                 protoMethodModel,
                 protoParser);
-        if (groupConfig == null) {
-          missing = true;
-        } else {
+        if (groupConfig != null) {
           flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
         }
       }
-      if (missing) {
+      if (diagCollector.hasErrors()) {
         return null;
       }
     }
