@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 public class ProtoMethodTransformer implements MethodTransformer {
   private static final PagingParameters PAGING_PARAMETERS = new ProtoPagingParameters();
   private static final int MILLIS_PER_SECOND = 1000;
-  private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
 
   @Override
   public boolean isIgnoredParameter(String parameter) {
