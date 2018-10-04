@@ -225,7 +225,6 @@ public abstract class FlatteningConfig {
 
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
     Set<String> oneofNames = new HashSet<>();
-    if (methodSignature == null || methodSignature.getFieldsCount() == 0) return null;
 
     List<String> flattenedParams = Lists.newArrayList(methodSignature.getFieldsList());
     for (String parameter : flattenedParams) {
