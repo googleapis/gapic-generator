@@ -276,38 +276,6 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       methodConfigMapBuilder.put(method.getSimpleName(), methodConfig);
     }
 
-    // // Create GapicMethodConfigs for the methodConfigProtos that don't have corresponding
-    // // proto Methods.
-    // for (MethodConfigProto methodConfigProto : methodConfigProtoMap.values()) {
-    //   if (methodConfigMapBuilder.containsKey(methodConfigProto.getName())) {
-    //     continue;
-    //   }
-    //   Interface targetInterface =
-    //       getTargetInterface(apiInterface, methodConfigProto.getRerouteToGrpcInterface());
-    //   Method method = targetInterface.lookupMethod(methodConfigProto.getName());
-    //   if (method == null) {
-    //     diagCollector.addDiag(
-    //         Diag.error(
-    //             SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
-    //     continue;
-    //   }
-    //   GapicMethodConfig methodConfig =
-    //       GapicMethodConfig.createMethodConfig(
-    //           diagCollector,
-    //           language,
-    //           methodConfigProto,
-    //           method,
-    //           messageConfigs,
-    //           resourceNameConfigs,
-    //           retryCodesConfig,
-    //           retryParamsConfigNames,
-    //           protoParser);
-    //   if (methodConfig == null) {
-    //     continue;
-    //   }
-    //   methodConfigMapBuilder.put(methodConfigProto.getName(), methodConfig);
-    // }
-
     if (diagCollector.getErrorCount() > 0) {
       return null;
     } else {
