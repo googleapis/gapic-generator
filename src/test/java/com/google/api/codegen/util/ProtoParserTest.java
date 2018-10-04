@@ -16,6 +16,7 @@ package com.google.api.codegen.util;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.MethodSignature;
 import com.google.api.Retry;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.protoannotations.GapicCodeGeneratorAnnotationsTest;
@@ -158,6 +159,25 @@ public class ProtoParserTest {
             .filter(f -> f.getSimpleName().equals("shelves")).findFirst().get();
     String shelfType = protoParser.getResourceType(shelves);
     assertThat(shelfType).isEqualTo("google.example.library.v1.Shelf");
+  }
+
+  @Test
+  public void testGetMethodSignatures() {
+    Method getShelfMethod =
+        libraryProtoFile
+            .getInterfaces().stream().filter(i -> i.lookupMethod("GetShelf") != null)
+            .findFirst().get().lookupMethod("GetShelf");
+    List<MethodSignature> getShelfFlattenings = protoParser.getMethodSignatures(getShelfMethod);
+    assertThat(getShelfFlattenings.size()).isEqualTo(2);
+
+    MethodSignature firstSignature = getShelfFlattenings.get(0);
+    assertThat(firstSignature.getFieldsList().size()).isEqualTo(1);
+    assertThat(firstSignature.getFieldsList().get(0)).isEqualTo("name");
+
+    MethodSignature additionalSignature = getShelfFlattenings.get(1);
+    assertThat(additionalSignature.getFieldsList().size()).isEqualTo(2);
+    assertThat(additionalSignature.getFieldsList().get(0)).isEqualTo("name");
+    assertThat(additionalSignature.getFieldsList().get(1)).isEqualTo("message");
   }
 
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
