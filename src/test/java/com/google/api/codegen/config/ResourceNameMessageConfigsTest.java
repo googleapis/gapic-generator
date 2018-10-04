@@ -270,7 +270,7 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(protoParser.getResourceType(nameField)).thenReturn("library.Shelf");
 
     // ProtoFile contributes flattenings {["name", "book"], ["name"]}.
-    Mockito.when(protoParser.getMethodSignatures(methodModel))
+    Mockito.when(protoParser.getMethodSignatures(createShelvesMethod))
         .thenReturn(
             Arrays.asList(
                 MethodSignature.newBuilder().addFields("name").addFields("book").build(),

@@ -18,7 +18,6 @@ import com.google.api.AnnotationsProto;
 import com.google.api.MethodSignature;
 import com.google.api.Resource;
 import com.google.api.Retry;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -72,12 +71,9 @@ public class ProtoParser {
 
   /* Return a list of method signatures, aka flattenings, specified on a given method.
    * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
-  public List<MethodSignature> getMethodSignatures(ProtoMethodModel method) {
+  public List<MethodSignature> getMethodSignatures(Method method) {
     MethodSignature methodSignature =
-        method
-            .getProtoMethod()
-            .getDescriptor()
-            .getMethodAnnotation(AnnotationsProto.methodSignature);
+        method.getDescriptor().getMethodAnnotation(AnnotationsProto.methodSignature);
     // Let's only recurse once when we look for additional MethodSignatures.
     List<MethodSignature> additionalSignatures = methodSignature.getAdditionalSignaturesList();
     return ImmutableList.<MethodSignature>builder()
