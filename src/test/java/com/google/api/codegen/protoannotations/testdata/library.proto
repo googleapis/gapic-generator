@@ -298,7 +298,10 @@ message Book {
   // Message field comment may include special characters: <>&"`'@.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource).path = "shelves/*/books/*"];
+    // TODO(andrealin): turn this into a resource_set
+    (google.api.resource).path = "shelves/*/books/*"
+    // TODO(andrealin): handle Resource.base_name
+  ];
 
   // The name of the book author.
   string author = 2;
