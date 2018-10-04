@@ -47,33 +47,13 @@ public abstract class FlatteningConfig {
   @Nullable
   public abstract String getFlatteningName();
 
-  @Nullable
-  static ImmutableList<FlatteningConfig> createFlatteningConfigs(
+  private static Map<String, FlatteningConfig> createFlatteningsFromGapicConfig(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       MethodModel methodModel) {
-    return createFlatteningConfigs(
-        diagCollector,
-        messageConfigs,
-        resourceNameConfigs,
-        methodConfigProto,
-        methodModel,
-        new ProtoParser());
-  }
 
-  @VisibleForTesting
-  @Nullable
-  static ImmutableList<FlatteningConfig> createFlatteningConfigs(
-      DiagCollector diagCollector,
-      ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      MethodConfigProto methodConfigProto,
-      MethodModel methodModel,
-      ProtoParser protoParser) {
-    // Enforce unique flattening configs, in case proto annotations overlaps with configProto
-    // flattening.
     Map<String, FlatteningConfig> flatteningConfigs = new LinkedHashMap<>();
 
     for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
@@ -93,29 +73,61 @@ public abstract class FlatteningConfig {
       return null;
     }
 
+    return flatteningConfigs;
+  }
+
+  static ImmutableList<FlatteningConfig> createFlatteningConfigs(
+      DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      MethodConfigProto methodConfigProto,
+      DiscoveryMethodModel methodModel) {
+    Map<String, FlatteningConfig> flatteningConfigMap =
+        createFlatteningsFromGapicConfig(
+            diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+    if (flatteningConfigMap == null) {
+      return null;
+    }
+    return ImmutableList.copyOf(flatteningConfigMap.values());
+  }
+
+  @VisibleForTesting
+  @Nullable
+  static ImmutableList<FlatteningConfig> createFlatteningConfigs(
+      DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      MethodConfigProto methodConfigProto,
+      MethodModel methodModel,
+      ProtoParser protoParser) {
+
+    Map<String, FlatteningConfig> flatteningConfigs =
+        createFlatteningsFromGapicConfig(
+            diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+
     // Get flattenings from protofile annotations, let these override flattenings from GAPIC config.
-    if (methodModel instanceof ProtoMethodModel) {
-      ProtoMethodModel protoMethodModel = (ProtoMethodModel) methodModel;
-      List<MethodSignature> methodSignatures = protoParser.getMethodSignatures(protoMethodModel);
-      for (MethodSignature signature : methodSignatures) {
-        if (signature.getFieldsCount() == 0) {
-          break;
-        }
-        FlatteningConfig groupConfig =
-            FlatteningConfig.createFlatteningFromProtoFile(
-                diagCollector,
-                messageConfigs,
-                resourceNameConfigs,
-                signature,
-                protoMethodModel,
-                protoParser);
-        if (groupConfig != null) {
-          flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
-        }
+    ProtoMethodModel protoMethodModel = (ProtoMethodModel) methodModel;
+    List<MethodSignature> methodSignatures = protoParser.getMethodSignatures(protoMethodModel);
+    for (MethodSignature signature : methodSignatures) {
+      if (signature.getFieldsCount() == 0) {
+        break;
       }
-      if (diagCollector.hasErrors()) {
-        return null;
+      FlatteningConfig groupConfig =
+          FlatteningConfig.createFlatteningFromProtoFile(
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              signature,
+              protoMethodModel,
+              protoParser);
+      if (groupConfig != null) {
+        // Enforce unique flattening configs, in case proto annotations overlaps with configProto
+        // flattening.
+        flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
       }
+    }
+    if (diagCollector.hasErrors()) {
+      return null;
     }
 
     return ImmutableList.copyOf(flatteningConfigs.values());
@@ -218,6 +230,7 @@ public abstract class FlatteningConfig {
       ProtoMethodModel method,
       ProtoParser protoParser) {
 
+    // TODO(andrealin): combine this method with createFlatteningFromConfigProto.
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
     Set<String> oneofNames = new HashSet<>();
 
