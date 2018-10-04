@@ -105,7 +105,7 @@ public class ProtoParser {
     return method.getDescriptor().getMethodAnnotation(AnnotationsProto.retry);
   }
 
-  /** Return the extra retry codes for the given method. */
+  /** Return the resource type for the given field. */
   public String getResourceType(Field field) {
     return (String) field.getOptionFields().get(AnnotationsProto.resourceType.getDescriptor());
   }

@@ -144,6 +144,22 @@ public class ProtoParserTest {
     assertThat(requiredFields.get(1)).isEqualTo("shelf");
   }
 
+  @Test
+  public void testGetResourceType() {
+    MessageType listShelvesResponse =
+        libraryProtoFile
+            .getMessages()
+            .stream()
+            .filter(m -> m.getSimpleName().equals("ListShelvesResponse"))
+            .findFirst()
+            .get();
+    Field shelves =
+        listShelvesResponse.getFields().stream()
+            .filter(f -> f.getSimpleName().equals("shelves")).findFirst().get();
+    String shelfType = protoParser.getResourceType(shelves);
+    assertThat(shelfType).isEqualTo("google.example.library.v1.Shelf");
+  }
+
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
   @Test
   public void testGetAuthScopes() {
