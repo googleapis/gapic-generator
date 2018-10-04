@@ -102,7 +102,7 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
     typeNameConverter = new PythonTypeTable(implicitPackageName);
     List<String> protoNames = new ArrayList<>();
     for (String n : implicitPackageName.split("\\.")) {
-      if (n.equals("rules_gapic")) {
+      if (n.equals("gapic")) {
         break;
       }
       protoNames.add(n);
