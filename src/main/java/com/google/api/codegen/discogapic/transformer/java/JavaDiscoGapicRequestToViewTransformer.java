@@ -26,7 +26,6 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
@@ -68,7 +67,6 @@ import java.util.Set;
 public class JavaDiscoGapicRequestToViewTransformer
     implements ModelToViewTransformer<DiscoApiModel> {
   private final GapicCodePathMapper pathMapper;
-  private final PackageMetadataConfig packageConfig;
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -104,11 +102,8 @@ public class JavaDiscoGapicRequestToViewTransformer
 
   private static final String REQUEST_TEMPLATE_FILENAME = "java/message.snip";
 
-  public JavaDiscoGapicRequestToViewTransformer(
-      GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
+  public JavaDiscoGapicRequestToViewTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
-    this.packageConfig = packageMetadataConfig;
-    // TODO use packageMetadataConfig
   }
 
   @Override

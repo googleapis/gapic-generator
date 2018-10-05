@@ -36,6 +36,7 @@ import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /* Factory for DiscoGapicGenerators based on an id. */
@@ -54,36 +55,40 @@ public class DiscoGapicGeneratorFactory {
     // Please keep the following IDs in alphabetical order
     if (language.equals(JAVA)) {
       if (artifactFlags.surfaceGeneratorEnabled()) {
-        GapicCodePathMapper javaPathMapper =
-            CommonGapicCodePathMapper.newBuilder()
-                .setPrefix("src/main/java")
-                .setShouldAppendPackage(true)
-                .build();
-        List<ModelToViewTransformer<DiscoApiModel>> transformers =
-            Arrays.asList(
-                new JavaDiscoGapicResourceNameToViewTransformer(javaPathMapper, packageConfig),
-                new JavaDiscoGapicSchemaToViewTransformer(javaPathMapper, packageConfig),
-                new JavaDiscoGapicRequestToViewTransformer(javaPathMapper, packageConfig),
-                new JavaDiscoGapicSurfaceTransformer(javaPathMapper, packageConfig));
-        DiscoGapicGenerator generator =
-            DiscoGapicGenerator.newBuilder()
-                .setDiscoApiModel(model)
-                .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setModelToViewTransformers(transformers)
-                .build();
+        if (artifactFlags.codeFilesEnabled()) {
+          GapicCodePathMapper javaPathMapper =
+              CommonGapicCodePathMapper.newBuilder()
+                  .setPrefix("src/main/java")
+                  .setShouldAppendPackage(true)
+                  .build();
+          List<ModelToViewTransformer<DiscoApiModel>> transformers =
+              Arrays.asList(
+                  new JavaDiscoGapicResourceNameToViewTransformer(javaPathMapper),
+                  new JavaDiscoGapicSchemaToViewTransformer(javaPathMapper),
+                  new JavaDiscoGapicRequestToViewTransformer(javaPathMapper),
+                  new JavaDiscoGapicSurfaceTransformer(javaPathMapper));
+          DiscoGapicGenerator generator =
+              DiscoGapicGenerator.newBuilder()
+                  .setDiscoApiModel(model)
+                  .setProductConfig(productConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
+                  .setModelToViewTransformers(transformers)
+                  .build();
 
-        generators.add(generator);
+          generators.add(generator);
+        }
 
-        CodeGenerator metadataGenerator =
-            DiscoGapicGenerator.newBuilder()
-                .setDiscoApiModel(model)
-                .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setModelToViewTransformers(
-                    Arrays.asList(new JavaGapicPackageTransformer<DiscoApiModel>(packageConfig)))
-                .build();
-        generators.add(metadataGenerator);
+        if (artifactFlags.packagingFilesEnabled()) {
+          CodeGenerator metadataGenerator =
+              DiscoGapicGenerator.newBuilder()
+                  .setDiscoApiModel(model)
+                  .setProductConfig(productConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
+                  .setModelToViewTransformers(
+                      Collections.singletonList(new JavaGapicPackageTransformer<>(packageConfig)))
+                  .build();
+          generators.add(metadataGenerator);
+        }
       }
 
       if (artifactFlags.testGeneratorEnabled()) {
@@ -99,9 +104,9 @@ public class DiscoGapicGeneratorFactory {
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformers(
                     Arrays.asList(
-                        new JavaSurfaceTestTransformer<DiscoApiModel>(
+                        new JavaSurfaceTestTransformer<>(
                             javaTestPathMapper,
-                            new JavaDiscoGapicSurfaceTransformer(javaTestPathMapper, packageConfig),
+                            new JavaDiscoGapicSurfaceTransformer(javaTestPathMapper),
                             "java/http_test.snip")))
                 .build();
         generators.add(testGenerator);

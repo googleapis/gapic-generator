@@ -334,7 +334,7 @@ class OutputTransformer {
         throw new IllegalStateException(
             String.format(
                 "%s:%s: type and typeName can't be null at the same time",
-                context.getMethodModel().getSimpleName(), valueSet.getId(), newVar));
+                context.getMethodModel().getSimpleName(), valueSet.getId()));
       }
       typeName =
           type == null

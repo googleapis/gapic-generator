@@ -175,8 +175,11 @@ public class GeneratorMain {
       case DISCOGAPIC_CONFIG:
         discoGapicConfigGeneratorMain(args);
         break;
+      case DISCOGAPIC_CODE:
+        discoGapicMain(artifactType, args);
+        break;
       case LEGACY_DISCOGAPIC_AND_PACKAGE:
-        discoGapicMain(args);
+        discoGapicMain(artifactType, args);
         break;
       case LEGACY_GRPC_PACKAGE:
         packageGeneratorMain(args);
@@ -393,7 +396,7 @@ public class GeneratorMain {
     System.exit(exitCode);
   }
 
-  public static void discoGapicMain(String[] args) throws Exception {
+  public static void discoGapicMain(ArtifactType artifactType, String[] args) throws Exception {
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
     // TODO make required after artman passes this in
@@ -441,7 +444,7 @@ public class GeneratorMain {
           GapicGeneratorApp.ENABLED_ARTIFACTS,
           Lists.newArrayList(cl.getOptionValues(enabledArtifactsOption.getLongOpt())));
     }
-    DiscoGapicGeneratorApp codeGen = new DiscoGapicGeneratorApp(toolOptions);
+    DiscoGapicGeneratorApp codeGen = new DiscoGapicGeneratorApp(toolOptions, artifactType);
     int exitCode = codeGen.run();
     System.exit(exitCode);
   }

@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import autovalue.shaded.com.google.common.common.annotations.VisibleForTesting;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionLanguageOverridesProto;
 import com.google.api.codegen.common.TargetLanguage;
@@ -28,6 +27,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import java.util.Arrays;
 import java.util.List;
