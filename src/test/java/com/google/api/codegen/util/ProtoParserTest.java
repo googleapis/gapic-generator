@@ -16,6 +16,8 @@ package com.google.api.codegen.util;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.Resource;
+import com.google.api.ResourceSet;
 import com.google.api.Retry;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.protoannotations.GapicCodeGeneratorAnnotationsTest;
@@ -45,6 +47,7 @@ public class ProtoParserTest {
   private static Interface libraryService;
   private static Method deleteShelfMethod;
   private static Method getBigBookMethod;
+  private static MessageType book;
   private static MessageType shelf;
 
   // Object under test.
@@ -81,6 +84,14 @@ public class ProtoParserTest {
     shelfNameField =
         shelf.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
 
+    book =
+        libraryProtoFile
+            .getMessages()
+            .stream()
+            .filter(m -> m.getSimpleName().equals("Book"))
+            .findFirst()
+            .get();
+
     libraryService = libraryProtoFile.getInterfaces().get(0);
     deleteShelfMethod = libraryService.lookupMethod("DeleteShelf");
     getBigBookMethod = libraryService.lookupMethod("GetBigBook");
@@ -109,12 +120,30 @@ public class ProtoParserTest {
 
   /** Return the entity name, e.g. "shelf" for a resource field. */
   @Test
-  public void getResourceEntityName() {
-    assertThat(protoParser.getResourceEntityName(shelfNameField)).isEqualTo("shelf");
+  public void testGetResourceEntityName() {
+    String defaultEntityName = protoParser.getDefaultResourceEntityName(shelfNameField);
+    assertThat(defaultEntityName).isEqualTo("shelf");
+    assertThat(protoParser.getResourceEntityName(shelfNameField, defaultEntityName))
+        .isEqualTo("shelf");
   }
 
   @Test
-  public void getLongRunningOperation() {
+  public void testGetResourceSet() {
+    Field bookNameField =
+        book.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
+    ResourceSet bookResourceSet = protoParser.getResourceSet(bookNameField);
+    assertThat(bookResourceSet).isNotNull();
+    assertThat(bookResourceSet.getBaseName()).isEqualTo("book_oneof");
+    assertThat(bookResourceSet.getResourcesCount()).isEqualTo(3);
+    assertThat(bookResourceSet.getResources(0))
+        .isEqualTo(Resource.newBuilder().setBaseName("book").setPath("shelves/*/books/*").build());
+    assertThat(bookResourceSet.getResources(2))
+        .isEqualTo(
+            Resource.newBuilder().setBaseName("deleted_book").setPath("_deleted-book_").build());
+  }
+
+  @Test
+  public void testGetLongRunningOperation() {
     OperationTypes operationTypes = protoParser.getLongRunningOperation(getBigBookMethod);
 
     OperationTypes expected =

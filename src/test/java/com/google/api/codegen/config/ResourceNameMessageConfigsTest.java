@@ -216,7 +216,9 @@ public class ResourceNameMessageConfigsTest {
 
   @Test
   public void testCreateResourceNameConfigs() {
-    Mockito.when(protoParser.getResourceEntityName(Mockito.any())).thenCallRealMethod();
+    Mockito.when(protoParser.getResourceEntityName(Mockito.any(), Mockito.any()))
+        .thenCallRealMethod();
+    Mockito.when(protoParser.getDefaultResourceEntityName(Mockito.any())).thenCallRealMethod();
     DiagCollector diagCollector = new BoundedDiagCollector();
     Map<String, ResourceNameConfig> resourceNameConfigs =
         GapicProductConfig.createResourceNameConfigs(

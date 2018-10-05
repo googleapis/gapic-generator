@@ -30,6 +30,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
@@ -114,39 +115,39 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   public static SingleResourceNameConfig createSingleResourceName(
       DiagCollector diagCollector,
       Field resourceField,
-      List<PathTemplate> pathTemplatesFromConfig,
+      PathTemplate pathTemplate,
+      Collection<SingleResourceNameConfig> resourceNamesFromConfigs,
       ProtoFile file,
       ProtoParser protoParser) {
-    String namePattern = protoParser.getResourcePath(resourceField);
-    PathTemplate nameTemplate;
 
-    try {
-      String nameTemplateString = escapePathTemplate(namePattern);
-      final PathTemplate pathTemplate = PathTemplate.create(nameTemplateString);
-      // If the proto annotation path template is effectively the same path template,
-      // irrespective of wildcards, as one from the gapic config CollectionConfigProto,
-      // then use the GAPIC config path template.
-      Optional<PathTemplate> pathTemplateFromConfig =
-          pathTemplatesFromConfig
-              .stream()
-              .filter(
-                  template ->
-                      template
-                          .withoutVars()
-                          .toString()
-                          .equals(pathTemplate.withoutVars().toString()))
-              .findAny();
-      nameTemplate = pathTemplateFromConfig.orElse(pathTemplate);
-    } catch (ValidationException e) {
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
-      return null;
-    }
-    String entityId = protoParser.getResourceEntityName(resourceField);
+    // If the proto annotation path template is effectively the same path template,
+    // irrespective of wildcards, as one from the gapic config CollectionConfigProto,
+    // then use the GAPIC config path template.
+    Optional<SingleResourceNameConfig> correspondingGapicConfigResourceName =
+        resourceNamesFromConfigs
+            .stream()
+            .filter(
+                resourceNameConfig ->
+                    resourceNameConfig
+                        .getNameTemplate()
+                        .withoutVars()
+                        .toString()
+                        .equals(pathTemplate.withoutVars().toString()))
+            .findAny();
+    PathTemplate nameTemplate =
+        correspondingGapicConfigResourceName
+            .map(SingleResourceNameConfig::getNameTemplate)
+            .orElse(pathTemplate);
+    String defaultEntityId =
+        correspondingGapicConfigResourceName
+            .map(SingleResourceNameConfig::getEntityId)
+            .orElse(protoParser.getDefaultResourceEntityName(resourceField));
+    String entityId = protoParser.getResourceEntityName(resourceField, defaultEntityId);
     String entityName = entityId;
     String commonResourceName = null;
     return new AutoValue_SingleResourceNameConfig(
         ConfigSource.PROTO_FILE,
-        namePattern,
+        pathTemplate.toString(),
         nameTemplate,
         entityId,
         entityName,

@@ -15,8 +15,10 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.FixedResourceNameValueProto;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
@@ -67,5 +69,28 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
 
     return new AutoValue_FixedResourceNameConfig(
         entityName, entityName, ConfigSource.GAPIC_CONFIG, fixedValue, file);
+  }
+
+  @Nullable
+  public static FixedResourceNameConfig createFixedResourceNameConfig(
+      DiagCollector diagCollector, Field field, @Nullable ProtoFile file, ProtoParser protoParser) {
+
+    String entityName =
+        protoParser.getResourceEntityName(field, protoParser.getDefaultResourceEntityName(field));
+    String fixedValue = protoParser.getResourcePath(field);
+
+    if (entityName == null || fixedValue == null) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "incorrectly configured FixedResourceNameConfig: name: "
+                  + entityName
+                  + ", value: "
+                  + fixedValue));
+      return null;
+    }
+
+    return new AutoValue_FixedResourceNameConfig(
+        entityName, entityName, ConfigSource.PROTO_FILE, fixedValue, file);
   }
 }

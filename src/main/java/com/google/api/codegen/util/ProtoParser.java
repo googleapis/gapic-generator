@@ -17,6 +17,7 @@ package com.google.api.codegen.util;
 import com.google.api.AnnotationsProto;
 import com.google.api.MethodSignature;
 import com.google.api.Resource;
+import com.google.api.ResourceSet;
 import com.google.api.Retry;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.tools.framework.model.Field;
@@ -44,6 +45,17 @@ public class ProtoParser {
         (Resource) element.getOptionFields().get(AnnotationsProto.resource.getDescriptor());
     if (resource != null) {
       return resource.getPath();
+    }
+    return null;
+  }
+
+  /** Return the ResourceSet a resource field. Return null if none found. */
+  @Nullable
+  public ResourceSet getResourceSet(Field element) {
+    ResourceSet resource =
+        (ResourceSet) element.getOptionFields().get(AnnotationsProto.resourceSet.getDescriptor());
+    if (!resource.equals(ResourceSet.getDefaultInstance())) {
+      return resource;
     }
     return null;
   }
@@ -82,13 +94,18 @@ public class ProtoParser {
   }
 
   /** Return the entity name, e.g. "shelf" for a resource field. */
-  public String getResourceEntityName(Field field) {
+  public String getDefaultResourceEntityName(Field field) {
+    return field.getParent().getSimpleName().toLowerCase();
+  }
+
+  /** Return the entity name, e.g. "shelf" for a resource field. */
+  public String getResourceEntityName(Field field, String defaultEntityName) {
     Resource resource =
         (Resource) field.getOptionFields().get(AnnotationsProto.resource.getDescriptor());
     if (resource != null && !Strings.isNullOrEmpty(resource.getBaseName())) {
       return resource.getBaseName();
     }
-    return field.getParent().getSimpleName().toLowerCase();
+    return defaultEntityName;
   }
 
   /** Get long running settings. */

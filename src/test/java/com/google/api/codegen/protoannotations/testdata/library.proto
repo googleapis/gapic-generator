@@ -36,10 +36,10 @@ option (google.api.metadata) = {
 // resource model:
 //
 // - The API has a collection of [Shelf][google.example.library.v1.Shelf]
-//   resources, named ``bookShelves/*``
+//   resources, named ``shelves/*``
 //
 // - Each Shelf has a collection of [Book][google.example.library.v1.Book]
-//   resources, named `bookShelves/*/books/*`
+//   resources, named `shelves/*/books/*`
 //
 // Check out [cloud docs!](/library/example/link).
 // This is [not a cloud link](http://www.google.com).
@@ -77,6 +77,9 @@ service LibraryService {
   // Lists shelves.
   rpc ListShelves(ListShelvesRequest) returns (ListShelvesResponse) {
     option (google.api.http) = { get: "/v1/bookShelves" };
+    option (google.api.method_signature) = {
+      fields: []
+    };
   }
 
   // Deletes a shelf.
@@ -145,12 +148,12 @@ service LibraryService {
     option (google.api.http) = { put: "/v1/{name=bookShelves/*/books/*}" body: "book" };
     option (google.api.method_signature) = {
       fields: ["name", "book"]
-      // TODO(andrealin): parse function_name attributes.
-      function_name: "update_book_1"
       additional_signatures: [
-        {fields: ["name", "optional_foo", "book", "update_mask", "physical_mask"]
-        function_name: "update_book_2"}
+        {fields: ["name", "optional_foo", "book", "update_mask", "physical_mask"]}
       ]
+    };
+    option (google.api.retry) = {
+      codes: [UNAVAILABLE, DEADLINE_EXCEEDED]
     };
   }
 
@@ -290,6 +293,74 @@ service LibraryService {
   // Test optional flattening parameters of all types
   rpc TestOptionalRequiredFlatteningParams(TestOptionalRequiredFlatteningParamsRequest) returns (TestOptionalRequiredFlatteningParamsResponse) {
     option (google.api.http) = { post: "/v1/testofp" body: "*" };
+    option (google.api.method_signature) = {
+      fields: []
+      additional_signatures: {
+        fields: [
+          "required_singular_int32",
+          "required_singular_int64",
+          "required_singular_float",
+          "required_singular_double",
+          "required_singular_bool",
+          "required_singular_enum",
+          "required_singular_string",
+          "required_singular_bytes",
+          "required_singular_message",
+          "required_singular_resource_name",
+          "required_singular_resource_name_oneof",
+          "required_singular_resource_name_common",
+          "required_singular_fixed32",
+          "required_singular_fixed64",
+          "required_repeated_int32",
+          "required_repeated_int64",
+          "required_repeated_float",
+          "required_repeated_double",
+          "required_repeated_bool",
+          "required_repeated_enum",
+          "required_repeated_string",
+          "required_repeated_bytes",
+          "required_repeated_message",
+          "required_repeated_resource_name",
+          "required_repeated_resource_name_oneof",
+          "required_repeated_resource_name_common",
+          "required_repeated_fixed32",
+          "required_repeated_fixed64",
+          "required_map",
+          "optional_singular_int32",
+          "optional_singular_int64",
+          "optional_singular_float",
+          "optional_singular_double",
+          "optional_singular_bool",
+          "optional_singular_enum",
+          "optional_singular_string",
+          "optional_singular_bytes",
+          "optional_singular_message",
+          "optional_singular_resource_name",
+          "optional_singular_resource_name_oneof",
+          "optional_singular_resource_name_common",
+          "optional_singular_fixed32",
+          "optional_singular_fixed64",
+          "optional_repeated_int32",
+          "optional_repeated_int64",
+          "optional_repeated_float",
+          "optional_repeated_double",
+          "optional_repeated_bool",
+          "optional_repeated_enum",
+          "optional_repeated_string",
+          "optional_repeated_bytes",
+          "optional_repeated_message",
+          "optional_repeated_resource_name",
+          "optional_repeated_resource_name_oneof",
+          "optional_repeated_resource_name_common",
+          "optional_repeated_fixed32",
+          "optional_repeated_fixed64",
+          "optional_map"]
+      }
+    };
+    option (google.longrunning.operation_types) = {
+      response: "google.example.library.v1.Book"
+      metadata: "google.example.library.v1.GetBigBookMetadata"
+    };
   }
 }
 
@@ -297,13 +368,18 @@ service LibraryService {
 // Message comment may include special characters: <>&"`'@.
 message Book {
   // The resource name of the book.
-  // Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+  // Book names have the form `shelves/{shelf_id}/books/{book_id}`.
   // Message field comment may include special characters: <>&"`'@.
   string name = 1 [
     (google.api.required) = true,
-    // TODO(andrealin): turn this into a resource_set
-    (google.api.resource).path = "shelves/*/books/*"
-    // TODO(andrealin): handle Resource.base_name
+    (google.api.resource_set) = {
+      base_name: "book_oneof"
+      resources: [
+        {base_name: "book"             path : "shelves/*/books/*"},
+        {base_name: "archived_book"    path : "archives/*/books/*"},
+        {base_name: "deleted_book"     path : "_deleted-book_"}
+      ]
+    }
   ];
 
   // The name of the book author.
@@ -366,7 +442,8 @@ message BookFromArchive {
   // The resource name of the book.
   // Book names have the form `archives/{archive_id}/books/{book_id}`.
   string name = 1 [
-    (google.api.required) = true];
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book.archived_book"];
 
   // The name of the book author.
   string author = 2;
@@ -423,7 +500,7 @@ message SomeMessage2 {
 // A Shelf contains a collection of books with a theme.
 message Shelf {
   // The resource name of the shelf.
-  // Shelf names have the form `bookShelves/{shelf_id}`.
+  // Shelf names have the form `shelves/{shelf_id}`.
   string name = 1 [
     (google.api.required) = true,
     (google.api.resource).path = "shelves/*"];
@@ -439,8 +516,7 @@ message Shelf {
 message CreateShelfRequest {
   // The shelf to create.
   Shelf shelf = 1 [
-    (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Shelf"];
+    (google.api.required) = true];
 }
 
 // Request message for LibraryService.GetShelf.
@@ -478,8 +554,7 @@ message ListShelvesRequest {
 // Response message for LibraryService.ListShelves.
 message ListShelvesResponse {
   // The list of shelves.
-  repeated Shelf shelves = 1 [
-    (google.api.resource_type) = "google.example.library.v1.Shelf"];
+  repeated Shelf shelves = 1;
 
   // A token to retrieve next page of results.
   // Pass this value in the
@@ -542,8 +617,7 @@ message PublishSeriesRequest {
 
   // The books to publish in the series.
   repeated Book books = 2 [
-    (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.required) = true];
 
   oneof versioning {
     // The edition of the series
@@ -569,8 +643,7 @@ message SeriesUuid {
 message PublishSeriesResponse {
   // The names of the books in the series that were published
   repeated string book_names = 1 [
-    (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.required) = true];
   SeriesUuid series_uuid = 2;
 }
 
@@ -579,7 +652,7 @@ message GetBookRequest {
   // The name of the book to retrieve.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.resource_type) = "google.example.library.v1.Book.book"];
 }
 
 // Request message for LibraryService.ListBooks.
@@ -606,8 +679,7 @@ message ListBooksRequest {
 // Response message for LibraryService.ListBooks.
 message ListBooksResponse {
   // The list of books.
-  repeated Book books = 1 [
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+  repeated Book books = 1;
 
   // A token to retrieve next page of results.
   // Pass this value in the
@@ -629,7 +701,7 @@ message UpdateBookRequest {
   // The name of the book to update.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.resource_type) = "google.example.library.v1.Book.book"];
 
   // An optional foo.
   string optional_foo = 2;
@@ -651,7 +723,7 @@ message DeleteBookRequest {
   // The name of the book to delete.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.resource_type) = "google.example.library.v1.Book.book"];
 }
 
 // Describes what book to move (name) and what shelf we're moving it
@@ -660,7 +732,7 @@ message MoveBookRequest {
   // The name of the book to move.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.resource_type) = "google.example.library.v1.Book.book"];
 
   // The name of the destination shelf.
   string other_shelf_name = 2 [
@@ -682,7 +754,7 @@ message ListStringsResponse {
 message AddCommentsRequest {
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.resource_type) = "google.example.library.v1.Book.book"];
 
   repeated Comment comments = 2 [
     (google.api.required) = true];
@@ -713,7 +785,8 @@ message Comment {
 message GetBookFromArchiveRequest {
   // The name of the book to retrieve.
   string name = 1 [
-    (google.api.required) = true];
+    (google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book.archived_book"];
 }
 
 // Request message for LibraryService.GetBookFromAnywhere.
@@ -743,7 +816,7 @@ message UpdateBookIndexRequest {
   // The name of the book to update.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.resource_type) = "google.example.library.v1.Book.book"];
 
   // The name of the index for the book
   string index_name = 2 [
@@ -769,7 +842,7 @@ message DiscussBookRequest {
 message FindRelatedBooksRequest {
   repeated string names = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.resource_type) = "google.example.library.v1.Book.book"];
   repeated string shelves = 2 [
     (google.api.required) = true,
     (google.api.resource_type) = "google.example.library.v1.Shelf"];
@@ -780,7 +853,7 @@ message FindRelatedBooksRequest {
 // Test repeated field with resource name format in page streaming response
 message FindRelatedBooksResponse {
   repeated string names = 1 [
-    (google.api.resource_type) = "google.example.library.v1.Book"];
+    (google.api.resource_type) = "google.example.library.v1.Book.book"];
   string next_page_token = 2;
 }
 
@@ -814,9 +887,15 @@ message TestOptionalRequiredFlatteningParamsRequest {
   string required_singular_string = 7 [(google.api.required) = true];
   bytes required_singular_bytes = 8 [(google.api.required) = true];
   InnerMessage required_singular_message = 9 [(google.api.required) = true];
-  string required_singular_resource_name = 10 [(google.api.required) = true];
-  string required_singular_resource_name_oneof = 11 [(google.api.required) = true];
-  string required_singular_resource_name_common = 14 [(google.api.required) = true];
+  string required_singular_resource_name = 10 [(google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book.book"
+  ];
+  string required_singular_resource_name_oneof = 11 [(google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"
+  ];
+  string required_singular_resource_name_common = 14 [(google.api.required) = true,
+    (google.api.resource_type) = "google.api.Project"
+  ];
   fixed32 required_singular_fixed32 = 12 [(google.api.required) = true];
   fixed64 required_singular_fixed64 = 13 [(google.api.required) = true];
 
@@ -829,9 +908,13 @@ message TestOptionalRequiredFlatteningParamsRequest {
   repeated string required_repeated_string = 27 [(google.api.required) = true];
   repeated bytes required_repeated_bytes = 28 [(google.api.required) = true];
   repeated InnerMessage required_repeated_message = 29 [(google.api.required) = true];
-  repeated string required_repeated_resource_name = 30 [(google.api.required) = true];
-  repeated string required_repeated_resource_name_oneof = 31 [(google.api.required) = true];
-  repeated string required_repeated_resource_name_common = 34 [(google.api.required) = true];
+  repeated string required_repeated_resource_name = 30 [(google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book.book"];
+  repeated string required_repeated_resource_name_oneof = 31 [(google.api.required) = true,
+    (google.api.resource_type) = "google.example.library.v1.Book"];
+  repeated string required_repeated_resource_name_common = 34 [(google.api.required) = true,
+    (google.api.resource_type) = "google.api.Project"
+  ];
   repeated fixed32 required_repeated_fixed32 = 32 [(google.api.required) = true];
   repeated fixed64 required_repeated_fixed64 = 33 [(google.api.required) = true];
 
@@ -846,9 +929,15 @@ message TestOptionalRequiredFlatteningParamsRequest {
   string optional_singular_string = 57;
   bytes optional_singular_bytes = 58;
   InnerMessage optional_singular_message = 59;
-  string optional_singular_resource_name = 60;
-  string optional_singular_resource_name_oneof = 61;
-  string optional_singular_resource_name_common = 64;
+  string optional_singular_resource_name = 60 [
+    (google.api.resource_type) = "google.example.library.v1.Book.book"
+  ];
+  string optional_singular_resource_name_oneof = 61 [
+    (google.api.resource_type) = "google.example.library.v1.Book"
+  ];
+  string optional_singular_resource_name_common = 64 [
+    (google.api.resource_type) = "google.api.Project"
+  ];
   fixed32 optional_singular_fixed32 = 62;
   fixed64 optional_singular_fixed64 = 63;
 
@@ -861,9 +950,15 @@ message TestOptionalRequiredFlatteningParamsRequest {
   repeated string optional_repeated_string = 77;
   repeated bytes optional_repeated_bytes = 78;
   repeated InnerMessage optional_repeated_message = 79;
-  repeated string optional_repeated_resource_name = 80;
-  repeated string optional_repeated_resource_name_oneof = 81;
-  repeated string optional_repeated_resource_name_common = 84;
+  repeated string optional_repeated_resource_name = 80 [
+    (google.api.resource_type) = "google.example.library.v1.Book.book"
+  ];
+  repeated string optional_repeated_resource_name_oneof = 81 [
+    (google.api.resource_type) = "google.example.library.v1.Book"
+  ];
+  repeated string optional_repeated_resource_name_common = 84 [
+    (google.api.resource_type) = "google.api.Project"
+  ];
   repeated fixed32 optional_repeated_fixed32 = 82;
   repeated fixed64 optional_repeated_fixed64 = 83;
 

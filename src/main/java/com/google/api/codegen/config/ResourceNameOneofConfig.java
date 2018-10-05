@@ -14,16 +14,21 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.Resource;
+import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionOneofProto;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /** ResourceNameOneofConfig represents the configuration for a oneof set of resource names. */
@@ -96,6 +101,73 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
 
     return new AutoValue_ResourceNameOneofConfig(
         oneofName, ConfigSource.GAPIC_CONFIG, oneofName, configList, file);
+  }
+
+  @Nullable
+  public static ResourceNameOneofConfig createResourceNameOneof(
+      DiagCollector diagCollector,
+      ResourceSet resourceSet,
+      String oneOfName,
+      ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
+      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs,
+      ProtoFile file,
+      ProtoParser protoParser) {
+
+    if (singleResourceNameConfigs.containsKey(oneOfName)) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "oneof_name \"" + oneOfName + "\" already exists in collection configs"));
+      return null;
+    }
+    List<ResourceNameConfig> configList = new ArrayList<>();
+    boolean gotSingleResourceName = false;
+    List<String> resourceNames =
+        resourceSet
+            .getResourcesList()
+            .stream()
+            .map(Resource::getBaseName)
+            .collect(Collectors.toList());
+    for (String entityName : resourceNames) {
+      if (Strings.isNullOrEmpty(entityName)) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "base_name is required for Resources in a ResourceSet,"
+                    + " but ResourceSet %s has at least one Resource without a base_name.",
+                oneOfName));
+        return null;
+      }
+      ResourceNameConfig resourceNameConfig = singleResourceNameConfigs.get(entityName);
+      if (resourceNameConfig == null) {
+        resourceNameConfig = fixedResourceNameConfigs.get(entityName);
+      } else {
+        gotSingleResourceName = true;
+      }
+      if (resourceNameConfig == null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "base_name \""
+                    + entityName
+                    + "\" in ResourceSet \""
+                    + oneOfName
+                    + "\" not found in collection configs"));
+        return null;
+      }
+      configList.add(resourceNameConfig);
+    }
+    if (!gotSingleResourceName) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "At least one ResourceNameConfig with type SINGLE is required in oneof "
+                  + oneOfName));
+      return null;
+    }
+
+    return new AutoValue_ResourceNameOneofConfig(
+        oneOfName, ConfigSource.PROTO_FILE, oneOfName, configList, file);
   }
 
   @Override
