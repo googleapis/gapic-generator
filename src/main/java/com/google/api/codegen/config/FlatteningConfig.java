@@ -49,7 +49,7 @@ public abstract class FlatteningConfig {
 
   /**
    * Returns a map of a string representing a list of the fields in a flattening, to the flattening
-   * config.
+   * config created from a method in the gapic config.
    */
   private static Map<String, FlatteningConfig> createFlatteningsFromGapicConfig(
       DiagCollector diagCollector,
@@ -131,6 +131,10 @@ public abstract class FlatteningConfig {
     return ImmutableList.copyOf(flatteningConfigs.values());
   }
 
+  /**
+   * Returns a map of a string representing a list of the fields in a flattening, to the flattening
+   * config created from a method from the proto file.
+   */
   @Nullable
   private static Map<String, FlatteningConfig> createFlatteningConfigsFromProtoFile(
       DiagCollector diagCollector,
