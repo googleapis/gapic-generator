@@ -26,10 +26,14 @@ public enum ArtifactType {
   // Only supported by a subset of languages so far
   GAPIC_PACKAGE,
 
-  // This will be split into GAPIC and GAPIC_PACKAGE
+  // This is split into GAPIC_CODE and GAPIC_PACKAGE
   LEGACY_GAPIC_AND_PACKAGE,
-  // This will be split into DISCOGAPIC and DISCOGAPIC_PACKAGE
+  // This will be split into DISCOGAPIC_CODE and DISCOGAPIC_PACKAGE
   LEGACY_DISCOGAPIC_AND_PACKAGE,
+
+  // Generates only the code for the discovery client
+  // Only supported by a subset of languages so far
+  DISCOGAPIC_CODE,
 
   // The different artifact types will be split out (e.g. PROTOBUF_PACKAGE, GRPC_PACKAGE)
   LEGACY_GRPC_PACKAGE
