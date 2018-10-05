@@ -81,19 +81,13 @@ public class ProtoParserTest {
     shelfNameField =
         shelf.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
 
+    libraryService = libraryProtoFile.getInterfaces().get(0);
     deleteShelfMethod = libraryService.lookupMethod("DeleteShelf");
     getBigBookMethod = libraryService.lookupMethod("GetBigBook");
   }
 
   @Test
   public void testGetResourcePath() {
-    MessageType shelf =
-        libraryProtoFile
-            .getMessages()
-            .stream()
-            .filter(m -> m.getSimpleName().equals("Shelf"))
-            .findFirst()
-            .get();
     Field shelfNameField =
         shelf.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
     assertThat(protoParser.getResourcePath(shelfNameField)).isEqualTo("shelves/*");
@@ -108,8 +102,6 @@ public class ProtoParserTest {
             .filter(m -> m.getSimpleName().equals("Book"))
             .findFirst()
             .get();
-    Field bookNameField =
-        book.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
     Field authorBookField =
         book.getFields().stream().filter(f -> f.getSimpleName().equals("author")).findFirst().get();
     assertThat(protoParser.getResourcePath(authorBookField)).isNull();
