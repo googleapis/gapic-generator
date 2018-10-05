@@ -18,29 +18,29 @@ import com.google.auto.value.AutoValue;
 
 public interface AccessorView {
   enum Kind {
-    MEMBER,
+    FIELD,
     INDEX
   }
 
   Kind kind();
 
   @AutoValue
-  abstract class MemberView implements AccessorView {
-    public abstract String member();
+  abstract class FieldView implements AccessorView {
+    public abstract String field();
 
     public Kind kind() {
-      return Kind.MEMBER;
+      return Kind.FIELD;
     }
 
     public static Builder newBuilder() {
-      return new AutoValue_AccessorView_MemberView.Builder();
+      return new AutoValue_AccessorView_FieldView.Builder();
     }
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder member(String val);
+      public abstract Builder field(String val);
 
-      public abstract MemberView build();
+      public abstract FieldView build();
     }
   }
 

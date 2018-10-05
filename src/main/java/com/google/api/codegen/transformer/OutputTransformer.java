@@ -297,8 +297,8 @@ class OutputTransformer {
 
         type = field.getType();
         accessors.add(
-            AccessorView.MemberView.newBuilder()
-                .member(context.getNamer().getFieldGetFunctionName(field))
+            AccessorView.FieldView.newBuilder()
+                .field(context.getNamer().getFieldGetFunctionName(field))
                 .build());
       } else if (token == '[') {
         Preconditions.checkArgument(

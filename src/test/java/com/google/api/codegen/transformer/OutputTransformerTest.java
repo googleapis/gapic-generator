@@ -207,7 +207,7 @@ public class OutputTransformerTest {
 
     assertThat(variableView.variable()).isEqualTo("oldVar");
     assertThat(variableView.accessors())
-        .containsExactly(AccessorView.MemberView.newBuilder().member("getProperty").build())
+        .containsExactly(AccessorView.FieldView.newBuilder().field("getProperty").build())
         .inOrder();
     assertThat(parent.getTypeName("newVar")).isEqualTo("PropertyTypeName");
     assertThat(parent.getTypeModel("newVar")).isEqualTo(propertyTypeModel);
@@ -253,7 +253,7 @@ public class OutputTransformerTest {
     assertThat(variableView.variable()).isEqualTo("oldVar");
     assertThat(variableView.accessors())
         .containsExactly(
-            AccessorView.MemberView.newBuilder().member("getProperty").build(),
+            AccessorView.FieldView.newBuilder().field("getProperty").build(),
             AccessorView.IndexView.newBuilder().index("0").build())
         .inOrder();
     assertThat(parent.getTypeName("newVar")).isEqualTo("PropertyTypeName");

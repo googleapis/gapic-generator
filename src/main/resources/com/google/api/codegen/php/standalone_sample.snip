@@ -384,7 +384,7 @@
     @if not(view.args.size)
         printf("{@view.format}" . PHP_EOL);
     @else
-        printf("{@view.format}" . PHP_EOL, {@concatenatedArgs(view.args)});
+        printf("{@view.format}" . PHP_EOL, {@commaSeparatedFields(view.args)});
     @end
 @end
 
@@ -403,7 +403,7 @@
 @end
 
 
-@private concatenatedArgs(args)
+@private commaSeparatedFields(args)
     @join arg : args on ", "
         {@variableField(arg)}
     @end
@@ -420,9 +420,10 @@
 @private accessor(accessors)
     @join field : accessors on ""
         @switch field.kind
-        @case "MEMBER"
-            ->{@field.member}()
+        @case "FIELD"
+            ->{@field.field}()
         @case "INDEX"
+            # Assume that sample config is right; no need to check bounds.
             [{@field.index}]
         @end
     @end

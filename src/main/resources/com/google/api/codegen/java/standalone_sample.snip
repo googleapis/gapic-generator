@@ -260,7 +260,7 @@
       @if view.format == "%s"
         System.out.println({@variableField(view.args.get(0))});
       @else
-        System.out.printf("{@view.format}\n", {@concatenatedArgs(view.args)});
+        System.out.printf("{@view.format}\n", {@commaSeparatedFields(view.args)});
       @end
     @end
   @end
@@ -272,7 +272,7 @@
   }
 @end
 
-@private concatenatedArgs(args)
+@private commaSeparatedFields(args)
   @join arg : args on ", "
     {@variableField(arg)}
   @end
@@ -285,9 +285,10 @@
 @private accessor(accessors)
   @join field : accessors on ""
     @switch field.kind
-    @case "MEMBER"
-      .{@field.member}()
+    @case "FIELD"
+      .{@field.field}()
     @case "INDEX"
+      # Assume that sample config is right; no need to check bounds.
       .get({@field.index})
     @end
   @end
