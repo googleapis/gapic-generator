@@ -47,6 +47,10 @@ public abstract class FlatteningConfig {
   @Nullable
   public abstract String getFlatteningName();
 
+  /**
+   * Returns a map of a string representing a list of the fields in a flattening, to the flattening
+   * config.
+   */
   private static Map<String, FlatteningConfig> createFlatteningsFromGapicConfig(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
