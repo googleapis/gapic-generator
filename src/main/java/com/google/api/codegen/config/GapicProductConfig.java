@@ -43,10 +43,12 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.protobuf.DescriptorProtos;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -544,7 +546,7 @@ public abstract class GapicProductConfig implements ProductConfig {
           protoParser);
     } else {
       ImmutableMap.Builder<String, ResourceNameConfig> resourceCollectionMap =
-          ImmutableMap.builder();
+          new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
       resourceCollectionMap.putAll(singleResourceNameConfigs);
       resourceCollectionMap.putAll(resourceNameOneofConfigs);
       resourceCollectionMap.putAll(fixedResourceNameConfigs);
@@ -690,7 +692,8 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (diagCollector.getErrorCount() > 0) {
       return null;
     } else {
-      ImmutableMap.Builder<String, ResourceNameConfig> resourceNameConfigs = ImmutableMap.builder();
+      ImmutableMap.Builder<String, ResourceNameConfig> resourceNameConfigs =
+          new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
       resourceNameConfigs.putAll(finalSingleResourceNameConfigs);
       resourceNameConfigs.putAll(finalFixedResourceNameConfigs);
       resourceNameConfigs.putAll(finalResourceOneofNameConfigs);
