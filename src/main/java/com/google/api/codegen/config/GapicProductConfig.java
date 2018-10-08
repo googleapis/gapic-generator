@@ -584,7 +584,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     LinkedHashMap<String, ResourceNameOneofConfig> resourceOneOfConfigsFromProtoFile =
         new LinkedHashMap<>();
     Map<String, ResourceSet> resourceSets = new HashMap<>();
-    Map<String, ProtoFile> resourceSetNamesAndFiles = new HashMap<>();
+    Map<String, Field> resourceSetNames = new HashMap<>();
 
     // Collect the Single- and Fixed- ResourceNameConfigs from proto annotations.
     for (ProtoFile protoFile : sourceProtos) {
@@ -605,12 +605,14 @@ public abstract class GapicProductConfig implements ProductConfig {
           }
 
           if (resourceSet != null) {
-            // Create the resource one-ofs later, after the singleResourceNameConfigs are parsed.
+            // Save the resource one-ofs for creating later,
+            // after the singleResourceNameConfigs are parsed.
             String resourceSetName =
-                protoParser.getResourceEntityName(
+                protoParser.getResourceSetEntityName(
                     field, protoParser.getDefaultResourceEntityName(field));
             resourceSets.put(resourceSetName, resourceSet);
-            resourceSetNamesAndFiles.put(resourceSetName, protoFile);
+            resourceSetNames.put(resourceSetName, field);
+            continue;
           }
 
           if (resourcePath != null) {
@@ -633,13 +635,13 @@ public abstract class GapicProductConfig implements ProductConfig {
                   pathTemplate,
                   pathTemplatesFromConfig,
                   singleResourceConfigsFromProtoFile,
-                  protoFile,
                   protoParser);
               continue;
             }
+            // This was a fixed resource name, so make a Fixed resource name config.
             FixedResourceNameConfig fixedNameConfig =
                 FixedResourceNameConfig.createFixedResourceNameConfig(
-                    diagCollector, field, protoFile, protoParser);
+                    diagCollector, field, protoParser);
             if (fixedNameConfig == null) {
               return null;
             }
@@ -647,25 +649,6 @@ public abstract class GapicProductConfig implements ProductConfig {
           }
         }
       }
-    }
-
-    // Create the ResourceNameOneOfConfigs.
-    for (String resourceSetName : resourceSets.keySet()) {
-      ResourceSet resourceSet = resourceSets.get(resourceSetName);
-      ProtoFile protoFile = resourceSetNamesAndFiles.get(resourceSetName);
-      ResourceNameOneofConfig resourceNameOneofConfig =
-          ResourceNameOneofConfig.createResourceNameOneof(
-              diagCollector,
-              resourceSet,
-              resourceSetName,
-              ImmutableMap.copyOf(singleResourceConfigsFromProtoFile),
-              ImmutableMap.copyOf(fixedResourceConfigsFromProtoFile),
-              protoFile,
-              protoParser);
-      if (resourceNameOneofConfig == null) {
-        return null;
-      }
-      resourceOneOfConfigsFromProtoFile.put(resourceSetName, resourceNameOneofConfig);
     }
 
     Map<String, SingleResourceNameConfig> finalSingleResourceNameConfigs =
@@ -681,6 +664,24 @@ public abstract class GapicProductConfig implements ProductConfig {
             fixedResourceNameConfigsFromGapicConfig,
             fixedResourceConfigsFromProtoFile,
             FixedResourceNameConfig::getFixedValue);
+
+    // Create the ResourceNameOneOfConfigs.
+    for (String resourceSetName : resourceSets.keySet()) {
+      ResourceSet resourceSet = resourceSets.get(resourceSetName);
+      Field field = resourceSetNames.get(resourceSetName);
+      ResourceNameOneofConfig resourceNameOneofConfig =
+          ResourceNameOneofConfig.createResourceNameOneof(
+              diagCollector,
+              resourceSet,
+              resourceSetName,
+              ImmutableMap.copyOf(finalSingleResourceNameConfigs),
+              ImmutableMap.copyOf(finalFixedResourceNameConfigs),
+              field);
+      if (resourceNameOneofConfig == null) {
+        return null;
+      }
+      resourceOneOfConfigsFromProtoFile.put(resourceSetName, resourceNameOneofConfig);
+    }
 
     Map<String, ResourceNameOneofConfig> finalResourceOneofNameConfigs =
         mergeResourceNameConfigs(
@@ -804,14 +805,10 @@ public abstract class GapicProductConfig implements ProductConfig {
       PathTemplate pathTemplate,
       Collection<SingleResourceNameConfig> resourceNamesFromConfig,
       LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap,
-      ProtoFile file,
       ProtoParser protoParser) {
     SingleResourceNameConfig singleResourceNameConfig =
         SingleResourceNameConfig.createSingleResourceName(
-            diagCollector, field, pathTemplate, resourceNamesFromConfig, file, protoParser);
-    if (singleResourceNameConfig == null) {
-      return;
-    }
+            field, pathTemplate, resourceNamesFromConfig, field.getFile(), protoParser);
     if (singleResourceNameConfigsMap.containsKey(singleResourceNameConfig.getEntityId())) {
       SingleResourceNameConfig otherConfig =
           singleResourceNameConfigsMap.get(singleResourceNameConfig.getEntityId());

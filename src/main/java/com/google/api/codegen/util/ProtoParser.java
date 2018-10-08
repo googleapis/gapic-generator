@@ -104,6 +104,16 @@ public class ProtoParser {
     return defaultEntityName;
   }
 
+  /** Return the entity name, e.g. "shelf" for a resource set field. */
+  public String getResourceSetEntityName(Field field, String defaultEntityName) {
+    ResourceSet resourceSet =
+        (ResourceSet) field.getOptionFields().get(AnnotationsProto.resourceSet.getDescriptor());
+    if (resourceSet != null && !Strings.isNullOrEmpty(resourceSet.getBaseName())) {
+      return resourceSet.getBaseName();
+    }
+    return defaultEntityName;
+  }
+
   /** Get long running settings. */
   public OperationTypes getLongRunningOperation(Method method) {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);

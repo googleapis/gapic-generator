@@ -72,8 +72,8 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
   }
 
   @Nullable
-  public static FixedResourceNameConfig createFixedResourceNameConfig(
-      DiagCollector diagCollector, Field field, @Nullable ProtoFile file, ProtoParser protoParser) {
+  static FixedResourceNameConfig createFixedResourceNameConfig(
+      DiagCollector diagCollector, Field field, ProtoParser protoParser) {
 
     String entityName =
         protoParser.getResourceEntityName(field, protoParser.getDefaultResourceEntityName(field));
@@ -91,6 +91,6 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
     }
 
     return new AutoValue_FixedResourceNameConfig(
-        entityName, entityName, ConfigSource.PROTO_FILE, fixedValue, file);
+        entityName, entityName, ConfigSource.PROTO_FILE, fixedValue, field.getFile());
   }
 }

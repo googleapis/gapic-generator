@@ -20,6 +20,7 @@ import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
@@ -110,8 +111,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       String oneOfName,
       ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
       ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs,
-      ProtoFile file,
-      ProtoParser protoParser) {
+      Field field) {
 
     if (singleResourceNameConfigs.containsKey(oneOfName)) {
       diagCollector.addDiag(
@@ -167,7 +167,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     }
 
     return new AutoValue_ResourceNameOneofConfig(
-        oneOfName, ConfigSource.PROTO_FILE, oneOfName, configList, file);
+        oneOfName, ConfigSource.PROTO_FILE, oneOfName, configList, field.getFile());
   }
 
   @Override

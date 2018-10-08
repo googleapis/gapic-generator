@@ -111,9 +111,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
    * Creates an instance of SingleResourceNameConfig based on a field. On errors, null will be
    * returned, and diagnostics are reported to the diag collector.
    */
-  @Nullable
-  public static SingleResourceNameConfig createSingleResourceName(
-      DiagCollector diagCollector,
+  static SingleResourceNameConfig createSingleResourceName(
       Field resourceField,
       PathTemplate pathTemplate,
       Collection<SingleResourceNameConfig> resourceNamesFromConfigs,
