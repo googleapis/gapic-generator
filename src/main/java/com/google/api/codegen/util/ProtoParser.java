@@ -52,12 +52,8 @@ public class ProtoParser {
   /** Return the ResourceSet a resource field. Return null if none found. */
   @Nullable
   public ResourceSet getResourceSet(Field element) {
-    ResourceSet resource =
-        (ResourceSet) element.getOptionFields().get(AnnotationsProto.resourceSet.getDescriptor());
-    if (!resource.equals(ResourceSet.getDefaultInstance())) {
-      return resource;
-    }
-    return null;
+    return (ResourceSet)
+        element.getOptionFields().get(AnnotationsProto.resourceSet.getDescriptor());
   }
 
   /** Returns a base package name for an API's client. */
