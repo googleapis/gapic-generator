@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
@@ -583,72 +584,90 @@ public abstract class GapicProductConfig implements ProductConfig {
         new LinkedHashMap<>();
     LinkedHashMap<String, ResourceNameOneofConfig> resourceOneOfConfigsFromProtoFile =
         new LinkedHashMap<>();
-    Map<String, ResourceSet> resourceSets = new HashMap<>();
-    Map<String, Field> resourceSetNames = new HashMap<>();
+    // Map<String, ResourceSet> resourceSets = new HashMap<>();
+    // Map<String, Field> resourceSetNames = new HashMap<>();
 
-    // Collect the Single- and Fixed- ResourceNameConfigs from proto annotations.
+    Map<Field, ResourceSet> resourceSetFields = new HashMap<>();
+    Map<Field, Resource> resourceFields = new HashMap<>();
+
+    // Collect each type of ResourceNameConfig from proto annotations.
     for (ProtoFile protoFile : sourceProtos) {
       for (MessageType messageType : protoFile.getMessages()) {
         for (Field field : messageType.getFields()) {
-          String resourcePath = protoParser.getResourcePath(field);
+          Resource resource = protoParser.getResource(field);
           ResourceSet resourceSet = protoParser.getResourceSet(field);
-          if (resourceSet != null && !Strings.isNullOrEmpty(resourcePath)) {
+          if (resourceSet != null && resource != null) {
             diagCollector.addDiag(
                 Diag.error(
                     SimpleLocation.TOPLEVEL,
                     "A field can have *either* a Resource *or* a ResourceSet,"
                         + " but field %s has both resource path %s and resourceSet %s",
                     field.getSimpleName(),
-                    resourcePath,
+                    resource.getPath(),
                     resourceSet.toString()));
             return null;
           }
 
           if (resourceSet != null) {
-            // Save the resource one-ofs for creating later,
-            // after the singleResourceNameConfigs are parsed.
-            String resourceSetName =
-                protoParser.getResourceSetEntityName(
-                    field, protoParser.getDefaultResourceEntityName(field));
-            resourceSets.put(resourceSetName, resourceSet);
-            resourceSetNames.put(resourceSetName, field);
+            // Collect the resource one-ofs for creating configs later.
+            resourceSetFields.put(field, resourceSet);
+
+            // Collect the inner resources for creating name configs later.
+            for (Resource innerResource : resourceSet.getResourcesList()) {
+              resourceFields.put(field, innerResource);
+            }
             continue;
           }
 
-          if (resourcePath != null) {
-            PathTemplate pathTemplate;
-            try {
-              pathTemplate = PathTemplate.create(resourcePath);
-            } catch (ValidationException e) {
-              diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
-              return null;
-            }
-
-            try {
-              // Only fixed paths will encode against no values.
-              pathTemplate.encode(pathTemplate.encode());
-            } catch (ValidationException e) {
-              // This was not a fixed resourcename, so let's make a Single resource name config.
-              createSingleResourceNameConfig(
-                  diagCollector,
-                  field,
-                  pathTemplate,
-                  pathTemplatesFromConfig,
-                  singleResourceConfigsFromProtoFile,
-                  protoParser);
-              continue;
-            }
-            // This was a fixed resource name, so make a Fixed resource name config.
-            FixedResourceNameConfig fixedNameConfig =
-                FixedResourceNameConfig.createFixedResourceNameConfig(
-                    diagCollector, field, protoParser);
-            if (fixedNameConfig == null) {
-              return null;
-            }
-            fixedResourceConfigsFromProtoFile.put(fixedNameConfig.getEntityId(), fixedNameConfig);
+          if (resource != null) {
+            resourceFields.put(field, resource);
           }
         }
       }
+    }
+
+    // Process the Single- and Fixed- ResourceNameConfigs from proto annotations.
+    for (Field field : resourceFields.keySet()) {
+      Resource resource = resourceFields.get(field);
+      String resourcePath = resource.getPath();
+      if (Strings.isNullOrEmpty(resourcePath)) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "A path is required for each Resource, but resource field %s "
+                    + "(message %s) lacks a path.",
+                field.getSimpleName(),
+                field.getParent().getSimpleName()));
+      }
+      PathTemplate pathTemplate;
+      try {
+        pathTemplate = PathTemplate.create(resourcePath);
+      } catch (ValidationException e) {
+        diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
+        return null;
+      }
+
+      try {
+        // Only fixed paths will encode against no values.
+        pathTemplate.encode(pathTemplate.encode());
+      } catch (ValidationException e) {
+        // This was not a fixed resourcename, so let's make a Single resource name config.
+        createSingleResourceNameConfig(
+            diagCollector,
+            field,
+            pathTemplate,
+            pathTemplatesFromConfig,
+            singleResourceConfigsFromProtoFile,
+            protoParser);
+        continue;
+      }
+      // This was a fixed resource name, so make a Fixed resource name config.
+      FixedResourceNameConfig fixedNameConfig =
+          FixedResourceNameConfig.createFixedResourceNameConfig(diagCollector, field, protoParser);
+      if (fixedNameConfig == null) {
+        return null;
+      }
+      fixedResourceConfigsFromProtoFile.put(fixedNameConfig.getEntityId(), fixedNameConfig);
     }
 
     Map<String, SingleResourceNameConfig> finalSingleResourceNameConfigs =
@@ -666,9 +685,12 @@ public abstract class GapicProductConfig implements ProductConfig {
             FixedResourceNameConfig::getFixedValue);
 
     // Create the ResourceNameOneOfConfigs.
-    for (String resourceSetName : resourceSets.keySet()) {
-      ResourceSet resourceSet = resourceSets.get(resourceSetName);
-      Field field = resourceSetNames.get(resourceSetName);
+    for (Field resourceSetField : resourceSetFields.keySet()) {
+      ResourceSet resourceSet = resourceSetFields.get(resourceSetField);
+      String resourceSetName = resourceSet.getBaseName();
+      if (Strings.isNullOrEmpty(resourceSetName)) {
+        resourceSetName = protoParser.getDefaultResourceEntityName(resourceSetField);
+      }
       ResourceNameOneofConfig resourceNameOneofConfig =
           ResourceNameOneofConfig.createResourceNameOneof(
               diagCollector,
@@ -676,7 +698,7 @@ public abstract class GapicProductConfig implements ProductConfig {
               resourceSetName,
               ImmutableMap.copyOf(finalSingleResourceNameConfigs),
               ImmutableMap.copyOf(finalFixedResourceNameConfigs),
-              field);
+              resourceSetField);
       if (resourceNameOneofConfig == null) {
         return null;
       }

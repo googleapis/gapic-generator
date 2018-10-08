@@ -17,7 +17,6 @@ package com.google.api.codegen.config;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionOneofProto;
-import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -105,7 +104,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
   }
 
   @Nullable
-  public static ResourceNameOneofConfig createResourceNameOneof(
+  static ResourceNameOneofConfig createResourceNameOneof(
       DiagCollector diagCollector,
       ResourceSet resourceSet,
       String oneOfName,

@@ -77,7 +77,7 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
 
     String entityName =
         protoParser.getResourceEntityName(field, protoParser.getDefaultResourceEntityName(field));
-    String fixedValue = protoParser.getResourcePath(field);
+    String fixedValue = protoParser.getResource(field).getPath();
 
     if (entityName == null || fixedValue == null) {
       diagCollector.addDiag(

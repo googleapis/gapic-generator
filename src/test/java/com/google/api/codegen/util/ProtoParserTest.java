@@ -101,11 +101,11 @@ public class ProtoParserTest {
   public void testGetResourcePath() {
     Field shelfNameField =
         shelf.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
-    assertThat(protoParser.getResourcePath(shelfNameField)).isEqualTo("shelves/*");
+    assertThat(protoParser.getResource(shelfNameField).getPath()).isEqualTo("shelves/*");
   }
 
   @Test
-  public void testGetEmptyResourcePath() {
+  public void testGetEmptyResource() {
     MessageType book =
         libraryProtoFile
             .getMessages()
@@ -115,7 +115,7 @@ public class ProtoParserTest {
             .get();
     Field authorBookField =
         book.getFields().stream().filter(f -> f.getSimpleName().equals("author")).findFirst().get();
-    assertThat(protoParser.getResourcePath(authorBookField)).isNull();
+    assertThat(protoParser.getResource(authorBookField)).isNull();
   }
 
   /** Return the entity name, e.g. "shelf" for a resource field. */

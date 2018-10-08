@@ -38,15 +38,20 @@ import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
+  //
+  // /** Return the path, e.g. "shelves/*" for a resource field. Return null if no path found. */
+  // public String getResourcePath(Field element) {
+  //   Resource resource =
+  //       (Resource) element.getOptionFields().get(AnnotationsProto.resource.getDescriptor());
+  //   if (resource != null) {
+  //     return resource.getPath();
+  //   }
+  //   return null;
+  // }
 
-  /** Return the path, e.g. "shelves/*" for a resource field. Return null if no path found. */
-  public String getResourcePath(Field element) {
-    Resource resource =
-        (Resource) element.getOptionFields().get(AnnotationsProto.resource.getDescriptor());
-    if (resource != null) {
-      return resource.getPath();
-    }
-    return null;
+  @Nullable
+  public Resource getResource(Field element) {
+    return (Resource) element.getOptionFields().get(AnnotationsProto.resource.getDescriptor());
   }
 
   /** Return the ResourceSet a resource field. Return null if none found. */

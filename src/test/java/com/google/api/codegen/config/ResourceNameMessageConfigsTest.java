@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.MethodSignature;
+import com.google.api.Resource;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
@@ -131,8 +132,10 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(bookMessage.getSimpleName()).thenReturn("Book");
     Mockito.when(bookMessage.getFields()).thenReturn(ImmutableList.of(bookAuthor, bookName));
 
-    Mockito.when(protoParser.getResourcePath(bookName)).thenReturn(ASTERISK_BOOK_PATH);
-    Mockito.when(protoParser.getResourcePath(shelfName)).thenReturn(ASTERISK_SHELF_PATH);
+    Mockito.when(protoParser.getResource(bookName))
+        .thenReturn(Resource.newBuilder().setPath(ASTERISK_BOOK_PATH).build());
+    Mockito.when(protoParser.getResource(shelfName))
+        .thenReturn(Resource.newBuilder().setPath(ASTERISK_SHELF_PATH).build());
 
     Mockito.when(protoFile.getSimpleName()).thenReturn("library");
     Mockito.when(protoFile.getMessages()).thenReturn(ImmutableList.of(bookMessage, shelfMessage));
