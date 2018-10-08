@@ -15,7 +15,6 @@
 package com.google.api.codegen.util;
 
 import com.google.api.codegen.util.js.JSCommentReformatter;
-import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.common.truth.Truth;
 import java.util.regex.Matcher;
@@ -70,27 +69,6 @@ public class ProtoDocumentLinkTest {
         .isEqualTo("[not a cloud link](http://www.google.com)");
     Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com$)"))
         .isEqualTo("[not a cloud link](http://www.google.com$)");
-  }
-
-  @Test
-  public void testPythonCommentReformater() {
-    PythonCommentReformatter commentReformatter = new PythonCommentReformatter();
-    Truth.assertThat(commentReformatter.reformat("[Shelf][google.example.library.v1.Shelf]"))
-        .isEqualTo("``Shelf``");
-    Truth.assertThat(commentReformatter.reformat("[$Shelf][google.example.library.v1.Shelf]"))
-        .isEqualTo("``$Shelf``");
-
-    // Cloud link may contain special character '$'
-    Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link)"))
-        .isEqualTo("`cloud docs! <https://cloud.google.com/library/example/link>`_");
-    Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link$)"))
-        .isEqualTo("`cloud docs! <https://cloud.google.com/library/example/link$>`_");
-
-    // Absolute link may contain special character '$'
-    Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com)"))
-        .isEqualTo("`not a cloud link <http://www.google.com>`_");
-    Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com$)"))
-        .isEqualTo("`not a cloud link <http://www.google.com$>`_");
   }
 
   @Test
