@@ -238,7 +238,7 @@
     @if view.format == "{}"
       print({@variableField(view.args.get(0))})
     @else
-      print('{@view.format}'.format({@concatenatedArgs(view.args)}))
+      print('{@view.format}'.format({@commaSeparatedFields(view.args)}))
     @end
   @end
 @end
@@ -257,7 +257,7 @@
 @end
 
 
-@private concatenatedArgs(args)
+@private commaSeparatedFields(args)
   @join arg : args on ", "
     {@variableField(arg)}
   @end
@@ -269,6 +269,12 @@
 
 @private accessor(accessors)
   @join field : accessors on ""
-    .{@field}
+    @switch field.kind
+    @case "FIELD"
+      .{@field.field}
+    @case "INDEX"
+      # Assume that sample config is right; no need to check bounds.
+      [{@field.index}]
+    @end
   @end
 @end

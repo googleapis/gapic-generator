@@ -138,7 +138,7 @@ public interface OutputView {
 
     public abstract String variable();
 
-    public abstract ImmutableList<String> accessors();
+    public abstract ImmutableList<AccessorView> accessors();
 
     public static Builder newBuilder() {
       return new AutoValue_OutputView_VariableView.Builder();
@@ -148,7 +148,7 @@ public interface OutputView {
     public abstract static class Builder {
       public abstract Builder variable(String val);
 
-      public abstract Builder accessors(ImmutableList<String> val);
+      public abstract Builder accessors(ImmutableList<AccessorView> val);
 
       public abstract VariableView build();
     }
