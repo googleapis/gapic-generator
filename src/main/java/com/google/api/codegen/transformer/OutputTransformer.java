@@ -368,7 +368,7 @@ class OutputTransformer {
       }
     }
 
-    return view.accessors(accessors.build()).build();
+    return view.accessors(accessors.build()).type(type).build();
   }
 
   private static void assertIdentifierNotReserved(

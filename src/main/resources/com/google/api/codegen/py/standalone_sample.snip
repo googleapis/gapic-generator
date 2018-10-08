@@ -259,7 +259,11 @@
 
 @private commaSeparatedFields(args)
   @join arg : args on ", "
-    {@variableField(arg)}
+    @if arg.type.isEnum
+      enums.EnumName({@variableField(arg)}).name
+    @else
+      {@variableField(arg)}
+    @end
   @end
 @end
 

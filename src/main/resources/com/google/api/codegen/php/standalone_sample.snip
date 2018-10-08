@@ -405,7 +405,11 @@
 
 @private commaSeparatedFields(args)
     @join arg : args on ", "
-        {@variableField(arg)}
+        @if or(arg.type.isMessage, arg.type.isEnum)
+            print_r({@variableField(arg)}), true)
+        @else
+            {@variableField(arg)}
+        @end
     @end
 @end
 
