@@ -32,7 +32,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 /**
@@ -48,7 +54,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static final String SERVICE_ADDRESS_PARAM = "service_address";
   private static final String SCOPES_PARAM = "scopes";
   private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
-      ImmutableSet.<String>of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
+      ImmutableSet.of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
 
   public Interface getInterface() {
     return getInterfaceModel().getInterface();
@@ -115,10 +121,10 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
-    List<GapicMethodConfig> methodConfigs = null;
-    ImmutableMap<String, GapicMethodConfig> methodConfigMap = null;
+    ImmutableMap<String, GapicMethodConfig> methodConfigsMap;
+    List<GapicMethodConfig> methodConfigs;
     if (retryCodesConfig != null && retrySettingsDefinition != null) {
-      methodConfigMap =
+      methodConfigsMap =
           createMethodConfigMap(
               diagCollector,
               language,
@@ -127,15 +133,24 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfig,
-              retrySettingsDefinition.keySet());
-      methodConfigs = createMethodConfigs(methodConfigMap, interfaceConfigProto);
+              retrySettingsDefinition.keySet(),
+              protoParser);
+      methodConfigs = createMethodConfigs(methodConfigsMap, apiInterface, interfaceConfigProto);
+      if (methodConfigsMap == null) {
+        diagCollector.addDiag(
+            Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
+        return null;
+      }
+    } else {
+      methodConfigsMap = ImmutableMap.of();
+      methodConfigs = ImmutableList.of();
     }
 
     SmokeTestConfig smokeTestConfig =
         createSmokeTestConfig(diagCollector, apiInterface, interfaceConfigProto);
 
     ImmutableList<String> requiredConstructorParams =
-        ImmutableList.<String>copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
+        ImmutableList.copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
     for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
       if (!CONSTRUCTOR_PARAMS.contains(param)) {
         diagCollector.addDiag(
@@ -173,7 +188,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
           new ProtoInterfaceModel(apiInterface),
           methodConfigs,
           smokeTestConfig,
-          methodConfigMap,
+          methodConfigsMap,
           retryCodesConfig,
           retrySettingsDefinition,
           requiredConstructorParams,
@@ -204,18 +219,44 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
-      ImmutableSet<String> retryParamsConfigNames) {
-    ImmutableMap.Builder<String, GapicMethodConfig> methodConfigMapBuilder = ImmutableMap.builder();
+      ImmutableSet<String> retryParamsConfigNames,
+      ProtoParser protoParser) {
+    Map<String, GapicMethodConfig> methodConfigMapBuilder = new TreeMap<>();
 
+    // The order in which to create GapicMethodConfigs; first in the order of methods listed in
+    // the protofile, and then any remaining methods in the Gapic config.
+    LinkedHashSet<String> methodNames = new LinkedHashSet<>();
+
+    Map<String, Method> protoMethodsMap = new HashMap<>();
+
+    for (Method method : apiInterface.getMethods()) {
+      protoMethodsMap.put(method.getSimpleName(), method);
+      methodNames.add(method.getSimpleName());
+    }
+
+    Map<String, MethodConfigProto> methodConfigProtoMap = new HashMap<>();
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      Interface targetInterface =
-          getTargetInterface(apiInterface, methodConfigProto.getRerouteToGrpcInterface());
-      Method method = targetInterface.lookupMethod(methodConfigProto.getName());
+      methodConfigProtoMap.put(methodConfigProto.getName(), methodConfigProto);
+      // Re-insertion of the same method name doesn't affect the existing order
+      methodNames.add(methodConfigProto.getName());
+    }
+
+    for (String methodName : methodNames) {
+      Method method = protoMethodsMap.get(methodName);
+      MethodConfigProto methodConfigProto = methodConfigProtoMap.get(methodName);
+      if (methodConfigProto == null) {
+        methodConfigProto = MethodConfigProto.getDefaultInstance();
+      }
       if (method == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
-        continue;
+        Interface targetInterface =
+            getTargetInterface(apiInterface, methodConfigProto.getRerouteToGrpcInterface());
+        method = targetInterface.lookupMethod(methodConfigProto.getName());
+        if (method == null) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
+          continue;
+        }
       }
       GapicMethodConfig methodConfig =
           GapicMethodConfig.createMethodConfig(
@@ -226,18 +267,36 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfig,
-              retryParamsConfigNames);
+              retryParamsConfigNames,
+              protoParser);
       if (methodConfig == null) {
         continue;
       }
-      methodConfigMapBuilder.put(methodConfigProto.getName(), methodConfig);
+      methodConfigMapBuilder.put(method.getSimpleName(), methodConfig);
     }
 
     if (diagCollector.getErrorCount() > 0) {
       return null;
     } else {
-      return methodConfigMapBuilder.build();
+      return ImmutableMap.copyOf(methodConfigMapBuilder);
     }
+  }
+
+  private static <T> List<T> createMethodConfigs(
+      ImmutableMap<String, T> methodConfigMap,
+      Interface apiInterface,
+      InterfaceConfigProto interfaceConfigProto) {
+    Map<String, T> methodConfigs = new LinkedHashMap<>();
+    // Add in methods that aren't defined in the source protos but are defined in the GAPIC config.
+    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
+      methodConfigs.put(
+          methodConfigProto.getName(), methodConfigMap.get(methodConfigProto.getName()));
+    }
+    // Add in methods that aren't defined in the GAPIC config but are defined in the source protos.
+    for (Method method : apiInterface.getMethods()) {
+      methodConfigs.put(method.getSimpleName(), methodConfigMap.get(method.getSimpleName()));
+    }
+    return new LinkedList<>(methodConfigs.values());
   }
 
   static <T> List<T> createMethodConfigs(

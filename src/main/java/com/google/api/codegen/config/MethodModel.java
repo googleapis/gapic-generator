@@ -91,11 +91,11 @@ public interface MethodModel {
 
   boolean isOutputTypeEmpty();
 
-  Iterable<? extends FieldModel> getInputFields();
+  List<? extends FieldModel> getInputFields();
 
   List<? extends FieldModel> getInputFieldsForResourceNameMethod();
 
-  Iterable<? extends FieldModel> getOutputFields();
+  List<? extends FieldModel> getOutputFields();
 
   List<? extends FieldModel> getResourceNameInputFields();
 
