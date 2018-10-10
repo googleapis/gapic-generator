@@ -1610,6 +1610,7 @@ class LibraryServiceClient(object):
             series_uuid,
             edition=None,
             review_copy=None,
+            parent=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -1643,6 +1644,7 @@ class LibraryServiceClient(object):
                 message :class:`~google.cloud.example.library_v1.types.SeriesUuid`
             edition (int): The edition of the series
             review_copy (bool): If the book is in a pre-publish state
+            parent (str)
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will not
                 be retried.
@@ -1684,6 +1686,7 @@ class LibraryServiceClient(object):
             series_uuid=series_uuid,
             edition=edition,
             review_copy=review_copy,
+            parent=parent,
         )
         return self._inner_api_calls['publish_series'](request, retry=retry, timeout=timeout, metadata=metadata)
 

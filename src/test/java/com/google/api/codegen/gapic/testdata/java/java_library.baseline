@@ -932,7 +932,8 @@ public class LibraryClient implements BackgroundResource {
    *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
    *     .setSeriesString(seriesString)
    *     .build();
-   *   PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+   *   ShelfBookName parent = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid, parent);
    * }
    * </code></pre>
    *
@@ -940,9 +941,10 @@ public class LibraryClient implements BackgroundResource {
    * @param books The books to publish in the series.
    * @param edition The edition of the series
    * @param seriesUuid Uniquely identifies the series to the publishing house.
+   * @param parent
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition, SeriesUuid seriesUuid) {
+  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition, SeriesUuid seriesUuid, ShelfBookName parent) {
 
     PublishSeriesRequest request =
         PublishSeriesRequest.newBuilder()
@@ -950,6 +952,46 @@ public class LibraryClient implements BackgroundResource {
         .addAllBooks(books)
         .setEdition(edition)
         .setSeriesUuid(seriesUuid)
+        .setParent(parent == null ? null : parent.toString())
+        .build();
+    return publishSeries(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a series of books.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   int edition = 0;
+   *   String seriesString = "foobar";
+   *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+   *     .setSeriesString(seriesString)
+   *     .build();
+   *   ShelfBookName parent = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid, parent.toString());
+   * }
+   * </code></pre>
+   *
+   * @param shelf The shelf in which the series is created.
+   * @param books The books to publish in the series.
+   * @param edition The edition of the series
+   * @param seriesUuid Uniquely identifies the series to the publishing house.
+   * @param parent
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition, SeriesUuid seriesUuid, String parent) {
+
+    PublishSeriesRequest request =
+        PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setEdition(edition)
+        .setSeriesUuid(seriesUuid)
+        .setParent(parent)
         .build();
     return publishSeries(request);
   }
@@ -7699,7 +7741,8 @@ public class PublishSeriesFlattenedPiVersion {
     SeriesUuid seriesUuid = SeriesUuid.newBuilder()
       .setSeriesString(seriesString)
       .build();
-    PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+    ShelfBookName parent = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid, parent.toString());
     for (String title : response.getBookNamesList()) {
       System.out.printf("Title: %s\n", title);
     }
@@ -7740,7 +7783,8 @@ public class PublishSeriesFlattenedSecondEdition {
     List<Book> books = new ArrayList<>();
     int edition = 2;
     SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-    PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+    ShelfBookName parent = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid, parent.toString());
     System.out.println(response);
     // [END canonical_core]
   }
@@ -8563,9 +8607,10 @@ public class LibraryClientTest {
     SeriesUuid seriesUuid = SeriesUuid.newBuilder()
       .setSeriesString(seriesString)
       .build();
+    ShelfBookName parent = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
     PublishSeriesResponse actualResponse =
-        client.publishSeries(shelf, books, edition, seriesUuid);
+        client.publishSeries(shelf, books, edition, seriesUuid, parent);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
@@ -8576,6 +8621,7 @@ public class LibraryClientTest {
     Assert.assertEquals(books, actualRequest.getBooksList());
     Assert.assertEquals(edition, actualRequest.getEdition());
     Assert.assertEquals(seriesUuid, actualRequest.getSeriesUuid());
+    Assert.assertEquals(parent, ShelfBookName.parse(actualRequest.getParent()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -8596,8 +8642,9 @@ public class LibraryClientTest {
       SeriesUuid seriesUuid = SeriesUuid.newBuilder()
         .setSeriesString(seriesString)
         .build();
+      ShelfBookName parent = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
 
-      client.publishSeries(shelf, books, edition, seriesUuid);
+      client.publishSeries(shelf, books, edition, seriesUuid, parent);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception

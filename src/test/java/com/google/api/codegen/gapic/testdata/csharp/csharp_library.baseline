@@ -682,8 +682,8 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for PublishSeriesAsync</summary>
         public async Task PublishSeriesAsync()
         {
-            // Snippet: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint?,SeriesUuid,CallSettings)
-            // Additional: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint?,SeriesUuid,CancellationToken)
+            // Snippet: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint?,SeriesUuid,BookName,CallSettings)
+            // Additional: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint?,SeriesUuid,BookName,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
@@ -694,15 +694,16 @@ namespace Google.Example.Library.V1.Snippets
             {
                 SeriesString = "foobar",
             };
+            BookName parent = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
-            PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid);
+            PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid, parent);
             // End snippet
         }
 
         /// <summary>Snippet for PublishSeries</summary>
         public void PublishSeries()
         {
-            // Snippet: PublishSeries(Shelf,IEnumerable<Book>,uint?,SeriesUuid,CallSettings)
+            // Snippet: PublishSeries(Shelf,IEnumerable<Book>,uint?,SeriesUuid,BookName,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
@@ -713,8 +714,9 @@ namespace Google.Example.Library.V1.Snippets
             {
                 SeriesString = "foobar",
             };
+            BookName parent = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
-            PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid);
+            PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid, parent);
             // End snippet
         }
 
@@ -3504,6 +3506,7 @@ namespace Google.Example.Library.V1.Tests
                              {
                                  SeriesString = "foobar",
                              },
+                ParentAsBookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             PublishSeriesResponse expectedResponse = new PublishSeriesResponse
             {
@@ -3521,7 +3524,8 @@ namespace Google.Example.Library.V1.Tests
             {
                 SeriesString = "foobar",
             };
-            PublishSeriesResponse response = client.PublishSeries(shelf, books, edition, seriesUuid);
+            BookName parent = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            PublishSeriesResponse response = client.PublishSeries(shelf, books, edition, seriesUuid, parent);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3543,6 +3547,7 @@ namespace Google.Example.Library.V1.Tests
                              {
                                  SeriesString = "foobar",
                              },
+                ParentAsBookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             PublishSeriesResponse expectedResponse = new PublishSeriesResponse
             {
@@ -3560,7 +3565,8 @@ namespace Google.Example.Library.V1.Tests
             {
                 SeriesString = "foobar",
             };
-            PublishSeriesResponse response = await client.PublishSeriesAsync(shelf, books, edition, seriesUuid);
+            BookName parent = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            PublishSeriesResponse response = await client.PublishSeriesAsync(shelf, books, edition, seriesUuid, parent);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -7255,6 +7261,9 @@ namespace Google.Example.Library.V1
         /// <param name="seriesUuid">
         /// Uniquely identifies the series to the publishing house.
         /// </param>
+        /// <param name="parent">
+        ///
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -7266,6 +7275,7 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<Book> books,
             uint? edition,
             SeriesUuid seriesUuid,
+            BookName parent,
             gaxgrpc::CallSettings callSettings = null) => PublishSeriesAsync(
                 new PublishSeriesRequest
                 {
@@ -7273,6 +7283,7 @@ namespace Google.Example.Library.V1
                     Books = { gax::GaxPreconditions.CheckNotNull(books, nameof(books)) },
                     Edition = edition ?? 0, // Optional
                     SeriesUuid = gax::GaxPreconditions.CheckNotNull(seriesUuid, nameof(seriesUuid)),
+                    ParentAsBookName = parent, // Optional
                 },
                 callSettings);
 
@@ -7291,6 +7302,9 @@ namespace Google.Example.Library.V1
         /// <param name="seriesUuid">
         /// Uniquely identifies the series to the publishing house.
         /// </param>
+        /// <param name="parent">
+        ///
+        /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="st::CancellationToken"/> to use for this RPC.
         /// </param>
@@ -7302,11 +7316,13 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<Book> books,
             uint? edition,
             SeriesUuid seriesUuid,
+            BookName parent,
             st::CancellationToken cancellationToken) => PublishSeriesAsync(
                 shelf,
                 books,
                 edition,
                 seriesUuid,
+                parent,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -7324,6 +7340,9 @@ namespace Google.Example.Library.V1
         /// <param name="seriesUuid">
         /// Uniquely identifies the series to the publishing house.
         /// </param>
+        /// <param name="parent">
+        ///
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -7335,6 +7354,7 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<Book> books,
             uint? edition,
             SeriesUuid seriesUuid,
+            BookName parent,
             gaxgrpc::CallSettings callSettings = null) => PublishSeries(
                 new PublishSeriesRequest
                 {
@@ -7342,6 +7362,7 @@ namespace Google.Example.Library.V1
                     Books = { gax::GaxPreconditions.CheckNotNull(books, nameof(books)) },
                     Edition = edition ?? 0, // Optional
                     SeriesUuid = gax::GaxPreconditions.CheckNotNull(seriesUuid, nameof(seriesUuid)),
+                    ParentAsBookName = parent, // Optional
                 },
                 callSettings);
 
@@ -13102,6 +13123,19 @@ namespace Google.Example.Library.V1
         {
             get { return string.IsNullOrEmpty(OtherShelfName) ? null : Google.Example.Library.V1.ShelfName.Parse(OtherShelfName); }
             set { OtherShelfName = value != null ? value.ToString() : ""; }
+        }
+
+    }
+
+    public partial class PublishSeriesRequest
+    {
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.BookName"/>-typed view over the <see cref="Parent"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.BookName ParentAsBookName
+        {
+            get { return string.IsNullOrEmpty(Parent) ? null : Google.Example.Library.V1.BookName.Parse(Parent); }
+            set { Parent = value != null ? value.ToString() : ""; }
         }
 
     }

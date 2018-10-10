@@ -2243,6 +2243,8 @@ module Google
         # @!attribute [rw] series_uuid
         #   @return [Google::Example::Library::V1::SeriesUuid]
         #     Uniquely identifies the series to the publishing house.
+        # @!attribute [rw] parent
+        #   @return [String]
         class PublishSeriesRequest; end
 
         # @!attribute [rw] series_bytes
@@ -3380,6 +3382,7 @@ module Library
       #   The edition of the series
       # @param review_copy [true, false]
       #   If the book is in a pre-publish state
+      # @param parent [String]
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -3408,6 +3411,7 @@ module Library
           series_uuid,
           edition: nil,
           review_copy: nil,
+          parent: nil,
           options: nil,
           &block
         req = {
@@ -3415,7 +3419,8 @@ module Library
           books: books,
           series_uuid: series_uuid,
           edition: edition,
-          review_copy: review_copy
+          review_copy: review_copy,
+          parent: parent
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::PublishSeriesRequest)
         @publish_series.call(req, options, &block)
