@@ -156,7 +156,6 @@ public class MethodMerger {
       prevNode.insertNext(requiredFieldsNode);
       prevNode = requiredFieldsNode;
     }
-
     return prevNode;
   }
 

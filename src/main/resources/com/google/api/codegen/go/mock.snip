@@ -308,6 +308,9 @@
         if err != nil {
             t.Fatal(err)
         }
+        if err := stream.Send(request); err != nil {
+            t.Fatal(err)
+        }
         resp, err := stream.CloseAndRecv()
     @case "NonStreaming"
         @switch test.clientMethodType

@@ -1,5 +1,9 @@
-load("//:gapic_generator.bzl", "gapic_generator_tests")
-load("//:gapic_generator.bzl", "google_java_format_srcs")
+load(
+    "//:gapic_generator.bzl",
+    "gapic_generator_tests",
+    "google_java_format",
+    "google_java_format_verification",
+)
 
 _SRCS = glob(["src/main/java/**/*.java"])
 
@@ -11,7 +15,6 @@ _COMPILE_DEPS = [
     "@com_fasterxml_jackson_core_jackson_databind//jar",
     "@com_google_api_api_common//jar",
     "@com_google_api_api_compiler//jar",
-    "@com_google_api_gax//jar",
     "@com_google_api_grpc_proto_google_common_protos//jar",
     "@com_google_auto_value_auto_value//jar",
     "@com_google_auto_value_auto_value_annotations//jar",
@@ -86,7 +89,6 @@ java_binary(
     ] + _COMPILE_DEPS,
 )
 
-
 # This is probably not the right way of doing it, but good enough for now.
 # api-compiler module expects "protoc" binary to be accessible during tests execution, this genrule
 # "puts" the "binary" in a proper location (the tests are still hermetic, even with this hack).
@@ -104,6 +106,7 @@ java_library(
     data = glob([
         "src/**/testdata/**/*",
         "src/**/testsrc/**/*",
+        "src/main/resources/**/*",
     ]) + [":protoc_binary_hack_for_test"],
     javacopts = _JAVA_COPTS,
     resources = glob([
@@ -144,9 +147,16 @@ java_binary(
     runtime_deps = ["@google_java_format_all_deps//jar"],
 )
 
+# Run `bazel build //:google_java_format_verification` to verify that gapic-generator java sources
+# are formatted correctly
+google_java_format_verification(
+    name = "google_java_format_verification",
+    srcs = glob(["src/**/*.java"]),
+)
+
 # Run `bazel run //:google_java_format` to format gapic-generator sources
-google_java_format_srcs(
-    name = "google_java_format_srcs",
-    srcs = _SRCS + _TEST_SRCS,
+google_java_format(
+    name = "google_java_format",
+    srcs = glob(["src/**/*.java"]),
     formatter = "//:google_java_format_binary",
 )

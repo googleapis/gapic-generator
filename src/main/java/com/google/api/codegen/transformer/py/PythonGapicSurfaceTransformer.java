@@ -224,9 +224,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     ApiModel model = context.getApiModel();
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    xapiClass.serviceHostname(productServiceConfig.getServiceHostname(model.getServiceAddress()));
-    xapiClass.servicePort(productServiceConfig.getServicePort(model.getServiceAddress()));
+    xapiClass.serviceHostname(productServiceConfig.getServiceHostname(context.getServiceAddress()));
+    xapiClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
     xapiClass.serviceTitle(model.getTitle());
     xapiClass.authScopes(model.getAuthScopes());
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());

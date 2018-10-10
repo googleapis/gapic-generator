@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /** Generates language setting view objects using a package name. */
 public class LanguageTransformer {
@@ -61,6 +62,13 @@ public class LanguageTransformer {
               .build());
     }
     return languageSettings.build();
+  }
+
+  @Nullable
+  public static String getFormattedPackageName(String language, String basePackageName) {
+    LanguageTransformer.LanguageFormatter formatter =
+        LANGUAGE_FORMATTERS.get(language.toLowerCase());
+    return formatter.getFormattedPackageName(basePackageName);
   }
 
   public interface LanguageFormatter {

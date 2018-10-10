@@ -49,6 +49,10 @@ public class ProtoField implements FieldModel {
     this.protoTypeRef = ProtoTypeRef.create(typeRef);
   }
 
+  Field getProtoField() {
+    return protoField;
+  }
+
   @Override
   public String getSimpleName() {
     return protoField.getSimpleName();

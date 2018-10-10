@@ -19,7 +19,6 @@ import com.google.api.MethodSignature;
 import com.google.api.Resource;
 import com.google.api.Retry;
 import com.google.api.codegen.config.ProtoMethodModel;
-import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -38,11 +37,6 @@ import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
-  private static ProtoParser protoParser = new ProtoParser();
-
-  public static ProtoParser getProtoParser() {
-    return protoParser;
-  }
 
   /** Return the path, e.g. "shelves/*" for a resource field. Return null if no path found. */
   public String getResourcePath(Field element) {
@@ -56,7 +50,7 @@ public class ProtoParser {
 
   /** Returns a base package name for an API's client. */
   @Nullable
-  public static String getPackageName(Model model) {
+  public String getPackageName(Model model) {
     if (model.getServiceConfig().getApisCount() > 0) {
       Api api = model.getServiceConfig().getApis(0);
       Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
@@ -74,7 +68,7 @@ public class ProtoParser {
   }
 
   /** Return the entity name, e.g. "shelf" for a resource field. */
-  public static String getResourceEntityName(Field field) {
+  public String getResourceEntityName(Field field) {
     return field.getParent().getSimpleName().toLowerCase();
   }
 
@@ -93,33 +87,40 @@ public class ProtoParser {
         .build();
   }
 
-  public static List<String> getRequiredFields(Method method) {
-    MessageType inputMessage = method.getInputMessage();
-    return inputMessage
-        .getFields()
-        .stream()
-        .filter(ProtoParser::isFieldRequired)
-        .map(Field::getSimpleName)
-        .collect(Collectors.toList());
-  }
-
-  /** Returns if a field is required, according to the proto annotations. */
-  public static boolean isFieldRequired(Field field) {
-    return Optional.ofNullable(
-            (Boolean) field.getOptionFields().get(AnnotationsProto.required.getDescriptor()))
-        .orElse(false);
-  }
-
   /** Get long running settings. */
   public OperationTypes getLongRunningOperation(Method method) {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
   }
 
-  @Nullable
-  public static String getFormattedPackageName(String language, String basePackageName) {
-    LanguageTransformer.LanguageFormatter formatter =
-        LanguageTransformer.LANGUAGE_FORMATTERS.get(language.toLowerCase());
-    return formatter.getFormattedPackageName(basePackageName);
+  /* Return a list of method signatures, aka flattenings, specified on a given method.
+   * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
+  public List<MethodSignature> getMethodSignatures(Method method) {
+    MethodSignature methodSignature =
+        method.getDescriptor().getMethodAnnotation(AnnotationsProto.methodSignature);
+    // Let's only recurse once when we look for additional MethodSignatures.
+    List<MethodSignature> additionalSignatures = methodSignature.getAdditionalSignaturesList();
+    return ImmutableList.<MethodSignature>builder()
+        .add(methodSignature)
+        .addAll(additionalSignatures)
+        .build();
+  }
+
+  /** Return the names of required parameters of a method. */
+  public List<String> getRequiredFields(Method method) {
+    MessageType inputMessage = method.getInputMessage();
+    return inputMessage
+        .getFields()
+        .stream()
+        .filter(this::isFieldRequired)
+        .map(Field::getSimpleName)
+        .collect(Collectors.toList());
+  }
+
+  /** Returns if a field is required, according to the proto annotations. */
+  private boolean isFieldRequired(Field field) {
+    return Optional.ofNullable(
+            (Boolean) field.getOptionFields().get(AnnotationsProto.required.getDescriptor()))
+        .orElse(false);
   }
 
   /** Return the extra retry codes for the given method. */
@@ -127,9 +128,24 @@ public class ProtoParser {
     return method.getDescriptor().getMethodAnnotation(AnnotationsProto.retry);
   }
 
+  /** Return the resource type for the given field. */
+  public String getResourceType(Field field) {
+    return (String) field.getOptionFields().get(AnnotationsProto.resourceType.getDescriptor());
+  }
+
   /** Return whether the method has the HttpRule for GET. */
   public boolean isHttpGetMethod(Method method) {
     return !Strings.isNullOrEmpty(
         method.getDescriptor().getMethodAnnotation(AnnotationsProto.http).getGet());
+  }
+
+  /** The hostname for this service (e.g. "foo.googleapis.com"). */
+  public String getServiceAddress(Interface service) {
+    return service.getProto().getOptions().getExtension(AnnotationsProto.defaultHost);
+  }
+
+  /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
+  public List<String> getAuthScopes(Interface service) {
+    return service.getProto().getOptions().getExtension(AnnotationsProto.oauth).getScopesList();
   }
 }

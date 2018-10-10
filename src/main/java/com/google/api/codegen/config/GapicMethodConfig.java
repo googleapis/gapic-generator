@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
+
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -68,7 +70,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      ProtoParser protoParser) {
 
     boolean error = false;
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
@@ -102,8 +105,13 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
-          createFlattening(
-              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+          FlatteningConfig.createFlatteningConfigs(
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              methodModel,
+              protoParser);
       if (flattening == null) {
         error = true;
       }
@@ -127,10 +135,13 @@ public abstract class GapicMethodConfig extends MethodConfig {
             methodConfigProto, diagCollector, retryParamsConfigNames);
     error |= (retryParamsName == null);
 
-    Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
-    if (timeout.toMillis() <= 0) {
-      timeout = Duration.ofMillis(ProtoMethodTransformer.getTimeoutMillis(methodModel));
+    long defaultTimeout = methodConfigProto.getTimeoutMillis();
+    if (defaultTimeout <= 0) {
+      defaultTimeout = DEFAULT_MAX_RETRY_DELAY;
     }
+    long timeoutMillis = ProtoMethodTransformer.getTimeoutMillis(methodModel, defaultTimeout);
+
+    Duration timeout = Duration.ofMillis(timeoutMillis);
     if (timeout.toMillis() <= 0) {
       diagCollector.addDiag(
           Diag.error(
@@ -150,7 +161,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
     }
 
-    List<String> requiredFields = ProtoParser.getRequiredFields(method);
+    List<String> requiredFields = protoParser.getRequiredFields(method);
     if (requiredFields.isEmpty() && methodConfigProto != null) {
       requiredFields = methodConfigProto.getRequiredFieldsList();
     }
@@ -199,10 +210,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            method,
-            diagCollector,
-            methodConfigProto.getLongRunning(),
-            ProtoParser.getProtoParser());
+            method, diagCollector, methodConfigProto.getLongRunning(), new ProtoParser());
     if (diagCollector.getErrorCount() > 0) {
       error = true;
     }
