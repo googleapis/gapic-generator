@@ -83,7 +83,19 @@ public class ProtoParser {
         // We don't care if the resource type of the field is the field itself.
         return null;
       }
-      // TODO(andrealin): Parse out Resources from ResourceSets.
+      // Parse out Resources from ResourceSets.
+      String[] resourceParts = resourceName.split(":");
+      if (resourceParts.length > 2) {
+        throw new IllegalArgumentException(
+            String.format(
+                "Field %s has resource_type '%s', which has too many ':' characters.",
+                field.getSimpleName(), resourceName));
+      }
+      if (resourceParts.length == 2) {
+        // Just use the Resource base_name from one of the Resources within a ResourceSet.
+        return resourceParts[1];
+      }
+
       TypeRef resourceType = field.getModel().getSymbolTable().lookupType(resourceName);
       if (resourceType == null) {
         return resourceName;

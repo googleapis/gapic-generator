@@ -98,8 +98,8 @@ public abstract class LongRunningConfig {
       return null;
     }
 
-    String responseTypeName = operationTypes.getResponse();
-    String metadataTypeName = operationTypes.getMetadata();
+    String responseTypeName = operationTypes.getResponse().split(":")[0];
+    String metadataTypeName = operationTypes.getMetadata().split(":")[0];
 
     TypeRef returnType = model.getSymbolTable().lookupType(responseTypeName);
     TypeRef metadataType = model.getSymbolTable().lookupType(metadataTypeName);

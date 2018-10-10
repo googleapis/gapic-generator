@@ -143,22 +143,31 @@ public class ProtoParserTest {
   }
 
   @Test
-  public void testGetResourceTypeEntityName() {
-    MessageType createBookRequest =
+  public void testGetResourceTypeEntityNameFromOneof() {
+    MessageType getBookFromAnywhereRequest =
         libraryProtoFile
             .getMessages()
             .stream()
-            .filter(m -> m.getSimpleName().equals("CreateBookRequest"))
+            .filter(m -> m.getSimpleName().equals("GetBookFromAnywhereRequest"))
             .findFirst()
             .get();
-    Field shelfNameField =
-        createBookRequest
+    Field nameField =
+        getBookFromAnywhereRequest
             .getFields()
             .stream()
             .filter(f -> f.getSimpleName().equals("name"))
             .findFirst()
             .get();
-    assertThat(protoParser.getResourceTypeEntityName(shelfNameField)).isEqualTo("shelf");
+    assertThat(protoParser.getResourceTypeEntityName(nameField)).isEqualTo("book_oneof");
+
+    Field altBookNameField =
+        getBookFromAnywhereRequest
+            .getFields()
+            .stream()
+            .filter(f -> f.getSimpleName().equals("alt_book_name"))
+            .findFirst()
+            .get();
+    assertThat(protoParser.getResourceTypeEntityName(altBookNameField)).isEqualTo("book");
   }
 
   @Test
@@ -167,7 +176,7 @@ public class ProtoParserTest {
 
     OperationTypes expected =
         OperationTypes.newBuilder()
-            .setResponse("google.example.library.v1.Book")
+            .setResponse("google.example.library.v1.Book:book")
             .setMetadata("google.example.library.v1.GetBigBookMetadata")
             .build();
     assertThat(operationTypes).isEqualTo(expected);
