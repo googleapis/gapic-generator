@@ -19,7 +19,6 @@ import com.google.api.MethodSignature;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.Retry;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -38,16 +37,6 @@ import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
-  //
-  // /** Return the path, e.g. "shelves/*" for a resource field. Return null if no path found. */
-  // public String getResourcePath(Field element) {
-  //   Resource resource =
-  //       (Resource) element.getOptionFields().get(AnnotationsProto.resource.getDescriptor());
-  //   if (resource != null) {
-  //     return resource.getPath();
-  //   }
-  //   return null;
-  // }
 
   @Nullable
   public Resource getResource(Field element) {
@@ -168,12 +157,9 @@ public class ProtoParser {
 
   /* Return a list of method signatures, aka flattenings, specified on a given method.
    * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
-  public List<MethodSignature> getMethodSignatures(ProtoMethodModel method) {
+  public List<MethodSignature> getMethodSignatures(Method method) {
     MethodSignature methodSignature =
-        method
-            .getProtoMethod()
-            .getDescriptor()
-            .getMethodAnnotation(AnnotationsProto.methodSignature);
+        method.getDescriptor().getMethodAnnotation(AnnotationsProto.methodSignature);
     // Let's only recurse once when we look for additional MethodSignatures.
     List<MethodSignature> additionalSignatures = methodSignature.getAdditionalSignaturesList();
     return ImmutableList.<MethodSignature>builder()
@@ -194,7 +180,7 @@ public class ProtoParser {
   }
 
   /** Returns if a field is required, according to the proto annotations. */
-  public boolean isFieldRequired(Field field) {
+  private boolean isFieldRequired(Field field) {
     return Optional.ofNullable(
             (Boolean) field.getOptionFields().get(AnnotationsProto.required.getDescriptor()))
         .orElse(false);

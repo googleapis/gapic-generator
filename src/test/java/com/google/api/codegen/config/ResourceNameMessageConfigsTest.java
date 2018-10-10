@@ -258,7 +258,7 @@ public class ResourceNameMessageConfigsTest {
 
     Mockito.when(createShelvesMethod.getInputType()).thenReturn(TypeRef.of(createShelvesRequest));
     Mockito.when(createShelvesMethod.getOutputType()).thenReturn(TypeRef.of(createShelvesResponse));
-    ProtoMethodModel methodModel = new ProtoMethodModel(createShelvesMethod, protoParser);
+    ProtoMethodModel methodModel = new ProtoMethodModel(createShelvesMethod);
     Field bookField = Mockito.mock(Field.class);
     Mockito.when(bookField.getType()).thenReturn(TypeRef.of(bookType));
     Mockito.when(bookField.getParent()).thenReturn(createShelvesRequest);
@@ -282,7 +282,7 @@ public class ResourceNameMessageConfigsTest {
                 MethodSignature.newBuilder().addFields("name").addFields("book").build(),
                 MethodSignature.newBuilder().addFields("name").build()))
         .when(protoParser)
-        .getMethodSignatures(methodModel);
+        .getMethodSignatures(methodModel.getProtoMethod());
 
     String flatteningConfigName = "flatteningGroupName";
     // Gapic config contributes flattenings {["book"]}.

@@ -108,7 +108,12 @@ public abstract class GapicMethodConfig extends MethodConfig {
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
           FlatteningConfig.createFlatteningConfigs(
-              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              methodModel,
+              protoParser);
       if (flattening == null) {
         error = true;
       }
@@ -131,17 +136,13 @@ public abstract class GapicMethodConfig extends MethodConfig {
             methodConfigProto, diagCollector, retryParamsConfigNames);
     error |= (retryParamsName == null);
 
-    long timeoutMillis = ProtoMethodTransformer.getTimeoutMillis(methodModel);
-    if (timeoutMillis <= 0) {
-      timeoutMillis = methodConfigProto.getTimeoutMillis();
+    long defaultTimeout = methodConfigProto.getTimeoutMillis();
+    if (defaultTimeout <= 0) {
+      defaultTimeout = DEFAULT_MAX_RETRY_DELAY;
     }
-    if (timeoutMillis <= 0) {
-      timeoutMillis = DEFAULT_MAX_RETRY_DELAY;
-    }
+    long timeoutMillis = ProtoMethodTransformer.getTimeoutMillis(methodModel, defaultTimeout);
+
     Duration timeout = Duration.ofMillis(timeoutMillis);
-    if (timeout.toMillis() <= 0) {
-      timeout = Duration.ofMillis(ProtoMethodTransformer.getTimeoutMillis(methodModel));
-    }
     if (timeout.toMillis() <= 0) {
       diagCollector.addDiag(
           Diag.error(

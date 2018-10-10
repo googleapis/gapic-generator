@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 public class ProtoMethodTransformer implements MethodTransformer {
   private static final PagingParameters PAGING_PARAMETERS = new ProtoPagingParameters();
   private static final int MILLIS_PER_SECOND = 1000;
-  private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
 
   @Override
   public boolean isIgnoredParameter(String parameter) {
@@ -37,26 +36,17 @@ public class ProtoMethodTransformer implements MethodTransformer {
 
   @Override
   public String getTimeoutMillis(MethodModel method) {
-    return String.valueOf(getTimeoutMillisOrDefault((ProtoMethodModel) method));
+    return String.valueOf(getTimeoutMillis((ProtoMethodModel) method, DEFAULT_MAX_RETRY_DELAY));
   }
 
-  public static long getTimeoutMillis(ProtoMethodModel method) {
+  public static long getTimeoutMillis(ProtoMethodModel method, long defaultTimeout) {
     Model model = method.getProtoMethod().getModel();
     for (BackendRule backendRule : model.getServiceConfig().getBackend().getRulesList()) {
       if (backendRule.getSelector().equals(method.getFullName())) {
         return (long) Math.ceil(backendRule.getDeadline() * MILLIS_PER_SECOND);
       }
     }
-    return -1;
-  }
-
-  /** Get the timeout value from the method settings, or return a default value if not found. */
-  public static long getTimeoutMillisOrDefault(ProtoMethodModel methodModel) {
-    long timeoutMillis = getTimeoutMillis(methodModel);
-    if (timeoutMillis <= 0) {
-      return DEFAULT_MAX_RETRY_DELAY;
-    }
-    return timeoutMillis;
+    return defaultTimeout;
   }
 
   @Override
