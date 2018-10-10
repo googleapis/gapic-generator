@@ -264,6 +264,24 @@ public class ProtoParserTest {
     assertThat(additionalSignature2.getFieldsList().get(2)).isEqualTo("string_builder");
   }
 
+  @Test
+  public void testEmptySignature() {
+    // Test that we can detect empty method signatures.
+    Method listShelvesMethod =
+        libraryProtoFile
+            .getInterfaces()
+            .stream()
+            .filter(i -> i.lookupMethod("ListShelves") != null)
+            .findFirst()
+            .get()
+            .lookupMethod("ListShelves");
+    List<MethodSignature> listShelvesFlattenings =
+        protoParser.getMethodSignatures(listShelvesMethod);
+    assertThat(listShelvesFlattenings.size()).isEqualTo(1);
+    MethodSignature emptySignature = listShelvesFlattenings.get(0);
+    assertThat(emptySignature.getFieldsList().size()).isEqualTo(0);
+  }
+
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
   @Test
   public void testGetAuthScopes() {
