@@ -91,7 +91,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   // e.g. createPathTemplate("bookShelves/*/books/{book}") returns
   // PathTemplate.create("bookShelves/{bookShelf}/books/{book}")
   @VisibleForTesting
-  static String escapePathTemplate(String template) {
+  public static String escapePathTemplate(String template) {
     String[] pieces = template.split("/");
     List<String> newPieces = Arrays.asList(pieces);
     // Iterate only over wildcard pieces.
@@ -119,7 +119,10 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       ProtoParser protoParser) {
 
     // If the proto annotation path template is effectively the same path template,
-    // irrespective of wildcards, as one from the gapic config CollectionConfigProto,
+    // irrespective of wildcards, as one from the gapic config Collboolean foundResource = false;
+    // for (Field messageFields : messageType.getFields()) {
+    //   if mes
+    // }ectionConfigProto,
     // then use the GAPIC config path template.
     Optional<SingleResourceNameConfig> correspondingGapicConfigResourceName =
         resourceNamesFromConfigs

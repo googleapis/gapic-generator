@@ -117,6 +117,7 @@ import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
@@ -1769,7 +1770,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = ShelfName.of("[SHELF_ID]");
+   *   ResourceName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
    *   ListStringsRequest request = ListStringsRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -1817,7 +1818,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = ShelfName.of("[SHELF_ID]");
+   *   ResourceName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
    *   ListStringsRequest request = ListStringsRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -1980,8 +1981,32 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ArchivedBookName.format("[ARCHIVE_PATH]", "[BOOK_ID]");
-   *   BookFromArchive response = libraryClient.getBookFromArchive(formattedName);
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+   *   BookFromArchive response = libraryClient.getBookFromArchive(name);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final BookFromArchive getBookFromArchive(ArchivedBookName name) {
+
+    GetBookFromArchiveRequest request =
+        GetBookFromArchiveRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .build();
+    return getBookFromArchive(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book from an archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+   *   BookFromArchive response = libraryClient.getBookFromArchive(name.toString());
    * }
    * </code></pre>
    *

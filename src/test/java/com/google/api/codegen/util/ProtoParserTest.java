@@ -143,6 +143,25 @@ public class ProtoParserTest {
   }
 
   @Test
+  public void testGetResourceTypeEntityName() {
+    MessageType createBookRequest =
+        libraryProtoFile
+            .getMessages()
+            .stream()
+            .filter(m -> m.getSimpleName().equals("CreateBookRequest"))
+            .findFirst()
+            .get();
+    Field shelfNameField =
+        createBookRequest
+            .getFields()
+            .stream()
+            .filter(f -> f.getSimpleName().equals("name"))
+            .findFirst()
+            .get();
+    assertThat(protoParser.getResourceTypeEntityName(shelfNameField)).isEqualTo("shelf");
+  }
+
+  @Test
   public void testGetLongRunningOperation() {
     OperationTypes operationTypes = protoParser.getLongRunningOperation(getBigBookMethod);
 

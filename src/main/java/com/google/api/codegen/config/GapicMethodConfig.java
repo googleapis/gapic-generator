@@ -161,7 +161,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
         .getMessageType()
         .getFields()
         .stream()
-        .anyMatch(f -> !Strings.isNullOrEmpty(protoParser.getResourceMessage(f)))) {
+        .anyMatch(f -> !Strings.isNullOrEmpty(protoParser.getResourceTypeEntityName(f)))) {
       String methodInputPackageName =
           ((ProtoFile) method.getInputType().getMessageType().getParent()).getProto().getPackage();
       if (!defaultPackageName.equals(methodInputPackageName)) {

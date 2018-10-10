@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.Resource;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -51,20 +50,19 @@ public abstract class ResourceNameMessageConfig {
       MessageType message, ProtoParser protoParser) {
     ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
     for (Field field : message.getFields()) {
-      Resource resource = protoParser.getResource(field);
-      if (resource != null) {
-        String baseName = resource.getBaseName();
-        if (Strings.isNullOrEmpty(baseName)) {
-          baseName = protoParser.getDefaultResourceEntityName(field);
-        }
+      // TODO(andrealin): Can there be multiple fields be Resource[Set]s in a single message?
+      String baseName = protoParser.getResourceOrSetEntityName(field);
+      if (!Strings.isNullOrEmpty(baseName)) {
         builder.put(field.getSimpleName(), baseName);
         continue;
       }
-      String resourceType = protoParser.getResourceMessage(field);
+
+      String resourceType = protoParser.getResourceTypeEntityName(field);
       if (!Strings.isNullOrEmpty(resourceType)) {
         builder.put(field.getSimpleName(), resourceType);
       }
     }
+
     ImmutableMap<String, String> fieldEntityMap = builder.build();
     if (fieldEntityMap.isEmpty()) {
       // Return a null config when no fields were resource types; this is so empty proto annotations

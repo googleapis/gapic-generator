@@ -663,7 +663,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
       // This was a fixed resource name, so make a Fixed resource name config.
       FixedResourceNameConfig fixedNameConfig =
-          FixedResourceNameConfig.createFixedResourceNameConfig(diagCollector, field, protoParser);
+          FixedResourceNameConfig.createFixedResourceNameConfig(
+              diagCollector, field, resource, protoParser);
       if (fixedNameConfig == null) {
         return null;
       }
@@ -687,10 +688,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Create the ResourceNameOneOfConfigs.
     for (Field resourceSetField : resourceSetFields.keySet()) {
       ResourceSet resourceSet = resourceSetFields.get(resourceSetField);
-      String resourceSetName = resourceSet.getBaseName();
-      if (Strings.isNullOrEmpty(resourceSetName)) {
-        resourceSetName = protoParser.getDefaultResourceEntityName(resourceSetField);
-      }
+      String resourceSetName = protoParser.getResourceSetEntityName(resourceSetField);
       ResourceNameOneofConfig resourceNameOneofConfig =
           ResourceNameOneofConfig.createResourceNameOneof(
               diagCollector,

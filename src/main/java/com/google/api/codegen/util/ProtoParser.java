@@ -74,49 +74,79 @@ public class ProtoParser {
     return null;
   }
 
-  /** Return the entity name, e.g. "shelf" for a resource field. */
-  public String getResourceMessage(Field field) {
-    String resourceName =
-        (String) field.getOptionFields().get(AnnotationsProto.resourceType.getDescriptor());
+  /** Return the entity name, e.g. "shelf", for a field with resource_type. */
+  public String getResourceTypeEntityName(Field field) {
+    String resourceName = getResourceType(field);
     if (!Strings.isNullOrEmpty(resourceName)) {
       if (field.getType().isMessage()
           && resourceName.equals(field.getType().getMessageType().getFullName())) {
         // We don't care if the resource type of the field is the field itself.
         return null;
       }
+      // TODO(andrealin): Parse out Resources from ResourceSets.
       TypeRef resourceType = field.getModel().getSymbolTable().lookupType(resourceName);
       if (resourceType == null) {
         return resourceName;
       }
+
+      // Look for the Resource or ResourceSet field in the target message.
+      MessageType messageType = resourceType.getMessageType();
+      for (Field resourceField : messageType.getFields()) {
+        String entityName = getResourceOrSetEntityName(resourceField);
+        if (!Strings.isNullOrEmpty(entityName)) {
+          return entityName;
+        }
+      }
+
       return resourceType.getMessageType().getSimpleName().toLowerCase();
     }
     // return field.getParent().getFullName();
     return null;
   }
 
-  /** Return the entity name, e.g. "shelf" for a resource field. */
+  /** Return the entity name, e.g. "shelf" for a resource or resource set field. */
   public String getDefaultResourceEntityName(Field field) {
     return field.getParent().getSimpleName().toLowerCase();
   }
 
-  /** Return the entity name, e.g. "shelf" for a resource field. */
+  public String getResourceOrSetEntityName(Field field) {
+    if (getResource(field) != null) {
+      return getResourceEntityName(field);
+    }
+    if (getResourceSet(field) != null) {
+      return getResourceSetEntityName(field);
+    }
+    return null;
+  }
+
+  /**
+   * Return the entity name, e.g. "shelf" for a resource field, or use the given default name if no
+   * explicit name override was found.
+   *
+   * @param field The field to f
+   * @param defaultEntityName The value to return if no custom name was found.
+   */
+  // TODO(andrealin): Remove this method.
   public String getResourceEntityName(Field field, String defaultEntityName) {
-    Resource resource =
-        (Resource) field.getOptionFields().get(AnnotationsProto.resource.getDescriptor());
+    Resource resource = getResource(field);
     if (resource != null && !Strings.isNullOrEmpty(resource.getBaseName())) {
       return resource.getBaseName();
     }
     return defaultEntityName;
   }
 
+  /** Return the entity name, e.g. "shelf" for a resource field. */
+  public String getResourceEntityName(Field field) {
+    return getResourceEntityName(field, getDefaultResourceEntityName(field));
+  }
+
   /** Return the entity name, e.g. "shelf" for a resource set field. */
-  public String getResourceSetEntityName(Field field, String defaultEntityName) {
-    ResourceSet resourceSet =
-        (ResourceSet) field.getOptionFields().get(AnnotationsProto.resourceSet.getDescriptor());
+  public String getResourceSetEntityName(Field field) {
+    ResourceSet resourceSet = getResourceSet(field);
     if (resourceSet != null && !Strings.isNullOrEmpty(resourceSet.getBaseName())) {
       return resourceSet.getBaseName();
     }
-    return defaultEntityName;
+    return getDefaultResourceEntityName(field);
   }
 
   /** Get long running settings. */
@@ -163,7 +193,7 @@ public class ProtoParser {
     return method.getDescriptor().getMethodAnnotation(AnnotationsProto.retry);
   }
 
-  /** Return the extra retry codes for the given method. */
+  /** Return the resource type for the given field, according to the proto annotations. */
   public String getResourceType(Field field) {
     return (String) field.getOptionFields().get(AnnotationsProto.resourceType.getDescriptor());
   }

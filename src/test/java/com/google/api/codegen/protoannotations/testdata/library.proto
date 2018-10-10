@@ -148,8 +148,10 @@ service LibraryService {
     option (google.api.http) = { put: "/v1/{name=bookShelves/*/books/*}" body: "book" };
     option (google.api.method_signature) = {
       fields: ["name", "book"]
-      additional_signatures: [
-        {fields: ["name", "optional_foo", "book", "update_mask", "physical_mask"]}
+      function_name: "update_book_1"
+      additional_signatures: [{
+        fields: ["name", "optional_foo", "book", "update_mask", "physical_mask"]
+        function_name: "update_book_2"}
       ]
     };
     option (google.api.retry) = {
@@ -443,7 +445,7 @@ message BookFromArchive {
   // Book names have the form `archives/{archive_id}/books/{book_id}`.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book.archived_book"];
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   // The name of the book author.
   string author = 2;
@@ -652,7 +654,7 @@ message GetBookRequest {
   // The name of the book to retrieve.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book.book"];
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 }
 
 // Request message for LibraryService.ListBooks.
@@ -701,7 +703,7 @@ message UpdateBookRequest {
   // The name of the book to update.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book.book"];
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   // An optional foo.
   string optional_foo = 2;
@@ -723,7 +725,7 @@ message DeleteBookRequest {
   // The name of the book to delete.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book.book"];
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 }
 
 // Describes what book to move (name) and what shelf we're moving it
@@ -732,7 +734,7 @@ message MoveBookRequest {
   // The name of the book to move.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book.book"];
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   // The name of the destination shelf.
   string other_shelf_name = 2 [
@@ -754,7 +756,7 @@ message ListStringsResponse {
 message AddCommentsRequest {
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book.book"];
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   repeated Comment comments = 2 [
     (google.api.required) = true];
@@ -786,7 +788,8 @@ message GetBookFromArchiveRequest {
   // The name of the book to retrieve.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book.archived_book"];
+    // TODO(andrealin): switch to archived_book.
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 }
 
 // Request message for LibraryService.GetBookFromAnywhere.
@@ -816,7 +819,7 @@ message UpdateBookIndexRequest {
   // The name of the book to update.
   string name = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book.book"];
+    (google.api.resource_type) = "google.example.library.v1.Book"];
 
   // The name of the index for the book
   string index_name = 2 [
@@ -842,7 +845,7 @@ message DiscussBookRequest {
 message FindRelatedBooksRequest {
   repeated string names = 1 [
     (google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book.book"];
+    (google.api.resource_type) = "google.example.library.v1.Book"];
   repeated string shelves = 2 [
     (google.api.required) = true,
     (google.api.resource_type) = "google.example.library.v1.Shelf"];
@@ -853,7 +856,7 @@ message FindRelatedBooksRequest {
 // Test repeated field with resource name format in page streaming response
 message FindRelatedBooksResponse {
   repeated string names = 1 [
-    (google.api.resource_type) = "google.example.library.v1.Book.book"];
+    (google.api.resource_type) = "google.example.library.v1.Book"];
   string next_page_token = 2;
 }
 
@@ -888,7 +891,7 @@ message TestOptionalRequiredFlatteningParamsRequest {
   bytes required_singular_bytes = 8 [(google.api.required) = true];
   InnerMessage required_singular_message = 9 [(google.api.required) = true];
   string required_singular_resource_name = 10 [(google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book.book"
+    (google.api.resource_type) = "google.example.library.v1.Book"
   ];
   string required_singular_resource_name_oneof = 11 [(google.api.required) = true,
     (google.api.resource_type) = "google.example.library.v1.Book"
@@ -909,7 +912,7 @@ message TestOptionalRequiredFlatteningParamsRequest {
   repeated bytes required_repeated_bytes = 28 [(google.api.required) = true];
   repeated InnerMessage required_repeated_message = 29 [(google.api.required) = true];
   repeated string required_repeated_resource_name = 30 [(google.api.required) = true,
-    (google.api.resource_type) = "google.example.library.v1.Book.book"];
+    (google.api.resource_type) = "google.example.library.v1.Book"];
   repeated string required_repeated_resource_name_oneof = 31 [(google.api.required) = true,
     (google.api.resource_type) = "google.example.library.v1.Book"];
   repeated string required_repeated_resource_name_common = 34 [(google.api.required) = true,
@@ -930,7 +933,7 @@ message TestOptionalRequiredFlatteningParamsRequest {
   bytes optional_singular_bytes = 58;
   InnerMessage optional_singular_message = 59;
   string optional_singular_resource_name = 60 [
-    (google.api.resource_type) = "google.example.library.v1.Book.book"
+    (google.api.resource_type) = "google.example.library.v1.Book"
   ];
   string optional_singular_resource_name_oneof = 61 [
     (google.api.resource_type) = "google.example.library.v1.Book"
@@ -951,7 +954,7 @@ message TestOptionalRequiredFlatteningParamsRequest {
   repeated bytes optional_repeated_bytes = 78;
   repeated InnerMessage optional_repeated_message = 79;
   repeated string optional_repeated_resource_name = 80 [
-    (google.api.resource_type) = "google.example.library.v1.Book.book"
+    (google.api.resource_type) = "google.example.library.v1.Book"
   ];
   repeated string optional_repeated_resource_name_oneof = 81 [
     (google.api.resource_type) = "google.example.library.v1.Book"

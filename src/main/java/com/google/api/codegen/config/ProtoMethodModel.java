@@ -230,7 +230,7 @@ public final class ProtoMethodModel implements MethodModel {
         .getMessageType()
         .getFields()
         .stream()
-        .filter(f -> !Strings.isNullOrEmpty(protoParser.getResourceMessage(f)))
+        .filter(f -> !Strings.isNullOrEmpty(protoParser.getResourceTypeEntityName(f)))
         .map(ProtoField::new)
         .collect(Collectors.toList());
   }

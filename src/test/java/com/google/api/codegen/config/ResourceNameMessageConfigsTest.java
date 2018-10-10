@@ -52,7 +52,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 public class ResourceNameMessageConfigsTest {
-  private static final ProtoParser protoParser = Mockito.mock(ProtoParser.class);
+  private static final ProtoParser protoParser = Mockito.spy(ProtoParser.class);
   private static ConfigProto configProto;
   private static final Field shelfName = Mockito.mock(Field.class);
   private static final Field shelfTheme = Mockito.mock(Field.class);
@@ -132,10 +132,13 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(bookMessage.getSimpleName()).thenReturn("Book");
     Mockito.when(bookMessage.getFields()).thenReturn(ImmutableList.of(bookAuthor, bookName));
 
-    Mockito.when(protoParser.getResource(bookName))
-        .thenReturn(Resource.newBuilder().setPath(ASTERISK_BOOK_PATH).build());
-    Mockito.when(protoParser.getResource(shelfName))
-        .thenReturn(Resource.newBuilder().setPath(ASTERISK_SHELF_PATH).build());
+    Mockito.doReturn(Resource.newBuilder().setPath(ASTERISK_BOOK_PATH).build())
+        .when(protoParser)
+        .getResource(bookName);
+    Mockito.doReturn(Resource.newBuilder().setPath(ASTERISK_SHELF_PATH).build())
+        .when(protoParser)
+        .getResource(shelfName);
+    Mockito.doReturn(null).when(protoParser).getResourceSet(Mockito.any());
 
     Mockito.when(protoFile.getSimpleName()).thenReturn("library");
     Mockito.when(protoFile.getMessages()).thenReturn(ImmutableList.of(bookMessage, shelfMessage));
@@ -219,9 +222,6 @@ public class ResourceNameMessageConfigsTest {
 
   @Test
   public void testCreateResourceNameConfigs() {
-    Mockito.when(protoParser.getResourceEntityName(Mockito.any(), Mockito.any()))
-        .thenCallRealMethod();
-    Mockito.when(protoParser.getDefaultResourceEntityName(Mockito.any())).thenCallRealMethod();
     DiagCollector diagCollector = new BoundedDiagCollector();
     Map<String, ResourceNameConfig> resourceNameConfigs =
         GapicProductConfig.createResourceNameConfigs(
@@ -273,15 +273,16 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(createShelvesRequest.getFields())
         .thenReturn(ImmutableList.of(bookField, nameField));
 
-    Mockito.when(protoParser.getResourceType(bookField)).thenReturn("library.Book");
-    Mockito.when(protoParser.getResourceType(nameField)).thenReturn("library.Shelf");
+    Mockito.doReturn("library.Book").when(protoParser).getResourceType(bookField);
+    Mockito.doReturn("library.Shelf").when(protoParser).getResourceType(nameField);
 
     // ProtoFile contributes flattenings {["name", "book"], ["name"]}.
-    Mockito.when(protoParser.getMethodSignatures(methodModel))
-        .thenReturn(
+    Mockito.doReturn(
             Arrays.asList(
                 MethodSignature.newBuilder().addFields("name").addFields("book").build(),
-                MethodSignature.newBuilder().addFields("name").build()));
+                MethodSignature.newBuilder().addFields("name").build()))
+        .when(protoParser)
+        .getMethodSignatures(methodModel);
 
     String flatteningConfigName = "flatteningGroupName";
     // Gapic config contributes flattenings {["book"]}.
