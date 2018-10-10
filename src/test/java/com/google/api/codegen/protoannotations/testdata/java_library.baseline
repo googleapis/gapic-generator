@@ -455,9 +455,36 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   SomeMessage message = SomeMessage.newBuilder().build();
-   *   Shelf response = libraryClient.getShelf(formattedName, message);
+   *   Shelf response = libraryClient.getShelf(name, message);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to retrieve.
+   * @param message Field to verify that message-type query parameter gets flattened.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(ShelfName name, SomeMessage message) {
+
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setMessage(message)
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   SomeMessage message = SomeMessage.newBuilder().build();
+   *   Shelf response = libraryClient.getShelf(name.toString(), message);
    * }
    * </code></pre>
    *
@@ -482,10 +509,40 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
-   *   Shelf response = libraryClient.getShelf(formattedName, message, stringBuilder);
+   *   Shelf response = libraryClient.getShelf(name, message, stringBuilder);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to retrieve.
+   * @param message Field to verify that message-type query parameter gets flattened.
+   * @param stringBuilder
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(ShelfName name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
+
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setMessage(message)
+        .setStringBuilder(stringBuilder)
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   SomeMessage message = SomeMessage.newBuilder().build();
+   *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
+   *   Shelf response = libraryClient.getShelf(name.toString(), message, stringBuilder);
    * }
    * </code></pre>
    *
@@ -512,10 +569,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .setOptions(options)
    *     .build();
    *   Shelf response = libraryClient.getShelf(request);
@@ -536,10 +593,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .setOptions(options)
    *     .build();
    *   ApiFuture&lt;Shelf&gt; future = libraryClient.getShelfCallable().futureCall(request);
@@ -851,9 +908,36 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   Book book = Book.newBuilder().build();
-   *   Book response = libraryClient.createBook(formattedName, book);
+   *   Book response = libraryClient.createBook(name, book);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf in which the book is created.
+   * @param book The book to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book createBook(ShelfName name, Book book) {
+
+    CreateBookRequest request =
+        CreateBookRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setBook(book)
+        .build();
+    return createBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   Book book = Book.newBuilder().build();
+   *   Book response = libraryClient.createBook(name.toString(), book);
    * }
    * </code></pre>
    *
@@ -878,10 +962,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .setBook(book)
    *     .build();
    *   Book response = libraryClient.createBook(request);
@@ -902,10 +986,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .setBook(book)
    *     .build();
    *   ApiFuture&lt;Book&gt; future = libraryClient.createBookCallable().futureCall(request);
@@ -1756,7 +1840,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1766,7 +1850,42 @@ public class LibraryClient implements BackgroundResource {
    *     .setAlignment(alignment)
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
-   *   libraryClient.addComments(formattedName, comments);
+   *   libraryClient.addComments(name, comments);
+   * }
+   * </code></pre>
+   *
+   * @param name
+   * @param comments
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void addComments(ShelfBookName name, List<Comment> comments) {
+
+    AddCommentsRequest request =
+        AddCommentsRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .addAllComments(comments)
+        .build();
+    addComments(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds comments to a book
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ByteString comment = ByteString.copyFromUtf8("");
+   *   Comment.Stage stage = Comment.Stage.UNSET;
+   *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
+   *   Comment commentsElement = Comment.newBuilder()
+   *     .setComment(comment)
+   *     .setStage(stage)
+   *     .setAlignment(alignment)
+   *     .build();
+   *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
+   *   libraryClient.addComments(name.toString(), comments);
    * }
    * </code></pre>
    *
@@ -1791,7 +1910,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1802,7 +1921,7 @@ public class LibraryClient implements BackgroundResource {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .addAllComments(comments)
    *     .build();
    *   libraryClient.addComments(request);
@@ -1823,7 +1942,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1834,7 +1953,7 @@ public class LibraryClient implements BackgroundResource {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .addAllComments(comments)
    *     .build();
    *   ApiFuture&lt;Void&gt; future = libraryClient.addCommentsCallable().futureCall(request);
@@ -2002,7 +2121,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   BookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .setAltBookName(altBookName.toString())
@@ -2026,7 +2145,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   BookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .setAltBookName(altBookName.toString())
@@ -2096,7 +2215,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2118,7 +2237,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -8275,18 +8394,18 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedName = ShelfName.format("[SHELF_ID]");
+    ShelfName name = ShelfName.of("[SHELF_ID]");
     SomeMessage message = SomeMessage.newBuilder().build();
 
     Shelf actualResponse =
-        client.getShelf(formattedName, message);
+        client.getShelf(name, message);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
     Assert.assertEquals(message, actualRequest.getMessage());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -8301,10 +8420,10 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedName = ShelfName.format("[SHELF_ID]");
+      ShelfName name = ShelfName.of("[SHELF_ID]");
       SomeMessage message = SomeMessage.newBuilder().build();
 
-      client.getShelf(formattedName, message);
+      client.getShelf(name, message);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -8324,19 +8443,19 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedName = ShelfName.format("[SHELF_ID]");
+    ShelfName name = ShelfName.of("[SHELF_ID]");
     SomeMessage message = SomeMessage.newBuilder().build();
     com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
     Shelf actualResponse =
-        client.getShelf(formattedName, message, stringBuilder);
+        client.getShelf(name, message, stringBuilder);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
     Assert.assertEquals(message, actualRequest.getMessage());
     Assert.assertEquals(stringBuilder, actualRequest.getStringBuilder());
     Assert.assertTrue(
@@ -8352,11 +8471,11 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedName = ShelfName.format("[SHELF_ID]");
+      ShelfName name = ShelfName.of("[SHELF_ID]");
       SomeMessage message = SomeMessage.newBuilder().build();
       com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
-      client.getShelf(formattedName, message, stringBuilder);
+      client.getShelf(name, message, stringBuilder);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -8498,7 +8617,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void createBookTest() {
-    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    BookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;

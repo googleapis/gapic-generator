@@ -199,7 +199,7 @@ public class ProtoParserTest {
   @Test
   public void testGetServiceAddress() {
     String defaultHost = protoParser.getServiceAddress(libraryService);
-    assertThat(defaultHost).isEqualTo("library-example.googleapis.com");
+    assertThat(defaultHost).isEqualTo("library-example.googleapis.com:1234");
   }
 
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
