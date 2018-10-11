@@ -90,7 +90,6 @@ public abstract class LongRunningConfig {
   private static LongRunningConfig createLongRunningConfigFromProtoFile(
       Method method, DiagCollector diagCollector, ProtoParser protoParser) {
 
-    boolean error = false;
     Model model = method.getModel();
     OperationTypes operationTypes = protoParser.getLongRunningOperation(method);
     if (operationTypes == null
@@ -110,14 +109,12 @@ public abstract class LongRunningConfig {
               SimpleLocation.TOPLEVEL,
               "Type not found for long running config: '%s'",
               responseTypeName));
-      error = true;
     } else if (!returnType.isMessage()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Type for long running config is not a message: '%s'",
               responseTypeName));
-      error = true;
     }
 
     if (metadataType == null) {
@@ -126,33 +123,31 @@ public abstract class LongRunningConfig {
               SimpleLocation.TOPLEVEL,
               "Metadata type not found for long running config: '%s'",
               metadataTypeName));
-      error = true;
     } else if (!metadataType.isMessage()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Metadata type for long running config is not a message: '%s'",
               metadataTypeName));
-      error = true;
+    }
+
+    if (diagCollector.getErrorCount() > 0) {
+      return null;
     }
 
     Duration initialPollDelay = Duration.ofMillis(LRO_INITIAL_POLL_DELAY_MILLIS);
     Duration maxPollDelay = Duration.ofMillis(LRO_MAX_POLL_DELAY_MILLIS);
     Duration totalPollTimeout = Duration.ofMillis(LRO_TOTAL_POLL_TIMEOUT_MILLS);
 
-    if (error) {
-      return null;
-    } else {
-      return new AutoValue_LongRunningConfig(
-          ProtoTypeRef.create(returnType),
-          ProtoTypeRef.create(metadataType),
-          LRO_IMPLEMENTS_CANCEL,
-          LRO_IMPLEMENTS_DELETE,
-          initialPollDelay,
-          LRO_POLL_DELAY_MULTIPLIER,
-          maxPollDelay,
-          totalPollTimeout);
-    }
+    return new AutoValue_LongRunningConfig(
+        ProtoTypeRef.create(returnType),
+        ProtoTypeRef.create(metadataType),
+        LRO_IMPLEMENTS_CANCEL,
+        LRO_IMPLEMENTS_DELETE,
+        initialPollDelay,
+        LRO_POLL_DELAY_MULTIPLIER,
+        maxPollDelay,
+        totalPollTimeout);
   }
 
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
