@@ -137,12 +137,12 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               retryCodesConfig,
               retrySettingsDefinition.keySet(),
               protoParser);
-      methodConfigs = createMethodConfigs(methodConfigsMap, apiInterface, interfaceConfigProto);
       if (methodConfigsMap == null) {
         diagCollector.addDiag(
             Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
         return null;
       }
+      methodConfigs = createMethodConfigs(methodConfigsMap, apiInterface, interfaceConfigProto);
     } else {
       methodConfigsMap = ImmutableMap.of();
       methodConfigs = ImmutableList.of();

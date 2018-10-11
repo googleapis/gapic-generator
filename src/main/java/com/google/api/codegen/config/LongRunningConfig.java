@@ -104,8 +104,8 @@ public abstract class LongRunningConfig {
       return null;
     }
 
-    String responseTypeName = operationTypes.getResponse().split(":")[0];
-    String metadataTypeName = operationTypes.getMetadata().split(":")[0];
+    String responseTypeName = operationTypes.getResponse();
+    String metadataTypeName = operationTypes.getMetadata();
 
     if (responseTypeName.equals(longRunningConfigProto.getReturnType())
         && metadataTypeName.equals(longRunningConfigProto.getMetadataType())) {

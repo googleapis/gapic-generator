@@ -178,7 +178,7 @@ public class ProtoParserTest {
 
     OperationTypes expected =
         OperationTypes.newBuilder()
-            .setResponse("google.example.library.v1.Book:book")
+            .setResponse("google.example.library.v1.Book")
             .setMetadata("google.example.library.v1.GetBigBookMetadata")
             .build();
     assertThat(operationTypes).isEqualTo(expected);
