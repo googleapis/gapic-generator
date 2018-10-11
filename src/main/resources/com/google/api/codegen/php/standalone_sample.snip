@@ -1,106 +1,132 @@
 @extends "php/common.snip"
 
 @snippet generate(sampleFile)
-    //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "{@sampleFile.className}" ]
-    //// STUB standalone sample "{@sampleFile.className}" /////
-
-    // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-
-    @let apiMethod = sampleFile.libraryMethod
-        @let sample = apiMethod.samples.get(0)
-        // [START {@sample.regionTag}]
-
-        // FIXME: Insert here boilerplate code not directly related to the method call itself.
-    
-        //      calling form: "{@sample.callingForm.toString}"
-        //        region tag: "{@sample.regionTag}"
-        //         className: "{@sampleFile.className}"
-        //          valueSet: "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
-        //       description: "{@sample.valueSet.description}"
-        //        {@sample.valueSet.parameters}
-        //      apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
-
-        // [START {@sample.regionTag}_core]
-
-        // FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-        /*
-        {@standaloneSample(sampleFile, apiMethod, sample)}
-        */
-        // [END {@sample.regionTag}_core]
-
-        // FIXME: Insert here clean-up code.
-             
-        // [END {@sample.regionTag}]
-        @end
-    @end
+    {@standaloneSample(sampleFile, sampleFile.libraryMethod, sampleFile.libraryMethod.samples.get(0))}
 @end
 
 # The structure of this should be parallel to that of method_sample.snip:@incodeSampleCall
 @snippet standaloneSample(sampleFile, apiMethod, sample)
+    <?php
+    {@license(sampleFile.fileHeader)}
+
+    /*
+     * DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+     */
+
+    // [START {@sample.regionTag}]
+    namespace {@sampleFile.fileHeader.packageName};
+
     @if sample.initCode.importSection.appImports
         {@importList(sample.initCode.importSection.appImports)}
 
-
     @end
-    @if sampleFile.extraInfo.hasMissingDefaultOptions
-        $options = [
-            @if sampleFile.extraInfo.missingDefaultServiceAddress
-                'serviceAddress' => 'my-service-address',
-            @end
-            @if sampleFile.extraInfo.missingDefaultServiceScopes
-                'credentialsConfig' => [
-                    'scopes' => ['my-service-scope'],
-                ],
-            @end
-            ];
-        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
+    function {@sample.sampleFunctionName}({@formalArgs(sample.initCode.argDefaultParams)})
+    {
+        // [START {@sample.regionTag}_core]
 
-
-    @else
-        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
-
-
-    @end
-    @if sample.initCode.lines
-        {@initCode(sample.initCode, apiMethod.apiVariableName)}
-
-
-    @end
-    try {
-        @switch sample.callingForm
-        @case "LongRunningRequest"
-            {@longRunningSampleCode(sample, apiMethod)}
-        @case "LongRunningRequestAsync"
-            {@longRunningAsyncSampleCode(sample, apiMethod)}
-        @case "Request"
-            {@requestSampleCode(sample, apiMethod)}
-        @case "RequestPaged"
-            {@pagedSampleCode(sample, apiMethod)}
-        @case "RequestPagedAll"
-            {@pagedAllSampleCode(sample, apiMethod)}
-        @case "RequestStreamingBidi"
-            {@bidiStreamingSampleCode(sample, apiMethod)}
-        @case "RequestStreamingBidiAsync"
-            {@bidiStreamingAsyncSampleCode(sample, apiMethod)}
-        @case "RequestStreamingClient"
-            {@clientStreamingSampleCode(sample, apiMethod)}
-        @case "RequestStreamingClientAsync"
-            {@clientStreamingAsyncSampleCode(sample, apiMethod)}
-        @case "RequestStreamingServer"
-            {@serverStreamingSampleCode(sample, apiMethod)}
-        @default
-            $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
-        @end
-    } finally {
         @if sampleFile.extraInfo.hasMissingDefaultOptions
-            if (isset(${@apiMethod.apiVariableName})) {
-                ${@apiMethod.apiVariableName}->close();
-            }
+            $options = [
+                @if sampleFile.extraInfo.missingDefaultServiceAddress
+                    'serviceAddress' => 'my-service-address',
+                @end
+                @if sampleFile.extraInfo.missingDefaultServiceScopes
+                    'credentialsConfig' => [
+                        'scopes' => ['my-service-scope'],
+                    ],
+                @end
+                ];
+            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
+
         @else
-            ${@apiMethod.apiVariableName}->close();
+            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
+
         @end
+        @if sample.initCode.lines
+            {@initCode(sample.initCode, apiMethod.apiVariableName)}
+
+        @end
+        try {
+            @switch sample.callingForm
+            @case "LongRunningRequest"
+                {@longRunningSampleCode(sample, apiMethod)}
+            @case "LongRunningRequestAsync"
+                {@longRunningAsyncSampleCode(sample, apiMethod)}
+            @case "Request"
+                {@requestSampleCode(sample, apiMethod)}
+            @case "RequestPaged"
+                {@pagedSampleCode(sample, apiMethod)}
+            @case "RequestPagedAll"
+                {@pagedAllSampleCode(sample, apiMethod)}
+            @case "RequestStreamingBidi"
+                {@bidiStreamingSampleCode(sample, apiMethod)}
+            @case "RequestStreamingBidiAsync"
+                {@bidiStreamingAsyncSampleCode(sample, apiMethod)}
+            @case "RequestStreamingClient"
+                {@clientStreamingSampleCode(sample, apiMethod)}
+            @case "RequestStreamingClientAsync"
+                {@clientStreamingAsyncSampleCode(sample, apiMethod)}
+            @case "RequestStreamingServer"
+                {@serverStreamingSampleCode(sample, apiMethod)}
+            @default
+                $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+            @end
+        } finally {
+            @if sampleFile.extraInfo.hasMissingDefaultOptions
+                if (isset(${@apiMethod.apiVariableName})) {
+                    ${@apiMethod.apiVariableName}->close();
+                }
+            @else
+                ${@apiMethod.apiVariableName}->close();
+            @end
+        }
+
+        // [END {@sample.regionTag}_core]
     }
+    // [END {@sample.regionTag}]
+    {@processCliArguments(sample)}
+    {@sample.sampleFunctionName}({@formalArgs(sample.initCode.argDefaultParams)});
+@end
+
+@private processCliArguments(sample)
+    @if sample.initCode.argDefaultParams.size
+
+        {@optsArray(sample.initCode.argDefaultParams)}
+        {@defaultOptionsArray(sample.initCode.argDefaultParams)}
+        $options = getopt('', $opts);
+        $options += $defaultOptions;
+
+        @if sample.initCode.argDefaultParams
+            @join param : sample.initCode.argDefaultParams
+                {@variable(param.identifier)} = $options['{@param.identifier}'];
+            @end
+
+
+        @end
+    @end
+@end
+
+@private formalArgs(sampleArgs)
+  @join param : sampleArgs on ", "
+    {@variable(@param.identifier)}
+  @end
+@end
+
+@private optsArray(sampleArgs)
+    $opts = [
+        @join param : sampleArgs
+            '{@param.identifier}::',
+        @end
+    ];
+
+@end
+
+@private defaultOptionsArray(sampleArgs)
+    $defaultOptions = [
+        @join param : sampleArgs
+            '{@param.identifier}' => {@renderInitValue(param.initValue, param.identifier)},
+        @end
+    ];
+
 @end
 
 @private methodCallSampleCode(apiMethod)
@@ -358,7 +384,7 @@
     @if not(view.args.size)
         printf("{@view.format}" . PHP_EOL);
     @else
-        printf("{@view.format}" . PHP_EOL, {@concatenatedArgs(view.args)});
+        printf("{@view.format}" . PHP_EOL, {@commaSeparatedFields(view.args)});
     @end
 @end
 
@@ -377,7 +403,7 @@
 @end
 
 
-@private concatenatedArgs(args)
+@private commaSeparatedFields(args)
     @join arg : args on ", "
         {@variableField(arg)}
     @end
@@ -393,6 +419,12 @@
 
 @private accessor(accessors)
     @join field : accessors on ""
-        ->{@field}()
+        @switch field.kind
+        @case "FIELD"
+            ->{@field.field}()
+        @case "INDEX"
+            # Assume that sample config is right; no need to check bounds.
+            [{@field.index}]
+        @end
     @end
 @end

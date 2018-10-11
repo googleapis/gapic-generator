@@ -104,7 +104,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
-          createFlattening(
+          FlatteningConfig.createFlatteningConfigs(
               diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
       if (flattening == null) {
         error = true;
@@ -137,8 +137,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
               methodModel.getFullName()));
       error = true;
     }
-
-    boolean hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
 
     ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
@@ -206,7 +204,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
           optionalFieldConfigs,
           defaultResourceNameTreatment,
           batching,
-          hasRequestObjectMethod,
           fieldNamePatterns,
           sampleCodeInitFields,
           sampleSpec,

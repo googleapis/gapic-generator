@@ -1555,6 +1555,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return "response";
   }
 
+  public String getSampleFunctionName(MethodModel method) {
+    return getApiMethodName(Name.from("sample").join(method.asName()), VisibilityConfig.PRIVATE);
+  }
+
   /////////////////////////////////// Transport Protocol /////////////////////////////////////////
 
   public Name getTransportProtocolName(TransportProtocol protocol) {

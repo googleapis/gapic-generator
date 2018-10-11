@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
+
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -23,6 +25,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoParser;
@@ -67,7 +70,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      ProtoParser protoParser) {
 
     boolean error = false;
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
@@ -101,8 +105,13 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
-          createFlattening(
-              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+          FlatteningConfig.createFlatteningConfigs(
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              methodModel,
+              protoParser);
       if (flattening == null) {
         error = true;
       }
@@ -125,23 +134,19 @@ public abstract class GapicMethodConfig extends MethodConfig {
             methodConfigProto, diagCollector, retryParamsConfigNames);
     error |= (retryParamsName == null);
 
-    Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
+    long defaultTimeout = methodConfigProto.getTimeoutMillis();
+    if (defaultTimeout <= 0) {
+      defaultTimeout = DEFAULT_MAX_RETRY_DELAY;
+    }
+    long timeoutMillis = ProtoMethodTransformer.getTimeoutMillis(methodModel, defaultTimeout);
+
+    Duration timeout = Duration.ofMillis(timeoutMillis);
     if (timeout.toMillis() <= 0) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Default timeout not found or has invalid value (in method %s)",
               methodModel.getFullName()));
-      error = true;
-    }
-
-    boolean hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
-    if (hasRequestObjectMethod && method.getRequestStreaming()) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "request_object_method incompatible with streaming method %s",
-              method.getFullName()));
       error = true;
     }
 
@@ -155,6 +160,11 @@ public abstract class GapicMethodConfig extends MethodConfig {
       defaultResourceNameTreatment = ResourceNameTreatment.NONE;
     }
 
+    List<String> requiredFields = protoParser.getRequiredFields(method);
+    if (requiredFields.isEmpty() && methodConfigProto != null) {
+      requiredFields = methodConfigProto.getRequiredFieldsList();
+    }
+
     ImmutableList<FieldConfig> requiredFieldConfigs =
         createFieldNameConfigs(
             diagCollector,
@@ -162,8 +172,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getRequiredFields(
-                diagCollector, methodModel, methodConfigProto.getRequiredFieldsList()));
+            getRequiredFields(diagCollector, methodModel, requiredFields));
 
     ImmutableList<FieldConfig> optionalFieldConfigs =
         createFieldNameConfigs(
@@ -200,10 +209,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            method,
-            diagCollector,
-            methodConfigProto.getLongRunning(),
-            ProtoParser.getProtoParser());
+            method, diagCollector, methodConfigProto.getLongRunning(), new ProtoParser());
     if (diagCollector.getErrorCount() > 0) {
       error = true;
     }
@@ -226,7 +232,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
           optionalFieldConfigs,
           defaultResourceNameTreatment,
           batching,
-          hasRequestObjectMethod,
           fieldNamePatterns,
           sampleCodeInitFields,
           sampleSpec,

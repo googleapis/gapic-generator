@@ -90,10 +90,12 @@ public class DiscoGapicGeneratorApp {
           ImmutableList.of());
 
   private final ToolOptions options;
+  private final ArtifactType artifactType;
 
   /** Constructs a code generator api based on given options. */
-  public DiscoGapicGeneratorApp(ToolOptions options) {
+  public DiscoGapicGeneratorApp(ToolOptions options, ArtifactType artifactType) {
     this.options = options;
+    this.artifactType = artifactType;
   }
 
   /** From config file paths, constructs the DiscoGapicGenerators to run. */
@@ -104,7 +106,8 @@ public class DiscoGapicGeneratorApp {
       String packageConfig2File,
       String dependencyConfigFile,
       String languageStr,
-      List<String> enabledArtifacts)
+      List<String> enabledArtifacts,
+      ArtifactType artifactType)
       throws IOException {
     if (!new File(discoveryDocPath).exists()) {
       throw new IOException("File not found: " + discoveryDocPath);
@@ -160,8 +163,7 @@ public class DiscoGapicGeneratorApp {
 
     GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, language);
 
-    ArtifactFlags artifactFlags =
-        new ArtifactFlags(enabledArtifacts, ArtifactType.LEGACY_DISCOGAPIC_AND_PACKAGE);
+    ArtifactFlags artifactFlags = new ArtifactFlags(enabledArtifacts, artifactType);
     return DiscoGapicGeneratorFactory.create(
         language, model, productConfig, packageConfig, artifactFlags);
   }
@@ -181,14 +183,24 @@ public class DiscoGapicGeneratorApp {
             packageConfig2File,
             null,
             languageStr,
-            enabledArtifacts);
+            enabledArtifacts,
+            artifactType);
 
     Map<String, Object> outputFiles = Maps.newHashMap();
     for (CodeGenerator<?> generator : generators) {
       outputFiles.putAll(GeneratedResult.extractBodies(generator.generate()));
     }
-    ToolUtil.writeFiles(outputFiles, options.get(OUTPUT_FILE));
+    writeCodeGenOutput(outputFiles, options.get(OUTPUT_FILE));
     return 0;
+  }
+
+  private void writeCodeGenOutput(Map<String, ?> outputFiles, String outputPath)
+      throws IOException {
+    if (outputPath.endsWith(".jar") || outputPath.endsWith(".srcjar")) {
+      ToolUtil.writeJar(outputFiles, outputPath);
+    } else {
+      ToolUtil.writeFiles(outputFiles, outputPath);
+    }
   }
 
   private static List<File> pathsToFiles(List<String> configFileNames) {

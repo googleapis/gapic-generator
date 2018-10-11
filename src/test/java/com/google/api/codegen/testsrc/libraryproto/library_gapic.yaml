@@ -107,7 +107,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 1000
-    request_object_method: false
     resource_name_treatment: STATIC_TYPES
   - name: GetShelf
     flattening:
@@ -133,7 +132,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 2000
-    request_object_method: true
     field_name_patterns:
       name: shelf
   - name: ListShelves
@@ -149,7 +147,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 3000
-    request_object_method: false
   - name: DeleteShelf
     flattening:
       groups:
@@ -160,7 +157,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 4000
-    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
@@ -176,7 +172,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 5000
-    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
@@ -193,7 +188,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 6000
-    request_object_method: true
     # Test resource_name_treatment set to NONE with field_name_patterns
     resource_name_treatment: NONE
     field_name_patterns:
@@ -229,7 +223,6 @@ interfaces:
           - edition
           - shelf.name
         subresponse_field: book_names
-    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     sample_code_init_fields:
     - series_uuid.series_string=foobar
@@ -258,6 +251,9 @@ interfaces:
             print:
               - "Title: %s"
               - title
+      - print:
+        - "The first book is: %s"
+        - $resp.book_names[0]
       - print:
         - "That's all!"
       - print:
@@ -298,7 +294,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 8000
-    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
@@ -331,7 +326,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
@@ -349,7 +343,6 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     # leaving commented out to test the default
-    #request_object_method: false
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
@@ -373,7 +366,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
@@ -389,7 +381,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 10000
-    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
@@ -410,7 +401,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: "*"
@@ -436,7 +426,6 @@ interfaces:
         batched_field: comments
         discriminator_fields:
           - name
-    request_object_method: true
     # Test resource_name_treatment unset, so using default
     # resource_name_treatment: VALIDATE
     field_name_patterns:
@@ -455,7 +444,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: archived_book
@@ -471,7 +459,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book_oneof
@@ -486,7 +473,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book_oneof
@@ -501,7 +487,6 @@ interfaces:
     - name
     - index_name
     - index_map
-    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -512,7 +497,6 @@ interfaces:
       - index_name="default index"
       - index_map{"default_key"}
   - name: StreamShelves
-    request_object_method: false
     grpc_streaming:
       response:
         resources_field: shelves
@@ -537,7 +521,6 @@ interfaces:
       - calling_forms: ".*"
         value_sets: ".*"
   - name: StreamBooks
-    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     flattening:
       groups:
@@ -578,7 +561,6 @@ interfaces:
     # required_fields makes a difference on sample code.
     required_fields:
     - name
-    request_object_method: false
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 30000
@@ -607,7 +589,6 @@ interfaces:
     # required_fields makes a difference on sample code.
     required_fields:
     - name
-    request_object_method: false
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 30000
@@ -650,7 +631,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 3000
-    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     sample_code_init_fields:
     - names[0]
@@ -692,7 +672,6 @@ interfaces:
     required_fields:
     - resource
     - tag
-    request_object_method: true
     resource_name_treatment: VALIDATE
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -712,7 +691,6 @@ interfaces:
     required_fields:
     - resource
     - label
-    request_object_method: true
     resource_name_treatment: VALIDATE
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -733,7 +711,6 @@ interfaces:
         - name
     required_fields:
     - name
-    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -770,7 +747,6 @@ interfaces:
         - name
     required_fields:
     - name
-    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -878,7 +854,6 @@ interfaces:
     - required_repeated_fixed32
     - required_repeated_fixed64
     - required_map
-    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default

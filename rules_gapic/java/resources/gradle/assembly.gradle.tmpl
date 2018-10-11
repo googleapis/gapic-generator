@@ -1,0 +1,29 @@
+buildscript {
+  repositories {
+    mavenLocal()
+    maven {
+      url 'https://plugins.gradle.org/m2/'
+    }
+    mavenCentral()
+  }
+}
+
+subprojects {
+  apply plugin: 'java'
+  apply plugin: 'maven'
+
+  sourceCompatibility = 1.7
+  targetCompatibility = 1.7
+
+  test {
+    testLogging {
+      events "passed", "skipped", "failed", "standardOut", "standardError"
+      exceptionFormat = 'full'
+    }
+  }
+
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
+}

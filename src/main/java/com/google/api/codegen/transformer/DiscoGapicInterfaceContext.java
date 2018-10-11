@@ -328,4 +328,9 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   public String serviceTitle() {
     return getDocument().name();
   }
+
+  @Override
+  public String getServiceAddress() {
+    return getDocument().baseUrl();
+  }
 }
