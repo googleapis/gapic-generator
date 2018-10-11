@@ -8310,18 +8310,18 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ShelfName name = ShelfName.of("[SHELF_ID]");
+    String formattedName = ShelfName.format("[SHELF_ID]");
     SomeMessage message = SomeMessage.newBuilder().build();
 
     Shelf actualResponse =
-        client.getShelf(name, message);
+        client.getShelf(formattedName, message);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
+    Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(message, actualRequest.getMessage());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -8336,10 +8336,10 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      ShelfName name = ShelfName.of("[SHELF_ID]");
+      String formattedName = ShelfName.format("[SHELF_ID]");
       SomeMessage message = SomeMessage.newBuilder().build();
 
-      client.getShelf(name, message);
+      client.getShelf(formattedName, message);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -8359,19 +8359,19 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ShelfName name = ShelfName.of("[SHELF_ID]");
+    String formattedName = ShelfName.format("[SHELF_ID]");
     SomeMessage message = SomeMessage.newBuilder().build();
     com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
     Shelf actualResponse =
-        client.getShelf(name, message, stringBuilder);
+        client.getShelf(formattedName, message, stringBuilder);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
+    Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(message, actualRequest.getMessage());
     Assert.assertEquals(stringBuilder, actualRequest.getStringBuilder());
     Assert.assertTrue(
@@ -8387,11 +8387,11 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      ShelfName name = ShelfName.of("[SHELF_ID]");
+      String formattedName = ShelfName.format("[SHELF_ID]");
       SomeMessage message = SomeMessage.newBuilder().build();
       com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
-      client.getShelf(name, message, stringBuilder);
+      client.getShelf(formattedName, message, stringBuilder);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -8545,18 +8545,18 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ShelfName name = ShelfName.of("[SHELF_ID]");
+    String formattedName = ShelfName.format("[SHELF_ID]");
     Book book = Book.newBuilder().build();
 
     Book actualResponse =
-        client.createBook(name, book);
+        client.createBook(formattedName, book);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     CreateBookRequest actualRequest = (CreateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
+    Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -8571,10 +8571,10 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      ShelfName name = ShelfName.of("[SHELF_ID]");
+      String formattedName = ShelfName.format("[SHELF_ID]");
       Book book = Book.newBuilder().build();
 
-      client.createBook(name, book);
+      client.createBook(formattedName, book);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception

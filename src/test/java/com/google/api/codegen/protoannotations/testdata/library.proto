@@ -378,6 +378,9 @@ message Book {
         {base_name: "deleted_book"     path : "_deleted-book_"}
       ]
     }
+    // library_gapic.yaml specifies that this field will only use the "book"
+    // inner Resource within the "book_oneof" resource_set, but we can't
+    // configure proto annotations to say that.
   ];
 
   // The name of the book author.
@@ -739,7 +742,7 @@ message MoveBookRequest {
 }
 
 message ListStringsRequest {
-  string name = 1 [(google.api.required) = true];
+  string name = 1;
   int32 page_size = 2;
   string page_token = 3;
 }
