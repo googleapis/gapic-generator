@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.config.AnyResourceNameConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GrpcStreamingConfig;
@@ -888,7 +889,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   protected Name getAnyResourceTypeName() {
-    return Name.from("resource_name");
+    return Name.from(AnyResourceNameConfig.ENTITY_NAME);
   }
 
   public String getResourceTypeName(ResourceNameConfig resourceNameConfig) {
