@@ -69,8 +69,7 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
       return null;
     }
 
-    return new AutoValue_FixedResourceNameConfig(
-        entityName, entityName, ConfigSource.GAPIC_CONFIG, fixedValue, file);
+    return new AutoValue_FixedResourceNameConfig(entityName, entityName, fixedValue, file);
   }
 
   @Nullable
@@ -94,6 +93,6 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
     }
 
     return new AutoValue_FixedResourceNameConfig(
-        entityName, entityName, ConfigSource.PROTO_FILE, fixedValue, field.getFile());
+        entityName, entityName, fixedValue, field.getFile());
   }
 }

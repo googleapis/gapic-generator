@@ -76,13 +76,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       }
     }
     return new AutoValue_SingleResourceNameConfig(
-        ConfigSource.GAPIC_CONFIG,
-        namePattern,
-        nameTemplate,
-        entityId,
-        entityName,
-        commonResourceName,
-        file);
+        namePattern, nameTemplate, entityId, entityName, commonResourceName, file);
   }
 
   // Wrapper for PathTemplate.create().
@@ -150,13 +144,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
             .orElse(null);
     String entityId = protoParser.getResourceEntityName(resourceField, defaultEntityId);
     return new AutoValue_SingleResourceNameConfig(
-        ConfigSource.PROTO_FILE,
-        pathTemplate.toString(),
-        nameTemplate,
-        entityId,
-        entityName,
-        commonResourceName,
-        file);
+        pathTemplate.toString(), nameTemplate, entityId, entityName, commonResourceName, file);
   }
 
   /** Returns the name pattern for the resource name config. */

@@ -36,12 +36,4 @@ public interface ResourceNameConfig {
    * ensure that a consistent namespace can be calculated for the resource name.
    */
   ProtoFile getAssignedProtoFile();
-
-  ConfigSource getConfigSource();
-
-  public enum ConfigSource {
-    GAPIC_CONFIG,
-    PROTO_FILE,
-    NONE
-  }
 }

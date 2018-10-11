@@ -99,8 +99,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       return null;
     }
 
-    return new AutoValue_ResourceNameOneofConfig(
-        oneofName, ConfigSource.GAPIC_CONFIG, oneofName, configList, file);
+    return new AutoValue_ResourceNameOneofConfig(oneofName, oneofName, configList, file);
   }
 
   @Nullable
@@ -165,8 +164,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       return null;
     }
 
-    return new AutoValue_ResourceNameOneofConfig(
-        oneOfName, ConfigSource.PROTO_FILE, oneOfName, configList, field.getFile());
+    return new AutoValue_ResourceNameOneofConfig(oneOfName, oneOfName, configList, field.getFile());
   }
 
   @Override
