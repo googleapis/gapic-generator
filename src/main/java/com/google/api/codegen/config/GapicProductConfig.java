@@ -50,6 +50,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.protobuf.DescriptorProtos;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -540,22 +541,16 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     // TODO(andrealin): make protofiles be an empty list.
-    if (protoFiles != null) {
-      return mergeResourceNameConfigsFromProtoFile(
-          diagCollector,
-          protoFiles,
-          singleResourceNameConfigs,
-          fixedResourceNameConfigs,
-          resourceNameOneofConfigs,
-          protoParser);
-    } else {
-      ImmutableMap.Builder<String, ResourceNameConfig> resourceCollectionMap =
-          new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
-      resourceCollectionMap.putAll(singleResourceNameConfigs);
-      resourceCollectionMap.putAll(resourceNameOneofConfigs);
-      resourceCollectionMap.putAll(fixedResourceNameConfigs);
-      return resourceCollectionMap.build();
+    if (protoFiles == null) {
+      protoFiles = new ArrayList<>();
     }
+    return mergeResourceNameConfigsFromProtoFile(
+        diagCollector,
+        protoFiles,
+        singleResourceNameConfigs,
+        fixedResourceNameConfigs,
+        resourceNameOneofConfigs,
+        protoParser);
   }
 
   /**
@@ -769,9 +764,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       TargetLanguage language,
       ProtoParser protoParser) {
     ProtoFile file = null;
-    if (sourceProtos == null) {
-      sourceProtos = ImmutableList.of();
-    } else {
+    if (sourceProtos != null) {
       file = sourceProtos.get(0);
     }
     LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap =

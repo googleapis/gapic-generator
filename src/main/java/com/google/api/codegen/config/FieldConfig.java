@@ -93,7 +93,7 @@ public abstract class FieldConfig {
       Map<String, String> fieldNamePatterns,
       Map<String, ResourceNameConfig> resourceNameConfigs,
       FieldModel field,
-      ResourceNameTreatment treatment,
+      @Nullable ResourceNameTreatment treatment,
       ResourceNameTreatment defaultResourceNameTreatment) {
     String messageFieldEntityName = null;
     String flattenedFieldEntityName = null;

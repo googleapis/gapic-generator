@@ -168,6 +168,7 @@ public abstract class FlatteningConfig {
         protoParser.getMethodSignatures(methodModel.getProtoMethod());
     for (MethodSignature signature : methodSignatures) {
 
+      // Fetch the matching GAPIC Config flattening, if it exists.
       FlatteningGroupProto flatteningGroupProto =
           Optional.ofNullable(
                   flatteningGroupProtos.get(
