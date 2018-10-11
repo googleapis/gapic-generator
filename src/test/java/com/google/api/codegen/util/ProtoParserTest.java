@@ -43,11 +43,11 @@ public class ProtoParserTest {
   private static Model model;
   private static TestDataLocator testDataLocator;
   private static ProtoFile libraryProtoFile;
-  private static Field bookNameField;
+  private static Field shelfNameField;
   private static Interface libraryService;
   private static Method deleteShelfMethod;
   private static Method getBigBookMethod;
-  private static MessageType book;
+  private static MessageType shelf;
 
   // Object under test.
   private static ProtoParser protoParser = new ProtoParser();
@@ -70,15 +70,18 @@ public class ProtoParserTest {
             .get();
 
     model.addRoot(libraryProtoFile);
-    book =
+
+    libraryService = libraryProtoFile.getInterfaces().get(0);
+
+    shelf =
         libraryProtoFile
             .getMessages()
             .stream()
-            .filter(m -> m.getSimpleName().equals("Book"))
+            .filter(m -> m.getSimpleName().equals("Shelf"))
             .findFirst()
             .get();
-    bookNameField =
-        book.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
+    shelfNameField =
+        shelf.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
 
     libraryService = libraryProtoFile.getInterfaces().get(0);
     deleteShelfMethod = libraryService.lookupMethod("DeleteShelf");
@@ -87,11 +90,20 @@ public class ProtoParserTest {
 
   @Test
   public void testGetResourcePath() {
-    assertThat(protoParser.getResourcePath(bookNameField)).isEqualTo("shelves/*/books/*");
+    Field shelfNameField =
+        shelf.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
+    assertThat(protoParser.getResourcePath(shelfNameField)).isEqualTo("shelves/*");
   }
 
   @Test
   public void testGetEmptyResourcePath() {
+    MessageType book =
+        libraryProtoFile
+            .getMessages()
+            .stream()
+            .filter(m -> m.getSimpleName().equals("Book"))
+            .findFirst()
+            .get();
     Field authorBookField =
         book.getFields().stream().filter(f -> f.getSimpleName().equals("author")).findFirst().get();
     assertThat(protoParser.getResourcePath(authorBookField)).isNull();
@@ -100,7 +112,7 @@ public class ProtoParserTest {
   /** Return the entity name, e.g. "shelf" for a resource field. */
   @Test
   public void getResourceEntityName() {
-    assertThat(protoParser.getResourceEntityName(bookNameField)).isEqualTo("book");
+    assertThat(protoParser.getResourceEntityName(shelfNameField)).isEqualTo("shelf");
   }
 
   @Test
@@ -132,7 +144,7 @@ public class ProtoParserTest {
   @Test
   public void testGetServiceAddress() {
     String defaultHost = protoParser.getServiceAddress(libraryService);
-    assertThat(defaultHost).isEqualTo("library-example.googleapis.com");
+    assertThat(defaultHost).isEqualTo("library-example.googleapis.com:1234");
   }
 
   @Test
@@ -140,25 +152,26 @@ public class ProtoParserTest {
     Method publishSeriesMethod = libraryService.lookupMethod("PublishSeries");
     List<String> requiredFields = protoParser.getRequiredFields(publishSeriesMethod);
     Collections.sort(requiredFields);
-    assertThat(requiredFields.size()).isEqualTo(2);
+    assertThat(requiredFields.size()).isEqualTo(3);
     assertThat(requiredFields.get(0)).isEqualTo("books");
-    assertThat(requiredFields.get(1)).isEqualTo("shelf");
+    assertThat(requiredFields.get(1)).isEqualTo("series_uuid");
+    assertThat(requiredFields.get(2)).isEqualTo("shelf");
   }
 
   @Test
   public void testGetResourceType() {
-    MessageType listShelvesResponse =
+    MessageType getShelfRequest =
         libraryProtoFile
             .getMessages()
             .stream()
-            .filter(m -> m.getSimpleName().equals("ListShelvesResponse"))
+            .filter(m -> m.getSimpleName().equals("GetShelfRequest"))
             .findFirst()
             .get();
     Field shelves =
-        listShelvesResponse
+        getShelfRequest
             .getFields()
             .stream()
-            .filter(f -> f.getSimpleName().equals("shelves"))
+            .filter(f -> f.getSimpleName().equals("name"))
             .findFirst()
             .get();
     String shelfType = protoParser.getResourceType(shelves);
@@ -176,7 +189,7 @@ public class ProtoParserTest {
             .get()
             .lookupMethod("GetShelf");
     List<MethodSignature> getShelfFlattenings = protoParser.getMethodSignatures(getShelfMethod);
-    assertThat(getShelfFlattenings.size()).isEqualTo(2);
+    assertThat(getShelfFlattenings.size()).isEqualTo(3);
 
     MethodSignature firstSignature = getShelfFlattenings.get(0);
     assertThat(firstSignature.getFieldsList().size()).isEqualTo(1);
@@ -186,6 +199,12 @@ public class ProtoParserTest {
     assertThat(additionalSignature.getFieldsList().size()).isEqualTo(2);
     assertThat(additionalSignature.getFieldsList().get(0)).isEqualTo("name");
     assertThat(additionalSignature.getFieldsList().get(1)).isEqualTo("message");
+
+    MethodSignature additionalSignature2 = getShelfFlattenings.get(2);
+    assertThat(additionalSignature2.getFieldsList().size()).isEqualTo(3);
+    assertThat(additionalSignature2.getFieldsList().get(0)).isEqualTo("name");
+    assertThat(additionalSignature2.getFieldsList().get(1)).isEqualTo("message");
+    assertThat(additionalSignature2.getFieldsList().get(2)).isEqualTo("string_builder");
   }
 
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
