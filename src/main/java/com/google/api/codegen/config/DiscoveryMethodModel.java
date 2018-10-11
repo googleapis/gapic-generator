@@ -206,8 +206,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     return method.description();
   }
 
-  @Override
-  public List<DiscoveryField> getResourceNameInputFields() {
+  private List<DiscoveryField> getResourceNameInputFields() {
     if (resourceNameInputFields != null) {
       return resourceNameInputFields;
     }

@@ -22,7 +22,6 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.ProtoParser;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
@@ -30,15 +29,11 @@ import com.google.api.tools.framework.aspects.http.model.MethodKind;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /** A wrapper around the model of a protobuf-defined Method. */
 public final class ProtoMethodModel implements MethodModel {
@@ -47,7 +42,6 @@ public final class ProtoMethodModel implements MethodModel {
   private List<ProtoField> outputFields;
   private final TypeModel inputType;
   private final TypeModel outputType;
-  private ProtoParser protoParser;
 
   /* Create a MethodModel object from a non-null Method object. */
   public ProtoMethodModel(Method method) {
@@ -55,13 +49,6 @@ public final class ProtoMethodModel implements MethodModel {
     this.method = method;
     this.inputType = ProtoTypeRef.create(method.getInputType());
     this.outputType = ProtoTypeRef.create(method.getOutputType());
-    this.protoParser = new ProtoParser();
-  }
-
-  @VisibleForTesting
-  public ProtoMethodModel(Method method, ProtoParser protoParser) {
-    this(method);
-    this.protoParser = protoParser;
   }
 
   @Override
@@ -218,21 +205,6 @@ public final class ProtoMethodModel implements MethodModel {
     }
     outputFields = fieldsBuilder.build();
     return outputFields;
-  }
-
-  @Override
-  public List<ProtoField> getResourceNameInputFields() {
-    if (getProtoMethod().getInputType().getMessageType().getFields() == null) {
-      return new LinkedList<>();
-    }
-    return getProtoMethod()
-        .getInputType()
-        .getMessageType()
-        .getFields()
-        .stream()
-        .filter(f -> !Strings.isNullOrEmpty(protoParser.getResourceTypeEntityName(f)))
-        .map(ProtoField::new)
-        .collect(Collectors.toList());
   }
 
   @Override

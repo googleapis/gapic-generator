@@ -97,8 +97,6 @@ public interface MethodModel {
 
   List<? extends FieldModel> getOutputFields();
 
-  List<? extends FieldModel> getResourceNameInputFields();
-
   boolean isIdempotent();
 
   Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap);
