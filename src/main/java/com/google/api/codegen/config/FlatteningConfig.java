@@ -74,7 +74,8 @@ public abstract class FlatteningConfig {
               flatteningGroup,
               methodModel);
       if (groupConfig != null) {
-        flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
+        String key = flatteningConfigToString(groupConfig);
+        flatteningConfigs.put(key, groupConfig);
       }
     }
     if (diagCollector.hasErrors()) {
@@ -187,8 +188,8 @@ public abstract class FlatteningConfig {
               methodModel,
               protoParser);
       if (groupConfig != null) {
-
-        flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
+        String key = flatteningConfigToString(groupConfig);
+        flatteningConfigs.put(key, groupConfig);
       }
     }
     if (diagCollector.hasErrors()) {
@@ -397,11 +398,6 @@ public abstract class FlatteningConfig {
   /** Returns a string representing the ordered fields in a flattening config. */
   private static String flatteningConfigToString(FlatteningConfig flatteningConfig) {
     Collection<FieldModel> paramList = flatteningConfig.getFlattenedFields();
-    return fieldModelListToString(paramList);
-  }
-
-  /** Returns a string representing the ordered fields in a flattening config. */
-  private static String fieldModelListToString(Collection<FieldModel> paramList) {
     return paramListToString(
         paramList.stream().map(FieldModel::getSimpleName).collect(Collectors.toList()));
   }
