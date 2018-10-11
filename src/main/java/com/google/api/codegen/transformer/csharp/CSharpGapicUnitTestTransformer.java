@@ -51,6 +51,7 @@ import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /* Transforms a ProtoApiModel into the unit tests of an API for C#. */
@@ -245,7 +246,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
       MethodContext methodContext,
       GapicMethodContext requestContext,
       SymbolTable testNameTable,
-      Iterable<FieldConfig> fieldConfigs,
+      Collection<FieldConfig> fieldConfigs,
       ClientMethodType clientMethodType,
       Synchronicity synchronicity) {
     InitCodeContext initCodeContext =

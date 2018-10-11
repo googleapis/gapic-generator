@@ -172,13 +172,10 @@ public class RetryCodesConfig {
 
     ImmutableMap<String, ImmutableList<String>> retryCodesDefFromConfigProto =
         createRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
-    if (error) {
-      return;
-    }
 
     Map<String, String> methodRetryNamesFromConfigProto =
         createMethodRetryNamesFromConfigProto(interfaceConfigProto);
-    if (error) {
+    if (diagCollector.getErrorCount() > 0) {
       return;
     }
     retryCodesDefinition.putAll(retryCodesDefFromConfigProto);

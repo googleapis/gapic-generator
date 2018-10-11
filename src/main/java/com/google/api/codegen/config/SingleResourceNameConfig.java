@@ -83,7 +83,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   // e.g. createPathTemplate("bookShelves/*/books/{book}") returns
   // PathTemplate.create("bookShelves/{bookShelf}/books/{book}")
   @VisibleForTesting
-  static String escapePathTemplate(String template) {
+  public static String escapePathTemplate(String template) {
     String[] pieces = template.split("/");
     List<String> newPieces = Arrays.asList(pieces);
     // Iterate only over wildcard pieces.
