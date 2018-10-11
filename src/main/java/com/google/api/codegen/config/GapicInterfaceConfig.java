@@ -164,7 +164,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
       String entityName = collectionConfigProto.getEntityName();
       ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
-      if (!(resourceName instanceof SingleResourceNameConfig) || resourceName == null) {
+      if (!(resourceName instanceof SingleResourceNameConfig)) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
