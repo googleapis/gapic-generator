@@ -330,6 +330,8 @@ public abstract class FlatteningConfig {
         oneofNames.add(oneofName);
       }
 
+      // Use the GAPIC config default ResourceNameTreatment if it is set,
+      // otherwise use STATIC_TYPES if this field is a Resource, otherwise default to VALIDATE.
       ResourceNameTreatment defaultResourceNameTreatment =
           methodConfigProto.getResourceNameTreatment();
       if (defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
