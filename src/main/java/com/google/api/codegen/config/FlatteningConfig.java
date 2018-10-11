@@ -155,6 +155,7 @@ public abstract class FlatteningConfig {
 
     Map<String, FlatteningConfig> flatteningConfigs = new LinkedHashMap<>();
 
+    // Pre-compute the collection of possible matching FlatteningGroupProtos from GAPIC config.
     Map<String, FlatteningGroupProto> flatteningGroupProtos = new HashMap<>();
     for (FlatteningGroupProto flatteningGroupProto :
         methodConfigProto.getFlattening().getGroupsList()) {
