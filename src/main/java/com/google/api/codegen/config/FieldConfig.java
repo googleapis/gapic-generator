@@ -153,9 +153,7 @@ public abstract class FieldConfig {
       }
     }
 
-    if (treatment != null) {
-      validate(messageConfigs, field, treatment, flattenedFieldResourceNameConfig);
-    }
+    validate(messageConfigs, field, treatment, flattenedFieldResourceNameConfig);
 
     return createFieldConfig(
         field, treatment, flattenedFieldResourceNameConfig, messageFieldResourceNameConfig);
