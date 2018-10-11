@@ -53,6 +53,7 @@ import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /** Responsible for producing testing related views for PHP. */
@@ -190,7 +191,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
         clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
       }
 
-      Iterable<FieldConfig> fieldConfigs =
+      Collection<FieldConfig> fieldConfigs =
           methodContext.getMethodConfig().getRequiredFieldConfigs();
       InitCodeContext initCodeContext =
           InitCodeContext.newBuilder()

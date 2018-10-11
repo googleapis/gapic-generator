@@ -54,6 +54,7 @@ import com.google.common.collect.Lists;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +109,7 @@ public class InitCodeTransformer {
   public InitCodeContext createRequestInitCodeContext(
       MethodContext context,
       SymbolTable symbolTable,
-      Iterable<FieldConfig> fieldConfigs,
+      Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType outputType,
       TestValueGenerator valueGenerator) {
     return InitCodeContext.newBuilder()

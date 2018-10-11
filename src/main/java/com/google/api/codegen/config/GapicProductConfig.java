@@ -46,6 +46,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.protobuf.DescriptorProtos;
 import java.util.Collection;
@@ -54,6 +56,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -588,7 +591,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Map<String, Field> resourceSetNames = new HashMap<>();
 
     Map<Field, ResourceSet> resourceSetFields = new HashMap<>();
-    Map<Field, Resource> resourceFields = new HashMap<>();
+    Multimap<Field, Resource> resourceFields = LinkedHashMultimap.create();
 
     // Collect each type of ResourceNameConfig from proto annotations.
     for (ProtoFile protoFile : sourceProtos) {
@@ -627,8 +630,9 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     // Process the Single- and Fixed- ResourceNameConfigs from proto annotations.
-    for (Field field : resourceFields.keySet()) {
-      Resource resource = resourceFields.get(field);
+    for (Entry<Field, Resource> entry : resourceFields.entries()) {
+      Field field = entry.getKey();
+      Resource resource = entry.getValue();
       String resourcePath = resource.getPath();
       if (Strings.isNullOrEmpty(resourcePath)) {
         diagCollector.addDiag(

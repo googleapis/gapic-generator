@@ -119,10 +119,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       ProtoParser protoParser) {
 
     // If the proto annotation path template is effectively the same path template,
-    // irrespective of wildcards, as one from the gapic config Collboolean foundResource = false;
-    // for (Field messageFields : messageType.getFields()) {
-    //   if mes
-    // }ectionConfigProto,
+    // irrespective of wildcards, as one from the gapic config
     // then use the GAPIC config path template.
     Optional<SingleResourceNameConfig> correspondingGapicConfigResourceName =
         resourceNamesFromConfigs
@@ -143,9 +140,15 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
         correspondingGapicConfigResourceName
             .map(SingleResourceNameConfig::getEntityId)
             .orElse(protoParser.getDefaultResourceEntityName(resourceField));
+    String entityName =
+        correspondingGapicConfigResourceName
+            .map(SingleResourceNameConfig::getEntityName)
+            .orElse(protoParser.getDefaultResourceEntityName(resourceField));
+    String commonResourceName =
+        correspondingGapicConfigResourceName
+            .map(SingleResourceNameConfig::getCommonResourceName)
+            .orElse(null);
     String entityId = protoParser.getResourceEntityName(resourceField, defaultEntityId);
-    String entityName = entityId;
-    String commonResourceName = null;
     return new AutoValue_SingleResourceNameConfig(
         ConfigSource.PROTO_FILE,
         pathTemplate.toString(),

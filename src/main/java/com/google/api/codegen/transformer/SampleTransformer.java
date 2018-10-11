@@ -34,6 +34,7 @@ import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -88,7 +89,7 @@ public class SampleTransformer {
   public void generateSamples(
       ApiMethodView.Builder methodViewBuilder,
       MethodContext context,
-      Iterable<FieldConfig> fieldConfigs,
+      Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
       Generator generator,
       List<CallingForm> callingForms) {
@@ -129,7 +130,7 @@ public class SampleTransformer {
       ApiMethodView.Builder methodViewBuilder,
       MethodContext context,
       InitCodeContext initContext,
-      Iterable<FieldConfig> fieldConfigs,
+      Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
       Generator generator,
       List<CallingForm> callingForms) {
@@ -172,7 +173,7 @@ public class SampleTransformer {
   public List<MethodSampleView> generateSamples(
       MethodContext methodContext,
       InitCodeContext initContext,
-      Iterable<FieldConfig> fieldConfigs,
+      Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
       Generator sampleGenerator,
       List<CallingForm> callingForms) {
@@ -281,7 +282,7 @@ public class SampleTransformer {
 
   private InitCodeContext createInitCodeContext(
       MethodContext context,
-      Iterable<FieldConfig> fieldConfigs,
+      Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
       List<String> sampleCodeDefaultValues,
       List<String> sampleFunctionArguments) {

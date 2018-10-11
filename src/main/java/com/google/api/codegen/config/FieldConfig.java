@@ -22,9 +22,10 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /** FieldConfig represents a configuration for a Field, derived from the GAPIC config. */
@@ -274,12 +275,13 @@ public abstract class FieldConfig {
     }
   }
 
-  public static Iterable<FieldModel> toFieldTypeIterable(Iterable<FieldConfig> fieldConfigs) {
-    return Iterables.transform(fieldConfigs, FieldConfig::getField);
+  public static Collection<FieldModel> toFieldTypeIterable(Collection<FieldConfig> fieldConfigs) {
+    return fieldConfigs.stream().map(FieldConfig::getField).collect(Collectors.toList());
   }
 
-  public static Iterable<FieldModel> toFieldTypeIterableFromField(Iterable<Field> fieldConfigs) {
-    return Iterables.transform(fieldConfigs, ProtoField::new);
+  public static Collection<FieldModel> toFieldTypeIterableFromField(
+      Collection<Field> fieldConfigs) {
+    return fieldConfigs.stream().map(ProtoField::new).collect(Collectors.toList());
   }
 
   public static ImmutableMap<String, FieldConfig> toFieldConfigMap(
