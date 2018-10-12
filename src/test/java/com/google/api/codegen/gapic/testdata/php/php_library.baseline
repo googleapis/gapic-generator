@@ -2769,12 +2769,12 @@ function sampleDiscussBook()
             $stream->write($request);
             // if required, read a single response from the stream
             $responseItem = $stream->read();
-            printf("%s" . PHP_EOL, $responseItem);
+            printf("%s" . PHP_EOL, print_r($responseItem, true));
         }
         $stream->closeWrite();
         $responseItem = $stream->read();
         while (!is_null($responseItem)) {
-            printf("%s" . PHP_EOL, $responseItem);
+            printf("%s" . PHP_EOL, print_r($responseItem, true));
             $responseItem = $stream->read();
         }
     } finally {
@@ -2830,7 +2830,7 @@ function sampleDiscussBook()
         $stream = $libraryServiceClient->discussBook();
         $stream->writeAll($requests);
         foreach ($stream->closeWriteAndReadAll() as $responseItem) {
-            printf("%s" . PHP_EOL, $responseItem);
+            printf("%s" . PHP_EOL, print_r($responseItem, true));
         }
     } finally {
         $libraryServiceClient->close();
@@ -2992,7 +2992,7 @@ function sampleGetBigBook()
         }
         if ($newOperationResponse->operationSucceeded()) {
           $response = $newOperationResponse->getResult();
-          printf("%s" . PHP_EOL, $response);
+          printf("%s" . PHP_EOL, print_r($response, true));
         } else {
           $error = $newOperationResponse->getError();
           // handleError($error)
@@ -3044,7 +3044,7 @@ function sampleGetBigBook()
         $operationResponse->pollUntilComplete();
         if ($operationResponse->operationSucceeded()) {
             $response = $operationResponse->getResult();
-            printf("%s" . PHP_EOL, $response);
+            printf("%s" . PHP_EOL, print_r($response, true));
         } else {
             $error = $operationResponse->getError();
             // handleError($error)
@@ -3103,7 +3103,7 @@ function sampleMonologAboutBook()
             $stream->write($request);
         }
         $response = $stream->readResponse();
-        printf("%s" . PHP_EOL, $response);
+        printf("The stage of the comment is: %s" . PHP_EOL, $response->getStage());
     } finally {
         $libraryServiceClient->close();
     }
@@ -3155,7 +3155,7 @@ function sampleMonologAboutBook()
         $requests = [$request];
         $stream = $libraryServiceClient->monologAboutBook();
         $response = $stream->writeAllAndReadResponse($requests);
-        printf("%s" . PHP_EOL, $response);
+        printf("The stage of the comment is: %s" . PHP_EOL, $response->getStage());
     } finally {
         $libraryServiceClient->close();
     }
@@ -3284,7 +3284,7 @@ function samplePublishSeries()
 
     try {
         $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
-        printf("%s" . PHP_EOL, $response);
+        printf("%s" . PHP_EOL, print_r($response, true));
     } finally {
         $libraryServiceClient->close();
     }
@@ -3331,7 +3331,7 @@ function sampleStreamBooks()
         // Read all responses until the stream is complete
         $stream = $libraryServiceClient->streamBooks($name);
         foreach ($stream->readAll() as $responseItem) {
-            printf("%s" . PHP_EOL, $responseItem);
+            printf("%s" . PHP_EOL, print_r($responseItem, true));
         }
     } finally {
         $libraryServiceClient->close();
@@ -3377,7 +3377,7 @@ function sampleStreamShelves()
         // Read all responses until the stream is complete
         $stream = $libraryServiceClient->streamShelves();
         foreach ($stream->readAll() as $responseItem) {
-            printf("%s" . PHP_EOL, $responseItem);
+            printf("%s" . PHP_EOL, print_r($responseItem, true));
         }
     } finally {
         $libraryServiceClient->close();

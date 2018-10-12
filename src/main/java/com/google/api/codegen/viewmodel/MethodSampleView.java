@@ -33,6 +33,9 @@ public abstract class MethodSampleView {
   /** The response printing code. */
   public abstract ImmutableList<OutputView> outputs();
 
+  /** Extra imports required by outputs. */
+  public abstract ImmutableList<ImportFileView> outputImports();
+
   /** The region tag to be used for this sample. */
   public abstract String regionTag();
 
@@ -52,6 +55,8 @@ public abstract class MethodSampleView {
     public abstract Builder initCode(InitCodeView val);
 
     public abstract Builder outputs(ImmutableList<OutputView> val);
+
+    public abstract Builder outputImports(ImmutableList<ImportFileView> val);
 
     public abstract Builder regionTag(String val);
 
