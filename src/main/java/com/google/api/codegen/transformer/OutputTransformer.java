@@ -51,6 +51,11 @@ public class OutputTransformer {
     this.importTransformer = importTransformer;
   }
 
+  /**
+   * Tranformer that takes the a list of {@code OutputView(s)} and generate imports needed by the
+   * output part. The returned list of {@code ImportFileView(s)} will be passed to {@code
+   * MethodSampleView}.
+   */
   public static interface OutputImportTransformer {
 
     public default ImmutableList<ImportFileView> generateOutputImports(

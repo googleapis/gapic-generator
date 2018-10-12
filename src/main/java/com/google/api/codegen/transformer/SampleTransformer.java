@@ -250,7 +250,7 @@ public class SampleTransformer {
           outputs = OutputTransformer.defaultOutputSpecs(methodContext.getMethodModel());
         }
 
-        ImmutableList<OutputView> outputView =
+        ImmutableList<OutputView> outputViews =
             OutputTransformer.toViews(outputs, methodContext, valueSet);
 
         methodSampleViews.add(
@@ -258,11 +258,11 @@ public class SampleTransformer {
                 .callingForm(form)
                 .valueSet(SampleValueSetView.of(valueSet))
                 .initCode(initCodeView)
-                .outputs(outputView)
+                .outputs(outputViews)
                 .outputImports(
                     outputTransformer
                         .getOutputImportTransformer()
-                        .generateOutputImports(methodContext, outputView))
+                        .generateOutputImports(methodContext, outputViews))
                 .regionTag(
                     regionTagFromSpec(
                         setAndTag.regionTag(),
