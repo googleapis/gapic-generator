@@ -97,6 +97,9 @@ public class RetryDefinitionsTransformer {
       DiagCollector diagCollector,
       Set<String> retryParamsConfigNames) {
     String retryParamsName = methodConfigProto.getRetryParamsName();
+    if (Strings.isNullOrEmpty(retryParamsName)) {
+      return RETRY_PARAMS_DEFAULT_NAME;
+    }
     if (!retryParamsConfigNames.isEmpty() && !retryParamsConfigNames.contains(retryParamsName)) {
       diagCollector.addDiag(
           Diag.error(
@@ -105,9 +108,6 @@ public class RetryDefinitionsTransformer {
               retryParamsName,
               methodConfigProto.getName()));
       return null;
-    }
-    if (Strings.isNullOrEmpty(retryParamsName)) {
-      return RETRY_PARAMS_DEFAULT_NAME;
     }
     return retryParamsName;
   }

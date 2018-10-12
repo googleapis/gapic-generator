@@ -16,6 +16,7 @@ package com.google.api.codegen.util;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.MethodSignature;
 import com.google.api.Retry;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.protoannotations.GapicCodeGeneratorAnnotationsTest;
@@ -28,6 +29,7 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.longrunning.OperationTypes;
 import com.google.rpc.Code;
+import java.util.Collections;
 import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -131,6 +133,59 @@ public class ProtoParserTest {
   public void testGetServiceAddress() {
     String defaultHost = protoParser.getServiceAddress(libraryService);
     assertThat(defaultHost).isEqualTo("library-example.googleapis.com");
+  }
+
+  @Test
+  public void testGetRequiredFields() {
+    Method publishSeriesMethod = libraryService.lookupMethod("PublishSeries");
+    List<String> requiredFields = protoParser.getRequiredFields(publishSeriesMethod);
+    Collections.sort(requiredFields);
+    assertThat(requiredFields.size()).isEqualTo(2);
+    assertThat(requiredFields.get(0)).isEqualTo("books");
+    assertThat(requiredFields.get(1)).isEqualTo("shelf");
+  }
+
+  @Test
+  public void testGetResourceType() {
+    MessageType listShelvesResponse =
+        libraryProtoFile
+            .getMessages()
+            .stream()
+            .filter(m -> m.getSimpleName().equals("ListShelvesResponse"))
+            .findFirst()
+            .get();
+    Field shelves =
+        listShelvesResponse
+            .getFields()
+            .stream()
+            .filter(f -> f.getSimpleName().equals("shelves"))
+            .findFirst()
+            .get();
+    String shelfType = protoParser.getResourceType(shelves);
+    assertThat(shelfType).isEqualTo("google.example.library.v1.Shelf");
+  }
+
+  @Test
+  public void testGetMethodSignatures() {
+    Method getShelfMethod =
+        libraryProtoFile
+            .getInterfaces()
+            .stream()
+            .filter(i -> i.lookupMethod("GetShelf") != null)
+            .findFirst()
+            .get()
+            .lookupMethod("GetShelf");
+    List<MethodSignature> getShelfFlattenings = protoParser.getMethodSignatures(getShelfMethod);
+    assertThat(getShelfFlattenings.size()).isEqualTo(2);
+
+    MethodSignature firstSignature = getShelfFlattenings.get(0);
+    assertThat(firstSignature.getFieldsList().size()).isEqualTo(1);
+    assertThat(firstSignature.getFieldsList().get(0)).isEqualTo("name");
+
+    MethodSignature additionalSignature = getShelfFlattenings.get(1);
+    assertThat(additionalSignature.getFieldsList().size()).isEqualTo(2);
+    assertThat(additionalSignature.getFieldsList().get(0)).isEqualTo("name");
+    assertThat(additionalSignature.getFieldsList().get(1)).isEqualTo("message");
   }
 
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */

@@ -40,7 +40,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -467,7 +469,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             fixedResourceNameConfigs,
             file);
 
-    ImmutableMap.Builder<String, ResourceNameConfig> resourceCollectionMap = ImmutableMap.builder();
+    ImmutableSortedMap.Builder<String, ResourceNameConfig> resourceCollectionMap =
+        new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
     resourceCollectionMap.putAll(singleResourceNameConfigs);
     resourceCollectionMap.putAll(resourceNameOneofConfigs);
     resourceCollectionMap.putAll(fixedResourceNameConfigs);
