@@ -1637,7 +1637,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = ShelfName.of("[SHELF_ID]");
+   *   ResourceName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   for (ResourceName element : libraryClient.listStrings(name).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
@@ -1662,7 +1662,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = ShelfName.of("[SHELF_ID]");
+   *   ResourceName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   for (ResourceName element : libraryClient.listStrings(name.toString()).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
@@ -8905,7 +8905,7 @@ public class LibraryClientTest {
   @SuppressWarnings("all")
   public void listStringsTest() {
     String nextPageToken = "";
-    ResourceName stringsElement = ShelfName.of("[SHELF_ID]");
+    ResourceName stringsElement = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
     List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
@@ -8955,7 +8955,7 @@ public class LibraryClientTest {
   @SuppressWarnings("all")
   public void listStringsTest2() {
     String nextPageToken = "";
-    ResourceName stringsElement = ShelfName.of("[SHELF_ID]");
+    ResourceName stringsElement = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
     List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
@@ -8963,7 +8963,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ResourceName name = ShelfName.of("[SHELF_ID]");
+    ResourceName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
 
     ListStringsPagedResponse pagedListResponse = client.listStrings(name);
 
@@ -8993,7 +8993,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      ResourceName name = ShelfName.of("[SHELF_ID]");
+      ResourceName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
 
       client.listStrings(name);
       Assert.fail("No exception raised");

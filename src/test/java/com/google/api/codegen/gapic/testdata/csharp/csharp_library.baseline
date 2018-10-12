@@ -1321,7 +1321,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            IResourceName name = new ShelfName("[SHELF_ID]");
+            IResourceName name = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
             // Make the request
             PagedAsyncEnumerable<ListStringsResponse, IResourceName> response =
                 libraryServiceClient.ListStringsAsync(name);
@@ -1365,7 +1365,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            IResourceName name = new ShelfName("[SHELF_ID]");
+            IResourceName name = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
             // Make the request
             PagedEnumerable<ListStringsResponse, IResourceName> response =
                 libraryServiceClient.ListStrings(name);
@@ -12168,91 +12168,6 @@ using linq = System.Linq;
 namespace Google.Example.Library.V1
 {
     /// <summary>
-    /// Resource name for the 'shelf' resource.
-    /// </summary>
-    public sealed partial class ShelfName : gax::IResourceName, sys::IEquatable<ShelfName>
-    {
-        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("shelves/{shelf_id}");
-
-        /// <summary>
-        /// Parses the given shelf resource name in string form into a new
-        /// <see cref="ShelfName"/> instance.
-        /// </summary>
-        /// <param name="shelfName">The shelf resource name in string form. Must not be <c>null</c>.</param>
-        /// <returns>The parsed <see cref="ShelfName"/> if successful.</returns>
-        public static ShelfName Parse(string shelfName)
-        {
-            gax::GaxPreconditions.CheckNotNull(shelfName, nameof(shelfName));
-            gax::TemplatedResourceName resourceName = s_template.ParseName(shelfName);
-            return new ShelfName(resourceName[0]);
-        }
-
-        /// <summary>
-        /// Tries to parse the given shelf resource name in string form into a new
-        /// <see cref="ShelfName"/> instance.
-        /// </summary>
-        /// <remarks>
-        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="shelfName"/> is null,
-        /// as this would usually indicate a programming error rather than a data error.
-        /// </remarks>
-        /// <param name="shelfName">The shelf resource name in string form. Must not be <c>null</c>.</param>
-        /// <param name="result">When this method returns, the parsed <see cref="ShelfName"/>,
-        /// or <c>null</c> if parsing fails.</param>
-        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
-        public static bool TryParse(string shelfName, out ShelfName result)
-        {
-            gax::GaxPreconditions.CheckNotNull(shelfName, nameof(shelfName));
-            gax::TemplatedResourceName resourceName;
-            if (s_template.TryParseName(shelfName, out resourceName))
-            {
-                result = new ShelfName(resourceName[0]);
-                return true;
-            }
-            else
-            {
-                result = null;
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Constructs a new instance of the <see cref="ShelfName"/> resource name class
-        /// from its component parts.
-        /// </summary>
-        /// <param name="shelfId">The shelf ID. Must not be <c>null</c>.</param>
-        public ShelfName(string shelfId)
-        {
-            ShelfId = gax::GaxPreconditions.CheckNotNull(shelfId, nameof(shelfId));
-        }
-
-        /// <summary>
-        /// The shelf ID. Never <c>null</c>.
-        /// </summary>
-        public string ShelfId { get; }
-
-        /// <inheritdoc />
-        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
-
-        /// <inheritdoc />
-        public override string ToString() => s_template.Expand(ShelfId);
-
-        /// <inheritdoc />
-        public override int GetHashCode() => ToString().GetHashCode();
-
-        /// <inheritdoc />
-        public override bool Equals(object obj) => Equals(obj as ShelfName);
-
-        /// <inheritdoc />
-        public bool Equals(ShelfName other) => ToString() == other?.ToString();
-
-        /// <inheritdoc />
-        public static bool operator ==(ShelfName a, ShelfName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
-
-        /// <inheritdoc />
-        public static bool operator !=(ShelfName a, ShelfName b) => !(a == b);
-    }
-
-    /// <summary>
     /// Resource name for the 'archived_book' resource.
     /// </summary>
     public sealed partial class ArchivedBookName : gax::IResourceName, sys::IEquatable<ArchivedBookName>
@@ -12434,105 +12349,6 @@ namespace Google.Example.Library.V1
 
         /// <inheritdoc />
         public static bool operator !=(BookName a, BookName b) => !(a == b);
-    }
-
-    /// <summary>
-    /// Resource name for the 'return' resource.
-    /// </summary>
-    public sealed partial class ReturnName : gax::IResourceName, sys::IEquatable<ReturnName>
-    {
-        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("shelves/{shelf}/books/{book}/returns/{return}");
-
-        /// <summary>
-        /// Parses the given return resource name in string form into a new
-        /// <see cref="ReturnName"/> instance.
-        /// </summary>
-        /// <param name="returnName">The return resource name in string form. Must not be <c>null</c>.</param>
-        /// <returns>The parsed <see cref="ReturnName"/> if successful.</returns>
-        public static ReturnName Parse(string returnName)
-        {
-            gax::GaxPreconditions.CheckNotNull(returnName, nameof(returnName));
-            gax::TemplatedResourceName resourceName = s_template.ParseName(returnName);
-            return new ReturnName(resourceName[0], resourceName[1], resourceName[2]);
-        }
-
-        /// <summary>
-        /// Tries to parse the given return resource name in string form into a new
-        /// <see cref="ReturnName"/> instance.
-        /// </summary>
-        /// <remarks>
-        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="returnName"/> is null,
-        /// as this would usually indicate a programming error rather than a data error.
-        /// </remarks>
-        /// <param name="returnName">The return resource name in string form. Must not be <c>null</c>.</param>
-        /// <param name="result">When this method returns, the parsed <see cref="ReturnName"/>,
-        /// or <c>null</c> if parsing fails.</param>
-        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
-        public static bool TryParse(string returnName, out ReturnName result)
-        {
-            gax::GaxPreconditions.CheckNotNull(returnName, nameof(returnName));
-            gax::TemplatedResourceName resourceName;
-            if (s_template.TryParseName(returnName, out resourceName))
-            {
-                result = new ReturnName(resourceName[0], resourceName[1], resourceName[2]);
-                return true;
-            }
-            else
-            {
-                result = null;
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Constructs a new instance of the <see cref="ReturnName"/> resource name class
-        /// from its component parts.
-        /// </summary>
-        /// <param name="shelfId">The shelf ID. Must not be <c>null</c>.</param>
-        /// <param name="bookId">The book ID. Must not be <c>null</c>.</param>
-        /// <param name="returnId">The return ID. Must not be <c>null</c>.</param>
-        public ReturnName(string shelfId, string bookId, string returnId)
-        {
-            ShelfId = gax::GaxPreconditions.CheckNotNull(shelfId, nameof(shelfId));
-            BookId = gax::GaxPreconditions.CheckNotNull(bookId, nameof(bookId));
-            ReturnId = gax::GaxPreconditions.CheckNotNull(returnId, nameof(returnId));
-        }
-
-        /// <summary>
-        /// The shelf ID. Never <c>null</c>.
-        /// </summary>
-        public string ShelfId { get; }
-
-        /// <summary>
-        /// The book ID. Never <c>null</c>.
-        /// </summary>
-        public string BookId { get; }
-
-        /// <summary>
-        /// The return ID. Never <c>null</c>.
-        /// </summary>
-        public string ReturnId { get; }
-
-        /// <inheritdoc />
-        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
-
-        /// <inheritdoc />
-        public override string ToString() => s_template.Expand(ShelfId, BookId, ReturnId);
-
-        /// <inheritdoc />
-        public override int GetHashCode() => ToString().GetHashCode();
-
-        /// <inheritdoc />
-        public override bool Equals(object obj) => Equals(obj as ReturnName);
-
-        /// <inheritdoc />
-        public bool Equals(ReturnName other) => ToString() == other?.ToString();
-
-        /// <inheritdoc />
-        public static bool operator ==(ReturnName a, ReturnName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
-
-        /// <inheritdoc />
-        public static bool operator !=(ReturnName a, ReturnName b) => !(a == b);
     }
 
     /// <summary>
@@ -12841,6 +12657,190 @@ namespace Google.Example.Library.V1
 
         /// <inheritdoc />
         public static bool operator !=(DeletedBookNameFixed a, DeletedBookNameFixed b) => !(a == b);
+    }
+
+    /// <summary>
+    /// Resource name for the 'return' resource.
+    /// </summary>
+    public sealed partial class ReturnName : gax::IResourceName, sys::IEquatable<ReturnName>
+    {
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("shelves/{shelf}/books/{book}/returns/{return}");
+
+        /// <summary>
+        /// Parses the given return resource name in string form into a new
+        /// <see cref="ReturnName"/> instance.
+        /// </summary>
+        /// <param name="returnName">The return resource name in string form. Must not be <c>null</c>.</param>
+        /// <returns>The parsed <see cref="ReturnName"/> if successful.</returns>
+        public static ReturnName Parse(string returnName)
+        {
+            gax::GaxPreconditions.CheckNotNull(returnName, nameof(returnName));
+            gax::TemplatedResourceName resourceName = s_template.ParseName(returnName);
+            return new ReturnName(resourceName[0], resourceName[1], resourceName[2]);
+        }
+
+        /// <summary>
+        /// Tries to parse the given return resource name in string form into a new
+        /// <see cref="ReturnName"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="returnName"/> is null,
+        /// as this would usually indicate a programming error rather than a data error.
+        /// </remarks>
+        /// <param name="returnName">The return resource name in string form. Must not be <c>null</c>.</param>
+        /// <param name="result">When this method returns, the parsed <see cref="ReturnName"/>,
+        /// or <c>null</c> if parsing fails.</param>
+        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
+        public static bool TryParse(string returnName, out ReturnName result)
+        {
+            gax::GaxPreconditions.CheckNotNull(returnName, nameof(returnName));
+            gax::TemplatedResourceName resourceName;
+            if (s_template.TryParseName(returnName, out resourceName))
+            {
+                result = new ReturnName(resourceName[0], resourceName[1], resourceName[2]);
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Constructs a new instance of the <see cref="ReturnName"/> resource name class
+        /// from its component parts.
+        /// </summary>
+        /// <param name="shelfId">The shelf ID. Must not be <c>null</c>.</param>
+        /// <param name="bookId">The book ID. Must not be <c>null</c>.</param>
+        /// <param name="returnId">The return ID. Must not be <c>null</c>.</param>
+        public ReturnName(string shelfId, string bookId, string returnId)
+        {
+            ShelfId = gax::GaxPreconditions.CheckNotNull(shelfId, nameof(shelfId));
+            BookId = gax::GaxPreconditions.CheckNotNull(bookId, nameof(bookId));
+            ReturnId = gax::GaxPreconditions.CheckNotNull(returnId, nameof(returnId));
+        }
+
+        /// <summary>
+        /// The shelf ID. Never <c>null</c>.
+        /// </summary>
+        public string ShelfId { get; }
+
+        /// <summary>
+        /// The book ID. Never <c>null</c>.
+        /// </summary>
+        public string BookId { get; }
+
+        /// <summary>
+        /// The return ID. Never <c>null</c>.
+        /// </summary>
+        public string ReturnId { get; }
+
+        /// <inheritdoc />
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
+
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand(ShelfId, BookId, ReturnId);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => ToString().GetHashCode();
+
+        /// <inheritdoc />
+        public override bool Equals(object obj) => Equals(obj as ReturnName);
+
+        /// <inheritdoc />
+        public bool Equals(ReturnName other) => ToString() == other?.ToString();
+
+        /// <inheritdoc />
+        public static bool operator ==(ReturnName a, ReturnName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
+
+        /// <inheritdoc />
+        public static bool operator !=(ReturnName a, ReturnName b) => !(a == b);
+    }
+
+    /// <summary>
+    /// Resource name for the 'shelf' resource.
+    /// </summary>
+    public sealed partial class ShelfName : gax::IResourceName, sys::IEquatable<ShelfName>
+    {
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("shelves/{shelf_id}");
+
+        /// <summary>
+        /// Parses the given shelf resource name in string form into a new
+        /// <see cref="ShelfName"/> instance.
+        /// </summary>
+        /// <param name="shelfName">The shelf resource name in string form. Must not be <c>null</c>.</param>
+        /// <returns>The parsed <see cref="ShelfName"/> if successful.</returns>
+        public static ShelfName Parse(string shelfName)
+        {
+            gax::GaxPreconditions.CheckNotNull(shelfName, nameof(shelfName));
+            gax::TemplatedResourceName resourceName = s_template.ParseName(shelfName);
+            return new ShelfName(resourceName[0]);
+        }
+
+        /// <summary>
+        /// Tries to parse the given shelf resource name in string form into a new
+        /// <see cref="ShelfName"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="shelfName"/> is null,
+        /// as this would usually indicate a programming error rather than a data error.
+        /// </remarks>
+        /// <param name="shelfName">The shelf resource name in string form. Must not be <c>null</c>.</param>
+        /// <param name="result">When this method returns, the parsed <see cref="ShelfName"/>,
+        /// or <c>null</c> if parsing fails.</param>
+        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
+        public static bool TryParse(string shelfName, out ShelfName result)
+        {
+            gax::GaxPreconditions.CheckNotNull(shelfName, nameof(shelfName));
+            gax::TemplatedResourceName resourceName;
+            if (s_template.TryParseName(shelfName, out resourceName))
+            {
+                result = new ShelfName(resourceName[0]);
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Constructs a new instance of the <see cref="ShelfName"/> resource name class
+        /// from its component parts.
+        /// </summary>
+        /// <param name="shelfId">The shelf ID. Must not be <c>null</c>.</param>
+        public ShelfName(string shelfId)
+        {
+            ShelfId = gax::GaxPreconditions.CheckNotNull(shelfId, nameof(shelfId));
+        }
+
+        /// <summary>
+        /// The shelf ID. Never <c>null</c>.
+        /// </summary>
+        public string ShelfId { get; }
+
+        /// <inheritdoc />
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
+
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand(ShelfId);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => ToString().GetHashCode();
+
+        /// <inheritdoc />
+        public override bool Equals(object obj) => Equals(obj as ShelfName);
+
+        /// <inheritdoc />
+        public bool Equals(ShelfName other) => ToString() == other?.ToString();
+
+        /// <inheritdoc />
+        public static bool operator ==(ShelfName a, ShelfName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
+
+        /// <inheritdoc />
+        public static bool operator !=(ShelfName a, ShelfName b) => !(a == b);
     }
 
 
