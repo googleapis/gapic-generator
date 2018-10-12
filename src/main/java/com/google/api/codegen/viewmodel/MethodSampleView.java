@@ -33,7 +33,7 @@ public abstract class MethodSampleView {
   /** The response printing code. */
   public abstract ImmutableList<OutputView> outputs();
 
-  /** Extra imports required by outputs */
+  /** Extra imports required by outputs. */
   public abstract ImmutableList<ImportFileView> outputImports();
 
   /** The region tag to be used for this sample. */
