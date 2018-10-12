@@ -22,6 +22,7 @@ import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.viewmodel.AccessorView;
+import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -35,10 +36,32 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
 
-class OutputTransformer {
+public class OutputTransformer {
   private static final String RESPONSE_PLACEHOLDER = "$resp";
   private static final Set<String> RESERVED_KEYWORDS =
       ImmutableSet.<String>of("response", "response_item");
+
+  private final OutputImportTransformer importTransformer;
+
+  public OutputTransformer() {
+    this.importTransformer = new OutputImportTransformer() {};
+  }
+
+  public OutputTransformer(OutputImportTransformer importTransformer) {
+    this.importTransformer = importTransformer;
+  }
+
+  public static interface OutputImportTransformer {
+
+    public default ImmutableList<ImportFileView> generateOutputImports(
+        MethodContext context, List<OutputView> outputViews) {
+      return ImmutableList.<ImportFileView>of();
+    }
+  }
+
+  public OutputImportTransformer getOutputImportTransformer() {
+    return this.importTransformer;
+  }
 
   static List<OutputSpec> defaultOutputSpecs(MethodModel method) {
     if (method.isOutputTypeEmpty()) {
