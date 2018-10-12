@@ -212,7 +212,7 @@ public class LongRunningConfigTest {
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(longRunningConfig).isNotNull();
 
-    // Assert that proto annotations settings take precendence over gapic config.
+    // Assert that we are using gapic config LRO settings.
     ProtoTypeRef metadataTypeModel = (ProtoTypeRef) longRunningConfig.getMetadataType();
     assertThat(metadataTypeModel.getProtoType()).isEqualTo(annotationsMetadataType);
     ProtoTypeRef returnTypeModel = (ProtoTypeRef) longRunningConfig.getReturnType();
