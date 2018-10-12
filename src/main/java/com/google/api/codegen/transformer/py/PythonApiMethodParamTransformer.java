@@ -138,6 +138,7 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
             messageType = context.getTypeTable().getFullNameForElementType(field);
           }
           docLines.add(
+              "",
               "If a dict is provided, it must be of the same form as the protobuf",
               String.format(
                   "message :class:`%s`",
