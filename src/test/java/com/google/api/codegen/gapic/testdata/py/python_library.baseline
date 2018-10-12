@@ -4362,6 +4362,7 @@ import sys
 # [START sample]
 
 from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
 
 def sample_monolog_about_book():
   """Testing calling forms"""
@@ -4375,7 +4376,7 @@ def sample_monolog_about_book():
 
   requests = [request]
   response = client.monolog_about_book(requests)
-  print(response)
+  print('The stage of the comment is: {}'.format(enums.EnumName(response.stage).name))
 
   # [END sample_core]
 # [END sample]
