@@ -219,10 +219,6 @@ public class SampleTransformer {
         InitCodeContext thisContext = initContext;
         SampleValueSet valueSet = setAndTag.values();
         if (thisContext == null) {
-          // TODO(pongad): Check that the attributes don't "overlap"
-          // (eg, specifying attributes for both `list` and `list[0]` should be an error).
-          // Probably do this after we implement the second kind of attributes;
-          // with only one implemented, I'm not sure what's the best way to do this yet.
           thisContext =
               createInitCodeContext(
                   methodContext,
@@ -233,7 +229,8 @@ public class SampleTransformer {
                       .getParameters()
                       .getAttributesList()
                       .stream()
-                      .filter(SampleInitAttribute::getSampleArgument)
+                      // TODO()
+                      .filter(attr -> !attr.getSampleArgumentName().isEmpty())
                       .map(SampleInitAttribute::getParameter)
                       .collect(ImmutableList.toImmutableList()));
         }
