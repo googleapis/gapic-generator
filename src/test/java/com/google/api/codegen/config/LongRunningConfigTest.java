@@ -35,8 +35,8 @@ public class LongRunningConfigTest {
   private static final String GAPIC_CONFIG_METADATA_TYPE = "HeaderType";
   private static final String ANNOTATIONS_RETURN_TYPE_NAME = "BookType";
   private static final String ANNOTATIONS_METADATA_TYPE = "FooterType";
-  private static final boolean TEST_IMPLEMENTS_DELETE = false;
-  private static final boolean TEST_IMPLEMENTS_CANCEL = false;
+  private static boolean TEST_IMPLEMENTS_DELETE = false;
+  private static boolean TEST_IMPLEMENTS_CANCEL = false;
   private static int TEST_INITIAL_POLL_DELAY = 5;
   private static double TEST_POLL_DELAY_MULTIPLIER = 10;
   private static long TEST_MAX_POLL_DELAY = 12500;
@@ -190,6 +190,42 @@ public class LongRunningConfigTest {
         .isEqualTo(LongRunningConfig.LRO_IMPLEMENTS_CANCEL);
     assertThat(longRunningConfig.implementsDelete())
         .isEqualTo(LongRunningConfig.LRO_IMPLEMENTS_DELETE);
+  }
+
+  @Test
+  public void testCreateSameLROFromProtoFileAndGapicConfig() {
+    // Given a Protobuf LRO method annotated with the same Return and Metadata Type
+    // as in the GAPIC config, use the GAPIC config settings.
+    DiagCollector diagCollector = new BoundedDiagCollector();
+
+    // Use a GAPIC config with the same return and metadata types as the LRO proto annotations.
+    LongRunningConfigProto longRunningConfigProto =
+        lroConfigProtoWithPollSettings
+            .toBuilder()
+            .setMetadataType(ANNOTATIONS_METADATA_TYPE)
+            .setReturnType(ANNOTATIONS_RETURN_TYPE_NAME)
+            .build();
+    LongRunningConfig longRunningConfig =
+        LongRunningConfig.createLongRunningConfig(
+            lroAnnotatedMethod, diagCollector, longRunningConfigProto, protoParser);
+
+    assertThat(diagCollector.getErrorCount()).isEqualTo(0);
+    assertThat(longRunningConfig).isNotNull();
+
+    // Assert that we are using gapic config LRO settings.
+    ProtoTypeRef metadataTypeModel = (ProtoTypeRef) longRunningConfig.getMetadataType();
+    assertThat(metadataTypeModel.getProtoType()).isEqualTo(annotationsMetadataType);
+    ProtoTypeRef returnTypeModel = (ProtoTypeRef) longRunningConfig.getReturnType();
+    assertThat(returnTypeModel.getProtoType()).isEqualTo(annotationsReturnType);
+
+    assertThat(longRunningConfig.getInitialPollDelay().toMillis())
+        .isEqualTo(TEST_INITIAL_POLL_DELAY);
+    assertThat(longRunningConfig.getMaxPollDelay().toMillis()).isEqualTo(TEST_MAX_POLL_DELAY);
+    assertThat(longRunningConfig.getPollDelayMultiplier()).isEqualTo(TEST_POLL_DELAY_MULTIPLIER);
+    assertThat(longRunningConfig.getTotalPollTimeout().toMillis())
+        .isEqualTo(TEST_TOTAL_POLL_TIMEOUT);
+    assertThat(longRunningConfig.implementsCancel()).isEqualTo(TEST_IMPLEMENTS_CANCEL);
+    assertThat(longRunningConfig.implementsDelete()).isEqualTo(TEST_IMPLEMENTS_DELETE);
   }
 
   @Test
