@@ -138,6 +138,8 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
             messageType = context.getTypeTable().getFullNameForElementType(field);
           }
           docLines.add(
+              // Add a blank line between previous doc lines and this one, to
+              // preserve valid restructuredtext.
               "",
               "If a dict is provided, it must be of the same form as the protobuf",
               String.format(
