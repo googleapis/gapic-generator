@@ -388,7 +388,6 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
               context.asRequestMethodContext(method));
       settingsMembers.addAll(calls);
     }
-    // settingsMembers.stream().filter(s -> s.memberName() != )
     return settingsMembers;
   }
 
