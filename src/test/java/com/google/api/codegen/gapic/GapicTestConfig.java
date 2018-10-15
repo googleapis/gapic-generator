@@ -38,7 +38,6 @@ public class GapicTestConfig extends TestConfig {
     AnnotationsProto.registerAllExtensions(registry);
     OperationsProto.registerAllExtensions(registry);
     AuthProto.registerAllExtensions(registry);
-    OperationsProto.registerAllExtensions(registry);
     return FileDescriptorSet.parseFrom(Files.newInputStream(getDescriptorFile()), registry);
   }
 }
