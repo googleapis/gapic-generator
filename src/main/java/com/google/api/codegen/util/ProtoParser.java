@@ -83,6 +83,7 @@ public class ProtoParser {
     if (!signatureDescriptor.isPresent()) {
       return ImmutableList.of();
     }
+    // Variable methodSignature will always be nonnull, so we had to check for presence above.
     MethodSignature methodSignature =
         (MethodSignature) method.getOptionFields().get(signatureDescriptor.get());
 
