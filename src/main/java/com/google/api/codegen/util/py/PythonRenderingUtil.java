@@ -17,25 +17,9 @@ package com.google.api.codegen.util.py;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class PythonRenderingUtil {
-  public List<String> trimDocs(List<String> docLines) {
-    // TODO (geigerj): "trimming" the docs means we don't support code blocks. Investigate
-    // supporting code blocks here.
-    ImmutableList.Builder<String> trimmedDocLines = ImmutableList.builder();
-    for (int i = 0; i < docLines.size(); ++i) {
-      String line = docLines.get(i).trim();
-      if (line.equals("::")) {
-        ++i;
-      } else {
-        trimmedDocLines.add(line);
-      }
-    }
-    return trimmedDocLines.build();
-  }
-
   public List<String> getDocLines(String text) {
     return CommonRenderingUtil.getDocLines(text);
   }
