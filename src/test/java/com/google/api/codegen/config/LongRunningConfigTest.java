@@ -35,12 +35,12 @@ public class LongRunningConfigTest {
   private static final String GAPIC_CONFIG_METADATA_TYPE = "HeaderType";
   private static final String ANNOTATIONS_RETURN_TYPE_NAME = "BookType";
   private static final String ANNOTATIONS_METADATA_TYPE = "FooterType";
-  private static boolean TEST_IMPLEMENTS_DELETE = false;
-  private static boolean TEST_IMPLEMENTS_CANCEL = false;
-  private static int TEST_INITIAL_POLL_DELAY = 5;
-  private static double TEST_POLL_DELAY_MULTIPLIER = 10;
-  private static long TEST_MAX_POLL_DELAY = 12500;
-  private static int TEST_TOTAL_POLL_TIMEOUT = 50000;
+  private static final boolean TEST_IMPLEMENTS_DELETE = false;
+  private static final boolean TEST_IMPLEMENTS_CANCEL = false;
+  private static final int TEST_INITIAL_POLL_DELAY = 5;
+  private static final double TEST_POLL_DELAY_MULTIPLIER = 10;
+  private static final long TEST_MAX_POLL_DELAY = 12500;
+  private static final int TEST_TOTAL_POLL_TIMEOUT = 50000;
 
   private static final ProtoParser protoParser = Mockito.mock(ProtoParser.class);
 
