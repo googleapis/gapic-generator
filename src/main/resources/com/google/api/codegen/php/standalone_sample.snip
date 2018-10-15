@@ -405,7 +405,14 @@
 
 @private commaSeparatedFields(args)
     @join arg : args on ", "
-        {@variableField(arg)}
+        # FIXME(hzyi): print enums directly will just get us an int
+        # Fix this by creating a mapping between enums and meaningful display names
+        # until https://github.com/protocolbuffers/protobuf/pull/4534 is merged
+        @if arg.type.isMessage
+            print_r({@variableField(arg)}, true)
+        @else
+            {@variableField(arg)}
+        @end
     @end
 @end
 

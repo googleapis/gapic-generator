@@ -241,9 +241,9 @@ interfaces:
         - edition=123
         attributes:
         - parameter: shelf.name
-          sample_argument: true
+          sample_argument_name: name
         - parameter: edition
-          sample_argument: true
+          sample_argument_name: edition
       on_success:
       - loop:
           variable: title
@@ -603,6 +603,10 @@ interfaces:
       parameters:
         defaults:
         - name=BASIC
+      on_success:
+        - print:
+          - "The stage of the comment is: %s"
+          - $resp.stage
     samples:
       in_code:
       - calling_forms: ".*"
