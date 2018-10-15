@@ -29,7 +29,6 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.longrunning.OperationTypes;
 import com.google.rpc.Code;
-import java.util.Collections;
 import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -151,11 +150,7 @@ public class ProtoParserTest {
   public void testGetRequiredFields() {
     Method publishSeriesMethod = libraryService.lookupMethod("PublishSeries");
     List<String> requiredFields = protoParser.getRequiredFields(publishSeriesMethod);
-    Collections.sort(requiredFields);
-    assertThat(requiredFields.size()).isEqualTo(3);
-    assertThat(requiredFields.get(0)).isEqualTo("books");
-    assertThat(requiredFields.get(1)).isEqualTo("series_uuid");
-    assertThat(requiredFields.get(2)).isEqualTo("shelf");
+    assertThat(requiredFields).containsExactly("books", "series_uuid", "shelf");
   }
 
   @Test
@@ -202,17 +197,17 @@ public class ProtoParserTest {
 
     MethodSignature additionalSignature2 = getShelfFlattenings.get(2);
     assertThat(additionalSignature2.getFieldsList().size()).isEqualTo(3);
-    assertThat(additionalSignature2.getFieldsList().get(0)).isEqualTo("name");
-    assertThat(additionalSignature2.getFieldsList().get(1)).isEqualTo("message");
-    assertThat(additionalSignature2.getFieldsList().get(2)).isEqualTo("string_builder");
+    assertThat(additionalSignature2.getFieldsList())
+        .containsExactly("name", "message", "string_builder");
   }
 
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
   @Test
   public void testGetAuthScopes() {
     List<String> scopes = protoParser.getAuthScopes(libraryService);
-    assertThat(scopes.size()).isEqualTo(2);
-    assertThat(scopes.get(0)).isEqualTo("https://www.googleapis.com/auth/library");
-    assertThat(scopes.get(1)).isEqualTo("https://www.googleapis.com/auth/cloud-platform");
+    assertThat(scopes)
+        .containsExactly(
+            "https://www.googleapis.com/auth/library",
+            "https://www.googleapis.com/auth/cloud-platform");
   }
 }
