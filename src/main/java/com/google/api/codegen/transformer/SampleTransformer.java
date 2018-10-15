@@ -236,7 +236,7 @@ public class SampleTransformer {
                       .getParameters()
                       .getAttributesList()
                       .stream()
-                      // TODO()
+                      // TODO(#2366) honor the configured name.
                       .filter(attr -> !attr.getSampleArgumentName().isEmpty())
                       .map(SampleInitAttribute::getParameter)
                       .collect(ImmutableList.toImmutableList()));
