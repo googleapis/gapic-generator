@@ -159,7 +159,6 @@ def java_gapic_proto_gradle_pkg(
         pkg_type = "proto",
         deps = deps + [
             "@com_google_protobuf_protobuf_java//jar",
-            "@com_google_api_grpc_proto_google_common_protos//jar",
         ],
         test_deps = test_deps,
         visibility = visibility,
