@@ -223,7 +223,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ProtoParser protoParser) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new TreeMap<>();
 
-    // The order in which to create GapicMethodConfigs; only use .
+    // The order in which to create GapicMethodConfigs; only use methods defined in GAPIC config.
     LinkedHashSet<String> methodNames = new LinkedHashSet<>();
     // TODO(andrealin): After migration off GAPIC config is complete; generate all methods
     // from protofile even if they aren't included in the GAPIC config.
