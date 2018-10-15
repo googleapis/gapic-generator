@@ -25,6 +25,9 @@
   @# [START {@sample.regionTag}]
 
   {@importList(sample.initCode.importSection.appImports)}
+  @if sample.outputImports.size
+    {@importList(sample.outputImports)}
+  @end
   @let convertTextCode = convertText(sample)
     @if convertTextCode
       import six
@@ -259,7 +262,11 @@
 
 @private commaSeparatedFields(args)
   @join arg : args on ", "
-    {@variableField(arg)}
+    @if arg.type.isEnum
+      enums.EnumName({@variableField(arg)}).name
+    @else
+      {@variableField(arg)}
+    @end
   @end
 @end
 

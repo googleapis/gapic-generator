@@ -66,6 +66,16 @@ public class DynamicLangApiMethodTransformer {
     this.sampleTransformer = new SampleTransformer(sampleType);
   }
 
+  public DynamicLangApiMethodTransformer(
+      ApiMethodParamTransformer apiMethodParamTransformer,
+      InitCodeTransformer initCodeTransformer,
+      SampleType sampleType,
+      OutputTransformer outputTransformer) {
+    this.apiMethodParamTransformer = apiMethodParamTransformer;
+    this.initCodeTransformer = initCodeTransformer;
+    this.sampleTransformer = new SampleTransformer(sampleType, outputTransformer);
+  }
+
   public OptionalArrayMethodView generateMethod(GapicMethodContext context) {
     return generateMethod(context, false);
   }
