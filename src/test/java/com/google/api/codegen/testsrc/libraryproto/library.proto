@@ -186,6 +186,12 @@ service LibraryService {
   rpc TestOptionalRequiredFlatteningParams(TestOptionalRequiredFlatteningParamsRequest) returns (TestOptionalRequiredFlatteningParamsResponse) {
     option (google.api.http) = { post: "/v1/testofp" body: "*" };
   }
+
+  // This method is not exposed in the GAPIC config.
+  rpc PrivateGetBook(GetBookRequest) returns (Book)  {
+    // http_get retry codes should not be generated from this private method.
+    option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}" };
+  }
 }
 
 // A single book in the library.
