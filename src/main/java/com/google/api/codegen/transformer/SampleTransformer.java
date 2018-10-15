@@ -29,6 +29,7 @@ import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
+import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
@@ -45,6 +46,7 @@ import java.util.List;
 public class SampleTransformer {
 
   private final SampleType sampleType;
+  private final OutputTransformer outputTransformer;
 
   /**
    * A functional interface provided by clients to generate an InitCodeView given an
@@ -62,7 +64,12 @@ public class SampleTransformer {
    *     configured on the methods are ignored.
    */
   public SampleTransformer(SampleType sampleType) {
+    this(sampleType, new OutputTransformer());
+  }
+
+  public SampleTransformer(SampleType sampleType, OutputTransformer outputTransformer) {
     this.sampleType = sampleType;
+    this.outputTransformer = outputTransformer;
   }
 
   /**
@@ -220,10 +227,6 @@ public class SampleTransformer {
         InitCodeContext thisContext = initContext;
         SampleValueSet valueSet = setAndTag.values();
         if (thisContext == null) {
-          // TODO(pongad): Check that the attributes don't "overlap"
-          // (eg, specifying attributes for both `list` and `list[0]` should be an error).
-          // Probably do this after we implement the second kind of attributes;
-          // with only one implemented, I'm not sure what's the best way to do this yet.
           thisContext =
               createInitCodeContext(
                   methodContext,
@@ -234,7 +237,8 @@ public class SampleTransformer {
                       .getParameters()
                       .getAttributesList()
                       .stream()
-                      .filter(SampleInitAttribute::getSampleArgument)
+                      // TODO(#2366) honor the configured name.
+                      .filter(attr -> !attr.getSampleArgumentName().isEmpty())
                       .map(SampleInitAttribute::getParameter)
                       .collect(ImmutableList.toImmutableList()));
         }
@@ -244,12 +248,19 @@ public class SampleTransformer {
           outputs = OutputTransformer.defaultOutputSpecs(methodContext.getMethodModel());
         }
 
+        ImmutableList<OutputView> outputViews =
+            OutputTransformer.toViews(outputs, methodContext, valueSet);
+
         methodSampleViews.add(
             MethodSampleView.newBuilder()
                 .callingForm(form)
                 .valueSet(SampleValueSetView.of(valueSet))
                 .initCode(initCodeView)
-                .outputs(OutputTransformer.toViews(outputs, methodContext, valueSet))
+                .outputs(outputViews)
+                .outputImports(
+                    outputTransformer
+                        .getOutputImportTransformer()
+                        .generateOutputImports(methodContext, outputViews))
                 .regionTag(
                     regionTagFromSpec(
                         setAndTag.regionTag(),
