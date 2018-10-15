@@ -146,7 +146,6 @@ def java_gapic_library(
             "@com_google_auth_google_auth_library_credentials//jar",
             "@com_google_auth_google_auth_library_oauth2_http//jar",
             "@com_google_http_client_google_http_client//jar",
-            "@com_google_api_grpc_proto_google_common_protos//jar",
         ],
         test_deps = test_deps + [
             "@com_google_api_gax_grpc_testlib//jar",
@@ -156,7 +155,6 @@ def java_gapic_library(
             "@io_grpc_grpc_netty_shaded//jar",
             "@io_grpc_grpc_stub//jar",
             "@io_opencensus_opencensus_contrib_grpc_metrics//jar",
-            "@com_google_api_grpc_grpc_google_common_protos//jar",
             "@junit_junit//jar",
         ],
         gapic_yaml = gapic_yaml,
