@@ -33,7 +33,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.rpc.Code;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -157,7 +159,7 @@ public class RetryCodesConfig {
       return;
     }
 
-    populateRetryCodesDefinitionWithProtoFile(apiInterface, protoParser);
+    populateRetryCodesDefinitionWithProtoFile(apiInterface, interfaceConfigProto, protoParser);
   }
 
   /**
@@ -189,7 +191,7 @@ public class RetryCodesConfig {
    * settings name.
    */
   private void populateRetryCodesDefinitionWithProtoFile(
-      Interface apiInterface, ProtoParser protoParser) {
+      Interface apiInterface, InterfaceConfigProto interfaceConfigProto, ProtoParser protoParser) {
 
     SymbolTable symbolTable = new SymbolTable();
 
@@ -197,6 +199,17 @@ public class RetryCodesConfig {
       // Record all the preexisting retryCodeNames from configProto.
       symbolTable.getNewSymbol(retryCodesName);
     }
+
+    // For now, only create retryCodeDef for methods that are also defined in the GAPIC config.
+    Map<String, Method> methodsFromProtoFile =
+        apiInterface.getMethods().stream().collect(Collectors.toMap(Method::getSimpleName, m -> m));
+    List<Method> methodsFromGapicConfig =
+        interfaceConfigProto
+            .getMethodsList()
+            .stream()
+            .map(m -> methodsFromProtoFile.get(m.getName()))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
 
     // Unite all HTTP GET methods that have no additional retry codes under one retry code name to
     // reduce duplication.
@@ -206,7 +219,7 @@ public class RetryCodesConfig {
     String noRetryName = symbolTable.getNewSymbol(NO_RETRY_CODE_DEF_NAME);
 
     // Check proto annotations for retry settings.
-    for (Method method : apiInterface.getMethods()) {
+    for (Method method : methodsFromGapicConfig) {
       if (methodRetryNames.containsKey(method.getSimpleName())) {
         // https://github.com/googleapis/gapic-generator/issues/2311.
         // For now, let GAPIC config take precedent over proto annotations, for retry code
