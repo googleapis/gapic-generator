@@ -1614,7 +1614,6 @@ class LibraryServiceClient(object):
             series_uuid,
             edition=None,
             review_copy=None,
-            parent=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -1626,8 +1625,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> # TODO: Initialize `shelf`:
-            >>> shelf = {}
+            >>> shelf = client.shelf_path('[SHELF_ID]')
             >>>
             >>> # TODO: Initialize `books`:
             >>> books = []
@@ -1637,10 +1635,7 @@ class LibraryServiceClient(object):
             >>> response = client.publish_series(shelf, books, series_uuid)
 
         Args:
-            shelf (Union[dict, ~google.cloud.example.library_v1.types.Shelf]): The shelf in which the series is created.
-
-                If a dict is provided, it must be of the same form as the protobuf
-                message :class:`~google.cloud.example.library_v1.types.Shelf`
+            shelf (str): The shelf in which the series is created.
             books (list[Union[dict, ~google.cloud.example.library_v1.types.Book]]): The books to publish in the series.
 
                 If a dict is provided, it must be of the same form as the protobuf
@@ -1651,7 +1646,6 @@ class LibraryServiceClient(object):
                 message :class:`~google.cloud.example.library_v1.types.SeriesUuid`
             edition (int): The edition of the series
             review_copy (bool): If the book is in a pre-publish state
-            parent (str)
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will not
                 be retried.
@@ -1693,7 +1687,6 @@ class LibraryServiceClient(object):
             series_uuid=series_uuid,
             edition=edition,
             review_copy=review_copy,
-            parent=parent,
         )
         return self._inner_api_calls['publish_series'](request, retry=retry, timeout=timeout, metadata=metadata)
 
@@ -4423,20 +4416,18 @@ import sys
 from google.cloud.example import library_v1
 import six
 
-def sample_publish_series(name, edition):
+def sample_publish_series(shelf, edition):
   """Testing calling forms"""
 
   # [START canonical_core]
 
   client = library_v1.LibraryServiceClient()
 
-  # name = 'Math'
+  # shelf = client.shelf_path('[SHELF_ID]')
   # edition = 123
 
-  if isinstance(name, six.binary_type):
-    name = name.decode('utf-8')
-
-  shelf = {'name': name}
+  if isinstance(shelf, six.binary_type):
+    shelf = shelf.decode('utf-8')
 
   # TODO: Initialize `books`:
   books = []
@@ -4457,11 +4448,11 @@ def main():
   import argparse
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--name', type=str, default='Math')
+  parser.add_argument('--shelf', type=str, default=client.shelf_path('[SHELF_ID]'))
   parser.add_argument('--edition', type=int, default=123)
   args = parser.parse_args()
 
-  sample_publish_series(args.name, args.edition)
+  sample_publish_series(args.shelf, args.edition)
 
 if __name__ == '__main__':
   main()
@@ -4500,8 +4491,7 @@ def sample_publish_series():
 
   client = library_v1.LibraryServiceClient()
 
-  # TODO: Initialize `shelf`:
-  shelf = {}
+  shelf = client.shelf_path('[SHELF_ID]')
 
   # TODO: Initialize `books`:
   books = []
@@ -5062,7 +5052,7 @@ class TestLibraryServiceClient(object):
             channel=channel)
 
         # Setup Request
-        shelf = {}
+        shelf = client.shelf_path('[SHELF_ID]')
         books = []
         series_string = 'foobar'
         series_uuid = {'series_string': series_string}
@@ -5082,7 +5072,7 @@ class TestLibraryServiceClient(object):
              channel=channel)
 
         # Setup request
-        shelf = {}
+        shelf = client.shelf_path('[SHELF_ID]')
         books = []
         series_string = 'foobar'
         series_uuid = {'series_string': series_string}

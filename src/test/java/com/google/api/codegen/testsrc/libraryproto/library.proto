@@ -408,7 +408,7 @@ message CreateBookRequest {
 // Request message for LibraryService.PublishSeries.
 message PublishSeriesRequest {
   // The shelf in which the series is created.
-  Shelf shelf = 1;
+  string shelf = 1;
 
   // The books to publish in the series.
   repeated Book books = 2;
@@ -423,10 +423,6 @@ message PublishSeriesRequest {
 
   // Uniquely identifies the series to the publishing house.
   SeriesUuid series_uuid = 5;
-
-  // TODO(pongad): Come up with a reason for this path to be here.
-  // String format: "shelves/*/books/*"
-  string parent = 6;
 }
 
 message SeriesUuid {
