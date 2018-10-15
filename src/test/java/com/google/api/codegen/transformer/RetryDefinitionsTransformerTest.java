@@ -128,12 +128,12 @@ public class RetryDefinitionsTransformerTest {
     Map<String, ImmutableList<String>> retryCodesDef = retryCodesConfig.getRetryCodesDefinition();
     Map<String, String> retryCodesMap = retryCodesConfig.getMethodRetryNames();
 
-    Truth.assertThat(retryCodesMap.size()).isEqualTo(5);
+    Truth.assertThat(retryCodesMap.size()).isEqualTo(4);
     String getHttpRetryName = retryCodesMap.get(GET_HTTP_METHOD_NAME);
     String nonIdempotentRetryName = retryCodesMap.get(NON_IDEMPOTENT_METHOD_NAME);
     String permissionDeniedRetryName = retryCodesMap.get(PERMISSION_DENIED_METHOD_NAME);
     String idempotentRetryName = retryCodesMap.get(IDEMPOTENT_METHOD_NAME);
-    String cancelledRetryName = retryCodesMap.get(CANCELED_METHOD_NAME);
+    // CANCELED_METHOD_NAME won't have a retry code because it wasn't defined in GAPIC config.
 
     // GET_HTTP_METHOD_NAME had to be escaped because it was defined in the config proto retry code
     // map already.
@@ -141,7 +141,6 @@ public class RetryDefinitionsTransformerTest {
     Truth.assertThat(nonIdempotentRetryName).isEqualTo(RETRY_CODES_NON_IDEMPOTENT_NAME);
     Truth.assertThat(permissionDeniedRetryName).isEqualTo(RetryCodesConfig.NO_RETRY_CODE_DEF_NAME);
     Truth.assertThat(idempotentRetryName).isEqualTo(RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME);
-    Truth.assertThat(cancelledRetryName).isEqualTo("canceledmethod_retry_code");
 
     // httpGetMethod was an HTTP Get method, so it has two codes by default; config proto didn't
     // have a retry config.
@@ -155,9 +154,7 @@ public class RetryDefinitionsTransformerTest {
     // For permissionDeniedMethod, Config proto gives [] and proto method gives [PERMISSION_DENIED].
     Truth.assertThat(retryCodesDef.get(permissionDeniedRetryName).size()).isEqualTo(0);
 
-    // cancelledMethod is not contained in Config proto, and the proto method gives [CANCELLED].
-    Truth.assertThat(retryCodesDef.get(cancelledRetryName).iterator().next())
-        .isEqualTo(CANCELLED.name());
+    // cancelledMethod is not contained in Config proto.
 
     Truth.assertThat(retryCodesDef.get(idempotentRetryName).iterator().next())
         .isEqualTo(RESOURCE_EXHAUSTED.name());
@@ -165,13 +162,20 @@ public class RetryDefinitionsTransformerTest {
 
   @Test
   public void testWithInterfaceOnly() {
+    // During GAPIC config migration, we should only create retry codes for methods named in the
+    // GAPIC config.
+    InterfaceConfigProto bareBonesConfigProto =
+        InterfaceConfigProto.newBuilder()
+            .addMethods(MethodConfigProto.newBuilder().setName(GET_HTTP_METHOD_NAME))
+            .addMethods(MethodConfigProto.newBuilder().setName(NON_IDEMPOTENT_METHOD_NAME))
+            .addMethods(MethodConfigProto.newBuilder().setName(PERMISSION_DENIED_METHOD_NAME))
+            .addMethods(MethodConfigProto.newBuilder().setName(CANCELED_METHOD_NAME))
+            .build();
 
     DiagCollector diagCollector = new BoundedDiagCollector();
 
-    InterfaceConfigProto emptyConfig = InterfaceConfigProto.getDefaultInstance();
-
     RetryCodesConfig retryCodesConfig =
-        RetryCodesConfig.create(diagCollector, emptyConfig, apiInterface, protoParser);
+        RetryCodesConfig.create(diagCollector, bareBonesConfigProto, apiInterface, protoParser);
 
     Map<String, ImmutableList<String>> retryCodesDef = retryCodesConfig.getRetryCodesDefinition();
     Map<String, String> retryCodesMap = retryCodesConfig.getMethodRetryNames();
