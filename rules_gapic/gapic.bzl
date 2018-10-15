@@ -117,6 +117,12 @@ def _proto_custom_library_impl(ctx):
             arguments = [intermediate_output.path, output.path],
         )
 
+    # This makes `proto_custom_library` pretend that it returns same provider as the native
+    # `proto_library rule`. This allows using proto_custom_library output as its own input (deps).
+    # Copy other properites of ProtoSourcesProvider if ever needed (currently only
+    # 'check_deps_sources' and 'transitive_imports' fields of ProtoSourcesProvider are supported)
+    return struct(proto = struct(check_deps_sources = srcs, transitive_imports = imports))
+
 proto_custom_library = rule(
     attrs = {
         "deps": attr.label_list(mandatory = True, allow_empty = False, providers = ["proto"]),
