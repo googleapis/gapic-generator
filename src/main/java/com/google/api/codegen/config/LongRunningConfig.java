@@ -73,7 +73,8 @@ public abstract class LongRunningConfig {
       LongRunningConfigProto longRunningConfigProto,
       ProtoParser protoParser) {
     LongRunningConfig longRunningConfig =
-        createLongRunningConfigFromProtoFile(method, diagCollector, protoParser);
+        createLongRunningConfigFromProtoFile(
+            method, diagCollector, longRunningConfigProto, protoParser);
     if (longRunningConfig != null) {
       return longRunningConfig;
     }
@@ -85,12 +86,18 @@ public abstract class LongRunningConfig {
     return null;
   }
 
-  /** Creates an instance of LongRunningConfig based on protofile annotations. */
+  /**
+   * Creates an instance of LongRunningConfig based on protofile annotations. If there is matching
+   * long running config from GAPIC config, use the GAPIC config's timeout values.
+   */
   @Nullable
   private static LongRunningConfig createLongRunningConfigFromProtoFile(
-      Method method, DiagCollector diagCollector, ProtoParser protoParser) {
+      Method method,
+      DiagCollector diagCollector,
+      LongRunningConfigProto longRunningConfigProto,
+      ProtoParser protoParser) {
+    int preexistingErrors = diagCollector.getErrorCount();
 
-    boolean error = false;
     Model model = method.getModel();
     OperationTypes operationTypes = protoParser.getLongRunningOperation(method);
     if (operationTypes == null
@@ -101,6 +108,13 @@ public abstract class LongRunningConfig {
     String responseTypeName = operationTypes.getResponse();
     String metadataTypeName = operationTypes.getMetadata();
 
+    if (responseTypeName.equals(longRunningConfigProto.getReturnType())
+        && metadataTypeName.equals(longRunningConfigProto.getMetadataType())) {
+      // GAPIC config refers to the same Long running config; so use its retry settings.
+      return LongRunningConfig.createLongRunningConfigFromGapicConfig(
+          method.getModel(), diagCollector, longRunningConfigProto);
+    }
+
     TypeRef returnType = model.getSymbolTable().lookupType(responseTypeName);
     TypeRef metadataType = model.getSymbolTable().lookupType(metadataTypeName);
 
@@ -110,14 +124,12 @@ public abstract class LongRunningConfig {
               SimpleLocation.TOPLEVEL,
               "Type not found for long running config: '%s'",
               responseTypeName));
-      error = true;
     } else if (!returnType.isMessage()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Type for long running config is not a message: '%s'",
               responseTypeName));
-      error = true;
     }
 
     if (metadataType == null) {
@@ -126,33 +138,32 @@ public abstract class LongRunningConfig {
               SimpleLocation.TOPLEVEL,
               "Metadata type not found for long running config: '%s'",
               metadataTypeName));
-      error = true;
     } else if (!metadataType.isMessage()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Metadata type for long running config is not a message: '%s'",
               metadataTypeName));
-      error = true;
     }
 
+    if (diagCollector.getErrorCount() - preexistingErrors > 0) {
+      return null;
+    }
+
+    // Use default retry settings.
     Duration initialPollDelay = Duration.ofMillis(LRO_INITIAL_POLL_DELAY_MILLIS);
     Duration maxPollDelay = Duration.ofMillis(LRO_MAX_POLL_DELAY_MILLIS);
     Duration totalPollTimeout = Duration.ofMillis(LRO_TOTAL_POLL_TIMEOUT_MILLS);
 
-    if (error) {
-      return null;
-    } else {
-      return new AutoValue_LongRunningConfig(
-          ProtoTypeRef.create(returnType),
-          ProtoTypeRef.create(metadataType),
-          LRO_IMPLEMENTS_CANCEL,
-          LRO_IMPLEMENTS_DELETE,
-          initialPollDelay,
-          LRO_POLL_DELAY_MULTIPLIER,
-          maxPollDelay,
-          totalPollTimeout);
-    }
+    return new AutoValue_LongRunningConfig(
+        ProtoTypeRef.create(returnType),
+        ProtoTypeRef.create(metadataType),
+        LRO_IMPLEMENTS_CANCEL,
+        LRO_IMPLEMENTS_DELETE,
+        initialPollDelay,
+        LRO_POLL_DELAY_MULTIPLIER,
+        maxPollDelay,
+        totalPollTimeout);
   }
 
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
@@ -160,7 +171,7 @@ public abstract class LongRunningConfig {
   private static LongRunningConfig createLongRunningConfigFromGapicConfig(
       Model model, DiagCollector diagCollector, LongRunningConfigProto longRunningConfigProto) {
 
-    boolean error = false;
+    int preexistingErrors = diagCollector.getErrorCount();
 
     TypeRef returnType = model.getSymbolTable().lookupType(longRunningConfigProto.getReturnType());
     TypeRef metadataType =
@@ -172,14 +183,12 @@ public abstract class LongRunningConfig {
               SimpleLocation.TOPLEVEL,
               "Type not found for long running config: '%s'",
               longRunningConfigProto.getReturnType()));
-      error = true;
     } else if (!returnType.isMessage()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Type for long running config is not a message: '%s'",
               longRunningConfigProto.getReturnType()));
-      error = true;
     }
 
     if (metadataType == null) {
@@ -188,14 +197,12 @@ public abstract class LongRunningConfig {
               SimpleLocation.TOPLEVEL,
               "Metadata type not found for long running config: '%s'",
               longRunningConfigProto.getMetadataType()));
-      error = true;
     } else if (!metadataType.isMessage()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Metadata type for long running config is not a message: '%s'",
               longRunningConfigProto.getMetadataType()));
-      error = true;
     }
 
     Duration initialPollDelay =
@@ -206,7 +213,6 @@ public abstract class LongRunningConfig {
               SimpleLocation.TOPLEVEL,
               "Initial poll delay must be provided and set to a positive number: '%s'",
               longRunningConfigProto.getInitialPollDelayMillis()));
-      error = true;
     }
 
     double pollDelayMultiplier = longRunningConfigProto.getPollDelayMultiplier();
@@ -216,7 +222,6 @@ public abstract class LongRunningConfig {
               SimpleLocation.TOPLEVEL,
               "Poll delay multiplier must be provided and be greater or equal than 1.0: '%s'",
               longRunningConfigProto.getPollDelayMultiplier()));
-      error = true;
     }
 
     Duration maxPollDelay = Duration.ofMillis(longRunningConfigProto.getMaxPollDelayMillis());
@@ -226,7 +231,6 @@ public abstract class LongRunningConfig {
               SimpleLocation.TOPLEVEL,
               "Max poll delay must be provided and set be equal or greater than initial poll delay: '%s'",
               longRunningConfigProto.getMaxPollDelayMillis()));
-      error = true;
     }
 
     Duration totalPollTimeout =
@@ -237,21 +241,20 @@ public abstract class LongRunningConfig {
               SimpleLocation.TOPLEVEL,
               "Total poll timeout must be provided and be be equal or greater than max poll delay: '%s'",
               longRunningConfigProto.getTotalPollTimeoutMillis()));
-      error = true;
     }
 
-    if (error) {
+    if (diagCollector.getErrorCount() - preexistingErrors > 0) {
       return null;
-    } else {
-      return new AutoValue_LongRunningConfig(
-          ProtoTypeRef.create(returnType),
-          ProtoTypeRef.create(metadataType),
-          longRunningConfigProto.getImplementsDelete(),
-          longRunningConfigProto.getImplementsCancel(),
-          initialPollDelay,
-          pollDelayMultiplier,
-          maxPollDelay,
-          totalPollTimeout);
     }
+
+    return new AutoValue_LongRunningConfig(
+        ProtoTypeRef.create(returnType),
+        ProtoTypeRef.create(metadataType),
+        longRunningConfigProto.getImplementsDelete(),
+        longRunningConfigProto.getImplementsCancel(),
+        initialPollDelay,
+        pollDelayMultiplier,
+        maxPollDelay,
+        totalPollTimeout);
   }
 }
