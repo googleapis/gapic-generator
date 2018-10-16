@@ -359,10 +359,6 @@ service LibraryService {
           "optional_map"]
       }
     };
-    option (google.longrunning.operation_types) = {
-      response: "google.example.library.v1.Book"
-      metadata: "google.example.library.v1.GetBigBookMetadata"
-    };
   }
 }
 
@@ -378,7 +374,7 @@ message Book {
       base_name: "book_oneof"
       resources: [
         {base_name: "book"             path : "shelves/*/books/*"},
-        {base_name: "archived_book"    path : "archives/*/books/*"},
+        {base_name: "archived_book"    path : "archives/*/books/**"},
         {base_name: "deleted_book"     path : "_deleted-book_"}
       ]
     }
@@ -747,7 +743,7 @@ message MoveBookRequest {
 }
 
 message ListStringsRequest {
-  string name = 1 [(google.api.required) = true];
+  string name = 1;
   int32 page_size = 2;
   string page_token = 3;
 }
