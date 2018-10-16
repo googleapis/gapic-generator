@@ -99,6 +99,7 @@ public abstract class GapicProductConfig implements ProductConfig {
    *
    * <p>TODO(eoogbe): Validate the value in GAPIC config advisor.
    */
+  @Nullable
   public abstract String getConfigSchemaVersion();
 
   public GapicProductConfig withPackageName(String packageName) {

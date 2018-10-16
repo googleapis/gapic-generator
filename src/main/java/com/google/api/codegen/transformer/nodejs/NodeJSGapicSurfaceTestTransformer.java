@@ -59,6 +59,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -172,7 +173,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         // Issue: https://github.com/googleapis/toolkit/issues/946
         continue;
       }
-      Iterable<FieldConfig> fieldConfigs =
+      Collection<FieldConfig> fieldConfigs =
           methodContext.getMethodConfig().getRequiredFieldConfigs();
       InitCodeContext initCodeContext =
           InitCodeContext.newBuilder()

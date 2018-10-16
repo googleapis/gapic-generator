@@ -26,7 +26,7 @@ import com.google.api.tools.framework.model.Model;
 
 /** Merges the gapic config from a proto Model into a ConfigNode. */
 public class ProtoConfigMerger {
-  ProtoParser protoParser = new ProtoParser();
+  private ProtoParser protoParser = new ProtoParser();
 
   public ConfigNode mergeConfig(Model model, String fileName) {
     ConfigMerger configMerger = createMerger(model, fileName);

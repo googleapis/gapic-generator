@@ -175,14 +175,7 @@ public class ProtoParserTest {
 
   @Test
   public void testGetMethodSignatures() {
-    Method getShelfMethod =
-        libraryProtoFile
-            .getInterfaces()
-            .stream()
-            .filter(i -> i.lookupMethod("GetShelf") != null)
-            .findFirst()
-            .get()
-            .lookupMethod("GetShelf");
+    Method getShelfMethod = libraryService.lookupMethod("GetShelf");
     List<MethodSignature> getShelfFlattenings = protoParser.getMethodSignatures(getShelfMethod);
     assertThat(getShelfFlattenings.size()).isEqualTo(3);
 
@@ -199,6 +192,26 @@ public class ProtoParserTest {
     assertThat(additionalSignature2.getFieldsList().size()).isEqualTo(3);
     assertThat(additionalSignature2.getFieldsList())
         .containsExactly("name", "message", "string_builder");
+  }
+
+  @Test
+  public void testEmptySignature() {
+    // Test that we can detect empty method signatures.
+    Method listShelvesMethod = libraryService.lookupMethod("ListShelves");
+    List<MethodSignature> listShelvesFlattenings =
+        protoParser.getMethodSignatures(listShelvesMethod);
+    assertThat(listShelvesFlattenings.size()).isEqualTo(1);
+    MethodSignature emptySignature = listShelvesFlattenings.get(0);
+    assertThat(emptySignature.getFieldsList().size()).isEqualTo(0);
+  }
+
+  @Test
+  public void testNoSignature() {
+    // Test that we can detect the absence of method signatures.
+    Method streamShelvesMethod = libraryService.lookupMethod("StreamShelves");
+    List<MethodSignature> listShelvesFlattenings =
+        protoParser.getMethodSignatures(streamShelvesMethod);
+    assertThat(listShelvesFlattenings.size()).isEqualTo(0);
   }
 
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */

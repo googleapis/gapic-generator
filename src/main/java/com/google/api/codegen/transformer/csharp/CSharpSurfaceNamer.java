@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.codegen.config.AnyResourceNameConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -270,7 +271,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     boolean requirePlural = type.isRepeated();
 
     if (fieldConfig.getResourceNameType() == ResourceNameType.ANY) {
-      resourceName = Name.from("resource_name");
+      resourceName = Name.from(AnyResourceNameConfig.ENTITY_NAME);
     } else {
       resourceName = getResourceTypeNameObject(fieldConfig.getMessageResourceNameConfig());
     }
