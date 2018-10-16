@@ -353,6 +353,19 @@ jobs:
             - googleapis
             - showcase-protos
             - showcase-protos-patched
+  test-baselines:
+    docker:
+      - image: circleci/golang:1.11
+    steps:
+      - checkout
+      - run:
+          name: Test baselines
+          command: |
+            ./testutils/check-baselines.sh
+            go test testutils/check-calling-form-in-baseline/*.go
+            go run $(find testutils/check-calling-form-in-baseline -type f | grep -v _test) -yaml src/test/java/com/google/api/codegen/testsrc/libraryproto/library_gapic.yaml src/test
+            go test testutils/check-lang-uses-form/*.go
+            go run $(find testutils/check-lang-uses-form -type f | grep -v _test) -forms src/main/java/com/google/api/codegen/viewmodel/CallingForm.java src/test
   test-gapic-generator:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -361,26 +374,17 @@ jobs:
       - checkout:
           path: gapic-generator
       - run:
-          name: Make reports directory
-          command: |
-            mkdir -p reports/gapic-generator
-      - run:
           name: Run unit tests for gapic-generator
           command: |
+            mkdir -p /tmp/workspace/reports/gapic-generator
             cd gapic-generator
-            ./gradlew clean test
-            export TEST_REPORTS_DIR=/tmp/workspace/reports/gapic-generator
-            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${TEST_REPORTS_DIR} \;
+            ./gradlew check
+            find -type f -regex ".*/build/test-results/.*xml" | xargs cp -t /tmp/workspace/reports/gapic-generator
           when: always
       - store_test_results:
           path: reports/gapic-generator
       - store_artifacts:
           path: reports/gapic-generator
-      - persist_to_workspace:
-          # Save all generated directories in workspace for later CircleCI jobs.
-          root: /tmp/workspace
-          paths:
-            - reports/gapic-generator
   generate-clients:
     docker:
       - image: googleapis/artman:0.15.5
@@ -676,9 +680,10 @@ workflows:
   run_generated_tests:
     jobs:
       - install-gapic-generator
+      - test-baselines
       - test-gapic-generator:
           requires:
-            - install-gapic-generator
+            - test-baselines
       - generate-clients:
           requires:
             - install-gapic-generator
