@@ -379,6 +379,7 @@ jobs:
             mkdir -p /tmp/workspace/reports/gapic-generator
             cd gapic-generator
             ./gradlew check
+            bash <(curl -s https://codecov.io/bash)
             find -type f -regex ".*/build/test-results/.*xml" | xargs cp -t /tmp/workspace/reports/gapic-generator
           when: always
       - store_test_results:
