@@ -47,6 +47,7 @@ import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -513,7 +514,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
   private StaticLangApiMethodView generateInitCode(
       StaticLangApiMethodView method,
       MethodContext context,
-      Iterable<FieldConfig> fieldConfigs,
+      Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
       CallingForm callingForm) {
     // Replace the sample/init code using the same context as for the whole snippet file.

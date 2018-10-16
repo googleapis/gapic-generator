@@ -206,14 +206,13 @@ public final class DiscoveryMethodModel implements MethodModel {
     return method.description();
   }
 
-  @Override
-  public List<DiscoveryField> getResourceNameInputFields() {
+  private List<DiscoveryField> getResourceNameInputFields() {
     if (resourceNameInputFields != null) {
       return resourceNameInputFields;
     }
 
     ImmutableList.Builder<DiscoveryField> params = ImmutableList.builder();
-    for (DiscoveryField field : inputFields) {
+    for (DiscoveryField field : getInputFields()) {
       if (field.getDiscoveryField().isPathParam()) {
         params.add(field);
       }

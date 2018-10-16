@@ -43,6 +43,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -678,7 +679,7 @@ public class StaticLangApiMethodTransformer {
       List<CallingForm> callingForms) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
-    Iterable<FieldConfig> fieldConfigs =
+    Collection<FieldConfig> fieldConfigs =
         context.getFlatteningConfig().getFlattenedFieldConfigs().values();
     sampleTransformer.generateSamples(
         methodViewBuilder,

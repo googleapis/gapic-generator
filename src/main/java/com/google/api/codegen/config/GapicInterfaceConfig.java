@@ -135,12 +135,12 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               retryCodesConfig,
               retrySettingsDefinition.keySet(),
               protoParser);
-      methodConfigs = createMethodConfigs(methodConfigsMap, apiInterface, interfaceConfigProto);
       if (methodConfigsMap == null) {
         diagCollector.addDiag(
             Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
         return null;
       }
+      methodConfigs = createMethodConfigs(methodConfigsMap, apiInterface, interfaceConfigProto);
     } else {
       methodConfigsMap = ImmutableMap.of();
       methodConfigs = ImmutableList.of();
@@ -162,7 +162,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
       String entityName = collectionConfigProto.getEntityName();
       ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
-      if (resourceName == null || !(resourceName instanceof SingleResourceNameConfig)) {
+      if (!(resourceName instanceof SingleResourceNameConfig)) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
@@ -223,15 +223,15 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ProtoParser protoParser) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new TreeMap<>();
 
-    // The order in which to create GapicMethodConfigs; first in the order of methods listed in
-    // the protofile, and then any remaining methods in the Gapic config.
+    // The order in which to create GapicMethodConfigs; only use methods defined in GAPIC config.
     LinkedHashSet<String> methodNames = new LinkedHashSet<>();
+    // TODO(andrealin): After migration off GAPIC config is complete; generate all methods
+    // from protofile even if they aren't included in the GAPIC config.
 
     Map<String, Method> protoMethodsMap = new HashMap<>();
 
     for (Method method : apiInterface.getMethods()) {
       protoMethodsMap.put(method.getSimpleName(), method);
-      methodNames.add(method.getSimpleName());
     }
 
     Map<String, MethodConfigProto> methodConfigProtoMap = new HashMap<>();
@@ -292,10 +292,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       methodConfigs.put(
           methodConfigProto.getName(), methodConfigMap.get(methodConfigProto.getName()));
     }
-    // Add in methods that aren't defined in the GAPIC config but are defined in the source protos.
-    for (Method method : apiInterface.getMethods()) {
-      methodConfigs.put(method.getSimpleName(), methodConfigMap.get(method.getSimpleName()));
-    }
+    // TODO(andrealin): After migration from GAPIC config, add in methods that aren't defined
+    // in the GAPIC config but are defined in the source protos.
+
     return new LinkedList<>(methodConfigs.values());
   }
 

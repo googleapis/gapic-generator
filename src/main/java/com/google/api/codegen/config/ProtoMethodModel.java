@@ -31,7 +31,6 @@ import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -206,11 +205,6 @@ public final class ProtoMethodModel implements MethodModel {
     }
     outputFields = fieldsBuilder.build();
     return outputFields;
-  }
-
-  @Override
-  public List<ProtoField> getResourceNameInputFields() {
-    return new ArrayList<>();
   }
 
   @Override
