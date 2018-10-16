@@ -30,7 +30,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.longrunning.OperationTypes;
 import com.google.longrunning.OperationsProto;
 import com.google.protobuf.Api;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -159,19 +158,12 @@ public class ProtoParser {
   /* Return a list of method signatures, aka flattenings, specified on a given method.
    * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
   public List<MethodSignature> getMethodSignatures(Method method) {
-    Optional<FieldDescriptor> signatureDescriptor =
-        method
-            .getOptionFields()
-            .keySet()
-            .stream()
-            .filter(o -> o.getFullName().equals("google.api.method_signature"))
-            .findAny();
-    if (!signatureDescriptor.isPresent()) {
+    if (!method.getOptionFields().containsKey(AnnotationsProto.methodSignature.getDescriptor())) {
       return ImmutableList.of();
     }
+    // Variable methodSignature will always be nonnull, so we had to check for presence above.
     MethodSignature methodSignature =
-        (MethodSignature) method.getOptionFields().get(signatureDescriptor.get());
-
+        method.getDescriptor().getMethodAnnotation(AnnotationsProto.methodSignature);
     // Let's only recurse once when we look for additional MethodSignatures.
     List<MethodSignature> additionalSignatures = methodSignature.getAdditionalSignaturesList();
     return ImmutableList.<MethodSignature>builder()
