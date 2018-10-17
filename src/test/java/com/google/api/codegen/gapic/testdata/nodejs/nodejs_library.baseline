@@ -563,7 +563,7 @@ stream.write(request);
 //         className: "PublishSeriesRequestPiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
+//        [shelf=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeries" of type "OptionalArrayMethod"
 
 // [START canonical_core]
@@ -571,18 +571,15 @@ stream.write(request);
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-// const name = 'Math';
+// const formattedShelf = client.shelfPath('[SHELF_ID]');
 // const edition = 123;
-const shelf = {
-  name: name,
-};
 const books = [];
 const seriesString = 'xyz3141592654';
 const seriesUuid = {
   seriesString: seriesString,
 };
 const request = {
-  shelf: shelf,
+  shelf: formattedShelf,
   books: books,
   seriesUuid: seriesUuid,
   edition: edition,
@@ -624,12 +621,12 @@ client.publishSeries(request)
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-const shelf = {};
+const formattedShelf = client.shelfPath('[SHELF_ID]');
 const books = [];
 const seriesUuid = {};
 const edition = 2;
 const request = {
-  shelf: shelf,
+  shelf: formattedShelf,
   books: books,
   seriesUuid: seriesUuid,
   edition: edition,
@@ -1243,10 +1240,8 @@ const CreateBookRequest = {
 /**
  * Request message for LibraryService.PublishSeries.
  *
- * @property {Object} shelf
+ * @property {string} shelf
  *   The shelf in which the series is created.
- *
- *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
  *
  * @property {Object[]} books
  *   The books to publish in the series.
@@ -3308,7 +3303,7 @@ class LibraryServiceClient {
         'books',
         [
           'edition',
-          'shelf.name',
+          'shelf',
         ],
         'bookNames',
         gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Book'))
@@ -3887,10 +3882,8 @@ class LibraryServiceClient {
    *
    * @param {Object} request
    *   The request object that will be sent.
-   * @param {Object} request.shelf
+   * @param {string} request.shelf
    *   The shelf in which the series is created.
-   *
-   *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
    * @param {Object[]} request.books
    *   The books to publish in the series.
    *
@@ -3922,14 +3915,14 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const shelf = {};
+   * const formattedShelf = client.shelfPath('[SHELF_ID]');
    * const books = [];
    * const seriesString = 'foobar';
    * const seriesUuid = {
    *   seriesString: seriesString,
    * };
    * const request = {
-   *   shelf: shelf,
+   *   shelf: formattedShelf,
    *   books: books,
    *   seriesUuid: seriesUuid,
    * };
@@ -6269,14 +6262,14 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const shelf = {};
+      const formattedShelf = client.shelfPath('[SHELF_ID]');
       const books = [];
       const seriesString = 'foobar';
       const seriesUuid = {
         seriesString: seriesString,
       };
       const request = {
-        shelf: shelf,
+        shelf: formattedShelf,
         books: books,
         seriesUuid: seriesUuid,
       };
@@ -6308,14 +6301,14 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const shelf = {};
+      const formattedShelf = client.shelfPath('[SHELF_ID]');
       const books = [];
       const seriesString = 'foobar';
       const seriesUuid = {
         seriesString: seriesString,
       };
       const request = {
-        shelf: shelf,
+        shelf: formattedShelf,
         books: books,
         seriesUuid: seriesUuid,
       };
