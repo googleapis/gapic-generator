@@ -2561,7 +2561,7 @@ func TestLibraryServicePublishSeries(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedShelf string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
     var seriesString string = "foobar"
     var seriesUuid = &librarypb.SeriesUuid{
@@ -2570,7 +2570,7 @@ func TestLibraryServicePublishSeries(t *testing.T) {
         },
     }
     var request = &librarypb.PublishSeriesRequest{
-        Shelf: formattedShelf,
+        Shelf: shelf,
         Books: books,
         SeriesUuid: seriesUuid,
     }
@@ -2599,7 +2599,7 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedShelf string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
     var seriesString string = "foobar"
     var seriesUuid = &librarypb.SeriesUuid{
@@ -2608,7 +2608,7 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
         },
     }
     var request = &librarypb.PublishSeriesRequest{
-        Shelf: formattedShelf,
+        Shelf: shelf,
         Books: books,
         SeriesUuid: seriesUuid,
     }
