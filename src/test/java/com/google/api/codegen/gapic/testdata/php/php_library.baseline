@@ -789,18 +789,18 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $shelf = new Shelf();
+     *     $formattedShelf = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $books = [];
      *     $seriesString = 'foobar';
      *     $seriesUuid = new SeriesUuid();
      *     $seriesUuid->setSeriesString($seriesString);
-     *     $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
+     *     $response = $libraryServiceClient->publishSeries($formattedShelf, $books, $seriesUuid);
      * } finally {
      *     $libraryServiceClient->close();
      * }
      * ```
      *
-     * @param Shelf $shelf The shelf in which the series is created.
+     * @param string $shelf The shelf in which the series is created.
      * @param Book[] $books The books to publish in the series.
      * @param SeriesUuid $seriesUuid Uniquely identifies the series to the publishing house.
      * @param array $optionalArgs {
@@ -3192,25 +3192,22 @@ namespace Google\Cloud\Example\Library\V1;
 
 use \Google\Example\Library\V1\Book;
 use \Google\Example\Library\V1\SeriesUuid;
-use \Google\Example\Library\V1\Shelf;
 
-function samplePublishSeries($name, $edition)
+function samplePublishSeries($formattedShelf, $edition)
 {
     // [START canonical_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    // $name = 'Math';
+    // $formattedShelf = $libraryServiceClient->shelfName('[SHELF_ID]');
     // $edition = 123;
-    $shelf = new Shelf();
-    $shelf->setName($name);
     $books = [];
     $seriesString = 'xyz3141592654';
     $seriesUuid = new SeriesUuid();
     $seriesUuid->setSeriesString($seriesString);
 
     try {
-        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        $response = $libraryServiceClient->publishSeries($formattedShelf, $books, $seriesUuid, ['edition' => $edition]);
         foreach ($response->getBookNames() as $title) {
             printf("Title: %s" . PHP_EOL, $title);
         }
@@ -3226,22 +3223,22 @@ function samplePublishSeries($name, $edition)
 // [END canonical]
 
 $opts = [
-    'name::',
+    'formattedShelf::',
     'edition::',
 ];
 
 $defaultOptions = [
-    'name' => 'Math',
+    'formattedShelf' => $formattedShelf->shelfName('[SHELF_ID]'),
     'edition' => 123,
 ];
 
 $options = getopt('', $opts);
 $options += $defaultOptions;
 
-$name = $options['name'];
+$formattedShelf = $options['formattedShelf'];
 $edition = $options['edition'];
 
-samplePublishSeries($name, $edition);
+samplePublishSeries($formattedShelf, $edition);
 ============== file: src/V1/samples/publishSeries/PublishSeriesRequestSecondEdition.php ==============
 <?php
 /*
@@ -3269,7 +3266,6 @@ namespace Google\Cloud\Example\Library\V1;
 
 use \Google\Example\Library\V1\Book;
 use \Google\Example\Library\V1\SeriesUuid;
-use \Google\Example\Library\V1\Shelf;
 
 function samplePublishSeries()
 {
@@ -3277,13 +3273,13 @@ function samplePublishSeries()
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    $shelf = new Shelf();
+    $formattedShelf = $libraryServiceClient->shelfName('[SHELF_ID]');
     $books = [];
     $seriesUuid = new SeriesUuid();
     $edition = 2;
 
     try {
-        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        $response = $libraryServiceClient->publishSeries($formattedShelf, $books, $seriesUuid, ['edition' => $edition]);
         printf("%s" . PHP_EOL, print_r($response, true));
     } finally {
         $libraryServiceClient->close();
@@ -4043,13 +4039,13 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $shelf = new Shelf();
+        $formattedShelf = $client->shelfName('[SHELF_ID]');
         $books = [];
         $seriesString = 'foobar';
         $seriesUuid = new SeriesUuid();
         $seriesUuid->setSeriesString($seriesString);
 
-        $response = $client->publishSeries($shelf, $books, $seriesUuid);
+        $response = $client->publishSeries($formattedShelf, $books, $seriesUuid);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -4059,7 +4055,7 @@ class LibraryServiceClientTest extends GeneratedTest
 
         $actualValue = $actualRequestObject->getShelf();
 
-        $this->assertProtobufEquals($shelf, $actualValue);
+        $this->assertProtobufEquals($formattedShelf, $actualValue);
         $actualValue = $actualRequestObject->getBooks();
 
         $this->assertProtobufEquals($books, $actualValue);
@@ -4093,14 +4089,14 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $shelf = new Shelf();
+        $formattedShelf = $client->shelfName('[SHELF_ID]');
         $books = [];
         $seriesString = 'foobar';
         $seriesUuid = new SeriesUuid();
         $seriesUuid->setSeriesString($seriesString);
 
         try {
-            $client->publishSeries($shelf, $books, $seriesUuid);
+            $client->publishSeries($formattedShelf, $books, $seriesUuid);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

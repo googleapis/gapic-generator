@@ -925,7 +925,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   Shelf shelf = Shelf.newBuilder().build();
+   *   ShelfName shelf = ShelfName.of("[SHELF_ID]");
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   int edition = 0;
    *   String seriesString = "foobar";
@@ -942,7 +942,43 @@ public class LibraryClient implements BackgroundResource {
    * @param seriesUuid Uniquely identifies the series to the publishing house.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition, SeriesUuid seriesUuid) {
+  public final PublishSeriesResponse publishSeries(ShelfName shelf, List<Book> books, int edition, SeriesUuid seriesUuid) {
+
+    PublishSeriesRequest request =
+        PublishSeriesRequest.newBuilder()
+        .setShelf(shelf == null ? null : shelf.toString())
+        .addAllBooks(books)
+        .setEdition(edition)
+        .setSeriesUuid(seriesUuid)
+        .build();
+    return publishSeries(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a series of books.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName shelf = ShelfName.of("[SHELF_ID]");
+   *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   int edition = 0;
+   *   String seriesString = "foobar";
+   *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+   *     .setSeriesString(seriesString)
+   *     .build();
+   *   PublishSeriesResponse response = libraryClient.publishSeries(shelf.toString(), books, edition, seriesUuid);
+   * }
+   * </code></pre>
+   *
+   * @param shelf The shelf in which the series is created.
+   * @param books The books to publish in the series.
+   * @param edition The edition of the series
+   * @param seriesUuid Uniquely identifies the series to the publishing house.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final PublishSeriesResponse publishSeries(String shelf, List<Book> books, int edition, SeriesUuid seriesUuid) {
 
     PublishSeriesRequest request =
         PublishSeriesRequest.newBuilder()
@@ -961,14 +997,14 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   Shelf shelf = Shelf.newBuilder().build();
+   *   ShelfName shelf = ShelfName.of("[SHELF_ID]");
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   String seriesString = "foobar";
    *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
    *     .setSeriesString(seriesString)
    *     .build();
    *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-   *     .setShelf(shelf)
+   *     .setShelf(shelf.toString())
    *     .addAllBooks(books)
    *     .setSeriesUuid(seriesUuid)
    *     .build();
@@ -990,14 +1026,14 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   Shelf shelf = Shelf.newBuilder().build();
+   *   ShelfName shelf = ShelfName.of("[SHELF_ID]");
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   String seriesString = "foobar";
    *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
    *     .setSeriesString(seriesString)
    *     .build();
    *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-   *     .setShelf(shelf)
+   *     .setShelf(shelf.toString())
    *     .addAllBooks(books)
    *     .setSeriesUuid(seriesUuid)
    *     .build();
@@ -6476,7 +6512,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       new BatchingDescriptor<PublishSeriesRequest, PublishSeriesResponse>() {
         @Override
         public PartitionKey getBatchPartitionKey(PublishSeriesRequest request) {
-          return new PartitionKey(request.getEdition(), request.getName());
+          return new PartitionKey(request.getEdition(), request.getShelf());
         }
 
         @Override
@@ -7681,7 +7717,7 @@ public class MonologAboutBookCallableCallableStreamingClientProg {
 //         className: "PublishSeriesFlattenedPiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
+//        [shelf=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeries" of type "FlattenedMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
@@ -7689,17 +7725,14 @@ public class MonologAboutBookCallableCallableStreamingClientProg {
 public class PublishSeriesFlattenedPiVersion {
   public static void main(String[] args) {
     // [START canonical_core]
-    // String name = "Math";
+    // ShelfName shelf = ShelfName.of("[SHELF_ID]");
     // int edition = 123;
-    Shelf shelf = Shelf.newBuilder()
-      .setName(name)
-      .build();
     List<Book> books = new ArrayList<>();
     String seriesString = "xyz3141592654";
     SeriesUuid seriesUuid = SeriesUuid.newBuilder()
       .setSeriesString(seriesString)
       .build();
-    PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+    PublishSeriesResponse response = libraryClient.publishSeries(shelf.toString(), books, edition, seriesUuid);
     for (String title : response.getBookNamesList()) {
       System.out.printf("Title: %s\n", title);
     }
@@ -7736,11 +7769,11 @@ public class PublishSeriesFlattenedPiVersion {
 public class PublishSeriesFlattenedSecondEdition {
   public static void main(String[] args) {
     // [START canonical_core]
-    Shelf shelf = Shelf.newBuilder().build();
+    ShelfName shelf = ShelfName.of("[SHELF_ID]");
     List<Book> books = new ArrayList<>();
     int edition = 2;
     SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-    PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+    PublishSeriesResponse response = libraryClient.publishSeries(shelf.toString(), books, edition, seriesUuid);
     System.out.println(response);
     // [END canonical_core]
   }
@@ -7764,7 +7797,7 @@ public class PublishSeriesFlattenedSecondEdition {
 //         className: "PublishSeriesRequestPiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
+//        [shelf=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeries" of type "RequestObjectMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
@@ -7772,18 +7805,15 @@ public class PublishSeriesFlattenedSecondEdition {
 public class PublishSeriesRequestPiVersion {
   public static void main(String[] args) {
     // [START canonical_core]
-    // String name = "Math";
+    // ShelfName shelf = ShelfName.of("[SHELF_ID]");
     // int edition = 123;
-    Shelf shelf = Shelf.newBuilder()
-      .setName(name)
-      .build();
     List<Book> books = new ArrayList<>();
     String seriesString = "xyz3141592654";
     SeriesUuid seriesUuid = SeriesUuid.newBuilder()
       .setSeriesString(seriesString)
       .build();
     PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-      .setShelf(shelf)
+      .setShelf(shelf.toString())
       .addAllBooks(books)
       .setSeriesUuid(seriesUuid)
       .setEdition(edition)
@@ -7825,12 +7855,12 @@ public class PublishSeriesRequestPiVersion {
 public class PublishSeriesRequestSecondEdition {
   public static void main(String[] args) {
     // [START canonical_core]
-    Shelf shelf = Shelf.newBuilder().build();
+    ShelfName shelf = ShelfName.of("[SHELF_ID]");
     List<Book> books = new ArrayList<>();
     SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
     int edition = 2;
     PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-      .setShelf(shelf)
+      .setShelf(shelf.toString())
       .addAllBooks(books)
       .setSeriesUuid(seriesUuid)
       .setEdition(edition)
@@ -7859,7 +7889,7 @@ public class PublishSeriesRequestSecondEdition {
 //         className: "PublishSeriesCallableCallablePiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
+//        [shelf=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeriesCallable" of type "CallableMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
@@ -7867,18 +7897,15 @@ public class PublishSeriesRequestSecondEdition {
 public class PublishSeriesCallableCallablePiVersion {
   public static void main(String[] args) {
     // [START canonical_core]
-    // String name = "Math";
+    // ShelfName shelf = ShelfName.of("[SHELF_ID]");
     // int edition = 123;
-    Shelf shelf = Shelf.newBuilder()
-      .setName(name)
-      .build();
     List<Book> books = new ArrayList<>();
     String seriesString = "xyz3141592654";
     SeriesUuid seriesUuid = SeriesUuid.newBuilder()
       .setSeriesString(seriesString)
       .build();
     PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-      .setShelf(shelf)
+      .setShelf(shelf.toString())
       .addAllBooks(books)
       .setSeriesUuid(seriesUuid)
       .setEdition(edition)
@@ -7924,12 +7951,12 @@ public class PublishSeriesCallableCallablePiVersion {
 public class PublishSeriesCallableCallableSecondEdition {
   public static void main(String[] args) {
     // [START canonical_core]
-    Shelf shelf = Shelf.newBuilder().build();
+    ShelfName shelf = ShelfName.of("[SHELF_ID]");
     List<Book> books = new ArrayList<>();
     SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
     int edition = 2;
     PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-      .setShelf(shelf)
+      .setShelf(shelf.toString())
       .addAllBooks(books)
       .setSeriesUuid(seriesUuid)
       .setEdition(edition)
@@ -8556,7 +8583,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    Shelf shelf = Shelf.newBuilder().build();
+    ShelfName shelf = ShelfName.of("[SHELF_ID]");
     List<Book> books = new ArrayList<>();
     int edition = 1887963714;
     String seriesString = "foobar";
@@ -8572,7 +8599,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     PublishSeriesRequest actualRequest = (PublishSeriesRequest)actualRequests.get(0);
 
-    Assert.assertEquals(shelf, actualRequest.getShelf());
+    Assert.assertEquals(shelf, ShelfName.parse(actualRequest.getShelf()));
     Assert.assertEquals(books, actualRequest.getBooksList());
     Assert.assertEquals(edition, actualRequest.getEdition());
     Assert.assertEquals(seriesUuid, actualRequest.getSeriesUuid());
@@ -8589,7 +8616,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      Shelf shelf = Shelf.newBuilder().build();
+      ShelfName shelf = ShelfName.of("[SHELF_ID]");
       List<Book> books = new ArrayList<>();
       int edition = 1887963714;
       String seriesString = "foobar";
