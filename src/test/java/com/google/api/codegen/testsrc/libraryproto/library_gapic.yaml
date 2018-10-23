@@ -203,8 +203,6 @@ interfaces:
         - books
         - edition
         - series_uuid
-        parameter_resource_name_treatment:
-          name: STATIC_TYPES
     required_fields:
       - shelf
       - books
@@ -223,11 +221,9 @@ interfaces:
         batched_field: books
         discriminator_fields:
           - edition
-          - shelf
+          - shelf.name
         subresponse_field: book_names
     resource_name_treatment: STATIC_TYPES
-    field_name_patterns:
-      shelf: shelf
     sample_code_init_fields:
     - series_uuid.series_string=foobar
     sample_value_sets:
@@ -239,11 +235,11 @@ interfaces:
       description: "Testing calling forms"
       parameters:
         defaults:
-        - shelf=Math
+        - shelf.name=Math
         - series_uuid.series_string=xyz3141592654
         - edition=123
         attributes:
-        - parameter: shelf
+        - parameter: shelf.name
           sample_argument_name: name
         - parameter: edition
           sample_argument_name: edition
@@ -941,9 +937,6 @@ resource_name_generation:
 - message_name: FindRelatedBooksResponse
   field_entity_map:
     names: book
-- message_name: PublishSeriesRequest
-  field_entity_map:
-    shelf: shelf
 - message_name: TestOptionalRequiredFlatteningParamsRequest
   field_entity_map:
     required_singular_resource_name: book

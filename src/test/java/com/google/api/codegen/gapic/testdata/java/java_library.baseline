@@ -925,7 +925,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfName shelf = ShelfName.of("[SHELF_ID]");
+   *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   int edition = 0;
    *   String seriesString = "foobar";
@@ -942,43 +942,7 @@ public class LibraryClient implements BackgroundResource {
    * @param seriesUuid Uniquely identifies the series to the publishing house.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final PublishSeriesResponse publishSeries(ShelfName shelf, List<Book> books, int edition, SeriesUuid seriesUuid) {
-
-    PublishSeriesRequest request =
-        PublishSeriesRequest.newBuilder()
-        .setShelf(shelf == null ? null : shelf.toString())
-        .addAllBooks(books)
-        .setEdition(edition)
-        .setSeriesUuid(seriesUuid)
-        .build();
-    return publishSeries(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Creates a series of books.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfName shelf = ShelfName.of("[SHELF_ID]");
-   *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
-   *   int edition = 0;
-   *   String seriesString = "foobar";
-   *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-   *     .setSeriesString(seriesString)
-   *     .build();
-   *   PublishSeriesResponse response = libraryClient.publishSeries(shelf.toString(), books, edition, seriesUuid);
-   * }
-   * </code></pre>
-   *
-   * @param shelf The shelf in which the series is created.
-   * @param books The books to publish in the series.
-   * @param edition The edition of the series
-   * @param seriesUuid Uniquely identifies the series to the publishing house.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final PublishSeriesResponse publishSeries(String shelf, List<Book> books, int edition, SeriesUuid seriesUuid) {
+  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition, SeriesUuid seriesUuid) {
 
     PublishSeriesRequest request =
         PublishSeriesRequest.newBuilder()
@@ -997,14 +961,14 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfName shelf = ShelfName.of("[SHELF_ID]");
+   *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   String seriesString = "foobar";
    *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
    *     .setSeriesString(seriesString)
    *     .build();
    *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-   *     .setShelf(shelf.toString())
+   *     .setShelf(shelf)
    *     .addAllBooks(books)
    *     .setSeriesUuid(seriesUuid)
    *     .build();
@@ -1026,14 +990,14 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfName shelf = ShelfName.of("[SHELF_ID]");
+   *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   String seriesString = "foobar";
    *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
    *     .setSeriesString(seriesString)
    *     .build();
    *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-   *     .setShelf(shelf.toString())
+   *     .setShelf(shelf)
    *     .addAllBooks(books)
    *     .setSeriesUuid(seriesUuid)
    *     .build();
@@ -6512,7 +6476,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       new BatchingDescriptor<PublishSeriesRequest, PublishSeriesResponse>() {
         @Override
         public PartitionKey getBatchPartitionKey(PublishSeriesRequest request) {
-          return new PartitionKey(request.getEdition(), request.getShelf());
+          return new PartitionKey(request.getEdition(), request.getName());
         }
 
         @Override
@@ -7296,24 +7260,35 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-public class DiscussBookCallableCallableStreamingBidiProg {
-  public static void main(String[] args) {
-    // [START turing_prog_callable_streaming_bidi_core]
-    BidiStream<DiscussBookRequest, Comment> bidiStream =
-        libraryClient.discussBookCallable().call();
+package com.google.gcloud.pubsub.v1;
 
-    String name = "BASIC";
-    DiscussBookRequest request = DiscussBookRequest.newBuilder()
-      .setName(name)
-      .build();
-    bidiStream.send(request);
-    for (Comment responseItem : bidiStream) {
-      System.out.println(responseItem);
+import com.google.example.library.v1.DiscussBookRequest;
+
+public class DiscussBookCallableCallableStreamingBidiProg {
+  public static void sampleDiscussBook() {
+    // [START turing_prog_callable_streaming_bidi_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      BidiStream<DiscussBookRequest, Comment> bidiStream =
+          libraryClient.discussBookCallable().call();
+
+      String name = "BASIC";
+      DiscussBookRequest request = DiscussBookRequest.newBuilder()
+        .setName(name)
+        .build();
+      bidiStream.send(request);
+      for (Comment responseItem : bidiStream) {
+        System.out.println(responseItem);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END turing_prog_callable_streaming_bidi_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleDiscussBook();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END turing_prog_callable_streaming_bidi]
@@ -7337,25 +7312,34 @@ public class DiscussBookCallableCallableStreamingBidiProg {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
 public class FindRelatedBooksFlattenedPagedOdyssey {
-  public static void main(String[] args) {
+  public static void sampleFindRelatedBooks() {
     // [START sample_core]
-    String namesElement = "Odyssey";
-    List<String> names = Arrays.asList(namesElement);
-    String shelvesElement = "Classics";
-    List<String> shelves = Arrays.asList(shelvesElement);
-    ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(names, shelves);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      String namesElement = "Odyssey";
+      List<String> names = Arrays.asList(namesElement);
+      String shelvesElement = "Classics";
+      List<String> shelves = Arrays.asList(shelvesElement);
+      ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(names, shelves);
 
-    // Do something
+      // Do something
 
-    for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
-      ShelfBookName book = responseItem;
-      System.out.printf("Here's a related book: %s\n", book);
+      for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
+        ShelfBookName book = responseItem;
+        System.out.printf("Here's a related book: %s\n", book);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END sample_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END sample]
@@ -7379,25 +7363,38 @@ public class FindRelatedBooksFlattenedPagedOdyssey {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+
 public class FindRelatedBooksRequestPagedOdyssey {
-  public static void main(String[] args) {
+  public static void sampleFindRelatedBooks() {
     // [START sample_core]
-    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    List<ShelfBookName> names = Arrays.asList(namesElement);
-    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-    List<ShelfName> shelves = Arrays.asList(shelvesElement);
-    FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(ShelfBookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
-      .build();
-    for (ShelfBookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
-      ShelfBookName book = responseItem;
-      System.out.printf("Here's a related book: %s\n", book);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<ShelfBookName> names = Arrays.asList(namesElement);
+      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+      List<ShelfName> shelves = Arrays.asList(shelvesElement);
+      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+        .addAllNames(ShelfBookName.toStringList(names))
+        .addAllShelves(ShelfName.toStringList(shelves))
+        .build();
+      for (ShelfBookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
+        ShelfBookName book = responseItem;
+        System.out.printf("Here's a related book: %s\n", book);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END sample_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END sample]
@@ -7421,34 +7418,47 @@ public class FindRelatedBooksRequestPagedOdyssey {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+
 public class FindRelatedBooksCallableCallableListOdyssey {
-  public static void main(String[] args) {
+  public static void sampleFindRelatedBooks() {
     // [START sample_core]
-    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    List<ShelfBookName> names = Arrays.asList(namesElement);
-    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-    List<ShelfName> shelves = Arrays.asList(shelvesElement);
-    FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(ShelfBookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
-      .build();
-    while (true) {
-      FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-      for (ShelfBookName responseItem : ShelfBookName.parseList(response.getNamesList())) {
-        ShelfBookName book = responseItem;
-        System.out.printf("Here's a related book: %s\n", book);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<ShelfBookName> names = Arrays.asList(namesElement);
+      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+      List<ShelfName> shelves = Arrays.asList(shelvesElement);
+      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+        .addAllNames(ShelfBookName.toStringList(names))
+        .addAllShelves(ShelfName.toStringList(shelves))
+        .build();
+      while (true) {
+        FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
+        for (ShelfBookName responseItem : ShelfBookName.parseList(response.getNamesList())) {
+          ShelfBookName book = responseItem;
+          System.out.printf("Here's a related book: %s\n", book);
+        }
+        String nextPageToken = response.getNextPageToken();
+        if (!Strings.isNullOrEmpty(nextPageToken)) {
+          request = request.toBuilder().setPageToken(nextPageToken).build();
+        } else {
+          break;
+        }
       }
-      String nextPageToken = response.getNextPageToken();
-      if (!Strings.isNullOrEmpty(nextPageToken)) {
-        request = request.toBuilder().setPageToken(nextPageToken).build();
-      } else {
-        break;
-      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END sample_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END sample]
@@ -7472,29 +7482,42 @@ public class FindRelatedBooksCallableCallableListOdyssey {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+
 public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
-  public static void main(String[] args) {
+  public static void sampleFindRelatedBooks() {
     // [START sample_core]
-    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    List<ShelfBookName> names = Arrays.asList(namesElement);
-    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-    List<ShelfName> shelves = Arrays.asList(shelvesElement);
-    FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(ShelfBookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
-      .build();
-    ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<ShelfBookName> names = Arrays.asList(namesElement);
+      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+      List<ShelfName> shelves = Arrays.asList(shelvesElement);
+      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+        .addAllNames(ShelfBookName.toStringList(names))
+        .addAllShelves(ShelfName.toStringList(shelves))
+        .build();
+      ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
 
-    // Do something
+      // Do something
 
-    for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
-      ShelfBookName book = responseItem;
-      System.out.printf("Here's a related book: %s\n", book);
+      for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
+        ShelfBookName book = responseItem;
+        System.out.printf("Here's a related book: %s\n", book);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END sample_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END sample]
@@ -7518,16 +7541,27 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import com.google.example.library.v1.ShelfBookName;
+
 public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
-  public static void main(String[] args) {
+  public static void sampleGetBigBook() {
     // [START hopper_core]
-    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    Book response = libraryClient.getBigBookAsync(name.toString()).get();
-    System.out.println(response);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      Book response = libraryClient.getBigBookAsync(name.toString()).get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END hopper_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleGetBigBook();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
@@ -7551,19 +7585,31 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.ShelfBookName;
+
 public class GetBigBookAsyncLongRunningRequestAsyncWap {
-  public static void main(String[] args) {
+  public static void sampleGetBigBook() {
     // [START hopper_core]
-    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    GetBookRequest request = GetBookRequest.newBuilder()
-      .setName(name.toString())
-      .build();
-    Book response = libraryClient.getBigBookAsync(request).get();
-    System.out.println(response);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      Book response = libraryClient.getBigBookAsync(request).get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END hopper_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleGetBigBook();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
@@ -7587,23 +7633,35 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.ShelfBookName;
+
 public class GetBigBookCallableCallableWap {
-  public static void main(String[] args) {
+  public static void sampleGetBigBook() {
     // [START hopper_core]
-    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    GetBookRequest request = GetBookRequest.newBuilder()
-      .setName(name.toString())
-      .build();
-    ApiFuture<Operation> future = libraryClient.getBigBookCallable().futureCall(request);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Operation> future = libraryClient.getBigBookCallable().futureCall(request);
 
-    // Do something
+      // Do something
 
-    Operation response = future.get();
-    System.out.println(response);
+      Operation response = future.get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END hopper_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleGetBigBook();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
@@ -7627,23 +7685,35 @@ public class GetBigBookCallableCallableWap {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.ShelfBookName;
+
 public class GetBigBookOperationCallableLongRunningCallableWap {
-  public static void main(String[] args) {
+  public static void sampleGetBigBook() {
     // [START hopper_core]
-    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    GetBookRequest request = GetBookRequest.newBuilder()
-      .setName(name.toString())
-      .build();
-    OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
 
-    // Do something
+      // Do something
 
-    Book response = future.get();
-    System.out.println(response);
+      Book response = future.get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END hopper_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleGetBigBook();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
@@ -7667,38 +7737,49 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import com.google.example.library.v1.DiscussBookRequest;
+
 public class MonologAboutBookCallableCallableStreamingClientProg {
-  public static void main(String[] args) {
+  public static void sampleMonologAboutBook() {
     // [START sample_core]
-    ApiStreamObserver<Comment> responseObserver =
-        new ApiStreamObserver<Comment>() {
-          @Override
-          public void onNext(Comment response) {
-            System.out.printf("The stage of the comment is: %s\n", response.getStage());
-          }
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ApiStreamObserver<Comment> responseObserver =
+          new ApiStreamObserver<Comment>() {
+            @Override
+            public void onNext(Comment response) {
+              System.out.printf("The stage of the comment is: %s\n", response.getStage());
+            }
 
-          @Override
-          public void onError(Throwable t) {
-            // Add error-handling
-          }
+            @Override
+            public void onError(Throwable t) {
+              // Add error-handling
+            }
 
-          @Override
-          public void onCompleted() {
-            // Do something when complete.
-          }
-        };
-    ApiStreamObserver<DiscussBookRequest> requestObserver =
-        libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
+            @Override
+            public void onCompleted() {
+              // Do something when complete.
+            }
+          };
+      ApiStreamObserver<DiscussBookRequest> requestObserver =
+          libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
 
-    String name = "BASIC";
-    DiscussBookRequest request = DiscussBookRequest.newBuilder()
-      .setName(name)
-      .build();
-    requestObserver.onNext(request);
+      String name = "BASIC";
+      DiscussBookRequest request = DiscussBookRequest.newBuilder()
+        .setName(name)
+        .build();
+      requestObserver.onNext(request);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END sample_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleMonologAboutBook();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END sample]
@@ -7717,32 +7798,75 @@ public class MonologAboutBookCallableCallableStreamingClientProg {
 //         className: "PublishSeriesFlattenedPiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf=Math, series_uuid.series_string=xyz3141592654, edition=123]
+//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeries" of type "FlattenedMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PublishSeriesFlattenedPiVersion {
-  public static void main(String[] args) {
+  public static void samplePublishSeries(String name, int edition) {
     // [START canonical_core]
-    // ShelfName shelf = ShelfName.of("[SHELF_ID]");
-    // int edition = 123;
-    List<Book> books = new ArrayList<>();
-    String seriesString = "xyz3141592654";
-    SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-      .setSeriesString(seriesString)
-      .build();
-    PublishSeriesResponse response = libraryClient.publishSeries(shelf.toString(), books, edition, seriesUuid);
-    for (String title : response.getBookNamesList()) {
-      System.out.printf("Title: %s\n", title);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String name = "Math";
+      // int edition = 123;
+      Shelf shelf = Shelf.newBuilder()
+        .setName(name)
+        .build();
+      List<Book> books = new ArrayList<>();
+      String seriesString = "xyz3141592654";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+      for (String title : response.getBookNamesList()) {
+        System.out.printf("Title: %s\n", title);
+      }
+      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
+      System.out.println("That's all!");
+      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
-    System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
-    System.out.println("That's all!");
-    System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
     // [END canonical_core]
   }
-}
 
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("name")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("edition")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String name = cl.getOptionValue("name", "Math");
+    int edition =
+        cl.getOptionValue("edition") != null
+            ? Integer.parseInt(cl.getOptionValue("edition"))
+            : 123;
+
+    samplePublishSeries(name, edition);
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
@@ -7766,19 +7890,34 @@ public class PublishSeriesFlattenedPiVersion {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PublishSeriesFlattenedSecondEdition {
-  public static void main(String[] args) {
+  public static void samplePublishSeries() {
     // [START canonical_core]
-    ShelfName shelf = ShelfName.of("[SHELF_ID]");
-    List<Book> books = new ArrayList<>();
-    int edition = 2;
-    SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-    PublishSeriesResponse response = libraryClient.publishSeries(shelf.toString(), books, edition, seriesUuid);
-    System.out.println(response);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      int edition = 2;
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END canonical_core]
   }
-}
 
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
@@ -7797,38 +7936,82 @@ public class PublishSeriesFlattenedSecondEdition {
 //         className: "PublishSeriesRequestPiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf=Math, series_uuid.series_string=xyz3141592654, edition=123]
+//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeries" of type "RequestObjectMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PublishSeriesRequestPiVersion {
-  public static void main(String[] args) {
+  public static void samplePublishSeries(String name, int edition) {
     // [START canonical_core]
-    // ShelfName shelf = ShelfName.of("[SHELF_ID]");
-    // int edition = 123;
-    List<Book> books = new ArrayList<>();
-    String seriesString = "xyz3141592654";
-    SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-      .setSeriesString(seriesString)
-      .build();
-    PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-      .setShelf(shelf.toString())
-      .addAllBooks(books)
-      .setSeriesUuid(seriesUuid)
-      .setEdition(edition)
-      .build();
-    PublishSeriesResponse response = libraryClient.publishSeries(request);
-    for (String title : response.getBookNamesList()) {
-      System.out.printf("Title: %s\n", title);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String name = "Math";
+      // int edition = 123;
+      Shelf shelf = Shelf.newBuilder()
+        .setName(name)
+        .build();
+      List<Book> books = new ArrayList<>();
+      String seriesString = "xyz3141592654";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(request);
+      for (String title : response.getBookNamesList()) {
+        System.out.printf("Title: %s\n", title);
+      }
+      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
+      System.out.println("That's all!");
+      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
-    System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
-    System.out.println("That's all!");
-    System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
     // [END canonical_core]
   }
-}
 
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("name")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("edition")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String name = cl.getOptionValue("name", "Math");
+    int edition =
+        cl.getOptionValue("edition") != null
+            ? Integer.parseInt(cl.getOptionValue("edition"))
+            : 123;
+
+    samplePublishSeries(name, edition);
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
@@ -7852,25 +8035,41 @@ public class PublishSeriesRequestPiVersion {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PublishSeriesRequestSecondEdition {
-  public static void main(String[] args) {
+  public static void samplePublishSeries() {
     // [START canonical_core]
-    ShelfName shelf = ShelfName.of("[SHELF_ID]");
-    List<Book> books = new ArrayList<>();
-    SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-    int edition = 2;
-    PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-      .setShelf(shelf.toString())
-      .addAllBooks(books)
-      .setSeriesUuid(seriesUuid)
-      .setEdition(edition)
-      .build();
-    PublishSeriesResponse response = libraryClient.publishSeries(request);
-    System.out.println(response);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+      int edition = 2;
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(request);
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END canonical_core]
   }
-}
 
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
@@ -7889,42 +8088,86 @@ public class PublishSeriesRequestSecondEdition {
 //         className: "PublishSeriesCallableCallablePiVersion"
 //          valueSet: "pi_version" ("Pi version")
 //       description: "Testing calling forms"
-//        [shelf=Math, series_uuid.series_string=xyz3141592654, edition=123]
+//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
 //      apiMethod "publishSeriesCallable" of type "CallableMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PublishSeriesCallableCallablePiVersion {
-  public static void main(String[] args) {
+  public static void samplePublishSeries(String name, int edition) {
     // [START canonical_core]
-    // ShelfName shelf = ShelfName.of("[SHELF_ID]");
-    // int edition = 123;
-    List<Book> books = new ArrayList<>();
-    String seriesString = "xyz3141592654";
-    SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-      .setSeriesString(seriesString)
-      .build();
-    PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-      .setShelf(shelf.toString())
-      .addAllBooks(books)
-      .setSeriesUuid(seriesUuid)
-      .setEdition(edition)
-      .build();
-    ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String name = "Math";
+      // int edition = 123;
+      Shelf shelf = Shelf.newBuilder()
+        .setName(name)
+        .build();
+      List<Book> books = new ArrayList<>();
+      String seriesString = "xyz3141592654";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
 
-    // Do something
+      // Do something
 
-    PublishSeriesResponse response = future.get();
-    for (String title : response.getBookNamesList()) {
-      System.out.printf("Title: %s\n", title);
+      PublishSeriesResponse response = future.get();
+      for (String title : response.getBookNamesList()) {
+        System.out.printf("Title: %s\n", title);
+      }
+      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
+      System.out.println("That's all!");
+      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
-    System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
-    System.out.println("That's all!");
-    System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
     // [END canonical_core]
   }
-}
 
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("name")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("edition")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String name = cl.getOptionValue("name", "Math");
+    int edition =
+        cl.getOptionValue("edition") != null
+            ? Integer.parseInt(cl.getOptionValue("edition"))
+            : 123;
+
+    samplePublishSeries(name, edition);
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
@@ -7948,29 +8191,45 @@ public class PublishSeriesCallableCallablePiVersion {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
+package com.google.gcloud.pubsub.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PublishSeriesCallableCallableSecondEdition {
-  public static void main(String[] args) {
+  public static void samplePublishSeries() {
     // [START canonical_core]
-    ShelfName shelf = ShelfName.of("[SHELF_ID]");
-    List<Book> books = new ArrayList<>();
-    SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-    int edition = 2;
-    PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-      .setShelf(shelf.toString())
-      .addAllBooks(books)
-      .setSeriesUuid(seriesUuid)
-      .setEdition(edition)
-      .build();
-    ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+      int edition = 2;
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
 
-    // Do something
+      // Do something
 
-    PublishSeriesResponse response = future.get();
-    System.out.println(response);
+      PublishSeriesResponse response = future.get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END canonical_core]
   }
-}
 
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
@@ -7994,22 +8253,33 @@ public class PublishSeriesCallableCallableSecondEdition {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-public class StreamBooksCallableCallableStreamingServerProg {
-  public static void main(String[] args) {
-    // [START babbage_core]
-    String name = "BASIC";
-    StreamBooksRequest request = StreamBooksRequest.newBuilder()
-      .setName(name)
-      .build();
+package com.google.gcloud.pubsub.v1;
 
-    ServerStream<Book> stream = libraryClient.streamBooksCallable().call(request);
-    for (Book responseItem : stream) {
-      System.out.println(responseItem);
+import com.google.example.library.v1.StreamBooksRequest;
+
+public class StreamBooksCallableCallableStreamingServerProg {
+  public static void sampleStreamBooks() {
+    // [START babbage_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      String name = "BASIC";
+      StreamBooksRequest request = StreamBooksRequest.newBuilder()
+        .setName(name)
+        .build();
+
+      ServerStream<Book> stream = libraryClient.streamBooksCallable().call(request);
+      for (Book responseItem : stream) {
+        System.out.println(responseItem);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END babbage_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleStreamBooks();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END babbage]
@@ -8033,19 +8303,30 @@ public class StreamBooksCallableCallableStreamingServerProg {
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
-public class StreamShelvesCallableCallableStreamingServerEmpty {
-  public static void main(String[] args) {
-    // [START sample_core]
-    StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+package com.google.gcloud.pubsub.v1;
 
-    ServerStream<StreamShelvesResponse> stream = libraryClient.streamShelvesCallable().call(request);
-    for (StreamShelvesResponse responseItem : stream) {
-      System.out.println(responseItem);
+import com.google.example.library.v1.StreamShelvesRequest;
+
+public class StreamShelvesCallableCallableStreamingServerEmpty {
+  public static void sampleStreamShelves() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+
+      ServerStream<StreamShelvesResponse> stream = libraryClient.streamShelvesCallable().call(request);
+      for (StreamShelvesResponse responseItem : stream) {
+        System.out.println(responseItem);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END sample_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleStreamShelves();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END sample]
@@ -8583,7 +8864,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ShelfName shelf = ShelfName.of("[SHELF_ID]");
+    Shelf shelf = Shelf.newBuilder().build();
     List<Book> books = new ArrayList<>();
     int edition = 1887963714;
     String seriesString = "foobar";
@@ -8599,7 +8880,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     PublishSeriesRequest actualRequest = (PublishSeriesRequest)actualRequests.get(0);
 
-    Assert.assertEquals(shelf, ShelfName.parse(actualRequest.getShelf()));
+    Assert.assertEquals(shelf, actualRequest.getShelf());
     Assert.assertEquals(books, actualRequest.getBooksList());
     Assert.assertEquals(edition, actualRequest.getEdition());
     Assert.assertEquals(seriesUuid, actualRequest.getSeriesUuid());
@@ -8616,7 +8897,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      ShelfName shelf = ShelfName.of("[SHELF_ID]");
+      Shelf shelf = Shelf.newBuilder().build();
       List<Book> books = new ArrayList<>();
       int edition = 1887963714;
       String seriesString = "foobar";
