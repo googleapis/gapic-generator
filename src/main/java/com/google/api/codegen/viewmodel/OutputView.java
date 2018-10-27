@@ -115,7 +115,7 @@ public interface OutputView {
 
     public abstract String format();
 
-    public abstract ImmutableList<VariableView> args();
+    public abstract ImmutableList<PrintArgView> args();
 
     public Kind kind() {
       return Kind.PRINT;
@@ -129,7 +129,7 @@ public interface OutputView {
     public abstract static class Builder {
       public abstract Builder format(String val);
 
-      public abstract Builder args(ImmutableList<VariableView> val);
+      public abstract Builder args(ImmutableList<PrintArgView> val);
 
       public abstract PrintView build();
     }

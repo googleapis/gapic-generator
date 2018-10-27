@@ -21,6 +21,7 @@ import com.google.api.codegen.util.ImportType;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.OutputView;
+import com.google.api.codegen.viewmodel.PrintArgView;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
@@ -60,21 +61,24 @@ public class PythonSampleOutputImportTransformer
       ImmutableSet.Builder<ImportFileView> imports,
       MethodContext context,
       OutputView.PrintView view) {
-    for (OutputView.VariableView variableView : view.args()) {
-      TypeModel type = variableView.type();
-      if (type != null && type.isEnum()) {
-        ImportTypeView importTypeView =
-            ImportTypeView.newBuilder()
-                .fullName("enums")
-                .type(ImportType.SimpleImport)
-                .nickname("")
-                .build();
-        imports.add(
-            ImportFileView.newBuilder()
-                .moduleName(context.getNamer().getVersionedDirectoryNamespace())
-                .types(Collections.singletonList(importTypeView))
-                .build());
-      }
+    for (PrintArgView arg : view.args()) {
+      for (PrintArgView.ArgSegmentView segment : arg.segments())
+        if (segment instanceof PrintArgView.VariableSegmentView) {
+          TypeModel type = ((PrintArgView.VariableSegmentView) segment).variable().type();
+          if (type != null && type.isEnum()) {
+            ImportTypeView importTypeView =
+                ImportTypeView.newBuilder()
+                    .fullName("enums")
+                    .type(ImportType.SimpleImport)
+                    .nickname("")
+                    .build();
+            imports.add(
+                ImportFileView.newBuilder()
+                    .moduleName(context.getNamer().getVersionedDirectoryNamespace())
+                    .types(Collections.singletonList(importTypeView))
+                    .build());
+          }
+        }
     }
   }
 }
