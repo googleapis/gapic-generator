@@ -35,8 +35,8 @@ import java.util.List;
 public class PythonSamplePrintArgTransformer implements OutputTransformer.PrintArgTransformer {
 
   /**
-   * Converts the {@link OutputView#VariableView} to a {@link PrintArgView} that knows how to print
-   * proto types nicely. Has effects only when the variable is an enum.
+   * Converts the {@code VariableView} to a {@link com.google.api.codegen.viewmodel.PrintArgView}
+   * that knows how to print proto types nicely. Has effects only when the variable is an enum.
    *
    * <p>In python, calling {@code print(x)} or {@code print(''.format(x))} would only get an int
    * when {@code x} is an enum. To print the enum name of the value, we need to convert the enum
