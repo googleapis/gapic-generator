@@ -69,7 +69,10 @@ public class OutputTransformer {
     }
   }
 
-  /** */
+  /**
+   * Transformer that converts a {@code VariableView} to a {@code PrintArgView} in order to print
+   * the variable nicely.
+   */
   public static interface PrintArgTransformer {
 
     public default PrintArgView generatePrintArg(
@@ -97,8 +100,7 @@ public class OutputTransformer {
   ImmutableList<OutputView> toViews(
       List<OutputSpec> configs, MethodContext context, SampleValueSet valueSet) {
     ScopeTable localVars = new ScopeTable();
-    return configs
-        .stream()
+    return configs.stream()
         .map(s -> toView(s, context, valueSet, localVars))
         .collect(ImmutableList.toImmutableList());
   }
@@ -151,9 +153,7 @@ public class OutputTransformer {
     return OutputView.PrintView.newBuilder()
         .format(context.getNamer().getPrintSpec(config.get(0)))
         .args(
-            config
-                .subList(1, config.size())
-                .stream()
+            config.subList(1, config.size()).stream()
                 .map(
                     a ->
                         printArgTransformer.generatePrintArg(
@@ -181,8 +181,7 @@ public class OutputTransformer {
             .variableName(context.getNamer().localVarName(Name.from(loopVariable)))
             .collection(accessor)
             .body(
-                loop.getBodyList()
-                    .stream()
+                loop.getBodyList().stream()
                     .map(body -> toView(body, context, valueSet, scope))
                     .collect(ImmutableList.toImmutableList()))
             .build();
