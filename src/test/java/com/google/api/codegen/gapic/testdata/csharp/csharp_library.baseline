@@ -682,12 +682,12 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for PublishSeriesAsync</summary>
         public async Task PublishSeriesAsync()
         {
-            // Snippet: PublishSeriesAsync(ShelfName,IEnumerable<Book>,uint?,SeriesUuid,CallSettings)
-            // Additional: PublishSeriesAsync(ShelfName,IEnumerable<Book>,uint?,SeriesUuid,CancellationToken)
+            // Snippet: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint?,SeriesUuid,CallSettings)
+            // Additional: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint?,SeriesUuid,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            ShelfName shelf = new ShelfName("[SHELF_ID]");
+            Shelf shelf = new Shelf();
             IEnumerable<Book> books = new List<Book>();
             uint edition = 0;
             SeriesUuid seriesUuid = new SeriesUuid
@@ -702,11 +702,11 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for PublishSeries</summary>
         public void PublishSeries()
         {
-            // Snippet: PublishSeries(ShelfName,IEnumerable<Book>,uint?,SeriesUuid,CallSettings)
+            // Snippet: PublishSeries(Shelf,IEnumerable<Book>,uint?,SeriesUuid,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            ShelfName shelf = new ShelfName("[SHELF_ID]");
+            Shelf shelf = new Shelf();
             IEnumerable<Book> books = new List<Book>();
             uint edition = 0;
             SeriesUuid seriesUuid = new SeriesUuid
@@ -728,7 +728,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             PublishSeriesRequest request = new PublishSeriesRequest
             {
-                ShelfAsShelfName = new ShelfName("[SHELF_ID]"),
+                Shelf = new Shelf(),
                 Books = { },
                 SeriesUuid = new SeriesUuid
                              {
@@ -749,7 +749,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             PublishSeriesRequest request = new PublishSeriesRequest
             {
-                ShelfAsShelfName = new ShelfName("[SHELF_ID]"),
+                Shelf = new Shelf(),
                 Books = { },
                 SeriesUuid = new SeriesUuid
                              {
@@ -3497,7 +3497,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             PublishSeriesRequest expectedRequest = new PublishSeriesRequest
             {
-                ShelfAsShelfName = new ShelfName("[SHELF_ID]"),
+                Shelf = new Shelf(),
                 Books = { },
                 Edition = 1887963714,
                 SeriesUuid = new SeriesUuid
@@ -3514,7 +3514,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.PublishSeries(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName shelf = new ShelfName("[SHELF_ID]");
+            Shelf shelf = new Shelf();
             IEnumerable<Book> books = new List<Book>();
             uint edition = 1887963714;
             SeriesUuid seriesUuid = new SeriesUuid
@@ -3536,7 +3536,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             PublishSeriesRequest expectedRequest = new PublishSeriesRequest
             {
-                ShelfAsShelfName = new ShelfName("[SHELF_ID]"),
+                Shelf = new Shelf(),
                 Books = { },
                 Edition = 1887963714,
                 SeriesUuid = new SeriesUuid
@@ -3553,7 +3553,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.PublishSeriesAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<PublishSeriesResponse>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName shelf = new ShelfName("[SHELF_ID]");
+            Shelf shelf = new Shelf();
             IEnumerable<Book> books = new List<Book>();
             uint edition = 1887963714;
             SeriesUuid seriesUuid = new SeriesUuid
@@ -3575,7 +3575,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             PublishSeriesRequest request = new PublishSeriesRequest
             {
-                ShelfAsShelfName = new ShelfName("[SHELF_ID]"),
+                Shelf = new Shelf(),
                 Books = { },
                 SeriesUuid = new SeriesUuid
                              {
@@ -3606,7 +3606,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             PublishSeriesRequest request = new PublishSeriesRequest
             {
-                ShelfAsShelfName = new ShelfName("[SHELF_ID]"),
+                Shelf = new Shelf(),
                 Books = { },
                 SeriesUuid = new SeriesUuid
                              {
@@ -7262,14 +7262,14 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<PublishSeriesResponse> PublishSeriesAsync(
-            ShelfName shelf,
+            Shelf shelf,
             scg::IEnumerable<Book> books,
             uint? edition,
             SeriesUuid seriesUuid,
             gaxgrpc::CallSettings callSettings = null) => PublishSeriesAsync(
                 new PublishSeriesRequest
                 {
-                    ShelfAsShelfName = gax::GaxPreconditions.CheckNotNull(shelf, nameof(shelf)),
+                    Shelf = gax::GaxPreconditions.CheckNotNull(shelf, nameof(shelf)),
                     Books = { gax::GaxPreconditions.CheckNotNull(books, nameof(books)) },
                     Edition = edition ?? 0, // Optional
                     SeriesUuid = gax::GaxPreconditions.CheckNotNull(seriesUuid, nameof(seriesUuid)),
@@ -7298,7 +7298,7 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<PublishSeriesResponse> PublishSeriesAsync(
-            ShelfName shelf,
+            Shelf shelf,
             scg::IEnumerable<Book> books,
             uint? edition,
             SeriesUuid seriesUuid,
@@ -7331,14 +7331,14 @@ namespace Google.Example.Library.V1
         /// The RPC response.
         /// </returns>
         public virtual PublishSeriesResponse PublishSeries(
-            ShelfName shelf,
+            Shelf shelf,
             scg::IEnumerable<Book> books,
             uint? edition,
             SeriesUuid seriesUuid,
             gaxgrpc::CallSettings callSettings = null) => PublishSeries(
                 new PublishSeriesRequest
                 {
-                    ShelfAsShelfName = gax::GaxPreconditions.CheckNotNull(shelf, nameof(shelf)),
+                    Shelf = gax::GaxPreconditions.CheckNotNull(shelf, nameof(shelf)),
                     Books = { gax::GaxPreconditions.CheckNotNull(books, nameof(books)) },
                     Edition = edition ?? 0, // Optional
                     SeriesUuid = gax::GaxPreconditions.CheckNotNull(seriesUuid, nameof(seriesUuid)),
@@ -13102,19 +13102,6 @@ namespace Google.Example.Library.V1
         {
             get { return string.IsNullOrEmpty(OtherShelfName) ? null : Google.Example.Library.V1.ShelfName.Parse(OtherShelfName); }
             set { OtherShelfName = value != null ? value.ToString() : ""; }
-        }
-
-    }
-
-    public partial class PublishSeriesRequest
-    {
-        /// <summary>
-        /// <see cref="Google.Example.Library.V1.ShelfName"/>-typed view over the <see cref="Shelf"/> resource name property.
-        /// </summary>
-        public Google.Example.Library.V1.ShelfName ShelfAsShelfName
-        {
-            get { return string.IsNullOrEmpty(Shelf) ? null : Google.Example.Library.V1.ShelfName.Parse(Shelf); }
-            set { Shelf = value != null ? value.ToString() : ""; }
         }
 
     }

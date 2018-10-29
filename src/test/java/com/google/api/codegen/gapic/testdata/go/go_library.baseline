@@ -98,6 +98,10 @@ func TestLibClientSmoke(t *testing.T) {
 package library // import "cloud.google.com/go/library/apiv1"
 
 import (
+    "runtime"
+    "strings"
+    "unicode"
+
     "golang.org/x/net/context"
     "google.golang.org/grpc/metadata"
 )
@@ -120,6 +124,45 @@ func DefaultAuthScopes() []string {
     "https://www.googleapis.com/auth/library",
   }
 }
+
+// versionGo returns the Go runtime version. The returned string
+// has no whitespace, suitable for reporting in header.
+func versionGo() string {
+    const develPrefix = "devel +"
+
+    s := runtime.Version()
+    if strings.HasPrefix(s, develPrefix) {
+        s = s[len(develPrefix):]
+        if p := strings.IndexFunc(s, unicode.IsSpace); p >= 0 {
+            s = s[:p]
+        }
+        return s
+    }
+
+    notSemverRune := func(r rune) bool {
+        return strings.IndexRune("0123456789.", r) < 0
+    }
+
+    if strings.HasPrefix(s, "go1") {
+        s = s[2:]
+        var prerelease string
+        if p := strings.IndexFunc(s, notSemverRune); p >= 0 {
+            s, prerelease = s[:p], s[p:]
+        }
+        if strings.HasSuffix(s, ".") {
+            s += "0"
+        } else if strings.Count(s, ".") < 2 {
+            s += ".0"
+        }
+        if prerelease != "" {
+            s += "-" + prerelease
+        }
+        return s
+    }
+    return "UNKNOWN"
+}
+
+const versionClient = "UNKNOWN"
 ============== file: cloud.google.com/go/library/apiv1/library_client.go ==============
 // Copyright 2018 Google LLC
 //
@@ -144,7 +187,6 @@ import (
     "math"
     "time"
 
-    "cloud.google.com/go/internal/version"
     "cloud.google.com/go/longrunning"
     lroauto "cloud.google.com/go/longrunning/autogen"
     "github.com/golang/protobuf/proto"
@@ -328,8 +370,8 @@ func (c *LibClient) Close() error {
 // the `x-goog-api-client` header passed on each request. Intended for
 // use by Google-written clients.
 func (c *LibClient) SetGoogleClientInfo(keyval ...string) {
-    kv := append([]string{"gl-go", version.Go()}, keyval...)
-    kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", grpc.Version)
+    kv := append([]string{"gl-go", versionGo()}, keyval...)
+    kv = append(kv, "gapic", versionClient, "gax", gax.Version, "grpc", grpc.Version)
     c.xGoogMetadata = metadata.Pairs("x-goog-api-client", gax.XGoogHeader(kv...))
 }
 
@@ -2561,7 +2603,7 @@ func TestLibraryServicePublishSeries(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedShelf string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
     var seriesString string = "foobar"
     var seriesUuid = &librarypb.SeriesUuid{
@@ -2570,7 +2612,7 @@ func TestLibraryServicePublishSeries(t *testing.T) {
         },
     }
     var request = &librarypb.PublishSeriesRequest{
-        Shelf: formattedShelf,
+        Shelf: shelf,
         Books: books,
         SeriesUuid: seriesUuid,
     }
@@ -2599,7 +2641,7 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedShelf string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
     var seriesString string = "foobar"
     var seriesUuid = &librarypb.SeriesUuid{
@@ -2608,7 +2650,7 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
         },
     }
     var request = &librarypb.PublishSeriesRequest{
-        Shelf: formattedShelf,
+        Shelf: shelf,
         Books: books,
         SeriesUuid: seriesUuid,
     }

@@ -317,7 +317,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   @VisibleForTesting
   void addXApiImports(InterfaceContext context, Collection<MethodModel> methods) {
     ImportTypeTable typeTable = context.getImportTypeTable();
-    typeTable.saveNicknameFor("cloud.google.com/go/internal/version;;;");
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
     typeTable.saveNicknameFor("google.golang.org/grpc;;;");
     typeTable.saveNicknameFor("github.com/googleapis/gax-go;gax;;");

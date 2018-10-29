@@ -1625,7 +1625,8 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> shelf = client.shelf_path('[SHELF_ID]')
+            >>> # TODO: Initialize `shelf`:
+            >>> shelf = {}
             >>>
             >>> # TODO: Initialize `books`:
             >>> books = []
@@ -1635,7 +1636,10 @@ class LibraryServiceClient(object):
             >>> response = client.publish_series(shelf, books, series_uuid)
 
         Args:
-            shelf (str): The shelf in which the series is created.
+            shelf (Union[dict, ~google.cloud.example.library_v1.types.Shelf]): The shelf in which the series is created.
+
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Shelf`
             books (list[Union[dict, ~google.cloud.example.library_v1.types.Book]]): The books to publish in the series.
 
                 If a dict is provided, it must be of the same form as the protobuf
@@ -4416,18 +4420,20 @@ import sys
 from google.cloud.example import library_v1
 import six
 
-def sample_publish_series(shelf, edition):
+def sample_publish_series(name, edition):
   """Testing calling forms"""
 
   # [START canonical_core]
 
   client = library_v1.LibraryServiceClient()
 
-  # shelf = client.shelf_path('[SHELF_ID]')
+  # name = 'Math'
   # edition = 123
 
-  if isinstance(shelf, six.binary_type):
-    shelf = shelf.decode('utf-8')
+  if isinstance(name, six.binary_type):
+    name = name.decode('utf-8')
+
+  shelf = {'name': name}
 
   # TODO: Initialize `books`:
   books = []
@@ -4448,11 +4454,11 @@ def main():
   import argparse
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default=client.shelf_path('[SHELF_ID]'))
+  parser.add_argument('--name', type=str, default='Math')
   parser.add_argument('--edition', type=int, default=123)
   args = parser.parse_args()
 
-  sample_publish_series(args.shelf, args.edition)
+  sample_publish_series(args.name, args.edition)
 
 if __name__ == '__main__':
   main()
@@ -4491,7 +4497,8 @@ def sample_publish_series():
 
   client = library_v1.LibraryServiceClient()
 
-  shelf = client.shelf_path('[SHELF_ID]')
+  # TODO: Initialize `shelf`:
+  shelf = {}
 
   # TODO: Initialize `books`:
   books = []
@@ -5052,7 +5059,7 @@ class TestLibraryServiceClient(object):
             channel=channel)
 
         # Setup Request
-        shelf = client.shelf_path('[SHELF_ID]')
+        shelf = {}
         books = []
         series_string = 'foobar'
         series_uuid = {'series_string': series_string}
@@ -5072,7 +5079,7 @@ class TestLibraryServiceClient(object):
              channel=channel)
 
         # Setup request
-        shelf = client.shelf_path('[SHELF_ID]')
+        shelf = {}
         books = []
         series_string = 'foobar'
         series_uuid = {'series_string': series_string}

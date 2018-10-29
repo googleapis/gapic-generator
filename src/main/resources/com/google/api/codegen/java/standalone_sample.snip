@@ -24,17 +24,42 @@
     //      apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
 
     // FIXME: Insert here code to prepare the request fields, make the call, process the response.
+    # FIXME: change the package name from pubsub to library
 
+    package {@sampleFile.fileHeader.packageName};
+    
+    @if sample.initCode.argDefaultParams.size
+      import org.apache.commons.cli.CommandLine;
+      import org.apache.commons.cli.DefaultParser;
+      import org.apache.commons.cli.Option;
+      import org.apache.commons.cli.Options;     
+    @end
+    # FIXME: also import the client
+    @if sample.initCode.importSection.appImports.size
+      {@importList(sample.initCode.importSection.appImports)}
+    
+    @end
     public class {@sampleFile.classView.name} {
-      public static void main(String[] args) {
+      public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.initCode.argDefaultParams)}) {
         // [START {@sample.regionTag}_core]
-        @let coreSampleCode = generateSample(apiMethod, sample)
-          {@methodLines(coreSampleCode)}
-        @end
+        try ({@apiMethod.apiClassName} {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.create()) {
+          @let coreSampleCode = generateSample(apiMethod, sample)
+            {@methodLines(coreSampleCode)}
+          @end
+        } catch (Exception exception) {
+          System.err.println("Failed to create the client due to: " + exception);          
+        }
         // [END {@sample.regionTag}_core]
       }
-    }
 
+      public static void main(String[] args) {
+        @if sample.initCode.argDefaultParams.size
+          {@processCliArguments(sample)}
+
+        @end
+        {@sample.sampleFunctionName}({@commaSeparatedArgs(sample.initCode.argDefaultParams)});
+      }
+    }
     // FIXME: Insert here clean-up code.
 
     // [END {@sample.regionTag}]
@@ -214,6 +239,55 @@
 @private methodLines(methodSampleCode)
   @join sampleLine : util.splitLines(methodSampleCode)
     {@sampleLine}
+  @end
+@end
+
+@private processCliArguments(sample)
+  Options options = new Options();
+  @join param : sample.initCode.argDefaultParams
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("{@param.identifier}")
+          .build());
+  @end
+
+  CommandLine cl = (new DefaultParser()).parse(options, args);
+  @join param : sample.initCode.argDefaultParams
+    @switch param.typeName
+    @case "String"
+      String {@param.identifier} = cl.getOptionValue("{@param.identifier}", {@renderInitValue(param.initValue)});
+    @case "int"
+      int {@param.identifier} = 
+          cl.getOptionValue("{@param.identifier}") != null
+              ? Integer.parseInt(cl.getOptionValue("{@param.identifier}"))
+              : {@renderInitValue(param.initValue)};
+    @case "double"
+      double {@param.identifier} = 
+          cl.getOptionValue("{@param.identifier}") != null
+              ? Double.parseDouble(cl.getOptionValue("{@param.identifier}"))
+              : {@renderInitValue(param.initValue)};
+    @case "boolean"
+      boolean {@param.identifier} =
+          cl.getOptionValue("{@param.identifier}") != null
+              ? Boolean.parseBoolean(cl.getOptionValue("{@param.identifier}"))
+              : {@renderInitValue(param.initValue)};
+    @default
+      $unhandledCase: {@param.typeName}$
+    @end
+  @end
+@end
+
+@private commaSeparatedArgs(args)
+  @join arg : args on ", "
+    {@arg.identifier}
+  @end
+@end
+
+@private commaSeparatedArgAndTypes(args)
+  @join arg : args on ", "
+    {@arg.typeName} {@arg.identifier}
   @end
 @end
 
