@@ -56,14 +56,13 @@ public class PythonSamplePrintArgTransformer implements OutputTransformer.PrintA
       return PrintArgView.newBuilder()
           .segments(ImmutableList.<ArgSegmentView>of(VariableSegmentView.of(variableView)))
           .build();
-    } else {
-      ImmutableList<ArgSegmentView> segments =
-          ImmutableList.of(
-              TextSegmentView.of(getEnumTypeClassName(context, variableView.type()) + "("),
-              VariableSegmentView.of(variableView),
-              TextSegmentView.of(").name"));
-      return PrintArgView.newBuilder().segments(segments).build();
     }
+    ImmutableList<ArgSegmentView> segments =
+        ImmutableList.of(
+            TextSegmentView.of(getEnumTypeClassName(context, variableView.type()) + "("),
+            VariableSegmentView.of(variableView),
+            TextSegmentView.of(").name"));
+    return PrintArgView.newBuilder().segments(segments).build();
   }
 
   private static String getEnumTypeClassName(MethodContext context, TypeModel type) {
