@@ -29,6 +29,7 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,17 +52,17 @@ public class PythonSamplePrintArgTransformer implements OutputTransformer.PrintA
   @Override
   public PrintArgView generatePrintArg(
       MethodContext context, OutputView.VariableView variableView) {
-    if (variableView.type() != null && variableView.type().isEnum()) {
+    if (variableView.type() == null || !variableView.type().isEnum()) {
+      return PrintArgView.newBuilder()
+          .segments(ImmutableList.<ArgSegmentView>of(VariableSegmentView.of(variableView)))
+          .build();
+    } else {
       ImmutableList<ArgSegmentView> segments =
           ImmutableList.of(
               TextSegmentView.of(getEnumTypeClassName(context, variableView.type()) + "("),
               VariableSegmentView.of(variableView),
               TextSegmentView.of(").name"));
       return PrintArgView.newBuilder().segments(segments).build();
-    } else {
-      return PrintArgView.newBuilder()
-          .segments(ImmutableList.<ArgSegmentView>of(VariableSegmentView.of(variableView)))
-          .build();
     }
   }
 
@@ -85,11 +86,9 @@ public class PythonSamplePrintArgTransformer implements OutputTransformer.PrintA
     }
     names.add("enums");
     StringBuilder builder = new StringBuilder();
-    for (int i = names.size() - 1; i >= 1; i--) {
-      builder.append(names.get(i));
-      builder.append(".");
+    for (String name : Lists.reverse(names)) {
+      builder.append(name).append(".");
     }
-    builder.append(names.get(0));
-    return builder.toString();
+    return builder.substring(0, builder.length() - 1);
   }
 }

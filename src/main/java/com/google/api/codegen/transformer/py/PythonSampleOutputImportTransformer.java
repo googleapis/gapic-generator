@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.OutputTransformer;
 import com.google.api.codegen.util.ImportType;
@@ -61,24 +60,25 @@ public class PythonSampleOutputImportTransformer
       ImmutableSet.Builder<ImportFileView> imports,
       MethodContext context,
       OutputView.PrintView view) {
-    for (PrintArgView arg : view.args()) {
-      for (PrintArgView.ArgSegmentView segment : arg.segments())
-        if (segment instanceof PrintArgView.VariableSegmentView) {
-          TypeModel type = ((PrintArgView.VariableSegmentView) segment).variable().type();
-          if (type != null && type.isEnum()) {
-            ImportTypeView importTypeView =
-                ImportTypeView.newBuilder()
-                    .fullName("enums")
-                    .type(ImportType.SimpleImport)
-                    .nickname("")
-                    .build();
-            imports.add(
-                ImportFileView.newBuilder()
-                    .moduleName(context.getNamer().getVersionedDirectoryNamespace())
-                    .types(Collections.singletonList(importTypeView))
-                    .build());
-          }
-        }
+    boolean addEnumImports =
+        view.args()
+            .stream()
+            .flatMap(arg -> arg.segments().stream())
+            .filter(seg -> seg.kind() == PrintArgView.ArgSegmentView.Kind.VARIABLE)
+            .map(seg -> ((PrintArgView.VariableSegmentView) seg).variable().type())
+            .anyMatch(type -> type != null && type.isEnum());
+    if (addEnumImports) {
+      ImportTypeView importTypeView =
+          ImportTypeView.newBuilder()
+              .fullName("enums")
+              .type(ImportType.SimpleImport)
+              .nickname("")
+              .build();
+      imports.add(
+          ImportFileView.newBuilder()
+              .moduleName(context.getNamer().getVersionedDirectoryNamespace())
+              .types(Collections.singletonList(importTypeView))
+              .build());
     }
   }
 }
