@@ -63,7 +63,8 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
           new PythonApiMethodParamTransformer(),
           new InitCodeTransformer(importSectionTransformer),
           sampleType,
-          new OutputTransformer(new PythonSampleOutputImportTransformer()));
+          new OutputTransformer(
+              new PythonSampleOutputImportTransformer(), new PythonSamplePrintArgTransformer()));
   private final PythonMethodViewGenerator methodGenerator =
       new PythonMethodViewGenerator(apiMethodTransformer);
   private final GapicCodePathMapper pathMapper;

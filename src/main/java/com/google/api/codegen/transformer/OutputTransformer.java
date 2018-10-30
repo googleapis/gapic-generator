@@ -24,6 +24,7 @@ import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.viewmodel.AccessorView;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.OutputView;
+import com.google.api.codegen.viewmodel.PrintArgView;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -42,13 +43,17 @@ public class OutputTransformer {
       ImmutableSet.<String>of("response", "response_item");
 
   private final OutputImportTransformer importTransformer;
+  private final PrintArgTransformer printArgTransformer;
 
   public OutputTransformer() {
     this.importTransformer = new OutputImportTransformer() {};
+    this.printArgTransformer = new PrintArgTransformer() {};
   }
 
-  public OutputTransformer(OutputImportTransformer importTransformer) {
+  public OutputTransformer(
+      OutputImportTransformer importTransformer, PrintArgTransformer printArgTransformer) {
     this.importTransformer = importTransformer;
+    this.printArgTransformer = printArgTransformer;
   }
 
   /**
@@ -64,6 +69,22 @@ public class OutputTransformer {
     }
   }
 
+  /**
+   * Transformer that converts a {@code VariableView} to a {@code PrintArgView} in order to print
+   * the variable nicely.
+   */
+  public static interface PrintArgTransformer {
+
+    public default PrintArgView generatePrintArg(
+        MethodContext context, OutputView.VariableView variableView) {
+      return PrintArgView.newBuilder()
+          .segments(
+              ImmutableList.<PrintArgView.ArgSegmentView>of(
+                  PrintArgView.VariableSegmentView.of(variableView)))
+          .build();
+    }
+  }
+
   public OutputImportTransformer getOutputImportTransformer() {
     return this.importTransformer;
   }
@@ -76,16 +97,16 @@ public class OutputTransformer {
         OutputSpec.newBuilder().addPrint("%s").addPrint(RESPONSE_PLACEHOLDER).build());
   }
 
-  static ImmutableList<OutputView> toViews(
+  ImmutableList<OutputView> toViews(
       List<OutputSpec> configs, MethodContext context, SampleValueSet valueSet) {
     ScopeTable localVars = new ScopeTable();
     return configs
         .stream()
-        .map(s -> OutputTransformer.toView(s, context, valueSet, localVars))
+        .map(s -> toView(s, context, valueSet, localVars))
         .collect(ImmutableList.toImmutableList());
   }
 
-  private static OutputView toView(
+  private OutputView toView(
       OutputSpec config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
     Runnable once =
         new Runnable() {
@@ -123,26 +144,28 @@ public class OutputTransformer {
         valueSet.getId());
   }
 
-  private static OutputView.PrintView printView(
+  private OutputView.PrintView printView(
       List<String> config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
     Preconditions.checkArgument(
         !config.isEmpty(),
         "%s:%s: print spec cannot be empty",
         context.getMethodModel().getSimpleName(),
         valueSet.getId());
-
     return OutputView.PrintView.newBuilder()
         .format(context.getNamer().getPrintSpec(config.get(0)))
         .args(
             config
                 .subList(1, config.size())
                 .stream()
-                .map(a -> accessor(new Scanner(a), context, valueSet, localVars))
+                .map(
+                    a ->
+                        printArgTransformer.generatePrintArg(
+                            context, accessor(new Scanner(a), context, valueSet, localVars)))
                 .collect(ImmutableList.toImmutableList()))
         .build();
   }
 
-  private static OutputView.LoopView loopView(
+  private OutputView.LoopView loopView(
       OutputSpec.LoopStatement loop,
       MethodContext context,
       SampleValueSet valueSet,
@@ -169,7 +192,7 @@ public class OutputTransformer {
     return ret;
   }
 
-  private static OutputView.DefineView defineView(
+  private OutputView.DefineView defineView(
       Scanner definition, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
     Preconditions.checkArgument(
         definition.scan() == Scanner.IDENT,

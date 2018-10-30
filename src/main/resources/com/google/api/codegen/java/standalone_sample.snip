@@ -329,10 +329,10 @@
     System.out.println("{@view.format}");
   @else
     @if view.format == ""
-      System.out.println({@variableField(view.args.get(0))});
+      System.out.println({@printVariableField(view.args.get(0))});
     @else
       @if view.format == "%s"
-        System.out.println({@variableField(view.args.get(0))});
+        System.out.println({@printVariableField(view.args.get(0))});
       @else
         System.out.printf("{@view.format}\n", {@commaSeparatedFields(view.args)});
       @end
@@ -348,7 +348,20 @@
 
 @private commaSeparatedFields(args)
   @join arg : args on ", "
-    {@variableField(arg)}
+    {@printVariableField(arg)}
+  @end
+@end
+
+@private printVariableField(arg)
+  @join segment : arg.segments
+    @switch segment.kind
+      @case "TEXT"
+        {@segment.text}
+      @case "VARIABLE"
+        {@variableField(segment.variable)}
+      @default
+        $unhandledPrintArgView: arg
+    @end
   @end
 @end
 
