@@ -50,7 +50,9 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
 
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
-          new PhpApiMethodParamTransformer(), new InitCodeTransformer(), SampleType.STANDALONE);
+          new PhpApiMethodParamTransformer(),
+          new InitCodeTransformer(new PhpImportSectionTransformer()),
+          SampleType.STANDALONE);
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new PhpImportSectionTransformer());
   private final GapicCodePathMapper pathMapper;
@@ -159,12 +161,12 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
 
   private GapicInterfaceContext createContext(
       InterfaceModel apiInterface, GapicProductConfig productConfig) {
+    String samplePackageName = productConfig.getPackageName() + "\\Samples";
     return GapicInterfaceContext.create(
         apiInterface,
         productConfig,
         new ModelTypeTable(
-            new PhpTypeTable(productConfig.getPackageName()),
-            new PhpModelTypeNameConverter(productConfig.getPackageName())),
+            new PhpTypeTable(samplePackageName), new PhpModelTypeNameConverter(samplePackageName)),
         new PhpSurfaceNamer(productConfig.getPackageName()),
         new PhpFeatureConfig());
   }
