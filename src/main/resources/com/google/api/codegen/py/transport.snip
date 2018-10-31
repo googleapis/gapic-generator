@@ -22,7 +22,7 @@
         )
 
         def __init__(self, channel=None, credentials=None,
-                     address='{@api.serviceAddress}:{@api.servicePort}'):
+                     address='{@api.serviceHostname}:{@api.servicePort}'):
             """Instantiate the transport class.
 
             Args:
@@ -71,7 +71,7 @@
         @@classmethod
         def create_channel(
                     cls,
-                    address='{@api.serviceAddress}:{@api.servicePort}',
+                    address='{@api.serviceHostname}:{@api.servicePort}',
                     credentials=None):
             """Create and return a gRPC channel object.
 
@@ -98,7 +98,7 @@
             def {@apiMethod.name}(self):
                 """Return the gRPC stub for {$apiMethod.name}.
 
-                @join line : util.trimDocs(apiMethod.doc.mainDocLines)
+                @join line : apiMethod.doc.mainDocLines
                     {@line}
                 @end
 

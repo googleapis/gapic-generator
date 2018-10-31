@@ -1,5 +1,8 @@
 # GAPIC Generator
 
+[![Build Status](https://travis-ci.org/googleapis/gapic-generator.svg?branch=master)](https://travis-ci.org/googleapis/gapic-generator)
+[![CircleCI](https://circleci.com/gh/googleapis/gapic-generator.svg?style=svg)](https://circleci.com/gh/googleapis/gapic-generator)
+
 The GAPIC (Generated API Client) Generator auto-generates client libraries in various programming languages for both
 grpc-based APIs and Discovery-document-based APIs. Currently, the following
 programming languages are supported for grpc-based APIs:

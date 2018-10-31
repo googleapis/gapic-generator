@@ -20,31 +20,35 @@ import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
-import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.configgen.transformer.LanguageTransformer;
+import com.google.api.codegen.util.LicenseHeaderUtil;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
-import com.google.common.io.CharStreams;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /**
@@ -95,6 +99,7 @@ public abstract class GapicProductConfig implements ProductConfig {
    *
    * <p>TODO(eoogbe): Validate the value in GAPIC config advisor.
    */
+  @Nullable
   public abstract String getConfigSchemaVersion();
 
   public GapicProductConfig withPackageName(String packageName) {
@@ -112,14 +117,29 @@ public abstract class GapicProductConfig implements ProductConfig {
         getConfigSchemaVersion());
   }
 
+  @Nullable
+  public static GapicProductConfig create(
+      Model model, ConfigProto configProto, TargetLanguage language) {
+    return create(model, configProto, null, language);
+  }
+
   /**
    * Creates an instance of GapicProductConfig based on ConfigProto, linking up API interface
    * configurations with specified interfaces in interfaceConfigMap. On errors, null will be
    * returned, and diagnostics are reported to the model.
+   *
+   * @param model The protobuf model for which we are creating a config.
+   * @param configProto The parsed set of config files from input
+   * @param protoPackage The source proto package, as opposed to imported protos, that we will
+   *     generate clients for.
+   * @param language The language that this config will be used to generate a client in.
    */
   @Nullable
   public static GapicProductConfig create(
-      Model model, ConfigProto configProto, TargetLanguage language) {
+      Model model,
+      @Nullable ConfigProto configProto,
+      @Nullable String protoPackage,
+      TargetLanguage language) {
 
     // Get the proto file containing the first interface listed in the config proto, and use it as
     // the assigned file for generated resource names, and to get the default message namespace
@@ -127,20 +147,54 @@ public abstract class GapicProductConfig implements ProductConfig {
         model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
     String defaultPackage = file.getProto().getPackage();
 
+    // TODO(andrealin): populate sourceProtos from --package flag.
+    List<ProtoFile> sourceProtos =
+        model
+            .getFiles()
+            .stream()
+            .filter(f -> f.getProto().getPackage().equals(defaultPackage))
+            .collect(Collectors.toList());
+    if (sourceProtos.isEmpty()) {
+      model
+          .getDiagReporter()
+          .getDiagCollector()
+          .addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "There are no source proto files with package %s",
+                  defaultPackage));
+    }
+
+    ProtoParser protoParser = new ProtoParser();
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            model, configProto, defaultPackage);
+            sourceProtos,
+            model.getDiagReporter().getDiagCollector(),
+            configProto,
+            defaultPackage,
+            protoParser);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(
-            model.getDiagReporter().getDiagCollector(), configProto, file, language);
+            model.getDiagReporter().getDiagCollector(),
+            configProto,
+            sourceProtos,
+            language,
+            protoParser);
 
     TransportProtocol transportProtocol = TransportProtocol.GRPC;
 
+    String clientPackageName;
     LanguageSettingsProto settings =
         configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
+      String basePackageName =
+          Optional.ofNullable(protoPackage).orElse(protoParser.getPackageName(model));
+      clientPackageName =
+          LanguageTransformer.getFormattedPackageName(language.name(), basePackageName);
+    } else {
+      clientPackageName = settings.getPackageName();
     }
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
@@ -151,20 +205,17 @@ public abstract class GapicProductConfig implements ProductConfig {
             messageConfigs,
             resourceNameConfigs,
             model.getSymbolTable(),
-            language);
+            language,
+            protoParser);
 
     ImmutableList<String> copyrightLines = null;
     ImmutableList<String> licenseLines = null;
     try {
-      LicenseHeaderProto licenseHeader =
-          configProto
-              .getLicenseHeader()
-              .toBuilder()
-              .mergeFrom(settings.getLicenseHeaderOverride())
-              .build();
-      copyrightLines =
-          loadCopyrightLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
-      licenseLines = loadLicenseLines(model.getDiagReporter().getDiagCollector(), licenseHeader);
+      LicenseHeaderUtil licenseHeaderUtil =
+          LicenseHeaderUtil.create(
+              configProto, settings, model.getDiagReporter().getDiagCollector());
+      copyrightLines = licenseHeaderUtil.loadCopyrightLines();
+      licenseLines = licenseHeaderUtil.loadLicenseLines();
     } catch (Exception e) {
       model
           .getDiagReporter()
@@ -191,7 +242,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
     return new AutoValue_GapicProductConfig(
         interfaceConfigMap,
-        settings.getPackageName(),
+        clientPackageName,
         settings.getDomainLayerLocation(),
         settings.getReleaseLevel(),
         messageConfigs,
@@ -216,7 +267,7 @@ public abstract class GapicProductConfig implements ProductConfig {
             model, configProto, defaultPackage);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        createResourceNameConfigs(model.getDiagCollector(), configProto, null, language);
+        createResourceNameConfigs(model.getDiagCollector(), configProto, language);
 
     TransportProtocol transportProtocol = TransportProtocol.HTTP;
 
@@ -233,14 +284,10 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
     try {
-      LicenseHeaderProto licenseHeader =
-          configProto
-              .getLicenseHeader()
-              .toBuilder()
-              .mergeFrom(settings.getLicenseHeaderOverride())
-              .build();
-      copyrightLines = getResourceLines(licenseHeader.getCopyrightFile());
-      licenseLines = getResourceLines(licenseHeader.getLicenseFile());
+      LicenseHeaderUtil licenseHeaderUtil =
+          LicenseHeaderUtil.create(configProto, settings, model.getDiagCollector());
+      copyrightLines = licenseHeaderUtil.loadCopyrightLines();
+      licenseLines = licenseHeaderUtil.loadLicenseLines();
     } catch (Exception e) {
       model
           .getDiagCollector()
@@ -321,7 +368,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable,
-      TargetLanguage language) {
+      TargetLanguage language,
+      ProtoParser protoParser) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
@@ -344,7 +392,8 @@ public abstract class GapicProductConfig implements ProductConfig {
               apiInterface,
               interfaceNameOverride,
               messageConfigs,
-              resourceNameConfigs);
+              resourceNameConfigs,
+              protoParser);
       if (interfaceConfig == null) {
         continue;
       }
@@ -391,50 +440,25 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
   }
 
-  private static ImmutableList<String> loadCopyrightLines(
-      DiagCollector diagCollector, LicenseHeaderProto licenseHeaderProto) throws IOException {
-    if (licenseHeaderProto == null) {
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "license_header missing"));
-      return null;
-    }
-    if (Strings.isNullOrEmpty(licenseHeaderProto.getCopyrightFile())) {
-      diagCollector.addDiag(
-          Diag.error(SimpleLocation.TOPLEVEL, "license_header.copyright_file missing"));
-      return null;
-    }
-
-    return getResourceLines(licenseHeaderProto.getCopyrightFile());
-  }
-
-  private static ImmutableList<String> loadLicenseLines(
-      DiagCollector diagCollector, LicenseHeaderProto licenseHeaderProto) throws IOException {
-    if (licenseHeaderProto == null) {
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "license_header missing"));
-      return null;
-    }
-    if (Strings.isNullOrEmpty(licenseHeaderProto.getLicenseFile())) {
-      diagCollector.addDiag(
-          Diag.error(SimpleLocation.TOPLEVEL, "license_header.license_file missing"));
-      return null;
-    }
-
-    return getResourceLines(licenseHeaderProto.getLicenseFile());
-  }
-
-  private static ImmutableList<String> getResourceLines(String resourceFileName)
-      throws IOException {
-    InputStream fileStream = ConfigProto.class.getResourceAsStream(resourceFileName);
-    InputStreamReader fileReader = new InputStreamReader(fileStream, Charsets.UTF_8);
-    return ImmutableList.copyOf(CharStreams.readLines(fileReader));
-  }
-
   private static ImmutableMap<String, ResourceNameConfig> createResourceNameConfigs(
+      DiagCollector diagCollector, ConfigProto configProto, TargetLanguage language) {
+    return createResourceNameConfigs(diagCollector, configProto, null, language, null);
+  }
+
+  @VisibleForTesting
+  static ImmutableMap<String, ResourceNameConfig> createResourceNameConfigs(
       DiagCollector diagCollector,
       ConfigProto configProto,
-      ProtoFile file,
-      TargetLanguage language) {
+      @Nullable List<ProtoFile> protoFiles,
+      TargetLanguage language,
+      ProtoParser protoParser) {
+    ProtoFile file = null;
+    if (protoFiles != null) {
+      file = protoFiles.get(0);
+    }
     ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs =
-        createSingleResourceNameConfigs(diagCollector, configProto, file, language);
+        createSingleResourceNameConfigs(
+            diagCollector, configProto, protoFiles, language, protoParser);
     ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs =
         createFixedResourceNameConfigs(
             diagCollector, configProto.getFixedResourceNameValuesList(), file);
@@ -446,7 +470,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             fixedResourceNameConfigs,
             file);
 
-    ImmutableMap.Builder<String, ResourceNameConfig> resourceCollectionMap = ImmutableMap.builder();
+    ImmutableSortedMap.Builder<String, ResourceNameConfig> resourceCollectionMap =
+        new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
     resourceCollectionMap.putAll(singleResourceNameConfigs);
     resourceCollectionMap.putAll(resourceNameOneofConfigs);
     resourceCollectionMap.putAll(fixedResourceNameConfigs);
@@ -456,8 +481,15 @@ public abstract class GapicProductConfig implements ProductConfig {
   private static ImmutableMap<String, SingleResourceNameConfig> createSingleResourceNameConfigs(
       DiagCollector diagCollector,
       ConfigProto configProto,
-      ProtoFile file,
-      TargetLanguage language) {
+      @Nullable List<ProtoFile> sourceProtos,
+      TargetLanguage language,
+      ProtoParser protoParser) {
+    ProtoFile file = null;
+    if (sourceProtos == null) {
+      sourceProtos = ImmutableList.of();
+    } else {
+      file = sourceProtos.get(0);
+    }
     LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap =
         new LinkedHashMap<>();
     for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
@@ -472,6 +504,43 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
 
+    LinkedHashMap<String, SingleResourceNameConfig> resourceConfigsFromProtoFile =
+        new LinkedHashMap<>();
+    // Collect the ResourceNameConfigs from proto annotations.
+    for (ProtoFile protoFile : sourceProtos) {
+      for (MessageType messageType : protoFile.getMessages()) {
+        for (Field field : messageType.getFields()) {
+          String resourcePath = protoParser.getResourcePath(field);
+          if (resourcePath != null) {
+            createSingleResourceNameConfig(
+                diagCollector, field, resourceConfigsFromProtoFile, protoFile, protoParser);
+          }
+        }
+      }
+    }
+
+    // If protofile annotations clash with the configs from configProto, use the protofile.
+    for (SingleResourceNameConfig resourceFromProtoFile : resourceConfigsFromProtoFile.values()) {
+      if (singleResourceNameConfigsMap.containsKey(resourceFromProtoFile.getEntityId())) {
+        SingleResourceNameConfig otherConfig =
+            singleResourceNameConfigsMap.get(resourceFromProtoFile.getEntityId());
+        if (!resourceFromProtoFile.getNamePattern().equals(otherConfig.getNamePattern())) {
+          diagCollector.addDiag(
+              Diag.warning(
+                  SimpleLocation.TOPLEVEL,
+                  "For entity %s, resource path '%s'"
+                      + " from protofile clashes with GAPIC config resource path %s."
+                      + " Using path '%s' from protofile.",
+                  resourceFromProtoFile.getEntityId(),
+                  resourceFromProtoFile.getNamePattern(),
+                  otherConfig.getNamePattern(),
+                  resourceFromProtoFile.getEntityId()));
+        }
+      }
+      // Add the protofile resourceNameConfigs to the map of resourceNameConfigs.
+      singleResourceNameConfigsMap.put(resourceFromProtoFile.getEntityId(), resourceFromProtoFile);
+    }
+
     if (diagCollector.getErrorCount() > 0) {
       return null;
     } else {
@@ -483,7 +552,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       DiagCollector diagCollector,
       CollectionConfigProto collectionConfigProto,
       LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap,
-      ProtoFile file,
+      @Nullable ProtoFile file,
       TargetLanguage language) {
     SingleResourceNameConfig singleResourceNameConfig =
         SingleResourceNameConfig.createSingleResourceName(
@@ -507,10 +576,37 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
   }
 
+  private static void createSingleResourceNameConfig(
+      DiagCollector diagCollector,
+      Field field,
+      LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap,
+      ProtoFile file,
+      ProtoParser protoParser) {
+    SingleResourceNameConfig singleResourceNameConfig =
+        SingleResourceNameConfig.createSingleResourceName(diagCollector, field, file, protoParser);
+    if (singleResourceNameConfig == null) {
+      return;
+    }
+    if (singleResourceNameConfigsMap.containsKey(singleResourceNameConfig.getEntityId())) {
+      SingleResourceNameConfig otherConfig =
+          singleResourceNameConfigsMap.get(singleResourceNameConfig.getEntityId());
+      if (!singleResourceNameConfig.getNamePattern().equals(otherConfig.getNamePattern())) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Inconsistent collection configs across interfaces. Entity name: "
+                    + singleResourceNameConfig.getEntityId()));
+      }
+    } else {
+      singleResourceNameConfigsMap.put(
+          singleResourceNameConfig.getEntityId(), singleResourceNameConfig);
+    }
+  }
+
   private static ImmutableMap<String, FixedResourceNameConfig> createFixedResourceNameConfigs(
       DiagCollector diagCollector,
       Iterable<FixedResourceNameValueProto> fixedConfigProtos,
-      ProtoFile file) {
+      @Nullable ProtoFile file) {
     ImmutableMap.Builder<String, FixedResourceNameConfig> fixedConfigBuilder =
         ImmutableMap.builder();
     for (FixedResourceNameValueProto fixedConfigProto : fixedConfigProtos) {
@@ -530,7 +626,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       Iterable<CollectionOneofProto> oneofConfigProtos,
       ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
       ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs,
-      ProtoFile file) {
+      @Nullable ProtoFile file) {
     ImmutableMap.Builder<String, ResourceNameOneofConfig> oneofConfigBuilder =
         ImmutableMap.builder();
     for (CollectionOneofProto oneofProto : oneofConfigProtos) {

@@ -40,6 +40,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.TypeLiteral;
+import com.google.longrunning.OperationsProto;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import java.io.File;
@@ -91,6 +92,13 @@ public class GapicGeneratorApp extends ToolDriverBase {
           "Names of adviser rules to suppress warnings for.",
           ImmutableList.of());
 
+  public static final Option<Boolean> DEV_SAMPLES =
+      ToolOptions.createOption(
+          Boolean.class,
+          "dev_samples",
+          "Whether to generate samples in non-production-ready languages.",
+          false);
+
   private ArtifactType artifactType;
 
   /** Constructs a code generator api based on given options. */
@@ -102,11 +110,14 @@ public class GapicGeneratorApp extends ToolDriverBase {
   @Override
   public ExtensionRegistry getPlatformExtensions() {
     ExtensionRegistry extensionRegistry = super.getPlatformExtensions();
+    OperationsProto.registerAllExtensions(extensionRegistry);
     return extensionRegistry;
   }
 
   @Override
   protected void process() throws Exception {
+
+    String protoPackage = Strings.emptyToNull(options.get(PROTO_PACKAGE));
 
     // Read the YAML config and convert it to proto.
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
@@ -160,7 +171,8 @@ public class GapicGeneratorApp extends ToolDriverBase {
       language = TargetLanguage.fromString(languageStr.toUpperCase());
     }
 
-    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, language);
+    GapicProductConfig productConfig =
+        GapicProductConfig.create(model, configProto, protoPackage, language);
     if (productConfig == null) {
       return;
     }
@@ -168,7 +180,8 @@ public class GapicGeneratorApp extends ToolDriverBase {
     String outputPath = options.get(OUTPUT_FILE);
     ArtifactFlags artifactFlags = new ArtifactFlags(options.get(ENABLED_ARTIFACTS), artifactType);
     List<CodeGenerator<?>> generators =
-        GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
+        GapicGeneratorFactory.create(
+            language, model, productConfig, packageConfig, artifactFlags, options.get(DEV_SAMPLES));
     ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
     ImmutableSet.Builder<String> executables = ImmutableSet.builder();
     for (CodeGenerator<?> generator : generators) {

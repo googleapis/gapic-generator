@@ -58,6 +58,7 @@ import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -214,7 +215,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
           clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
         }
 
-        Iterable<FieldConfig> fieldConfigs =
+        Collection<FieldConfig> fieldConfigs =
             methodContext.getMethodConfig().getRequiredFieldConfigs();
         InitCodeOutputType initCodeOutputType =
             method.getRequestStreaming()

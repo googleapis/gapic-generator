@@ -21,12 +21,13 @@ import com.google.api.codegen.configgen.ProtoInterfaceTransformer;
 import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.configgen.ProtoPageStreamingTransformer;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
-import com.google.api.tools.framework.model.Interface;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Model;
-import com.google.protobuf.Api;
 
 /** Merges the gapic config from a proto Model into a ConfigNode. */
 public class ProtoConfigMerger {
+  private ProtoParser protoParser = new ProtoParser();
+
   public ConfigNode mergeConfig(Model model, String fileName) {
     ConfigMerger configMerger = createMerger(model, fileName);
     if (configMerger == null) {
@@ -38,8 +39,9 @@ public class ProtoConfigMerger {
 
   private ConfigMerger createMerger(Model model, String fileName) {
     ConfigHelper helper = new ConfigHelper(model.getDiagReporter().getDiagCollector(), fileName);
-    String packageName = getPackageName(model, helper);
+    String packageName = protoParser.getPackageName(model);
     if (packageName == null) {
+      helper.error(model.getLocation(), "Failed to determine package name.");
       return null;
     }
 
@@ -54,18 +56,5 @@ public class ProtoConfigMerger {
     InterfaceMerger interfaceMerger =
         new InterfaceMerger(collectionMerger, retryMerger, methodMerger, interfaceTranformer);
     return new ConfigMerger(languageSettingsMerger, interfaceMerger, packageName, helper);
-  }
-
-  private String getPackageName(Model model, ConfigHelper helper) {
-    if (model.getServiceConfig().getApisCount() > 0) {
-      Api api = model.getServiceConfig().getApis(0);
-      Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
-      if (apiInterface != null) {
-        return apiInterface.getFile().getFullName();
-      }
-    }
-
-    helper.error(model.getLocation(), "No interface found");
-    return null;
   }
 }

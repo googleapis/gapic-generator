@@ -37,9 +37,6 @@ public abstract class MethodView implements Comparable<MethodView> {
   /** The fields that are always required for a request to be valid. */
   public abstract List<String> requiredFields();
 
-  /** Turns on or off generation of a method whose sole parameter is a request object. */
-  public abstract boolean requestObjectMethod();
-
   /** The resource name treatment. */
   @Nullable
   public abstract ResourceNameTreatment resourceNameTreatment();
@@ -84,8 +81,6 @@ public abstract class MethodView implements Comparable<MethodView> {
     public abstract Builder flattening(FlatteningView val);
 
     public abstract Builder requiredFields(List<String> val);
-
-    public abstract Builder requestObjectMethod(boolean val);
 
     public abstract Builder resourceNameTreatment(ResourceNameTreatment val);
 

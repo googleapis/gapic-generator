@@ -23,6 +23,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductConfig;
+import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -32,7 +33,6 @@ import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
-import com.google.api.codegen.transformer.IamResourceTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
@@ -58,7 +58,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 import java.io.File;
 import java.util.ArrayList;
@@ -87,10 +86,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new GoImportSectionTransformer());
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
-  private final IamResourceTransformer iamResourceTransformer = new IamResourceTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
+  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   private final GapicCodePathMapper pathMapper;
 
@@ -160,13 +159,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
       context.getImportTypeTable().saveNicknameFor("fmt;;;");
     }
 
-    view.iamResources(iamResourceTransformer.generateIamResources(context));
-    if (!((GapicInterfaceConfig) productConfig.getInterfaceConfig(apiInterface.getFullName()))
-        .getIamResources()
-        .isEmpty()) {
-      context.getImportTypeTable().saveNicknameFor("cloud.google.com/go/iam;;;");
-    }
-
     // In Go, multiple methods share the same iterator type, one iterator type per resource type.
     // We have to dedupe the iterators.
     Map<String, PageStreamingDescriptorClassView> iterators = new TreeMap<>();
@@ -186,8 +178,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     }
     view.lroDetailViews(new ArrayList<>(lros.values()));
 
-    view.serviceAddress(context.getApiModel().getServiceAddress());
-    view.servicePort(model.getServicePort());
+    view.serviceHostname(productServiceConfig.getServiceHostname(context.getServiceAddress()));
+    view.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
 
     view.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
@@ -216,7 +208,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     view.clientConstructorExampleName(
         namer.getApiWrapperClassConstructorExampleName(interfaceConfig));
     view.apiMethods(generateApiMethods(context, context.getPublicMethods()));
-    view.iamResources(iamResourceTransformer.generateIamResources(context));
 
     // Examples are different from the API. In particular, we use short declaration
     // and so we omit most type names. We only need
@@ -293,12 +284,12 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     }
 
     TreeMap<RetryConfigDefinitionView.Name, RetryConfigDefinitionView> retryDef = new TreeMap<>();
-    Map<String, ImmutableSet<String>> retryCodesDef =
-        context.getInterfaceConfig().getRetryCodesDefinition();
+    Map<String, ImmutableList<String>> retryCodesDef =
+        context.getInterfaceConfig().getRetryCodesConfig().getRetryCodesDefinition();
     ImmutableMap<String, RetryParamsDefinitionProto> retryParamsDef =
         context.getInterfaceConfig().getRetrySettingsDefinition();
     for (RetryConfigDefinitionView.Name name : retryNames) {
-      ImmutableSet<String> codes = retryCodesDef.get(name.retryCodesConfigName());
+      ImmutableList<String> codes = retryCodesDef.get(name.retryCodesConfigName());
       if (codes.isEmpty()) {
         continue;
       }
@@ -326,7 +317,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   @VisibleForTesting
   void addXApiImports(InterfaceContext context, Collection<MethodModel> methods) {
     ImportTypeTable typeTable = context.getImportTypeTable();
-    typeTable.saveNicknameFor("cloud.google.com/go/internal/version;;;");
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
     typeTable.saveNicknameFor("google.golang.org/grpc;;;");
     typeTable.saveNicknameFor("github.com/googleapis/gax-go;gax;;");

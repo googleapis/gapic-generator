@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.config.AnyResourceNameConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GrpcStreamingConfig;
@@ -888,7 +889,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   protected Name getAnyResourceTypeName() {
-    return Name.from("resource_name");
+    return Name.from(AnyResourceNameConfig.ENTITY_NAME);
   }
 
   public String getResourceTypeName(ResourceNameConfig resourceNameConfig) {
@@ -1541,7 +1542,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getSampleResponseVarName(MethodContext context) {
-    return context.getMethodConfig().getPageStreaming() == null ? "response" : "element";
+    MethodConfig config = context.getMethodConfig();
+    if (config.getPageStreaming() != null) {
+      return "responseItem";
+    }
+    if (config.getGrpcStreaming() != null) {
+      GrpcStreamingConfig.GrpcStreamingType type = config.getGrpcStreaming().getType();
+      if (type == GrpcStreamingConfig.GrpcStreamingType.ServerStreaming
+          || type == GrpcStreamingConfig.GrpcStreamingType.BidiStreaming) {
+        return "responseItem";
+      }
+    }
+    return "response";
+  }
+
+  public String getSampleFunctionName(MethodModel method) {
+    return getApiMethodName(Name.from("sample").join(method.asName()), VisibilityConfig.PRIVATE);
   }
 
   /////////////////////////////////// Transport Protocol /////////////////////////////////////////

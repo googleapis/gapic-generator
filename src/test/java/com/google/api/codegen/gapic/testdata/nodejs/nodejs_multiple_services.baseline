@@ -1,0 +1,880 @@
+============== file: README.md ==============
+# Node.js Clients for Google Example API ([Production/Stable](https://github.com/GoogleCloudPlatform/google-cloud-node#versioning))
+
+[Google Example API][Product Documentation]:
+This description tests descriptions that span multiple lines. This is a service
+that increments and decrements a counter.
+- [Client Library Documentation][]
+- [Product Documentation][]
+
+## Quick Start
+In order to use this library, you first need to go through the following
+steps:
+
+1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+3. [Enable the Google Example API.](https://console.cloud.google.com/apis/library/multiple_services.googleapis.com)
+4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/master/guides/authentication)
+
+### Installation
+```
+$ npm install --save @google-cloud/multiple-services
+```
+
+### Next Steps
+- Read the [Client Library Documentation][] for Google Example API
+  to see other available methods on the client.
+- Read the [Google Example API Product documentation][Product Documentation]
+  to learn more about the product and see How-to Guides.
+- View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-node/blob/master/README.md)
+  to see the full list of Cloud APIs that we cover.
+
+[Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-node/#/docs/multiple_services
+[Product Documentation]: https://cloud.google.com/multiple_services
+============== file: package.json ==============
+{
+  "repository": "GoogleCloudPlatform/google-cloud-node",
+  "name": "@google-cloud/multiple-services",
+  "version": "0.1.0",
+  "author": "Google LLC",
+  "description": "Google Example API client for Node.js",
+  "main": "src/index.js",
+  "files": [
+    "protos",
+    "src",
+    "AUTHORS",
+    "COPYING"
+  ],
+  "keywords": [
+    "google apis client",
+    "google api client",
+    "google apis",
+    "google api",
+    "google",
+    "google cloud platform",
+    "google cloud",
+    "cloud",
+    "google multiple_services",
+    "multiple_services",
+    "Google Example API"
+  ],
+  "dependencies": {
+    "google-gax": "^0.17.1",
+    "google-some-other-package-v1": "^0.2.1",
+    "lodash.merge": "^4.6.0",
+    "lodash.union": "^4.6.0"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "through2": "^2.0.3"
+  },
+  "scripts": {
+    "publish-module": "node ../../scripts/publish.js multiple_services",
+    "smoke-test": "mocha smoke-test/*.js --timeout 5000",
+    "test": "mocha test/*.js"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=6.0.0"
+  }
+}
+
+============== file: src/index.js ==============
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @namespace google
+ */
+/**
+ * @namespace google.cloud
+ */
+/**
+ * @namespace google.cloud.multiple-services
+ */
+/**
+ * @namespace google.cloud.multiple-services.v1
+ */
+
+'use strict';
+
+// Import the clients for each version supported by this package.
+const gapic = Object.freeze({
+  v1: require('./v1'),
+});
+
+/**
+ * The `@google-cloud/multiple-services` package has the following named exports:
+ *
+ * - `IncrementerServiceClient` - Reference to
+ *   {@link v1.IncrementerServiceClient}
+ * - `DecrementerServiceClient` - Reference to
+ *   {@link v1.DecrementerServiceClient}
+ * - `v1` - This is used for selecting or pinning a
+ *   particular backend service version. It exports:
+ *     - `IncrementerServiceClient` - Reference to
+ *       {@link v1.IncrementerServiceClient}
+ *     - `DecrementerServiceClient` - Reference to
+ *       {@link v1.DecrementerServiceClient}
+ *
+ * @module {object} @google-cloud/multiple-services
+ * @alias nodejs-multiple-services
+ *
+ * @example <caption>Install the client library with <a href="https://www.npmjs.com/">npm</a>:</caption>
+ * npm install --save @google-cloud/multiple-services
+ *
+ * @example <caption>Import the client library:</caption>
+ * const multiple-services = require('@google-cloud/multiple-services');
+ *
+ * @example <caption>Create a client that uses <a href="https://goo.gl/64dyYX">Application Default Credentials (ADC)</a>:</caption>
+ * const client = new multiple-services.IncrementerServiceClient();
+ *
+ * @example <caption>Create a client with <a href="https://goo.gl/RXp6VL">explicit credentials</a>:</caption>
+ * const client = new multiple-services.IncrementerServiceClient({
+ *   projectId: 'your-project-id',
+ *   keyFilename: '/path/to/keyfile.json',
+ * });
+ */
+
+/**
+ * @type {object}
+ * @property {constructor} IncrementerServiceClient
+ *   Reference to {@link v1.IncrementerServiceClient}
+ * @property {constructor} DecrementerServiceClient
+ *   Reference to {@link v1.DecrementerServiceClient}
+ */
+module.exports = gapic.v1;
+
+/**
+ * @type {object}
+ * @property {constructor} IncrementerServiceClient
+ *   Reference to {@link v1.IncrementerServiceClient}
+ * @property {constructor} DecrementerServiceClient
+ *   Reference to {@link v1.DecrementerServiceClient}
+ */
+module.exports.v1 = gapic.v1;
+
+// Alias `module.exports` as `module.exports.default`, for future-proofing.
+module.exports.default = Object.assign({}, module.exports);
+
+============== file: src/v1/decrementer_service_client.js ==============
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+'use strict';
+
+const gapicConfig = require('./decrementer_service_client_config');
+const gax = require('google-gax');
+const merge = require('lodash.merge');
+const path = require('path');
+
+const VERSION = require('../../package.json').version;
+
+/**
+ * @class
+ * @memberof v1
+ */
+class DecrementerServiceClient {
+  /**
+   * Construct an instance of DecrementerServiceClient.
+   *
+   * @param {object} [options] - The configuration object. See the subsequent
+   *   parameters for more details.
+   * @param {object} [options.credentials] - Credentials object.
+   * @param {string} [options.credentials.client_email]
+   * @param {string} [options.credentials.private_key]
+   * @param {string} [options.email] - Account email address. Required when
+   *     using a .pem or .p12 keyFilename.
+   * @param {string} [options.keyFilename] - Full path to the a .json, .pem, or
+   *     .p12 key downloaded from the Google Developers Console. If you provide
+   *     a path to a JSON file, the projectId option below is not necessary.
+   *     NOTE: .pem and .p12 require you to specify options.email as well.
+   * @param {number} [options.port] - The port on which to connect to
+   *     the remote host.
+   * @param {string} [options.projectId] - The project ID from the Google
+   *     Developer's Console, e.g. 'grape-spaceship-123'. We will also check
+   *     the environment variable GCLOUD_PROJECT for your project ID. If your
+   *     app is running in an environment which supports
+   *     {@link https://developers.google.com/identity/protocols/application-default-credentials Application Default Credentials},
+   *     your project ID will be detected automatically.
+   * @param {function} [options.promise] - Custom promise module to use instead
+   *     of native Promises.
+   * @param {string} [options.servicePath] - The domain name of the
+   *     API remote host.
+   */
+  constructor(opts) {
+    this._descriptors = {};
+
+    // Ensure that options include the service address and port.
+    opts = Object.assign(
+      {
+        clientConfig: {},
+        port: this.constructor.port,
+        servicePath: this.constructor.servicePath,
+      },
+      opts
+    );
+
+    // Create a `gaxGrpc` object, with any grpc-specific options
+    // sent to the client.
+    opts.scopes = this.constructor.scopes;
+    const gaxGrpc = new gax.GrpcClient(opts);
+
+    // Save the auth object to the client, for use by other methods.
+    this.auth = gaxGrpc.auth;
+
+    // Determine the client header string.
+    const clientHeader = [
+      `gl-node/${process.version}`,
+      `grpc/${gaxGrpc.grpcVersion}`,
+      `gax/${gax.version}`,
+      `gapic/${VERSION}`,
+    ];
+    if (opts.libName && opts.libVersion) {
+      clientHeader.push(`${opts.libName}/${opts.libVersion}`);
+    }
+
+    // Load the applicable protos.
+    const protos = merge(
+      {},
+      gaxGrpc.loadProto(
+        path.join(__dirname, '..', '..', 'protos'),
+        'multiple_services.proto'
+      )
+    );
+
+    // Put together the default options sent with requests.
+    const defaults = gaxGrpc.constructSettings(
+      'google.cloud.example.v1.foo.DecrementerService',
+      gapicConfig,
+      opts.clientConfig,
+      {'x-goog-api-client': clientHeader.join(' ')}
+    );
+
+    // Set up a dictionary of "inner API calls"; the core implementation
+    // of calling the API is handled in `google-gax`, with this code
+    // merely providing the destination and request information.
+    this._innerApiCalls = {};
+
+    // Put together the "service stub" for
+    // google.cloud.example.v1.foo.DecrementerService.
+    const decrementerServiceStub = gaxGrpc.createStub(
+      protos.google.cloud.example.v1.foo.DecrementerService,
+      opts
+    );
+
+    // Iterate over each of the methods that the service provides
+    // and create an API call method for each.
+    const decrementerServiceStubMethods = [
+      'decrement',
+    ];
+    for (const methodName of decrementerServiceStubMethods) {
+      this._innerApiCalls[methodName] = gax.createApiCall(
+        decrementerServiceStub.then(
+          stub =>
+            function() {
+              const args = Array.prototype.slice.call(arguments, 0);
+              return stub[methodName].apply(stub, args);
+            }
+        ),
+        defaults[methodName],
+        null
+      );
+    }
+  }
+
+  /**
+   * The DNS address for this API service.
+   */
+  static get servicePath() {
+    return 'no-path-templates.googleapis.com';
+  }
+
+  /**
+   * The port for this API service.
+   */
+  static get port() {
+    return 443;
+  }
+
+  /**
+   * The scopes needed to make gRPC calls for every method defined
+   * in this service.
+   */
+  static get scopes() {
+    return [
+    ];
+  }
+
+  /**
+   * Return the project ID used by this class.
+   * @param {function(Error, string)} callback - the callback to
+   *   be called with the current project Id.
+   */
+  getProjectId(callback) {
+    return this.auth.getProjectId(callback);
+  }
+
+  // -------------------
+  // -- Service calls --
+  // -------------------
+
+  /**
+   * Decrement.
+   *
+   * @param {Object} [request]
+   *   The request object that will be sent.
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   * @param {function(?Error)} [callback]
+   *   The function which will be called with the result of the API call.
+   * @returns {Promise} - The promise which resolves when API call finishes.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const multipleServices = require('@google-cloud/multiple-services');
+   *
+   * const client = new multipleServices.v1.DecrementerServiceClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.decrement({}).catch(err => {
+   *   console.error(err);
+   * });
+   */
+  decrement(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    options = options || {};
+    if (request === undefined) {
+      request = {};
+    }
+    return this._innerApiCalls.decrement(request, options, callback);
+  }
+}
+
+
+module.exports = DecrementerServiceClient;
+
+============== file: src/v1/decrementer_service_client_config.json ==============
+{
+  "interfaces": {
+    "google.cloud.example.v1.foo.DecrementerService": {
+      "retry_codes": {
+        "no_retry": []
+      },
+      "retry_params": {
+        "default": {
+          "initial_retry_delay_millis": 100,
+          "retry_delay_multiplier": 1.3,
+          "max_retry_delay_millis": 60000,
+          "initial_rpc_timeout_millis": 20000,
+          "rpc_timeout_multiplier": 1.0,
+          "max_rpc_timeout_millis": 20000,
+          "total_timeout_millis": 600000
+        }
+      },
+      "methods": {
+        "Decrement": {
+          "timeout_millis": 10000,
+          "retry_codes_name": "no_retry",
+          "retry_params_name": "default"
+        }
+      }
+    }
+  }
+}
+
+============== file: src/v1/doc/google/cloud/example/v1/foo/doc_multiple_services.js ==============
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Note: this file is purely for documentation. Any contents are not expected
+// to be loaded as the JS file.
+
+/**
+ * @typedef IncrementRequest
+ * @memberof google.cloud.example.v1.foo
+ * @see [google.cloud.example.v1.foo.IncrementRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/multiple_services.proto}
+ */
+const IncrementRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @typedef DecrementRequest
+ * @memberof google.cloud.example.v1.foo
+ * @see [google.cloud.example.v1.foo.DecrementRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/multiple_services.proto}
+ */
+const DecrementRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+============== file: src/v1/doc/google/protobuf/doc_empty.js ==============
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Note: this file is purely for documentation. Any contents are not expected
+// to be loaded as the JS file.
+
+/**
+ * A generic empty message that you can re-use to avoid defining duplicated
+ * empty messages in your APIs. A typical example is to use it as the request
+ * or the response type of an API method. For instance:
+ *
+ *     service Foo {
+ *       rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);
+ *     }
+ *
+ * The JSON representation for `Empty` is empty JSON object `{}`.
+ * @typedef Empty
+ * @memberof google.protobuf
+ * @see [google.protobuf.Empty definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/empty.proto}
+ */
+const Empty = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+============== file: src/v1/incrementer_service_client.js ==============
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+'use strict';
+
+const gapicConfig = require('./incrementer_service_client_config');
+const gax = require('google-gax');
+const merge = require('lodash.merge');
+const path = require('path');
+
+const VERSION = require('../../package.json').version;
+
+/**
+ * @class
+ * @memberof v1
+ */
+class IncrementerServiceClient {
+  /**
+   * Construct an instance of IncrementerServiceClient.
+   *
+   * @param {object} [options] - The configuration object. See the subsequent
+   *   parameters for more details.
+   * @param {object} [options.credentials] - Credentials object.
+   * @param {string} [options.credentials.client_email]
+   * @param {string} [options.credentials.private_key]
+   * @param {string} [options.email] - Account email address. Required when
+   *     using a .pem or .p12 keyFilename.
+   * @param {string} [options.keyFilename] - Full path to the a .json, .pem, or
+   *     .p12 key downloaded from the Google Developers Console. If you provide
+   *     a path to a JSON file, the projectId option below is not necessary.
+   *     NOTE: .pem and .p12 require you to specify options.email as well.
+   * @param {number} [options.port] - The port on which to connect to
+   *     the remote host.
+   * @param {string} [options.projectId] - The project ID from the Google
+   *     Developer's Console, e.g. 'grape-spaceship-123'. We will also check
+   *     the environment variable GCLOUD_PROJECT for your project ID. If your
+   *     app is running in an environment which supports
+   *     {@link https://developers.google.com/identity/protocols/application-default-credentials Application Default Credentials},
+   *     your project ID will be detected automatically.
+   * @param {function} [options.promise] - Custom promise module to use instead
+   *     of native Promises.
+   * @param {string} [options.servicePath] - The domain name of the
+   *     API remote host.
+   */
+  constructor(opts) {
+    this._descriptors = {};
+
+    // Ensure that options include the service address and port.
+    opts = Object.assign(
+      {
+        clientConfig: {},
+        port: this.constructor.port,
+        servicePath: this.constructor.servicePath,
+      },
+      opts
+    );
+
+    // Create a `gaxGrpc` object, with any grpc-specific options
+    // sent to the client.
+    opts.scopes = this.constructor.scopes;
+    const gaxGrpc = new gax.GrpcClient(opts);
+
+    // Save the auth object to the client, for use by other methods.
+    this.auth = gaxGrpc.auth;
+
+    // Determine the client header string.
+    const clientHeader = [
+      `gl-node/${process.version}`,
+      `grpc/${gaxGrpc.grpcVersion}`,
+      `gax/${gax.version}`,
+      `gapic/${VERSION}`,
+    ];
+    if (opts.libName && opts.libVersion) {
+      clientHeader.push(`${opts.libName}/${opts.libVersion}`);
+    }
+
+    // Load the applicable protos.
+    const protos = merge(
+      {},
+      gaxGrpc.loadProto(
+        path.join(__dirname, '..', '..', 'protos'),
+        'multiple_services.proto'
+      )
+    );
+
+    // Put together the default options sent with requests.
+    const defaults = gaxGrpc.constructSettings(
+      'google.cloud.example.v1.foo.IncrementerService',
+      gapicConfig,
+      opts.clientConfig,
+      {'x-goog-api-client': clientHeader.join(' ')}
+    );
+
+    // Set up a dictionary of "inner API calls"; the core implementation
+    // of calling the API is handled in `google-gax`, with this code
+    // merely providing the destination and request information.
+    this._innerApiCalls = {};
+
+    // Put together the "service stub" for
+    // google.cloud.example.v1.foo.IncrementerService.
+    const incrementerServiceStub = gaxGrpc.createStub(
+      protos.google.cloud.example.v1.foo.IncrementerService,
+      opts
+    );
+
+    // Iterate over each of the methods that the service provides
+    // and create an API call method for each.
+    const incrementerServiceStubMethods = [
+      'increment',
+    ];
+    for (const methodName of incrementerServiceStubMethods) {
+      this._innerApiCalls[methodName] = gax.createApiCall(
+        incrementerServiceStub.then(
+          stub =>
+            function() {
+              const args = Array.prototype.slice.call(arguments, 0);
+              return stub[methodName].apply(stub, args);
+            }
+        ),
+        defaults[methodName],
+        null
+      );
+    }
+  }
+
+  /**
+   * The DNS address for this API service.
+   */
+  static get servicePath() {
+    return 'no-path-templates.googleapis.com';
+  }
+
+  /**
+   * The port for this API service.
+   */
+  static get port() {
+    return 443;
+  }
+
+  /**
+   * The scopes needed to make gRPC calls for every method defined
+   * in this service.
+   */
+  static get scopes() {
+    return [
+    ];
+  }
+
+  /**
+   * Return the project ID used by this class.
+   * @param {function(Error, string)} callback - the callback to
+   *   be called with the current project Id.
+   */
+  getProjectId(callback) {
+    return this.auth.getProjectId(callback);
+  }
+
+  // -------------------
+  // -- Service calls --
+  // -------------------
+
+  /**
+   * Increment.
+   *
+   * @param {Object} [request]
+   *   The request object that will be sent.
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   * @param {function(?Error)} [callback]
+   *   The function which will be called with the result of the API call.
+   * @returns {Promise} - The promise which resolves when API call finishes.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const multipleServices = require('@google-cloud/multiple-services');
+   *
+   * const client = new multipleServices.v1.IncrementerServiceClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.increment({}).catch(err => {
+   *   console.error(err);
+   * });
+   */
+  increment(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    options = options || {};
+    if (request === undefined) {
+      request = {};
+    }
+    return this._innerApiCalls.increment(request, options, callback);
+  }
+}
+
+
+module.exports = IncrementerServiceClient;
+
+============== file: src/v1/incrementer_service_client_config.json ==============
+{
+  "interfaces": {
+    "google.cloud.example.v1.foo.IncrementerService": {
+      "retry_codes": {
+        "no_retry": []
+      },
+      "retry_params": {
+        "default": {
+          "initial_retry_delay_millis": 100,
+          "retry_delay_multiplier": 1.3,
+          "max_retry_delay_millis": 60000,
+          "initial_rpc_timeout_millis": 20000,
+          "rpc_timeout_multiplier": 1.0,
+          "max_rpc_timeout_millis": 20000,
+          "total_timeout_millis": 600000
+        }
+      },
+      "methods": {
+        "Increment": {
+          "timeout_millis": 10000,
+          "retry_codes_name": "no_retry",
+          "retry_params_name": "default"
+        }
+      }
+    }
+  }
+}
+
+============== file: src/v1/index.js ==============
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+'use strict';
+
+const IncrementerServiceClient = require('./incrementer_service_client');
+const DecrementerServiceClient = require('./decrementer_service_client');
+
+module.exports.IncrementerServiceClient = IncrementerServiceClient;
+module.exports.DecrementerServiceClient = DecrementerServiceClient;
+
+============== file: test/gapic-v1.js ==============
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+'use strict';
+
+const assert = require('assert');
+
+const multipleServicesModule = require('../src');
+
+const FAKE_STATUS_CODE = 1;
+const error = new Error();
+error.code = FAKE_STATUS_CODE;
+
+describe('IncrementerServiceClient', () => {
+  describe('increment', () => {
+    it('invokes increment without error', done => {
+      const client = new multipleServicesModule.v1.IncrementerServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.increment = mockSimpleGrpcMethod(request);
+
+      client.increment(request, err => {
+        assert.ifError(err);
+        done();
+      });
+    });
+
+    it('invokes increment with error', done => {
+      const client = new multipleServicesModule.v1.IncrementerServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.increment = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.increment(request, err => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
+});
+describe('DecrementerServiceClient', () => {
+  describe('decrement', () => {
+    it('invokes decrement without error', done => {
+      const client = new multipleServicesModule.v1.DecrementerServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.decrement = mockSimpleGrpcMethod(request);
+
+      client.decrement(request, err => {
+        assert.ifError(err);
+        done();
+      });
+    });
+
+    it('invokes decrement with error', done => {
+      const client = new multipleServicesModule.v1.DecrementerServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.decrement = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.decrement(request, err => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
+});
+
+function mockSimpleGrpcMethod(expectedRequest, response, error) {
+  return function(actualRequest, options, callback) {
+    assert.deepStrictEqual(actualRequest, expectedRequest);
+    if (error) {
+      callback(error);
+    } else if (response) {
+      callback(null, response);
+    } else {
+      callback(null);
+    }
+  };
+}
+

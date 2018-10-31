@@ -26,6 +26,7 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.configgen.transformer.DiscoveryMethodTransformer;
 import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -82,7 +83,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ImmutableSet<String> retryCodesConfigNames,
+      RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames) {
 
     boolean error = false;
@@ -103,7 +104,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
-          createFlattening(
+          FlatteningConfig.createFlatteningConfigs(
               diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
       if (flattening == null) {
         error = true;
@@ -120,27 +121,12 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       }
     }
 
-    String retryCodesName = methodConfigProto.getRetryCodesName();
-    if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Retry codes config used but not defined: '%s' (in method %s)",
-              retryCodesName,
-              methodModel.getFullName()));
-      error = true;
-    }
+    String retryCodesName = retryCodesConfig.getMethodRetryNames().get(methodConfigProto.getName());
 
-    String retryParamsName = methodConfigProto.getRetryParamsName();
-    if (!retryParamsConfigNames.isEmpty() && !retryParamsConfigNames.contains(retryParamsName)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Retry parameters config used but not defined: %s (in method %s)",
-              retryParamsName,
-              methodModel.getFullName()));
-      error = true;
-    }
+    String retryParamsName =
+        RetryDefinitionsTransformer.getRetryParamsName(
+            methodConfigProto, diagCollector, retryParamsConfigNames);
+    error |= (retryParamsName == null);
 
     Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
     if (timeout.toMillis() <= 0) {
@@ -151,8 +137,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
               methodModel.getFullName()));
       error = true;
     }
-
-    boolean hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
 
     ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
@@ -220,7 +204,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
           optionalFieldConfigs,
           defaultResourceNameTreatment,
           batching,
-          hasRequestObjectMethod,
           fieldNamePatterns,
           sampleCodeInitFields,
           sampleSpec,

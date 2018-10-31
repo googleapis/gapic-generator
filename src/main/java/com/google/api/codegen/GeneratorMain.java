@@ -175,8 +175,11 @@ public class GeneratorMain {
       case DISCOGAPIC_CONFIG:
         discoGapicConfigGeneratorMain(args);
         break;
+      case DISCOGAPIC_CODE:
+        discoGapicMain(artifactType, args);
+        break;
       case LEGACY_DISCOGAPIC_AND_PACKAGE:
-        discoGapicMain(args);
+        discoGapicMain(artifactType, args);
         break;
       case LEGACY_GRPC_PACKAGE:
         packageGeneratorMain(args);
@@ -239,6 +242,15 @@ public class GeneratorMain {
             .build();
     options.addOption(enabledArtifactsOption);
 
+    Option devSamplesOption =
+        Option.builder()
+            .longOpt("dev_samples")
+            .desc("Whether to generate samples in non-production-ready languages.")
+            .argName("DEV_SAMPLES")
+            .required(false)
+            .build();
+    options.addOption(devSamplesOption);
+
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
       HelpFormatter formatter = new HelpFormatter();
@@ -286,6 +298,9 @@ public class GeneratorMain {
           GapicGeneratorApp.ENABLED_ARTIFACTS,
           Lists.newArrayList(cl.getOptionValues(enabledArtifactsOption.getLongOpt())));
     }
+
+    toolOptions.set(GapicGeneratorApp.DEV_SAMPLES, cl.hasOption(devSamplesOption.getLongOpt()));
+
     GapicGeneratorApp codeGen = new GapicGeneratorApp(toolOptions, artifactType);
     int exitCode = codeGen.run();
     System.exit(exitCode);
@@ -381,7 +396,7 @@ public class GeneratorMain {
     System.exit(exitCode);
   }
 
-  public static void discoGapicMain(String[] args) throws Exception {
+  public static void discoGapicMain(ArtifactType artifactType, String[] args) throws Exception {
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
     // TODO make required after artman passes this in
@@ -429,7 +444,7 @@ public class GeneratorMain {
           GapicGeneratorApp.ENABLED_ARTIFACTS,
           Lists.newArrayList(cl.getOptionValues(enabledArtifactsOption.getLongOpt())));
     }
-    DiscoGapicGeneratorApp codeGen = new DiscoGapicGeneratorApp(toolOptions);
+    DiscoGapicGeneratorApp codeGen = new DiscoGapicGeneratorApp(toolOptions, artifactType);
     int exitCode = codeGen.run();
     System.exit(exitCode);
   }

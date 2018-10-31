@@ -1,105 +1,451 @@
 @extends "php/common.snip"
-@extends "php/sample_common.snip"
 
 @snippet generate(sampleFile)
-    //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "{@sampleFile.className}" ]
-    //// STUB standalone sample "{@sampleFile.className}" /////
-
-    // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-
-    @let apiMethod = sampleFile.libraryMethod
-        @let sample = apiMethod.samples.get(0)
-        // [START {@sample.regionTag}]
-
-        // FIXME: Insert here boilerplate code not directly related to the method call itself.
-    
-        //      calling form: "{@sample.callingForm.toString}"
-        //        region tag: "{@sample.regionTag}"
-        //         className: "{@sampleFile.className}"
-        //          valueSet: "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
-        //       description: "{@sample.valueSet.description}"
-        //        {@sample.valueSet.parameters}
-        //      apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
-
-        // [START {@sample.regionTag}_core]
-
-        // FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-        /*
-        {@standaloneSample(sampleFile, apiMethod, sample)}
-        */
-        // [END {@sample.regionTag}_core]
-
-        // FIXME: Insert here clean-up code.
-             
-        // [END {@sample.regionTag}]
-        @end
-    @end
+    {@standaloneSample(sampleFile, sampleFile.libraryMethod, sampleFile.libraryMethod.samples.get(0))}
 @end
 
 # The structure of this should be parallel to that of method_sample.snip:@incodeSampleCall
 @snippet standaloneSample(sampleFile, apiMethod, sample)
+    <?php
+    {@license(sampleFile.fileHeader)}
+
+    /*
+     * DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+     */
+
+    // [START {@sample.regionTag}]
+    namespace {@sampleFile.fileHeader.packageName};
+
     @if sample.initCode.importSection.appImports
         {@importList(sample.initCode.importSection.appImports)}
 
-
     @end
-    @if sampleFile.extraInfo.hasMissingDefaultOptions
-        $options = [
-            @if sampleFile.extraInfo.missingDefaultServiceAddress
-                'serviceAddress' => 'my-service-address',
-            @end
-            @if sampleFile.extraInfo.missingDefaultServiceScopes
-                'credentialsConfig' => [
-                    'scopes' => ['my-service-scope'],
-                ],
-            @end
-            ];
-        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
+    function {@sample.sampleFunctionName}({@formalArgs(sample.initCode.argDefaultParams)})
+    {
+        // [START {@sample.regionTag}_core]
 
+        @if sampleFile.extraInfo.hasMissingDefaultOptions
+            $options = [
+                @if sampleFile.extraInfo.missingDefaultServiceAddress
+                    'serviceAddress' => 'my-service-address',
+                @end
+                @if sampleFile.extraInfo.missingDefaultServiceScopes
+                    'credentialsConfig' => [
+                        'scopes' => ['my-service-scope'],
+                    ],
+                @end
+                ];
+            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
+
+        @else
+            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
+
+        @end
+        @if sample.initCode.lines
+            {@initCode(sample.initCode, apiMethod.apiVariableName)}
+
+        @end
+        try {
+            @switch sample.callingForm
+            @case "LongRunningRequest"
+                {@longRunningSampleCode(sample, apiMethod)}
+            @case "LongRunningRequestAsync"
+                {@longRunningAsyncSampleCode(sample, apiMethod)}
+            @case "Request"
+                {@requestSampleCode(sample, apiMethod)}
+            @case "RequestPaged"
+                {@pagedSampleCode(sample, apiMethod)}
+            @case "RequestPagedAll"
+                {@pagedAllSampleCode(sample, apiMethod)}
+            @case "RequestStreamingBidi"
+                {@bidiStreamingSampleCode(sample, apiMethod)}
+            @case "RequestStreamingBidiAsync"
+                {@bidiStreamingAsyncSampleCode(sample, apiMethod)}
+            @case "RequestStreamingClient"
+                {@clientStreamingSampleCode(sample, apiMethod)}
+            @case "RequestStreamingClientAsync"
+                {@clientStreamingAsyncSampleCode(sample, apiMethod)}
+            @case "RequestStreamingServer"
+                {@serverStreamingSampleCode(sample, apiMethod)}
+            @default
+                $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+            @end
+        } finally {
+            @if sampleFile.extraInfo.hasMissingDefaultOptions
+                if (isset(${@apiMethod.apiVariableName})) {
+                    ${@apiMethod.apiVariableName}->close();
+                }
+            @else
+                ${@apiMethod.apiVariableName}->close();
+            @end
+        }
+
+        // [END {@sample.regionTag}_core]
+    }
+    // [END {@sample.regionTag}]
+    {@processCliArguments(sample)}
+    {@sample.sampleFunctionName}({@formalArgs(sample.initCode.argDefaultParams)});
+@end
+
+@private processCliArguments(sample)
+    @if sample.initCode.argDefaultParams.size
+
+        {@optsArray(sample.initCode.argDefaultParams)}
+        {@defaultOptionsArray(sample.initCode.argDefaultParams)}
+        $options = getopt('', $opts);
+        $options += $defaultOptions;
+
+        @if sample.initCode.argDefaultParams
+            @join param : sample.initCode.argDefaultParams
+                {@variable(param.identifier)} = $options['{@param.identifier}'];
+            @end
+
+
+        @end
+    @end
+@end
+
+@private formalArgs(sampleArgs)
+  @join param : sampleArgs on ", "
+    {@variable(@param.identifier)}
+  @end
+@end
+
+@private optsArray(sampleArgs)
+    $opts = [
+        @join param : sampleArgs
+            '{@param.identifier}::',
+        @end
+    ];
+
+@end
+
+@private defaultOptionsArray(sampleArgs)
+    $defaultOptions = [
+        @join param : sampleArgs
+            '{@param.identifier}' => {@renderInitValue(param.initValue, param.identifier)},
+        @end
+    ];
+
+@end
+
+@private methodCallSampleCode(apiMethod)
+    @if apiMethod.isSingularRequestMethod
+        ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
+            {@sampleMethodCallArgList(apiMethod.initCode)})
+    @else
+        ${@apiMethod.apiVariableName}->{@apiMethod.name}()
+    @end
+@end
+
+@private longRunningSampleCode(sample, apiMethod)
+    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationResponse->pollUntilComplete();
+    if ($operationResponse->operationSucceeded()) {
+        @if apiMethod.longRunningView.isEmptyOperation
+            // operation succeeded and returns no value
+        @else
+            $response = $operationResponse->getResult();
+            {@processResponse(sample)}
+        @end
+    } else {
+        $error = $operationResponse->getError();
+        // handleError($error)
+    }
+@end
+
+@private longRunningAsyncSampleCode(sample, apiMethod)
+    // start the operation, keep the operation name, and resume later
+    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationName = $operationResponse->getName();
+    // ... do other work
+    $newOperationResponse = ${@apiMethod.apiVariableName}->resumeOperation($operationName, '{@apiMethod.name}');
+    while (!$newOperationResponse->isDone()) {
+        // ... do other work
+        $newOperationResponse->reload();
+    }
+    if ($newOperationResponse->operationSucceeded()) {
+      @if apiMethod.longRunningView.isEmptyOperation
+          // operation succeeded and returns no value
+      @else
+          $response = $newOperationResponse->getResult();
+          {@processResponse(sample)}
+      @end
+    } else {
+      $error = $newOperationResponse->getError();
+      // handleError($error)
+    }
+@end
+
+@private requestSampleCode(sample, apiMethod)
+    @if apiMethod.hasReturnValue
+        $response = {@methodCallSampleCode(apiMethod)};
 
     @else
-        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
-
-
+        {@methodCallSampleCode(apiMethod)};
     @end
-    @if sample.initCode.lines
-        {@initCode(sample.initCode, apiMethod.apiVariableName)}
+    {@processResponse(sample)}
+@end
 
-
-    @end
-    try {
-        @switch sample.callingForm
-        @case "LongRunningRequest"
-            {@longRunningSampleCode(apiMethod)}
-        @case "LongRunningRequestAsync"
-            {@longRunningAsyncSampleCode(apiMethod)}
-        @case "Request"
-            {@requestSampleCode(apiMethod)}
-        @case "RequestPaged"
-            {@pagedSampleCode(apiMethod)}
-        @case "RequestPagedAll"
-            {@pagedAllSampleCode(apiMethod)}
-        @case "RequestStreamingBidi"
-            {@bidiStreamingSampleCode(apiMethod)}
-        @case "RequestStreamingBidiAsync"
-            {@bidiStreamingAsyncSampleCode(apiMethod)}
-        @case "RequestStreamingClient"
-            {@clientStreamingSampleCode(apiMethod)}
-        @case "RequestStreamingClientAsync"
-            {@clientStreamingAsyncSampleCode(apiMethod)}
-        @case "RequestStreamingServer"
-            {@serverStreamingSampleCode(apiMethod)}
-        @default
-            $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
-        @end
-    } finally {
-        @if sampleFile.extraInfo.hasMissingDefaultOptions
-            if (isset(${@apiMethod.apiVariableName})) {
-                ${@apiMethod.apiVariableName}->close();
-            }
-        @else
-            ${@apiMethod.apiVariableName}->close();
-        @end
+@private pagedSampleCode(sample, apiMethod)
+    // Iterate over pages of elements
+    $pagedResponse = {@methodCallSampleCode(apiMethod)};
+    foreach ($pagedResponse->iteratePages() as $page) {
+        foreach ($page as $responseItem) {
+            {@processResponse(sample)}
+        }
     }
+@end
+
+@private pagedAllSampleCode(sample, apiMethod)
+    // Iterate through all elements
+    $pagedResponse = {@methodCallSampleCode(apiMethod)};
+    foreach ($pagedResponse->iterateAllElements() as $responseItem) {
+        {@processResponse(sample)}
+    }
+@end
+
+@private clientStreamingSampleCode(sample, apiMethod)
+    // Write data to server and wait for a response
+    $requests = [$request];
+    $stream = {@methodCallSampleCode(apiMethod)};
+    $response = $stream->writeAllAndReadResponse($requests);
+    {@processResponse(sample)}
+@end
+
+@private clientStreamingAsyncSampleCode(sample, apiMethod)
+    // Write data as it becomes available, then wait for a response
+    $requests = [$request];
+    $stream = {@methodCallSampleCode(apiMethod)};
+    foreach ($requests as $request) {
+        $stream->write($request);
+    }
+    $response = $stream->readResponse();
+    {@processResponse(sample)}
+@end
+
+@private serverStreamingSampleCode(sample, apiMethod)
+    // Read all responses until the stream is complete
+    $stream = {@methodCallSampleCode(apiMethod)};
+    foreach ($stream->readAll() as $responseItem) {
+        {@processResponse(sample)}
+    }
+@end
+
+@private bidiStreamingSampleCode(sample, apiMethod)
+    // Write all requests to the server, then read all responses until the
+    // stream is complete
+    $requests = [$request];
+    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream->writeAll($requests);
+    foreach ($stream->closeWriteAndReadAll() as $responseItem) {
+        {@processResponse(sample)}
+    }
+@end
+
+@private bidiStreamingAsyncSampleCode(sample, apiMethod)
+    // Write requests individually, making read() calls if
+    // required. Call closeWrite() once writes are complete, and read the
+    // remaining responses from the server.
+    $requests = [$request];
+    $stream = {@methodCallSampleCode(apiMethod)};
+    foreach ($requests as $request) {
+        $stream->write($request);
+        // if required, read a single response from the stream
+        $responseItem = $stream->read();
+        {@processResponse(sample)}
+    }
+    $stream->closeWrite();
+    $responseItem = $stream->read();
+    while (!is_null($responseItem)) {
+        {@processResponse(sample)}
+        $responseItem = $stream->read();
+    }
+@end
+
+@private initCode(initCode, apiVariableName)
+    @if initCode.argDefaultLines
+        @join line : util.pretty(initCodeLines(initCode.argDefaultLines, apiVariableName))
+          // {@line}
+        @end
+
+
+    @end
+    {@initCodeLines(initCode.lines, apiVariableName)}
+@end
+
+@private initCodeLines(lines, apiVariableName)
+    @join line : lines
+        @switch line.lineType
+        @case "StructureInitLine"
+            {@initLineStructure(line)}
+        @case "ListInitLine"
+            {@initLineList(line)}
+        @case "MapInitLine"
+            {@initLineMap(line)}
+        @case "SimpleInitLine"
+            {@initLineSimple(line, apiVariableName)}
+        @default
+            $unhandledCase: {@line.lineType}$
+        @end
+    @end
+@end
+
+@private sampleMethodCallArgList(initCode)
+    @join fieldSetting : initCode.requiredFieldSettings on ", "
+        ${@fieldSetting.identifier}
+    @end
+    @if initCode.optionalFieldSettings
+        @if initCode.requiredFieldSettings
+            ,{@" "}
+        @end
+        {@optionalField(initCode.optionalFieldSettings)}
+    @end
+@end
+
+@private optionalField(fieldSettings)
+    [{@optionalFieldEntries(fieldSettings)}]
+@end
+
+@private optionalFieldEntries(fieldSettings)
+    @join fieldSetting : fieldSettings on ", "
+        '{@fieldSetting.fieldName}' => ${@fieldSetting.identifier}
+    @end
+@end
+
+@private initLineStructure(line)
+    ${@line.identifier} = new {@line.typeName}();
+    @join fieldSetting : line.fieldSettings
+        ${@line.identifier}->{@fieldSetting.fieldSetFunction}(${@fieldSetting.identifier});
+    @end
+@end
+
+@private initLineList(line)
+    ${@line.identifier} = [{@varList(line.elementIdentifiers)}];
+@end
+
+@private varList(args)
+    @join arg : args on ", "
+        ${@arg}
+    @end
+@end
+
+@private initLineMap(line)
+    ${@line.identifier} = [{@keyVarList(line.initEntries)}];
+@end
+
+@private keyVarList(mapEntries)
+    @join mapEntry : mapEntries on ","
+        {@mapEntry.key} => ${@mapEntry.valueString}
+    @end
+@end
+
+@private initLineSimple(line, apiVariableName)
+    ${@line.identifier} = {@renderInitValue(line.initValue, apiVariableName)};
+@end
+
+@private renderInitValue(initValue, apiVariableName)
+    @switch initValue.type
+    @case "SimpleInitValueView"
+        {@initValue.initialValue}
+    @case "FormattedInitValueView"
+        ${@apiVariableName}->{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+    @default
+        $unhandledCase: {@initValue.type}$
+    @end
+@end
+
+@private processResponse(sample)
+    @if sample.outputs.size == 0
+        print_r($response);
+    @else
+        {@processOutputViews(sample.outputs)}
+    @end
+@end
+
+@private processOutputViews(outputViews)
+    @join view : outputViews on BREAK
+        @switch view.kind
+        @case "COMMENT"
+            {@processCommentView(view)}
+        @case "DEFINE"
+            {@processDefineView(view)}
+        @case "LOOP"
+            {@processLoopView(view)}
+        @case "PRINT"
+            {@processPrintView(view)}
+        @default
+            $unhandledResponseForm: {@view}
+        @end
+    @end
+@end
+
+@private processPrintView(view)
+    @if not(view.args.size)
+        printf("{@view.format}" . PHP_EOL);
+    @else
+        printf("{@view.format}" . PHP_EOL, {@commaSeparatedFields(view.args)});
+    @end
+@end
+
+@private processCommentView(view)
+    {@toComments(view.lines)}
+@end
+
+@private processLoopView(view)
+    foreach ({@variableField(view.collection)} as {@variable(view.variableName)}) {
+        {@processOutputViews(view.body)}
+    }
+@end
+
+@private processDefineView(view)
+    {@variable(view.variableName)} = {@variableField(view.reference)};
+@end
+
+
+@private commaSeparatedFields(args)
+    @join arg : args on ", "
+        # FIXME(hzyi): print enums directly will just get us an int
+        # Fix this by creating a mapping between enums and meaningful display names
+        # until https://github.com/protocolbuffers/protobuf/pull/4534 is merged
+        @if arg.segments.get(0).variable.type.isMessage
+        # FIXME(hzyi): change to use OutputTranformer.PrintArgTransformer
+            print_r({@printVariableField(arg)}, true)
+        @else
+            {@printVariableField(arg)}
+        @end
+    @end
+@end
+
+@private printVariableField(arg)
+  @join segment : arg.segments
+    @switch segment.kind
+      @case "TEXT"
+        {@segment.text}
+      @case "VARIABLE"
+        {@variableField(segment.variable)}
+      @default
+        $unhandledPrintArgView: arg
+    @end
+  @end
+@end
+
+@private variableField(arg)
+    {@variable(arg.variable)}{@accessor(arg.accessors)}
+@end
+
+@private variable(var)
+    ${@var}
+@end
+
+@private accessor(accessors)
+    @join field : accessors on ""
+        @switch field.kind
+        @case "FIELD"
+            ->{@field.field}()
+        @case "INDEX"
+            # Assume that sample config is right; no need to check bounds.
+            [{@field.index}]
+        @end
+    @end
 @end

@@ -55,6 +55,7 @@ import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.common.collect.ImmutableList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -179,7 +180,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
     MethodContext requestMethodContext = context.asRequestMethodContext(method);
     MethodContext dynamicMethodContext = context.asDynamicMethodContext(method);
     MethodConfig methodConfig = requestMethodContext.getMethodConfig();
-    Iterable<FieldConfig> fieldConfigs = methodConfig.getRequiredFieldConfigs();
+    Collection<FieldConfig> fieldConfigs = methodConfig.getRequiredFieldConfigs();
 
     InitCodeOutputType outputType =
         method.getRequestStreaming()

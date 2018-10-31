@@ -34,7 +34,7 @@ public class ModelTypeNameConverterTestUtil {
     String fileName = "library.proto";
     TestDataLocator locator = TestDataLocator.create(CodegenTestUtil.class);
     locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
-    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto/config_not_annotated");
+    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
     Model model =
         CodegenTestUtil.readModel(
             locator, tempDir, new String[] {fileName}, new String[] {"library.yaml"});

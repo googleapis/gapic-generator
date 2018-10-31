@@ -1,0 +1,33 @@
+type: google.api.Service
+config_version: 1
+name: library-example.googleapis.com:1234
+title: Google Example Library API
+
+# Included protobuf APIs
+apis:
+- name: google.example.library.v1.LibraryService
+  mixins:
+  - name: google.tagger.v1.Tagger
+
+# Additional types used
+types:
+- name: google.example.library.v1.CustomError
+
+# Documentation section
+documentation:
+  summary:
+    A simple Google Example Library API.
+
+# Auth section
+authentication:
+  rules:
+    - selector: '*'
+      oauth:
+        canonical_scopes: https://www.googleapis.com/auth/library,
+                          https://www.googleapis.com/auth/cloud-platform
+
+# Backend section
+backend:
+  rules:
+    - selector: google.example.library.v1.LibraryService.CreateShelf
+      deadline: 1.0

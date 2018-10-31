@@ -14,10 +14,15 @@
  */
 package com.google.api.codegen.configgen;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
+
 import com.google.api.BackendRule;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.tools.framework.model.Model;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /** MethodTransformer implementation for proto Methods. */
 public class ProtoMethodTransformer implements MethodTransformer {
@@ -31,12 +36,26 @@ public class ProtoMethodTransformer implements MethodTransformer {
 
   @Override
   public String getTimeoutMillis(MethodModel method) {
-    Model model = ((ProtoMethodModel) method).getProtoMethod().getModel();
+    return String.valueOf(getTimeoutMillis((ProtoMethodModel) method, DEFAULT_MAX_RETRY_DELAY));
+  }
+
+  public static long getTimeoutMillis(ProtoMethodModel method, long defaultTimeout) {
+    Model model = method.getProtoMethod().getModel();
     for (BackendRule backendRule : model.getServiceConfig().getBackend().getRulesList()) {
       if (backendRule.getSelector().equals(method.getFullName())) {
-        return String.valueOf((int) Math.ceil(backendRule.getDeadline() * MILLIS_PER_SECOND));
+        return (long) Math.ceil(backendRule.getDeadline() * MILLIS_PER_SECOND);
       }
     }
-    return "60000";
+    return defaultTimeout;
+  }
+
+  @Override
+  public List<String> getParameterList(MethodModel method) {
+    return method
+        .getInputFields()
+        .stream()
+        .filter(f -> f.getOneof() == null && !isIgnoredParameter(f.getSimpleName()))
+        .map(FieldModel::getSimpleName)
+        .collect(Collectors.toList());
   }
 }

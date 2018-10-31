@@ -20,7 +20,6 @@ import java.util.List;
 public class ArtifactFlags {
   public static final String ARTIFACT_SURFACE = "surface";
   public static final String ARTIFACT_TEST = "test";
-  public static final String ARTIFACT_SAMPLES = "samples";
 
   private List<String> enabledArtifacts;
   private ArtifactType artifactType;
@@ -38,17 +37,16 @@ public class ArtifactFlags {
     return enabledArtifacts.isEmpty() || enabledArtifacts.contains(ARTIFACT_TEST);
   }
 
-  public boolean sampleGeneratorEnabled() {
-    return enabledArtifacts.contains(ARTIFACT_SAMPLES);
-  }
-
   public boolean codeFilesEnabled() {
     return artifactType == ArtifactType.LEGACY_GAPIC_AND_PACKAGE
-        || artifactType == ArtifactType.GAPIC_CODE;
+        || artifactType == ArtifactType.GAPIC_CODE
+        || artifactType == ArtifactType.LEGACY_DISCOGAPIC_AND_PACKAGE
+        || artifactType == ArtifactType.DISCOGAPIC_CODE;
   }
 
   public boolean packagingFilesEnabled() {
     return artifactType == ArtifactType.LEGACY_GAPIC_AND_PACKAGE
-        || artifactType == ArtifactType.GAPIC_PACKAGE;
+        || artifactType == ArtifactType.GAPIC_PACKAGE
+        || artifactType == ArtifactType.LEGACY_DISCOGAPIC_AND_PACKAGE;
   }
 }

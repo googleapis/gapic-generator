@@ -24,10 +24,12 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.RetryCodesConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
@@ -56,6 +58,7 @@ import com.google.api.codegen.viewmodel.ResourceNameSingleView;
 import com.google.api.codegen.viewmodel.ResourceNameView;
 import com.google.api.codegen.viewmodel.ResourceProtoFieldView;
 import com.google.api.codegen.viewmodel.ResourceProtoView;
+import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiAndSettingsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
@@ -99,6 +102,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
       new RetryDefinitionsTransformer();
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
+  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   public CSharpGapicClientTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
@@ -346,15 +350,25 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     String name = context.getNamer().getApiSettingsClassName(context.getInterfaceConfig());
     settingsClass.name(name);
     ApiModel model = context.getApiModel();
-    settingsClass.serviceAddress(model.getServiceAddress());
-    settingsClass.servicePort(model.getServicePort());
+    settingsClass.serviceHostname(
+        productServiceConfig.getServiceHostname(context.getServiceAddress()));
+    settingsClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
     settingsClass.authScopes(model.getAuthScopes());
     settingsClass.callSettings(generateCallSettings(context));
     settingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
     settingsClass.batchingDescriptors(batchingTransformer.generateDescriptorClasses(context));
-    settingsClass.retryCodesDefinitions(
-        retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
+    // Remove additional retry codes, added due to the change in retry when using proto annotations.
+    List<RetryCodesDefinitionView> retryCodes =
+        retryDefinitionsTransformer
+            .generateRetryCodesDefinitions(context)
+            .stream()
+            .filter(
+                x ->
+                    !x.key().equals(RetryCodesConfig.HTTP_RETRY_CODE_DEF_NAME)
+                        && !x.key().equals(RetryCodesConfig.NO_RETRY_CODE_DEF_NAME))
+            .collect(Collectors.toList());
+    settingsClass.retryCodesDefinitions(retryCodes);
     settingsClass.retryParamsDefinitions(
         retryDefinitionsTransformer.generateRetryParamsDefinitions(context));
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
@@ -516,8 +530,9 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ApiModel model = context.getApiModel();
-    settingsDoc.serviceAddress(model.getServiceAddress());
-    settingsDoc.servicePort(model.getServicePort());
+    settingsDoc.serviceHostname(
+        productServiceConfig.getServiceHostname(context.getServiceAddress()));
+    settingsDoc.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
     settingsDoc.exampleApiMethodName(""); // Unused in C#
     settingsDoc.exampleApiMethodSettingsGetter(""); // Unused in C#
     settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));

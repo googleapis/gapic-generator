@@ -21,17 +21,22 @@
 # FIXME: Replace the following function calls with calls to functions that emit full standalone samples. These stubs have been adapted from method_sample.snip
 @snippet standaloneSample(apiMethod, sample)
   import sys
-  
+
   @# [START {@sample.regionTag}]
 
   {@importList(sample.initCode.importSection.appImports)}
+  @if sample.outputImports.size
+    {@importList(sample.outputImports)}
+  @end
   @let convertTextCode = convertText(sample)
     @if convertTextCode
       import six
-      
+
     @end
 
-    def sample_{@apiMethod.name}({@sampleFuncParam(sample.initCode.argDefaultParams)}):
+    def {@sample.sampleFunctionName}({@formalArgs(sample.initCode.argDefaultParams)}):
+      """{@sample.valueSet.description}"""
+
       @# [START {@sample.regionTag}_core]
 
       client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
@@ -51,24 +56,19 @@
       @end
       @switch sample.callingForm
       @case "Request"
-        {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)}
       @case "RequestPaged"
         {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)}
       @case "RequestPagedAll"
         {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)}
       @case "RequestStreamingBidi"
-        {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)}
       @case "RequestStreamingClient"
-        {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)}
       @case "RequestStreamingServer"
-        {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)}
       @case "LongRunningPromise"
-        {@lroSampleCode(apiMethod, sample.initCode)}
-        {@processResponse(sample)}
+        {@lroSampleCode(apiMethod, sample)}
       @default
         $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
       @end
@@ -78,73 +78,83 @@
   @end
 
   def main():
-    @# FIXME: Convert argv from strings to the correct types.
-    sample_{@apiMethod.name}(*sys.argv[1:])
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    @join param : sample.initCode.argDefaultParams
+      parser.add_argument('--{@param.identifier}', type={@param.typeName}, default={@renderInitValue(param.initValue)})
+    @end
+    args = parser.parse_args()
+
+    {@sample.sampleFunctionName}({@actualArgs(sample.initCode.argDefaultParams)})
 
   if __name__ == '__main__':
     main()
 @end
 
-@private sampleFuncParam(defaultParams)
-  @join param : defaultParams on ", "
+@private actualArgs(sampleArgs)
+  @join param : sampleArgs on ", "
+    args.{@param.identifier}
+  @end
+@end
+
+@private formalArgs(sampleArgs)
+  @join param : sampleArgs on ", "
     {@param.identifier}
   @end
 @end
 
 @private convertText(sample)
-  @join line : sample.initCode.argDefaultLines
+  @join line : sample.initCode.argDefaultParams
     @if line.lineType == "SimpleInitLine"
       @if line.typeName == "str"
         if isinstance({@line.identifier}, six.binary_type):
           {@line.identifier} = {@line.identifier}.decode('utf-8')
-
       @end
     @end
   @end
 @end
 
-@private optionalArrayMethodSampleCodeNonStreaming(apiMethod, initCode)
-  {@singularResponseSampleCode(apiMethod, initCode)}
+@private optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)
+  {@singularResponseSampleCode(apiMethod, sample.initCode)}
+  {@processResponse(sample)}
 @end
 
 @private pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)
   @# Iterate over results one page at a time
   for page in {@pagedMethodCallSampleCode(apiMethod, sample.initCode)}:
-      for element in page:
+      for response_item in page:
           {@processResponse(sample)}
 @end
 
 @private pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)
   @# Iterate over all results
-  for element in {@methodCallSampleCode(apiMethod, sample.initCode)}:
+  for response_item in {@methodCallSampleCode(apiMethod, sample.initCode)}:
       {@processResponse(sample)}
 @end
 
-@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod, initCode)
+@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)
   requests = [request]
-  {@responseStreamingSampleCode(apiMethod, initCode)}
+  {@responseStreamingSampleCode(apiMethod, sample)}
 @end
 
-@private optionalArrayMethodSampleCodeClientStreaming(apiMethod, initCode)
+@private optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)
   requests = [request]
-  {@singularResponseSampleCode(apiMethod, initCode)}
+  {@singularResponseSampleCode(apiMethod, sample.initCode)}
+  {@processResponse(sample)}
 @end
 
-@private optionalArrayMethodSampleCodeServerStreaming(apiMethod, initCode)
-  {@responseStreamingSampleCode(apiMethod, initCode)}
+@private optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)
+  {@responseStreamingSampleCode(apiMethod, sample)}
 @end
 
-@private lroSampleCode(apiMethod, initCode)
-  response = {@methodCallSampleCode(apiMethod, initCode)}
+@private lroSampleCode(apiMethod, sample)
+  operation = {@methodCallSampleCode(apiMethod, sample.initCode)}
 
-  def callback(operation_future):
-      @# Handle result.
-      result = operation_future.result()
+  print('Waiting for operation to complete...')
+  response = operation.result()
 
-  response.add_done_callback(callback)
-
-  @# Handle metadata.
-  metadata = response.metadata()
+  {@processResponse(sample)}
 @end
 
 @private singularResponseSampleCode(apiMethod, initCode)
@@ -166,10 +176,9 @@
   @end
 @end
 
-@private responseStreamingSampleCode(apiMethod, initCode)
-  for element in {@methodCallSampleCode(apiMethod, initCode)}:
-      @# process element
-      pass
+@private responseStreamingSampleCode(apiMethod, sample)
+  for response_item in {@methodCallSampleCode(apiMethod, sample.initCode)}:
+      {@processResponse(sample)}
 @end
 
 # Render the API method call for page streaming
@@ -230,9 +239,9 @@
     print('{@view.format}')
   @else
     @if view.format == "{}"
-      print({@variableField(view.args.get(0))})
+      print({@printVariableField(view.args.get(0))})
     @else
-      print('{@view.format}'.format({@concatenatedArgs(view.args)}))
+      print('{@view.format}'.format({@commaSeparatedFields(view.args)}))
     @end
   @end
 @end
@@ -251,9 +260,22 @@
 @end
 
 
-@private concatenatedArgs(args)
+@private commaSeparatedFields(args)
   @join arg : args on ", "
-    {@variableField(arg)}
+    {@printVariableField(arg)}
+  @end
+@end
+
+@private printVariableField(arg)
+  @join segment : arg.segments on ""
+    @switch segment.kind
+      @case "TEXT"
+        {@segment.text}
+      @case "VARIABLE"
+        {@variableField(segment.variable)}
+      @default
+        $unhandledPrintArgView: arg
+    @end
   @end
 @end
 
@@ -263,6 +285,12 @@
 
 @private accessor(accessors)
   @join field : accessors on ""
-    .{@field}
+    @switch field.kind
+    @case "FIELD"
+      .{@field.field}
+    @case "INDEX"
+      # Assume that sample config is right; no need to check bounds.
+      [{@field.index}]
+    @end
   @end
 @end

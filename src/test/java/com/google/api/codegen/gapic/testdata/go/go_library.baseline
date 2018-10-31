@@ -1,0 +1,4171 @@
+============== file: cloud.google.com/go/library/apiv1/UpdateBook_smoke_test.go ==============
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// AUTO-GENERATED CODE. DO NOT EDIT.
+
+package library
+
+import (
+  librarypb "google.golang.org/genproto/googleapis/example/library/v1"
+)
+
+import (
+  "fmt"
+  "strconv"
+  "testing"
+  "time"
+
+  "cloud.google.com/go/internal/testutil"
+  "golang.org/x/net/context"
+  "google.golang.org/api/iterator"
+  "google.golang.org/api/option"
+)
+
+var _ = fmt.Sprintf
+var _ = iterator.Done
+var _ = strconv.FormatUint
+var _ = time.Now
+
+func TestLibClientSmoke(t *testing.T) {
+  if testing.Short() {
+    t.Skip("skipping smoke test in short mode")
+  }
+  ctx := context.Background()
+  ts := testutil.TokenSource(ctx, DefaultAuthScopes()...)
+  if ts == nil {
+    t.Skip("Integration tests skipped. See CONTRIBUTING.md for details")
+  }
+
+  projectId := testutil.ProjID()
+  _ = projectId
+
+  c, err := NewClient(ctx, option.WithTokenSource(ts))
+  if err != nil {
+    t.Fatal(err)
+  }
+
+  var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "testShelf-" + strconv.FormatInt(time.Now().UnixNano(), 10) + "", projectId)
+  var rating librarypb.Book_Rating = librarypb.Book_GOOD
+  var book = &librarypb.Book{
+      Rating: rating,
+  }
+  var request = &librarypb.UpdateBookRequest{
+      Name: formattedName,
+      Book: book,
+  }
+
+  if _, err := c.UpdateBook(ctx, request); err != nil {
+    t.Error(err)
+  }
+}
+============== file: cloud.google.com/go/library/apiv1/doc.go ==============
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// AUTO-GENERATED CODE. DO NOT EDIT.
+
+// Package library is an auto-generated package for the
+// Google Example Library API.
+//
+//   NOTE: This package is in alpha. It is not stable, and is likely to change.
+//
+// A simple Google Example Library API.
+//
+// Use the client at cloud.google.com/go/library in preference to this.
+package library // import "cloud.google.com/go/library/apiv1"
+
+import (
+    "runtime"
+    "strings"
+    "unicode"
+
+    "golang.org/x/net/context"
+    "google.golang.org/grpc/metadata"
+)
+
+func insertMetadata(ctx context.Context, mds ...metadata.MD) context.Context {
+    out, _ := metadata.FromOutgoingContext(ctx)
+    out = out.Copy()
+    for _, md := range mds {
+        for k, v := range md {
+            out[k] = append(out[k], v...)
+        }
+    }
+    return metadata.NewOutgoingContext(ctx, out)
+}
+
+// DefaultAuthScopes reports the default set of authentication scopes to use with this package.
+func DefaultAuthScopes() []string {
+  return []string{
+    "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/library",
+  }
+}
+
+// versionGo returns the Go runtime version. The returned string
+// has no whitespace, suitable for reporting in header.
+func versionGo() string {
+    const develPrefix = "devel +"
+
+    s := runtime.Version()
+    if strings.HasPrefix(s, develPrefix) {
+        s = s[len(develPrefix):]
+        if p := strings.IndexFunc(s, unicode.IsSpace); p >= 0 {
+            s = s[:p]
+        }
+        return s
+    }
+
+    notSemverRune := func(r rune) bool {
+        return strings.IndexRune("0123456789.", r) < 0
+    }
+
+    if strings.HasPrefix(s, "go1") {
+        s = s[2:]
+        var prerelease string
+        if p := strings.IndexFunc(s, notSemverRune); p >= 0 {
+            s, prerelease = s[:p], s[p:]
+        }
+        if strings.HasSuffix(s, ".") {
+            s += "0"
+        } else if strings.Count(s, ".") < 2 {
+            s += ".0"
+        }
+        if prerelease != "" {
+            s += "-" + prerelease
+        }
+        return s
+    }
+    return "UNKNOWN"
+}
+
+const versionClient = "UNKNOWN"
+============== file: cloud.google.com/go/library/apiv1/library_client.go ==============
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// AUTO-GENERATED CODE. DO NOT EDIT.
+
+package library
+
+import (
+    "fmt"
+    "math"
+    "time"
+
+    "cloud.google.com/go/longrunning"
+    lroauto "cloud.google.com/go/longrunning/autogen"
+    "github.com/golang/protobuf/proto"
+    gax "github.com/googleapis/gax-go"
+    "golang.org/x/net/context"
+    "google.golang.org/api/iterator"
+    "google.golang.org/api/option"
+    "google.golang.org/api/transport"
+    librarypb "google.golang.org/genproto/googleapis/example/library/v1"
+    longrunningpb "google.golang.org/genproto/googleapis/longrunning"
+    taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/metadata"
+)
+
+// CallOptions contains the retry settings for each method of LibClient.
+type CallOptions struct {
+    CreateShelf []gax.CallOption
+    GetShelf []gax.CallOption
+    ListShelves []gax.CallOption
+    DeleteShelf []gax.CallOption
+    MergeShelves []gax.CallOption
+    CreateBook []gax.CallOption
+    PublishSeries []gax.CallOption
+    GetBook []gax.CallOption
+    ListBooks []gax.CallOption
+    DeleteBook []gax.CallOption
+    UpdateBook []gax.CallOption
+    MoveBook []gax.CallOption
+    ListStrings []gax.CallOption
+    AddComments []gax.CallOption
+    GetBookFromArchive []gax.CallOption
+    GetBookFromAnywhere []gax.CallOption
+    GetBookFromAbsolutelyAnywhere []gax.CallOption
+    UpdateBookIndex []gax.CallOption
+    StreamShelves []gax.CallOption
+    StreamBooks []gax.CallOption
+    DiscussBook []gax.CallOption
+    MonologAboutBook []gax.CallOption
+    FindRelatedBooks []gax.CallOption
+    AddLabel []gax.CallOption
+    GetBigBook []gax.CallOption
+    GetBigNothing []gax.CallOption
+    TestOptionalRequiredFlatteningParams []gax.CallOption
+}
+
+func defaultClientOptions() []option.ClientOption {
+    return []option.ClientOption{
+        option.WithEndpoint("library-example.googleapis.com:1234"),
+        option.WithScopes(DefaultAuthScopes()...),
+    }
+}
+
+func defaultCallOptions() *CallOptions {
+    retry := map[[2]string][]gax.CallOption{
+        {"default", "idempotent"}: {
+            gax.WithRetry(func() gax.Retryer {
+                return gax.OnCodes([]codes.Code{
+                    codes.DeadlineExceeded,
+                    codes.Unavailable,
+                }, gax.Backoff{
+                    Initial: 100*time.Millisecond,
+                    Max: 1000*time.Millisecond,
+                    Multiplier: 1.2,
+                })
+            }),
+        },
+    }
+    return &CallOptions{
+        CreateShelf: retry[[2]string{"default", "non_idempotent"}],
+        GetShelf: retry[[2]string{"default", "idempotent"}],
+        ListShelves: retry[[2]string{"default", "idempotent"}],
+        DeleteShelf: retry[[2]string{"default", "idempotent"}],
+        MergeShelves: retry[[2]string{"default", "non_idempotent"}],
+        CreateBook: retry[[2]string{"default", "non_idempotent"}],
+        PublishSeries: retry[[2]string{"default", "non_idempotent"}],
+        GetBook: retry[[2]string{"default", "idempotent"}],
+        ListBooks: retry[[2]string{"default", "idempotent"}],
+        DeleteBook: retry[[2]string{"default", "idempotent"}],
+        UpdateBook: retry[[2]string{"default", "idempotent"}],
+        MoveBook: retry[[2]string{"default", "non_idempotent"}],
+        ListStrings: retry[[2]string{"default", "idempotent"}],
+        AddComments: retry[[2]string{"default", "non_idempotent"}],
+        GetBookFromArchive: retry[[2]string{"default", "idempotent"}],
+        GetBookFromAnywhere: retry[[2]string{"default", "idempotent"}],
+        GetBookFromAbsolutelyAnywhere: retry[[2]string{"default", "idempotent"}],
+        UpdateBookIndex: retry[[2]string{"default", "idempotent"}],
+        StreamShelves: retry[[2]string{"default", "idempotent"}],
+        StreamBooks: retry[[2]string{"default", "idempotent"}],
+        DiscussBook: retry[[2]string{"default", "non_idempotent"}],
+        MonologAboutBook: retry[[2]string{"default", "non_idempotent"}],
+        FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
+        AddLabel: retry[[2]string{"default", "non_idempotent"}],
+        GetBigBook: retry[[2]string{"default", "non_idempotent"}],
+        GetBigNothing: retry[[2]string{"default", "non_idempotent"}],
+        TestOptionalRequiredFlatteningParams: retry[[2]string{"default", "non_idempotent"}],
+    }
+}
+
+// LibClient is a client for interacting with Google Example Library API.
+//
+// Methods, except Close, may be called concurrently. However, fields must not be modified concurrently with method calls.
+type LibClient struct {
+    // The connection to the service.
+    conn *grpc.ClientConn
+
+    // The gRPC API client.
+    client librarypb.LibraryServiceClient
+    labelerClient taggerpb.LabelerClient
+
+    // LROClient is used internally to handle longrunning operations.
+    // It is exposed so that its CallOptions can be modified if required.
+    // Users should not Close this client.
+    LROClient *lroauto.OperationsClient
+
+    // The call options for this service.
+    CallOptions *CallOptions
+
+    // The x-goog-* metadata to be sent with each request.
+    xGoogMetadata metadata.MD
+}
+
+// NewClient creates a new library service client.
+//
+// This API represents a simple digital library.  It lets you manage Shelf
+// resources and Book resources in the library. It defines the following
+// resource model:
+//
+//   The API has a collection of [Shelf][google.example.library.v1.Shelf]
+//   resources, named bookShelves/*
+//
+//   Each Shelf has a collection of [Book][google.example.library.v1.Book]
+//   resources, named bookShelves/*/books/*
+//
+// Check out cloud docs! (at /library/example/link).
+// This is not a cloud link (at http://www.google.com).
+//
+// Service comment may include special characters: <>&"`'@.
+//
+// Write more docs here as an offering to the Great Gopher
+func NewClient(ctx context.Context, opts ...option.ClientOption) (*LibClient, error) {
+    conn, err := transport.DialGRPC(ctx, append(defaultClientOptions(), opts...)...)
+    if err != nil {
+        return nil, err
+    }
+    c := &LibClient {
+        conn: conn,
+        CallOptions: defaultCallOptions(),
+
+        client: librarypb.NewLibraryServiceClient(conn),
+        labelerClient: taggerpb.NewLabelerClient(conn),
+    }
+    c.SetGoogleClientInfo()
+
+    c.LROClient, err = lroauto.NewOperationsClient(ctx, option.WithGRPCConn(conn))
+    if err != nil {
+        // This error "should not happen", since we are just reusing old connection
+        // and never actually need to dial.
+        // If this does happen, we could leak conn. However, we cannot close conn:
+        // If the user invoked the function with option.WithGRPCConn,
+        // we would close a connection that's still in use.
+        // TODO(pongad): investigate error conditions.
+        return nil, err
+    }
+    return c, nil
+}
+
+// Connection returns the client's connection to the API service.
+func (c *LibClient) Connection() *grpc.ClientConn {
+    return c.conn
+}
+
+// Close closes the connection to the API service. The user should invoke this when
+// the client is no longer required.
+func (c *LibClient) Close() error {
+    return c.conn.Close()
+}
+
+// SetGoogleClientInfo sets the name and version of the application in
+// the `x-goog-api-client` header passed on each request. Intended for
+// use by Google-written clients.
+func (c *LibClient) SetGoogleClientInfo(keyval ...string) {
+    kv := append([]string{"gl-go", versionGo()}, keyval...)
+    kv = append(kv, "gapic", versionClient, "gax", gax.Version, "grpc", grpc.Version)
+    c.xGoogMetadata = metadata.Pairs("x-goog-api-client", gax.XGoogHeader(kv...))
+}
+
+// CreateShelf creates a shelf, and returns the new Shelf.
+// RPC method comment may include special characters: <>&"`'@.
+func (c *LibClient) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequest, opts ...gax.CallOption) (*librarypb.Shelf, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.CreateShelf[0:len(c.CallOptions.CreateShelf):len(c.CallOptions.CreateShelf)], opts...)
+    var resp *librarypb.Shelf
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.CreateShelf(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// GetShelf gets a shelf.
+func (c *LibClient) GetShelf(ctx context.Context, req *librarypb.GetShelfRequest, opts ...gax.CallOption) (*librarypb.Shelf, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.GetShelf[0:len(c.CallOptions.GetShelf):len(c.CallOptions.GetShelf)], opts...)
+    var resp *librarypb.Shelf
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.GetShelf(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// ListShelves lists shelves.
+func (c *LibClient) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequest, opts ...gax.CallOption) *ShelfIterator {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.ListShelves[0:len(c.CallOptions.ListShelves):len(c.CallOptions.ListShelves)], opts...)
+    it := &ShelfIterator{}
+    req = proto.Clone(req).(*librarypb.ListShelvesRequest)
+    it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Shelf, string, error) {
+        var resp *librarypb.ListShelvesResponse
+        req.PageToken = pageToken
+        if pageSize > math.MaxInt32 {
+            req.PageSize = math.MaxInt32
+        } else {
+            req.PageSize = int32(pageSize)
+        }
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+            var err error
+            resp, err = c.client.ListShelves(ctx, req, settings.GRPC...)
+            return err
+        }, opts...)
+        if err != nil {
+            return nil, "", err
+        }
+        return resp.Shelves, resp.NextPageToken, nil
+    }
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
+        if err != nil {
+            return "", err
+        }
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
+    }
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
+    return it
+}
+
+// DeleteShelf deletes a shelf.
+func (c *LibClient) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequest, opts ...gax.CallOption) error {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.DeleteShelf[0:len(c.CallOptions.DeleteShelf):len(c.CallOptions.DeleteShelf)], opts...)
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        _, err = c.client.DeleteShelf(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    return err
+}
+
+// MergeShelves merges two shelves by adding all books from the shelf named
+// other_shelf_name to shelf name, and deletes
+// other_shelf_name. Returns the updated shelf.
+func (c *LibClient) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRequest, opts ...gax.CallOption) (*librarypb.Shelf, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.MergeShelves[0:len(c.CallOptions.MergeShelves):len(c.CallOptions.MergeShelves)], opts...)
+    var resp *librarypb.Shelf
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.MergeShelves(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// CreateBook creates a book.
+func (c *LibClient) CreateBook(ctx context.Context, req *librarypb.CreateBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v&%s=%v", "name", req.GetName(), "book.read", req.GetBook().GetRead()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
+    opts = append(c.CallOptions.CreateBook[0:len(c.CallOptions.CreateBook):len(c.CallOptions.CreateBook)], opts...)
+    var resp *librarypb.Book
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.CreateBook(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// PublishSeries creates a series of books.
+func (c *LibClient) PublishSeries(ctx context.Context, req *librarypb.PublishSeriesRequest, opts ...gax.CallOption) (*librarypb.PublishSeriesResponse, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.PublishSeries[0:len(c.CallOptions.PublishSeries):len(c.CallOptions.PublishSeries)], opts...)
+    var resp *librarypb.PublishSeriesResponse
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.PublishSeries(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// GetBook gets a book.
+func (c *LibClient) GetBook(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.GetBook[0:len(c.CallOptions.GetBook):len(c.CallOptions.GetBook)], opts...)
+    var resp *librarypb.Book
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.GetBook(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// ListBooks lists books in a shelf.
+func (c *LibClient) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest, opts ...gax.CallOption) *BookIterator {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.ListBooks[0:len(c.CallOptions.ListBooks):len(c.CallOptions.ListBooks)], opts...)
+    it := &BookIterator{}
+    req = proto.Clone(req).(*librarypb.ListBooksRequest)
+    it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Book, string, error) {
+        var resp *librarypb.ListBooksResponse
+        req.PageToken = pageToken
+        if pageSize > math.MaxInt32 {
+            req.PageSize = math.MaxInt32
+        } else {
+            req.PageSize = int32(pageSize)
+        }
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+            var err error
+            resp, err = c.client.ListBooks(ctx, req, settings.GRPC...)
+            return err
+        }, opts...)
+        if err != nil {
+            return nil, "", err
+        }
+        return resp.Books, resp.NextPageToken, nil
+    }
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
+        if err != nil {
+            return "", err
+        }
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
+    }
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
+    return it
+}
+
+// DeleteBook deletes a book.
+func (c *LibClient) DeleteBook(ctx context.Context, req *librarypb.DeleteBookRequest, opts ...gax.CallOption) error {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.DeleteBook[0:len(c.CallOptions.DeleteBook):len(c.CallOptions.DeleteBook)], opts...)
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        _, err = c.client.DeleteBook(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    return err
+}
+
+// UpdateBook updates a book.
+func (c *LibClient) UpdateBook(ctx context.Context, req *librarypb.UpdateBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.UpdateBook[0:len(c.CallOptions.UpdateBook):len(c.CallOptions.UpdateBook)], opts...)
+    var resp *librarypb.Book
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.UpdateBook(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// MoveBook moves a book to another shelf, and returns the new book.
+func (c *LibClient) MoveBook(ctx context.Context, req *librarypb.MoveBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.MoveBook[0:len(c.CallOptions.MoveBook):len(c.CallOptions.MoveBook)], opts...)
+    var resp *librarypb.Book
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.MoveBook(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// ListStrings lists a primitive resource. To test go page streaming.
+func (c *LibClient) ListStrings(ctx context.Context, req *librarypb.ListStringsRequest, opts ...gax.CallOption) *StringIterator {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.ListStrings[0:len(c.CallOptions.ListStrings):len(c.CallOptions.ListStrings)], opts...)
+    it := &StringIterator{}
+    req = proto.Clone(req).(*librarypb.ListStringsRequest)
+    it.InternalFetch = func(pageSize int, pageToken string) ([]string, string, error) {
+        var resp *librarypb.ListStringsResponse
+        req.PageToken = pageToken
+        if pageSize > math.MaxInt32 {
+            req.PageSize = math.MaxInt32
+        } else {
+            req.PageSize = int32(pageSize)
+        }
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+            var err error
+            resp, err = c.client.ListStrings(ctx, req, settings.GRPC...)
+            return err
+        }, opts...)
+        if err != nil {
+            return nil, "", err
+        }
+        return resp.Strings, resp.NextPageToken, nil
+    }
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
+        if err != nil {
+            return "", err
+        }
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
+    }
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
+    return it
+}
+
+// AddComments adds comments to a book
+func (c *LibClient) AddComments(ctx context.Context, req *librarypb.AddCommentsRequest, opts ...gax.CallOption) error {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.AddComments[0:len(c.CallOptions.AddComments):len(c.CallOptions.AddComments)], opts...)
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        _, err = c.client.AddComments(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    return err
+}
+
+// GetBookFromArchive gets a book from an archive.
+func (c *LibClient) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest, opts ...gax.CallOption) (*librarypb.BookFromArchive, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.GetBookFromArchive[0:len(c.CallOptions.GetBookFromArchive):len(c.CallOptions.GetBookFromArchive)], opts...)
+    var resp *librarypb.BookFromArchive
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.GetBookFromArchive(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// GetBookFromAnywhere gets a book from a shelf or archive.
+func (c *LibClient) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBookFromAnywhereRequest, opts ...gax.CallOption) (*librarypb.BookFromAnywhere, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.GetBookFromAnywhere[0:len(c.CallOptions.GetBookFromAnywhere):len(c.CallOptions.GetBookFromAnywhere)], opts...)
+    var resp *librarypb.BookFromAnywhere
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.GetBookFromAnywhere(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// GetBookFromAbsolutelyAnywhere test proper OneOf-Any resource name mapping
+func (c *LibClient) GetBookFromAbsolutelyAnywhere(ctx context.Context, req *librarypb.GetBookFromAbsolutelyAnywhereRequest, opts ...gax.CallOption) (*librarypb.BookFromAnywhere, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.GetBookFromAbsolutelyAnywhere[0:len(c.CallOptions.GetBookFromAbsolutelyAnywhere):len(c.CallOptions.GetBookFromAbsolutelyAnywhere)], opts...)
+    var resp *librarypb.BookFromAnywhere
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.GetBookFromAbsolutelyAnywhere(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// UpdateBookIndex updates the index of a book.
+func (c *LibClient) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookIndexRequest, opts ...gax.CallOption) error {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.UpdateBookIndex[0:len(c.CallOptions.UpdateBookIndex):len(c.CallOptions.UpdateBookIndex)], opts...)
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        _, err = c.client.UpdateBookIndex(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    return err
+}
+
+// StreamShelves test server streaming
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+func (c *LibClient) StreamShelves(ctx context.Context, req *librarypb.StreamShelvesRequest, opts ...gax.CallOption) (librarypb.LibraryService_StreamShelvesClient, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.StreamShelves[0:len(c.CallOptions.StreamShelves):len(c.CallOptions.StreamShelves)], opts...)
+    var resp librarypb.LibraryService_StreamShelvesClient
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.StreamShelves(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// StreamBooks test server streaming, non-paged responses.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+func (c *LibClient) StreamBooks(ctx context.Context, req *librarypb.StreamBooksRequest, opts ...gax.CallOption) (librarypb.LibraryService_StreamBooksClient, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.StreamBooks[0:len(c.CallOptions.StreamBooks):len(c.CallOptions.StreamBooks)], opts...)
+    var resp librarypb.LibraryService_StreamBooksClient
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.StreamBooks(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// DiscussBook test bidi-streaming.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+func (c *LibClient) DiscussBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_DiscussBookClient, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.DiscussBook[0:len(c.CallOptions.DiscussBook):len(c.CallOptions.DiscussBook)], opts...)
+    var resp librarypb.LibraryService_DiscussBookClient
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.DiscussBook(ctx, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// MonologAboutBook test client streaming.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+func (c *LibClient) MonologAboutBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_MonologAboutBookClient, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.MonologAboutBook[0:len(c.CallOptions.MonologAboutBook):len(c.CallOptions.MonologAboutBook)], opts...)
+    var resp librarypb.LibraryService_MonologAboutBookClient
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.MonologAboutBook(ctx, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// FindRelatedBooks
+func (c *LibClient) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelatedBooksRequest, opts ...gax.CallOption) *StringIterator {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.FindRelatedBooks[0:len(c.CallOptions.FindRelatedBooks):len(c.CallOptions.FindRelatedBooks)], opts...)
+    it := &StringIterator{}
+    req = proto.Clone(req).(*librarypb.FindRelatedBooksRequest)
+    it.InternalFetch = func(pageSize int, pageToken string) ([]string, string, error) {
+        var resp *librarypb.FindRelatedBooksResponse
+        req.PageToken = pageToken
+        if pageSize > math.MaxInt32 {
+            req.PageSize = math.MaxInt32
+        } else {
+            req.PageSize = int32(pageSize)
+        }
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+            var err error
+            resp, err = c.client.FindRelatedBooks(ctx, req, settings.GRPC...)
+            return err
+        }, opts...)
+        if err != nil {
+            return nil, "", err
+        }
+        return resp.Names, resp.NextPageToken, nil
+    }
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
+        if err != nil {
+            return "", err
+        }
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
+    }
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
+    return it
+}
+
+// addLabel adds a label to the entity.
+func (c *LibClient) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest, opts ...gax.CallOption) (*taggerpb.AddLabelResponse, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.AddLabel[0:len(c.CallOptions.AddLabel):len(c.CallOptions.AddLabel)], opts...)
+    var resp *taggerpb.AddLabelResponse
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.labelerClient.AddLabel(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// GetBigBook test long-running operations
+func (c *LibClient) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*GetBigBookOperation, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.GetBigBook[0:len(c.CallOptions.GetBigBook):len(c.CallOptions.GetBigBook)], opts...)
+    var resp *longrunningpb.Operation
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.GetBigBook(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return &GetBigBookOperation{
+        lro: longrunning.InternalNewOperation(c.LROClient, resp),
+    }, nil
+}
+
+// GetBigNothing test long-running operations with empty return type.
+func (c *LibClient) GetBigNothing(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*GetBigNothingOperation, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.GetBigNothing[0:len(c.CallOptions.GetBigNothing):len(c.CallOptions.GetBigNothing)], opts...)
+    var resp *longrunningpb.Operation
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.GetBigNothing(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return &GetBigNothingOperation{
+        lro: longrunning.InternalNewOperation(c.LROClient, resp),
+    }, nil
+}
+
+// TestOptionalRequiredFlatteningParams test optional flattening parameters of all types
+func (c *LibClient) TestOptionalRequiredFlatteningParams(ctx context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest, opts ...gax.CallOption) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.TestOptionalRequiredFlatteningParams[0:len(c.CallOptions.TestOptionalRequiredFlatteningParams):len(c.CallOptions.TestOptionalRequiredFlatteningParams)], opts...)
+    var resp *librarypb.TestOptionalRequiredFlatteningParamsResponse
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.TestOptionalRequiredFlatteningParams(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+
+// BookIterator manages a stream of *librarypb.Book.
+type BookIterator struct {
+    items    []*librarypb.Book
+    pageInfo *iterator.PageInfo
+    nextFunc func() error
+
+    // InternalFetch is for use by the Google Cloud Libraries only.
+    // It is not part of the stable interface of this package.
+    //
+    // InternalFetch returns results from a single call to the underlying RPC.
+    // The number of results is no greater than pageSize.
+    // If there are no more results, nextPageToken is empty and err is nil.
+    InternalFetch func(pageSize int, pageToken string) (results []*librarypb.Book, nextPageToken string, err error)
+}
+
+// PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
+func (it *BookIterator) PageInfo() *iterator.PageInfo {
+    return it.pageInfo
+}
+
+// Next returns the next result. Its second return value is iterator.Done if there are no more
+// results. Once Next returns Done, all subsequent calls will return Done.
+func (it *BookIterator) Next() (*librarypb.Book, error) {
+    var item *librarypb.Book
+    if err := it.nextFunc(); err != nil {
+        return item, err
+    }
+    item = it.items[0]
+    it.items = it.items[1:]
+    return item, nil
+}
+
+func (it *BookIterator) bufLen() int {
+    return len(it.items)
+}
+
+func (it *BookIterator) takeBuf() interface{} {
+    b := it.items
+    it.items = nil
+    return b
+}
+
+// ShelfIterator manages a stream of *librarypb.Shelf.
+type ShelfIterator struct {
+    items    []*librarypb.Shelf
+    pageInfo *iterator.PageInfo
+    nextFunc func() error
+
+    // InternalFetch is for use by the Google Cloud Libraries only.
+    // It is not part of the stable interface of this package.
+    //
+    // InternalFetch returns results from a single call to the underlying RPC.
+    // The number of results is no greater than pageSize.
+    // If there are no more results, nextPageToken is empty and err is nil.
+    InternalFetch func(pageSize int, pageToken string) (results []*librarypb.Shelf, nextPageToken string, err error)
+}
+
+// PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
+func (it *ShelfIterator) PageInfo() *iterator.PageInfo {
+    return it.pageInfo
+}
+
+// Next returns the next result. Its second return value is iterator.Done if there are no more
+// results. Once Next returns Done, all subsequent calls will return Done.
+func (it *ShelfIterator) Next() (*librarypb.Shelf, error) {
+    var item *librarypb.Shelf
+    if err := it.nextFunc(); err != nil {
+        return item, err
+    }
+    item = it.items[0]
+    it.items = it.items[1:]
+    return item, nil
+}
+
+func (it *ShelfIterator) bufLen() int {
+    return len(it.items)
+}
+
+func (it *ShelfIterator) takeBuf() interface{} {
+    b := it.items
+    it.items = nil
+    return b
+}
+
+// StringIterator manages a stream of string.
+type StringIterator struct {
+    items    []string
+    pageInfo *iterator.PageInfo
+    nextFunc func() error
+
+    // InternalFetch is for use by the Google Cloud Libraries only.
+    // It is not part of the stable interface of this package.
+    //
+    // InternalFetch returns results from a single call to the underlying RPC.
+    // The number of results is no greater than pageSize.
+    // If there are no more results, nextPageToken is empty and err is nil.
+    InternalFetch func(pageSize int, pageToken string) (results []string, nextPageToken string, err error)
+}
+
+// PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
+func (it *StringIterator) PageInfo() *iterator.PageInfo {
+    return it.pageInfo
+}
+
+// Next returns the next result. Its second return value is iterator.Done if there are no more
+// results. Once Next returns Done, all subsequent calls will return Done.
+func (it *StringIterator) Next() (string, error) {
+    var item string
+    if err := it.nextFunc(); err != nil {
+        return item, err
+    }
+    item = it.items[0]
+    it.items = it.items[1:]
+    return item, nil
+}
+
+func (it *StringIterator) bufLen() int {
+    return len(it.items)
+}
+
+func (it *StringIterator) takeBuf() interface{} {
+    b := it.items
+    it.items = nil
+    return b
+}
+
+
+// GetBigBookOperation manages a long-running operation from GetBigBook.
+type GetBigBookOperation struct {
+    lro *longrunning.Operation
+}
+
+// GetBigBookOperation returns a new GetBigBookOperation from a given name.
+// The name must be that of a previously created GetBigBookOperation, possibly from a different process.
+func (c *LibClient) GetBigBookOperation(name string) *GetBigBookOperation {
+    return &GetBigBookOperation{
+        lro: longrunning.InternalNewOperation(c.LROClient, &longrunningpb.Operation{Name: name}),
+    }
+}
+
+// Wait blocks until the long-running operation is completed, returning the response and any errors encountered.
+//
+// See documentation of Poll for error-handling information.
+func (op *GetBigBookOperation) Wait(ctx context.Context, opts ...gax.CallOption) (*librarypb.Book, error) {
+    var resp librarypb.Book
+    if err := op.lro.WaitWithInterval(ctx, &resp, 30000*time.Millisecond, opts...); err != nil {
+        return nil, err
+    }
+    return &resp, nil
+}
+
+// Poll fetches the latest state of the long-running operation.
+//
+// Poll also fetches the latest metadata, which can be retrieved by Metadata.
+//
+// If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+// the operation has completed with failure, the error is returned and op.Done will return true.
+// If Poll succeeds and the operation has completed successfully,
+// op.Done will return true, and the response of the operation is returned.
+// If Poll succeeds and the operation has not completed, the returned response and error are both nil.
+func (op *GetBigBookOperation) Poll(ctx context.Context, opts ...gax.CallOption) (*librarypb.Book, error) {
+    var resp librarypb.Book
+    if err := op.lro.Poll(ctx, &resp, opts...); err != nil {
+        return nil, err
+    }
+    if !op.Done() {
+        return nil, nil
+    }
+    return &resp, nil
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// Metadata itself does not contact the server, but Poll does.
+// To get the latest metadata, call this method after a successful call to Poll.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (op *GetBigBookOperation) Metadata() (*librarypb.GetBigBookMetadata, error) {
+    var meta librarypb.GetBigBookMetadata
+    if err := op.lro.Metadata(&meta); err == longrunning.ErrNoMetadata {
+        return nil, nil
+    } else if err != nil {
+        return nil, err
+    }
+    return &meta, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (op *GetBigBookOperation) Done() bool {
+    return op.lro.Done()
+}
+
+// Name returns the name of the long-running operation.
+// The name is assigned by the server and is unique within the service from which the operation is created.
+func (op *GetBigBookOperation) Name() string {
+    return op.lro.Name()
+}
+
+// Cancel starts asynchronous cancellation on a long-running operation.
+// The server makes a best effort to cancel the operation, but success is not guaranteed.
+// Clients can use Poll or other methods to check whether the cancellation succeeded or whether the operation
+// completed despite cancellation. On successful cancellation, the operation is not deleted;
+// instead, op.Poll returns an error with code Canceled.
+func (op *GetBigBookOperation) Cancel(ctx context.Context, opts ...gax.CallOption) error {
+    return op.lro.Cancel(ctx, opts...)
+}
+
+// GetBigNothingOperation manages a long-running operation from GetBigNothing.
+type GetBigNothingOperation struct {
+    lro *longrunning.Operation
+}
+
+// GetBigNothingOperation returns a new GetBigNothingOperation from a given name.
+// The name must be that of a previously created GetBigNothingOperation, possibly from a different process.
+func (c *LibClient) GetBigNothingOperation(name string) *GetBigNothingOperation {
+    return &GetBigNothingOperation{
+        lro: longrunning.InternalNewOperation(c.LROClient, &longrunningpb.Operation{Name: name}),
+    }
+}
+
+// Wait blocks until the long-running operation is completed, returning any error encountered.
+//
+// See documentation of Poll for error-handling information.
+func (op *GetBigNothingOperation) Wait(ctx context.Context, opts ...gax.CallOption) error {
+    return op.lro.WaitWithInterval(ctx, nil, 60000*time.Millisecond, opts...)
+}
+
+// Poll fetches the latest state of the long-running operation.
+//
+// Poll also fetches the latest metadata, which can be retrieved by Metadata.
+//
+// If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+// the operation has completed with failure, the error is returned and op.Done will return true.
+// If Poll succeeds and the operation has completed successfully, op.Done will return true.
+func (op *GetBigNothingOperation) Poll(ctx context.Context, opts ...gax.CallOption) error {
+    return op.lro.Poll(ctx, nil, opts...)
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// Metadata itself does not contact the server, but Poll does.
+// To get the latest metadata, call this method after a successful call to Poll.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (op *GetBigNothingOperation) Metadata() (*librarypb.GetBigBookMetadata, error) {
+    var meta librarypb.GetBigBookMetadata
+    if err := op.lro.Metadata(&meta); err == longrunning.ErrNoMetadata {
+        return nil, nil
+    } else if err != nil {
+        return nil, err
+    }
+    return &meta, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (op *GetBigNothingOperation) Done() bool {
+    return op.lro.Done()
+}
+
+// Name returns the name of the long-running operation.
+// The name is assigned by the server and is unique within the service from which the operation is created.
+func (op *GetBigNothingOperation) Name() string {
+    return op.lro.Name()
+}
+
+
+// Delete deletes a long-running operation.
+// This method indicates that the client is no longer interested in the operation result.
+// It does not cancel the operation.
+func (op *GetBigNothingOperation) Delete(ctx context.Context, opts ...gax.CallOption) error {
+    return op.lro.Delete(ctx, opts...)
+}
+============== file: cloud.google.com/go/library/apiv1/library_client_example_test.go ==============
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// AUTO-GENERATED CODE. DO NOT EDIT.
+
+package library_test
+
+import (
+    "io"
+
+    "cloud.google.com/go/library/apiv1"
+    "golang.org/x/net/context"
+    "google.golang.org/api/iterator"
+    librarypb "google.golang.org/genproto/googleapis/example/library/v1"
+)
+
+func ExampleNewClient() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use client.
+    _ = c
+}
+
+func ExampleClient_CreateShelf() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.CreateShelfRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.CreateShelf(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_GetShelf() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.GetShelfRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.GetShelf(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_ListShelves() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.ListShelvesRequest{
+        // TODO: Fill request struct fields.
+    }
+    it := c.ListShelves(ctx, req)
+    for {
+        resp, err := it.Next()
+        if err == iterator.Done {
+            break
+        }
+        if err != nil {
+            // TODO: Handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+}
+
+func ExampleClient_DeleteShelf() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.DeleteShelfRequest{
+        // TODO: Fill request struct fields.
+    }
+    err = c.DeleteShelf(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+}
+
+func ExampleClient_MergeShelves() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.MergeShelvesRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.MergeShelves(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_CreateBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.CreateBookRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.CreateBook(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_PublishSeries() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.PublishSeriesRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.PublishSeries(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_GetBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.GetBookRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.GetBook(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_ListBooks() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.ListBooksRequest{
+        // TODO: Fill request struct fields.
+    }
+    it := c.ListBooks(ctx, req)
+    for {
+        resp, err := it.Next()
+        if err == iterator.Done {
+            break
+        }
+        if err != nil {
+            // TODO: Handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+}
+
+func ExampleClient_DeleteBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.DeleteBookRequest{
+        // TODO: Fill request struct fields.
+    }
+    err = c.DeleteBook(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+}
+
+func ExampleClient_UpdateBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.UpdateBookRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.UpdateBook(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_MoveBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.MoveBookRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.MoveBook(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_ListStrings() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.ListStringsRequest{
+        // TODO: Fill request struct fields.
+    }
+    it := c.ListStrings(ctx, req)
+    for {
+        resp, err := it.Next()
+        if err == iterator.Done {
+            break
+        }
+        if err != nil {
+            // TODO: Handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+}
+
+func ExampleClient_AddComments() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.AddCommentsRequest{
+        // TODO: Fill request struct fields.
+    }
+    err = c.AddComments(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+}
+
+func ExampleClient_GetBookFromArchive() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.GetBookFromArchiveRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.GetBookFromArchive(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_GetBookFromAnywhere() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.GetBookFromAnywhereRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.GetBookFromAnywhere(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_GetBookFromAbsolutelyAnywhere() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.GetBookFromAbsolutelyAnywhereRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.GetBookFromAbsolutelyAnywhere(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_UpdateBookIndex() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.UpdateBookIndexRequest{
+        // TODO: Fill request struct fields.
+    }
+    err = c.UpdateBookIndex(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+}
+
+func ExampleClient_StreamShelves() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.StreamShelvesRequest{
+        // TODO: Fill request struct fields.
+    }
+    stream, err := c.StreamShelves(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    for {
+        resp, err := stream.Recv()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            // TODO: handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+}
+
+func ExampleClient_StreamBooks() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.StreamBooksRequest{
+        // TODO: Fill request struct fields.
+    }
+    stream, err := c.StreamBooks(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    for {
+        resp, err := stream.Recv()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            // TODO: handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+}
+
+func ExampleClient_DiscussBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    stream, err := c.DiscussBook(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    go func() {
+        reqs := []*librarypb.DiscussBookRequest{
+            // TODO: Create requests.
+        }
+        for _, req := range reqs {
+            if err := stream.Send(req); err != nil {
+                // TODO: Handle error.
+            }
+        }
+        stream.CloseSend()
+    }()
+    for {
+        resp, err := stream.Recv()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            // TODO: handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+}
+
+func ExampleClient_MonologAboutBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    stream, err := c.MonologAboutBook(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    reqs := []*librarypb.DiscussBookRequest{
+        // TODO: Create requests.
+    }
+    for _, req := range reqs {
+        if err := stream.Send(req); err != nil {
+            // TODO: Handle error.
+        }
+    }
+    resp, err := stream.CloseAndRecv()
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_FindRelatedBooks() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.FindRelatedBooksRequest{
+        // TODO: Fill request struct fields.
+    }
+    it := c.FindRelatedBooks(ctx, req)
+    for {
+        resp, err := it.Next()
+        if err == iterator.Done {
+            break
+        }
+        if err != nil {
+            // TODO: Handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+}
+
+func ExampleClient_GetBigBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.GetBookRequest{
+        // TODO: Fill request struct fields.
+    }
+    op, err := c.GetBigBook(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    resp, err := op.Wait(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_GetBigNothing() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.GetBookRequest{
+        // TODO: Fill request struct fields.
+    }
+    op, err := c.GetBigNothing(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    err = op.Wait(ctx)
+    // TODO: Handle error.
+}
+
+func ExampleClient_TestOptionalRequiredFlatteningParams() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.TestOptionalRequiredFlatteningParamsRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.TestOptionalRequiredFlatteningParams(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+
+============== file: cloud.google.com/go/library/apiv1/mock_test.go ==============
+// Copyright 2018 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// AUTO-GENERATED CODE. DO NOT EDIT.
+
+package library
+
+import (
+    emptypb "github.com/golang/protobuf/ptypes/empty"
+    librarypb "google.golang.org/genproto/googleapis/example/library/v1"
+    longrunningpb "google.golang.org/genproto/googleapis/longrunning"
+    taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
+)
+
+import (
+    "flag"
+    "fmt"
+    "io"
+    "log"
+    "net"
+    "os"
+    "strings"
+    "testing"
+
+    "github.com/golang/protobuf/proto"
+    "github.com/golang/protobuf/ptypes"
+    "golang.org/x/net/context"
+    "google.golang.org/api/option"
+    status "google.golang.org/genproto/googleapis/rpc/status"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/metadata"
+    gstatus "google.golang.org/grpc/status"
+)
+
+var _ = io.EOF
+var _ = ptypes.MarshalAny
+var _ status.Status
+
+type mockLibraryServer struct {
+    // Embed for forward compatibility.
+    // Tests will keep working if more methods are added
+    // in the future.
+    librarypb.LibraryServiceServer
+
+    reqs []proto.Message
+
+    // If set, all calls return this error.
+    err error
+
+    // responses to return if err == nil
+    resps []proto.Message
+}
+
+func (s *mockLibraryServer) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequest) (*librarypb.Shelf, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.Shelf), nil
+}
+
+func (s *mockLibraryServer) GetShelf(ctx context.Context, req *librarypb.GetShelfRequest) (*librarypb.Shelf, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.Shelf), nil
+}
+
+func (s *mockLibraryServer) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequest) (*librarypb.ListShelvesResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.ListShelvesResponse), nil
+}
+
+func (s *mockLibraryServer) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequest) (*emptypb.Empty, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*emptypb.Empty), nil
+}
+
+func (s *mockLibraryServer) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRequest) (*librarypb.Shelf, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.Shelf), nil
+}
+
+func (s *mockLibraryServer) CreateBook(ctx context.Context, req *librarypb.CreateBookRequest) (*librarypb.Book, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.Book), nil
+}
+
+func (s *mockLibraryServer) PublishSeries(ctx context.Context, req *librarypb.PublishSeriesRequest) (*librarypb.PublishSeriesResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.PublishSeriesResponse), nil
+}
+
+func (s *mockLibraryServer) GetBook(ctx context.Context, req *librarypb.GetBookRequest) (*librarypb.Book, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.Book), nil
+}
+
+func (s *mockLibraryServer) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest) (*librarypb.ListBooksResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.ListBooksResponse), nil
+}
+
+func (s *mockLibraryServer) DeleteBook(ctx context.Context, req *librarypb.DeleteBookRequest) (*emptypb.Empty, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*emptypb.Empty), nil
+}
+
+func (s *mockLibraryServer) UpdateBook(ctx context.Context, req *librarypb.UpdateBookRequest) (*librarypb.Book, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.Book), nil
+}
+
+func (s *mockLibraryServer) MoveBook(ctx context.Context, req *librarypb.MoveBookRequest) (*librarypb.Book, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.Book), nil
+}
+
+func (s *mockLibraryServer) ListStrings(ctx context.Context, req *librarypb.ListStringsRequest) (*librarypb.ListStringsResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.ListStringsResponse), nil
+}
+
+func (s *mockLibraryServer) AddComments(ctx context.Context, req *librarypb.AddCommentsRequest) (*emptypb.Empty, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*emptypb.Empty), nil
+}
+
+func (s *mockLibraryServer) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.BookFromArchive, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.BookFromArchive), nil
+}
+
+func (s *mockLibraryServer) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBookFromAnywhereRequest) (*librarypb.BookFromAnywhere, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.BookFromAnywhere), nil
+}
+
+func (s *mockLibraryServer) GetBookFromAbsolutelyAnywhere(ctx context.Context, req *librarypb.GetBookFromAbsolutelyAnywhereRequest) (*librarypb.BookFromAnywhere, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.BookFromAnywhere), nil
+}
+
+func (s *mockLibraryServer) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookIndexRequest) (*emptypb.Empty, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*emptypb.Empty), nil
+}
+
+func (s *mockLibraryServer) StreamShelves(req *librarypb.StreamShelvesRequest, stream librarypb.LibraryService_StreamShelvesServer) error {
+    md, _ := metadata.FromIncomingContext(stream.Context())
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return s.err
+    }
+    for _, v := range s.resps {
+        if err := stream.Send(v.(*librarypb.StreamShelvesResponse)); err != nil {
+            return err
+        }
+    }
+    return nil
+}
+
+func (s *mockLibraryServer) StreamBooks(req *librarypb.StreamBooksRequest, stream librarypb.LibraryService_StreamBooksServer) error {
+    md, _ := metadata.FromIncomingContext(stream.Context())
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return s.err
+    }
+    for _, v := range s.resps {
+        if err := stream.Send(v.(*librarypb.Book)); err != nil {
+            return err
+        }
+    }
+    return nil
+}
+
+func (s *mockLibraryServer) DiscussBook(stream librarypb.LibraryService_DiscussBookServer) error {
+    md, _ := metadata.FromIncomingContext(stream.Context())
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    for {
+        if req, err := stream.Recv(); err == io.EOF {
+            break
+        } else if err != nil {
+            return err
+        } else {
+            s.reqs = append(s.reqs, req)
+        }
+    }
+    if s.err != nil {
+        return s.err
+    }
+    for _, v := range s.resps {
+        if err := stream.Send(v.(*librarypb.Comment)); err != nil {
+            return err
+        }
+    }
+    return nil
+}
+
+func (s *mockLibraryServer) MonologAboutBook(stream librarypb.LibraryService_MonologAboutBookServer) error {
+    md, _ := metadata.FromIncomingContext(stream.Context())
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    for {
+        if req, err := stream.Recv(); err == io.EOF {
+            break
+        } else if err != nil {
+            return err
+        } else {
+            s.reqs = append(s.reqs, req)
+        }
+    }
+    if s.err != nil {
+        return s.err
+    }
+    return stream.SendAndClose(s.resps[0].(*librarypb.Comment))
+}
+
+func (s *mockLibraryServer) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelatedBooksRequest) (*librarypb.FindRelatedBooksResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.FindRelatedBooksResponse), nil
+}
+
+func (s *mockLibraryServer) AddTag(ctx context.Context, req *taggerpb.AddTagRequest) (*taggerpb.AddTagResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*taggerpb.AddTagResponse), nil
+}
+
+func (s *mockLibraryServer) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) (*longrunningpb.Operation, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*longrunningpb.Operation), nil
+}
+
+func (s *mockLibraryServer) GetBigNothing(ctx context.Context, req *librarypb.GetBookRequest) (*longrunningpb.Operation, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*longrunningpb.Operation), nil
+}
+
+func (s *mockLibraryServer) TestOptionalRequiredFlatteningParams(ctx context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.TestOptionalRequiredFlatteningParamsResponse), nil
+}
+
+type mockLabelerServer struct {
+    // Embed for forward compatibility.
+    // Tests will keep working if more methods are added
+    // in the future.
+    taggerpb.LabelerServer
+
+    reqs []proto.Message
+
+    // If set, all calls return this error.
+    err error
+
+    // responses to return if err == nil
+    resps []proto.Message
+}
+
+func (s *mockLabelerServer) AddLabel(ctx context.Context, req *taggerpb.AddLabelRequest) (*taggerpb.AddLabelResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*taggerpb.AddLabelResponse), nil
+}
+
+
+// clientOpt is the option tests should use to connect to the test server.
+// It is initialized by TestMain.
+var clientOpt option.ClientOption
+
+var (
+    mockLibrary mockLibraryServer
+    mockLabeler mockLabelerServer
+)
+
+func TestMain(m *testing.M) {
+    flag.Parse()
+
+    serv := grpc.NewServer()
+    librarypb.RegisterLibraryServiceServer(serv, &mockLibrary)
+    taggerpb.RegisterLabelerServer(serv, &mockLabeler)
+
+    lis, err := net.Listen("tcp", "localhost:0")
+    if err != nil {
+        log.Fatal(err)
+    }
+    go serv.Serve(lis)
+
+    conn, err := grpc.Dial(lis.Addr().String(), grpc.WithInsecure())
+    if err != nil {
+        log.Fatal(err)
+    }
+    clientOpt = option.WithGRPCConn(conn)
+
+    os.Exit(m.Run())
+}
+
+func TestLibraryServiceCreateShelf(t *testing.T) {
+    var name string = "name3373707"
+    var theme string = "theme110327241"
+    var internalTheme string = "internalTheme792518087"
+    var expectedResponse = &librarypb.Shelf{
+        Name: name,
+        Theme: theme,
+        InternalTheme: internalTheme,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var shelf *librarypb.Shelf = &librarypb.Shelf{}
+    var request = &librarypb.CreateShelfRequest{
+        Shelf: shelf,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.CreateShelf(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceCreateShelfError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var shelf *librarypb.Shelf = &librarypb.Shelf{}
+    var request = &librarypb.CreateShelfRequest{
+        Shelf: shelf,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.CreateShelf(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceGetShelf(t *testing.T) {
+    var name2 string = "name2-1052831874"
+    var theme string = "theme110327241"
+    var internalTheme string = "internalTheme792518087"
+    var expectedResponse = &librarypb.Shelf{
+        Name: name2,
+        Theme: theme,
+        InternalTheme: internalTheme,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var options string = "options-1249474914"
+    var request = &librarypb.GetShelfRequest{
+        Name: formattedName,
+        Options: options,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetShelf(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceGetShelfError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var options string = "options-1249474914"
+    var request = &librarypb.GetShelfRequest{
+        Name: formattedName,
+        Options: options,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetShelf(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceListShelves(t *testing.T) {
+    var nextPageToken string = ""
+    var shelvesElement *librarypb.Shelf = &librarypb.Shelf{}
+    var shelves = []*librarypb.Shelf{shelvesElement}
+    var expectedResponse = &librarypb.ListShelvesResponse{
+        NextPageToken: nextPageToken,
+        Shelves: shelves,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var request *librarypb.ListShelvesRequest = &librarypb.ListShelvesRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.ListShelves(context.Background(), request).Next()
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    want := (interface{})(expectedResponse.Shelves[0])
+    got := (interface{})(resp)
+    var ok bool
+
+    switch want := (want).(type) {
+    case proto.Message:
+        ok = proto.Equal(want, got.(proto.Message))
+    default:
+        ok = want == got
+    }
+    if !ok {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceListShelvesError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var request *librarypb.ListShelvesRequest = &librarypb.ListShelvesRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.ListShelves(context.Background(), request).Next()
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceDeleteShelf(t *testing.T) {
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var request = &librarypb.DeleteShelfRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.DeleteShelf(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+}
+
+func TestLibraryServiceDeleteShelfError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var request = &librarypb.DeleteShelfRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.DeleteShelf(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+}
+func TestLibraryServiceMergeShelves(t *testing.T) {
+    var name2 string = "name2-1052831874"
+    var theme string = "theme110327241"
+    var internalTheme string = "internalTheme792518087"
+    var expectedResponse = &librarypb.Shelf{
+        Name: name2,
+        Theme: theme,
+        InternalTheme: internalTheme,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var request = &librarypb.MergeShelvesRequest{
+        Name: formattedName,
+        OtherShelfName: formattedOtherShelfName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.MergeShelves(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceMergeShelvesError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var request = &librarypb.MergeShelvesRequest{
+        Name: formattedName,
+        OtherShelfName: formattedOtherShelfName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.MergeShelves(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceCreateBook(t *testing.T) {
+    var name2 string = "name2-1052831874"
+    var author string = "author-1406328437"
+    var title string = "title110371416"
+    var read bool = true
+    var expectedResponse = &librarypb.Book{
+        Name: name2,
+        Author: author,
+        Title: title,
+        Read: read,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var book *librarypb.Book = &librarypb.Book{}
+    var request = &librarypb.CreateBookRequest{
+        Name: formattedName,
+        Book: book,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.CreateBook(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceCreateBookError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var book *librarypb.Book = &librarypb.Book{}
+    var request = &librarypb.CreateBookRequest{
+        Name: formattedName,
+        Book: book,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.CreateBook(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServicePublishSeries(t *testing.T) {
+    var bookNamesElement string = "bookNamesElement1491670575"
+    var bookNames = []string{bookNamesElement}
+    var expectedResponse = &librarypb.PublishSeriesResponse{
+        BookNames: bookNames,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var shelf *librarypb.Shelf = &librarypb.Shelf{}
+    var books []*librarypb.Book = nil
+    var seriesString string = "foobar"
+    var seriesUuid = &librarypb.SeriesUuid{
+        Source: &librarypb.SeriesUuid_SeriesString{
+            SeriesString: seriesString,
+        },
+    }
+    var request = &librarypb.PublishSeriesRequest{
+        Shelf: shelf,
+        Books: books,
+        SeriesUuid: seriesUuid,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.PublishSeries(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServicePublishSeriesError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var shelf *librarypb.Shelf = &librarypb.Shelf{}
+    var books []*librarypb.Book = nil
+    var seriesString string = "foobar"
+    var seriesUuid = &librarypb.SeriesUuid{
+        Source: &librarypb.SeriesUuid_SeriesString{
+            SeriesString: seriesString,
+        },
+    }
+    var request = &librarypb.PublishSeriesRequest{
+        Shelf: shelf,
+        Books: books,
+        SeriesUuid: seriesUuid,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.PublishSeries(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceGetBook(t *testing.T) {
+    var name2 string = "name2-1052831874"
+    var author string = "author-1406328437"
+    var title string = "title110371416"
+    var read bool = true
+    var expectedResponse = &librarypb.Book{
+        Name: name2,
+        Author: author,
+        Title: title,
+        Read: read,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetBook(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceGetBookError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetBook(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceListBooks(t *testing.T) {
+    var nextPageToken string = ""
+    var booksElement *librarypb.Book = &librarypb.Book{}
+    var books = []*librarypb.Book{booksElement}
+    var expectedResponse = &librarypb.ListBooksResponse{
+        NextPageToken: nextPageToken,
+        Books: books,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var filter string = "book-filter-string"
+    var request = &librarypb.ListBooksRequest{
+        Name: formattedName,
+        Filter: filter,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.ListBooks(context.Background(), request).Next()
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    want := (interface{})(expectedResponse.Books[0])
+    got := (interface{})(resp)
+    var ok bool
+
+    switch want := (want).(type) {
+    case proto.Message:
+        ok = proto.Equal(want, got.(proto.Message))
+    default:
+        ok = want == got
+    }
+    if !ok {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceListBooksError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var filter string = "book-filter-string"
+    var request = &librarypb.ListBooksRequest{
+        Name: formattedName,
+        Filter: filter,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.ListBooks(context.Background(), request).Next()
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceDeleteBook(t *testing.T) {
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.DeleteBookRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.DeleteBook(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+}
+
+func TestLibraryServiceDeleteBookError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.DeleteBookRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.DeleteBook(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+}
+func TestLibraryServiceUpdateBook(t *testing.T) {
+    var name2 string = "name2-1052831874"
+    var author string = "author-1406328437"
+    var title string = "title110371416"
+    var read bool = true
+    var expectedResponse = &librarypb.Book{
+        Name: name2,
+        Author: author,
+        Title: title,
+        Read: read,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var book *librarypb.Book = &librarypb.Book{}
+    var request = &librarypb.UpdateBookRequest{
+        Name: formattedName,
+        Book: book,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.UpdateBook(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceUpdateBookError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var book *librarypb.Book = &librarypb.Book{}
+    var request = &librarypb.UpdateBookRequest{
+        Name: formattedName,
+        Book: book,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.UpdateBook(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceMoveBook(t *testing.T) {
+    var name2 string = "name2-1052831874"
+    var author string = "author-1406328437"
+    var title string = "title110371416"
+    var read bool = true
+    var expectedResponse = &librarypb.Book{
+        Name: name2,
+        Author: author,
+        Title: title,
+        Read: read,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var request = &librarypb.MoveBookRequest{
+        Name: formattedName,
+        OtherShelfName: formattedOtherShelfName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.MoveBook(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceMoveBookError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var request = &librarypb.MoveBookRequest{
+        Name: formattedName,
+        OtherShelfName: formattedOtherShelfName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.MoveBook(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceListStrings(t *testing.T) {
+    var nextPageToken string = ""
+    var stringsElement string = "stringsElement474465855"
+    var strings = []string{stringsElement}
+    var expectedResponse = &librarypb.ListStringsResponse{
+        NextPageToken: nextPageToken,
+        Strings: strings,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var request *librarypb.ListStringsRequest = &librarypb.ListStringsRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.ListStrings(context.Background(), request).Next()
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    want := (interface{})(expectedResponse.Strings[0])
+    got := (interface{})(resp)
+    var ok bool
+
+    switch want := (want).(type) {
+    case proto.Message:
+        ok = proto.Equal(want, got.(proto.Message))
+    default:
+        ok = want == got
+    }
+    if !ok {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceListStringsError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var request *librarypb.ListStringsRequest = &librarypb.ListStringsRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.ListStrings(context.Background(), request).Next()
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceAddComments(t *testing.T) {
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var comment []byte = []byte("95")
+    var stage librarypb.Comment_Stage = librarypb.Comment_UNSET
+    var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = librarypb.SomeMessage2_SomeMessage3_CHAR
+    var commentsElement = &librarypb.Comment{
+        Comment: comment,
+        Stage: stage,
+        Alignment: alignment,
+    }
+    var comments = []*librarypb.Comment{commentsElement}
+    var request = &librarypb.AddCommentsRequest{
+        Name: formattedName,
+        Comments: comments,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.AddComments(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+}
+
+func TestLibraryServiceAddCommentsError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var comment []byte = []byte("95")
+    var stage librarypb.Comment_Stage = librarypb.Comment_UNSET
+    var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = librarypb.SomeMessage2_SomeMessage3_CHAR
+    var commentsElement = &librarypb.Comment{
+        Comment: comment,
+        Stage: stage,
+        Alignment: alignment,
+    }
+    var comments = []*librarypb.Comment{commentsElement}
+    var request = &librarypb.AddCommentsRequest{
+        Name: formattedName,
+        Comments: comments,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.AddComments(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+}
+func TestLibraryServiceGetBookFromArchive(t *testing.T) {
+    var name2 string = "name2-1052831874"
+    var author string = "author-1406328437"
+    var title string = "title110371416"
+    var read bool = true
+    var expectedResponse = &librarypb.BookFromArchive{
+        Name: name2,
+        Author: author,
+        Title: title,
+        Read: read,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE_PATH]", "[BOOK_ID]")
+    var request = &librarypb.GetBookFromArchiveRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetBookFromArchive(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceGetBookFromArchiveError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE_PATH]", "[BOOK_ID]")
+    var request = &librarypb.GetBookFromArchiveRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetBookFromArchive(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
+    var name2 string = "name2-1052831874"
+    var author string = "author-1406328437"
+    var title string = "title110371416"
+    var read bool = true
+    var expectedResponse = &librarypb.BookFromAnywhere{
+        Name: name2,
+        Author: author,
+        Title: title,
+        Read: read,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var formattedAltBookName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookFromAnywhereRequest{
+        Name: formattedName,
+        AltBookName: formattedAltBookName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetBookFromAnywhere(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var formattedAltBookName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookFromAnywhereRequest{
+        Name: formattedName,
+        AltBookName: formattedAltBookName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetBookFromAnywhere(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceGetBookFromAbsolutelyAnywhere(t *testing.T) {
+    var name2 string = "name2-1052831874"
+    var author string = "author-1406328437"
+    var title string = "title110371416"
+    var read bool = true
+    var expectedResponse = &librarypb.BookFromAnywhere{
+        Name: name2,
+        Author: author,
+        Title: title,
+        Read: read,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookFromAbsolutelyAnywhereRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetBookFromAbsolutelyAnywhere(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceGetBookFromAbsolutelyAnywhereError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookFromAbsolutelyAnywhereRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetBookFromAbsolutelyAnywhere(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceUpdateBookIndex(t *testing.T) {
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var indexName string = "default index"
+    var indexMapItem string = "indexMapItem1918721251"
+    var indexMap = map[string]string{
+        "default_key": indexMapItem,
+    }
+    var request = &librarypb.UpdateBookIndexRequest{
+        Name: formattedName,
+        IndexName: indexName,
+        IndexMap: indexMap,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.UpdateBookIndex(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+}
+
+func TestLibraryServiceUpdateBookIndexError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var indexName string = "default index"
+    var indexMapItem string = "indexMapItem1918721251"
+    var indexMap = map[string]string{
+        "default_key": indexMapItem,
+    }
+    var request = &librarypb.UpdateBookIndexRequest{
+        Name: formattedName,
+        IndexName: indexName,
+        IndexMap: indexMap,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.UpdateBookIndex(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+}
+func TestLibraryServiceStreamShelves(t *testing.T) {
+    var shelvesElement *librarypb.Shelf = &librarypb.Shelf{}
+    var shelves = []*librarypb.Shelf{shelvesElement}
+    var expectedResponse = &librarypb.StreamShelvesResponse{
+        Shelves: shelves,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var request *librarypb.StreamShelvesRequest = &librarypb.StreamShelvesRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.StreamShelves(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.Recv()
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceStreamShelvesError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var request *librarypb.StreamShelvesRequest = &librarypb.StreamShelvesRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.StreamShelves(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.Recv()
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceStreamBooks(t *testing.T) {
+    var name2 string = "name2-1052831874"
+    var author string = "author-1406328437"
+    var title string = "title110371416"
+    var read bool = true
+    var expectedResponse = &librarypb.Book{
+        Name: name2,
+        Author: author,
+        Title: title,
+        Read: read,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var name string = "name3373707"
+    var request = &librarypb.StreamBooksRequest{
+        Name: name,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.StreamBooks(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.Recv()
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceStreamBooksError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var name string = "name3373707"
+    var request = &librarypb.StreamBooksRequest{
+        Name: name,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.StreamBooks(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.Recv()
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceDiscussBook(t *testing.T) {
+    var userName string = "userName339340927"
+    var comment []byte = []byte("95")
+    var expectedResponse = &librarypb.Comment{
+        UserName: userName,
+        Comment: comment,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var name string = "name3373707"
+    var request = &librarypb.DiscussBookRequest{
+        Name: name,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.DiscussBook(context.Background())
+    if err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.Send(request); err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.CloseSend(); err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.Recv()
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceDiscussBookError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var name string = "name3373707"
+    var request = &librarypb.DiscussBookRequest{
+        Name: name,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.DiscussBook(context.Background())
+    if err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.Send(request); err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.CloseSend(); err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.Recv()
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceMonologAboutBook(t *testing.T) {
+    var userName string = "userName339340927"
+    var comment []byte = []byte("95")
+    var expectedResponse = &librarypb.Comment{
+        UserName: userName,
+        Comment: comment,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var name string = "name3373707"
+    var request = &librarypb.DiscussBookRequest{
+        Name: name,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.MonologAboutBook(context.Background())
+    if err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.Send(request); err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.CloseAndRecv()
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceMonologAboutBookError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var name string = "name3373707"
+    var request = &librarypb.DiscussBookRequest{
+        Name: name,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.MonologAboutBook(context.Background())
+    if err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.Send(request); err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.CloseAndRecv()
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceFindRelatedBooks(t *testing.T) {
+    var nextPageToken string = ""
+    var namesElement2 string = "namesElement21120252792"
+    var names2 = []string{namesElement2}
+    var expectedResponse = &librarypb.FindRelatedBooksResponse{
+        NextPageToken: nextPageToken,
+        Names: names2,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var namesElement string = "namesElement-249113339"
+    var names = []string{namesElement}
+    var shelves []string = nil
+    var request = &librarypb.FindRelatedBooksRequest{
+        Names: names,
+        Shelves: shelves,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.FindRelatedBooks(context.Background(), request).Next()
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    want := (interface{})(expectedResponse.Names[0])
+    got := (interface{})(resp)
+    var ok bool
+
+    switch want := (want).(type) {
+    case proto.Message:
+        ok = proto.Equal(want, got.(proto.Message))
+    default:
+        ok = want == got
+    }
+    if !ok {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceFindRelatedBooksError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var namesElement string = "namesElement-249113339"
+    var names = []string{namesElement}
+    var shelves []string = nil
+    var request = &librarypb.FindRelatedBooksRequest{
+        Names: names,
+        Shelves: shelves,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.FindRelatedBooks(context.Background(), request).Next()
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLabelerAddLabel(t *testing.T) {
+    var expectedResponse *taggerpb.AddLabelResponse = &taggerpb.AddLabelResponse{}
+
+    mockLabeler.err = nil
+    mockLabeler.reqs = nil
+
+    mockLabeler.resps = append(mockLabeler.resps[:0], expectedResponse)
+
+    var formattedResource string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var label string = "label102727412"
+    var request = &taggerpb.AddLabelRequest{
+        Resource: formattedResource,
+        Label: label,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.addLabel(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLabeler.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLabelerAddLabelError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLabeler.err = gstatus.Error(errCode, "test error")
+
+    var formattedResource string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var label string = "label102727412"
+    var request = &taggerpb.AddLabelRequest{
+        Resource: formattedResource,
+        Label: label,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.addLabel(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceGetBigBook(t *testing.T) {
+    var name2 string = "name2-1052831874"
+    var author string = "author-1406328437"
+    var title string = "title110371416"
+    var read bool = true
+    var expectedResponse = &librarypb.Book{
+        Name: name2,
+        Author: author,
+        Title: title,
+        Read: read,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    any, err := ptypes.MarshalAny(expectedResponse)
+    if err != nil {
+        t.Fatal(err)
+    }
+    mockLibrary.resps = append(mockLibrary.resps[:0], &longrunningpb.Operation{
+        Name: "longrunning-test",
+        Done: true,
+        Result: &longrunningpb.Operation_Response{ Response: any },
+    })
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    respLRO, err := c.GetBigBook(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    resp, err := respLRO.Wait(context.Background())
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceGetBigBookError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = nil
+    mockLibrary.resps = append(mockLibrary.resps[:0], &longrunningpb.Operation{
+        Name: "longrunning-test",
+        Done: true,
+        Result: &longrunningpb.Operation_Error{
+            Error: &status.Status{
+                Code: int32(errCode),
+                Message: "test error",
+            },
+        },
+    })
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    respLRO, err := c.GetBigBook(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    resp, err := respLRO.Wait(context.Background())
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceGetBigNothing(t *testing.T) {
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    any, err := ptypes.MarshalAny(expectedResponse)
+    if err != nil {
+        t.Fatal(err)
+    }
+    mockLibrary.resps = append(mockLibrary.resps[:0], &longrunningpb.Operation{
+        Name: "longrunning-test",
+        Done: true,
+        Result: &longrunningpb.Operation_Response{ Response: any },
+    })
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    respLRO, err := c.GetBigNothing(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    err = respLRO.Wait(context.Background())
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+}
+
+func TestLibraryServiceGetBigNothingError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = nil
+    mockLibrary.resps = append(mockLibrary.resps[:0], &longrunningpb.Operation{
+        Name: "longrunning-test",
+        Done: true,
+        Result: &longrunningpb.Operation_Error{
+            Error: &status.Status{
+                Code: int32(errCode),
+                Message: "test error",
+            },
+        },
+    })
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    respLRO, err := c.GetBigNothing(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    err = respLRO.Wait(context.Background())
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+}
+func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
+    var expectedResponse *librarypb.TestOptionalRequiredFlatteningParamsResponse = &librarypb.TestOptionalRequiredFlatteningParamsResponse{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var requiredSingularInt32 int32 = 72313594
+    var requiredSingularInt64 int64 = 72313499
+    var requiredSingularFloat float32 = -7514705.0
+    var requiredSingularDouble float64 = 1.9111005E8
+    var requiredSingularBool bool = true
+    var requiredSingularEnum librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerEnum = librarypb.TestOptionalRequiredFlatteningParamsRequest_ZERO
+    var requiredSingularString string = "requiredSingularString-1949894503"
+    var requiredSingularBytes []byte = []byte("-29")
+    var requiredSingularMessage *librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = &librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage{}
+    var requiredSingularResourceName string = "requiredSingularResourceName-1701575020"
+    var requiredSingularResourceNameOneof string = "requiredSingularResourceNameOneof-25303726"
+    var requiredSingularResourceNameCommon string = "requiredSingularResourceNameCommon-1126805002"
+    var requiredSingularFixed32 int32 = 720656715
+    var requiredSingularFixed64 int64 = 720656810
+    var requiredRepeatedInt32 []int32 = nil
+    var requiredRepeatedInt64 []int64 = nil
+    var requiredRepeatedFloat []float32 = nil
+    var requiredRepeatedDouble []float64 = nil
+    var requiredRepeatedBool []bool = nil
+    var requiredRepeatedEnum []librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerEnum = nil
+    var requiredRepeatedString []string = nil
+    var requiredRepeatedBytes [][]byte = nil
+    var requiredRepeatedMessage []*librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = nil
+    var formattedRequiredRepeatedResourceName []string = nil
+    var formattedRequiredRepeatedResourceNameOneof []string = nil
+    var requiredRepeatedResourceNameCommon []string = nil
+    var requiredRepeatedFixed32 []int32 = nil
+    var requiredRepeatedFixed64 []int64 = nil
+    var requiredMap map[int32]string = nil
+    var request = &librarypb.TestOptionalRequiredFlatteningParamsRequest{
+        RequiredSingularInt32: requiredSingularInt32,
+        RequiredSingularInt64: requiredSingularInt64,
+        RequiredSingularFloat: requiredSingularFloat,
+        RequiredSingularDouble: requiredSingularDouble,
+        RequiredSingularBool: requiredSingularBool,
+        RequiredSingularEnum: requiredSingularEnum,
+        RequiredSingularString: requiredSingularString,
+        RequiredSingularBytes: requiredSingularBytes,
+        RequiredSingularMessage: requiredSingularMessage,
+        RequiredSingularResourceName: requiredSingularResourceName,
+        RequiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+        RequiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
+        RequiredSingularFixed32: requiredSingularFixed32,
+        RequiredSingularFixed64: requiredSingularFixed64,
+        RequiredRepeatedInt32: requiredRepeatedInt32,
+        RequiredRepeatedInt64: requiredRepeatedInt64,
+        RequiredRepeatedFloat: requiredRepeatedFloat,
+        RequiredRepeatedDouble: requiredRepeatedDouble,
+        RequiredRepeatedBool: requiredRepeatedBool,
+        RequiredRepeatedEnum: requiredRepeatedEnum,
+        RequiredRepeatedString: requiredRepeatedString,
+        RequiredRepeatedBytes: requiredRepeatedBytes,
+        RequiredRepeatedMessage: requiredRepeatedMessage,
+        RequiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
+        RequiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+        RequiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
+        RequiredRepeatedFixed32: requiredRepeatedFixed32,
+        RequiredRepeatedFixed64: requiredRepeatedFixed64,
+        RequiredMap: requiredMap,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.TestOptionalRequiredFlatteningParams(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var requiredSingularInt32 int32 = 72313594
+    var requiredSingularInt64 int64 = 72313499
+    var requiredSingularFloat float32 = -7514705.0
+    var requiredSingularDouble float64 = 1.9111005E8
+    var requiredSingularBool bool = true
+    var requiredSingularEnum librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerEnum = librarypb.TestOptionalRequiredFlatteningParamsRequest_ZERO
+    var requiredSingularString string = "requiredSingularString-1949894503"
+    var requiredSingularBytes []byte = []byte("-29")
+    var requiredSingularMessage *librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = &librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage{}
+    var requiredSingularResourceName string = "requiredSingularResourceName-1701575020"
+    var requiredSingularResourceNameOneof string = "requiredSingularResourceNameOneof-25303726"
+    var requiredSingularResourceNameCommon string = "requiredSingularResourceNameCommon-1126805002"
+    var requiredSingularFixed32 int32 = 720656715
+    var requiredSingularFixed64 int64 = 720656810
+    var requiredRepeatedInt32 []int32 = nil
+    var requiredRepeatedInt64 []int64 = nil
+    var requiredRepeatedFloat []float32 = nil
+    var requiredRepeatedDouble []float64 = nil
+    var requiredRepeatedBool []bool = nil
+    var requiredRepeatedEnum []librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerEnum = nil
+    var requiredRepeatedString []string = nil
+    var requiredRepeatedBytes [][]byte = nil
+    var requiredRepeatedMessage []*librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = nil
+    var formattedRequiredRepeatedResourceName []string = nil
+    var formattedRequiredRepeatedResourceNameOneof []string = nil
+    var requiredRepeatedResourceNameCommon []string = nil
+    var requiredRepeatedFixed32 []int32 = nil
+    var requiredRepeatedFixed64 []int64 = nil
+    var requiredMap map[int32]string = nil
+    var request = &librarypb.TestOptionalRequiredFlatteningParamsRequest{
+        RequiredSingularInt32: requiredSingularInt32,
+        RequiredSingularInt64: requiredSingularInt64,
+        RequiredSingularFloat: requiredSingularFloat,
+        RequiredSingularDouble: requiredSingularDouble,
+        RequiredSingularBool: requiredSingularBool,
+        RequiredSingularEnum: requiredSingularEnum,
+        RequiredSingularString: requiredSingularString,
+        RequiredSingularBytes: requiredSingularBytes,
+        RequiredSingularMessage: requiredSingularMessage,
+        RequiredSingularResourceName: requiredSingularResourceName,
+        RequiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+        RequiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
+        RequiredSingularFixed32: requiredSingularFixed32,
+        RequiredSingularFixed64: requiredSingularFixed64,
+        RequiredRepeatedInt32: requiredRepeatedInt32,
+        RequiredRepeatedInt64: requiredRepeatedInt64,
+        RequiredRepeatedFloat: requiredRepeatedFloat,
+        RequiredRepeatedDouble: requiredRepeatedDouble,
+        RequiredRepeatedBool: requiredRepeatedBool,
+        RequiredRepeatedEnum: requiredRepeatedEnum,
+        RequiredRepeatedString: requiredRepeatedString,
+        RequiredRepeatedBytes: requiredRepeatedBytes,
+        RequiredRepeatedMessage: requiredRepeatedMessage,
+        RequiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
+        RequiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+        RequiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
+        RequiredRepeatedFixed32: requiredRepeatedFixed32,
+        RequiredRepeatedFixed64: requiredRepeatedFixed64,
+        RequiredMap: requiredMap,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.TestOptionalRequiredFlatteningParams(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}

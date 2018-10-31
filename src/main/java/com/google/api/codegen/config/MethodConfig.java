@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.FlatteningGroupProto;
-import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
@@ -62,8 +60,6 @@ public abstract class MethodConfig {
 
   @Nullable
   public abstract BatchingConfig getBatching();
-
-  public abstract boolean hasRequestObjectMethod();
 
   public abstract ImmutableMap<String, String> getFieldNamePatterns();
 
@@ -173,37 +169,6 @@ public abstract class MethodConfig {
       fieldsBuilder.add(requiredField);
     }
     return fieldsBuilder.build();
-  }
-
-  @Nullable
-  static ImmutableList<FlatteningConfig> createFlattening(
-      DiagCollector diagCollector,
-      ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      MethodConfigProto methodConfigProto,
-      MethodModel method) {
-    boolean missing = false;
-    ImmutableList.Builder<FlatteningConfig> flatteningGroupsBuilder = ImmutableList.builder();
-    for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
-      FlatteningConfig groupConfig =
-          FlatteningConfig.createFlattening(
-              diagCollector,
-              messageConfigs,
-              resourceNameConfigs,
-              methodConfigProto,
-              flatteningGroup,
-              method);
-      if (groupConfig == null) {
-        missing = true;
-      } else {
-        flatteningGroupsBuilder.add(groupConfig);
-      }
-    }
-    if (missing) {
-      return null;
-    }
-
-    return flatteningGroupsBuilder.build();
   }
 
   static ImmutableList<FieldConfig> createFieldNameConfigs(

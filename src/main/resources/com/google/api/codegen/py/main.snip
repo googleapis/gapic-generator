@@ -27,7 +27,7 @@
 
 
         @end
-        SERVICE_ADDRESS = '{@api.serviceAddress}:{@api.servicePort}'
+        SERVICE_ADDRESS = '{@api.serviceHostname}:{@api.servicePort}'
         """The default address of the service."""
 
         @# The name of the interface for this client. This is the key used to
@@ -161,7 +161,7 @@
             def {@apiMethod.name}(
                     {@renderMethodParams(apiMethod.methodParams)}):
                 """
-                @join line : util.trimDocs(apiMethod.doc.mainDocLines)
+                @join line : apiMethod.doc.mainDocLines
                     {@line}
                 @end
 
