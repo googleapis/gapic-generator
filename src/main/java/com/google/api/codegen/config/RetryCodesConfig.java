@@ -17,7 +17,6 @@ package com.google.api.codegen.config;
 import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
 
-import com.google.api.Retry;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
@@ -31,7 +30,6 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.rpc.Code;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -224,41 +222,20 @@ public class RetryCodesConfig {
         continue;
       }
 
-      Retry retry = protoParser.getRetry(method);
-      Set<String> retryCodes = new TreeSet<>();
-
+      String retryCodesName;
       if (protoParser.isHttpGetMethod(method)) {
-        // If this is analogous to HTTP GET, then automatically retry on `INTERNAL` and
-        // `UNAVAILABLE`.
-        retryCodes.addAll(RETRY_CODES_FOR_HTTP_GET);
-      }
-
-      if (retry.getCodesCount() == 0) {
-        String retryCodesName;
-        if (protoParser.isHttpGetMethod(method)) {
-          // It is a common case to have an HTTP GET method with no extra codes to retry on,
-          // so let's put them all under the same retry code name.
-          retryCodesName = httpGetRetryName;
-          retryCodesDefinition.put(httpGetRetryName, RETRY_CODES_FOR_HTTP_GET);
-        } else {
-          // It is a common case to have a method with no codes to retry on,
-          // so let's put these methods all under the same retry code name.
-          retryCodesName = noRetryName;
-          retryCodesDefinition.put(noRetryName, ImmutableList.of());
-        }
-
-        methodRetryNames.put(method.getSimpleName(), retryCodesName);
-
+        // It is a common case to have an HTTP GET method with no extra codes to retry on,
+        // so let's put them all under the same retry code name.
+        retryCodesName = httpGetRetryName;
+        retryCodesDefinition.put(httpGetRetryName, RETRY_CODES_FOR_HTTP_GET);
       } else {
-        // Add all retry codes defined in the Retry proto annotation.
-        retryCodes.addAll(
-            retry.getCodesList().stream().map(Code::name).collect(Collectors.toList()));
-
-        // Create a retryCode config internally.
-        String retryCodesName = symbolTable.getNewSymbol(getRetryCodesName(method));
-        methodRetryNames.put(method.getSimpleName(), retryCodesName);
-        retryCodesDefinition.put(retryCodesName, ImmutableList.copyOf(retryCodes));
+        // It is a common case to have a method with no codes to retry on,
+        // so let's put these methods all under the same retry code name.
+        retryCodesName = noRetryName;
+        retryCodesDefinition.put(noRetryName, ImmutableList.of());
       }
+
+      methodRetryNames.put(method.getSimpleName(), retryCodesName);
     }
   }
 
