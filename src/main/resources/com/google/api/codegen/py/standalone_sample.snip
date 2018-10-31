@@ -239,7 +239,7 @@
     print('{@view.format}')
   @else
     @if view.format == "{}"
-      print({@variableField(view.args.get(0))})
+      print({@printVariableField(view.args.get(0))})
     @else
       print('{@view.format}'.format({@commaSeparatedFields(view.args)}))
     @end
@@ -262,10 +262,19 @@
 
 @private commaSeparatedFields(args)
   @join arg : args on ", "
-    @if arg.type.isEnum
-      enums.EnumName({@variableField(arg)}).name
-    @else
-      {@variableField(arg)}
+    {@printVariableField(arg)}
+  @end
+@end
+
+@private printVariableField(arg)
+  @join segment : arg.segments on ""
+    @switch segment.kind
+      @case "TEXT"
+        {@segment.text}
+      @case "VARIABLE"
+        {@variableField(segment.variable)}
+      @default
+        $unhandledPrintArgView: arg
     @end
   @end
 @end

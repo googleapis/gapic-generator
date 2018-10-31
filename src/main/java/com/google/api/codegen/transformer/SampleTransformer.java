@@ -249,7 +249,7 @@ public class SampleTransformer {
         }
 
         ImmutableList<OutputView> outputViews =
-            OutputTransformer.toViews(outputs, methodContext, valueSet);
+            outputTransformer.toViews(outputs, methodContext, valueSet);
 
         methodSampleViews.add(
             MethodSampleView.newBuilder()

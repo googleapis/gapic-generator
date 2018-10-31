@@ -1208,9 +1208,11 @@ class LibraryServiceClient(object):
             )
 
         if client_info is None:
-            client_info = (
-                google.api_core.gapic_v1.client_info.DEFAULT_CLIENT_INFO)
-        client_info.gapic_version = _GAPIC_LIBRARY_VERSION
+            client_info = google.api_core.gapic_v1.client_info.ClientInfo(
+                gapic_version=_GAPIC_LIBRARY_VERSION,
+            )
+        else:
+            client_info.gapic_version = _GAPIC_LIBRARY_VERSION
         self._client_info = client_info
 
         # Parse out the default settings for retry and timeout for each RPC
@@ -4376,7 +4378,7 @@ def sample_monolog_about_book():
 
   requests = [request]
   response = client.monolog_about_book(requests)
-  print('The stage of the comment is: {}'.format(enums.EnumName(response.stage).name))
+  print('The stage of the comment is: {}'.format(enums.Comment.Stage(response.stage).name))
 
   # [END sample_core]
 # [END sample]
