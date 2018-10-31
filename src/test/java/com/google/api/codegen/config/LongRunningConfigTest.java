@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.OperationData;
 import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
@@ -25,7 +26,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SymbolTable;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.longrunning.OperationTypes;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -84,9 +84,9 @@ public class LongRunningConfigTest {
 
     Mockito.when(protoParser.getLongRunningOperation(lroAnnotatedMethod))
         .thenReturn(
-            OperationTypes.newBuilder()
-                .setMetadata(ANNOTATIONS_METADATA_TYPE)
-                .setResponse(ANNOTATIONS_RETURN_TYPE_NAME)
+            OperationData.newBuilder()
+                .setMetadataType(ANNOTATIONS_METADATA_TYPE)
+                .setResponseType(ANNOTATIONS_RETURN_TYPE_NAME)
                 .build());
 
     Mockito.when(symbolTable.lookupType(GAPIC_CONFIG_METADATA_TYPE))
