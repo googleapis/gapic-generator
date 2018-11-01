@@ -356,12 +356,8 @@ public abstract class FlatteningConfig {
               defaultResourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }
-    String flatteningName = methodSignature.getFunctionName();
-    if (Strings.isNullOrEmpty(flatteningName)) {
-      flatteningName = flatteningGroupProto.getFlatteningGroupName();
-    }
 
-    return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build(), flatteningName);
+    return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build(), null);
   }
 
   public Collection<FieldModel> getFlattenedFields() {

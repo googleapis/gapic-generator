@@ -17,9 +17,9 @@ package com.google.api.codegen.util;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.MethodSignature;
+import com.google.api.OperationData;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
-import com.google.api.Retry;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.protoannotations.GapicCodeGeneratorAnnotationsTest;
 import com.google.api.tools.framework.model.Field;
@@ -29,8 +29,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
-import com.google.longrunning.OperationTypes;
-import com.google.rpc.Code;
 import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -136,13 +134,12 @@ public class ProtoParserTest {
         book.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
     ResourceSet bookResourceSet = protoParser.getResourceSet(bookNameField);
     assertThat(bookResourceSet).isNotNull();
-    assertThat(bookResourceSet.getBaseName()).isEqualTo("book_oneof");
-    assertThat(bookResourceSet.getResourcesCount()).isEqualTo(3);
+    assertThat(bookResourceSet.getName()).isEqualTo("book_oneof");
+    assertThat(bookResourceSet.getResourcesCount()).isEqualTo(2);
     assertThat(bookResourceSet.getResources(0))
-        .isEqualTo(Resource.newBuilder().setBaseName("book").setPath("shelves/*/books/*").build());
+        .isEqualTo(Resource.newBuilder().setName("book").setPath("shelves/*/books/*").build());
     assertThat(bookResourceSet.getResources(2))
-        .isEqualTo(
-            Resource.newBuilder().setBaseName("deleted_book").setPath("_deleted-book_").build());
+        .isEqualTo(Resource.newBuilder().setName("deleted_book").setPath("_deleted-book_").build());
   }
 
   @Test
@@ -180,22 +177,14 @@ public class ProtoParserTest {
 
   @Test
   public void testGetLongRunningOperation() {
-    OperationTypes operationTypes = protoParser.getLongRunningOperation(getBigBookMethod);
+    OperationData operationTypes = protoParser.getLongRunningOperation(getBigBookMethod);
 
-    OperationTypes expected =
-        OperationTypes.newBuilder()
-            .setResponse("google.example.library.v1.Book")
-            .setMetadata("google.example.library.v1.GetBigBookMetadata")
+    OperationData expected =
+        OperationData.newBuilder()
+            .setResponseType("google.example.library.v1.Book")
+            .setMetadataType("google.example.library.v1.GetBigBookMetadata")
             .build();
     assertThat(operationTypes).isEqualTo(expected);
-  }
-
-  @Test
-  public void testGetRetryOnExplicitRetryCodes() {
-    Retry deleteShelfRetry = protoParser.getRetry(deleteShelfMethod);
-    Retry expectedDeleteShelfRetry =
-        Retry.newBuilder().addCodes(Code.UNAVAILABLE).addCodes(Code.DEADLINE_EXCEEDED).build();
-    assertThat(deleteShelfRetry).isEqualTo(expectedDeleteShelfRetry);
   }
 
   @Test

@@ -75,7 +75,7 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
   @Nullable
   static FixedResourceNameConfig createFixedResourceNameConfig(
       DiagCollector diagCollector, Field field, Resource resource, ProtoParser protoParser) {
-    String entityName = resource.getBaseName();
+    String entityName = resource.getName();
     if (Strings.isNullOrEmpty(entityName)) {
       entityName = protoParser.getResourceEntityName(field);
     }

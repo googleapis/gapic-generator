@@ -121,11 +121,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     List<ResourceNameConfig> configList = new ArrayList<>();
     boolean gotSingleResourceName = false;
     List<String> resourceNames =
-        resourceSet
-            .getResourcesList()
-            .stream()
-            .map(Resource::getBaseName)
-            .collect(Collectors.toList());
+        resourceSet.getResourcesList().stream().map(Resource::getName).collect(Collectors.toList());
     for (String entityName : resourceNames) {
       if (Strings.isNullOrEmpty(entityName)) {
         diagCollector.addDiag(

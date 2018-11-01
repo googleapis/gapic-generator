@@ -14,11 +14,14 @@
  */
 package com.google.api.codegen.util;
 
+import static com.google.api.FieldBehavior.REQUIRED;
+
 import com.google.api.AnnotationsProto;
+import com.google.api.FieldBehavior;
 import com.google.api.MethodSignature;
+import com.google.api.OperationData;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
-import com.google.api.Retry;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -27,11 +30,8 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.longrunning.OperationTypes;
-import com.google.longrunning.OperationsProto;
 import com.google.protobuf.Api;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -63,7 +63,7 @@ public class ProtoParser {
     return null;
   }
 
-  /** Return the entity name, e.g. "shelf", for a field with resource_type. */
+  /** Return the entity name, e.g. "shelf", for a field with resource_reference. */
   public String getResourceTypeEntityName(Field field) {
     String resourceName = getResourceType(field);
     if (!Strings.isNullOrEmpty(resourceName)) {
@@ -77,7 +77,7 @@ public class ProtoParser {
       if (resourceParts.length > 2) {
         throw new IllegalArgumentException(
             String.format(
-                "Field %s has resource_type '%s', which has too many ':' characters.",
+                "Field %s has resource_reference '%s', which has too many ':' characters.",
                 field.getSimpleName(), resourceName));
       }
       if (resourceParts.length == 2) {
@@ -130,8 +130,8 @@ public class ProtoParser {
   // TODO(andrealin): Remove this method.
   public String getResourceEntityName(Field field, String defaultEntityName) {
     Resource resource = getResource(field);
-    if (resource != null && !Strings.isNullOrEmpty(resource.getBaseName())) {
-      return resource.getBaseName();
+    if (resource != null && !Strings.isNullOrEmpty(resource.getName())) {
+      return resource.getName();
     }
     return defaultEntityName;
   }
@@ -144,17 +144,18 @@ public class ProtoParser {
   /** Return the entity name, e.g. "shelf" for a resource set field. */
   public String getResourceSetEntityName(Field field) {
     ResourceSet resourceSet = getResourceSet(field);
-    if (resourceSet != null && !Strings.isNullOrEmpty(resourceSet.getBaseName())) {
-      return resourceSet.getBaseName();
+    if (resourceSet != null && !Strings.isNullOrEmpty(resourceSet.getName())) {
+      return resourceSet.getName();
     }
     return getDefaultResourceEntityName(field);
   }
 
   /** Get long running settings. */
-  public OperationTypes getLongRunningOperation(Method method) {
-    return method.getDescriptor().getMethodAnnotation(OperationsProto.operationTypes);
+  public OperationData getLongRunningOperation(Method method) {
+    return method.getDescriptor().getMethodAnnotation(AnnotationsProto.operation);
   }
 
+  @SuppressWarnings("unchecked")
   /* Return a list of method signatures, aka flattenings, specified on a given method.
    * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
   public List<MethodSignature> getMethodSignatures(Method method) {
@@ -162,14 +163,10 @@ public class ProtoParser {
       return ImmutableList.of();
     }
     // Variable methodSignature will always be nonnull, so we had to check for presence above.
-    MethodSignature methodSignature =
-        method.getDescriptor().getMethodAnnotation(AnnotationsProto.methodSignature);
-    // Let's only recurse once when we look for additional MethodSignatures.
-    List<MethodSignature> additionalSignatures = methodSignature.getAdditionalSignaturesList();
-    return ImmutableList.<MethodSignature>builder()
-        .add(methodSignature)
-        .addAll(additionalSignatures)
-        .build();
+    List<MethodSignature> methodSignatures =
+        (List<MethodSignature>)
+            method.getOptionFields().get(AnnotationsProto.methodSignature.getDescriptor());
+    return ImmutableList.<MethodSignature>builder().addAll(methodSignatures).build();
   }
 
   /** Return the names of required parameters of a method. */
@@ -183,21 +180,18 @@ public class ProtoParser {
         .collect(Collectors.toList());
   }
 
-  /** Returns if a field is required, according to the proto annotations. */
+  @SuppressWarnings("unchecked")
+  /* Returns if a field is required, according to the proto annotations. */
   private boolean isFieldRequired(Field field) {
-    return Optional.ofNullable(
-            (Boolean) field.getOptionFields().get(AnnotationsProto.required.getDescriptor()))
-        .orElse(false);
-  }
-
-  /** Return the extra retry codes for the given method. */
-  public Retry getRetry(Method method) {
-    return method.getDescriptor().getMethodAnnotation(AnnotationsProto.retry);
+    List<FieldBehavior> fieldBehaviors =
+        (List<FieldBehavior>)
+            field.getOptionFields().get(AnnotationsProto.fieldBehavior.getDescriptor());
+    return fieldBehaviors != null && fieldBehaviors.contains(REQUIRED.getValueDescriptor());
   }
 
   /** Return the resource type for the given field, according to the proto annotations. */
   public String getResourceType(Field field) {
-    return (String) field.getOptionFields().get(AnnotationsProto.resourceType.getDescriptor());
+    return (String) field.getOptionFields().get(AnnotationsProto.resourceReference.getDescriptor());
   }
 
   /** Return whether the method has the HttpRule for GET. */
