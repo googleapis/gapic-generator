@@ -69,6 +69,7 @@ public class ProtoParser {
     return method.getDescriptor().getMethodAnnotation(AnnotationsProto.operation);
   }
 
+  @SuppressWarnings("unchecked")
   /* Return a list of method signatures, aka flattenings, specified on a given method.
    * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
   public List<MethodSignature> getMethodSignatures(Method method) {
@@ -93,7 +94,8 @@ public class ProtoParser {
         .collect(Collectors.toList());
   }
 
-  /** Returns if a field is required, according to the proto annotations. */
+  @SuppressWarnings("unchecked")
+  /* Returns if a field is required, according to the proto annotations. */
   private boolean isFieldRequired(Field field) {
     List<FieldBehavior> fieldBehaviors =
         (List<FieldBehavior>)
