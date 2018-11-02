@@ -73,13 +73,12 @@ public class ProtoParser {
   /* Return a list of method signatures, aka flattenings, specified on a given method.
    * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
   public List<MethodSignature> getMethodSignatures(Method method) {
-    if (!method.getOptionFields().containsKey(AnnotationsProto.methodSignature.getDescriptor())) {
-      return ImmutableList.of();
-    }
-    // Variable methodSignature will always be nonnull, so we had to check for presence above.
     List<MethodSignature> methodSignatures =
         (List<MethodSignature>)
             method.getOptionFields().get(AnnotationsProto.methodSignature.getDescriptor());
+    if (methodSignatures == null) {
+      return ImmutableList.of();
+    }
     return ImmutableList.<MethodSignature>builder().addAll(methodSignatures).build();
   }
 
