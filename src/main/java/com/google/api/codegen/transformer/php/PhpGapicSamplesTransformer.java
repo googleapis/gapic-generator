@@ -39,6 +39,7 @@ import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.Collections;
@@ -101,6 +102,12 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
                 callingForm,
                 valueSet);
         String sampleOutputPath = subPath + File.separator + namer.getApiSampleFileName(className);
+        String autoloadPath =
+            "__DIR__ . '"
+                + Strings.repeat(
+                    "/..",
+                    (int) sampleOutputPath.chars().filter(c -> c == File.separatorChar).count())
+                + "/vendor/autoload.php'";
         generatedSamples.addFile(
             sampleOutputPath, method.name(), callingForm, valueSet, methodSample.regionTag());
         viewModels.add(
@@ -114,6 +121,7 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
                 .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
                 .extraInfo(
                     PhpSampleExtraInfo.newBuilder()
+                        .autoloadPath(autoloadPath)
                         .hasDefaultServiceScopes(
                             context.getInterfaceConfig().hasDefaultServiceScopes())
                         .hasDefaultServiceAddress(
@@ -131,6 +139,8 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
     abstract boolean hasDefaultServiceAddress();
 
     abstract boolean hasDefaultServiceScopes();
+
+    public abstract String autoloadPath();
 
     public boolean missingDefaultServiceScopes() {
       return !hasDefaultServiceScopes();
@@ -154,6 +164,8 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
       abstract Builder hasDefaultServiceAddress(boolean val);
 
       abstract Builder hasDefaultServiceScopes(boolean val);
+
+      abstract Builder autoloadPath(String val);
 
       abstract PhpSampleExtraInfo build();
     }
