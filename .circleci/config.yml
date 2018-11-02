@@ -465,6 +465,29 @@ jobs:
           paths:
             - gapic-generator/artman-genfiles
             - reports
+  compute-discovery-test:
+    # Generate the Discovery Compute client and run its tests.
+    working_directory: /tmp/
+    docker:
+      - image: circleci/buildpack-deps:14.04
+#      - image: circleci/buildpack-deps:14.04-curl-browsers-legacy
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Download Discovery files
+          command: git clone --single-branch https://github.com/googleapis/discovery-artifact-manager/.git discovery
+      - run:
+          name: Download bazel
+          command: |
+            wget -O bazel https://github.com/bazelbuild/bazel/releases/download/0.17.1/bazel-0.17.1-linux-x86_64
+            chmod 755 bazel
+      - run:
+          name: Generate and build the compute/v1 client
+          command: ./bazel build --experimental_enable_repo_mapping //gapic/google/compute/v1:compute_java_gapic
+      - run:
+          name: Test the generate Compute client
+          command: ./bazel test --experimental_enable_repo_mapping //gapic/google/compute/v1:all
   java-openjdk8-test:
     working_directory: /tmp/
     environment:
@@ -682,43 +705,7 @@ workflows:
     jobs:
       - install-gapic-generator
       - test-baselines
-      - test-gapic-generator:
-          requires:
-            - test-baselines
-      - generate-clients:
-          requires:
-            - install-gapic-generator
-      - java-openjdk8-test:
-          requires:
-            - generate-clients
-      - python-test:
-          requires:
-            - generate-clients
-      - ruby-2.4-test:
-          requires:
-            - generate-clients
-      - python-system-test:
-          requires:
-            - generate-clients
-          filters:
-            branches:
-              only: master
-      - ruby-2.4-system-test:
-          requires:
-            - generate-clients
-          filters:
-            branches:
-              only: master
-      - php-7.2-test:
-          requires:
-            - generate-clients
-      # TODO: Other php versions
-      - go-1.10-test:
-          requires:
-            - generate-clients
-      - nodejs-8-test:
-          requires:
-            - generate-clients
+      - compute-discovery-test
 
 machine:
   services:
