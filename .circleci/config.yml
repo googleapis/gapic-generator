@@ -468,9 +468,13 @@ jobs:
   compute-discovery-test:
     # Generate the Discovery Compute client and run its tests.
     working_directory: /tmp/
+    environment:
+      # Options that before the target command in bazel. Reduce memory usage to avoid OOM errors.
+      BAZEL_STARTUP_OPTIONS: --host_jvm_args=-Xmx1g --host_jvm_args=-Xms512m  --experimental_enable_repo_mapping
+      # Options that go after the target command in bazel.
+      BAZEL_STANDARD_OPTIONS: --local_resources 1600,1.0,1.0 --jobs=5
     docker:
       - image: circleci/openjdk:8-jdk
-#      - image: circleci/buildpack-deps:14.04-curl-browsers-legacy
     steps:
       - attach_workspace:
           at: workspace
@@ -487,12 +491,12 @@ jobs:
           name: Generate and build the compute/v1 client
           command: |
             cd discovery
-            ./bazel build --experimental_enable_repo_mapping //gapic/google/compute/v1:compute_java_gapic
+            ./bazel $BAZEL_STARTUP_OPTIONS build//gapic/google/compute/v1:compute_java_gapic $BAZEL_STANDARD_OPTIONS
       - run:
           name: Test the generate Compute client
           command: |
             cd discovery
-            ./bazel test --experimental_enable_repo_mapping //gapic/google/compute/v1:all
+            ./bazel test $BAZEL_STARTUP_OPTIONS //gapic/google/compute/v1:all $BAZEL_STANDARD_OPTIONS
   java-openjdk8-test:
     working_directory: /tmp/
     environment:
