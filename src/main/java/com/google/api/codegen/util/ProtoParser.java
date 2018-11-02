@@ -79,7 +79,7 @@ public class ProtoParser {
     if (methodSignatures == null) {
       return ImmutableList.of();
     }
-    return ImmutableList.<MethodSignature>builder().addAll(methodSignatures).build();
+    return ImmutableList.copyOf(methodSignatures);
   }
 
   /** Return the names of required parameters of a method. */
