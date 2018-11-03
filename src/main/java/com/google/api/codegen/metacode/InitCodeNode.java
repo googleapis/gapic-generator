@@ -18,6 +18,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -51,6 +52,7 @@ public class InitCodeNode {
   private Name identifier;
   private OneofConfig oneofConfig;
   private String varName;
+  private SampleParameterConfig sampleParamConfig;
 
   /*
    * Get the key associated with the node. For InitCodeNode objects that are not a root object, they
@@ -194,6 +196,7 @@ public class InitCodeNode {
     }
 
     root.resolveNamesAndTypes(context, context.initObjectType(), context.suggestedName(), null);
+    root.resolveSampleParamConfigs(context.sampleParamConfigMap(), "");
     return root;
   }
 
@@ -362,6 +365,34 @@ public class InitCodeNode {
       default:
         throw new IllegalArgumentException("unexpected InitcodeLineType: " + lineType);
     }
+  }
+
+  /**
+   * Attach {@code sampleParamConfig} to the nodes in this tree. Also sets lineType to {@code
+   * InitCodeLineType.ReadFileInitLine} if specified in {@code sampleParamConfig}.
+   *
+   * @param parentFieldPath The full path of the parent object of {@code typeRef}. Set to empty
+   *     string if {@code typeRef} is a top level proto object. We need to keep track of this
+   *     because the keys in {@code sampleParamConfigMap} are full paths while {@code key} is the
+   *     simple field name.
+   */
+  private void resolveSampleParamConfigs(
+      ImmutableMap<String, SampleParameterConfig> sampleParamConfigMap, String parentFieldPath) {
+    String fieldPath;
+    if ("root".equals(key)) {
+      fieldPath = "";
+    } else if (parentFieldPath.isEmpty()) {
+      fieldPath = key;
+    } else {
+      fieldPath = parentFieldPath + "." + key;
+    }
+    this.sampleParamConfig = sampleParamConfigMap.get(fieldPath);
+    if (sampleParamConfig != null && sampleParamConfig.readFromFile()) {
+      setLineType(InitCodeLineType.ReadFileInitLine);
+    }
+    children
+        .values()
+        .forEach(child -> child.resolveSampleParamConfigs(sampleParamConfigMap, fieldPath));
   }
 
   private static Name getChildSuggestedName(

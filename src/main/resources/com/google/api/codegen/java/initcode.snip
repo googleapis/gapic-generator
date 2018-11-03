@@ -22,6 +22,8 @@
       {@initLineMap(line)}
     @case "SimpleInitLine"
       {@initLineSimple(line)}
+    @case "ReadFileInitLine"
+      {@initLineReadFile(line)}
     @default
       $unhandledCase: {@line.lineType.toString}$
     @end
@@ -52,6 +54,13 @@
   {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue)};
 @end
 
+@private initLineReadFile(line)
+  String fileName = {@renderInitValue(line.fileName)};
+  Path path = Paths.get(fileName);
+  byte[] data = Files.readAllBytes(path);
+  {@line.typeName} {@line.identifier} = ByteString.copyFrom(data);
+@end
+
 @snippet renderInitValue(initValue)
   @switch initValue.type
   @case "SimpleInitValueView"
@@ -64,6 +73,8 @@
     {@renderResourceName(initValue.specificResourceNameView)}
   @case "RepeatedResourceNameInitValueView"
     new ArrayList<>()
+  @case "FileInitValueView"
+    {@renderFileInitValueView(initValue)}
   @default
     $unhandledCase: {@initValue.type}$
   @end
@@ -87,3 +98,8 @@
     .{@fieldSetting.formatMethodName}()
   @end
 @end
+
+@private renderFileInitValueView(initValue)
+   ByteString.copyFrom(Files.readAllBytes(Paths.get(initValue.filePath)))
+@end
+

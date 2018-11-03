@@ -7255,14 +7255,16 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 //         className: "DiscussBookCallableCallableStreamingBidiProg"
 //          valueSet: "prog" ("Programming Books")
 //       description: "Testing calling forms"
-//        [name=BASIC]
+//        [name=BASIC, comment.comment=comment_file]
 //      apiMethod "discussBookCallable" of type "CallableMethod"
 
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 package com.google.gcloud.pubsub.v1;
 
+import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.DiscussBookRequest;
+import com.google.protobuf.ByteString;
 
 public class DiscussBookCallableCallableStreamingBidiProg {
   public static void sampleDiscussBook() {
@@ -7272,8 +7274,16 @@ public class DiscussBookCallableCallableStreamingBidiProg {
           libraryClient.discussBookCallable().call();
 
       String name = "BASIC";
+      String fileName = "comment_file";
+      Path path = Paths.get(fileName);
+      byte[] data = Files.readAllBytes(path);
+      ByteString comment = ByteString.copyFrom(data);
+      Comment comment2 = Comment.newBuilder()
+        .setComment(comment)
+        .build();
       DiscussBookRequest request = DiscussBookRequest.newBuilder()
         .setName(name)
+        .setComment(comment2)
         .build();
       bidiStream.send(request);
       for (Comment responseItem : bidiStream) {

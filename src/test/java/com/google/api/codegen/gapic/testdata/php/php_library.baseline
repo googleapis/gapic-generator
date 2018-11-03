@@ -2748,6 +2748,7 @@ return [
 require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\Comment;
 use Google\Example\Library\V1\DiscussBookRequest;
 
 function sampleDiscussBook()
@@ -2757,8 +2758,12 @@ function sampleDiscussBook()
     $libraryServiceClient = new LibraryServiceClient();
 
     $name = 'BASIC';
+    $comment = file_get_contents('comment_file');
+    $comment2 = new Comment();
+    $comment2->setComment($comment);
     $request = new DiscussBookRequest();
     $request->setName($name);
+    $request->setComment($comment2);
 
     try {
         // Write requests individually, making read() calls if
@@ -2813,6 +2818,7 @@ sampleDiscussBook();
 require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\Comment;
 use Google\Example\Library\V1\DiscussBookRequest;
 
 function sampleDiscussBook()
@@ -2822,8 +2828,12 @@ function sampleDiscussBook()
     $libraryServiceClient = new LibraryServiceClient();
 
     $name = 'BASIC';
+    $comment = file_get_contents('comment_file');
+    $comment2 = new Comment();
+    $comment2->setComment($comment);
     $request = new DiscussBookRequest();
     $request->setName($name);
+    $request->setComment($comment2);
 
     try {
         // Write all requests to the server, then read all responses until the
