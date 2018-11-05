@@ -219,7 +219,7 @@ Python Client for Google Example Library API (`Production/Stable`_)
 
 .. _Production/Stable: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/README.rst
 .. _Google Example Library API: https://cloud.google.com/library
-.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library/usage.html
+.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/latest/library/usage.html
 .. _Product Documentation:  https://cloud.google.com/library
 
 Quick Start
@@ -235,7 +235,7 @@ In order to use this library, you first need to go through the following steps:
 .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
 .. _Enable billing for your project.: https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project
 .. _Enable the Google Example Library API.:  https://cloud.google.com/library
-.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/core/auth.html
+.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/latest/core/auth.html
 
 Installation
 ~~~~~~~~~~~~
@@ -647,7 +647,7 @@ Python Client for Google Example Library API (`Production/Stable`_)
 
 .. _Production/Stable: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/README.rst
 .. _Google Example Library API: https://cloud.google.com/library
-.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library/usage.html
+.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/latest/library/usage.html
 .. _Product Documentation:  https://cloud.google.com/library
 
 Quick Start
@@ -663,7 +663,7 @@ In order to use this library, you first need to go through the following steps:
 .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
 .. _Enable billing for your project.: https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project
 .. _Enable the Google Example Library API.:  https://cloud.google.com/library
-.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/core/auth.html
+.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/latest/core/auth.html
 
 Installation
 ~~~~~~~~~~~~
@@ -1380,7 +1380,7 @@ class LibraryServiceClient(object):
             >>> # Alternatively:
             >>>
             >>> # Iterate over results one page at a time
-            >>> for page in client.list_shelves(options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.list_shelves().pages:
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -1777,7 +1777,7 @@ class LibraryServiceClient(object):
             >>> # Alternatively:
             >>>
             >>> # Iterate over results one page at a time
-            >>> for page in client.list_books(name, filter=filter_, options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.list_books(name, filter=filter_).pages:
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -2044,7 +2044,7 @@ class LibraryServiceClient(object):
             >>> # Alternatively:
             >>>
             >>> # Iterate over results one page at a time
-            >>> for page in client.list_strings(options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.list_strings().pages:
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -2640,7 +2640,7 @@ class LibraryServiceClient(object):
             >>> # Alternatively:
             >>>
             >>> # Iterate over results one page at a time
-            >>> for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.find_related_books(names, shelves).pages:
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -3527,6 +3527,8 @@ class LibraryServiceGrpcTransport(object):
                 credentials=credentials,
             )
 
+        self._channel = channel
+
         # gRPC uses objects called "stubs" that are bound to the
         # channel and provide a basic method for each RPC.
         self._stubs = {
@@ -3562,6 +3564,15 @@ class LibraryServiceGrpcTransport(object):
             credentials=credentials,
             scopes=cls._OAUTH_SCOPES,
         )
+
+    @property
+    def channel(self):
+        """The gRPC channel used by the transport.
+
+        Returns:
+            grpc.Channel: A gRPC channel object.
+        """
+        return self._channel
 
     @property
     def create_shelf(self):
@@ -4260,7 +4271,7 @@ def sample_find_related_books():
   shelves = [shelves_element]
 
   # Iterate over results one page at a time
-  for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
+  for page in client.find_related_books(names, shelves).pages:
       for response_item in page:
           book = response_item
           print('Here\'s a related book: {}'.format(book))
