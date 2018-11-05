@@ -353,6 +353,30 @@ jobs:
             - googleapis
             - showcase-protos
             - showcase-protos-patched
+  gapic-generator-bazel-test:
+    working_directory: /tmp/workspace
+    environment:
+      TEST_REPORTS_DIR: /tmp/workspace/bazel/reports/gapic-generator
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout:
+          path: gapic-generator
+      - run:
+          name: Make reports directory
+          command: |
+            mkdir -p ${TEST_REPORTS_DIR}
+      - run:
+          name: Run unit tests for gapic-generator
+          command: |
+            cd gapic-generator
+            bazel test //...
+            find . -type f -regex ".*/bazel-testlogs/.*xml" -exec cp {} ${TEST_REPORTS_DIR} \;
+          when: always
+      - store_test_results:
+          path: bazel/reports/gapic-generator
+      - store_artifacts:
+          path: bazel/reports/gapic-generator
   test-gapic-generator:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -676,6 +700,9 @@ workflows:
   run_generated_tests:
     jobs:
       - install-gapic-generator
+      - gapic-generator-bazel-test:
+          requires:
+            - install-gapic-generator
       - test-gapic-generator:
           requires:
             - install-gapic-generator
