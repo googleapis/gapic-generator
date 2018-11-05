@@ -17,7 +17,7 @@ package com.google.api.codegen.util;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.MethodSignature;
-import com.google.api.Retry;
+import com.google.api.OperationData;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.protoannotations.GapicCodeGeneratorAnnotationsTest;
 import com.google.api.tools.framework.model.Field;
@@ -27,8 +27,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
-import com.google.longrunning.OperationTypes;
-import com.google.rpc.Code;
 import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -116,22 +114,14 @@ public class ProtoParserTest {
 
   @Test
   public void getLongRunningOperation() {
-    OperationTypes operationTypes = protoParser.getLongRunningOperation(getBigBookMethod);
+    OperationData operationTypes = protoParser.getLongRunningOperation(getBigBookMethod);
 
-    OperationTypes expected =
-        OperationTypes.newBuilder()
-            .setResponse("google.example.library.v1.Book")
-            .setMetadata("google.example.library.v1.GetBigBookMetadata")
+    OperationData expected =
+        OperationData.newBuilder()
+            .setResponseType("google.example.library.v1.Book")
+            .setMetadataType("google.example.library.v1.GetBigBookMetadata")
             .build();
     assertThat(operationTypes).isEqualTo(expected);
-  }
-
-  @Test
-  public void testGetRetryOnExplicitRetryCodes() {
-    Retry deleteShelfRetry = protoParser.getRetry(deleteShelfMethod);
-    Retry expectedDeleteShelfRetry =
-        Retry.newBuilder().addCodes(Code.UNAVAILABLE).addCodes(Code.DEADLINE_EXCEEDED).build();
-    assertThat(deleteShelfRetry).isEqualTo(expectedDeleteShelfRetry);
   }
 
   @Test
