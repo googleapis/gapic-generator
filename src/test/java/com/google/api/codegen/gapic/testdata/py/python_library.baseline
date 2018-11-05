@@ -1380,7 +1380,7 @@ class LibraryServiceClient(object):
             >>> # Alternatively:
             >>>
             >>> # Iterate over results one page at a time
-            >>> for page in client.list_shelves(options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.list_shelves().pages:
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -1777,7 +1777,7 @@ class LibraryServiceClient(object):
             >>> # Alternatively:
             >>>
             >>> # Iterate over results one page at a time
-            >>> for page in client.list_books(name, filter=filter_, options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.list_books(name, filter=filter_).pages:
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -2044,7 +2044,7 @@ class LibraryServiceClient(object):
             >>> # Alternatively:
             >>>
             >>> # Iterate over results one page at a time
-            >>> for page in client.list_strings(options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.list_strings().pages:
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -2640,7 +2640,7 @@ class LibraryServiceClient(object):
             >>> # Alternatively:
             >>>
             >>> # Iterate over results one page at a time
-            >>> for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.find_related_books(names, shelves).pages:
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -4260,7 +4260,7 @@ def sample_find_related_books():
   shelves = [shelves_element]
 
   # Iterate over results one page at a time
-  for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
+  for page in client.find_related_books(names, shelves).pages:
       for response_item in page:
           book = response_item
           print('Here\'s a related book: {}'.format(book))
