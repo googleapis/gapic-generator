@@ -901,6 +901,7 @@ public class JavaSurfaceTransformer {
       case GRPC:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStubCallableFactory");
+        typeTable.saveNicknameFor("com.google.longrunning.Operation");
         typeTable.saveNicknameFor("com.google.longrunning.stub.OperationsStub");
         break;
       case HTTP:
