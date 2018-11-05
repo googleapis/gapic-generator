@@ -896,7 +896,6 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.PagedCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.BatchingCallSettings");
-    typeTable.saveNicknameFor("com.google.longrunning.Operation");
 
     switch (context.getProductConfig().getTransportProtocol()) {
       case GRPC:
