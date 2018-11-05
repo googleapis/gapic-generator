@@ -167,8 +167,7 @@ public class GoGapicSurfaceTransformerTest {
   public void testExampleImports() {
     transformer.addXExampleImports(context, context.getSupportedMethods());
     Truth.assertThat(context.getImportTypeTable().getImports())
-        .containsEntry(
-            "golang.org/x/net/context", TypeAlias.create("golang.org/x/net/context", ""));
+        .containsEntry("context", TypeAlias.create("context", ""));
     Truth.assertThat(context.getImportTypeTable().getImports())
         .containsEntry(
             "cloud.google.com/go/gopher/apiv1",
