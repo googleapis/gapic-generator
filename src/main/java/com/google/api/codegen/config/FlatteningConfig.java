@@ -314,8 +314,7 @@ public abstract class FlatteningConfig {
               messageConfigs, resourceNameConfigs, parameterField, resourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }
-    return new AutoValue_FlatteningConfig(
-        flattenedFieldConfigBuilder.build(), methodSignature.getFunctionName());
+    return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build(), null);
   }
 
   public Iterable<FieldModel> getFlattenedFields() {
