@@ -15,10 +15,8 @@
 package com.google.api.codegen.util;
 
 import static com.google.api.FieldBehavior.REQUIRED;
-import static com.google.api.FieldBehavior.REQUIRED_VALUE;
 
 import com.google.api.AnnotationsProto;
-import com.google.api.FieldBehavior;
 import com.google.api.MethodSignature;
 import com.google.api.OperationData;
 import com.google.api.Resource;
