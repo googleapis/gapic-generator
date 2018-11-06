@@ -269,9 +269,9 @@
           @@Override
           public Iterable<{@desc.resourceTypeName}> extractResources({@desc.responseTypeName} payload) {
             @if desc.resourcesFieldIsMap
-              return payload.{@desc.resourcesFieldGetFunction}().values();
+              return payload.{@desc.resourcesFieldGetFunction}()!=null? payload.{@desc.resourcesFieldGetFunction}().values():Collections.<{@desc.resourceTypeName}>emptyList();
             @else
-              return payload.{@desc.resourcesFieldGetFunction}();
+              return payload.{@desc.resourcesFieldGetFunction}()!=null?payload.{@desc.resourcesFieldGetFunction}():Collections.<{@desc.resourceTypeName}>emptyList();
             @end
           }
         };
