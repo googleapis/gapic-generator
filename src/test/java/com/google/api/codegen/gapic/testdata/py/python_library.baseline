@@ -1144,8 +1144,7 @@ class LibraryServiceClient(object):
         )
 
     def __init__(self, transport=None, channel=None, credentials=None,
-            client_config=library_service_client_config.config,
-            client_info=None):
+            client_config=None, client_info=None):
         """Constructor.
 
         Args:
@@ -1177,12 +1176,16 @@ class LibraryServiceClient(object):
                 your own client library.
         """
         # Raise deprecation warnings for things we want to go away.
-        if client_config:
+        if client_config is not None:
             warnings.warn('The `client_config` argument is deprecated.',
-                          PendingDeprecationWarning)
+                          PendingDeprecationWarning, stacklevel=2)
+        else:
+            client_config = library_service_client_config.config
+
         if channel:
             warnings.warn('The `channel` argument is deprecated; use '
-                          '`transport` instead.', PendingDeprecationWarning)
+                          '`transport` instead.',
+                          PendingDeprecationWarning, stacklevel=2)
 
         # Instantiate the transport.
         # The transport is responsible for handling serialization and
@@ -4075,7 +4078,7 @@ def unit(session, py):
     session.virtualenv_dirname = 'unit-' + py
 
     # Install all test dependencies, then install this package in-place.
-    session.install('pytest')
+    session.install('pytest', 'mock')
     session.install('-e', '.')
 
     # Run py.test against the unit tests.
@@ -4783,6 +4786,7 @@ class TestSystemLibraryService(object):
 
 """Unit tests."""
 
+import mock
 import pytest
 
 from google.rpc import status_pb2
@@ -4856,8 +4860,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         shelf = {}
@@ -4873,8 +4879,10 @@ class TestLibraryServiceClient(object):
     def test_create_shelf_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         shelf = {}
@@ -4892,8 +4900,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.shelf_path('[SHELF_ID]')
@@ -4910,8 +4920,10 @@ class TestLibraryServiceClient(object):
     def test_get_shelf_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.shelf_path('[SHELF_ID]')
@@ -4930,8 +4942,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         paged_list_response = client.list_shelves()
         resources = list(paged_list_response)
@@ -4946,8 +4960,10 @@ class TestLibraryServiceClient(object):
 
     def test_list_shelves_exception(self):
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         paged_list_response = client.list_shelves()
         with pytest.raises(CustomException):
@@ -4955,8 +4971,10 @@ class TestLibraryServiceClient(object):
 
     def test_delete_shelf(self):
         channel = ChannelStub()
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.shelf_path('[SHELF_ID]')
@@ -4971,8 +4989,10 @@ class TestLibraryServiceClient(object):
     def test_delete_shelf_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.shelf_path('[SHELF_ID]')
@@ -4990,8 +5010,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.shelf_path('[SHELF_ID]')
@@ -5008,8 +5030,10 @@ class TestLibraryServiceClient(object):
     def test_merge_shelves_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.shelf_path('[SHELF_ID]')
@@ -5029,8 +5053,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.shelf_path('[SHELF_ID]')
@@ -5047,8 +5073,10 @@ class TestLibraryServiceClient(object):
     def test_create_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.shelf_path('[SHELF_ID]')
@@ -5066,8 +5094,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         shelf = {}
@@ -5086,8 +5116,10 @@ class TestLibraryServiceClient(object):
     def test_publish_series_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         shelf = {}
@@ -5109,8 +5141,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5126,8 +5160,10 @@ class TestLibraryServiceClient(object):
     def test_get_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5145,8 +5181,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.shelf_path('[SHELF_ID]')
@@ -5165,8 +5203,10 @@ class TestLibraryServiceClient(object):
 
     def test_list_books_exception(self):
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.shelf_path('[SHELF_ID]')
@@ -5178,8 +5218,10 @@ class TestLibraryServiceClient(object):
 
     def test_delete_book(self):
         channel = ChannelStub()
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5194,8 +5236,10 @@ class TestLibraryServiceClient(object):
     def test_delete_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5214,8 +5258,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5232,8 +5278,10 @@ class TestLibraryServiceClient(object):
     def test_update_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5253,8 +5301,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5271,8 +5321,10 @@ class TestLibraryServiceClient(object):
     def test_move_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5291,8 +5343,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         paged_list_response = client.list_strings()
         resources = list(paged_list_response)
@@ -5307,8 +5361,10 @@ class TestLibraryServiceClient(object):
 
     def test_list_strings_exception(self):
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         paged_list_response = client.list_strings()
         with pytest.raises(CustomException):
@@ -5316,8 +5372,10 @@ class TestLibraryServiceClient(object):
 
     def test_add_comments(self):
         channel = ChannelStub()
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5337,8 +5395,10 @@ class TestLibraryServiceClient(object):
     def test_add_comments_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5362,8 +5422,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
@@ -5379,8 +5441,10 @@ class TestLibraryServiceClient(object):
     def test_get_book_from_archive_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
@@ -5399,8 +5463,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5417,8 +5483,10 @@ class TestLibraryServiceClient(object):
     def test_get_book_from_anywhere_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5438,8 +5506,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5455,8 +5525,10 @@ class TestLibraryServiceClient(object):
     def test_get_book_from_absolutely_anywhere_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5466,8 +5538,10 @@ class TestLibraryServiceClient(object):
 
     def test_update_book_index(self):
         channel = ChannelStub()
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5485,8 +5559,10 @@ class TestLibraryServiceClient(object):
     def test_update_book_index_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5506,8 +5582,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [iter([expected_response])])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
 
         response = client.stream_shelves()
@@ -5523,8 +5601,10 @@ class TestLibraryServiceClient(object):
     def test_stream_shelves_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         with pytest.raises(CustomException):
             client.stream_shelves()
@@ -5540,8 +5620,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [iter([expected_response])])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
 
         # Setup Request
@@ -5560,8 +5642,10 @@ class TestLibraryServiceClient(object):
     def test_stream_books_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = 'name3373707'
@@ -5578,8 +5662,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [iter([expected_response])])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = 'name3373707'
@@ -5601,8 +5687,10 @@ class TestLibraryServiceClient(object):
     def test_discuss_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = 'name3373707'
@@ -5623,8 +5711,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = 'name3373707'
@@ -5644,8 +5734,10 @@ class TestLibraryServiceClient(object):
     def test_monolog_about_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = 'name3373707'
@@ -5667,8 +5759,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         names_element = 'namesElement-249113339'
@@ -5688,8 +5782,10 @@ class TestLibraryServiceClient(object):
 
     def test_find_related_books_exception(self):
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         names_element = 'namesElement-249113339'
@@ -5707,8 +5803,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5725,8 +5823,10 @@ class TestLibraryServiceClient(object):
     def test_add_tag_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5742,8 +5842,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5760,8 +5862,10 @@ class TestLibraryServiceClient(object):
     def test_add_label_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5783,8 +5887,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses=[operation])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5807,8 +5913,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses=[operation])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5826,8 +5934,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses=[operation])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5850,8 +5960,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses=[operation])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5867,8 +5979,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         required_singular_int32 = 72313594
@@ -5912,8 +6026,10 @@ class TestLibraryServiceClient(object):
     def test_test_optional_required_flattening_params_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         required_singular_int32 = 72313594

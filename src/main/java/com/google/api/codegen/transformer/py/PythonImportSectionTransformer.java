@@ -224,7 +224,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private List<ImportFileView> generateTestStandardImports() {
-    return ImmutableList.of(createImport("pytest"));
+    ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
+    imports.add(createImport("mock"));
+    imports.add(createImport("pytest"));
+    return imports.build();
   }
 
   private List<ImportFileView> generateSmokeTestStandardImports(boolean requireProjectId) {
