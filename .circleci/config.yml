@@ -474,11 +474,21 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
+      - checkout
+         path: gapic-generator
       - attach_workspace:
           at: workspace
       - run:
           name: Download Discovery files
           command: git clone --single-branch https://github.com/googleapis/discovery-artifact-manager.git discovery
+      - run:
+          name: Use local gapic-generator
+          command: |
+            cd discovery
+            rm -rf toolkit
+            cp ../gapic-generator toolkit
+            cd toolkit
+            ./gradlew fatJar install
       - run:
           name: Download bazel into the discovery dir
           command: |
