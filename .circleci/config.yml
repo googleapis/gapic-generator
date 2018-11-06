@@ -469,6 +469,8 @@ jobs:
     # Generate the Discovery Compute client and run its tests.
     working_directory: /tmp/
     environment:
+      # The bazel targets use a lot of memory, and CircleCI instances don't have many resources.
+      BAZEL_STARTUP_OPTIONS: --host_jvm_args=-Xmx2g --host_jvm_args=-Xms1024m
       # Options that go after the target command in bazel.
       BAZEL_STANDARD_OPTIONS: --jobs=5 --verbose_failures --sandbox_debug --java_debug
     docker:
@@ -499,12 +501,12 @@ jobs:
           name: Generate and build the compute/v1 client
           command: |
             cd discovery
-            ./bazel build --experimental_enable_repo_mapping //gapic/google/compute/v1:compute_java_gapic $BAZEL_STANDARD_OPTIONS
+            ./bazel $BAZEL_STARTUP_OPTIONS build --experimental_enable_repo_mapping //gapic/google/compute/v1:compute_java_gapic $BAZEL_STANDARD_OPTIONS
       - run:
           name: Test the generate Compute client
           command: |
             cd discovery
-            ./bazel test --experimental_enable_repo_mapping //gapic/google/compute/v1:all $BAZEL_STANDARD_OPTIONS
+            ./bazel $BAZEL_STARTUP_OPTIONS test --experimental_enable_repo_mapping //gapic/google/compute/v1:all $BAZEL_STANDARD_OPTIONS
   java-openjdk8-test:
     working_directory: /tmp/
     environment:
