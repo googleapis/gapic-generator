@@ -366,6 +366,30 @@ jobs:
             go run $(find testutils/check-calling-form-in-baseline -type f | grep -v _test) -yaml src/test/java/com/google/api/codegen/testsrc/libraryproto/library_gapic.yaml src/test
             go test testutils/check-lang-uses-form/*.go
             go run $(find testutils/check-lang-uses-form -type f | grep -v _test) -forms src/main/java/com/google/api/codegen/viewmodel/CallingForm.java src/test
+  gapic-generator-bazel-test:
+    working_directory: /tmp/workspace
+    environment:
+      TEST_REPORTS_DIR: /tmp/workspace/bazel/reports/gapic-generator
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout:
+          path: gapic-generator
+      - run:
+          name: Make reports directory
+          command: |
+            mkdir -p ${TEST_REPORTS_DIR}
+      - run:
+          name: Run unit tests for gapic-generator
+          command: |
+            cd gapic-generator
+            bazel test //...
+            find . -type f -regex ".*/bazel-testlogs/.*xml" -exec cp {} ${TEST_REPORTS_DIR} \;
+          when: always
+      - store_test_results:
+          path: bazel/reports/gapic-generator
+      - store_artifacts:
+          path: bazel/reports/gapic-generator
   test-gapic-generator:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -721,6 +745,9 @@ workflows:
       - install-gapic-generator
       - test-baselines
       - compute-discovery-test:
+          requires:
+            - install-gapic-generator
+      - gapic-generator-bazel-test:
           requires:
             - install-gapic-generator
       - test-gapic-generator:
