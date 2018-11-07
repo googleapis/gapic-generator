@@ -470,8 +470,9 @@ jobs:
     working_directory: /tmp/
     environment:
       # The bazel targets use a lot of memory, and CircleCI instances don't have many resources.
+      BAZEL_STARTUP_OPTIONS: --host_jvm_args=-Xmx512m --host_jvm_args=-Xms512m
       # Options that go after the target command in bazel.
-      BAZEL_STANDARD_OPTIONS: --verbose_failures --sandbox_debug --java_debug  --experimental_enable_repo_mapping
+      BAZEL_STANDARD_OPTIONS: --jobs=5 --verbose_failures --sandbox_debug --java_debug  --experimental_enable_repo_mapping
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
@@ -500,7 +501,7 @@ jobs:
           name: Generate and build the compute/v1 client using local gapic-generator
           command: |
             cd discovery
-            ./bazel build \
+            ./bazel $BAZEL_STARTUP_OPTIONS build \
                 --override_repository='com_google_api_codegen=/tmp/gapic-generator' \
                 //gapic/google/compute/v1:compute_java_gapic \
                 $BAZEL_STANDARD_OPTIONS
@@ -508,7 +509,7 @@ jobs:
           name: Test the generate Compute client
           command: |
             cd discovery
-            ./bazel test \
+            ./bazel $BAZEL_STARTUP_OPTIONS test \
                 --override_repository='com_google_api_codegen=/tmp/gapic-generator' \
                 //gapic/google/compute/v1:all \
                 $BAZEL_STANDARD_OPTIONS
