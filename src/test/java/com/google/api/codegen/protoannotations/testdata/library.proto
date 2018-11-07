@@ -31,6 +31,21 @@ option (google.api.metadata) = {
   package_namespace: ["Google", "Example"]
 };
 
+option (google.api.resource_definition) = {
+  name: "project"
+  path: "projects/{project}"
+};
+
+option (google.api.resource_definition) = {
+  name: "book"
+  path : "shelves/{shelf_id}/books/{book_id}"
+};
+
+option (google.api.resource_definition) = {
+  name: "archived_book"
+  path : "archives/{archive_path}/books/{book_id=**}"
+};
+
 // This API represents a simple digital library.  It lets you manage Shelf
 // resources and Book resources in the library. It defines the following
 // resource model:
@@ -437,8 +452,7 @@ message BookFromArchive {
   // Book names have the form `archives/{archive_id}/books/{book_id}`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    // TODO(andrealin): Make this refer only to the archived_book path.
-    (google.api.resource_reference) = "google.example.library.v1.Book"];
+    (google.api.resource_reference) = "archived_book"];
 
   // The name of the book author.
   string author = 2;
@@ -498,7 +512,7 @@ message Shelf {
   // Shelf names have the form `shelves/{shelf_id}`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource).path = "shelves/*"];
+    (google.api.resource).path = "shelves/{shelf_id}"];
 
   // The theme of the shelf
   string theme = 2;
@@ -519,7 +533,7 @@ message GetShelfRequest {
   // The name of the shelf to retrieve.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = "google.example.library.v1.Shelf"];
+    (google.api.resource_reference) = "Shelf"];
 
   // Field to verify that message-type query parameter gets flattened.
   SomeMessage message = 2;
@@ -567,7 +581,7 @@ message StreamShelvesRequest {
 message StreamShelvesResponse {
   // The list of shelves.
   repeated Shelf shelves = 1 [
-    (google.api.resource_reference) = "google.example.library.v1.Shelf"];
+    (google.api.resource_reference) = "Shelf"];
 }
 
 // Request message for LibraryService.DeleteShelf.
@@ -575,7 +589,7 @@ message DeleteShelfRequest {
   // The name of the shelf to delete.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = "google.example.library.v1.Shelf"];
+    (google.api.resource_reference) = "Shelf"];
 }
 
 // Describes the shelf being removed (other_shelf_name) and updated
@@ -647,8 +661,7 @@ message GetBookRequest {
   // The name of the book to retrieve.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    // TODO(andrealin): Make this refer only to the book resource.
-    (google.api.resource_reference) = "google.example.library.v1.Book"];
+    (google.api.resource_reference) = "book"];
 }
 
 // Request message for LibraryService.ListBooks.
@@ -697,8 +710,7 @@ message UpdateBookRequest {
   // The name of the book to update.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    // TODO(andrealin): Make this refer only to the book path.
-    (google.api.resource_reference) = "google.example.library.v1.Book"];
+    (google.api.resource_reference) = "book"];
 
   // An optional foo.
   string optional_foo = 2;
@@ -720,8 +732,7 @@ message DeleteBookRequest {
   // The name of the book to delete.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    // TODO(andrealin): Make this refer only to the book path.
-    (google.api.resource_reference) = "google.example.library.v1.Book"];
+    (google.api.resource_reference) = "book"];
 }
 
 // Describes what book to move (name) and what shelf we're moving it
@@ -752,8 +763,7 @@ message ListStringsResponse {
 message AddCommentsRequest {
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    // TODO(andrealin): Make this refer only to the archived_book path.
-    (google.api.resource_reference) = "google.example.library.v1.Book"];
+    (google.api.resource_reference) = "archived_book"];
 
   repeated Comment comments = 2 [
     (google.api.field_behavior) = REQUIRED];
@@ -785,8 +795,7 @@ message GetBookFromArchiveRequest {
   // The name of the book to retrieve.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    // TODO(andrealin): Make this refer only to the archived_book path.
-    (google.api.resource_reference) = "google.example.library.v1.Book"];
+    (google.api.resource_reference) = "archived_book"];
 }
 
 // Request message for LibraryService.GetBookFromAnywhere.
@@ -799,8 +808,7 @@ message GetBookFromAnywhereRequest {
   // An alternate book name, used to test restricting flattened field to a
   // single resource name type in a oneof.
   string alt_book_name = 2 [
-    // TODO(andrealin): Make this refer only to the book path.
-    (google.api.resource_reference) = "google.example.library.v1.Book"];
+    (google.api.resource_reference) = "book"];
 }
 
 // Request message for LibraryService.GetBookFromAbsolutelyAnywhere.
@@ -816,8 +824,7 @@ message UpdateBookIndexRequest {
   // The name of the book to update.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    // TODO(andrealin): Make this refer only to the book path.
-    (google.api.resource_reference) = "google.example.library.v1.Book"];
+    (google.api.resource_reference) = "book"];
 
   // The name of the index for the book
   string index_name = 2 [
@@ -843,8 +850,7 @@ message DiscussBookRequest {
 message FindRelatedBooksRequest {
   repeated string names = 1 [
     (google.api.field_behavior) = REQUIRED,
-    // TODO(andrealin): Make this refer only to the book path.
-    (google.api.resource_reference) = "google.example.library.v1.Book"];
+    (google.api.resource_reference) = "book"];
   repeated string shelves = 2 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = "google.example.library.v1.Shelf"];
@@ -855,8 +861,7 @@ message FindRelatedBooksRequest {
 // Test repeated field with resource name format in page streaming response
 message FindRelatedBooksResponse {
   repeated string names = 1 [
-    // TODO(andrealin): Make this refer only to the book path.
-    (google.api.resource_reference) = "google.example.library.v1.Book"];
+    (google.api.resource_reference) = "book"];
   string next_page_token = 2;
 }
 
@@ -891,14 +896,13 @@ message TestOptionalRequiredFlatteningParamsRequest {
   bytes required_singular_bytes = 8 [(google.api.field_behavior) = REQUIRED];
   InnerMessage required_singular_message = 9 [(google.api.field_behavior) = REQUIRED];
   string required_singular_resource_name = 10 [(google.api.field_behavior) = REQUIRED,
-    // TODO(andrealin): Make this refer only to the book path.
-    (google.api.resource_reference) = "google.example.library.v1.Book"
+    (google.api.resource_reference) = "book"
   ];
   string required_singular_resource_name_oneof = 11 [(google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = "google.example.library.v1.Book"
   ];
   string required_singular_resource_name_common = 14 [(google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = "google.api.Project"
+    (google.api.resource_reference) = "project"
   ];
   fixed32 required_singular_fixed32 = 12 [(google.api.field_behavior) = REQUIRED];
   fixed64 required_singular_fixed64 = 13 [(google.api.field_behavior) = REQUIRED];
@@ -912,13 +916,12 @@ message TestOptionalRequiredFlatteningParamsRequest {
   repeated string required_repeated_string = 27 [(google.api.field_behavior) = REQUIRED];
   repeated bytes required_repeated_bytes = 28 [(google.api.field_behavior) = REQUIRED];
   repeated InnerMessage required_repeated_message = 29 [(google.api.field_behavior) = REQUIRED];
-  // TODO(andrealin): Make this refer only to the Book resource name.
   repeated string required_repeated_resource_name = 30 [(google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = "google.example.library.v1.Book"];
+    (google.api.resource_reference) = "book"];
   repeated string required_repeated_resource_name_oneof = 31 [(google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = "google.example.library.v1.Book"];
   repeated string required_repeated_resource_name_common = 34 [(google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = "google.api.Project"
+    (google.api.resource_reference) = "project"
   ];
   repeated fixed32 required_repeated_fixed32 = 32 [(google.api.field_behavior) = REQUIRED];
   repeated fixed64 required_repeated_fixed64 = 33 [(google.api.field_behavior) = REQUIRED];
@@ -935,14 +938,13 @@ message TestOptionalRequiredFlatteningParamsRequest {
   bytes optional_singular_bytes = 58;
   InnerMessage optional_singular_message = 59;
   string optional_singular_resource_name = 60 [
-    // TODO(andrealin): make this only refer to the book resource path
-    (google.api.resource_reference) = "google.example.library.v1.Book"
+    (google.api.resource_reference) = "book"
   ];
   string optional_singular_resource_name_oneof = 61 [
     (google.api.resource_reference) = "google.example.library.v1.Book"
   ];
   string optional_singular_resource_name_common = 64 [
-    (google.api.resource_reference) = "google.api.Project"
+    (google.api.resource_reference) = "project"
   ];
   fixed32 optional_singular_fixed32 = 62;
   fixed64 optional_singular_fixed64 = 63;
@@ -957,14 +959,13 @@ message TestOptionalRequiredFlatteningParamsRequest {
   repeated bytes optional_repeated_bytes = 78;
   repeated InnerMessage optional_repeated_message = 79;
   repeated string optional_repeated_resource_name = 80 [
-    // TODO(andrealin): Make this only refer to the book resource path
-    (google.api.resource_reference) = "google.example.library.v1.Book"
+    (google.api.resource_reference) = "book"
   ];
   repeated string optional_repeated_resource_name_oneof = 81 [
     (google.api.resource_reference) = "google.example.library.v1.Book"
   ];
   repeated string optional_repeated_resource_name_common = 84 [
-    (google.api.resource_reference) = "google.api.Project"
+    (google.api.resource_reference) = "project"
   ];
   repeated fixed32 optional_repeated_fixed32 = 82;
   repeated fixed64 optional_repeated_fixed64 = 83;

@@ -102,7 +102,7 @@ public class ProtoParserTest {
   public void testGetResourcePath() {
     Field shelfNameField =
         shelf.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
-    assertThat(protoParser.getResource(shelfNameField).getPath()).isEqualTo("shelves/*");
+    assertThat(protoParser.getResource(shelfNameField).getPath()).isEqualTo("shelves/{shelf_id}");
   }
 
   @Test
@@ -175,7 +175,7 @@ public class ProtoParserTest {
             .filter(f -> f.getSimpleName().equals("alt_book_name"))
             .findFirst()
             .get();
-    assertThat(protoParser.getResourceTypeEntityName(altBookNameField)).isEqualTo("book_oneof");
+    assertThat(protoParser.getResourceTypeEntityName(altBookNameField)).isEqualTo("book");
   }
 
   @Test
@@ -231,7 +231,7 @@ public class ProtoParserTest {
             .findFirst()
             .get();
     String shelfType = protoParser.getResourceType(shelves);
-    assertThat(shelfType).isEqualTo("google.example.library.v1.Shelf");
+    assertThat(shelfType).isEqualTo("Shelf");
   }
 
   @Test
