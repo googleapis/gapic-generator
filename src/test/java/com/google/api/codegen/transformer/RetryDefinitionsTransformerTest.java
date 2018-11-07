@@ -160,7 +160,7 @@ public class RetryDefinitionsTransformerTest {
     Map<String, ImmutableList<String>> retryCodesDef = retryCodesConfig.getRetryCodesDefinition();
     Map<String, String> retryCodesMap = retryCodesConfig.getMethodRetryNames();
 
-    Truth.assertThat(retryCodesMap.size()).isEqualTo(3);
+    Truth.assertThat(retryCodesMap).hasSize(3);
     String getHttpRetryName = retryCodesMap.get(GET_HTTP_METHOD_NAME);
     String nonIdempotentRetryName = retryCodesMap.get(NON_IDEMPOTENT_METHOD_NAME);
     String permissionDeniedRetryName = retryCodesMap.get(PERMISSION_DENIED_METHOD_NAME);

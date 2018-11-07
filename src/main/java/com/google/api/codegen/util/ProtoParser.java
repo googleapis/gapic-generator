@@ -31,6 +31,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Api;
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -159,14 +160,13 @@ public class ProtoParser {
   /* Return a list of method signatures, aka flattenings, specified on a given method.
    * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
   public List<MethodSignature> getMethodSignatures(Method method) {
-    if (!method.getOptionFields().containsKey(AnnotationsProto.methodSignature.getDescriptor())) {
-      return ImmutableList.of();
-    }
-    // Variable methodSignature will always be nonnull, so we had to check for presence above.
     List<MethodSignature> methodSignatures =
         (List<MethodSignature>)
             method.getOptionFields().get(AnnotationsProto.methodSignature.getDescriptor());
-    return ImmutableList.<MethodSignature>builder().addAll(methodSignatures).build();
+    if (methodSignatures == null) {
+      return ImmutableList.of();
+    }
+    return ImmutableList.copyOf(methodSignatures);
   }
 
   /** Return the names of required parameters of a method. */
@@ -183,8 +183,8 @@ public class ProtoParser {
   @SuppressWarnings("unchecked")
   /* Returns if a field is required, according to the proto annotations. */
   private boolean isFieldRequired(Field field) {
-    List<FieldBehavior> fieldBehaviors =
-        (List<FieldBehavior>)
+    List<EnumValueDescriptor> fieldBehaviors =
+        (List<EnumValueDescriptor>)
             field.getOptionFields().get(AnnotationsProto.fieldBehavior.getDescriptor());
     return fieldBehaviors != null && fieldBehaviors.contains(REQUIRED.getValueDescriptor());
   }
