@@ -137,9 +137,17 @@ public class ProtoParserTest {
     assertThat(bookResourceSet.getName()).isEqualTo("book_oneof");
     assertThat(bookResourceSet.getResourcesCount()).isEqualTo(2);
     assertThat(bookResourceSet.getResources(0))
-        .isEqualTo(Resource.newBuilder().setName("book").setPath("shelves/*/books/*").build());
-    assertThat(bookResourceSet.getResources(2))
-        .isEqualTo(Resource.newBuilder().setName("deleted_book").setPath("_deleted-book_").build());
+        .isEqualTo(
+            Resource.newBuilder()
+                .setName("book")
+                .setPath("shelves/{shelf_id}/books/{book_id}")
+                .build());
+    assertThat(bookResourceSet.getResources(1))
+        .isEqualTo(
+            Resource.newBuilder()
+                .setName("archived_book")
+                .setPath("archives/{archive_path}/books/{book_id=**}")
+                .build());
   }
 
   @Test
@@ -167,7 +175,7 @@ public class ProtoParserTest {
             .filter(f -> f.getSimpleName().equals("alt_book_name"))
             .findFirst()
             .get();
-    assertThat(protoParser.getResourceTypeEntityName(altBookNameField)).isEqualTo("book");
+    assertThat(protoParser.getResourceTypeEntityName(altBookNameField)).isEqualTo("book_oneof");
   }
 
   @Test
