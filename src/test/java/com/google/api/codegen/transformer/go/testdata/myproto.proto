@@ -16,11 +16,8 @@ service Gopher {
   // Returns Operation, but doesn't have long_running config in gapic.yaml
   rpc NotLroMethod(SimpleRequest) returns (google.longrunning.Operation);
 
-  rpc RetryMethod(SimpleRequest) returns (SimpleResponse) {
-    option (google.api.retry) = {
-      codes: [INTERNAL, UNAVAILABLE]
-    };
-  }
+  rpc RetryMethod(SimpleRequest) returns (SimpleResponse);
+
   rpc PageStreamMethod(PageStreamRequest) returns (PageStreamResponse);
 
   rpc ServerStreamMethod(SimpleRequest) returns (stream SimpleResponse);
