@@ -207,7 +207,7 @@ public class ProtoParserTest {
             .filter(f -> f.getSimpleName().equals("alt_book_name"))
             .findFirst()
             .get();
-    assertThat(protoParser.getResourceTypeEntityName(altBookNameField)).isEqualTo("book");
+    assertThat(protoParser.getResourceTypeEntityName(altBookNameField)).isEqualTo("Book");
   }
 
   @Test

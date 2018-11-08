@@ -19,7 +19,6 @@ import static org.mockito.ArgumentMatchers.any;
 
 import com.google.api.MethodSignature;
 import com.google.api.Resource;
-import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
