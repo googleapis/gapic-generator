@@ -485,6 +485,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
+  // TODO(hzyi): generate necessary imports
   private InitCodeLineView generateReadFileInitCodeLine(MethodContext context, InitCodeNode item) {
     ReadFileInitCodeLineView.Builder surfaceLine = ReadFileInitCodeLineView.newBuilder();
     SurfaceNamer namer = context.getNamer();
