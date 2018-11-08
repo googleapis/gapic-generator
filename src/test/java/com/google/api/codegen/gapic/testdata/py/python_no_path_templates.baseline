@@ -1402,7 +1402,7 @@ class TestNoTemplatesAPIServiceClient(object):
 
     def test_increment(self):
         channel = ChannelStub()
-        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
         with patch as create_channel:
             create_channel.return_value = channel
             client = example.NoTemplatesAPIServiceClient()
@@ -1417,7 +1417,7 @@ class TestNoTemplatesAPIServiceClient(object):
     def test_increment_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        patch = mock.patch('google.cloud.api_core.grpc_helpers.create_channel')
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
         with patch as create_channel:
             create_channel.return_value = channel
             client = example.NoTemplatesAPIServiceClient()
