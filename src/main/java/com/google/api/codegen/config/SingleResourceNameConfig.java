@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.Resource;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionLanguageOverridesProto;
 import com.google.api.codegen.common.TargetLanguage;
@@ -23,7 +24,6 @@ import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
@@ -106,7 +106,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
    * returned, and diagnostics are reported to the diag collector.
    */
   static SingleResourceNameConfig createSingleResourceName(
-      Field resourceField,
+      Resource resource,
       PathTemplate pathTemplate,
       Collection<SingleResourceNameConfig> resourceNamesFromConfigs,
       ProtoFile file,
@@ -137,16 +137,16 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     String defaultEntityId =
         correspondingGapicConfigResourceName
             .map(SingleResourceNameConfig::getEntityId)
-            .orElse(protoParser.getDefaultResourceEntityName(resourceField));
+            .orElse(resource.getName());
     String entityName =
         correspondingGapicConfigResourceName
             .map(SingleResourceNameConfig::getEntityName)
-            .orElse(protoParser.getDefaultResourceEntityName(resourceField));
+            .orElse(resource.getName());
     String commonResourceName =
         correspondingGapicConfigResourceName
             .map(SingleResourceNameConfig::getCommonResourceName)
             .orElse(null);
-    String entityId = protoParser.getResourceEntityName(resourceField, defaultEntityId);
+    String entityId = protoParser.getResourceEntityName(resource, defaultEntityId);
     return new AutoValue_SingleResourceNameConfig(
         namePattern, nameTemplate, entityId, entityName, commonResourceName, file);
   }

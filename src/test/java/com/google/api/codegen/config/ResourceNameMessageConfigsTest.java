@@ -227,7 +227,7 @@ public class ResourceNameMessageConfigsTest {
         GapicProductConfig.createResourceNameConfigs(
             diagCollector, configProto, sourceProtoFiles, TargetLanguage.CSHARP, protoParser);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
-    assertThat(resourceNameConfigs.size()).isEqualTo(6);
+    assertThat(resourceNameConfigs.size()).isEqualTo(5);
 
     assertThat((resourceNameConfigs.get("shelf")) instanceof SingleResourceNameConfig).isTrue();
     SingleResourceNameConfig shelfResourceNameConfig =

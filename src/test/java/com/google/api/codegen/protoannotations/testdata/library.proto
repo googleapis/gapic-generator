@@ -32,17 +32,17 @@ option (google.api.metadata) = {
 };
 
 option (google.api.resource_definition) = {
-  name: "project"
+  name: "Project"
   path: "projects/{project}"
 };
 
 option (google.api.resource_definition) = {
-  name: "book"
+  name: "Book"
   path : "shelves/{shelf_id}/books/{book_id}"
 };
 
 option (google.api.resource_definition) = {
-  name: "archived_book"
+  name: "ArchivedBook"
   path : "archives/{archive_path}/books/{book_id=**}"
 };
 
@@ -380,11 +380,14 @@ message Book {
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_set) = {
-      name: "book_oneof"
+      name: "BookOneOf"
       resources: [
-        {name: "book"             path : "shelves/{shelf_id}/books/{book_id}"},
-        {name: "archived_book"    path : "archives/{archive_path}/books/{book_id=**}"}
+        {
+          name: "DeletedBook"
+          path : "_deleted-book_"
+        }
       ]
+      resource_references: ["ArchivedBook", "Book"]
     }
     // library_gapic.yaml specifies that this field will only use the "book"
     // inner Resource within the "book_oneof" resource_set, but we can't

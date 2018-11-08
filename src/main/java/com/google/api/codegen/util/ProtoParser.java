@@ -43,6 +43,7 @@ import com.google.protobuf.Message;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -154,6 +155,13 @@ public class ProtoParser {
     return defaultEntityName;
   }
 
+  public String getResourceEntityName(Resource resource, String defaultEntityName) {
+    if (resource != null && !Strings.isNullOrEmpty(resource.getName())) {
+      return resource.getName();
+    }
+    return defaultEntityName;
+  }
+
   /** Return the entity name, e.g. "shelf" for a resource field. */
   public String getResourceEntityName(Field field) {
     return getResourceEntityName(field, getDefaultResourceEntityName(field));
@@ -180,7 +188,8 @@ public class ProtoParser {
         diagCollector,
         AnnotationsProto.resourceDefinition,
         AnnotationsProto.resource,
-        Resource::getName);
+        Resource::getName,
+        (resource, baseNameToSet) -> resource.toBuilder().setName(baseNameToSet).build());
   }
 
   /* Return a Map of ResourceSet names to the corresponding ResourceSet, from a given ProtoFile. */
@@ -190,7 +199,15 @@ public class ProtoParser {
         diagCollector,
         AnnotationsProto.resourceSetDefinition,
         AnnotationsProto.resourceSet,
-        ResourceSet::getName);
+        ResourceSet::getName,
+        (resourceSet, baseNameToSet) -> resourceSet.toBuilder().setName(baseNameToSet).build());
+  }
+
+  /* For each ResourceSet, if there are any resource_references, replace the references
+   * with a Resource, in place, in the ResourceSet. */
+  public void resolveResourceSetReferences(List<ResourceSet> protoFile, List<Resource> resources) {
+
+    // TODO(andrealin):
   }
 
   /* Return a Map of names to their corresponding Resource or ResourceSet element. */
@@ -199,13 +216,14 @@ public class ProtoParser {
       DiagCollector diagCollector,
       GeneratedExtension<FileOptions, List<T>> fileExtension,
       GeneratedExtension<FieldOptions, T> fieldExtension,
-      Function<T, String> getNameFunc) {
+      Function<T, String> getNameFunc,
+      BiFunction<T, String, T> setNameFunc) {
     Map<String, T> resourceSetDefs = new LinkedHashMap<>();
     List<T> resourcesAtFileLevel = getProtoExtension(protoFile, fileExtension);
     // Get definitions from protofile options.
     if (resourcesAtFileLevel != null) {
-      for (T resourceSet : resourcesAtFileLevel) {
-        String baseName = getNameFunc.apply(resourceSet);
+      for (T definition : resourcesAtFileLevel) {
+        String baseName = getNameFunc.apply(definition);
         if (Strings.isNullOrEmpty(baseName)) {
           diagCollector.addDiag(
               Diag.error(
@@ -227,17 +245,20 @@ public class ProtoParser {
                   protoFile.getFullName(),
                   fieldExtension.getDescriptor().getFullName()));
         }
-        resourceSetDefs.put(baseName, resourceSet);
+        resourceSetDefs.put(baseName, definition);
       }
     }
 
     // Get Resource[Set] definitions from fields in message types.
     for (MessageType message : protoFile.getMessages()) {
       for (Field field : message.getFields()) {
-        T resourceSet = getProtoExtension(field, fieldExtension);
-        if (resourceSet != null) {
-          String baseName = getResourceEntityName(field);
-          resourceSetDefs.put(baseName, resourceSet);
+        T definition = getProtoExtension(field, fieldExtension);
+        if (definition != null) {
+          if (Strings.isNullOrEmpty(getNameFunc.apply(definition))) {
+            String baseName = getResourceEntityName(field);
+            definition = setNameFunc.apply(definition, baseName);
+          }
+          resourceSetDefs.put(getNameFunc.apply(definition), definition);
         }
       }
     }

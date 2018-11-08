@@ -32,9 +32,7 @@ import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -46,8 +44,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.protobuf.DescriptorProtos;
 import java.util.ArrayList;
@@ -57,7 +53,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -580,62 +575,27 @@ public abstract class GapicProductConfig implements ProductConfig {
         new LinkedHashMap<>();
     LinkedHashMap<String, ResourceNameOneofConfig> resourceOneOfConfigsFromProtoFile =
         new LinkedHashMap<>();
-    // Map<String, ResourceSet> resourceSets = new HashMap<>();
-    // Map<String, Field> resourceSetNames = new HashMap<>();
 
-    Map<Field, ResourceSet> resourceSetFields = new HashMap<>();
-    Multimap<Field, Resource> resourceFields = LinkedHashMultimap.create();
+    Map<Resource, ProtoFile> resourceDefs = new LinkedHashMap<>();
+    Map<ResourceSet, ProtoFile> resourceSetDefs = new LinkedHashMap<>();
 
     // Collect each type of ResourceNameConfig from proto annotations.
+
     for (ProtoFile protoFile : sourceProtos) {
-      for (MessageType messageType : protoFile.getMessages()) {
-        for (Field field : messageType.getFields()) {
-          Resource resource = protoParser.getResource(field);
-          ResourceSet resourceSet = protoParser.getResourceSet(field);
-          if (resourceSet != null && resource != null) {
-            diagCollector.addDiag(
-                Diag.error(
-                    SimpleLocation.TOPLEVEL,
-                    "A field can have *either* a Resource *or* a ResourceSet,"
-                        + " but field %s has both resource path %s and resourceSet %s",
-                    field.getSimpleName(),
-                    resource.getPath(),
-                    resourceSet.toString()));
-            return null;
-          }
+      List<Resource> resources = protoParser.getResourceDefs(protoFile, diagCollector);
+      List<ResourceSet> resourceSets = protoParser.getResourceSetDefs(protoFile, diagCollector);
 
-          if (resourceSet != null) {
-            // Collect the resource one-ofs for creating configs later.
-            resourceSetFields.put(field, resourceSet);
-
-            // Collect the inner resources for creating name configs later.
-            for (Resource innerResource : resourceSet.getResourcesList()) {
-              resourceFields.put(field, innerResource);
-            }
-            continue;
-          }
-
-          if (resource != null) {
-            resourceFields.put(field, resource);
-          }
-        }
+      for (Resource resource : resources) {
+        resourceDefs.put(resource, protoFile);
+      }
+      for (ResourceSet resourceSet : resourceSets) {
+        resourceSetDefs.put(resourceSet, protoFile);
       }
     }
 
-    // Process the SingleResourceNameConfigs from proto annotations.
-    for (Entry<Field, Resource> entry : resourceFields.entries()) {
-      Field field = entry.getKey();
-      Resource resource = entry.getValue();
+    // Create the SingleResourceNameConfigs.
+    for (Resource resource : resourceDefs.keySet()) {
       String resourcePath = resource.getPath();
-      if (Strings.isNullOrEmpty(resourcePath)) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "A path is required for each Resource, but resource field %s "
-                    + "(message %s) lacks a path.",
-                field.getSimpleName(),
-                field.getParent().getSimpleName()));
-      }
       PathTemplate pathTemplate;
       try {
         pathTemplate = PathTemplate.create(resourcePath);
@@ -643,9 +603,11 @@ public abstract class GapicProductConfig implements ProductConfig {
         diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
         return null;
       }
+      ProtoFile protoFile = resourceDefs.get(resource);
       createSingleResourceNameConfig(
           diagCollector,
-          field,
+          resource,
+          protoFile,
           pathTemplate,
           pathTemplatesFromConfig,
           singleResourceConfigsFromProtoFile,
@@ -660,9 +622,9 @@ public abstract class GapicProductConfig implements ProductConfig {
             SingleResourceNameConfig::getEntityName);
 
     // Create the ResourceNameOneOfConfigs.
-    for (Field resourceSetField : resourceSetFields.keySet()) {
-      ResourceSet resourceSet = resourceSetFields.get(resourceSetField);
-      String resourceSetName = protoParser.getResourceSetEntityName(resourceSetField);
+    for (ResourceSet resourceSet : resourceSetDefs.keySet()) {
+      ProtoFile protoFile = resourceSetDefs.get(resourceSet);
+      String resourceSetName = resourceSet.getName();
       ResourceNameOneofConfig resourceNameOneofConfig =
           ResourceNameOneofConfig.createResourceNameOneof(
               diagCollector,
@@ -670,7 +632,7 @@ public abstract class GapicProductConfig implements ProductConfig {
               resourceSetName,
               ImmutableMap.copyOf(finalSingleResourceNameConfigs),
               ImmutableMap.copyOf(fixedResourceNameConfigsFromGapicConfig),
-              resourceSetField);
+              protoFile);
       if (resourceNameOneofConfig == null) {
         return null;
       }
@@ -789,14 +751,15 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   private static void createSingleResourceNameConfig(
       DiagCollector diagCollector,
-      Field field,
+      Resource resource,
+      ProtoFile file,
       PathTemplate pathTemplate,
       Collection<SingleResourceNameConfig> resourceNamesFromConfig,
       LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap,
       ProtoParser protoParser) {
     SingleResourceNameConfig singleResourceNameConfig =
         SingleResourceNameConfig.createSingleResourceName(
-            field, pathTemplate, resourceNamesFromConfig, field.getFile(), protoParser);
+            resource, pathTemplate, resourceNamesFromConfig, file, protoParser);
     if (singleResourceNameConfigsMap.containsKey(singleResourceNameConfig.getEntityId())) {
       SingleResourceNameConfig otherConfig =
           singleResourceNameConfigsMap.get(singleResourceNameConfig.getEntityId());

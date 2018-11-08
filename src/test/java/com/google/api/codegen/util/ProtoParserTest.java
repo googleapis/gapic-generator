@@ -22,6 +22,8 @@ import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.protoannotations.GapicCodeGeneratorAnnotationsTest;
+import com.google.api.tools.framework.model.BoundedDiagCollector;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -134,19 +136,49 @@ public class ProtoParserTest {
         book.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
     ResourceSet bookResourceSet = protoParser.getResourceSet(bookNameField);
     assertThat(bookResourceSet).isNotNull();
-    assertThat(bookResourceSet.getName()).isEqualTo("book_oneof");
-    assertThat(bookResourceSet.getResourcesCount()).isEqualTo(2);
+    assertThat(bookResourceSet.getName()).isEqualTo("BookOneOf");
+    assertThat(bookResourceSet.getResourcesCount()).isEqualTo(1);
     assertThat(bookResourceSet.getResources(0))
-        .isEqualTo(
+        .isEqualTo(Resource.newBuilder().setName("DeletedBook").setPath("_deleted-book_").build());
+    assertThat(bookResourceSet.getResourceReferencesList()).containsExactly("ArchivedBook", "Book");
+  }
+
+  @Test
+  public void testGetAllResourceDefs() {
+    DiagCollector diagCollector = new BoundedDiagCollector();
+    List<Resource> resources = protoParser.getResourceDefs(libraryProtoFile, diagCollector);
+    assertThat(resources).hasSize(4);
+    assertThat(resources)
+        .contains(Resource.newBuilder().setName("Shelf").setPath("shelves/{shelf_id}").build());
+    assertThat(resources)
+        .contains(Resource.newBuilder().setName("Project").setPath("projects/{project}").build());
+    assertThat(resources)
+        .contains(
             Resource.newBuilder()
-                .setName("book")
+                .setName("Book")
                 .setPath("shelves/{shelf_id}/books/{book_id}")
                 .build());
-    assertThat(bookResourceSet.getResources(1))
-        .isEqualTo(
+    assertThat(resources)
+        .contains(
             Resource.newBuilder()
-                .setName("archived_book")
+                .setName("ArchivedBook")
                 .setPath("archives/{archive_path}/books/{book_id=**}")
+                .build());
+  }
+
+  @Test
+  public void testGetAllResourceSetDefs() {
+    DiagCollector diagCollector = new BoundedDiagCollector();
+    List<ResourceSet> resources = protoParser.getResourceSetDefs(libraryProtoFile, diagCollector);
+    assertThat(resources).hasSize(1);
+    assertThat(resources)
+        .contains(
+            ResourceSet.newBuilder()
+                .setName("BookOneOf")
+                .addResources(
+                    Resource.newBuilder().setName("DeletedBook").setPath("_deleted-book_"))
+                .addResourceReferences("ArchivedBook")
+                .addResourceReferences("Book")
                 .build());
   }
 
@@ -166,7 +198,7 @@ public class ProtoParserTest {
             .filter(f -> f.getSimpleName().equals("name"))
             .findFirst()
             .get();
-    assertThat(protoParser.getResourceTypeEntityName(nameField)).isEqualTo("book_oneof");
+    assertThat(protoParser.getResourceTypeEntityName(nameField)).isEqualTo("BookOneOf");
 
     Field altBookNameField =
         getBookFromAnywhereRequest
