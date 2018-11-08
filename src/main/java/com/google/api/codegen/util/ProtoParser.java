@@ -18,18 +18,33 @@ import static com.google.api.FieldBehavior.REQUIRED;
 
 import com.google.api.AnnotationsProto;
 import com.google.api.MethodSignature;
+import com.google.api.OAuth;
 import com.google.api.OperationData;
 import com.google.api.Resource;
+import com.google.api.ResourceSet;
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Api;
+import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import com.google.protobuf.Message;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -44,6 +59,24 @@ public class ProtoParser {
       return resource.getPath();
     }
     return null;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Nullable
+  private <T, O extends Message, E extends ProtoElement> T getProtoExtension(
+      E element, GeneratedExtension<O, T> extension) {
+    return (T) element.getOptionFields().get(extension.getDescriptor());
+  }
+
+  @Nullable
+  public Resource getResource(Field element) {
+    return getProtoExtension(element, AnnotationsProto.resource);
+  }
+
+  /** Return the ResourceSet a resource field. Return null if none found. */
+  @Nullable
+  ResourceSet getResourceSet(Field element) {
+    return getProtoExtension(element, AnnotationsProto.resourceSet);
   }
 
   /** Returns a base package name for an API's client. */
@@ -61,7 +94,12 @@ public class ProtoParser {
 
   /** Return the entity name, e.g. "shelf" for a resource field. */
   public String getResourceEntityName(Field field) {
-    return field.getParent().getSimpleName().toLowerCase();
+    String defaultEntityName = field.getParent().getSimpleName();
+    Resource resource = getResource(field);
+    if (resource != null && !Strings.isNullOrEmpty(resource.getName())) {
+      return resource.getName();
+    }
+    return defaultEntityName;
   }
 
   /** Get long running settings. */
@@ -69,13 +107,89 @@ public class ProtoParser {
     return method.getDescriptor().getMethodAnnotation(AnnotationsProto.operation);
   }
 
+  /* Return a Map of Resource names to the corresponding Resource, from a given ProtoFile. */
+  List<Resource> getResourceDefs(ProtoFile protoFile, DiagCollector diagCollector) {
+    return getResourceOrSetDefs(
+        protoFile,
+        diagCollector,
+        AnnotationsProto.resourceDefinition,
+        AnnotationsProto.resource,
+        Resource::getName,
+        (resource, baseNameToSet) -> resource.toBuilder().setName(baseNameToSet).build());
+  }
+
+  /* Return a Map of ResourceSet names to the corresponding ResourceSet, from a given ProtoFile. */
+  List<ResourceSet> getResourceSetDefs(ProtoFile protoFile, DiagCollector diagCollector) {
+    return getResourceOrSetDefs(
+        protoFile,
+        diagCollector,
+        AnnotationsProto.resourceSetDefinition,
+        AnnotationsProto.resourceSet,
+        ResourceSet::getName,
+        (resourceSet, baseNameToSet) -> resourceSet.toBuilder().setName(baseNameToSet).build());
+  }
+
+  /* Return a Map of names to their corresponding Resource or ResourceSet element. */
+  private <T> List<T> getResourceOrSetDefs(
+      ProtoFile protoFile,
+      DiagCollector diagCollector,
+      GeneratedExtension<FileOptions, List<T>> fileExtension,
+      GeneratedExtension<FieldOptions, T> fieldExtension,
+      Function<T, String> getNameFunc,
+      BiFunction<T, String, T> setNameFunc) {
+    Map<String, T> resourceSetDefs = new LinkedHashMap<>();
+    List<T> resourcesAtFileLevel = getProtoExtension(protoFile, fileExtension);
+    // Get definitions from protofile options.
+    if (resourcesAtFileLevel != null) {
+      for (T definition : resourcesAtFileLevel) {
+        String baseName = getNameFunc.apply(definition);
+        if (Strings.isNullOrEmpty(baseName)) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "There is a %s option with"
+                      + " no name defined in proto file %s. %s.name is required.",
+                  fileExtension.getDescriptor().getFullName(),
+                  protoFile.getFullName(),
+                  fileExtension.getDescriptor().getFullName()));
+        }
+        if (resourceSetDefs.containsKey(baseName)) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "Multiple %s defintions with the name"
+                      + " %s are defined in proto file %s. Values for %s.name must be unique.",
+                  fieldExtension.getDescriptor().getFullName(),
+                  baseName,
+                  protoFile.getFullName(),
+                  fieldExtension.getDescriptor().getFullName()));
+        }
+        resourceSetDefs.put(baseName, definition);
+      }
+    }
+
+    // Get Resource[Set] definitions from fields in message types.
+    for (MessageType message : protoFile.getMessages()) {
+      for (Field field : message.getFields()) {
+        T definition = getProtoExtension(field, fieldExtension);
+        if (definition != null) {
+          if (Strings.isNullOrEmpty(getNameFunc.apply(definition))) {
+            String baseName = getResourceEntityName(field);
+            definition = setNameFunc.apply(definition, baseName);
+          }
+          resourceSetDefs.put(getNameFunc.apply(definition), definition);
+        }
+      }
+    }
+    return ImmutableList.copyOf(resourceSetDefs.values());
+  }
+
   @SuppressWarnings("unchecked")
   /* Return a list of method signatures, aka flattenings, specified on a given method.
    * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
   public List<MethodSignature> getMethodSignatures(Method method) {
     List<MethodSignature> methodSignatures =
-        (List<MethodSignature>)
-            method.getOptionFields().get(AnnotationsProto.methodSignature.getDescriptor());
+        getProtoExtension(method, AnnotationsProto.methodSignature);
     if (methodSignatures == null) {
       return ImmutableList.of();
     }
@@ -102,9 +216,9 @@ public class ProtoParser {
     return fieldBehaviors != null && fieldBehaviors.contains(REQUIRED.getValueDescriptor());
   }
 
-  /** Return the resource type for the given field. */
+  /** Return the resource type for the given field, according to the proto annotations. */
   public String getResourceType(Field field) {
-    return (String) field.getOptionFields().get(AnnotationsProto.resourceReference.getDescriptor());
+    return getProtoExtension(field, AnnotationsProto.resourceReference);
   }
 
   /** Return whether the method has the HttpRule for GET. */
@@ -115,11 +229,15 @@ public class ProtoParser {
 
   /** The hostname for this service (e.g. "foo.googleapis.com"). */
   public String getServiceAddress(Interface service) {
-    return service.getProto().getOptions().getExtension(AnnotationsProto.defaultHost);
+    return getProtoExtension(service, AnnotationsProto.defaultHost);
   }
 
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
   public List<String> getAuthScopes(Interface service) {
-    return service.getProto().getOptions().getExtension(AnnotationsProto.oauth).getScopesList();
+    OAuth oAuth = getProtoExtension(service, AnnotationsProto.oauth);
+    if (oAuth != null) {
+      return ImmutableList.copyOf(oAuth.getScopesList());
+    }
+    return ImmutableList.of();
   }
 }
