@@ -1,0 +1,66 @@
+// TODO: Use bazel instead of gradle for running the generated Compute client.
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: 'java'
+
+description = 'GAPIC library for Discovery API'
+group = 'com.google.cloud'
+version = '0.0.0-SNAPSHOT'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+
+dependencies {
+    compile 'com.google.api:gax:1.29.0'
+    testCompile 'com.google.api:gax:1.29.0:testlib'
+    compile 'com.google.api:gax-httpjson:0.51.0'
+    testCompile 'com.google.api:gax-httpjson:0.51.0:testlib'
+    testCompile 'io.grpc:grpc-netty-shaded:1.10.1'
+    testCompile 'junit:junit:4.12'
+}
+
+task smokeTest(type: Test) {
+    filter {
+        includeTestsMatching "*SmokeTest"
+        setFailOnNoMatchingTests false
+    }
+}
+
+test {
+    testLogging {
+        events "PASSED", "STARTED", "FAILED", "SKIPPED"
+    }
+
+    exclude "**/*SmokeTest*"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+    }
+}
+
+clean {
+    delete 'all-jars'
+}
+
+task allJars(type: Copy) {
+    dependsOn test, jar
+    into 'all-jars'
+    // Replace with `from configurations.testRuntime, jar` to include test dependencies
+    from configurations.runtime, jar
+}

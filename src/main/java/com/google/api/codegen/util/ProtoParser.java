@@ -17,7 +17,6 @@ package com.google.api.codegen.util;
 import static com.google.api.FieldBehavior.REQUIRED;
 
 import com.google.api.AnnotationsProto;
-import com.google.api.FieldBehavior;
 import com.google.api.MethodSignature;
 import com.google.api.OperationData;
 import com.google.api.Resource;
@@ -29,6 +28,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Api;
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -96,8 +96,8 @@ public class ProtoParser {
   @SuppressWarnings("unchecked")
   /* Returns if a field is required, according to the proto annotations. */
   private boolean isFieldRequired(Field field) {
-    List<FieldBehavior> fieldBehaviors =
-        (List<FieldBehavior>)
+    List<EnumValueDescriptor> fieldBehaviors =
+        (List<EnumValueDescriptor>)
             field.getOptionFields().get(AnnotationsProto.fieldBehavior.getDescriptor());
     return fieldBehaviors != null && fieldBehaviors.contains(REQUIRED.getValueDescriptor());
   }

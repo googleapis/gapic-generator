@@ -65,7 +65,7 @@ import java.util.Set;
 /** Responsible for producing package metadata related views for Python */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String GITHUB_DOC_HOST =
-      "https://googlecloudplatform.github.io/google-cloud-python/stable";
+      "https://googlecloudplatform.github.io/google-cloud-python/latest";
   private static final String GITHUB_REPO_HOST =
       "https://github.com/GoogleCloudPlatform/google-cloud-python";
   private static final String AUTH_DOC_PATH = "/core/auth.html";
@@ -268,7 +268,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
     ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
     dependencies.add(
         PackageDependencyView.create(
-            "google-api-core[grpc]", VersionBound.create("1.1.0", "2.0.0dev")));
+            "google-api-core[grpc]", VersionBound.create("1.4.1", "2.0.0dev")));
     return dependencies.build();
   }
 
