@@ -15,9 +15,11 @@
 package com.google.api.codegen.config;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 import com.google.api.MethodSignature;
 import com.google.api.Resource;
+import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
@@ -138,7 +140,7 @@ public class ResourceNameMessageConfigsTest {
     Mockito.doReturn(Resource.newBuilder().setPath(SHELF_PATH).build())
         .when(protoParser)
         .getResource(shelfName);
-    Mockito.doReturn(null).when(protoParser).getResourceSet(Mockito.any());
+    Mockito.doReturn(null).when(protoParser).getResourceSet(any());
 
     Mockito.when(protoFile.getSimpleName()).thenReturn("library");
     Mockito.when(protoFile.getMessages()).thenReturn(ImmutableList.of(bookMessage, shelfMessage));
@@ -223,6 +225,22 @@ public class ResourceNameMessageConfigsTest {
   @Test
   public void testCreateResourceNameConfigs() {
     DiagCollector diagCollector = new BoundedDiagCollector();
+    //
+    // Mockito.when(protoParser.getResourceDefs(protoFile, any(DiagCollector.class))).thenReturn(
+    //     Arrays.asList(
+    //         Resource.newBuilder().setName("Shelf").setPath("shelves/{shelf_id}").build(),
+    //         Resource.newBuilder().setName("Project").setPath("projects/{project}").build(),
+    //         Resource.newBuilder()
+    //             .setName("Book")
+    //             .setPath("shelves/{shelf_id}/books/{book_id}")
+    //             .build(),
+    //         Resource.newBuilder()
+    //             .setName("archived_book")
+    //             .setPath("archives/{archive_path}/books/{book_id=**}")
+    //             .build()));
+    // Mockito.when(protoParser.getResourceSetDefs(protoFile, any(DiagCollector.class))).thenReturn(
+    //     Arrays.asList(
+    //         ResourceSet.newBuilder().setName("Shelf").setPath("shelves/{shelf_id}").build());
     Map<String, ResourceNameConfig> resourceNameConfigs =
         GapicProductConfig.createResourceNameConfigs(
             diagCollector, configProto, sourceProtoFiles, TargetLanguage.CSHARP, protoParser);
@@ -248,15 +266,6 @@ public class ResourceNameMessageConfigsTest {
         (SingleResourceNameConfig) resourceNameConfigs.get("Book");
     assertThat(bookResourcenameConfigFromProtoFile.getNamePattern())
         .isEqualTo(PathTemplate.create(BOOK_PATH).toString());
-    // assertThat(
-    //         diagCollector
-    //             .getDiags()
-    //             .stream()
-    //             .anyMatch(
-    //                 d ->
-    //                     d.getMessage().contains("from protofile clashes with GAPIC config")
-    //                         && d.getKind().equals(Kind.WARNING)))
-    //     .isTrue();
   }
 
   @Test
