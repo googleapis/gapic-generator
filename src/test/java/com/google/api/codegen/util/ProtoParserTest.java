@@ -123,9 +123,9 @@ public class ProtoParserTest {
   @Test
   public void testGetResourceEntityName() {
     String defaultEntityName = protoParser.getDefaultResourceEntityName(shelfNameField);
-    assertThat(defaultEntityName).isEqualTo("shelf");
+    assertThat(defaultEntityName).isEqualTo("Shelf");
     assertThat(protoParser.getResourceEntityName(shelfNameField, defaultEntityName))
-        .isEqualTo("shelf");
+        .isEqualTo("Shelf");
   }
 
   @Test
@@ -180,7 +180,7 @@ public class ProtoParserTest {
 
   @Test
   public void getResourceEntityName() {
-    assertThat(protoParser.getResourceEntityName(shelfNameField)).isEqualTo("shelf");
+    assertThat(protoParser.getResourceEntityName(shelfNameField)).isEqualTo("Shelf");
   }
 
   @Test

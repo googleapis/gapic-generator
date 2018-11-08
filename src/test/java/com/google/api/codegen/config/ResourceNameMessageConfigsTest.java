@@ -30,8 +30,8 @@ import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.util.ProtoParser;
+import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
-import com.google.api.tools.framework.model.Diag.Kind;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
@@ -68,8 +68,8 @@ public class ResourceNameMessageConfigsTest {
   private static final String SIMPLE_BOOK_PATH = "shelves/{shelf_id}/books/{book_id}";
   private static final String SIMPLE_ARCHIVED_BOOK_PATH =
       "archives/{archive_path}/books/{book_id=**}";
-  private static final String ASTERISK_SHELF_PATH = "shelves/*";
-  private static final String ASTERISK_BOOK_PATH = "bookShelves/*";
+  private static final String SHELF_PATH = "shelves/{shelf}";
+  private static final String BOOK_PATH = "bookShelves/{book}";
 
   @BeforeClass
   public static void startUp() {
@@ -132,10 +132,10 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(bookMessage.getSimpleName()).thenReturn("Book");
     Mockito.when(bookMessage.getFields()).thenReturn(ImmutableList.of(bookAuthor, bookName));
 
-    Mockito.doReturn(Resource.newBuilder().setPath(ASTERISK_BOOK_PATH).build())
+    Mockito.doReturn(Resource.newBuilder().setPath(BOOK_PATH).build())
         .when(protoParser)
         .getResource(bookName);
-    Mockito.doReturn(Resource.newBuilder().setPath(ASTERISK_SHELF_PATH).build())
+    Mockito.doReturn(Resource.newBuilder().setPath(SHELF_PATH).build())
         .when(protoParser)
         .getResource(shelfName);
     Mockito.doReturn(null).when(protoParser).getResourceSet(Mockito.any());
@@ -158,10 +158,10 @@ public class ResourceNameMessageConfigsTest {
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(2);
     ResourceNameMessageConfig bookMessageConfig =
         messageConfigs.getResourceTypeConfigMap().get("library.Book");
-    assertThat(bookMessageConfig.fieldEntityMap().get("name")).isEqualTo("book");
+    assertThat(bookMessageConfig.fieldEntityMap().get("name")).isEqualTo("Book");
     ResourceNameMessageConfig shelfMessageConfig =
         messageConfigs.getResourceTypeConfigMap().get("library.Shelf");
-    assertThat(shelfMessageConfig.fieldEntityMap().get("name")).isEqualTo("shelf");
+    assertThat(shelfMessageConfig.fieldEntityMap().get("name")).isEqualTo("Shelf");
   }
 
   @Test
@@ -227,31 +227,36 @@ public class ResourceNameMessageConfigsTest {
         GapicProductConfig.createResourceNameConfigs(
             diagCollector, configProto, sourceProtoFiles, TargetLanguage.CSHARP, protoParser);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
-    assertThat(resourceNameConfigs.size()).isEqualTo(5);
+    assertThat(resourceNameConfigs.size()).isEqualTo(6);
 
     assertThat((resourceNameConfigs.get("shelf")) instanceof SingleResourceNameConfig).isTrue();
     SingleResourceNameConfig shelfResourceNameConfig =
         (SingleResourceNameConfig) resourceNameConfigs.get("shelf");
 
-    // ASTERISK_SHELF_PATH from protofile is the same as GAPIC_CONFIG_SHELF_PATH
-    // when wildcards are removed, so use the GAPIC_CONFIG_SHELF_PATH.
+    // Let GAPIC_CONFIG_SHELF_PATH override SHELF_PATH from protofile.
     assertThat(shelfResourceNameConfig.getNamePattern()).isEqualTo(GAPIC_CONFIG_SHELF_PATH);
 
     assertThat((resourceNameConfigs.get("book")) instanceof SingleResourceNameConfig).isTrue();
     SingleResourceNameConfig bookResourcenameConfig =
         (SingleResourceNameConfig) resourceNameConfigs.get("book");
 
-    // Let ASTERISK_BOOK_PATH from protofile override SIMPLE_BOOK_PATH from gapic config.
-    assertThat(bookResourcenameConfig.getNamePattern()).isEqualTo(ASTERISK_BOOK_PATH);
-    assertThat(
-            diagCollector
-                .getDiags()
-                .stream()
-                .anyMatch(
-                    d ->
-                        d.getMessage().contains("from protofile clashes with GAPIC config")
-                            && d.getKind().equals(Kind.WARNING)))
-        .isTrue();
+    // Use SIMPLE_BOOK_PATH from gapic config.
+    assertThat(bookResourcenameConfig.getNamePattern()).isEqualTo(SIMPLE_BOOK_PATH);
+
+    // "Book" is the name from the unnamed Resource in the Book message type.
+    SingleResourceNameConfig bookResourcenameConfigFromProtoFile =
+        (SingleResourceNameConfig) resourceNameConfigs.get("Book");
+    assertThat(bookResourcenameConfigFromProtoFile.getNamePattern())
+        .isEqualTo(PathTemplate.create(BOOK_PATH).toString());
+    // assertThat(
+    //         diagCollector
+    //             .getDiags()
+    //             .stream()
+    //             .anyMatch(
+    //                 d ->
+    //                     d.getMessage().contains("from protofile clashes with GAPIC config")
+    //                         && d.getKind().equals(Kind.WARNING)))
+    //     .isTrue();
   }
 
   @Test
@@ -375,8 +380,9 @@ public class ResourceNameMessageConfigsTest {
 
     FieldConfig bookConfig = shelfAndBookFlattening.getFlattenedFieldConfigs().get("book");
     assertThat(bookConfig.getResourceNameTreatment()).isEqualTo(ResourceNameTreatment.STATIC_TYPES);
+    // Use the resource name path from GAPIC config.
     assertThat(((SingleResourceNameConfig) bookConfig.getResourceNameConfig()).getNamePattern())
-        .isEqualTo(ASTERISK_BOOK_PATH);
+        .isEqualTo(SIMPLE_BOOK_PATH);
     assertThat(((ProtoTypeRef) bookConfig.getField().getType()).getProtoType().getMessageType())
         .isEqualTo(bookType);
   }

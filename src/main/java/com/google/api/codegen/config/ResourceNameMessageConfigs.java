@@ -84,6 +84,18 @@ public abstract class ResourceNameMessageConfigs {
       }
     }
 
+    // // Add more ResourceNameMessageConfigs from proto annotations. Overwrite the configs from
+    // // configProto if any clash.
+    // for (ProtoFile protoFile : protoFiles) {
+    //   for (protoFile.) {
+    //     ResourceNameMessageConfig resourceNameMessageConfig =
+    //         ResourceNameMessageConfig.createResourceNameMessageConfig(message, protoParser);
+    //     if (resourceNameMessageConfig != null) {
+    //       builder.put(message.getFullName(), resourceNameMessageConfig);
+    //     }
+    //   }
+    // }
+
     ImmutableSortedMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap =
         ImmutableSortedMap.copyOf(builder);
 
