@@ -52,7 +52,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -601,9 +600,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     Map<String, SingleResourceNameConfig> finalSingleResourceNameConfigs =
         mergeResourceNameConfigs(
-            diagCollector,
-            singleResourceNamesFromGapicConfig,
-            singleResourceConfigsFromProtoFile);
+            diagCollector, singleResourceNamesFromGapicConfig, singleResourceConfigsFromProtoFile);
 
     // Create the ResourceNameOneOfConfigs.
     for (ResourceSet resourceSet : resourceSetDefs.keySet()) {

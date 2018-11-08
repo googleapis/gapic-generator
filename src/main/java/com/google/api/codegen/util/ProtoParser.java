@@ -123,22 +123,6 @@ public class ProtoParser {
     return null;
   }
 
-  /**
-   * Return the entity name, e.g. "shelf" for a resource field, or use the given default name if no
-   * explicit name override was found.
-   *
-   * @param field The field to get the Resource entity name from.
-   * @param defaultEntityName The value to return if no custom name was found.
-   */
-  // TODO(andrealin): Remove this method.
-  public String getResourceEntityName(Field field, String defaultEntityName) {
-    Resource resource = getResource(field);
-    if (resource != null && !Strings.isNullOrEmpty(resource.getName())) {
-      return resource.getName();
-    }
-    return defaultEntityName;
-  }
-
   public String getResourceEntityName(Resource resource, String defaultEntityName) {
     if (resource != null && !Strings.isNullOrEmpty(resource.getName())) {
       return resource.getName();
