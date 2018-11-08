@@ -102,7 +102,7 @@ public abstract class InitCodeContext {
         .outputType(InitCodeOutputType.SingleObject)
         .additionalInitCodeNodes(ImmutableList.of())
         .initFieldConfigStrings(ImmutableList.of())
-        .sampleParamConfigMap(ImmutableMap.<String, SampleParameterConfig>of());
+        .sampleParamConfigMap(ImmutableMap.of());
   }
 
   @AutoValue.Builder
