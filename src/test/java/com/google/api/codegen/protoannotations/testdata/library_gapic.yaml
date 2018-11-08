@@ -2,7 +2,7 @@ type: com.google.api.codegen.ConfigProto
 config_schema_version: 1.0.0
 language_settings:
   java:
-    package_name: com.google.gcloud.pubsub.v1
+    package_name: com.google.example.library.v1
     interface_names:
       google.example.library.v1.LibraryService: Library
     release_level: GA
@@ -240,9 +240,9 @@ interfaces:
         - edition=123
         attributes:
         - parameter: shelf.name
-          sample_argument: true
+          sample_argument_name: name
         - parameter: edition
-          sample_argument: true
+          sample_argument_name: edition
       on_success:
       - loop:
           variable: title
@@ -251,6 +251,9 @@ interfaces:
             print:
               - "Title: %s"
               - title
+      - print:
+        - "The first book is: %s"
+        - $resp.book_names[0]
       - print:
         - "That's all!"
       - print:
@@ -599,6 +602,10 @@ interfaces:
       parameters:
         defaults:
         - name=BASIC
+      on_success:
+        - print:
+          - "The stage of the comment is: %s"
+          - $resp.stage
     samples:
       in_code:
       - calling_forms: ".*"
@@ -860,6 +867,7 @@ interfaces:
       optional_repeated_resource_name: book
       optional_repeated_resource_name_oneof: book_oneof
     timeout_millis: 60000
+  # Intentionally leave out PrivateGetBook method from GAPIC config.
 resource_name_generation:
 - message_name: Book
   field_entity_map:
