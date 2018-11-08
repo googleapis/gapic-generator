@@ -492,8 +492,8 @@ public class InitCodeTransformer {
     ImportTypeTable typeTable = context.getTypeTable();
     checkState(
         item.getType().isBytesType(),
-        "Error setting init code node %s to reading from file. "
-            + "Replacing field value with file contents only allowed for bytes type, "
+        "Error setting %s to be read from file. "
+            + "Replacing field value with file contents is only allowed for fields of type 'bytes', "
             + "but the type is %s.",
         item.getIdentifier(),
         item.getType());
