@@ -11232,7 +11232,8 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
         }
         @Override
         public Iterable<AddressesScopedList> extractResources(AddressAggregatedList payload) {
-          return payload.getItemsMap().values();
+          return payload.getItemsMap() != null ? payload.getItemsMap().values() :
+            ImmutableList.<AddressAggregatedList>of();
         }
       };
 
@@ -11266,7 +11267,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
         }
         @Override
         public Iterable<Address> extractResources(AddressList payload) {
-          return payload.getItemsList();
+          return payload.getItemsList() != null ? payload.getItemsList() : ImmutableList.<AddressList>of();
         }
       };
 
@@ -13203,7 +13204,7 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
         }
         @Override
         public Iterable<Address> extractResources(ProjectsGetDummyObjectResources payload) {
-          return payload.getResourcesList();
+          return payload.getResourcesList() != null ? payload.getResourcesList() : ImmutableList.<Address>of();
         }
       };
 
