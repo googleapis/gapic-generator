@@ -23,8 +23,6 @@ public abstract class ReadFileInitCodeLineView implements InitCodeLineView {
     return InitCodeLineType.ReadFileInitLine;
   }
 
-  public abstract String typeName();
-
   public abstract String identifier();
 
   public abstract InitValueView fileName();
@@ -35,8 +33,6 @@ public abstract class ReadFileInitCodeLineView implements InitCodeLineView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-
-    public abstract Builder typeName(String val);
 
     public abstract Builder identifier(String val);
 

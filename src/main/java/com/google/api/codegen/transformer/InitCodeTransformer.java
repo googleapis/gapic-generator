@@ -497,6 +497,7 @@ public class InitCodeTransformer {
             + "but the type is %s.",
         item.getIdentifier(),
         item.getType());
+    typeTable.getAndSaveNicknameFor(item.getType());
     String value = item.getInitValueConfig().getInitialValue().getValue();
     switch (item.getInitValueConfig().getInitialValue().getType()) {
       case Literal:
@@ -513,7 +514,6 @@ public class InitCodeTransformer {
     }
     return surfaceLine
         .identifier(namer.localVarName(item.getIdentifier()))
-        .typeName(typeTable.getAndSaveNicknameFor(item.getType()))
         .fileName(SimpleInitValueView.newBuilder().initialValue(value).build())
         .build();
   }
