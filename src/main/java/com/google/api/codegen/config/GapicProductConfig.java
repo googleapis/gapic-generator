@@ -603,8 +603,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         mergeResourceNameConfigs(
             diagCollector,
             singleResourceNamesFromGapicConfig,
-            singleResourceConfigsFromProtoFile,
-            SingleResourceNameConfig::getEntityName);
+            singleResourceConfigsFromProtoFile);
 
     // Create the ResourceNameOneOfConfigs.
     for (ResourceSet resourceSet : resourceSetDefs.keySet()) {
@@ -628,8 +627,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         mergeResourceNameConfigs(
             diagCollector,
             resourceNameOneofConfigsFromGapicConfig,
-            resourceOneOfConfigsFromProtoFile,
-            ResourceNameOneofConfig::getEntityName);
+            resourceOneOfConfigsFromProtoFile);
 
     if (diagCollector.getErrorCount() > 0) {
       return null;
@@ -646,28 +644,19 @@ public abstract class GapicProductConfig implements ProductConfig {
   private static <T extends ResourceNameConfig> ImmutableMap<String, T> mergeResourceNameConfigs(
       DiagCollector diagCollector,
       Map<String, T> configsFromGapicConfig,
-      Map<String, T> configsFromProtoFile,
-      Function<T, String> toStringFunction) {
+      Map<String, T> configsFromProtoFile) {
     Map<String, T> mergedResourceNameConfigs = new HashMap<>(configsFromProtoFile);
 
     // If protofile annotations clash with the configs from configProto, use the configProto.
     for (T resourceFromGapicConfig : configsFromGapicConfig.values()) {
       if (configsFromProtoFile.containsKey(resourceFromGapicConfig.getEntityId())) {
-        T otherConfig = configsFromProtoFile.get(resourceFromGapicConfig.getEntityId());
-        String thisStringRepresentation = toStringFunction.apply(resourceFromGapicConfig);
-        String otherStringRepresentation = toStringFunction.apply(otherConfig);
-        if (!thisStringRepresentation.equals(otherStringRepresentation)) {
-          diagCollector.addDiag(
-              Diag.warning(
-                  SimpleLocation.TOPLEVEL,
-                  "For entity %s, resource path '%s'"
-                      + " from protofile clashes with GAPIC config resource path %s."
-                      + " Using path '%s' from protofile.",
-                  resourceFromGapicConfig.getEntityId(),
-                  thisStringRepresentation,
-                  otherStringRepresentation,
-                  resourceFromGapicConfig.getEntityId()));
-        }
+        diagCollector.addDiag(
+            Diag.warning(
+                SimpleLocation.TOPLEVEL,
+                "Resource[Set] entity %s from protofile clashes with a"
+                    + " Resource[Set] of the same name from the GAPIC config."
+                    + " Using the GAPIC config entity.",
+                resourceFromGapicConfig.getEntityId()));
       }
       // Add the protofile resourceNameConfigs to the map of resourceNameConfigs.
       mergedResourceNameConfigs.put(resourceFromGapicConfig.getEntityId(), resourceFromGapicConfig);

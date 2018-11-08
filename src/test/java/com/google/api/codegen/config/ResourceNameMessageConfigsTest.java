@@ -246,6 +246,10 @@ public class ResourceNameMessageConfigsTest {
 
     assertThat(((SingleResourceNameConfig) resourceNameConfigs.get("Book")).getNamePattern())
         .isEqualTo(PROTO_BOOK_PATH);
+
+    // Both Protofile and GAPIC config have definitions for archived_book.
+    assertThat(diagCollector.getDiags().get(0).getMessage())
+        .contains("archived_book from protofile clashes with a Resource");
     assertThat(
             ((SingleResourceNameConfig) resourceNameConfigs.get("archived_book")).getNamePattern())
         .isEqualTo(ARCHIVED_BOOK_PATH);
