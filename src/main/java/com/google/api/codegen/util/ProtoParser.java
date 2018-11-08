@@ -18,6 +18,7 @@ import static com.google.api.FieldBehavior.REQUIRED;
 
 import com.google.api.AnnotationsProto;
 import com.google.api.MethodSignature;
+import com.google.api.OAuth;
 import com.google.api.OperationData;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
@@ -91,18 +92,6 @@ public class ProtoParser {
         // We don't care if the resource type of the field is the field itself.
         return null;
       }
-      // Parse out Resources from ResourceSets.
-      String[] resourceParts = resourceName.split(":");
-      if (resourceParts.length > 2) {
-        throw new IllegalArgumentException(
-            String.format(
-                "Field %s has resource_reference '%s', which has too many ':' characters.",
-                field.getSimpleName(), resourceName));
-      }
-      if (resourceParts.length == 2) {
-        // Just use the Resource base_name from one of the Resources within a ResourceSet.
-        return resourceParts[1];
-      }
 
       TypeRef resourceType = field.getModel().getSymbolTable().lookupType(resourceName);
       if (resourceType == null) {
@@ -122,11 +111,6 @@ public class ProtoParser {
     }
     // return field.getParent().getFullName();
     return null;
-  }
-
-  /** Return the entity name, e.g. "shelf" for a resource or resource set field. */
-  public String getDefaultResourceEntityName(Field field) {
-    return field.getParent().getSimpleName();
   }
 
   public String getResourceOrSetEntityName(Field field) {
@@ -164,16 +148,21 @@ public class ProtoParser {
 
   /** Return the entity name, e.g. "shelf" for a resource field. */
   public String getResourceEntityName(Field field) {
-    return getResourceEntityName(field, getDefaultResourceEntityName(field));
+    String defaultEntityName = field.getParent().getSimpleName();
+    Resource resource = getResource(field);
+    if (resource != null && !Strings.isNullOrEmpty(resource.getName())) {
+      return resource.getName();
+    }
+    return defaultEntityName;
   }
 
   /** Return the entity name, e.g. "shelf" for a resource set field. */
-  public String getResourceSetEntityName(Field field) {
+  String getResourceSetEntityName(Field field) {
     ResourceSet resourceSet = getResourceSet(field);
     if (resourceSet != null && !Strings.isNullOrEmpty(resourceSet.getName())) {
       return resourceSet.getName();
     }
-    return getDefaultResourceEntityName(field);
+    return field.getParent().getSimpleName();
   }
 
   /** Get long running settings. */
@@ -310,11 +299,15 @@ public class ProtoParser {
 
   /** The hostname for this service (e.g. "foo.googleapis.com"). */
   public String getServiceAddress(Interface service) {
-    return service.getProto().getOptions().getExtension(AnnotationsProto.defaultHost);
+    return getProtoExtension(service, AnnotationsProto.defaultHost);
   }
 
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
   public List<String> getAuthScopes(Interface service) {
-    return service.getProto().getOptions().getExtension(AnnotationsProto.oauth).getScopesList();
+    OAuth oAuth = getProtoExtension(service, AnnotationsProto.oauth);
+    if (oAuth != null) {
+      return ImmutableList.copyOf(oAuth.getScopesList());
+    }
+    return ImmutableList.of();
   }
 }

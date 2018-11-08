@@ -28,8 +28,6 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
-import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
@@ -596,22 +594,9 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Create the SingleResourceNameConfigs.
     for (Resource resource : resourceDefs.keySet()) {
       String resourcePath = resource.getPath();
-      PathTemplate pathTemplate;
-      try {
-        pathTemplate = PathTemplate.create(resourcePath);
-      } catch (ValidationException e) {
-        diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
-        return null;
-      }
       ProtoFile protoFile = resourceDefs.get(resource);
       createSingleResourceNameConfig(
-          diagCollector,
-          resource,
-          protoFile,
-          pathTemplate,
-          pathTemplatesFromConfig,
-          singleResourceConfigsFromProtoFile,
-          protoParser);
+          diagCollector, resource, protoFile, resourcePath, singleResourceConfigsFromProtoFile);
     }
 
     Map<String, SingleResourceNameConfig> finalSingleResourceNameConfigs =
@@ -753,13 +738,11 @@ public abstract class GapicProductConfig implements ProductConfig {
       DiagCollector diagCollector,
       Resource resource,
       ProtoFile file,
-      PathTemplate pathTemplate,
-      Collection<SingleResourceNameConfig> resourceNamesFromConfig,
-      LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap,
-      ProtoParser protoParser) {
+      String pathTemplate,
+      LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap) {
     SingleResourceNameConfig singleResourceNameConfig =
         SingleResourceNameConfig.createSingleResourceName(
-            resource, pathTemplate, resourceNamesFromConfig, file, protoParser);
+            resource, pathTemplate, file, diagCollector);
     if (singleResourceNameConfigsMap.containsKey(singleResourceNameConfig.getEntityId())) {
       SingleResourceNameConfig otherConfig =
           singleResourceNameConfigsMap.get(singleResourceNameConfig.getEntityId());

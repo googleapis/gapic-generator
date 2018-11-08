@@ -124,10 +124,7 @@ public class ProtoParserTest {
   /** Return the entity name, e.g. "shelf" for a resource field. */
   @Test
   public void testGetResourceEntityName() {
-    String defaultEntityName = protoParser.getDefaultResourceEntityName(shelfNameField);
-    assertThat(defaultEntityName).isEqualTo("Shelf");
-    assertThat(protoParser.getResourceEntityName(shelfNameField, defaultEntityName))
-        .isEqualTo("Shelf");
+    assertThat(protoParser.getResourceEntityName(shelfNameField)).isEqualTo("Shelf");
   }
 
   @Test
