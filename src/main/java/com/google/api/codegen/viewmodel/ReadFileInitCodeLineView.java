@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,6 @@ public abstract class ReadFileInitCodeLineView implements InitCodeLineView {
 
   public abstract InitValueView fileName();
 
-  /** @return if a newline should be added above this line */
-  public abstract boolean needsLeadingNewline();
-
   public static Builder newBuilder() {
     return new AutoValue_ReadFileInitCodeLineView.Builder();
   }
@@ -44,8 +41,6 @@ public abstract class ReadFileInitCodeLineView implements InitCodeLineView {
     public abstract Builder identifier(String val);
 
     public abstract Builder fileName(InitValueView val);
-
-    public abstract Builder needsLeadingNewline(boolean val);
 
     public abstract ReadFileInitCodeLineView build();
   }

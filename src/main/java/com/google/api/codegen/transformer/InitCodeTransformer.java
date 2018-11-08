@@ -381,7 +381,7 @@ public class InitCodeTransformer {
       case MapInitLine:
         return generateMapInitCodeLine(context, specItemNode);
       case ReadFileInitLine:
-        return generateReadFileInitCodeLine(context, specItemNode, isFirstItem);
+        return generateReadFileInitCodeLine(context, specItemNode);
       default:
         throw new RuntimeException("unhandled line type: " + specItemNode.getLineType());
     }
@@ -485,14 +485,13 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private InitCodeLineView generateReadFileInitCodeLine(
-      MethodContext context, InitCodeNode item, boolean isFirstItem) {
+  private InitCodeLineView generateReadFileInitCodeLine(MethodContext context, InitCodeNode item) {
     ReadFileInitCodeLineView.Builder surfaceLine = ReadFileInitCodeLineView.newBuilder();
     SurfaceNamer namer = context.getNamer();
     ImportTypeTable typeTable = context.getTypeTable();
     checkState(
         item.getType().isBytesType(),
-        "Error setting init code node %s to read from file. "
+        "Error setting init code node %s to reading from file. "
             + "Replacing field value with file contents only allowed for bytes type, "
             + "but the type is %s.",
         item.getIdentifier(),
@@ -500,21 +499,19 @@ public class InitCodeTransformer {
     String value = item.getInitValueConfig().getInitialValue().getValue();
     switch (item.getInitValueConfig().getInitialValue().getType()) {
       case Literal:
+        // File names are always strings
         value =
-            context
-                .getTypeTable()
-                .renderPrimitiveValue(
-                    ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")), value);
+            typeTable.renderPrimitiveValue(
+                ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")), value);
         break;
       case Variable:
-        value = context.getNamer().localVarReference(Name.anyLower(value));
+        value = namer.localVarReference(Name.anyLower(value));
         break;
       default:
         throw new IllegalArgumentException("Unhandled init value type");
     }
     return surfaceLine
         .identifier(namer.localVarName(item.getIdentifier()))
-        .needsLeadingNewline(!isFirstItem)
         .typeName(typeTable.getAndSaveNicknameFor(item.getType()))
         .fileName(SimpleInitValueView.newBuilder().initialValue(value).build())
         .build();

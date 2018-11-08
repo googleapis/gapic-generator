@@ -15,7 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.auto.value.AutoValue;
-import javax.annotation.Nullable;
 
 /** SampleParameterConfig represents the configuration for standalone sample parameters. */
 @AutoValue
@@ -32,21 +31,20 @@ public abstract class SampleParameterConfig {
    *
    * <p>If the parameter is a bytes field, the value set to this parameter will be the file name.
    *
-   * <p>If the parameter is a repeated bytes field, the value set to this parameter will be the a
-   * list of file names separated by comma. For example, "foo.jpg,bar.jpg,baz.jpg".
+   * <p>If the parameter is a repeated bytes field, the value set to this parameter will be a list
+   * of comma separated file names. For example, "foo.jpg,bar.jpg,baz.jpg".
    */
   public abstract boolean readFromFile();
 
   /** If true, the parameter will be an argument passed to the sample function. */
   public boolean isSampleArgument() {
-    return sampleArgumentName() != null && !sampleArgumentName().isEmpty();
+    return !sampleArgumentName().isEmpty();
   }
 
   /**
-   * If not null, the parameter will be an argument passed to the sample function. Returns the name
+   * If not empty, the parameter will be an argument passed to the sample function. Returns the name
    * of the argument.
    */
-  @Nullable
   public abstract String sampleArgumentName();
 
   public static Builder newBuilder() {

@@ -42,7 +42,7 @@ import java.util.Set;
  */
 public class InitCodeNode {
   private static final TypeModel INT_TYPE = ProtoTypeRef.create(TypeRef.of(Type.TYPE_UINT64));
-
+  private static final String ROOT_KEY = "root";
   private String key;
   private InitCodeLineType lineType;
   private InitValueConfig initValueConfig;
@@ -162,7 +162,7 @@ public class InitCodeNode {
 
   /** Creates a node to be used as the root of the initialization tree. */
   public static InitCodeNode newRoot() {
-    return new InitCodeNode("root", InitCodeLineType.StructureInitLine, InitValueConfig.create());
+    return new InitCodeNode(ROOT_KEY, InitCodeLineType.StructureInitLine, InitValueConfig.create());
   }
 
   /**
@@ -371,15 +371,15 @@ public class InitCodeNode {
    * Attach {@code sampleParamConfig} to the nodes in this tree. Also sets lineType to {@code
    * InitCodeLineType.ReadFileInitLine} if specified in {@code sampleParamConfig}.
    *
-   * @param parentFieldPath The full path of the parent object of {@code typeRef}. Set to empty
+   * @param parentFieldPath The full path of the parent object of {@code typeRef}. Set to an empty
    *     string if {@code typeRef} is a top level proto object. We need to keep track of this
-   *     because the keys in {@code sampleParamConfigMap} are full paths while {@code key} is the
+   *     because the keys in {@code sampleParamConfigMap} are full paths while {@code key} is a
    *     simple field name.
    */
   private void resolveSampleParamConfigs(
       ImmutableMap<String, SampleParameterConfig> sampleParamConfigMap, String parentFieldPath) {
     String fieldPath;
-    if ("root".equals(key)) {
+    if (ROOT_KEY.equals(key)) {
       fieldPath = "";
     } else if (parentFieldPath.isEmpty()) {
       fieldPath = key;
