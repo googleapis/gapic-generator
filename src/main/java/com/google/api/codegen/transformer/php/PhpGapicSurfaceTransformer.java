@@ -64,6 +64,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -361,11 +362,14 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     List<String> additionalBindings = new ArrayList<>();
     Map.Entry<String, String> entry = getHttpMethodEntry(httpRule);
     String uriTemplate = entry.getValue();
-    Set<String> templateVars = PathTemplate.create(uriTemplate).vars();
+    Set<String> templateVars = new HashSet<String>();
+    templateVars.addAll(PathTemplate.create(uriTemplate).vars());
 
     if (httpRule.getAdditionalBindingsCount() > 0) {
       for (HttpRule additionalBindingHttpRule : httpRule.getAdditionalBindingsList()) {
-        additionalBindings.add(getHttpMethodEntry(additionalBindingHttpRule).getValue());
+        String additionalBindingTemplate = getHttpMethodEntry(additionalBindingHttpRule).getValue();
+        templateVars.addAll(PathTemplate.create(additionalBindingTemplate).vars());
+        additionalBindings.add(additionalBindingTemplate);
       }
     }
 
