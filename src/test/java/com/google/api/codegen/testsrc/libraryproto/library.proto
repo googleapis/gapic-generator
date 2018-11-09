@@ -131,7 +131,7 @@ service LibraryService {
     option (google.api.http) = {
       post: "/v1/{name=archives/*/books/*}"
       additional_bindings {
-        post: "/v1/{name=bookShelves/*/books/*}"
+        post: "/v1/{alt_book_name=bookShelves/*/books/*}"
       }
     };
   }
@@ -583,6 +583,10 @@ message GetBookFromAnywhereRequest {
 message GetBookFromAbsolutelyAnywhereRequest {
   // The name of the book to retrieve.
   string name = 1;
+
+  // An alternate book name, used to test proper processing of placeholders
+  // within additional bindings.
+  string alt_book_name = 2;
 }
 
 // Request message for LibraryService.UpdateBookIndex.
