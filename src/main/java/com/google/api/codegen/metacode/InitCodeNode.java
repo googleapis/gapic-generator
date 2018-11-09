@@ -368,8 +368,7 @@ public class InitCodeNode {
   }
 
   /**
-   * Attach {@code sampleParamConfig} to the nodes in this tree. Also sets lineType to {@code
-   * InitCodeLineType.ReadFileInitLine} if specified in {@code sampleParamConfig}.
+   * Apply {@code sampleParamConfig} to the nodes in this tree. 
    *
    * @param parentFieldPath The full path of the parent object of {@code typeRef}. Set to an empty
    *     string if {@code typeRef} is a top level proto object. We need to keep track of this
