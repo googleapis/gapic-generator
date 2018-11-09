@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 public class ResourceNameMessageConfigsTest {
@@ -236,6 +237,8 @@ public class ResourceNameMessageConfigsTest {
                     .build()))
         .when(protoParser)
         .getResourceDefs(protoFile, diagCollector);
+
+    Mockito.doReturn("library").when(protoParser).getProtoPackage(protoFile);
 
     Map<String, ResourceNameConfig> resourceNameConfigs =
         GapicProductConfig.createResourceNameConfigs(

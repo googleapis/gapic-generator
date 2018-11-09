@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionOneofProto;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -27,7 +28,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /** ResourceNameOneofConfig represents the configuration for a oneof set of resource names. */
@@ -106,11 +106,11 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       DiagCollector diagCollector,
       ResourceSet resourceSet,
       String oneOfName,
-      ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
-      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs,
+      ImmutableMap<String, SingleResourceNameConfig> fileLevelSingleResourceNameConfigs,
+      ProtoParser protoParser,
       ProtoFile file) {
 
-    if (singleResourceNameConfigs.containsKey(oneOfName)) {
+    if (fileLevelSingleResourceNameConfigs.containsKey(oneOfName)) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -118,45 +118,48 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       return null;
     }
     List<ResourceNameConfig> configList = new ArrayList<>();
-    boolean gotSingleResourceName = false;
-    List<String> resourceNames =
-        resourceSet.getResourcesList().stream().map(Resource::getName).collect(Collectors.toList());
-    for (String entityName : resourceNames) {
-      if (Strings.isNullOrEmpty(entityName)) {
+
+    // Set of contained Resources is the list of resources defined in the ResourceSet,
+    // plus the referent Resources from the top-level.
+    List<Resource> resourceDefs = resourceSet.getResourcesList();
+    List<String> resourceReferences = resourceSet.getResourceReferencesList();
+
+    for (Resource resource : resourceDefs) {
+      SingleResourceNameConfig singleResourceNameConfig =
+          SingleResourceNameConfig.createSingleResourceName(
+              resource, resource.getPath(), file, diagCollector);
+      configList.add(singleResourceNameConfig);
+    }
+    for (String resourceRef : resourceReferences) {
+      if (Strings.isNullOrEmpty(resourceRef)) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "base_name is required for Resources in a ResourceSet,"
-                    + " but ResourceSet %s has at least one Resource without a base_name.",
+                "name is required for Resources in a ResourceSet,"
+                    + " but ResourceSet %s has at least one Resource without a name.",
                 oneOfName));
         return null;
       }
-      ResourceNameConfig resourceNameConfig = singleResourceNameConfigs.get(entityName);
-      if (resourceNameConfig == null) {
-        resourceNameConfig = fixedResourceNameConfigs.get(entityName);
-      } else {
-        gotSingleResourceName = true;
+      String qualifiedRef = resourceRef;
+      if (!qualifiedRef.contains(".")) {
+        qualifiedRef = protoParser.getProtoPackage(file) + "." + resourceRef;
       }
-      if (resourceNameConfig == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "base_name \""
-                    + entityName
-                    + "\" in ResourceSet \""
-                    + oneOfName
-                    + "\" not found in collection configs"));
-        return null;
+      SingleResourceNameConfig reference = fileLevelSingleResourceNameConfigs.get(qualifiedRef);
+      if (reference == null) {
+        ResourceNameConfig resourceNameConfig = fileLevelSingleResourceNameConfigs.get(resourceRef);
+        if (resourceNameConfig == null) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "name \""
+                      + resourceRef
+                      + "\" in ResourceSet \""
+                      + oneOfName
+                      + "\" not found in collection configs"));
+          return null;
+        }
+        configList.add(resourceNameConfig);
       }
-      configList.add(resourceNameConfig);
-    }
-    if (!gotSingleResourceName) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "At least one ResourceNameConfig with type SINGLE is required in oneof "
-                  + oneOfName));
-      return null;
     }
 
     return new AutoValue_ResourceNameOneofConfig(oneOfName, oneOfName, configList, file);

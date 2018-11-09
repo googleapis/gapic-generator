@@ -294,4 +294,8 @@ public class ProtoParser {
     }
     return ImmutableList.of();
   }
+
+  public String getProtoPackage(ProtoFile file) {
+    return file.getProto().getPackage();
+  }
 }
