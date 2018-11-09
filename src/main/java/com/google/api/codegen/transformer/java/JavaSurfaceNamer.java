@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -403,5 +405,20 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
     return typeTable.getAndSaveNicknameForElementType(type);
+  }
+
+  @Override
+  public String getExamplePackageName() {
+    String packageName = getPackageName();
+    checkArgument(
+        packageName.startsWith("com.google."),
+        "package that does not belong to google is not supported yet");
+    packageName = packageName.replaceFirst("com\\.google\\.", "");
+    String simpleOrgName = packageName.substring(0, packageName.indexOf('.'));
+    return "com.google."
+        + simpleOrgName
+        + ".examples"
+        + packageName.replaceFirst(simpleOrgName, "")
+        + ".snippets";
   }
 }
