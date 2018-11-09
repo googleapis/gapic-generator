@@ -66,7 +66,7 @@ public class JavaGapicSamplesTransformer implements ModelToViewTransformer<Proto
 
     for (InterfaceModel apiInterface : model.getInterfaces()) {
       boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
-      ImportTypeTable typeTable = createTypeTable(productConfig.getPackageName());
+      ImportTypeTable typeTable = createTypeTable(namer.getExamplePackageName());
       InterfaceContext context =
           createInterfaceContext(
               apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
