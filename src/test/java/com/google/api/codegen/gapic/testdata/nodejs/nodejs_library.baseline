@@ -263,7 +263,7 @@ module.exports.default = Object.assign({}, module.exports);
 //         className: "DiscussBookRequestStreamingBidiProg"
 //          valueSet: "prog" ("Programming Books")
 //       description: "Testing calling forms"
-//        [name=BASIC]
+//        [name=BASIC, comment.comment=comment_file]
 //      apiMethod "discussBook" of type "OptionalArrayMethod"
 
 // [START turing_prog_request_streaming_bidi_core]
@@ -275,8 +275,14 @@ const stream = client.discussBook().on('data', response => {
   // doThingsWith(response)
 });
 const name = 'BASIC';
+const fileName = 'comment_file';
+const comment = fs.readFileSync(fileName).toString('base64');
+const comment2 = {
+  comment: comment,
+};
 const request = {
   name: name,
+  comment: comment2,
 };
 // Write request objects.
 stream.write(request);

@@ -368,10 +368,17 @@
       {@initLineMap(line)}
     @case "SimpleInitLine"
       {@initLineSimple(line)}
+    @case "ReadFileInitLine"
+      {@initLineReadFile(line)}
     @default
       $unhandledCase: {@line.lineType.toString}$
     @end
   @end
+@end
+
+@private initLineReadFile(line)
+  const fileName = {@renderInitValue(line.fileName)};
+  const {@line.identifier} = fs.readFileSync(fileName).toString('base64');
 @end
 
 @private initLineStructure(line)

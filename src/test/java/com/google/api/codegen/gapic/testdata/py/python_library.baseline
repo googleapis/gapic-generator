@@ -4160,7 +4160,11 @@ def sample_discuss_book():
   client = library_v1.LibraryServiceClient()
 
   name = 'BASIC'
-  request = {'name': name}
+  file_name = 'comment_file'
+  with io.open(file_name, 'rb') as f:
+    comment = f.read()
+  comment_2 = {'comment': comment}
+  request = {'name': name, 'comment': comment_2}
 
   requests = [request]
   for response_item in client.discuss_book(requests):

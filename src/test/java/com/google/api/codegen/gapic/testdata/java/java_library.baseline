@@ -7166,8 +7166,10 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 package com.google.example.examples.library.v1.snippets;
 
 // [START turing_prog_callable_streaming_bidi]
+import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.LibraryClient;
+import com.google.protobuf.ByteString;
 
 public class DiscussBookCallableCallableStreamingBidiProg {
   public static void sampleDiscussBook() {
@@ -7177,8 +7179,16 @@ public class DiscussBookCallableCallableStreamingBidiProg {
           libraryClient.discussBookCallable().call();
 
       String name = "BASIC";
+      String fileName = "comment_file";
+      Path path = Paths.get(fileName);
+      byte[] data = Files.readAllBytes(path);
+      ByteString comment = ByteString.copyFrom(data);
+      Comment comment2 = Comment.newBuilder()
+        .setComment(comment)
+        .build();
       DiscussBookRequest request = DiscussBookRequest.newBuilder()
         .setName(name)
+        .setComment(comment2)
         .build();
       bidiStream.send(request);
       for (Comment responseItem : bidiStream) {

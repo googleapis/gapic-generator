@@ -22,6 +22,8 @@
       {@initLineMap(line)}
     @case "SimpleInitLine"
       {@initLineSimple(line)}
+    @case "ReadFileInitLine"
+      {@initLineReadFile(line)}
     @default
       $unhandledCase: {@line.lineType.toString}$
     @end
@@ -50,6 +52,13 @@
 
 @private initLineSimple(line)
   {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue)};
+@end
+
+@private initLineReadFile(line)
+  String fileName = {@renderInitValue(line.fileName)};
+  Path path = Paths.get(fileName);
+  byte[] data = Files.readAllBytes(path);
+  ByteString {@line.identifier} = ByteString.copyFrom(data);
 @end
 
 @snippet renderInitValue(initValue)
