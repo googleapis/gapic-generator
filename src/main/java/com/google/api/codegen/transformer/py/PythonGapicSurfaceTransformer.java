@@ -179,11 +179,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   }
 
   private List<ProtoFile> getProtoFiles(GapicProductConfig productConfig) {
-    ImmutableList.Builder<ProtoFile> files = ImmutableList.builder();
-    for (ProtoFile protoFile : ProtoFiles.getProtoFiles(productConfig)) {
-      files.add(protoFile);
-    }
-    return files.build();
+    return ImmutableList.copyOf(ProtoFiles.getProtoFiles(productConfig));
   }
 
   private void addApiImports(GapicInterfaceContext context) {
