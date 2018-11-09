@@ -2279,6 +2279,7 @@ class LibraryServiceClient(object):
     def get_book_from_absolutely_anywhere(
             self,
             name,
+            alt_book_name=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -2296,6 +2297,8 @@ class LibraryServiceClient(object):
 
         Args:
             name (str): The name of the book to retrieve.
+            alt_book_name (str): An alternate book name, used to test proper processing of placeholders
+                within additional bindings.
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will not
                 be retried.
@@ -2326,6 +2329,7 @@ class LibraryServiceClient(object):
 
         request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(
             name=name,
+            alt_book_name=alt_book_name,
         )
         return self._inner_api_calls['get_book_from_absolutely_anywhere'](request, retry=retry, timeout=timeout, metadata=metadata)
 

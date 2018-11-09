@@ -1335,6 +1335,9 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
+     *     @type string $altBookName
+     *          An alternate book name, used to test proper processing of placeholders
+     *          within additional bindings.
      *     @type RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
      *          {@see Google\ApiCore\RetrySettings} object, or an associative array
@@ -1351,6 +1354,9 @@ class LibraryServiceGapicClient
     {
         $request = new GetBookFromAbsolutelyAnywhereRequest();
         $request->setName($name);
+        if (isset($optionalArgs['altBookName'])) {
+            $request->setAltBookName($optionalArgs['altBookName']);
+        }
 
         return $this->startCall(
             'GetBookFromAbsolutelyAnywhere',
@@ -2638,13 +2644,18 @@ return [
                 'additionalBindings' => [
                     [
                         'method' => 'post',
-                        'uriTemplate' => '/v1/{name=bookShelves/*/books/*}',
+                        'uriTemplate' => '/v1/{alt_book_name=bookShelves/*/books/*}',
                     ],
                 ],
                 'placeholders' => [
                     'name' => [
                         'getters' => [
                             'getName',
+                        ],
+                    ],
+                    'alt_book_name' => [
+                        'getters' => [
+                            'getAltBookName',
                         ],
                     ],
                 ]
