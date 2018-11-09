@@ -838,8 +838,7 @@ class NoTemplatesAPIServiceClient(object):
     from_service_account_json = from_service_account_file
 
     def __init__(self, transport=None, channel=None, credentials=None,
-            client_config=no_templates_api_service_client_config.config,
-            client_info=None):
+            client_config=None, client_info=None):
         """Constructor.
 
         Args:
@@ -871,12 +870,16 @@ class NoTemplatesAPIServiceClient(object):
                 your own client library.
         """
         # Raise deprecation warnings for things we want to go away.
-        if client_config:
+        if client_config is not None:
             warnings.warn('The `client_config` argument is deprecated.',
-                          PendingDeprecationWarning)
+                          PendingDeprecationWarning, stacklevel=2)
+        else:
+            client_config = no_templates_api_service_client_config.config
+
         if channel:
             warnings.warn('The `channel` argument is deprecated; use '
-                          '`transport` instead.', PendingDeprecationWarning)
+                          '`transport` instead.',
+                          PendingDeprecationWarning, stacklevel=2)
 
         # Instantiate the transport.
         # The transport is responsible for handling serialization and
@@ -1232,7 +1235,7 @@ def unit(session, py):
     session.virtualenv_dirname = 'unit-' + py
 
     # Install all test dependencies, then install this package in-place.
-    session.install('pytest')
+    session.install('pytest', 'mock')
     session.install('-e', '.')
 
     # Run py.test against the unit tests.
@@ -1351,6 +1354,7 @@ setuptools.setup(
 
 """Unit tests."""
 
+import mock
 import pytest
 
 from example.proto import no_path_templates_messages_pb2
@@ -1398,8 +1402,10 @@ class TestNoTemplatesAPIServiceClient(object):
 
     def test_increment(self):
         channel = ChannelStub()
-        client = example.NoTemplatesAPIServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = example.NoTemplatesAPIServiceClient()
 
         client.increment()
 
@@ -1411,8 +1417,10 @@ class TestNoTemplatesAPIServiceClient(object):
     def test_increment_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = example.NoTemplatesAPIServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = example.NoTemplatesAPIServiceClient()
 
         with pytest.raises(CustomException):
             client.increment()
