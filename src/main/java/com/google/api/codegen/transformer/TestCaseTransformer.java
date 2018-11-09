@@ -485,7 +485,7 @@ public class TestCaseTransformer {
   public FlatteningConfig getSmokeTestFlatteningGroup(
       MethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
     for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-      if (flatteningGroup.getFlatteningName().equals(smokeTestConfig.getFlatteningName())) {
+      if (smokeTestConfig.getFlatteningName().equals(flatteningGroup.getFlatteningName())) {
         return flatteningGroup;
       }
     }

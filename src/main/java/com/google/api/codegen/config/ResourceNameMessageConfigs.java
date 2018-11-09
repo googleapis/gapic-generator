@@ -63,17 +63,8 @@ public abstract class ResourceNameMessageConfigs {
       String defaultPackage,
       ProtoParser protoParser) {
     Map<String, ResourceNameMessageConfig> builder = new HashMap<>();
-    // Get ResourceNameMessageConfigs from configProto.
-    for (ResourceNameMessageConfigProto messageResourceTypesProto :
-        configProto.getResourceNameGenerationList()) {
-      ResourceNameMessageConfig messageResourceTypeConfig =
-          ResourceNameMessageConfig.createResourceNameMessageConfig(
-              diagCollector, messageResourceTypesProto, defaultPackage);
-      builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
-    }
 
-    // Add more ResourceNameMessageConfigs from proto annotations. Overwrite the configs from
-    // configProto if any clash.
+    // Get ResourceNameMessageConfigs from proto annotations.
     for (ProtoFile protoFile : protoFiles) {
       for (MessageType message : protoFile.getMessages()) {
         ResourceNameMessageConfig resourceNameMessageConfig =
@@ -84,17 +75,15 @@ public abstract class ResourceNameMessageConfigs {
       }
     }
 
-    // // Add more ResourceNameMessageConfigs from proto annotations. Overwrite the configs from
-    // // configProto if any clash.
-    // for (ProtoFile protoFile : protoFiles) {
-    //   for (protoFile.) {
-    //     ResourceNameMessageConfig resourceNameMessageConfig =
-    //         ResourceNameMessageConfig.createResourceNameMessageConfig(message, protoParser);
-    //     if (resourceNameMessageConfig != null) {
-    //       builder.put(message.getFullName(), resourceNameMessageConfig);
-    //     }
-    //   }
-    // }
+    // Add more ResourceNameMessageConfigs from configProto. Overwrite the configs from
+    // configProto if any clash.
+    for (ResourceNameMessageConfigProto messageResourceTypesProto :
+        configProto.getResourceNameGenerationList()) {
+      ResourceNameMessageConfig messageResourceTypeConfig =
+          ResourceNameMessageConfig.createResourceNameMessageConfig(
+              diagCollector, messageResourceTypesProto, defaultPackage);
+      builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
+    }
 
     ImmutableSortedMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap =
         ImmutableSortedMap.copyOf(builder);

@@ -134,9 +134,10 @@ public abstract class FlatteningConfig {
     // flattening.
     Map<String, FlatteningConfig> flatteningConfigs = new LinkedHashMap<>();
 
-    flatteningConfigs.putAll(flatteningConfigsFromGapicConfig);
-    // Let flattenings from proto annotations override flattenings from GAPIC config.
+    // Let flattenings from GAPIC config override flattenings from proto annotations.
     flatteningConfigs.putAll(flatteningConfigsFromProtoFile);
+
+    flatteningConfigs.putAll(flatteningConfigsFromGapicConfig);
 
     return ImmutableList.copyOf(flatteningConfigs.values());
   }

@@ -135,8 +135,10 @@ public abstract class FieldConfig {
         ok = oneofConfig.getResourceNameConfigs().contains(flattenedFieldResourceNameConfig);
       }
       if (!ok) {
-        Diag error =
-            Diag.error(
+        // Prefer using entity name from flattening config, which is derived from GAPIC config,
+        // than the entity name from method config, which might be defined in proto annotations.
+        Diag warning =
+            Diag.warning(
                 SimpleLocation.TOPLEVEL,
                 "Multiple entity names specified for field: "
                     + field.getFullName()
@@ -144,12 +146,9 @@ public abstract class FieldConfig {
                     + flattenedFieldEntityName
                     + ", "
                     + messageFieldEntityName
-                    + "]");
-        if (diagCollector == null) {
-          throw new IllegalArgumentException(error.toString());
-        }
-        diagCollector.addDiag(error);
-        return null;
+                    + "], using flattening config instead of message config.");
+        diagCollector.addDiag(warning);
+        messageFieldResourceNameConfig = flattenedFieldResourceNameConfig;
       }
     }
 

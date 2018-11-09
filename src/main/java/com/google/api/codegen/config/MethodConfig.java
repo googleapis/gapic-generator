@@ -180,7 +180,7 @@ public abstract class MethodConfig {
       Iterable<FieldModel> fields) {
     ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
     for (FieldModel field : fields) {
-      fieldConfigsBuilder.add(
+      FieldConfig fieldConfig =
           FieldConfig.createFieldConfig(
               diagCollector,
               messageConfigs,
@@ -188,7 +188,11 @@ public abstract class MethodConfig {
               resourceNameConfigs,
               field,
               null,
-              defaultResourceNameTreatment));
+              defaultResourceNameTreatment);
+      if (fieldConfig == null) {
+        return null;
+      }
+      fieldConfigsBuilder.add(fieldConfig);
     }
     return fieldConfigsBuilder.build();
   }

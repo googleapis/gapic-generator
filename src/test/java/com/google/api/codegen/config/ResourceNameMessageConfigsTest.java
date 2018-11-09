@@ -49,7 +49,6 @@ import java.util.Map;
 import java.util.Optional;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 public class ResourceNameMessageConfigsTest {

@@ -46,7 +46,6 @@ import com.google.common.collect.Iterables;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.protobuf.DescriptorProtos;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -601,7 +600,12 @@ public abstract class GapicProductConfig implements ProductConfig {
       String resourcePath = resource.getPath();
       ProtoFile protoFile = resourceDefs.get(resource);
       createSingleResourceNameConfig(
-          diagCollector, resource, protoFile, resourcePath, protoParser, fullyQualifiedSingleResourcesFromProtoFile);
+          diagCollector,
+          resource,
+          protoFile,
+          resourcePath,
+          protoParser,
+          fullyQualifiedSingleResourcesFromProtoFile);
     }
 
     // Create the ResourceNameOneOfConfigs.
@@ -623,11 +627,12 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     // Populate a SingleResourceNameConfigs map, using just the unqualified names.
-    Map<String, SingleResourceNameConfig> singleResourceConfigsFromProtoFile = new LinkedHashMap<>();
+    Map<String, SingleResourceNameConfig> singleResourceConfigsFromProtoFile =
+        new LinkedHashMap<>();
     for (String fullName : fullyQualifiedSingleResourcesFromProtoFile.keySet()) {
       int periodIndex = fullName.lastIndexOf('.');
       SingleResourceNameConfig config = fullyQualifiedSingleResourcesFromProtoFile.get(fullName);
-      singleResourceConfigsFromProtoFile.put(fullName.substring(periodIndex+1), config);
+      singleResourceConfigsFromProtoFile.put(fullName.substring(periodIndex + 1), config);
     }
 
     Map<String, SingleResourceNameConfig> finalSingleResourceNameConfigs =

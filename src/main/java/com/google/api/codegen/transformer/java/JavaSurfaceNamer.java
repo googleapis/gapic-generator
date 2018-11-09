@@ -43,6 +43,7 @@ import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import java.io.File;
 import java.util.ArrayList;
@@ -292,18 +293,24 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
     String entityName = resourceNameConfig.getEntityName();
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
+    Function<String, Name> formatNameFunc;
+    if (entityName.length() > 0 && Character.isUpperCase(entityName.charAt(0))) {
+      formatNameFunc = Name::upperCamel;
+    } else {
+      formatNameFunc = Name::anyLower;
+    }
     switch (resourceNameType) {
       case ANY:
         return getAnyResourceTypeName();
       case FIXED:
-        return Name.anyLower(entityName).join("name_fixed");
+        return formatNameFunc.apply(entityName).join("name_fixed");
       case ONEOF:
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
         // with a collection config.
         entityName = StringUtil.removeSuffix(entityName, "_oneof");
-        return Name.anyLower(entityName).join("name");
+        return formatNameFunc.apply(entityName).join("name");
       case SINGLE:
-        return Name.anyLower(entityName).join("name");
+        return formatNameFunc.apply(entityName).join("name");
       case NONE:
       default:
         throw new UnsupportedOperationException("unexpected entity name type");
