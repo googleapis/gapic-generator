@@ -387,8 +387,13 @@ public class InitCodeNode {
       fieldPath = parentFieldPath + "." + key;
     }
     this.sampleParamConfig = sampleParamConfigMap.get(fieldPath);
-    if (sampleParamConfig != null && sampleParamConfig.readFromFile()) {
-      setLineType(InitCodeLineType.ReadFileInitLine);
+    if (sampleParamConfig != null) {
+      if (sampleParamConfig.readFromFile()) {
+        setLineType(InitCodeLineType.ReadFileInitLine);
+      }
+      if (sampleParamConfig.isSampleArgument()) {
+        identifier = Name.anyLower(sampleParamConfig.sampleArgumentName());
+      }
     }
     children
         .values()

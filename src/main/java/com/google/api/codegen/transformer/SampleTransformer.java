@@ -238,8 +238,6 @@ public class SampleTransformer {
                       .getParameters()
                       .getAttributesList()
                       .stream()
-
-                      // TODO(#2366) honor the configured name.
                       .collect(
                           ImmutableMap.toImmutableMap(
                               attr -> attr.getParameter(),
