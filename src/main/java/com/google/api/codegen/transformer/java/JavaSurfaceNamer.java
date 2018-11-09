@@ -408,18 +408,21 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   /**
-   * All Google cloud java libraries have package names like "com.google.cloud.library.v1" and the
-   * repect examples have package names like "com.google.cloud.examples.library.v1.snippets". This
-   * method assumes {@code packageName} to have the format of "com.google.(.+).artifact.name". This
-   * works for both existing libraries and the baseline test. We will need to adjust this if in the
-   * future there are libraries that do not follow the package name format assumed here.
+   * Returns the package name of standalone samples.
+   *
+   * <p>All Google cloud java libraries have package names like "com.google.cloud.library.v1" and
+   * the respective examples have package names like
+   * "com.google.cloud.examples.library.v1.snippets". This method assumes {@code packageName} has
+   * the format of "com.google.(.+).artifact.name". This works for both existing libraries and the
+   * baseline test. We will need to adjust this if in the future there are libraries that do not
+   * follow the package name format assumed here.
    */
   @Override
   public String getExamplePackageName() {
     String packageName = getPackageName();
     checkArgument(
         packageName.startsWith("com.google."),
-        "package that does not belong to google is not supported yet");
+        "We currently only support packages beginning with 'com.google'");
     packageName = packageName.replaceFirst("com\\.google\\.", "");
     String simpleOrgName = packageName.substring(0, packageName.indexOf('.'));
     return "com.google."
