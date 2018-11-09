@@ -407,6 +407,13 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     return typeTable.getAndSaveNicknameForElementType(type);
   }
 
+  /**
+   * All Google cloud java libraries have package names like "com.google.cloud.library.v1" and the
+   * repect examples have package names like "com.google.cloud.examples.library.v1.snippets". This
+   * method assumes {@code packageName} to have the format of "com.google.(.+).artifact.name". This
+   * works for both existing libraries and the baseline test. We will need to adjust this if in the
+   * future there are libraries that do not follow the package name format assumed here.
+   */
   @Override
   public String getExamplePackageName() {
     String packageName = getPackageName();
