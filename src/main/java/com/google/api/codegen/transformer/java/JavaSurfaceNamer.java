@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -410,5 +412,30 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
     return typeTable.getAndSaveNicknameForElementType(type);
+  }
+
+  /**
+   * Returns the package name of standalone samples.
+   *
+   * <p>All Google cloud java libraries have package names like "com.google.cloud.library.v1" and
+   * the respective examples have package names like
+   * "com.google.cloud.examples.library.v1.snippets". This method assumes {@code packageName} has
+   * the format of "com.google.(.+).artifact.name". This works for both existing libraries and the
+   * baseline test. We will need to adjust this if in the future there are libraries that do not
+   * follow the package name format assumed here.
+   */
+  @Override
+  public String getExamplePackageName() {
+    String packageName = getPackageName();
+    checkArgument(
+        packageName.startsWith("com.google."),
+        "We currently only support packages beginning with 'com.google'");
+    packageName = packageName.replaceFirst("com\\.google\\.", "");
+    String simpleOrgName = packageName.substring(0, packageName.indexOf('.'));
+    return "com.google."
+        + simpleOrgName
+        + ".examples"
+        + packageName.replaceFirst(simpleOrgName, "")
+        + ".snippets";
   }
 }

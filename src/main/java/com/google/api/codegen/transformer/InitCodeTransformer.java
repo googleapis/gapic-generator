@@ -14,7 +14,10 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
 import com.google.api.codegen.config.ResourceNameType;
@@ -38,6 +41,7 @@ import com.google.api.codegen.viewmodel.ListInitCodeLineView;
 import com.google.api.codegen.viewmodel.MapEntryView;
 import com.google.api.codegen.viewmodel.MapInitCodeLineView;
 import com.google.api.codegen.viewmodel.OneofConfigView;
+import com.google.api.codegen.viewmodel.ReadFileInitCodeLineView;
 import com.google.api.codegen.viewmodel.RepeatedResourceNameInitValueView;
 import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
 import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
@@ -46,6 +50,7 @@ import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
 import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -375,6 +380,8 @@ public class InitCodeTransformer {
         return generateSimpleInitCodeLine(context, specItemNode, isFirstItem);
       case MapInitLine:
         return generateMapInitCodeLine(context, specItemNode);
+      case ReadFileInitLine:
+        return generateReadFileInitCodeLine(context, specItemNode);
       default:
         throw new RuntimeException("unhandled line type: " + specItemNode.getLineType());
     }
@@ -476,6 +483,39 @@ public class InitCodeTransformer {
     surfaceLine.initEntries(entries);
 
     return surfaceLine.build();
+  }
+
+  // TODO(hzyi): generate necessary imports
+  private InitCodeLineView generateReadFileInitCodeLine(MethodContext context, InitCodeNode item) {
+    ReadFileInitCodeLineView.Builder surfaceLine = ReadFileInitCodeLineView.newBuilder();
+    SurfaceNamer namer = context.getNamer();
+    ImportTypeTable typeTable = context.getTypeTable();
+    checkState(
+        item.getType().isBytesType(),
+        "Error setting %s to be read from file. "
+            + "Replacing field value with file contents is only allowed for fields of type 'bytes', "
+            + "but the type is %s.",
+        item.getIdentifier(),
+        item.getType());
+    typeTable.getAndSaveNicknameFor(item.getType());
+    String value = item.getInitValueConfig().getInitialValue().getValue();
+    switch (item.getInitValueConfig().getInitialValue().getType()) {
+      case Literal:
+        // File names are always strings
+        value =
+            typeTable.renderPrimitiveValue(
+                ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")), value);
+        break;
+      case Variable:
+        value = namer.localVarReference(Name.anyLower(value));
+        break;
+      default:
+        throw new IllegalArgumentException("Unhandled init value type");
+    }
+    return surfaceLine
+        .identifier(namer.localVarName(item.getIdentifier()))
+        .fileName(SimpleInitValueView.newBuilder().initialValue(value).build())
+        .build();
   }
 
   private void setInitValueAndComments(
