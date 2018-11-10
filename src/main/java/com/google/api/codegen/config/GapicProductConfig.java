@@ -45,7 +45,6 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.protobuf.DescriptorProtos;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -190,21 +189,32 @@ public abstract class GapicProductConfig implements ProductConfig {
       configProto = ConfigProto.getDefaultInstance();
     }
 
+    DiagCollector diagCollector = model.getDiagReporter().getDiagCollector();
+
+    Map<Resource, ProtoFile> resourceDefs =
+        protoParser.getResourceDefs(sourceProtos, diagCollector);
+    Map<ResourceSet, ProtoFile> resourceSetDefs =
+        protoParser.getResourceSetDefs(sourceProtos, diagCollector);
+
     // Get list of fields from proto
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtos,
-            model.getDiagReporter().getDiagCollector(),
+            diagCollector,
             configProto,
             defaultPackage,
+            resourceDefs,
+            resourceSetDefs,
             protoParser);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(
-            model.getDiagReporter().getDiagCollector(),
+            diagCollector,
             configProto,
             sourceProtos,
             language,
+            resourceDefs,
+            resourceSetDefs,
             protoParser);
 
     if (resourceNameConfigs == null) {
@@ -505,7 +515,8 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   private static ImmutableMap<String, ResourceNameConfig> createResourceNameConfigs(
       DiagCollector diagCollector, ConfigProto configProto, TargetLanguage language) {
-    return createResourceNameConfigs(diagCollector, configProto, null, language, null);
+    return createResourceNameConfigs(
+        diagCollector, configProto, null, language, ImmutableMap.of(), ImmutableMap.of(), null);
   }
 
   @VisibleForTesting
@@ -515,6 +526,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       ConfigProto configProto,
       @Nullable List<ProtoFile> protoFiles,
       TargetLanguage language,
+      Map<Resource, ProtoFile> resourceDefs,
+      Map<ResourceSet, ProtoFile> resourceSetDefs,
       ProtoParser protoParser) {
     ProtoFile file = null;
     if (protoFiles != null) {
@@ -538,16 +551,13 @@ public abstract class GapicProductConfig implements ProductConfig {
       return null;
     }
 
-    // TODO(andrealin): make protofiles be an empty list.
-    if (protoFiles == null) {
-      protoFiles = new ArrayList<>();
-    }
     return mergeResourceNameConfigsFromProtoFile(
         diagCollector,
-        protoFiles,
         singleResourceNameConfigs,
         fixedResourceNameConfigs,
         resourceNameOneofConfigs,
+        resourceDefs,
+        resourceSetDefs,
         protoParser);
   }
 
@@ -557,19 +567,21 @@ public abstract class GapicProductConfig implements ProductConfig {
    * override the GAPIC config resourceNames in event of clashes.
    *
    * @param diagCollector error and warning collector
-   * @param sourceProtos list of ProtoFiles to create ResourceName configs from
    * @param singleResourceNamesFromGapicConfig Single resource names from GAPIC config
    * @param fixedResourceNameConfigsFromGapicConfig Fixed resource names from GAPIC config
    * @param resourceNameOneofConfigsFromGapicConfig Oneof resource names from GAPIC config.
    * @param protoParser util to parse annotations from ProtoFile
+   * @param resourceDefs all Resources, mapped to the ProtoFile they are defined in
+   * @param resourceSetDefs all Resources, mapped to the ProtoFile they are defined in
    * @return complete Map of resource_entity_id to ResourceNameConfig, to be used by transformers
    */
   private static ImmutableMap<String, ResourceNameConfig> mergeResourceNameConfigsFromProtoFile(
       DiagCollector diagCollector,
-      List<ProtoFile> sourceProtos,
       ImmutableMap<String, SingleResourceNameConfig> singleResourceNamesFromGapicConfig,
       ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigsFromGapicConfig,
       ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigsFromGapicConfig,
+      Map<Resource, ProtoFile> resourceDefs,
+      Map<ResourceSet, ProtoFile> resourceSetDefs,
       ProtoParser protoParser) {
 
     // Map of fully qualified Resource name to its derived config.
@@ -578,22 +590,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Map of fully qualified ResourceSet name to its derived config.
     LinkedHashMap<String, ResourceNameOneofConfig> resourceOneOfConfigsFromProtoFile =
         new LinkedHashMap<>();
-
-    Map<Resource, ProtoFile> resourceDefs = new LinkedHashMap<>();
-    Map<ResourceSet, ProtoFile> resourceSetDefs = new LinkedHashMap<>();
-
-    // Collect all Resources and ResourceSets from proto annotations.
-    for (ProtoFile protoFile : sourceProtos) {
-      List<Resource> resources = protoParser.getResourceDefs(protoFile, diagCollector);
-      List<ResourceSet> resourceSets = protoParser.getResourceSetDefs(protoFile, diagCollector);
-
-      for (Resource resource : resources) {
-        resourceDefs.put(resource, protoFile);
-      }
-      for (ResourceSet resourceSet : resourceSets) {
-        resourceSetDefs.put(resourceSet, protoFile);
-      }
-    }
 
     // Create the SingleResourceNameConfigs.
     for (Resource resource : resourceDefs.keySet()) {

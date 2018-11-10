@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.Resource;
+import com.google.api.ResourceSet;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
@@ -52,7 +54,13 @@ public abstract class ResourceNameMessageConfigs {
   static ResourceNameMessageConfigs createMessageResourceTypesConfig(
       DiagCollector diagCollector, ConfigProto configProto, String defaultPackage) {
     return createMessageResourceTypesConfig(
-        new LinkedList<>(), diagCollector, configProto, defaultPackage, null);
+        new LinkedList<>(),
+        diagCollector,
+        configProto,
+        defaultPackage,
+        ImmutableMap.of(),
+        ImmutableMap.of(),
+        null);
   }
 
   @VisibleForTesting
@@ -61,6 +69,8 @@ public abstract class ResourceNameMessageConfigs {
       DiagCollector diagCollector,
       ConfigProto configProto,
       String defaultPackage,
+      Map<Resource, ProtoFile> resourceDefs,
+      Map<ResourceSet, ProtoFile> resourceSetDefs,
       ProtoParser protoParser) {
     Map<String, ResourceNameMessageConfig> builder = new HashMap<>();
 
@@ -68,7 +78,8 @@ public abstract class ResourceNameMessageConfigs {
     for (ProtoFile protoFile : protoFiles) {
       for (MessageType message : protoFile.getMessages()) {
         ResourceNameMessageConfig resourceNameMessageConfig =
-            ResourceNameMessageConfig.createResourceNameMessageConfig(message, protoParser);
+            ResourceNameMessageConfig.createResourceNameMessageConfig(
+                message, resourceDefs, resourceSetDefs, protoParser);
         if (resourceNameMessageConfig != null) {
           builder.put(message.getFullName(), resourceNameMessageConfig);
         }

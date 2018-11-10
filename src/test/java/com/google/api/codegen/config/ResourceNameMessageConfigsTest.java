@@ -19,6 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 import com.google.api.MethodSignature;
 import com.google.api.Resource;
+import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
@@ -44,6 +45,7 @@ import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -69,6 +71,18 @@ public class ResourceNameMessageConfigsTest {
   private static final String ARCHIVED_BOOK_PATH = "archives/{archive_path}/books/{book_id=**}";
   private static final String PROTO_SHELF_PATH = "shelves/{shelf}";
   private static final String PROTO_BOOK_PATH = "bookShelves/{book}";
+
+  private static final Map<Resource, ProtoFile> allResourceDefs =
+      ImmutableMap.of(
+          Resource.newBuilder().setName("Shelf").setPath(PROTO_SHELF_PATH).build(), protoFile,
+          Resource.newBuilder().setName("Book").setPath(PROTO_BOOK_PATH).build(), protoFile,
+          Resource.newBuilder()
+                  .setName("archived_book")
+                  .setPath("archives/{archive}/books/{book}")
+                  .build(),
+              protoFile);
+
+  private static final Map<ResourceSet, ProtoFile> allResourceSetDefs = ImmutableMap.of();
 
   @BeforeClass
   public static void startUp() {
@@ -151,7 +165,13 @@ public class ResourceNameMessageConfigsTest {
 
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            sourceProtoFiles, diagCollector, emptyConfigProto, defaultPackage, protoParser);
+            sourceProtoFiles,
+            diagCollector,
+            emptyConfigProto,
+            defaultPackage,
+            allResourceDefs,
+            allResourceSetDefs,
+            protoParser);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
 
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(2);
@@ -213,9 +233,16 @@ public class ResourceNameMessageConfigsTest {
   public void testCreateResourceNames() {
     DiagCollector diagCollector = new BoundedDiagCollector();
 
+    Map<ResourceSet, ProtoFile> resourceSetDefs = new HashMap<>();
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            sourceProtoFiles, diagCollector, configProto, DEFAULT_PACKAGE, protoParser);
+            sourceProtoFiles,
+            diagCollector,
+            configProto,
+            DEFAULT_PACKAGE,
+            allResourceDefs,
+            resourceSetDefs,
+            protoParser);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
   }
 
@@ -223,25 +250,17 @@ public class ResourceNameMessageConfigsTest {
   public void testCreateResourceNameConfigs() {
     DiagCollector diagCollector = new BoundedDiagCollector();
 
-    Mockito.doReturn(Arrays.asList())
-        .when(protoParser)
-        .getResourceSetDefs(protoFile, diagCollector);
-    Mockito.doReturn(
-            Arrays.asList(
-                Resource.newBuilder().setName("Shelf").setPath(PROTO_SHELF_PATH).build(),
-                Resource.newBuilder().setName("Book").setPath(PROTO_BOOK_PATH).build(),
-                Resource.newBuilder()
-                    .setName("archived_book")
-                    .setPath("archives/{archive}/books/{book}")
-                    .build()))
-        .when(protoParser)
-        .getResourceDefs(protoFile, diagCollector);
-
     Mockito.doReturn("library").when(protoParser).getProtoPackage(protoFile);
 
     Map<String, ResourceNameConfig> resourceNameConfigs =
         GapicProductConfig.createResourceNameConfigs(
-            diagCollector, configProto, sourceProtoFiles, TargetLanguage.CSHARP, protoParser);
+            diagCollector,
+            configProto,
+            sourceProtoFiles,
+            TargetLanguage.CSHARP,
+            allResourceDefs,
+            allResourceSetDefs,
+            protoParser);
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(resourceNameConfigs.size()).isEqualTo(7);
@@ -304,8 +323,8 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(createShelvesRequest.getFields())
         .thenReturn(ImmutableList.of(bookField, nameField));
 
-    Mockito.doReturn("library.Book").when(protoParser).getResourceType(bookField);
-    Mockito.doReturn("library.Shelf").when(protoParser).getResourceType(nameField);
+    Mockito.doReturn("library.Book").when(protoParser).getResourceReference(bookField);
+    Mockito.doReturn("library.Shelf").when(protoParser).getResourceReference(nameField);
 
     // ProtoFile contributes flattenings {["name", "book"], ["name"]}.
     Mockito.doReturn(
@@ -345,10 +364,22 @@ public class ResourceNameMessageConfigsTest {
     DiagCollector diagCollector = new BoundedDiagCollector();
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            sourceProtoFiles, diagCollector, configProto, DEFAULT_PACKAGE, protoParser);
+            sourceProtoFiles,
+            diagCollector,
+            configProto,
+            DEFAULT_PACKAGE,
+            allResourceDefs,
+            allResourceSetDefs,
+            protoParser);
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         GapicProductConfig.createResourceNameConfigs(
-            diagCollector, configProto, sourceProtoFiles, TargetLanguage.CSHARP, protoParser);
+            diagCollector,
+            configProto,
+            sourceProtoFiles,
+            TargetLanguage.CSHARP,
+            allResourceDefs,
+            allResourceSetDefs,
+            protoParser);
 
     List<FlatteningConfig> flatteningConfigs =
         new ArrayList<>(

@@ -14,14 +14,18 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.Resource;
+import com.google.api.ResourceSet;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 /** Configuration of the resource name types for fields of a single message. */
 @AutoValue
@@ -47,7 +51,10 @@ public abstract class ResourceNameMessageConfig {
   }
 
   public static ResourceNameMessageConfig createResourceNameMessageConfig(
-      MessageType message, ProtoParser protoParser) {
+      MessageType message,
+      Map<Resource, ProtoFile> allResources,
+      Map<ResourceSet, ProtoFile> allResourceSets,
+      ProtoParser protoParser) {
     ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
     for (Field field : message.getFields()) {
       // TODO(andrealin): Can there be multiple fields be Resource[Set]s in a single message?
@@ -57,7 +64,8 @@ public abstract class ResourceNameMessageConfig {
         continue;
       }
 
-      String resourceType = protoParser.getResourceTypeEntityName(field);
+      String resourceType =
+          protoParser.getResourceReferenceName(field, allResources, allResourceSets);
       if (!Strings.isNullOrEmpty(resourceType)) {
         builder.put(field.getSimpleName(), resourceType);
       }
