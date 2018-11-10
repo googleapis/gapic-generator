@@ -395,8 +395,8 @@ public class InitCodeNode {
         setLineType(InitCodeLineType.ReadFileInitLine);
       }
 
-      // If sample_argument_name is specified in config. If the name has not been used yet
-      // then set identifier to the this, otherwise error out.
+      // If sample_argument_name is specified in config, set identifier to this name if the name has
+      // not be used yet and error out otherwise.
       if (sampleParamConfig.isSampleArgument()) {
         Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
         if (!argName.equals(identifier)) {
