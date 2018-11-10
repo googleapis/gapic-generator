@@ -14,16 +14,12 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.Resource;
 import com.google.api.codegen.FixedResourceNameValueProto;
-import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Strings;
 import javax.annotation.Nullable;
 
 /**
@@ -71,28 +67,28 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
 
     return new AutoValue_FixedResourceNameConfig(entityName, entityName, fixedValue, file);
   }
-
-  @Nullable
-  static FixedResourceNameConfig createFixedResourceNameConfig(
-      DiagCollector diagCollector, Field field, Resource resource, ProtoParser protoParser) {
-    String entityName = resource.getName();
-    if (Strings.isNullOrEmpty(entityName)) {
-      entityName = protoParser.getResourceEntityName(field);
-    }
-    String fixedValue = resource.getPath();
-
-    if (entityName == null || fixedValue == null) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "incorrectly configured FixedResourceNameConfig: name: "
-                  + entityName
-                  + ", value: "
-                  + fixedValue));
-      return null;
-    }
-
-    return new AutoValue_FixedResourceNameConfig(
-        entityName, entityName, fixedValue, field.getFile());
-  }
+  //
+  // @Nullable
+  // static FixedResourceNameConfig createFixedResourceNameConfig(
+  //     DiagCollector diagCollector, Field field, Resource resource, ProtoParser protoParser) {
+  //   String entityName = resource.getName();
+  //   if (Strings.isNullOrEmpty(entityName)) {
+  //     entityName = protoParser.getResourceEntityName(field);
+  //   }
+  //   String fixedValue = resource.getPath();
+  //
+  //   if (entityName == null || fixedValue == null) {
+  //     diagCollector.addDiag(
+  //         Diag.error(
+  //             SimpleLocation.TOPLEVEL,
+  //             "incorrectly configured FixedResourceNameConfig: name: "
+  //                 + entityName
+  //                 + ", value: "
+  //                 + fixedValue));
+  //     return null;
+  //   }
+  //
+  //   return new AutoValue_FixedResourceNameConfig(
+  //       entityName, entityName, fixedValue, field.getFile());
+  // }
 }

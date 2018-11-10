@@ -139,25 +139,17 @@ public class ProtoParser {
     return null;
   }
 
-  public String getResourceEntityName(Resource resource, String defaultEntityName) {
-    if (resource != null && !Strings.isNullOrEmpty(resource.getName())) {
-      return resource.getName();
-    }
-    return defaultEntityName;
-  }
-
   /** Return the entity name, e.g. "shelf" for a resource field. */
-  public String getResourceEntityName(Field field) {
-    String defaultEntityName = field.getParent().getSimpleName();
+  String getResourceEntityName(Field field) {
     Resource resource = getResource(field);
     if (resource != null && !Strings.isNullOrEmpty(resource.getName())) {
       return resource.getName();
     }
-    return defaultEntityName;
+    return field.getParent().getSimpleName();
   }
 
   /** Return the entity name, e.g. "shelf" for a resource set field. */
-  String getResourceSetEntityName(Field field) {
+  private String getResourceSetEntityName(Field field) {
     ResourceSet resourceSet = getResourceSet(field);
     if (resourceSet != null && !Strings.isNullOrEmpty(resourceSet.getName())) {
       return resourceSet.getName();
@@ -194,13 +186,6 @@ public class ProtoParser {
         AnnotationsProto.resourceSet,
         ResourceSet::getName,
         (resourceSet, baseNameToSet) -> resourceSet.toBuilder().setName(baseNameToSet).build());
-  }
-
-  /* For each ResourceSet, if there are any resource_references, replace the references
-   * with a Resource, in place, in the ResourceSet. */
-  public void resolveResourceSetReferences(List<ResourceSet> protoFile, List<Resource> resources) {
-
-    // TODO(andrealin):
   }
 
   /* Return a Map of Resource or ResourceSet elements to their containing ProtoFile. */

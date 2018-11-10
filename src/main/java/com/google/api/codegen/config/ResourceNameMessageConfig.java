@@ -50,7 +50,7 @@ public abstract class ResourceNameMessageConfig {
     return new AutoValue_ResourceNameMessageConfig(fullyQualifiedMessageName, fieldEntityMap);
   }
 
-  public static ResourceNameMessageConfig createResourceNameMessageConfig(
+  static ResourceNameMessageConfig createResourceNameMessageConfig(
       MessageType message,
       Map<Resource, ProtoFile> allResources,
       Map<ResourceSet, ProtoFile> allResourceSets,
@@ -80,7 +80,7 @@ public abstract class ResourceNameMessageConfig {
     return new AutoValue_ResourceNameMessageConfig(message.getFullName(), fieldEntityMap);
   }
 
-  public static String getFullyQualifiedMessageName(String defaultPackage, String messageName) {
+  static String getFullyQualifiedMessageName(String defaultPackage, String messageName) {
     if (messageName.contains(".")) {
       return messageName;
     } else {
@@ -88,7 +88,7 @@ public abstract class ResourceNameMessageConfig {
     }
   }
 
-  public String getEntityNameForField(String fieldSimpleName) {
+  String getEntityNameForField(String fieldSimpleName) {
     return fieldEntityMap().get(fieldSimpleName);
   }
 }
