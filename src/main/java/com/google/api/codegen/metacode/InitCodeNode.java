@@ -196,7 +196,7 @@ public class InitCodeNode {
     }
 
     root.resolveNamesAndTypes(context, context.initObjectType(), context.suggestedName(), null);
-    root.resolveSampleParamConfigs(context.sampleParamConfigMap(), "");
+    root.resolveSampleParamConfigs(context, "");
     return root;
   }
 
@@ -368,15 +368,16 @@ public class InitCodeNode {
   }
 
   /**
-   * Apply {@code sampleParamConfig} to the nodes in this tree. 
+   * Apply {@code sampleParamConfig} to the nodes in this tree.
    *
    * @param parentFieldPath The full path of the parent object of {@code typeRef}. Set to an empty
    *     string if {@code typeRef} is a top level proto object. We need to keep track of this
    *     because the keys in {@code sampleParamConfigMap} are full paths while {@code key} is a
    *     simple field name.
    */
-  private void resolveSampleParamConfigs(
-      ImmutableMap<String, SampleParameterConfig> sampleParamConfigMap, String parentFieldPath) {
+  private void resolveSampleParamConfigs(InitCodeContext context, String parentFieldPath) {
+    ImmutableMap<String, SampleParameterConfig> sampleParamConfigMap =
+        context.sampleParamConfigMap();
     String fieldPath;
     if (ROOT_KEY.equals(key)) {
       fieldPath = "";
@@ -386,17 +387,31 @@ public class InitCodeNode {
       fieldPath = parentFieldPath + "." + key;
     }
     this.sampleParamConfig = sampleParamConfigMap.get(fieldPath);
+
     if (sampleParamConfig != null) {
+
+      // If read_file is set to true in config, change the line type to ReadFileInitLine.
       if (sampleParamConfig.readFromFile()) {
         setLineType(InitCodeLineType.ReadFileInitLine);
       }
+
+      // If sample_argument_name is specified in config. If the name has not been used yet
+      // then set identifier to the this, otherwise error out.
       if (sampleParamConfig.isSampleArgument()) {
-        identifier = Name.anyLower(sampleParamConfig.sampleArgumentName());
+        Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
+        if (!argName.equals(identifier)) {
+          Preconditions.checkArgument(
+              !context.symbolTable().isSymbolUsed(argName),
+              "sample_argument_name \"%s\" is not valid.",
+              sampleParamConfig.sampleArgumentName());
+          identifier =
+              context
+                  .symbolTable()
+                  .getNewSymbol(Name.anyLower(sampleParamConfig.sampleArgumentName()));
+        }
       }
     }
-    children
-        .values()
-        .forEach(child -> child.resolveSampleParamConfigs(sampleParamConfigMap, fieldPath));
+    children.values().forEach(child -> child.resolveSampleParamConfigs(context, fieldPath));
   }
 
   private static Name getChildSuggestedName(

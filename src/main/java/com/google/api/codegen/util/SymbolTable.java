@@ -87,6 +87,11 @@ public class SymbolTable {
     return desiredName + suffix;
   }
 
+  /** Returns true if a {@code symbol} is already used. */
+  public boolean isSymbolUsed(Name symbol) {
+    return symbolTable.contains(symbol.toLowerUnderscore());
+  }
+
   /**
    * Returns the next numeric suffix that makes desiredName unique.
    *
