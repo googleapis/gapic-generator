@@ -285,6 +285,8 @@
             {@initLineMap(line)}
         @case "SimpleInitLine"
             {@initLineSimple(line, apiVariableName)}
+        @case "ReadFileInitLine"
+            {@initLineReadFile(line, apiVariableName)}
         @default
             $unhandledCase: {@line.lineType}$
         @end
@@ -342,6 +344,10 @@
 
 @private initLineSimple(line, apiVariableName)
     ${@line.identifier} = {@renderInitValue(line.initValue, apiVariableName)};
+@end
+
+@private initLineReadFile(line, apiVariableName)
+    {@variable(line.identifier)} = file_get_contents({@renderInitValue(line.fileName, apiVariableName)});
 @end
 
 @private renderInitValue(initValue, apiVariableName)

@@ -16,6 +16,7 @@ package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -65,11 +66,21 @@ public abstract class InitCodeContext {
   /** Returns init config strings. */
   public abstract List<String> initFieldConfigStrings();
 
+  /** Configuration for the sample arguments. */
+  public abstract ImmutableMap<String, SampleParameterConfig> sampleParamConfigMap();
+
   /**
    * When generating samples, the sample function accept these parts of the request object as
    * arguments.
    */
-  public abstract ImmutableList<String> sampleArgStrings();
+  public ImmutableList<String> sampleArgStrings() {
+    return sampleParamConfigMap()
+        .values()
+        .stream()
+        .filter(SampleParameterConfig::isSampleArgument)
+        .map(SampleParameterConfig::identifier)
+        .collect(ImmutableList.toImmutableList());
+  }
 
   /**
    * Allows additional InitCodeNode objects which will be placed into the generated subtrees. This
@@ -91,7 +102,7 @@ public abstract class InitCodeContext {
         .outputType(InitCodeOutputType.SingleObject)
         .additionalInitCodeNodes(ImmutableList.of())
         .initFieldConfigStrings(ImmutableList.of())
-        .sampleArgStrings(ImmutableList.of());
+        .sampleParamConfigMap(ImmutableMap.of());
   }
 
   @AutoValue.Builder
@@ -110,7 +121,8 @@ public abstract class InitCodeContext {
 
     public abstract Builder initFieldConfigStrings(List<String> configStrings);
 
-    public abstract Builder sampleArgStrings(ImmutableList<String> val);
+    public abstract Builder sampleParamConfigMap(
+        ImmutableMap<String, SampleParameterConfig> configs);
 
     public abstract Builder initValueConfigMap(Map<String, InitValueConfig> configMap);
 
