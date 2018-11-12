@@ -32,8 +32,10 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
@@ -51,16 +53,6 @@ import javax.annotation.Nullable;
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
 
-  /** Return the path, e.g. "shelves/*" for a resource field. Return null if no path found. */
-  public String getResourcePath(Field element) {
-    Resource resource =
-        (Resource) element.getOptionFields().get(AnnotationsProto.resource.getDescriptor());
-    if (resource != null) {
-      return resource.getPath();
-    }
-    return null;
-  }
-
   @SuppressWarnings("unchecked")
   @Nullable
   private <T, O extends Message, E extends ProtoElement> T getProtoExtension(
@@ -75,7 +67,7 @@ public class ProtoParser {
 
   /** Return the ResourceSet a resource field. Return null if none found. */
   @Nullable
-  ResourceSet getResourceSet(Field element) {
+  public ResourceSet getResourceSet(Field element) {
     return getProtoExtension(element, AnnotationsProto.resourceSet);
   }
 
@@ -92,14 +84,77 @@ public class ProtoParser {
     return null;
   }
 
+  /**
+   * Return the name of the referent Resource or ResourceSet, e.g. "Shelf", for a field with
+   * resource_reference.
+   */
+  public String getResourceReferenceName(
+      Field field,
+      Map<Resource, ProtoFile> allResources,
+      Map<ResourceSet, ProtoFile> allResourceSets) {
+    String resourceName = getResourceReference(field);
+    if (!Strings.isNullOrEmpty(resourceName)) {
+
+      TypeRef resourceType = field.getModel().getSymbolTable().lookupType(resourceName);
+      if (resourceType != null) {
+        // Look for the Resource or ResourceSet field in the target message.
+        MessageType messageType = resourceType.getMessageType();
+        for (Field resourceField : messageType.getFields()) {
+          String entityName = getResourceOrSetEntityName(resourceField);
+          if (!Strings.isNullOrEmpty(entityName)) {
+            return entityName;
+          }
+        }
+      }
+
+      // Look in the given Resource and ResourceSet collections.
+      for (Resource resource : allResources.keySet()) {
+        ProtoFile protoFile = allResources.get(resource);
+        if (getResourceFullName(resource, protoFile).equals(resourceName)
+            || field.getFile().equals(protoFile) && resource.getName().equals(resourceName)) {
+          return resource.getName();
+        }
+      }
+      for (ResourceSet resourceSet : allResourceSets.keySet()) {
+        ProtoFile protoFile = allResourceSets.get(resourceSet);
+        if (getResourceSetFullName(resourceSet, protoFile).equals(resourceName)
+            || field.getFile().equals(protoFile) && resourceSet.getName().equals(resourceName)) {
+          return resourceSet.getName();
+        }
+      }
+
+      return resourceType.getMessageType().getSimpleName();
+    }
+
+    return null;
+  }
+
+  public String getResourceOrSetEntityName(Field field) {
+    if (getResource(field) != null) {
+      return getResourceEntityName(field);
+    }
+    if (getResourceSet(field) != null) {
+      return getResourceSetEntityName(field);
+    }
+    return null;
+  }
+
   /** Return the entity name, e.g. "shelf" for a resource field. */
-  public String getResourceEntityName(Field field) {
-    String defaultEntityName = field.getParent().getSimpleName();
+  String getResourceEntityName(Field field) {
     Resource resource = getResource(field);
     if (resource != null && !Strings.isNullOrEmpty(resource.getName())) {
       return resource.getName();
     }
-    return defaultEntityName;
+    return field.getParent().getSimpleName();
+  }
+
+  /** Return the entity name, e.g. "shelf" for a resource set field. */
+  private String getResourceSetEntityName(Field field) {
+    ResourceSet resourceSet = getResourceSet(field);
+    if (resourceSet != null && !Strings.isNullOrEmpty(resourceSet.getName())) {
+      return resourceSet.getName();
+    }
+    return field.getParent().getSimpleName();
   }
 
   /** Get long running settings. */
@@ -107,8 +162,10 @@ public class ProtoParser {
     return method.getDescriptor().getMethodAnnotation(AnnotationsProto.operation);
   }
 
-  /* Return a Map of Resource names to the corresponding Resource, from a given ProtoFile. */
-  List<Resource> getResourceDefs(ProtoFile protoFile, DiagCollector diagCollector) {
+  /* Return a Map of Resource names to the corresponding Resource, from a given ProtoFile.
+   * The name map keys are package-qualified names of Resources. */
+  public Map<Resource, ProtoFile> getResourceDefs(
+      List<ProtoFile> protoFile, DiagCollector diagCollector) {
     return getResourceOrSetDefs(
         protoFile,
         diagCollector,
@@ -118,8 +175,10 @@ public class ProtoParser {
         (resource, baseNameToSet) -> resource.toBuilder().setName(baseNameToSet).build());
   }
 
-  /* Return a Map of ResourceSet names to the corresponding ResourceSet, from a given ProtoFile. */
-  List<ResourceSet> getResourceSetDefs(ProtoFile protoFile, DiagCollector diagCollector) {
+  /* Return a Map of ResourceSet full names to the corresponding ResourceSet, from a given ProtoFile.
+   * The name map keys are package-qualified names of ResourceSets. */
+  public Map<ResourceSet, ProtoFile> getResourceSetDefs(
+      List<ProtoFile> protoFile, DiagCollector diagCollector) {
     return getResourceOrSetDefs(
         protoFile,
         diagCollector,
@@ -129,62 +188,72 @@ public class ProtoParser {
         (resourceSet, baseNameToSet) -> resourceSet.toBuilder().setName(baseNameToSet).build());
   }
 
-  /* Return a Map of names to their corresponding Resource or ResourceSet element. */
-  private <T> List<T> getResourceOrSetDefs(
-      ProtoFile protoFile,
+  /* Return a Map of Resource or ResourceSet elements to their containing ProtoFile. */
+  private <T> Map<T, ProtoFile> getResourceOrSetDefs(
+      List<ProtoFile> protoFiles,
       DiagCollector diagCollector,
       GeneratedExtension<FileOptions, List<T>> fileExtension,
       GeneratedExtension<FieldOptions, T> fieldExtension,
       Function<T, String> getNameFunc,
       BiFunction<T, String, T> setNameFunc) {
-    Map<String, T> resourceSetDefs = new LinkedHashMap<>();
-    List<T> resourcesAtFileLevel = getProtoExtension(protoFile, fileExtension);
-    // Get definitions from protofile options.
-    if (resourcesAtFileLevel != null) {
-      for (T definition : resourcesAtFileLevel) {
-        String baseName = getNameFunc.apply(definition);
-        if (Strings.isNullOrEmpty(baseName)) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "There is a %s option with"
-                      + " no name defined in proto file %s. %s.name is required.",
-                  fileExtension.getDescriptor().getFullName(),
-                  protoFile.getFullName(),
-                  fileExtension.getDescriptor().getFullName()));
-          continue;
-        }
+    ImmutableMap.Builder<T, ProtoFile> definitions = ImmutableMap.builder();
 
-        if (resourceSetDefs.containsKey(baseName)) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "Multiple %s defintions with the name"
-                      + " %s are defined in proto file %s. Values for %s.name must be unique.",
-                  fieldExtension.getDescriptor().getFullName(),
-                  baseName,
-                  protoFile.getFullName(),
-                  fieldExtension.getDescriptor().getFullName()));
-          continue;
-        }
-        resourceSetDefs.put(baseName, definition);
-      }
-    }
+    for (ProtoFile protoFile : protoFiles) {
 
-    // Get Resource[Set] definitions from fields in message types.
-    for (MessageType message : protoFile.getMessages()) {
-      for (Field field : message.getFields()) {
-        T definition = getProtoExtension(field, fieldExtension);
-        if (definition != null) {
-          if (Strings.isNullOrEmpty(getNameFunc.apply(definition))) {
-            String baseName = getResourceEntityName(field);
-            definition = setNameFunc.apply(definition, baseName);
+      // Maps base names to Resource[Sets].
+      Map<String, T> localDefs = new LinkedHashMap<>();
+      // Get definitions from protofile options.
+      List<T> resourcesAtFileLevel = getProtoExtension(protoFile, fileExtension);
+      if (resourcesAtFileLevel != null) {
+
+        for (T definition : resourcesAtFileLevel) {
+          String baseName = getNameFunc.apply(definition);
+          if (Strings.isNullOrEmpty(baseName)) {
+            diagCollector.addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "There is a %s option with"
+                        + " no name defined in proto file %s. %s.name is required.",
+                    fileExtension.getDescriptor().getFullName(),
+                    protoFile.getFullName(),
+                    fileExtension.getDescriptor().getFullName()));
           }
-          resourceSetDefs.put(getNameFunc.apply(definition), definition);
+          if (localDefs.containsKey(baseName)) {
+            diagCollector.addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "Multiple %s defintions with the name"
+                        + " %s are defined in proto file %s. Values for %s.name must be unique.",
+                    fieldExtension.getDescriptor().getFullName(),
+                    baseName,
+                    protoFile.getFullName(),
+                    fieldExtension.getDescriptor().getFullName()));
+          }
+          localDefs.put(baseName, definition);
         }
       }
+
+      // Get Resource[Set] definitions from fields in message types.
+      for (MessageType message : protoFile.getMessages()) {
+        for (Field field : message.getFields()) {
+          T definition = getProtoExtension(field, fieldExtension);
+          if (definition != null) {
+            if (Strings.isNullOrEmpty(getNameFunc.apply(definition))) {
+              String baseName = getResourceEntityName(field);
+              definition = setNameFunc.apply(definition, baseName);
+            }
+            localDefs.put(getNameFunc.apply(definition), definition);
+          }
+        }
+      }
+
+      // Fully qualify the names of the Resource[Set]s.
+      for (String baseName : localDefs.keySet()) {
+        T def = localDefs.get(baseName);
+        definitions.put(def, protoFile);
+      }
     }
-    return ImmutableList.copyOf(resourceSetDefs.values());
+    return definitions.build();
   }
 
   @SuppressWarnings("unchecked")
@@ -219,8 +288,8 @@ public class ProtoParser {
     return fieldBehaviors != null && fieldBehaviors.contains(REQUIRED.getValueDescriptor());
   }
 
-  /** Return the resource type for the given field, according to the proto annotations. */
-  public String getResourceType(Field field) {
+  /** Return the resource reference for the given field, according to the proto annotations. */
+  public String getResourceReference(Field field) {
     return getProtoExtension(field, AnnotationsProto.resourceReference);
   }
 
@@ -242,5 +311,17 @@ public class ProtoParser {
       return ImmutableList.copyOf(oAuth.getScopesList());
     }
     return ImmutableList.of();
+  }
+
+  public String getProtoPackage(ProtoFile file) {
+    return file.getProto().getPackage();
+  }
+
+  private String getResourceFullName(Resource resource, ProtoFile file) {
+    return String.format("%s.%s", resource.getName(), getProtoPackage(file));
+  }
+
+  private String getResourceSetFullName(ResourceSet resource, ProtoFile file) {
+    return String.format("%s.%s", resource.getName(), getProtoPackage(file));
   }
 }
