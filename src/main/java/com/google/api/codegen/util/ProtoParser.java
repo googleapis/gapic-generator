@@ -152,7 +152,9 @@ public class ProtoParser {
                   fileExtension.getDescriptor().getFullName(),
                   protoFile.getFullName(),
                   fileExtension.getDescriptor().getFullName()));
+          continue;
         }
+
         if (resourceSetDefs.containsKey(baseName)) {
           diagCollector.addDiag(
               Diag.error(
@@ -163,6 +165,7 @@ public class ProtoParser {
                   baseName,
                   protoFile.getFullName(),
                   fieldExtension.getDescriptor().getFullName()));
+          continue;
         }
         resourceSetDefs.put(baseName, definition);
       }
