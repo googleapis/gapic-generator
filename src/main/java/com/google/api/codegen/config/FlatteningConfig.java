@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.ResourceNameTreatment.NONE;
-
 import com.google.api.MethodSignature;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -252,7 +250,7 @@ public abstract class FlatteningConfig {
       ResourceNameTreatment defaultResourceNameTreatment =
           methodConfigProto.getResourceNameTreatment();
       if (!parameterField.mayBeInResourceName()) {
-        defaultResourceNameTreatment = NONE;
+        defaultResourceNameTreatment = ResourceNameTreatment.NONE;
       }
       if (defaultResourceNameTreatment == null
           || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
@@ -351,7 +349,7 @@ public abstract class FlatteningConfig {
               methodConfigProto.getFieldNamePatternsMap(),
               resourceNameConfigs,
               parameterField,
-              NONE,
+              defaultResourceNameTreatment,
               defaultResourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }

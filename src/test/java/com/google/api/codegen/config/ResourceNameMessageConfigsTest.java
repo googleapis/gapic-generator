@@ -74,8 +74,10 @@ public class ResourceNameMessageConfigsTest {
 
   private static final Map<Resource, ProtoFile> allResourceDefs =
       ImmutableMap.of(
-          Resource.newBuilder().setName("Shelf").setPath(PROTO_SHELF_PATH).build(), protoFile,
-          Resource.newBuilder().setName("Book").setPath(PROTO_BOOK_PATH).build(), protoFile,
+          Resource.newBuilder().setName("Shelf").setPath(PROTO_SHELF_PATH).build(),
+          protoFile,
+          Resource.newBuilder().setName("Book").setPath(PROTO_BOOK_PATH).build(),
+          protoFile,
           Resource.newBuilder()
               .setName("archived_book")
               .setPath("archives/{archive}/books/{book}")
@@ -251,8 +253,6 @@ public class ResourceNameMessageConfigsTest {
   @Test
   public void testCreateResourceNameConfigs() {
     DiagCollector diagCollector = new BoundedDiagCollector();
-
-
 
     Map<String, ResourceNameConfig> resourceNameConfigs =
         GapicProductConfig.createResourceNameConfigs(
