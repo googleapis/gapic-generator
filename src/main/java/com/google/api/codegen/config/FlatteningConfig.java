@@ -36,7 +36,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -166,17 +165,17 @@ public abstract class FlatteningConfig {
           flatteningGroupProto);
     }
 
-    // Get flattenings from protofile annotations, let these override flattenings from GAPIC config.
     List<MethodSignature> methodSignatures =
         protoParser.getMethodSignatures(methodModel.getProtoMethod());
     for (MethodSignature signature : methodSignatures) {
 
-      // Fetch the matching GAPIC Config flattening, if it exists.
-      FlatteningGroupProto flatteningGroupProto =
-          Optional.ofNullable(
-                  flatteningGroupProtos.get(
-                      paramListToString(Lists.newArrayList(signature.getFieldsList()))))
-              .orElse(FlatteningGroupProto.getDefaultInstance());
+      // Fetch the matching GAPIC Config flattening, if it exists. Let GAPIC config override
+      // proto annotations flattenings.
+      if (flatteningGroupProtos.get(
+              paramListToString(Lists.newArrayList(signature.getFieldsList())))
+          != null) {
+        continue;
+      }
 
       FlatteningConfig groupConfig =
           FlatteningConfig.createFlatteningFromProtoFile(
@@ -185,7 +184,6 @@ public abstract class FlatteningConfig {
               resourceNameConfigs,
               signature,
               methodConfigProto,
-              flatteningGroupProto,
               methodModel,
               protoParser);
       if (groupConfig != null) {
@@ -294,7 +292,6 @@ public abstract class FlatteningConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodSignature methodSignature,
       MethodConfigProto methodConfigProto,
-      FlatteningGroupProto flatteningGroupProto,
       ProtoMethodModel method,
       ProtoParser protoParser) {
 
@@ -353,11 +350,10 @@ public abstract class FlatteningConfig {
               methodConfigProto.getFieldNamePatternsMap(),
               resourceNameConfigs,
               parameterField,
-              flatteningGroupProto.getParameterResourceNameTreatmentMap().get(parameter),
+              defaultResourceNameTreatment,
               defaultResourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }
-
     return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build(), null);
   }
 
