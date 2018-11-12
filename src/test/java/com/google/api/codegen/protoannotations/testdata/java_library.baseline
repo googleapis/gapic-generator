@@ -116,50 +116,8 @@ import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
-import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.ArchivedBookName;
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.BookFromAnywhere;
-import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.BookName;
-import com.google.example.library.v1.Comment;
-import com.google.example.library.v1.CreateBookRequest;
-import com.google.example.library.v1.CreateShelfRequest;
-import com.google.example.library.v1.DeleteBookRequest;
-import com.google.example.library.v1.DeleteShelfRequest;
-import com.google.example.library.v1.DiscussBookRequest;
-import com.google.example.library.v1.FindRelatedBooksRequest;
-import com.google.example.library.v1.FindRelatedBooksResponse;
-import com.google.example.library.v1.GetBigBookMetadata;
-import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
-import com.google.example.library.v1.GetBookFromAnywhereRequest;
-import com.google.example.library.v1.GetBookFromArchiveRequest;
-import com.google.example.library.v1.GetBookRequest;
-import com.google.example.library.v1.GetShelfRequest;
-import com.google.example.library.v1.ListBooksRequest;
-import com.google.example.library.v1.ListBooksResponse;
-import com.google.example.library.v1.ListShelvesRequest;
-import com.google.example.library.v1.ListShelvesResponse;
-import com.google.example.library.v1.ListStringsRequest;
-import com.google.example.library.v1.ListStringsResponse;
-import com.google.example.library.v1.MergeShelvesRequest;
-import com.google.example.library.v1.MoveBookRequest;
-import com.google.example.library.v1.PublishSeriesRequest;
-import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.SeriesUuid;
-import com.google.example.library.v1.Shelf;
-import com.google.example.library.v1.ShelfBookName;
-import com.google.example.library.v1.ShelfName;
-import com.google.example.library.v1.SomeMessage;
-import com.google.example.library.v1.StreamBooksRequest;
-import com.google.example.library.v1.StreamShelvesRequest;
-import com.google.example.library.v1.StreamShelvesResponse;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
-import com.google.example.library.v1.UpdateBookIndexRequest;
-import com.google.example.library.v1.UpdateBookRequest;
 import com.google.example.library.v1.stub.LibraryServiceStub;
 import com.google.example.library.v1.stub.LibraryServiceStubSettings;
 import com.google.longrunning.Operation;
@@ -512,10 +470,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   String formattedName = ShelfName.format("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(name.toString())
+   *     .setName(formattedName)
    *     .setOptions(options)
    *     .build();
    *   Shelf response = libraryClient.getShelf(request);
@@ -536,10 +494,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   String formattedName = ShelfName.format("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(name.toString())
+   *     .setName(formattedName)
    *     .setOptions(options)
    *     .build();
    *   ApiFuture&lt;Shelf&gt; future = libraryClient.getShelfCallable().futureCall(request);
@@ -1756,7 +1714,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1766,42 +1724,7 @@ public class LibraryClient implements BackgroundResource {
    *     .setAlignment(alignment)
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
-   *   libraryClient.addComments(name, comments);
-   * }
-   * </code></pre>
-   *
-   * @param name
-   * @param comments
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final void addComments(ShelfBookName name, List<Comment> comments) {
-
-    AddCommentsRequest request =
-        AddCommentsRequest.newBuilder()
-        .setName(name == null ? null : name.toString())
-        .addAllComments(comments)
-        .build();
-    addComments(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Adds comments to a book
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   ByteString comment = ByteString.copyFromUtf8("");
-   *   Comment.Stage stage = Comment.Stage.UNSET;
-   *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
-   *   Comment commentsElement = Comment.newBuilder()
-   *     .setComment(comment)
-   *     .setStage(stage)
-   *     .setAlignment(alignment)
-   *     .build();
-   *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
-   *   libraryClient.addComments(name.toString(), comments);
+   *   libraryClient.addComments(formattedName, comments);
    * }
    * </code></pre>
    *
@@ -1826,7 +1749,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1837,7 +1760,7 @@ public class LibraryClient implements BackgroundResource {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(name.toString())
+   *     .setName(formattedName)
    *     .addAllComments(comments)
    *     .build();
    *   libraryClient.addComments(request);
@@ -1858,7 +1781,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1869,7 +1792,7 @@ public class LibraryClient implements BackgroundResource {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(name.toString())
+   *     .setName(formattedName)
    *     .addAllComments(comments)
    *     .build();
    *   ApiFuture&lt;Void&gt; future = libraryClient.addCommentsCallable().futureCall(request);
@@ -2037,7 +1960,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   ShelfBookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .setAltBookName(altBookName.toString())
@@ -2061,7 +1984,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   ShelfBookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName altBookName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .setAltBookName(altBookName.toString())
@@ -2131,7 +2054,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ResourceName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2153,7 +2076,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ResourceName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -3976,43 +3899,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.BookFromAnywhere;
-import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.Comment;
-import com.google.example.library.v1.CreateBookRequest;
-import com.google.example.library.v1.CreateShelfRequest;
-import com.google.example.library.v1.DeleteBookRequest;
-import com.google.example.library.v1.DeleteShelfRequest;
-import com.google.example.library.v1.DiscussBookRequest;
-import com.google.example.library.v1.FindRelatedBooksRequest;
-import com.google.example.library.v1.FindRelatedBooksResponse;
-import com.google.example.library.v1.GetBigBookMetadata;
-import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
-import com.google.example.library.v1.GetBookFromAnywhereRequest;
-import com.google.example.library.v1.GetBookFromArchiveRequest;
-import com.google.example.library.v1.GetBookRequest;
-import com.google.example.library.v1.GetShelfRequest;
-import com.google.example.library.v1.LibraryServiceGrpc;
-import com.google.example.library.v1.ListBooksRequest;
-import com.google.example.library.v1.ListBooksResponse;
-import com.google.example.library.v1.ListShelvesRequest;
-import com.google.example.library.v1.ListShelvesResponse;
-import com.google.example.library.v1.ListStringsRequest;
-import com.google.example.library.v1.ListStringsResponse;
-import com.google.example.library.v1.MergeShelvesRequest;
-import com.google.example.library.v1.MoveBookRequest;
-import com.google.example.library.v1.PublishSeriesRequest;
-import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.Shelf;
-import com.google.example.library.v1.StreamBooksRequest;
-import com.google.example.library.v1.StreamShelvesRequest;
-import com.google.example.library.v1.StreamShelvesResponse;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
-import com.google.example.library.v1.UpdateBookIndexRequest;
-import com.google.example.library.v1.UpdateBookRequest;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
@@ -4723,6 +4609,11 @@ import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
+import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
+import com.google.example.library.v1.LibrarySettings;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
 import com.google.example.library.v1.ListShelvesRequest;
@@ -4747,11 +4638,6 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
-import com.google.example.library.v1.LibrarySettings;
 import com.google.longrunning.Operation;
 import com.google.longrunning.stub.GrpcOperationsStub;
 import com.google.longrunning.stub.OperationsStub;
@@ -4890,6 +4776,11 @@ import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
+import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
+import com.google.example.library.v1.LibrarySettings;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
 import com.google.example.library.v1.ListShelvesRequest;
@@ -4914,11 +4805,6 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
-import com.google.example.library.v1.LibrarySettings;
 import com.google.longrunning.Operation;
 import com.google.longrunning.stub.GrpcOperationsStub;
 import com.google.protobuf.ByteString;
@@ -5599,6 +5485,10 @@ import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
+import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
 import com.google.example.library.v1.ListShelvesRequest;
@@ -5623,10 +5513,6 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.longrunning.Operation;
 import com.google.longrunning.stub.OperationsStub;
 import com.google.protobuf.ByteString;
@@ -5883,6 +5769,10 @@ import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
+import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibraryServiceGrpc;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
@@ -5902,10 +5792,6 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import com.google.tagger.v1.LabelerGrpc;
@@ -7276,28 +7162,14 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   }
 }
 ============== file: src/main/java/samples/com/google/example/library/v1/discussbookcallable/DiscussBookCallableCallableStreamingBidiProg.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "DiscussBookCallableCallableStreamingBidiProg" ]
-//// STUB standalone sample "DiscussBookCallableCallableStreamingBidiProg" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("CallableStreamingBidi",  "prog")
+package com.google.example.examples.library.v1.snippets;
 
 // [START turing_prog_callable_streaming_bidi]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "CallableStreamingBidi"
-//        region tag: "turing_prog_callable_streaming_bidi"
-//         className: "DiscussBookCallableCallableStreamingBidiProg"
-//          valueSet: "prog" ("Programming Books")
-//       description: "Testing calling forms"
-//        [name=BASIC]
-//      apiMethod "discussBookCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
+import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.protobuf.ByteString;
 
 public class DiscussBookCallableCallableStreamingBidiProg {
   public static void sampleDiscussBook() {
@@ -7307,8 +7179,16 @@ public class DiscussBookCallableCallableStreamingBidiProg {
           libraryClient.discussBookCallable().call();
 
       String name = "BASIC";
+      String fileName = "comment_file";
+      Path path = Paths.get(fileName);
+      byte[] data = Files.readAllBytes(path);
+      ByteString comment = ByteString.copyFrom(data);
+      Comment comment2 = Comment.newBuilder()
+        .setComment(comment)
+        .build();
       DiscussBookRequest request = DiscussBookRequest.newBuilder()
         .setName(name)
+        .setComment(comment2)
         .build();
       bidiStream.send(request);
       for (Comment responseItem : bidiStream) {
@@ -7328,26 +7208,11 @@ public class DiscussBookCallableCallableStreamingBidiProg {
 
 // [END turing_prog_callable_streaming_bidi]
 ============== file: src/main/java/samples/com/google/example/library/v1/findrelatedbooks/FindRelatedBooksFlattenedPagedOdyssey.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksFlattenedPagedOdyssey" ]
-//// STUB standalone sample "FindRelatedBooksFlattenedPagedOdyssey" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("FlattenedPaged",  "odyssey")
+package com.google.example.examples.library.v1.snippets;
 
 // [START sample]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "FlattenedPaged"
-//        region tag: "sample"
-//         className: "FindRelatedBooksFlattenedPagedOdyssey"
-//          valueSet: "odyssey" ("The Odyssey")
-//       description: "Testing calling forms"
-//        [names[0]=Odyssey, shelves[0]=Classics]
-//      apiMethod "findRelatedBooks" of type "PagedFlattenedMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
+import com.google.example.library.v1.LibraryClient;
 
 public class FindRelatedBooksFlattenedPagedOdyssey {
   public static void sampleFindRelatedBooks() {
@@ -7379,28 +7244,12 @@ public class FindRelatedBooksFlattenedPagedOdyssey {
 
 // [END sample]
 ============== file: src/main/java/samples/com/google/example/library/v1/findrelatedbooks/FindRelatedBooksRequestPagedOdyssey.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksRequestPagedOdyssey" ]
-//// STUB standalone sample "FindRelatedBooksRequestPagedOdyssey" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
+package com.google.example.examples.library.v1.snippets;
 
 // [START sample]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "RequestPaged"
-//        region tag: "sample"
-//         className: "FindRelatedBooksRequestPagedOdyssey"
-//          valueSet: "odyssey" ("The Odyssey")
-//       description: "Testing calling forms"
-//        [names[0]=Odyssey, shelves[0]=Classics]
-//      apiMethod "findRelatedBooks" of type "PagedRequestObjectMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
 import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 import com.google.example.library.v1.ShelfName;
 
@@ -7434,28 +7283,12 @@ public class FindRelatedBooksRequestPagedOdyssey {
 
 // [END sample]
 ============== file: src/main/java/samples/com/google/example/library/v1/findrelatedbookscallable/FindRelatedBooksCallableCallableListOdyssey.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksCallableCallableListOdyssey" ]
-//// STUB standalone sample "FindRelatedBooksCallableCallableListOdyssey" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("CallableList",  "odyssey")
+package com.google.example.examples.library.v1.snippets;
 
 // [START sample]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "CallableList"
-//        region tag: "sample"
-//         className: "FindRelatedBooksCallableCallableListOdyssey"
-//          valueSet: "odyssey" ("The Odyssey")
-//       description: "Testing calling forms"
-//        [names[0]=Odyssey, shelves[0]=Classics]
-//      apiMethod "findRelatedBooksCallable" of type "UnpagedListCallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
 import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 import com.google.example.library.v1.ShelfName;
 
@@ -7498,28 +7331,12 @@ public class FindRelatedBooksCallableCallableListOdyssey {
 
 // [END sample]
 ============== file: src/main/java/samples/com/google/example/library/v1/findrelatedbookspagedcallable/FindRelatedBooksPagedCallableCallablePagedOdyssey.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksPagedCallableCallablePagedOdyssey" ]
-//// STUB standalone sample "FindRelatedBooksPagedCallableCallablePagedOdyssey" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("CallablePaged",  "odyssey")
+package com.google.example.examples.library.v1.snippets;
 
 // [START sample]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "CallablePaged"
-//        region tag: "sample"
-//         className: "FindRelatedBooksPagedCallableCallablePagedOdyssey"
-//          valueSet: "odyssey" ("The Odyssey")
-//       description: "Testing calling forms"
-//        [names[0]=Odyssey, shelves[0]=Classics]
-//      apiMethod "findRelatedBooksPagedCallable" of type "PagedCallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
 import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 import com.google.example.library.v1.ShelfName;
 
@@ -7557,27 +7374,11 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
 
 // [END sample]
 ============== file: src/main/java/samples/com/google/example/library/v1/getbigbookasync/GetBigBookAsyncLongRunningFlattenedAsyncWap.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookAsyncLongRunningFlattenedAsyncWap" ]
-//// STUB standalone sample "GetBigBookAsyncLongRunningFlattenedAsyncWap" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "wap")
+package com.google.example.examples.library.v1.snippets;
 
 // [START hopper]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "LongRunningFlattenedAsync"
-//        region tag: "hopper"
-//         className: "GetBigBookAsyncLongRunningFlattenedAsyncWap"
-//          valueSet: "wap" ("GetBigBook: 'War and Peace'")
-//       description: "Testing calling forms"
-//        [name="War and Peace"]
-//      apiMethod "getBigBookAsync" of type "AsyncOperationFlattenedMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 
 public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
@@ -7601,28 +7402,12 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
 
 // [END hopper]
 ============== file: src/main/java/samples/com/google/example/library/v1/getbigbookasync/GetBigBookAsyncLongRunningRequestAsyncWap.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookAsyncLongRunningRequestAsyncWap" ]
-//// STUB standalone sample "GetBigBookAsyncLongRunningRequestAsyncWap" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
+package com.google.example.examples.library.v1.snippets;
 
 // [START hopper]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "LongRunningRequestAsync"
-//        region tag: "hopper"
-//         className: "GetBigBookAsyncLongRunningRequestAsyncWap"
-//          valueSet: "wap" ("GetBigBook: 'War and Peace'")
-//       description: "Testing calling forms"
-//        [name="War and Peace"]
-//      apiMethod "getBigBookAsync" of type "AsyncOperationRequestObjectMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
 import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 
 public class GetBigBookAsyncLongRunningRequestAsyncWap {
@@ -7649,28 +7434,12 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap {
 
 // [END hopper]
 ============== file: src/main/java/samples/com/google/example/library/v1/getbigbookcallable/GetBigBookCallableCallableWap.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookCallableCallableWap" ]
-//// STUB standalone sample "GetBigBookCallableCallableWap" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("Callable",  "wap")
+package com.google.example.examples.library.v1.snippets;
 
 // [START hopper]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Callable"
-//        region tag: "hopper"
-//         className: "GetBigBookCallableCallableWap"
-//          valueSet: "wap" ("GetBigBook: 'War and Peace'")
-//       description: "Testing calling forms"
-//        [name="War and Peace"]
-//      apiMethod "getBigBookCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
 import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 
 public class GetBigBookCallableCallableWap {
@@ -7701,28 +7470,12 @@ public class GetBigBookCallableCallableWap {
 
 // [END hopper]
 ============== file: src/main/java/samples/com/google/example/library/v1/getbigbookoperationcallable/GetBigBookOperationCallableLongRunningCallableWap.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookOperationCallableLongRunningCallableWap" ]
-//// STUB standalone sample "GetBigBookOperationCallableLongRunningCallableWap" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "wap")
+package com.google.example.examples.library.v1.snippets;
 
 // [START hopper]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "LongRunningCallable"
-//        region tag: "hopper"
-//         className: "GetBigBookOperationCallableLongRunningCallableWap"
-//          valueSet: "wap" ("GetBigBook: 'War and Peace'")
-//       description: "Testing calling forms"
-//        [name="War and Peace"]
-//      apiMethod "getBigBookOperationCallable" of type "OperationCallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
 import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 
 public class GetBigBookOperationCallableLongRunningCallableWap {
@@ -7753,28 +7506,12 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
 
 // [END hopper]
 ============== file: src/main/java/samples/com/google/example/library/v1/monologaboutbookcallable/MonologAboutBookCallableCallableStreamingClientProg.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "MonologAboutBookCallableCallableStreamingClientProg" ]
-//// STUB standalone sample "MonologAboutBookCallableCallableStreamingClientProg" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "prog")
+package com.google.example.examples.library.v1.snippets;
 
 // [START sample]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "CallableStreamingClient"
-//        region tag: "sample"
-//         className: "MonologAboutBookCallableCallableStreamingClientProg"
-//          valueSet: "prog" ("Programming Books")
-//       description: "Testing calling forms"
-//        [name=BASIC]
-//      apiMethod "monologAboutBookCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
 import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
 
 public class MonologAboutBookCallableCallableStreamingClientProg {
   public static void sampleMonologAboutBook() {
@@ -7819,32 +7556,16 @@ public class MonologAboutBookCallableCallableStreamingClientProg {
 
 // [END sample]
 ============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesFlattenedPiVersion.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesFlattenedPiVersion" ]
-//// STUB standalone sample "PublishSeriesFlattenedPiVersion" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-
-// [START canonical]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Flattened"
-//        region tag: "canonical"
-//         className: "PublishSeriesFlattenedPiVersion"
-//          valueSet: "pi_version" ("Pi version")
-//       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
-//      apiMethod "publishSeries" of type "FlattenedMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
+// DO NOT EDIT! This is a generated sample ("Flattened",  "pi_version")
+package com.google.example.examples.library.v1.snippets;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+// [START canonical]
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
@@ -7906,28 +7627,12 @@ public class PublishSeriesFlattenedPiVersion {
 
 // [END canonical]
 ============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesFlattenedSecondEdition.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesFlattenedSecondEdition" ]
-//// STUB standalone sample "PublishSeriesFlattenedSecondEdition" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("Flattened",  "second_edition")
+package com.google.example.examples.library.v1.snippets;
 
 // [START canonical]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Flattened"
-//        region tag: "canonical"
-//         className: "PublishSeriesFlattenedSecondEdition"
-//          valueSet: "second_edition" ("Second edition")
-//       description: "Testing calling forms"
-//        [edition=2]
-//      apiMethod "publishSeries" of type "FlattenedMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
@@ -7957,32 +7662,16 @@ public class PublishSeriesFlattenedSecondEdition {
 
 // [END canonical]
 ============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesRequestPiVersion.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesRequestPiVersion" ]
-//// STUB standalone sample "PublishSeriesRequestPiVersion" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-
-// [START canonical]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Request"
-//        region tag: "canonical"
-//         className: "PublishSeriesRequestPiVersion"
-//          valueSet: "pi_version" ("Pi version")
-//       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
-//      apiMethod "publishSeries" of type "RequestObjectMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
+// DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
+package com.google.example.examples.library.v1.snippets;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+// [START canonical]
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
@@ -8051,28 +7740,12 @@ public class PublishSeriesRequestPiVersion {
 
 // [END canonical]
 ============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesRequestSecondEdition.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesRequestSecondEdition" ]
-//// STUB standalone sample "PublishSeriesRequestSecondEdition" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
+package com.google.example.examples.library.v1.snippets;
 
 // [START canonical]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Request"
-//        region tag: "canonical"
-//         className: "PublishSeriesRequestSecondEdition"
-//          valueSet: "second_edition" ("Second edition")
-//       description: "Testing calling forms"
-//        [edition=2]
-//      apiMethod "publishSeries" of type "RequestObjectMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
@@ -8109,32 +7782,16 @@ public class PublishSeriesRequestSecondEdition {
 
 // [END canonical]
 ============== file: src/main/java/samples/com/google/example/library/v1/publishseriescallable/PublishSeriesCallableCallablePiVersion.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesCallableCallablePiVersion" ]
-//// STUB standalone sample "PublishSeriesCallableCallablePiVersion" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-
-// [START canonical]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Callable"
-//        region tag: "canonical"
-//         className: "PublishSeriesCallableCallablePiVersion"
-//          valueSet: "pi_version" ("Pi version")
-//       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
-//      apiMethod "publishSeriesCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
+// DO NOT EDIT! This is a generated sample ("Callable",  "pi_version")
+package com.google.example.examples.library.v1.snippets;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+// [START canonical]
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
@@ -8207,28 +7864,12 @@ public class PublishSeriesCallableCallablePiVersion {
 
 // [END canonical]
 ============== file: src/main/java/samples/com/google/example/library/v1/publishseriescallable/PublishSeriesCallableCallableSecondEdition.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesCallableCallableSecondEdition" ]
-//// STUB standalone sample "PublishSeriesCallableCallableSecondEdition" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("Callable",  "second_edition")
+package com.google.example.examples.library.v1.snippets;
 
 // [START canonical]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Callable"
-//        region tag: "canonical"
-//         className: "PublishSeriesCallableCallableSecondEdition"
-//          valueSet: "second_edition" ("Second edition")
-//       description: "Testing calling forms"
-//        [edition=2]
-//      apiMethod "publishSeriesCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
@@ -8269,27 +7910,11 @@ public class PublishSeriesCallableCallableSecondEdition {
 
 // [END canonical]
 ============== file: src/main/java/samples/com/google/example/library/v1/streambookscallable/StreamBooksCallableCallableStreamingServerProg.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamBooksCallableCallableStreamingServerProg" ]
-//// STUB standalone sample "StreamBooksCallableCallableStreamingServerProg" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "prog")
+package com.google.example.examples.library.v1.snippets;
 
 // [START babbage]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "CallableStreamingServer"
-//        region tag: "babbage"
-//         className: "StreamBooksCallableCallableStreamingServerProg"
-//          valueSet: "prog" ("Programming Books")
-//       description: "Testing calling forms"
-//        [name=BASIC]
-//      apiMethod "streamBooksCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.StreamBooksRequest;
 
 public class StreamBooksCallableCallableStreamingServerProg {
@@ -8319,27 +7944,11 @@ public class StreamBooksCallableCallableStreamingServerProg {
 
 // [END babbage]
 ============== file: src/main/java/samples/com/google/example/library/v1/streamshelvescallable/StreamShelvesCallableCallableStreamingServerEmpty.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamShelvesCallableCallableStreamingServerEmpty" ]
-//// STUB standalone sample "StreamShelvesCallableCallableStreamingServerEmpty" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+// DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "empty")
+package com.google.example.examples.library.v1.snippets;
 
 // [START sample]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "CallableStreamingServer"
-//        region tag: "sample"
-//         className: "StreamShelvesCallableCallableStreamingServerEmpty"
-//          valueSet: "empty" ("Server streaming")
-//       description: "Testing calling forms"
-//        []
-//      apiMethod "streamShelvesCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-package com.google.example.library.v1;
-
+import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.StreamShelvesRequest;
 
 public class StreamShelvesCallableCallableStreamingServerEmpty {
@@ -8399,56 +8008,14 @@ import com.google.api.gax.rpc.StatusCode;
 import com.google.api.resourcenames.ResourceName;
 import com.google.cloud.ProjectName;
 import com.google.common.collect.Lists;
-import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.ArchivedBookName;
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.BookFromAnywhere;
-import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.BookName;
-import com.google.example.library.v1.BookNames;
-import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.Comment.Stage;
-import com.google.example.library.v1.CreateBookRequest;
-import com.google.example.library.v1.CreateShelfRequest;
-import com.google.example.library.v1.DeleteBookRequest;
-import com.google.example.library.v1.DeleteShelfRequest;
-import com.google.example.library.v1.DiscussBookRequest;
-import com.google.example.library.v1.FindRelatedBooksRequest;
-import com.google.example.library.v1.FindRelatedBooksResponse;
-import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
-import com.google.example.library.v1.GetBookFromAnywhereRequest;
-import com.google.example.library.v1.GetBookFromArchiveRequest;
-import com.google.example.library.v1.GetBookRequest;
-import com.google.example.library.v1.GetShelfRequest;
-import com.google.example.library.v1.ListBooksRequest;
-import com.google.example.library.v1.ListBooksResponse;
-import com.google.example.library.v1.ListShelvesRequest;
-import com.google.example.library.v1.ListShelvesResponse;
-import com.google.example.library.v1.ListStringsRequest;
-import com.google.example.library.v1.ListStringsResponse;
-import com.google.example.library.v1.MergeShelvesRequest;
-import com.google.example.library.v1.MoveBookRequest;
-import com.google.example.library.v1.PublishSeriesRequest;
-import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.SeriesUuid;
-import com.google.example.library.v1.Shelf;
-import com.google.example.library.v1.ShelfBookName;
-import com.google.example.library.v1.ShelfName;
-import com.google.example.library.v1.SomeMessage;
-import com.google.example.library.v1.SomeMessage2.SomeMessage3.Alignment;
-import com.google.example.library.v1.StreamBooksRequest;
-import com.google.example.library.v1.StreamShelvesRequest;
-import com.google.example.library.v1.StreamShelvesResponse;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
-import com.google.example.library.v1.UpdateBookIndexRequest;
-import com.google.example.library.v1.UpdateBookRequest;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
+import com.google.example.library.v1.SomeMessage2.SomeMessage3.Alignment;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
@@ -8841,7 +8408,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void createBookTest() {
-    BookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -8950,7 +8517,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookTest() {
-    BookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9085,7 +8652,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookTest() {
-    BookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9136,7 +8703,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookTest2() {
-    BookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9196,7 +8763,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void moveBookTest() {
-    BookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9351,7 +8918,7 @@ public class LibraryClientTest {
     Empty expectedResponse = Empty.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
     ByteString comment = ByteString.copyFromUtf8("95");
     Comment.Stage stage = Comment.Stage.UNSET;
     SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -9362,13 +8929,13 @@ public class LibraryClientTest {
       .build();
     List<Comment> comments = Arrays.asList(commentsElement);
 
-    client.addComments(name, comments);
+    client.addComments(formattedName, comments);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     AddCommentsRequest actualRequest = (AddCommentsRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, ShelfBookName.parse(actualRequest.getName()));
+    Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(comments, actualRequest.getCommentsList());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -9383,7 +8950,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
       ByteString comment = ByteString.copyFromUtf8("95");
       Comment.Stage stage = Comment.Stage.UNSET;
       SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -9394,7 +8961,7 @@ public class LibraryClientTest {
         .build();
       List<Comment> comments = Arrays.asList(commentsElement);
 
-      client.addComments(name, comments);
+      client.addComments(formattedName, comments);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -9476,7 +9043,7 @@ public class LibraryClientTest {
     GetBookFromAnywhereRequest actualRequest = (GetBookFromAnywhereRequest)actualRequests.get(0);
 
     Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
-    Assert.assertEquals(altBookName, ShelfBookName.parse(actualRequest.getAltBookName()));
+    Assert.assertEquals(Objects.toString(altBookName), actualRequest.getAltBookName());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -9525,7 +9092,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromAbsolutelyAnywhereRequest actualRequest = (GetBookFromAbsolutelyAnywhereRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
+    Assert.assertEquals(Objects.toString(name), Objects.toString(actualRequest.getName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -9643,7 +9210,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void streamBooksTest() throws Exception {
-    BookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9898,7 +9465,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBigBookTest() throws Exception {
-    BookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name2 = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -10269,10 +9836,7 @@ package com.google.example.library.v1;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.example.library.v1.Book;
 import com.google.example.library.v1.Book.Rating;
-import com.google.example.library.v1.ShelfBookName;
-import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.FieldMask;
 import java.util.Arrays;
 import java.util.List;
@@ -10540,42 +10104,7 @@ package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.common.collect.Lists;
-import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.BookFromAnywhere;
-import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.Comment;
-import com.google.example.library.v1.CreateBookRequest;
-import com.google.example.library.v1.CreateShelfRequest;
-import com.google.example.library.v1.DeleteBookRequest;
-import com.google.example.library.v1.DeleteShelfRequest;
-import com.google.example.library.v1.DiscussBookRequest;
-import com.google.example.library.v1.FindRelatedBooksRequest;
-import com.google.example.library.v1.FindRelatedBooksResponse;
-import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
-import com.google.example.library.v1.GetBookFromAnywhereRequest;
-import com.google.example.library.v1.GetBookFromArchiveRequest;
-import com.google.example.library.v1.GetBookRequest;
-import com.google.example.library.v1.GetShelfRequest;
 import com.google.example.library.v1.LibraryServiceGrpc.LibraryServiceImplBase;
-import com.google.example.library.v1.ListBooksRequest;
-import com.google.example.library.v1.ListBooksResponse;
-import com.google.example.library.v1.ListShelvesRequest;
-import com.google.example.library.v1.ListShelvesResponse;
-import com.google.example.library.v1.ListStringsRequest;
-import com.google.example.library.v1.ListStringsResponse;
-import com.google.example.library.v1.MergeShelvesRequest;
-import com.google.example.library.v1.MoveBookRequest;
-import com.google.example.library.v1.PublishSeriesRequest;
-import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.Shelf;
-import com.google.example.library.v1.StreamBooksRequest;
-import com.google.example.library.v1.StreamShelvesRequest;
-import com.google.example.library.v1.StreamShelvesResponse;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
-import com.google.example.library.v1.UpdateBookIndexRequest;
-import com.google.example.library.v1.UpdateBookRequest;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import com.google.protobuf.GeneratedMessageV3;

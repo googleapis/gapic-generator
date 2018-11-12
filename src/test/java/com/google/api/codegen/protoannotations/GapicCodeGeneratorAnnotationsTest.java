@@ -56,6 +56,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
     // Use the common yaml files from the codegen test package's testsrc/common.
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc");
     // TODO(andrealin): Remove dependency on yaml files when proto annotations fully supported.
   }
 
@@ -73,7 +74,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
         //         ARTIFACT_TYPE),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
-            new String[] {"library_gapic.yaml"},
+            new String[] {"libraryproto/library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
             "google.example.library.v1",
