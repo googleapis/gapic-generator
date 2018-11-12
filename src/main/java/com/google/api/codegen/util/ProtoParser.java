@@ -317,11 +317,11 @@ public class ProtoParser {
     return file.getProto().getPackage();
   }
 
-  public String getResourceFullName(Resource resource, ProtoFile file) {
+  private String getResourceFullName(Resource resource, ProtoFile file) {
     return String.format("%s.%s", resource.getName(), getProtoPackage(file));
   }
 
-  public String getResourceSetFullName(ResourceSet resource, ProtoFile file) {
+  private String getResourceSetFullName(ResourceSet resource, ProtoFile file) {
     return String.format("%s.%s", resource.getName(), getProtoPackage(file));
   }
 }

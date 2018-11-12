@@ -295,6 +295,7 @@ public class ResourceNameMessageConfigsTest {
     SingleResourceNameConfig bookResourcenameConfigFromProtoFile =
         (SingleResourceNameConfig) resourceNameConfigs.get("Book");
     assertThat(bookResourcenameConfigFromProtoFile.getNamePattern()).isEqualTo(PROTO_BOOK_PATH);
+    assertThat(diagCollector.getErrorCount()).isEqualTo(0);
   }
 
   @Test
