@@ -46,7 +46,7 @@ public abstract class ResourceNameMessageConfig {
   public static ResourceNameMessageConfig createResourceNameMessageConfig(Field field) {
     String messageName = field.getParent().getFullName();
     ImmutableMap<String, String> fieldEntityMap =
-        ImmutableMap.of(field.getSimpleName(), field.getParent().getSimpleName().toLowerCase());
+        ImmutableMap.of(field.getSimpleName(), field.getParent().getSimpleName());
 
     return new AutoValue_ResourceNameMessageConfig(messageName, fieldEntityMap);
   }

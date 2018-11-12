@@ -150,10 +150,10 @@ public class ResourceNameMessageConfigsTest {
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(2);
     ResourceNameMessageConfig bookMessageConfig =
         messageConfigs.getResourceTypeConfigMap().get("library.Book");
-    assertThat(bookMessageConfig.fieldEntityMap().get("name")).isEqualTo("book");
+    assertThat(bookMessageConfig.fieldEntityMap().get("name")).isEqualTo("Book");
     ResourceNameMessageConfig shelfMessageConfig =
         messageConfigs.getResourceTypeConfigMap().get("library.Shelf");
-    assertThat(shelfMessageConfig.fieldEntityMap().get("name")).isEqualTo("shelf");
+    assertThat(shelfMessageConfig.fieldEntityMap().get("name")).isEqualTo("Shelf");
   }
 
   @Test
