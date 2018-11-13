@@ -57,7 +57,6 @@ public abstract class ResourceNameMessageConfig {
       ProtoParser protoParser) {
     ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
     for (Field field : message.getFields()) {
-      // TODO(andrealin): Can there be multiple fields be Resource[Set]s in a single message?
       String baseName = protoParser.getResourceOrSetEntityName(field);
       if (!Strings.isNullOrEmpty(baseName)) {
         builder.put(field.getSimpleName(), baseName);
