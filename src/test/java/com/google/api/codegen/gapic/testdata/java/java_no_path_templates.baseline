@@ -737,7 +737,13 @@ public class GrpcNoTemplatesApiServiceStub extends NoTemplatesApiServiceStub {
 
   @Override
   public final void close() {
-    shutdown();
+    try{
+      stub.shutdown();
+      stub.awaitTermination(1, TimeUnit.MINUTES);
+      stub.close();
+    } catch(InterruptedException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
