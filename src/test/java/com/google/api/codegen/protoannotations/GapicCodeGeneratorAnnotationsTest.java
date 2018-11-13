@@ -17,7 +17,7 @@ package com.google.api.codegen.protoannotations;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.gapic.GapicTestBase2;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,17 +40,30 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       String apiName,
       String baseline,
       String protoPackage) {
-    super(language, null, null, snippetName, baseline, protoPackage);
+    super(
+        language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline, protoPackage);
 
     this.apiName = apiName;
+    // Use the library.proto contained in this test package's testdata.
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
+
+    // Use the common yaml files from the codegen test package's testsrc/common.
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc");
+    // TODO(andrealin): Remove dependency on yaml files when proto annotations fully supported.
   }
 
   @Parameters(name = "{3}")
   public static List<Object[]> testedConfigs() {
-    return new LinkedList<>();
-    // TODO(andrealin): Implement parsing proto-annotations, make baseline files, write tests.
+    // return Arrays.asList();
+    // TODO(andrealin): Add these back in after baselines are checked in.
+    return Arrays.<Object[]>asList(
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA,
+            new String[] {"libraryproto/library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1"));
   }
 
   @Test
