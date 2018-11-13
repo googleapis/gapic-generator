@@ -413,9 +413,9 @@ public class JavaSurfaceNamer extends SurfaceNamer {
    * <p>All Google cloud java libraries have package names like "com.google.cloud.library.v1" and
    * the respective examples have package names like
    * "com.google.cloud.examples.library.v1.snippets". This method assumes {@code packageName} has
-   * the format of "com.google.(.+).artifact.name". This works for both existing libraries and the
-   * baseline test. We will need to adjust this if in the future there are libraries that do not
-   * follow the package name format assumed here.
+   * the format of "com.google.orgname.artifact.name", where "artifact.name" could be empty. This
+   * works for both existing libraries and the baseline test. We will need to adjust this if in the
+   * future there are libraries that do not follow the package name format assumed here.
    */
   @Override
   public String getExamplePackageName() {
@@ -424,11 +424,15 @@ public class JavaSurfaceNamer extends SurfaceNamer {
         packageName.startsWith("com.google."),
         "We currently only support packages beginning with 'com.google'");
     packageName = packageName.replaceFirst("com\\.google\\.", "");
-    String simpleOrgName = packageName.substring(0, packageName.indexOf('.'));
-    return "com.google."
-        + simpleOrgName
-        + ".examples"
-        + packageName.replaceFirst(simpleOrgName, "")
-        + ".snippets";
+    checkArgument(
+        !packageName.isEmpty(),
+        "package name should have at least one more component than 'com.google'");
+    String simpleOrgName =
+        packageName.indexOf('.') < 0
+            ? packageName
+            : packageName.substring(0, packageName.indexOf('.'));
+    String artifactName = packageName.replaceFirst(simpleOrgName, "");
+    return "com.google." + simpleOrgName + ".examples" + artifactName + ".snippets";
   }
 }
+
