@@ -14,9 +14,6 @@
  */
 package com.google.api.codegen.protoannotations;
 
-import static com.google.api.codegen.ArtifactType.LEGACY_GAPIC_AND_PACKAGE;
-
-import com.google.api.codegen.ArtifactType;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.gapic.GapicTestBase2;
@@ -32,10 +29,6 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
-
-  // TODO(andrealin): Change this to GAPIC_CODE when proto annotations are fully supported and
-  // yaml files are no longer required.
-  private static final ArtifactType ARTIFACT_TYPE = LEGACY_GAPIC_AND_PACKAGE;
 
   private final String apiName;
 
@@ -77,8 +70,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             new String[] {"libraryproto/library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
-            "google.example.library.v1",
-            ARTIFACT_TYPE));
+            "google.example.library.v1"));
   }
 
   @Test
