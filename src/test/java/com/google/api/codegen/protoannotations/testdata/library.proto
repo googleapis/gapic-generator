@@ -582,8 +582,7 @@ message StreamShelvesRequest {
 // Response message for LibraryService.StreamShelves.
 message StreamShelvesResponse {
   // The list of shelves.
-  repeated Shelf shelves = 1 [
-    (google.api.resource_reference) = "google.example.library.v1.Shelf"];
+  repeated Shelf shelves = 1;
 }
 
 // Request message for LibraryService.DeleteShelf.
@@ -810,6 +809,7 @@ message GetBookFromAnywhereRequest {
   // An alternate book name, used to test restricting flattened field to a
   // single resource name type in a oneof.
   string alt_book_name = 2 [
+    (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = "Book"];
 }
 
