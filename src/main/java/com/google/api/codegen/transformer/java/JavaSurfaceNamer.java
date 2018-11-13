@@ -414,6 +414,10 @@ public class JavaSurfaceNamer extends SurfaceNamer {
    * package name is "com.google.foo", the sample package name returned by this method will be
    * "com.google.foo.examples.snippets". If package name is "com.google.foo.bar", the sample package
    * name returned by this method will be "com.google.foo.examples.bar.snippets".
+   *
+   * <p>We structure the example package name in this way because in the case of a package named
+   * "com.google.foo.bar", 'foo' is very often the organization name, and this lets us group
+   * examples from the same org into a common package. E.g. "com.google.cloud.library.v1"
    */
   @Override
   public String getExamplePackageName() {
@@ -421,13 +425,13 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     checkArgument(
         packageName.startsWith("com.google."),
         "We currently only support packages beginning with 'com.google'");
-    packageName = packageName.replaceFirst("com\\.google\\.", "");
+    packageName = packageName.replaceFirst("com.google.", "");
     checkArgument(
         !packageName.isEmpty(),
         "package name should have at least one more component than 'com.google'");
     int index = packageName.indexOf('.');
-    String component = index < 0 ? packageName : packageName.substring(0, index);
-    String artifactName = packageName.replaceFirst(component, "");
-    return "com.google." + component + ".examples" + artifactName + ".snippets";
+    String firstComponent = index < 0 ? packageName : packageName.substring(0, index);
+    String remainingComponents = packageName.replaceFirst(firstComponent, "");
+    return "com.google." + firstComponent + ".examples" + remainingComponents + ".snippets";
   }
 }
