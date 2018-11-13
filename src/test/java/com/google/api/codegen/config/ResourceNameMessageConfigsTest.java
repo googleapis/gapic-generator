@@ -74,13 +74,15 @@ public class ResourceNameMessageConfigsTest {
 
   private static final Map<Resource, ProtoFile> allResourceDefs =
       ImmutableMap.of(
-          Resource.newBuilder().setName("Shelf").setPath(PROTO_SHELF_PATH).build(), protoFile,
-          Resource.newBuilder().setName("Book").setPath(PROTO_BOOK_PATH).build(), protoFile,
+          Resource.newBuilder().setName("Shelf").setPath(PROTO_SHELF_PATH).build(),
+          protoFile,
+          Resource.newBuilder().setName("Book").setPath(PROTO_BOOK_PATH).build(),
+          protoFile,
           Resource.newBuilder()
-                  .setName("archived_book")
-                  .setPath("archives/{archive}/books/{book}")
-                  .build(),
-              protoFile);
+              .setName("archived_book")
+              .setPath("archives/{archive}/books/{book}")
+              .build(),
+          protoFile);
 
   private static final Map<ResourceSet, ProtoFile> allResourceSetDefs = ImmutableMap.of();
 
@@ -148,6 +150,8 @@ public class ResourceNameMessageConfigsTest {
     Mockito.doReturn(null).when(protoParser).getResourceSet(any());
     Mockito.when(protoFile.getSimpleName()).thenReturn("library");
     Mockito.when(protoFile.getMessages()).thenReturn(ImmutableList.of(bookMessage, shelfMessage));
+
+    Mockito.doReturn("library").when(protoParser).getProtoPackage(protoFile);
   }
 
   @Test
@@ -249,8 +253,6 @@ public class ResourceNameMessageConfigsTest {
   @Test
   public void testCreateResourceNameConfigs() {
     DiagCollector diagCollector = new BoundedDiagCollector();
-
-    Mockito.doReturn("library").when(protoParser).getProtoPackage(protoFile);
 
     Map<String, ResourceNameConfig> resourceNameConfigs =
         GapicProductConfig.createResourceNameConfigs(

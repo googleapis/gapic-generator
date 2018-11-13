@@ -135,6 +135,7 @@ public abstract class FlatteningConfig {
 
     // Let flattenings from GAPIC config override flattenings from proto annotations.
     flatteningConfigs.putAll(flatteningConfigsFromProtoFile);
+    flatteningConfigs.putAll(flatteningConfigsFromGapicConfig);
 
     flatteningConfigs.putAll(flatteningConfigsFromGapicConfig);
 

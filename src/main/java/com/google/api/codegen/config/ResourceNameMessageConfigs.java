@@ -92,7 +92,7 @@ public abstract class ResourceNameMessageConfigs {
         configProto.getResourceNameGenerationList()) {
       ResourceNameMessageConfig messageResourceTypeConfig =
           ResourceNameMessageConfig.createResourceNameMessageConfig(
-              diagCollector, messageResourceTypesProto, defaultPackage);
+              messageResourceTypesProto, defaultPackage);
       builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
     }
 
@@ -128,7 +128,7 @@ public abstract class ResourceNameMessageConfigs {
         configProto.getResourceNameGenerationList()) {
       ResourceNameMessageConfig messageResourceTypeConfig =
           ResourceNameMessageConfig.createResourceNameMessageConfig(
-              model.getDiagCollector(), messageResourceTypesProto, defaultPackage);
+              messageResourceTypesProto, defaultPackage);
       builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
     }
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
@@ -155,19 +155,19 @@ public abstract class ResourceNameMessageConfigs {
     return getResourceTypeConfigMap().isEmpty();
   }
 
-  public boolean fieldHasResourceName(FieldModel field) {
+  boolean fieldHasResourceName(FieldModel field) {
     return fieldHasResourceName(field.getParentFullName(), field.getSimpleName());
   }
 
-  public boolean fieldHasResourceName(String messageFullName, String fieldSimpleName) {
+  private boolean fieldHasResourceName(String messageFullName, String fieldSimpleName) {
     return getResourceNameOrNullForField(messageFullName, fieldSimpleName) != null;
   }
 
-  public String getFieldResourceName(FieldModel field) {
+  String getFieldResourceName(FieldModel field) {
     return getFieldResourceName(field.getParentFullName(), field.getSimpleName());
   }
 
-  public String getFieldResourceName(String messageSimpleName, String fieldSimpleName) {
+  private String getFieldResourceName(String messageSimpleName, String fieldSimpleName) {
     if (!fieldHasResourceName(messageSimpleName, fieldSimpleName)) {
       throw new IllegalArgumentException(
           "Field "
