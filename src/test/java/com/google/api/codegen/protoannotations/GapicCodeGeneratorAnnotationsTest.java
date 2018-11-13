@@ -58,13 +58,12 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
     // return Arrays.asList();
     // TODO(andrealin): Add these back in after baselines are checked in.
     return Arrays.<Object[]>asList(
-        //     GapicTestBase2.createTestConfig(
-        //         TargetLanguage.GO,
-        //         new String[] {"library_gapic.yaml"},
-        //         null,
-        //         "library",
-        //         "google.example.library.v1",
-        //         ARTIFACT_TYPE),
+        // GapicTestBase2.createTestConfig(
+        //     TargetLanguage.GO,
+        //     new String[] {"library_gapic.yaml"},
+        //     null,
+        //     "library",
+        //     "google.example.library.v1"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"libraryproto/library_gapic.yaml"},

@@ -263,7 +263,7 @@ module.exports.default = Object.assign({}, module.exports);
 //         className: "DiscussBookRequestStreamingBidiProg"
 //          valueSet: "prog" ("Programming Books")
 //       description: "Testing calling forms"
-//        [name=BASIC]
+//        [name=BASIC, comment.comment=comment_file]
 //      apiMethod "discussBook" of type "OptionalArrayMethod"
 
 // [START turing_prog_request_streaming_bidi_core]
@@ -275,8 +275,14 @@ const stream = client.discussBook().on('data', response => {
   // doThingsWith(response)
 });
 const name = 'BASIC';
+const fileName = 'comment_file';
+const comment = fs.readFileSync(fileName).toString('base64');
+const comment2 = {
+  comment: comment,
+};
 const request = {
   name: name,
+  comment: comment2,
 };
 // Write request objects.
 stream.write(request);
@@ -1562,6 +1568,10 @@ const GetBookFromAnywhereRequest = {
  * @property {string} name
  *   The name of the book to retrieve.
  *
+ * @property {string} altBookName
+ *   An alternate book name, used to test proper processing of placeholders
+ *   within additional bindings.
+ *
  * @typedef GetBookFromAbsolutelyAnywhereRequest
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
@@ -1964,28 +1974,6 @@ const CancelOperationRequest = {
  * @see [google.longrunning.DeleteOperationRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
  */
 const DeleteOperationRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * The protocol buffer types used to indirectly support this method.
- *
- * @property {string} response
- *   Required. The message name of the primary return type for this
- *   long-running operation.
- *   This type will be used to deserialize the LRO's response.
- *
- *   If the response is in a different package from the rpc, a fully-qualified
- *   message name must be used (e.g. "google.protobuf.Empty").
- *
- * @property {string} metadata
- *   The metadata message name for this long-running operation.
- *
- * @typedef OperationTypes
- * @memberof google.longrunning
- * @see [google.longrunning.OperationTypes definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
- */
-const OperationTypes = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_any.js ==============
@@ -3460,7 +3448,7 @@ class LibraryServiceClient {
    * The port for this API service.
    */
   static get port() {
-    return 443;
+    return 1234;
   }
 
   /**
@@ -4624,6 +4612,9 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the book to retrieve.
+   * @param {string} [request.altBookName]
+   *   An alternate book name, used to test proper processing of placeholders
+   *   within additional bindings.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
