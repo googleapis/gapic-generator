@@ -30,14 +30,11 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /** FlatteningConfig represents a specific flattening configuration for a method. */
@@ -118,12 +115,7 @@ public abstract class FlatteningConfig {
     // Get flattenings from protofile annotations
     Map<String, FlatteningConfig> flatteningConfigsFromProtoFile =
         createFlatteningConfigsFromProtoFile(
-            diagCollector,
-            messageConfigs,
-            resourceNameConfigs,
-            methodConfigProto,
-            methodModel,
-            protoParser);
+            diagCollector, messageConfigs, resourceNameConfigs, methodModel, protoParser);
     if (flatteningConfigsFromProtoFile == null) {
       return null;
     }
@@ -132,9 +124,9 @@ public abstract class FlatteningConfig {
     // flattening.
     Map<String, FlatteningConfig> flatteningConfigs = new LinkedHashMap<>();
 
-    // Let flattenings from GAPIC config override flattenings from proto annotations.
-    flatteningConfigs.putAll(flatteningConfigsFromProtoFile);
     flatteningConfigs.putAll(flatteningConfigsFromGapicConfig);
+    // Let flattenings from proto annotations override flattenings from GAPIC config.
+    flatteningConfigs.putAll(flatteningConfigsFromProtoFile);
 
     return ImmutableList.copyOf(flatteningConfigs.values());
   }
@@ -148,45 +140,29 @@ public abstract class FlatteningConfig {
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      MethodConfigProto methodConfigProto,
       ProtoMethodModel methodModel,
       ProtoParser protoParser) {
 
     Map<String, FlatteningConfig> flatteningConfigs = new LinkedHashMap<>();
 
-    // Pre-compute the collection of possible matching FlatteningGroupProtos from GAPIC config.
-    Map<String, FlatteningGroupProto> flatteningGroupProtos = new HashMap<>();
-    for (FlatteningGroupProto flatteningGroupProto :
-        methodConfigProto.getFlattening().getGroupsList()) {
-      flatteningGroupProtos.put(
-          paramListToString(Lists.newArrayList(flatteningGroupProto.getParametersList())),
-          flatteningGroupProto);
-    }
-
+    // Get flattenings from protofile annotations, let these override flattenings from GAPIC config.
     List<MethodSignature> methodSignatures =
         protoParser.getMethodSignatures(methodModel.getProtoMethod());
     for (MethodSignature signature : methodSignatures) {
-
-      // Fetch the matching GAPIC Config flattening, if it exists. Let GAPIC config override
-      // proto annotations flattenings.
-      if (flatteningGroupProtos.get(
-              paramListToString(Lists.newArrayList(signature.getFieldsList())))
-          != null) {
-        continue;
+      if (signature.getFieldsCount() == 0) {
+        break;
       }
-
       FlatteningConfig groupConfig =
           FlatteningConfig.createFlatteningFromProtoFile(
               diagCollector,
               messageConfigs,
               resourceNameConfigs,
               signature,
-              methodConfigProto,
               methodModel,
               protoParser);
       if (groupConfig != null) {
-        String key = flatteningConfigToString(groupConfig);
-        flatteningConfigs.put(key, groupConfig);
+
+        flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
       }
     }
     if (diagCollector.hasErrors()) {
@@ -289,7 +265,6 @@ public abstract class FlatteningConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodSignature methodSignature,
-      MethodConfigProto methodConfigProto,
       ProtoMethodModel method,
       ProtoParser protoParser) {
 
@@ -329,33 +304,20 @@ public abstract class FlatteningConfig {
         oneofNames.add(oneofName);
       }
 
-      // Use the GAPIC config default ResourceNameTreatment if it is set,
-      // otherwise use STATIC_TYPES if this field is a Resource, otherwise default to VALIDATE.
-      ResourceNameTreatment defaultResourceNameTreatment =
-          methodConfigProto.getResourceNameTreatment();
-      if (defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
-        String resourceNameType = protoParser.getResourceReference(parameterField.getProtoField());
-        if (!Strings.isNullOrEmpty(resourceNameType)) {
-          defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
-        } else {
-          defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
-        }
+      ResourceNameTreatment resourceNameTreatment = ResourceNameTreatment.NONE;
+      String resourceNameType = protoParser.getResourceReference(parameterField.getProtoField());
+      if (!Strings.isNullOrEmpty(resourceNameType)) {
+        resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
       }
       FieldConfig fieldConfig =
-          FieldConfig.createFieldConfig(
-              diagCollector,
-              messageConfigs,
-              methodConfigProto.getFieldNamePatternsMap(),
-              resourceNameConfigs,
-              parameterField,
-              defaultResourceNameTreatment,
-              defaultResourceNameTreatment);
+          FieldConfig.createMessageFieldConfig(
+              messageConfigs, resourceNameConfigs, parameterField, resourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }
     return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build(), null);
   }
 
-  public Collection<FieldModel> getFlattenedFields() {
+  public Iterable<FieldModel> getFlattenedFields() {
     return FieldConfig.toFieldTypeIterable(getFlattenedFieldConfigs().values());
   }
 
@@ -388,15 +350,9 @@ public abstract class FlatteningConfig {
 
   /** Returns a string representing the ordered fields in a flattening config. */
   private static String flatteningConfigToString(FlatteningConfig flatteningConfig) {
-    Collection<FieldModel> paramList = flatteningConfig.getFlattenedFields();
-    return paramListToString(
-        paramList.stream().map(FieldModel::getSimpleName).collect(Collectors.toList()));
-  }
-
-  /** Returns a string representing the ordered fields in a flattening config. */
-  private static String paramListToString(Collection<String> paramList) {
+    Iterable<FieldModel> paramList = flatteningConfig.getFlattenedFields();
     StringBuilder paramsAsString = new StringBuilder();
-    paramList.forEach(p -> paramsAsString.append(p).append(", "));
+    paramList.forEach(p -> paramsAsString.append(p.getSimpleName()).append(", "));
     return paramsAsString.toString();
   }
 }
