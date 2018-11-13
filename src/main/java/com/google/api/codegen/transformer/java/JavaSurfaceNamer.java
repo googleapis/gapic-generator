@@ -410,12 +410,14 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   /**
    * Returns the package name of standalone samples.
    *
-   * <p>All Google cloud java libraries have package names like "com.google.cloud.library.v1" and
-   * the respective examples have package names like
-   * "com.google.cloud.examples.library.v1.snippets". This method assumes {@code packageName} has
-   * the format of "com.google.(.+).artifact.name". This works for both existing libraries and the
-   * baseline test. We will need to adjust this if in the future there are libraries that do not
-   * follow the package name format assumed here.
+   * <p>Currently we assume that package names always start with "com.google.". For example, if
+   * package name is "com.google.foo", the sample package name returned by this method will be
+   * "com.google.foo.examples.snippets". If package name is "com.google.foo.bar", the sample package
+   * name returned by this method will be "com.google.foo.examples.bar.snippets".
+   *
+   * <p>We structure the example package name in this way because in the case of a package named
+   * "com.google.foo.bar", 'foo' is very often the organization name, and this lets us group
+   * examples from the same org into a common package. E.g. "com.google.cloud.library.v1"
    */
   @Override
   public String getExamplePackageName() {
@@ -423,12 +425,13 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     checkArgument(
         packageName.startsWith("com.google."),
         "We currently only support packages beginning with 'com.google'");
-    packageName = packageName.replaceFirst("com\\.google\\.", "");
-    String simpleOrgName = packageName.substring(0, packageName.indexOf('.'));
-    return "com.google."
-        + simpleOrgName
-        + ".examples"
-        + packageName.replaceFirst(simpleOrgName, "")
-        + ".snippets";
+    packageName = packageName.replaceFirst("com.google.", "");
+    checkArgument(
+        !packageName.isEmpty(),
+        "package name should have at least one more component than 'com.google'");
+    int index = packageName.indexOf('.');
+    String firstComponent = index < 0 ? packageName : packageName.substring(0, index);
+    String remainingComponents = packageName.replaceFirst(firstComponent, "");
+    return "com.google." + firstComponent + ".examples" + remainingComponents + ".snippets";
   }
 }
