@@ -282,10 +282,10 @@
 @private cleanupSection()
   @@Override
   public final void close() {
-    try{
-      stub.shutdown();
-      stub.awaitTermination(1, TimeUnit.MINUTES);
-      stub.close();
+    try {
+      backgroundResources.shutdown();
+      backgroundResources.awaitTermination(1, TimeUnit.MINUTES);
+      backgroundResources.close();
     } catch(InterruptedException e) {
       throw new RuntimeException(e);
     }
