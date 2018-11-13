@@ -435,4 +435,3 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     return "com.google." + simpleOrgName + ".examples" + artifactName + ".snippets";
   }
 }
-
