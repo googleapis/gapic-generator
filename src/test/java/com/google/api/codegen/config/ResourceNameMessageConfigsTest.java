@@ -85,6 +85,7 @@ public class ResourceNameMessageConfigsTest {
           protoFile);
 
   private static final Map<ResourceSet, ProtoFile> allResourceSetDefs = ImmutableMap.of();
+
   @BeforeClass
   public static void startUp() {
     configProto =
