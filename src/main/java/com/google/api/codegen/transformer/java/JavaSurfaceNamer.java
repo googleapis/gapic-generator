@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -403,5 +405,33 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
     return typeTable.getAndSaveNicknameForElementType(type);
+  }
+
+  /**
+   * Returns the package name of standalone samples.
+   *
+   * <p>Currently we assume that package names always start with "com.google.". For example, if
+   * package name is "com.google.foo", the sample package name returned by this method will be
+   * "com.google.foo.examples.snippets". If package name is "com.google.foo.bar", the sample package
+   * name returned by this method will be "com.google.foo.examples.bar.snippets".
+   *
+   * <p>We structure the example package name in this way because in the case of a package named
+   * "com.google.foo.bar", 'foo' is very often the organization name, and this lets us group
+   * examples from the same org into a common package. E.g. "com.google.cloud.library.v1"
+   */
+  @Override
+  public String getExamplePackageName() {
+    String packageName = getPackageName();
+    checkArgument(
+        packageName.startsWith("com.google."),
+        "We currently only support packages beginning with 'com.google'");
+    packageName = packageName.replaceFirst("com.google.", "");
+    checkArgument(
+        !packageName.isEmpty(),
+        "package name should have at least one more component than 'com.google'");
+    int index = packageName.indexOf('.');
+    String firstComponent = index < 0 ? packageName : packageName.substring(0, index);
+    String remainingComponents = packageName.replaceFirst(firstComponent, "");
+    return "com.google." + firstComponent + ".examples" + remainingComponents + ".snippets";
   }
 }

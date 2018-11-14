@@ -18,8 +18,12 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.MethodSignature;
 import com.google.api.OperationData;
+import com.google.api.Resource;
+import com.google.api.ResourceSet;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.protoannotations.GapicCodeGeneratorAnnotationsTest;
+import com.google.api.tools.framework.model.BoundedDiagCollector;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -44,6 +48,7 @@ public class ProtoParserTest {
   private static Interface libraryService;
   private static Method deleteShelfMethod;
   private static Method getBigBookMethod;
+  private static MessageType book;
   private static MessageType shelf;
 
   // Object under test.
@@ -80,6 +85,16 @@ public class ProtoParserTest {
     shelfNameField =
         shelf.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
 
+    book =
+        libraryProtoFile
+            .getMessages()
+            .stream()
+            .filter(m -> m.getSimpleName().equals("Book"))
+            .findFirst()
+            .get();
+    shelfNameField =
+        shelf.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
+
     libraryService = libraryProtoFile.getInterfaces().get(0);
     deleteShelfMethod = libraryService.lookupMethod("DeleteShelf");
     getBigBookMethod = libraryService.lookupMethod("GetBigBook");
@@ -89,11 +104,11 @@ public class ProtoParserTest {
   public void testGetResourcePath() {
     Field shelfNameField =
         shelf.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
-    assertThat(protoParser.getResourcePath(shelfNameField)).isEqualTo("shelves/*");
+    assertThat(protoParser.getResource(shelfNameField).getPath()).isEqualTo("shelves/{shelf_id}");
   }
 
   @Test
-  public void testGetEmptyResourcePath() {
+  public void testGetEmptyResource() {
     MessageType book =
         libraryProtoFile
             .getMessages()
@@ -103,17 +118,74 @@ public class ProtoParserTest {
             .get();
     Field authorBookField =
         book.getFields().stream().filter(f -> f.getSimpleName().equals("author")).findFirst().get();
-    assertThat(protoParser.getResourcePath(authorBookField)).isNull();
+    assertThat(protoParser.getResource(authorBookField)).isNull();
   }
 
   /** Return the entity name, e.g. "shelf" for a resource field. */
   @Test
-  public void getResourceEntityName() {
-    assertThat(protoParser.getResourceEntityName(shelfNameField)).isEqualTo("shelf");
+  public void testGetResourceEntityName() {
+    assertThat(protoParser.getResourceEntityName(shelfNameField)).isEqualTo("Shelf");
   }
 
   @Test
-  public void getLongRunningOperation() {
+  public void testGetResourceSet() {
+    Field bookNameField =
+        book.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
+    ResourceSet bookResourceSet = protoParser.getResourceSet(bookNameField);
+    assertThat(bookResourceSet).isNotNull();
+    assertThat(bookResourceSet.getName()).isEqualTo("BookOneOf");
+    assertThat(bookResourceSet.getResourcesCount()).isEqualTo(1);
+    assertThat(bookResourceSet.getResources(0))
+        .isEqualTo(Resource.newBuilder().setName("DeletedBook").setPath("_deleted-book_").build());
+    assertThat(bookResourceSet.getResourceReferencesList()).containsExactly("ArchivedBook", "Book");
+  }
+
+  @Test
+  public void testGetAllResourceDefs() {
+    DiagCollector diagCollector = new BoundedDiagCollector();
+    List<Resource> resources = protoParser.getResourceDefs(libraryProtoFile, diagCollector);
+    assertThat(resources).hasSize(4);
+    assertThat(resources)
+        .contains(Resource.newBuilder().setName("Shelf").setPath("shelves/{shelf_id}").build());
+    assertThat(resources)
+        .contains(Resource.newBuilder().setName("Project").setPath("projects/{project}").build());
+    assertThat(resources)
+        .contains(
+            Resource.newBuilder()
+                .setName("Book")
+                .setPath("shelves/{shelf_id}/books/{book_id}")
+                .build());
+    assertThat(resources)
+        .contains(
+            Resource.newBuilder()
+                .setName("ArchivedBook")
+                .setPath("archives/{archive_path}/books/{book_id=**}")
+                .build());
+  }
+
+  @Test
+  public void testGetAllResourceSetDefs() {
+    DiagCollector diagCollector = new BoundedDiagCollector();
+    List<ResourceSet> resources = protoParser.getResourceSetDefs(libraryProtoFile, diagCollector);
+    assertThat(resources).hasSize(1);
+    assertThat(resources)
+        .contains(
+            ResourceSet.newBuilder()
+                .setName("BookOneOf")
+                .addResources(
+                    Resource.newBuilder().setName("DeletedBook").setPath("_deleted-book_"))
+                .addResourceReferences("ArchivedBook")
+                .addResourceReferences("Book")
+                .build());
+  }
+
+  @Test
+  public void getResourceEntityName() {
+    assertThat(protoParser.getResourceEntityName(shelfNameField)).isEqualTo("Shelf");
+  }
+
+  @Test
+  public void testGetLongRunningOperation() {
     OperationData operationTypes = protoParser.getLongRunningOperation(getBigBookMethod);
 
     OperationData expected =
@@ -160,7 +232,7 @@ public class ProtoParserTest {
             .findFirst()
             .get();
     String shelfType = protoParser.getResourceType(shelves);
-    assertThat(shelfType).isEqualTo("google.example.library.v1.Shelf");
+    assertThat(shelfType).isEqualTo("Shelf");
   }
 
   @Test
@@ -179,7 +251,6 @@ public class ProtoParserTest {
     assertThat(additionalSignature.getFieldsList().get(1)).isEqualTo("message");
 
     MethodSignature additionalSignature2 = getShelfFlattenings.get(2);
-    assertThat(additionalSignature2.getFieldsList().size()).isEqualTo(3);
     assertThat(additionalSignature2.getFieldsList())
         .containsExactly("name", "message", "string_builder");
   }

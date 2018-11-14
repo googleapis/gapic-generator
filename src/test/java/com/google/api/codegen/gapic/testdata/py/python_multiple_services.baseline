@@ -895,8 +895,7 @@ class DecrementerServiceClient(object):
     from_service_account_json = from_service_account_file
 
     def __init__(self, transport=None, channel=None, credentials=None,
-            client_config=decrementer_service_client_config.config,
-            client_info=None):
+            client_config=None, client_info=None):
         """Constructor.
 
         Args:
@@ -928,12 +927,16 @@ class DecrementerServiceClient(object):
                 your own client library.
         """
         # Raise deprecation warnings for things we want to go away.
-        if client_config:
+        if client_config is not None:
             warnings.warn('The `client_config` argument is deprecated.',
-                          PendingDeprecationWarning)
+                          PendingDeprecationWarning, stacklevel=2)
+        else:
+            client_config = decrementer_service_client_config.config
+
         if channel:
             warnings.warn('The `channel` argument is deprecated; use '
-                          '`transport` instead.', PendingDeprecationWarning)
+                          '`transport` instead.',
+                          PendingDeprecationWarning, stacklevel=2)
 
         # Instantiate the transport.
         # The transport is responsible for handling serialization and
@@ -1126,8 +1129,7 @@ class IncrementerServiceClient(object):
     from_service_account_json = from_service_account_file
 
     def __init__(self, transport=None, channel=None, credentials=None,
-            client_config=incrementer_service_client_config.config,
-            client_info=None):
+            client_config=None, client_info=None):
         """Constructor.
 
         Args:
@@ -1159,12 +1161,16 @@ class IncrementerServiceClient(object):
                 your own client library.
         """
         # Raise deprecation warnings for things we want to go away.
-        if client_config:
+        if client_config is not None:
             warnings.warn('The `client_config` argument is deprecated.',
-                          PendingDeprecationWarning)
+                          PendingDeprecationWarning, stacklevel=2)
+        else:
+            client_config = incrementer_service_client_config.config
+
         if channel:
             warnings.warn('The `channel` argument is deprecated; use '
-                          '`transport` instead.', PendingDeprecationWarning)
+                          '`transport` instead.',
+                          PendingDeprecationWarning, stacklevel=2)
 
         # Instantiate the transport.
         # The transport is responsible for handling serialization and
@@ -1634,7 +1640,7 @@ def unit(session, py):
     session.virtualenv_dirname = 'unit-' + py
 
     # Install all test dependencies, then install this package in-place.
-    session.install('pytest')
+    session.install('pytest', 'mock')
     session.install('-e', '.')
 
     # Run py.test against the unit tests.
@@ -1753,6 +1759,7 @@ setuptools.setup(
 
 """Unit tests."""
 
+import mock
 import pytest
 
 from google.cloud import example_v1
@@ -1800,8 +1807,10 @@ class TestDecrementerServiceClient(object):
 
     def test_decrement(self):
         channel = ChannelStub()
-        client = example_v1.DecrementerServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = example_v1.DecrementerServiceClient()
 
         client.decrement()
 
@@ -1813,8 +1822,10 @@ class TestDecrementerServiceClient(object):
     def test_decrement_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = example_v1.DecrementerServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = example_v1.DecrementerServiceClient()
 
         with pytest.raises(CustomException):
             client.decrement()
@@ -1838,6 +1849,7 @@ class TestDecrementerServiceClient(object):
 
 """Unit tests."""
 
+import mock
 import pytest
 
 from google.cloud import example_v1
@@ -1885,8 +1897,10 @@ class TestIncrementerServiceClient(object):
 
     def test_increment(self):
         channel = ChannelStub()
-        client = example_v1.IncrementerServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = example_v1.IncrementerServiceClient()
 
         client.increment()
 
@@ -1898,8 +1912,10 @@ class TestIncrementerServiceClient(object):
     def test_increment_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = example_v1.IncrementerServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = example_v1.IncrementerServiceClient()
 
         with pytest.raises(CustomException):
             client.increment()
