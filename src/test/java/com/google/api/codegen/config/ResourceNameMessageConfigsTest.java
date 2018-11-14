@@ -266,8 +266,8 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(createShelvesRequest.lookupField("book")).thenReturn(bookField);
     Mockito.when(createShelvesRequest.lookupField("name")).thenReturn(nameField);
 
-    Mockito.when(protoParser.getResourceType(bookField)).thenReturn("library.Book");
-    Mockito.when(protoParser.getResourceType(nameField)).thenReturn("library.Shelf");
+    Mockito.when(protoParser.getResourceReference(bookField)).thenReturn("library.Book");
+    Mockito.when(protoParser.getResourceReference(nameField)).thenReturn("library.Shelf");
 
     // ProtoFile contributes flattenings {["name", "book"], ["name"]}.
     Mockito.when(protoParser.getMethodSignatures(createShelvesMethod))
