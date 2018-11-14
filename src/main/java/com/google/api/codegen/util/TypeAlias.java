@@ -36,8 +36,8 @@ public abstract class TypeAlias {
   }
 
   /** Creates a type alias with the given fullName, nickname and importName. */
-  public static TypeAlias createOuterImport(String fullName, String nickname, String parentName) {
-    return new AutoValue_TypeAlias(fullName, nickname, parentName, ImportType.OuterImport);
+  public static TypeAlias createOuterImport(String fullName, String nickname, String importName) {
+    return new AutoValue_TypeAlias(fullName, nickname, importName, ImportType.OuterImport);
   }
 
   /** Creates a type alias with the given fullName, nickname and parentName. */

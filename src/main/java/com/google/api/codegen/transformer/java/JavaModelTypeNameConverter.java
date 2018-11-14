@@ -146,7 +146,6 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
       case TYPE_MESSAGE:
         return getTypeName(type.getMessageType());
       case TYPE_ENUM:
-        // return getTypeName(type.getEnumType());
         return getEnumTypeName(type.getEnumType());
       default:
         throw new IllegalArgumentException("unknown type kind: " + type.getKind());
