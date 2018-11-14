@@ -187,7 +187,18 @@ public class ProtoParser {
               String baseName = getResourceEntityName(field);
               definition = setNameFunc.apply(definition, baseName);
             }
-            localDefs.put(getNameFunc.apply(definition), definition);
+            String baseName = getNameFunc.apply(definition);
+            if (localDefs.put(baseName, definition) != null) {
+              diagCollector.addDiag(
+                  Diag.error(
+                      SimpleLocation.TOPLEVEL,
+                      "Multiple %s defintions with the name"
+                          + " %s are defined in proto file %s. Values for %s.name must be unique.",
+                      fieldExtension.getDescriptor().getFullName(),
+                      baseName,
+                      protoFile.getFullName(),
+                      fieldExtension.getDescriptor().getFullName()));
+            }
           }
         }
       }
