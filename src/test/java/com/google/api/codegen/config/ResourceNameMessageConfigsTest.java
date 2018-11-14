@@ -299,7 +299,8 @@ public class ResourceNameMessageConfigsTest {
             .addResourceNameGeneration(
                 ResourceNameMessageConfigProto.newBuilder()
                     .setMessageName("CreateShelvesRequest")
-                    .putFieldEntityMap("name", "shelf"))
+                    .putFieldEntityMap("name", "shelf")
+                    .putFieldEntityMap("book", "book"))
             .build();
 
     DiagCollector diagCollector = new BoundedDiagCollector();
@@ -365,6 +366,10 @@ public class ResourceNameMessageConfigsTest {
         .isEqualTo(GAPIC_SHELF_PATH);
 
     FieldConfig bookConfig = shelfAndBookFlattening.getFlattenedFieldConfigs().get("book");
+    assertThat(bookConfig.getResourceNameTreatment()).isEqualTo(ResourceNameTreatment.STATIC_TYPES);
+    // Use the resource name path from GAPIC config.
+    assertThat(((SingleResourceNameConfig) bookConfig.getResourceNameConfig()).getNamePattern())
+        .isEqualTo(GAPIC_BOOK_PATH);
     assertThat(((ProtoTypeRef) bookConfig.getField().getType()).getProtoType().getMessageType())
         .isEqualTo(bookType);
   }
