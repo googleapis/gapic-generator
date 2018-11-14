@@ -370,9 +370,6 @@ jobs:
     working_directory: /tmp/
     environment:
       BAZEL_VERSION: 0.19.1
-      BAZEL_PREFIX: bazel-install
-      BAZEL_INSTALLER: bazel-install/install.sh
-      BAZEL: bazel-install/bin/bazel
       TEST_REPORTS_DIR: /tmp/workspace/bazel/reports/gapic-generator
     docker:
       - image: circleci/openjdk:8-jdk
@@ -388,15 +385,15 @@ jobs:
       - run:
           name: Download bazel
           command: |
-            mkdir -p ${BAZEL_PREFIX}
-            curl -L -o ${BAZEL_INSTALLER} https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-installer-linux-x86_64.sh
-            chmod +x ${BAZEL_INSTALLER}
-            ./${BAZEL_INSTALLER} --prefix=${BAZEL_PREFIX}
+            echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
+            curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add -
+            sudo apt-get update
+            sudo apt-get install bazel=${BAZEL_VERSION}
       - run:
           name: Run unit tests for gapic-generator
           command: |
             cd gapic-generator
-            ${BAZEL} --host_jvm_args=-Xmx512m test //... \
+            bazel --host_jvm_args=-Xmx512m test //... \
               --verbose_failures \
               --local_resources=2048,2.0,1.0 \
               --jobs=2 \
