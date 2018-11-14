@@ -58,12 +58,42 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
     // return Arrays.asList();
     // TODO(andrealin): Add these back in after baselines are checked in.
     return Arrays.<Object[]>asList(
-        // GapicTestBase2.createTestConfig(
-        //     TargetLanguage.GO,
-        //     new String[] {"library_gapic.yaml"},
-        //     null,
-        //     "library",
-        //     "google.example.library.v1"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.PHP,
+            new String[] {"libraryproto/library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.NODEJS,
+            new String[] {"libraryproto/library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.CSHARP,
+            new String[] {"libraryproto/library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.RUBY,
+            new String[] {"libraryproto/library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.PYTHON,
+            new String[] {"libraryproto/library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.GO,
+            new String[] {"libraryproto/library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"libraryproto/library_gapic.yaml"},

@@ -1992,7 +1992,7 @@ module Google
         # @!attribute [rw] name
         #   @return [String]
         #     The resource name of the book.
-        #     Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+        #     Book names have the form `shelves/{shelf_id}/books/{book_id}`.
         #     Message field comment may include special characters: <>&"`'@.
         # @!attribute [rw] author
         #   @return [String]
@@ -2137,7 +2137,7 @@ module Google
         # @!attribute [rw] name
         #   @return [String]
         #     The resource name of the shelf.
-        #     Shelf names have the form `bookShelves/{shelf_id}`.
+        #     Shelf names have the form `shelves/{shelf_id}`.
         # @!attribute [rw] theme
         #   @return [String]
         #     The theme of the shelf
@@ -2402,6 +2402,10 @@ module Google
         # @!attribute [rw] name
         #   @return [String]
         #     The name of the book to retrieve.
+        # @!attribute [rw] alt_book_name
+        #   @return [String]
+        #     An alternate book name, used to test proper processing of placeholders
+        #     within additional bindings.
         class GetBookFromAbsolutelyAnywhereRequest; end
 
         # Request message for LibraryService.UpdateBookIndex.
@@ -2725,7 +2729,7 @@ module Library
       SERVICE_ADDRESS = "library-example.googleapis.com".freeze
 
       # The default port of the service.
-      DEFAULT_SERVICE_PORT = 443
+      DEFAULT_SERVICE_PORT = 1234
 
       # The default set of gRPC interceptors.
       GRPC_INTERCEPTORS = []
@@ -3795,6 +3799,9 @@ module Library
       #
       # @param name [String]
       #   The name of the book to retrieve.
+      # @param alt_book_name [String]
+      #   An alternate book name, used to test proper processing of placeholders
+      #   within additional bindings.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -3812,10 +3819,12 @@ module Library
 
       def get_book_from_absolutely_anywhere \
           name,
+          alt_book_name: nil,
           options: nil,
           &block
         req = {
-          name: name
+          name: name,
+          alt_book_name: alt_book_name
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAbsolutelyAnywhereRequest)
         @get_book_from_absolutely_anywhere.call(req, options, &block)

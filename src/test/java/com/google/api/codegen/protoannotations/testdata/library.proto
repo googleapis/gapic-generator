@@ -219,7 +219,7 @@ service LibraryService {
     option (google.api.http) = {
       post: "/v1/{name=archives/*/books/*}"
       additional_bindings {
-        post: "/v1/{name=bookShelves/*/books/*}"
+        post: "/v1/{alt_book_name=bookShelves/*/books/*}"
       }
     };
     option (google.api.method_signature) = {
@@ -654,6 +654,8 @@ message PublishSeriesResponse {
   // The names of the books in the series that were published
   repeated string book_names = 1 [
     (google.api.field_behavior) = REQUIRED];
+
+  // Uniquely identifies the series published
   SeriesUuid series_uuid = 2;
 }
 
@@ -819,6 +821,10 @@ message GetBookFromAbsolutelyAnywhereRequest {
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = "google.example.library.v1.Book"];
+
+  // An alternate book name, used to test proper processing of placeholders
+  // within additional bindings.
+  string alt_book_name = 2;
 }
 
 // Request message for LibraryService.UpdateBookIndex.
