@@ -42,6 +42,13 @@ public class TypeName {
     this(TypeAlias.create(fullName, nickname, parentTypeName));
   }
 
+  /** Creates a type alias for an inner type with the given fullName and referenced by nickname, with an import of outerTypeName. */
+  public static TypeName createOuterTypeName(
+      String fullName, String nickname, String outerTypeName) {
+    TypeAlias typeAlias = TypeAlias.createOuterImport(fullName, nickname, outerTypeName);
+    return new TypeName(typeAlias);
+  }
+
   /** Creates a TypeName with a given TypeAlias. */
   public TypeName(TypeAlias typeAlias) {
     this.topLevelAlias = typeAlias;
