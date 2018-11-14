@@ -148,7 +148,7 @@ public class ProtoParser {
 
       // Maps base names to Resource[Sets].
       Map<String, T> localDefs = new LinkedHashMap<>();
-      // Get definitions from protofile options.
+      // Get Resource definitions from protofile options.
       List<T> resourcesAtFileLevel = getProtoExtension(protoFile, fileExtension);
       if (resourcesAtFileLevel != null) {
 
