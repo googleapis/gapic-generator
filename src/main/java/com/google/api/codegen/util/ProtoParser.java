@@ -164,7 +164,7 @@ public class ProtoParser {
                     protoFile.getFullName(),
                     fileExtension.getDescriptor().getFullName()));
           }
-          if (localDefs.containsKey(baseName)) {
+          if (localDefs.put(baseName, definition) != null) {
             diagCollector.addDiag(
                 Diag.error(
                     SimpleLocation.TOPLEVEL,
@@ -175,7 +175,6 @@ public class ProtoParser {
                     protoFile.getFullName(),
                     fieldExtension.getDescriptor().getFullName()));
           }
-          localDefs.put(baseName, definition);
         }
       }
 
