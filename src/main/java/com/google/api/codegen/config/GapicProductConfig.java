@@ -94,11 +94,7 @@ public abstract class GapicProductConfig implements ProductConfig {
    */
   public abstract ImmutableMap<String, FieldConfig> getDefaultResourceNameFieldConfigMap();
 
-  /**
-   * Returns the version of config schema.
-   *
-   * <p>TODO(eoogbe): Validate the value in GAPIC config advisor.
-   */
+  /** Returns the version of config schema. */
   @Nullable
   public abstract String getConfigSchemaVersion();
 
@@ -226,7 +222,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     String configSchemaVersion = configProto.getConfigSchemaVersion();
-    // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
     if (Strings.isNullOrEmpty(configSchemaVersion)) {
       model
           .getDiagReporter()
@@ -297,7 +292,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     String configSchemaVersion = configProto.getConfigSchemaVersion();
-    // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
     if (Strings.isNullOrEmpty(configSchemaVersion)) {
       model
           .getDiagCollector()
