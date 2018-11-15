@@ -162,7 +162,7 @@ public class ProtoParser {
     return method.getDescriptor().getMethodAnnotation(AnnotationsProto.operation);
   }
 
-  /* Return a Map of Resource names to the corresponding Resource, from a given ProtoFile.
+  /* Return a Map of Resources to their containing Protofile.
    * The name map keys are package-qualified names of Resources. */
   public Map<Resource, ProtoFile> getResourceDefs(
       List<ProtoFile> protoFile, DiagCollector diagCollector) {
@@ -175,7 +175,7 @@ public class ProtoParser {
         (resource, baseNameToSet) -> resource.toBuilder().setName(baseNameToSet).build());
   }
 
-  /* Return a Map of ResourceSet full names to the corresponding ResourceSet, from a given ProtoFile.
+  /* Return a Map of ResourceSets to their containing Protofile.
    * The name map keys are package-qualified names of ResourceSets. */
   public Map<ResourceSet, ProtoFile> getResourceSetDefs(
       List<ProtoFile> protoFile, DiagCollector diagCollector) {
@@ -202,7 +202,7 @@ public class ProtoParser {
 
       // Maps base names to Resource[Sets].
       Map<String, T> localDefs = new LinkedHashMap<>();
-      // Get definitions from protofile options.
+      // Get Resource definitions from protofile options.
       List<T> resourcesAtFileLevel = getProtoExtension(protoFile, fileExtension);
       if (resourcesAtFileLevel != null) {
 
@@ -218,7 +218,7 @@ public class ProtoParser {
                     protoFile.getFullName(),
                     fileExtension.getDescriptor().getFullName()));
           }
-          if (localDefs.containsKey(baseName)) {
+          if (localDefs.put(baseName, definition) != null) {
             diagCollector.addDiag(
                 Diag.error(
                     SimpleLocation.TOPLEVEL,
@@ -229,7 +229,6 @@ public class ProtoParser {
                     protoFile.getFullName(),
                     fieldExtension.getDescriptor().getFullName()));
           }
-          localDefs.put(baseName, definition);
         }
       }
 
@@ -242,7 +241,18 @@ public class ProtoParser {
               String baseName = getResourceEntityName(field);
               definition = setNameFunc.apply(definition, baseName);
             }
-            localDefs.put(getNameFunc.apply(definition), definition);
+            String baseName = getNameFunc.apply(definition);
+            if (localDefs.put(baseName, definition) != null) {
+              diagCollector.addDiag(
+                  Diag.error(
+                      SimpleLocation.TOPLEVEL,
+                      "Multiple %s defintions with the name"
+                          + " %s are defined in proto file %s. Values for %s.name must be unique.",
+                      fieldExtension.getDescriptor().getFullName(),
+                      baseName,
+                      protoFile.getFullName(),
+                      fieldExtension.getDescriptor().getFullName()));
+            }
           }
         }
       }

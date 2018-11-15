@@ -67,11 +67,6 @@ public class ProtoInterfaceModel implements InterfaceModel {
   }
 
   @Override
-  public String getFileFullName() {
-    return protoInterface.getFile().getFullName();
-  }
-
-  @Override
   public List<MethodModel> getMethods() {
     ImmutableList.Builder<MethodModel> methods = ImmutableList.builder();
     for (Method method : protoInterface.getMethods()) {

@@ -45,11 +45,6 @@ public class DiscoInterfaceModel implements InterfaceModel {
   }
 
   @Override
-  public String getFileFullName() {
-    return interfaceName;
-  }
-
-  @Override
   public String getParentFullName() {
     return interfaceName;
   }

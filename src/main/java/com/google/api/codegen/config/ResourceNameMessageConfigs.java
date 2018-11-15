@@ -22,7 +22,6 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.ProtoParser;
-import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -52,10 +51,9 @@ public abstract class ResourceNameMessageConfigs {
   public abstract ListMultimap<String, FieldModel> getFieldsWithResourceNamesByMessage();
 
   static ResourceNameMessageConfigs createMessageResourceTypesConfig(
-      DiagCollector diagCollector, ConfigProto configProto, String defaultPackage) {
+      ConfigProto configProto, String defaultPackage) {
     return createMessageResourceTypesConfig(
         new LinkedList<>(),
-        diagCollector,
         configProto,
         defaultPackage,
         ImmutableMap.of(),
@@ -66,7 +64,6 @@ public abstract class ResourceNameMessageConfigs {
   @VisibleForTesting
   static ResourceNameMessageConfigs createMessageResourceTypesConfig(
       List<ProtoFile> protoFiles,
-      DiagCollector diagCollector,
       ConfigProto configProto,
       String defaultPackage,
       Map<Resource, ProtoFile> resourceDefs,
