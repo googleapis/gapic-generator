@@ -34,6 +34,7 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
@@ -107,8 +108,10 @@ public class ProtoParser {
     return method.getDescriptor().getMethodAnnotation(AnnotationsProto.operation);
   }
 
-  /* Return a Map of Resource names to the corresponding Resource, from a given ProtoFile. */
-  List<Resource> getResourceDefs(ProtoFile protoFile, DiagCollector diagCollector) {
+  /* Return a Map of Resources to their containing Protofile.
+   * The name map keys are package-qualified names of Resources. */
+  public Map<Resource, ProtoFile> getResourceDefs(
+      List<ProtoFile> protoFile, DiagCollector diagCollector) {
     return getResourceOrSetDefs(
         protoFile,
         diagCollector,
@@ -118,8 +121,10 @@ public class ProtoParser {
         (resource, baseNameToSet) -> resource.toBuilder().setName(baseNameToSet).build());
   }
 
-  /* Return a Map of ResourceSet names to the corresponding ResourceSet, from a given ProtoFile. */
-  List<ResourceSet> getResourceSetDefs(ProtoFile protoFile, DiagCollector diagCollector) {
+  /* Return a Map of ResourceSets to their containing Protofile.
+   * The name map keys are package-qualified names of ResourceSets. */
+  public Map<ResourceSet, ProtoFile> getResourceSetDefs(
+      List<ProtoFile> protoFile, DiagCollector diagCollector) {
     return getResourceOrSetDefs(
         protoFile,
         diagCollector,
@@ -129,62 +134,82 @@ public class ProtoParser {
         (resourceSet, baseNameToSet) -> resourceSet.toBuilder().setName(baseNameToSet).build());
   }
 
-  /* Return a Map of names to their corresponding Resource or ResourceSet element. */
-  private <T> List<T> getResourceOrSetDefs(
-      ProtoFile protoFile,
+  /* Return a Map of Resource or ResourceSet elements to their containing ProtoFile. */
+  private <T> Map<T, ProtoFile> getResourceOrSetDefs(
+      List<ProtoFile> protoFiles,
       DiagCollector diagCollector,
       GeneratedExtension<FileOptions, List<T>> fileExtension,
       GeneratedExtension<FieldOptions, T> fieldExtension,
       Function<T, String> getNameFunc,
       BiFunction<T, String, T> setNameFunc) {
-    Map<String, T> resourceSetDefs = new LinkedHashMap<>();
-    List<T> resourcesAtFileLevel = getProtoExtension(protoFile, fileExtension);
-    // Get definitions from protofile options.
-    if (resourcesAtFileLevel != null) {
-      for (T definition : resourcesAtFileLevel) {
-        String baseName = getNameFunc.apply(definition);
-        if (Strings.isNullOrEmpty(baseName)) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "There is a %s option with"
-                      + " no name defined in proto file %s. %s.name is required.",
-                  fileExtension.getDescriptor().getFullName(),
-                  protoFile.getFullName(),
-                  fileExtension.getDescriptor().getFullName()));
-          continue;
-        }
+    ImmutableMap.Builder<T, ProtoFile> definitions = ImmutableMap.builder();
 
-        if (resourceSetDefs.containsKey(baseName)) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "Multiple %s defintions with the name"
-                      + " %s are defined in proto file %s. Values for %s.name must be unique.",
-                  fieldExtension.getDescriptor().getFullName(),
-                  baseName,
-                  protoFile.getFullName(),
-                  fieldExtension.getDescriptor().getFullName()));
-          continue;
-        }
-        resourceSetDefs.put(baseName, definition);
-      }
-    }
+    for (ProtoFile protoFile : protoFiles) {
 
-    // Get Resource[Set] definitions from fields in message types.
-    for (MessageType message : protoFile.getMessages()) {
-      for (Field field : message.getFields()) {
-        T definition = getProtoExtension(field, fieldExtension);
-        if (definition != null) {
-          if (Strings.isNullOrEmpty(getNameFunc.apply(definition))) {
-            String baseName = getResourceEntityName(field);
-            definition = setNameFunc.apply(definition, baseName);
+      // Maps base names to Resource[Sets].
+      Map<String, T> localDefs = new LinkedHashMap<>();
+      // Get Resource definitions from protofile options.
+      List<T> resourcesAtFileLevel = getProtoExtension(protoFile, fileExtension);
+      if (resourcesAtFileLevel != null) {
+
+        for (T definition : resourcesAtFileLevel) {
+          String baseName = getNameFunc.apply(definition);
+          if (Strings.isNullOrEmpty(baseName)) {
+            diagCollector.addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "There is a %s option with"
+                        + " no name defined in proto file %s. %s.name is required.",
+                    fileExtension.getDescriptor().getFullName(),
+                    protoFile.getFullName(),
+                    fileExtension.getDescriptor().getFullName()));
           }
-          resourceSetDefs.put(getNameFunc.apply(definition), definition);
+          if (localDefs.put(baseName, definition) != null) {
+            diagCollector.addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "Multiple %s defintions with the name"
+                        + " %s are defined in proto file %s. Values for %s.name must be unique.",
+                    fieldExtension.getDescriptor().getFullName(),
+                    baseName,
+                    protoFile.getFullName(),
+                    fieldExtension.getDescriptor().getFullName()));
+          }
         }
       }
+
+      // Get Resource[Set] definitions from fields in message types.
+      for (MessageType message : protoFile.getMessages()) {
+        for (Field field : message.getFields()) {
+          T definition = getProtoExtension(field, fieldExtension);
+          if (definition != null) {
+            if (Strings.isNullOrEmpty(getNameFunc.apply(definition))) {
+              String baseName = getResourceEntityName(field);
+              definition = setNameFunc.apply(definition, baseName);
+            }
+            String baseName = getNameFunc.apply(definition);
+            if (localDefs.put(baseName, definition) != null) {
+              diagCollector.addDiag(
+                  Diag.error(
+                      SimpleLocation.TOPLEVEL,
+                      "Multiple %s defintions with the name"
+                          + " %s are defined in proto file %s. Values for %s.name must be unique.",
+                      fieldExtension.getDescriptor().getFullName(),
+                      baseName,
+                      protoFile.getFullName(),
+                      fieldExtension.getDescriptor().getFullName()));
+            }
+          }
+        }
+      }
+
+      // Fully qualify the names of the Resource[Set]s.
+      for (String baseName : localDefs.keySet()) {
+        T def = localDefs.get(baseName);
+        definitions.put(def, protoFile);
+      }
     }
-    return ImmutableList.copyOf(resourceSetDefs.values());
+    return definitions.build();
   }
 
   @SuppressWarnings("unchecked")
@@ -219,8 +244,8 @@ public class ProtoParser {
     return fieldBehaviors != null && fieldBehaviors.contains(REQUIRED.getValueDescriptor());
   }
 
-  /** Return the resource type for the given field, according to the proto annotations. */
-  public String getResourceType(Field field) {
+  /** Return the resource reference for the given field, according to the proto annotations. */
+  public String getResourceReference(Field field) {
     return getProtoExtension(field, AnnotationsProto.resourceReference);
   }
 
