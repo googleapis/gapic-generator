@@ -135,8 +135,7 @@ public class ProtoApiModel implements ApiModel {
 
   @Override
   public boolean equals(Object o) {
-    return o != null
-        && o instanceof ProtoApiModel
+    return o instanceof ProtoApiModel
         && ((ProtoApiModel) o).protoModel.equals(protoModel);
   }
 }
