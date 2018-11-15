@@ -305,7 +305,7 @@ public abstract class FlatteningConfig {
       }
 
       ResourceNameTreatment resourceNameTreatment = ResourceNameTreatment.NONE;
-      String resourceNameType = protoParser.getResourceType(parameterField.getProtoField());
+      String resourceNameType = protoParser.getResourceReference(parameterField.getProtoField());
       if (!Strings.isNullOrEmpty(resourceNameType)) {
         resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
       }
