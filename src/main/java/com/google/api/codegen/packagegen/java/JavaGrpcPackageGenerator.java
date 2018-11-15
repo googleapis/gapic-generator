@@ -52,8 +52,8 @@ public class JavaGrpcPackageGenerator implements CodeGenerator<Doc> {
     ImmutableMap.Builder<String, GeneratedResult<Doc>> results = new ImmutableMap.Builder<>();
 
     ProtoApiModel apiModel = new ProtoApiModel(model);
-    ArrayList<PackageMetadataView> metadataViews = new ArrayList<>();
-    metadataViews.addAll(transformer.transform(apiModel, config));
+    ArrayList<PackageMetadataView> metadataViews =
+        new ArrayList<>(transformer.transform(apiModel, config));
 
     for (PackageMetadataView view : metadataViews) {
       CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view, false);

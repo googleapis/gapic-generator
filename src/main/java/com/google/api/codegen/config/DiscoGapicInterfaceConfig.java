@@ -111,7 +111,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
       String entityName = collectionConfigProto.getEntityName();
       ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
-      if (resourceName == null || !(resourceName instanceof SingleResourceNameConfig)) {
+      if (!(resourceName instanceof SingleResourceNameConfig)) {
         model
             .getDiagCollector()
             .addDiag(

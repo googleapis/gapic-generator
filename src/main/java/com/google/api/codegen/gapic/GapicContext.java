@@ -45,11 +45,6 @@ public class GapicContext extends CodegenContext {
     this.serviceMessages = new ServiceMessages();
   }
 
-  /** Returns the associated model. */
-  public Model getModel() {
-    return model;
-  }
-
   /*
    * Returns the associated config.
    *

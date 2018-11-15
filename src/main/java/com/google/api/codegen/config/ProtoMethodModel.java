@@ -134,9 +134,7 @@ public final class ProtoMethodModel implements MethodModel {
 
   @Override
   public boolean equals(Object o) {
-    return o != null
-        && o instanceof ProtoMethodModel
-        && ((ProtoMethodModel) o).method.equals(method);
+    return o instanceof ProtoMethodModel && ((ProtoMethodModel) o).method.equals(method);
   }
 
   @Override

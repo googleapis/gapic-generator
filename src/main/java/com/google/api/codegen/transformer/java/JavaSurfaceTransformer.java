@@ -161,8 +161,7 @@ public class JavaSurfaceTransformer {
 
   private StaticLangFileView<StaticLangApiView> generateApiFile(
       InterfaceContext context, GapicProductConfig productConfig) {
-    StaticLangFileView.Builder<StaticLangApiView> apiFile =
-        StaticLangFileView.newBuilder();
+    StaticLangFileView.Builder<StaticLangApiView> apiFile = StaticLangFileView.newBuilder();
 
     apiFile.templateFileName(API_TEMPLATE_FILENAME);
 
