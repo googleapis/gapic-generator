@@ -241,6 +241,8 @@ public class ResourceNameMessageConfigsTest {
             resourceSetDefs,
             protoParser);
     assertThat(messageConfigs).isNotNull();
+
+    // TODO(andrealin): more asserts
   }
 
   @Test
@@ -328,7 +330,7 @@ public class ResourceNameMessageConfigsTest {
                 MethodSignature.newBuilder().addFields("name").addFields("book").build(),
                 MethodSignature.newBuilder().addFields("name").build()))
         .when(protoParser)
-        .getMethodSignatures(methodModel.getProtoMethod());
+        .getMethodSignatures(createShelvesMethod);
 
     String flatteningConfigName = "flatteningGroupName";
     // Gapic config contributes flattenings {["book"]}.

@@ -554,8 +554,7 @@ public abstract class GapicProductConfig implements ProductConfig {
             protoParser);
 
     // Populate a SingleResourceNameConfigs map, using just the unqualified names.
-    Map<String, SingleResourceNameConfig> singleResourceConfigsFromProtoFile =
-        new LinkedHashMap<>();
+    Map<String, SingleResourceNameConfig> singleResourceConfigsFromProtoFile = new HashMap<>();
     for (String fullName : fullyQualifiedSingleResourceNameConfigsFromProtoFile.keySet()) {
       int periodIndex = fullName.lastIndexOf('.');
       SingleResourceNameConfig config =
