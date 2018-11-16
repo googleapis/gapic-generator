@@ -66,7 +66,9 @@ public class ProtoParserTest {
     testDataLocator = TestDataLocator.create(GapicCodeGeneratorAnnotationsTest.class);
     testDataLocator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
 
-    model = CodegenTestUtil.readModel(testDataLocator, tempDir, protoFiles,  new String[] {"library.yaml"});
+    model =
+        CodegenTestUtil.readModel(
+            testDataLocator, tempDir, protoFiles, new String[] {"library.yaml"});
 
     libraryProtoFile =
         model
