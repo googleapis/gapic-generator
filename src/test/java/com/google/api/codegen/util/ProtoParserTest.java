@@ -66,7 +66,9 @@ public class ProtoParserTest {
     testDataLocator = TestDataLocator.create(GapicCodeGeneratorAnnotationsTest.class);
     testDataLocator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
 
-    model = CodegenTestUtil.readModel(testDataLocator, tempDir, protoFiles, new String[0]);
+    model =
+        CodegenTestUtil.readModel(
+            testDataLocator, tempDir, protoFiles, new String[] {"library.yaml"});
 
     libraryProtoFile =
         model
@@ -107,6 +109,12 @@ public class ProtoParserTest {
     resourceDefs = protoParser.getResourceDefs(Arrays.asList(libraryProtoFile), diagCollector);
     resourceSetDefs =
         protoParser.getResourceSetDefs(Arrays.asList(libraryProtoFile), diagCollector);
+  }
+
+  @Test
+  public void testGetPackageName() {
+    String packageName = protoParser.getPackageName(model);
+    assertThat(packageName).isEqualTo("google.example.library.v1");
   }
 
   @Test
