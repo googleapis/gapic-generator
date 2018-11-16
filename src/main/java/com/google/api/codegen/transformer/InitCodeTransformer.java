@@ -678,9 +678,7 @@ public class InitCodeTransformer {
     SingleResourceNameConfig singleResourceNameConfig =
         (SingleResourceNameConfig) fieldConfig.getResourceNameConfig();
     PathTemplate escapedPathTemplate =
-        PathTemplate.create(
-            SingleResourceNameConfig.escapePathTemplate(
-                singleResourceNameConfig.getNameTemplate().toString()));
+        PathTemplate.create(singleResourceNameConfig.getNameTemplate().toString());
     List<String> varList = Lists.newArrayList(escapedPathTemplate.vars());
 
     return ResourceNameInitValueView.newBuilder()

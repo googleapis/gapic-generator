@@ -49,8 +49,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     String namePattern = collectionConfigProto.getNamePattern();
     PathTemplate nameTemplate;
     try {
-      String nameTemplateString = escapePathTemplate(namePattern);
-      nameTemplate = PathTemplate.create(nameTemplateString);
+      nameTemplate = PathTemplate.create(namePattern);
     } catch (ValidationException e) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
       return null;
@@ -74,28 +73,6 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     }
     return new AutoValue_SingleResourceNameConfig(
         namePattern, nameTemplate, entityId, entityName, commonResourceName, file);
-  }
-
-  // Wrapper for PathTemplate.create().
-  // If there are literal '*' wildcards, replace them with an appropriate string representing a
-  // resource.
-  // e.g. createPathTemplate("bookShelves/*/books/{book}") returns
-  // PathTemplate.create("bookShelves/{bookShelf}/books/{book}")
-  @VisibleForTesting
-  public static String escapePathTemplate(String template) {
-    String[] pieces = template.split("/");
-    List<String> newPieces = Arrays.asList(pieces);
-    // Iterate only over wildcard pieces.
-    for (int i = 1; i < pieces.length; i = i + 2) {
-      String piece = pieces[i];
-      String prevPiece = pieces[i - 1];
-      if (piece.equals("*")) {
-        piece = String.format("{%s}", Inflector.singularize(prevPiece));
-        newPieces.set(i, piece);
-      }
-    }
-
-    return String.join("/", newPieces);
   }
 
   /**
