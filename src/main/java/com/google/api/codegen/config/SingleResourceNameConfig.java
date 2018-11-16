@@ -14,16 +14,15 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.Resource;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionLanguageOverridesProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.util.Inflector;
-import com.google.api.codegen.util.ProtoParser;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
@@ -103,23 +102,18 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
    * Creates an instance of SingleResourceNameConfig based on a field. On errors, null will be
    * returned, and diagnostics are reported to the diag collector.
    */
-  @Nullable
-  public static SingleResourceNameConfig createSingleResourceName(
-      DiagCollector diagCollector, Field resourceField, ProtoFile file, ProtoParser protoParser) {
-    String namePattern = protoParser.getResourcePath(resourceField);
+  static SingleResourceNameConfig createSingleResourceName(
+      Resource resource, String pathTemplate, ProtoFile file, DiagCollector diagCollector) {
     PathTemplate nameTemplate;
     try {
-      String nameTemplateString = escapePathTemplate(namePattern);
-      nameTemplate = PathTemplate.create(nameTemplateString);
+      nameTemplate = PathTemplate.create(pathTemplate);
     } catch (ValidationException e) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
       return null;
     }
-    String entityId = protoParser.getResourceEntityName(resourceField);
-    String entityName = entityId;
-    String commonResourceName = null;
+
     return new AutoValue_SingleResourceNameConfig(
-        namePattern, nameTemplate, entityId, entityName, commonResourceName, file);
+        pathTemplate, nameTemplate, resource.getName(), resource.getName(), null, file);
   }
 
   /** Returns the name pattern for the resource name config. */
