@@ -170,7 +170,6 @@ public class ResourceNameMessageConfigsTest {
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtoFiles,
-            diagCollector,
             emptyConfigProto,
             defaultPackage,
             allResourceDefs,
@@ -214,8 +213,7 @@ public class ResourceNameMessageConfigsTest {
     String defaultPackage = "library";
 
     ResourceNameMessageConfigs messageConfigs =
-        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            diagCollector, configProto, defaultPackage);
+        ResourceNameMessageConfigs.createMessageResourceTypesConfig(configProto, defaultPackage);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(messageConfigs).isNotNull();
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(3);
@@ -241,13 +239,13 @@ public class ResourceNameMessageConfigsTest {
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtoFiles,
-            diagCollector,
             configProto,
             DEFAULT_PACKAGE,
             allResourceDefs,
             resourceSetDefs,
             protoParser);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
+    // TODO(more asserts)
   }
 
   @Test
@@ -368,7 +366,6 @@ public class ResourceNameMessageConfigsTest {
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtoFiles,
-            diagCollector,
             configProto,
             DEFAULT_PACKAGE,
             allResourceDefs,

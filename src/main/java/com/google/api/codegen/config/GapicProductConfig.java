@@ -139,31 +139,49 @@ public abstract class GapicProductConfig implements ProductConfig {
       @Nullable String protoPackage,
       TargetLanguage language) {
 
-    // Get the proto file containing the first interface listed in the config proto, and use it as
-    // the assigned file for generated resource names, and to get the default message namespace
-    ProtoFile file =
-        model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
-    String defaultPackage = file.getProto().getPackage();
+    final String defaultPackage;
 
-    // TODO(andrealin): populate sourceProtos from --package flag.
+    if (protoPackage != null) {
+      // Default to using --package option for value of default package and first API protoFile.
+      defaultPackage = protoPackage;
+    } else if (configProto != null) {
+      // Otherwise use configProto to get the proto file containing the first interface listed in
+      // the config proto, and use it as
+      // the assigned file for generated resource names, and to get the default message namespace.
+      ProtoFile file =
+          model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
+      defaultPackage = file.getProto().getPackage();
+    } else {
+      throw new NullPointerException("configProto and protoPackage cannot both be null.");
+    }
+
     List<ProtoFile> sourceProtos =
         model
             .getFiles()
             .stream()
             .filter(f -> f.getProto().getPackage().equals(defaultPackage))
             .collect(Collectors.toList());
-    if (sourceProtos.isEmpty()) {
-      model
-          .getDiagReporter()
-          .getDiagCollector()
-          .addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "There are no source proto files with package %s",
-                  defaultPackage));
+
+    if (protoPackage != null) {
+      if (configProto == null) {
+        if (sourceProtos.size() == 0) {
+          model
+              .getDiagReporter()
+              .getDiagCollector()
+              .addDiag(
+                  Diag.error(
+                      SimpleLocation.TOPLEVEL,
+                      "There are no source proto files with package %s",
+                      defaultPackage));
+        }
+        sourceProtos.forEach(model::addRoot);
+      }
     }
 
     ProtoParser protoParser = new ProtoParser();
+    if (configProto == null) {
+      configProto = ConfigProto.getDefaultInstance();
+    }
 
     DiagCollector diagCollector = model.getDiagReporter().getDiagCollector();
 
@@ -175,13 +193,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Get list of fields from proto
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            sourceProtos,
-            diagCollector,
-            configProto,
-            defaultPackage,
-            resourceDefs,
-            resourceSetDefs,
-            protoParser);
+            sourceProtos, configProto, defaultPackage, resourceDefs, resourceSetDefs, protoParser);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(
@@ -216,6 +228,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         createInterfaceConfigMap(
             model.getDiagReporter().getDiagCollector(),
             configProto,
+            sourceProtos,
+            defaultPackage,
             settings,
             messageConfigs,
             resourceNameConfigs,
@@ -223,8 +237,10 @@ public abstract class GapicProductConfig implements ProductConfig {
             language,
             protoParser);
 
-    ImmutableList<String> copyrightLines = null;
-    ImmutableList<String> licenseLines = null;
+    ImmutableList<String> copyrightLines;
+    ImmutableList<String> licenseLines;
+    String configSchemaVersion = null;
+
     try {
       LicenseHeaderUtil licenseHeaderUtil =
           LicenseHeaderUtil.create(
@@ -240,15 +256,18 @@ public abstract class GapicProductConfig implements ProductConfig {
       throw new RuntimeException(e);
     }
 
-    String configSchemaVersion = configProto.getConfigSchemaVersion();
-    if (Strings.isNullOrEmpty(configSchemaVersion)) {
-      model
-          .getDiagReporter()
-          .getDiagCollector()
-          .addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "config_schema_version field is required in GAPIC yaml."));
+    if (!configProto.equals(ConfigProto.getDefaultInstance())) {
+      configSchemaVersion = configProto.getConfigSchemaVersion();
+      // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
+      if (Strings.isNullOrEmpty(configSchemaVersion)) {
+        model
+            .getDiagReporter()
+            .getDiagCollector()
+            .addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "config_schema_version field is required in GAPIC yaml."));
+      }
     }
 
     if (interfaceConfigMap == null || copyrightLines == null || licenseLines == null) {
@@ -377,6 +396,8 @@ public abstract class GapicProductConfig implements ProductConfig {
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
       DiagCollector diagCollector,
       ConfigProto configProto,
+      List<ProtoFile> sourceProtos,
+      String defaultPackageName,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
