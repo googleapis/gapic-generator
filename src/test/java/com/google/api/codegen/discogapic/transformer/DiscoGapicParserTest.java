@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen.discogapic.transformer;
 
-import com.google.common.truth.Truth;
+import static com.google.common.truth.Truth.assertThat;
+
 import org.junit.Test;
 
 public class DiscoGapicParserTest {
@@ -23,41 +24,39 @@ public class DiscoGapicParserTest {
   public void testCanonicalPath() {
     // The test inputs to the getCanonicalPath() are examples from the Compute Discovery Doc API.
 
-    Truth.assertThat(DiscoGapicParser.getCanonicalPath("{project}/backendBuckets/{backendBucket}"))
+    assertThat(DiscoGapicParser.getCanonicalPath("{project}/backendBuckets/{backendBucket}"))
         .isEqualTo("projects/{project}/backendBuckets/{backendBucket}");
-    Truth.assertThat(
-            DiscoGapicParser.getCanonicalPath("{project}/global/backendBuckets/{backendBucket}"))
+    assertThat(DiscoGapicParser.getCanonicalPath("{project}/global/backendBuckets/{backendBucket}"))
         .isEqualTo("projects/{project}/global/backendBuckets/{backendBucket}");
-    Truth.assertThat(
+    assertThat(
             DiscoGapicParser.getCanonicalPath("{project}/zones/{zone}/disks/{resource}/setLabels"))
         .isEqualTo("projects/{project}/zones/{zone}/disks/{resource}");
-    Truth.assertThat(
-            DiscoGapicParser.getCanonicalPath("{project}/global/images/{resource}/setLabels"))
+    assertThat(DiscoGapicParser.getCanonicalPath("{project}/global/images/{resource}/setLabels"))
         .isEqualTo("projects/{project}/global/images/{resource}");
   }
 
   @Test
   public void testGetQualifiedResourceIdentifier() {
-    Truth.assertThat(
+    assertThat(
             DiscoGapicParser.getQualifiedResourceIdentifier(
                     "{project}/backendBuckets/{backendBucket}")
                 .toUpperCamel())
         .isEqualTo("ProjectBackendBucket");
-    Truth.assertThat(
+    assertThat(
             DiscoGapicParser.getQualifiedResourceIdentifier(
                     "{project}/global/backendBuckets/{backendBucket}")
                 .toUpperCamel())
         .isEqualTo("ProjectGlobalBackendBucket");
-    Truth.assertThat(
+    assertThat(
             DiscoGapicParser.getQualifiedResourceIdentifier("{project}/zones/{zone}/disks/{disk}")
                 .toUpperCamel())
         .isEqualTo("ProjectZoneDisk");
-    Truth.assertThat(
+    assertThat(
             DiscoGapicParser.getQualifiedResourceIdentifier(
                     "{project}/zones/{zone}/disks/{resource}")
                 .toUpperCamel())
         .isEqualTo("ProjectZoneDiskResource");
-    Truth.assertThat(
+    assertThat(
             DiscoGapicParser.getQualifiedResourceIdentifier("{project}/global/images/{resource}")
                 .toUpperCamel())
         .isEqualTo("ProjectGlobalImageResource");
