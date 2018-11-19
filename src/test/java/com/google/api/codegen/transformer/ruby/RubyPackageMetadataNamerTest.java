@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.common.truth.Truth;
+import static com.google.common.truth.Truth.assertThat;
+
 import org.junit.Test;
 
 public class RubyPackageMetadataNamerTest {
@@ -24,35 +25,33 @@ public class RubyPackageMetadataNamerTest {
   @Test
   public void getMetadataIdentifier() {
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(testPackageName);
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("google-cloud-url_lengthener_api");
+    assertThat(namer.getMetadataIdentifier()).isEqualTo("google-cloud-url_lengthener_api");
   }
 
   @Test
   public void getOutputFileName() {
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(testPackageName);
-    Truth.assertThat(namer.getOutputFileName())
-        .isEqualTo("google-cloud-url_lengthener_api.gemspec");
+    assertThat(namer.getOutputFileName()).isEqualTo("google-cloud-url_lengthener_api.gemspec");
   }
 
   @Test
   public void getProjectVariable() {
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(testPackageName);
-    Truth.assertThat(namer.getProjectVariable(true)).isEqualTo("URL_LENGTHENER_API_TEST_PROJECT");
-    Truth.assertThat(namer.getProjectVariable(false)).isEqualTo("URL_LENGTHENER_API_PROJECT");
+    assertThat(namer.getProjectVariable(true)).isEqualTo("URL_LENGTHENER_API_TEST_PROJECT");
+    assertThat(namer.getProjectVariable(false)).isEqualTo("URL_LENGTHENER_API_PROJECT");
   }
 
   @Test
   public void getKeyfileVariable() {
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(testPackageName);
-    Truth.assertThat(namer.getKeyfileVariable(true)).isEqualTo("URL_LENGTHENER_API_TEST_KEYFILE");
-    Truth.assertThat(namer.getKeyfileVariable(false)).isEqualTo("URL_LENGTHENER_API_KEYFILE");
+    assertThat(namer.getKeyfileVariable(true)).isEqualTo("URL_LENGTHENER_API_TEST_KEYFILE");
+    assertThat(namer.getKeyfileVariable(false)).isEqualTo("URL_LENGTHENER_API_KEYFILE");
   }
 
   @Test
   public void getJsonKeyVariable() {
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(testPackageName);
-    Truth.assertThat(namer.getJsonKeyVariable(true))
-        .isEqualTo("URL_LENGTHENER_API_TEST_KEYFILE_JSON");
-    Truth.assertThat(namer.getJsonKeyVariable(false)).isEqualTo("URL_LENGTHENER_API_KEYFILE_JSON");
+    assertThat(namer.getJsonKeyVariable(true)).isEqualTo("URL_LENGTHENER_API_TEST_KEYFILE_JSON");
+    assertThat(namer.getJsonKeyVariable(false)).isEqualTo("URL_LENGTHENER_API_KEYFILE_JSON");
   }
 }

@@ -14,11 +14,12 @@
  */
 package com.google.api.codegen.transformer.go;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.api.codegen.transformer.ModelTypeNameConverterTestUtil;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.truth.Truth;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -35,14 +36,14 @@ public class GoModelTypeNameConverterTest {
     boolean isPointerFalse = false;
 
     // Specified import path, use the path.
-    Truth.assertThat(
+    assertThat(
             converter
                 .getTypeName("google.golang.org/genproto/zip/zap", "Baz", isPointerFalse)
                 .getNickname())
         .isEqualTo("zappb.Baz");
 
     // Also specified the import name, use it.
-    Truth.assertThat(
+    assertThat(
             converter
                 .getTypeName("google.golang.org/genproto/zip/zap;smack", "Baz", isPointerFalse)
                 .getNickname())
@@ -53,14 +54,12 @@ public class GoModelTypeNameConverterTest {
   public void testGetEnumValue() {
     TypeRef type = ModelTypeNameConverterTestUtil.getTestEnumType(tempDir);
     EnumValue value = type.getEnumType().getValues().get(0);
-    Truth.assertThat(
-            converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(new GoTypeTable()))
+    assertThat(converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(new GoTypeTable()))
         .isEqualTo("librarypb.Book_GOOD");
 
     type = ModelTypeNameConverterTestUtil.getTestType(tempDir, "TopLevelEnum");
     value = type.getEnumType().getValues().get(0);
-    Truth.assertThat(
-            converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(new GoTypeTable()))
+    assertThat(converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(new GoTypeTable()))
         .isEqualTo("librarypb.TopLevelEnum_FOO");
   }
 }
