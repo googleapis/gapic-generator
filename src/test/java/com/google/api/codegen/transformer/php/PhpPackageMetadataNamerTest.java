@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.common.truth.Truth;
+import static com.google.common.truth.Truth.assertThat;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -36,8 +37,8 @@ public class PhpPackageMetadataNamerTest {
   public void testWithoutDomainLayerLocationParams(
       String packageName, String expectedMetadataName, String expectedMetadataIdentifier) {
     PhpPackageMetadataNamer namer = new PhpPackageMetadataNamer(packageName, null);
-    Truth.assertThat(namer.getMetadataName()).isEqualTo(expectedMetadataName);
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo(expectedMetadataIdentifier);
+    assertThat(namer.getMetadataName()).isEqualTo(expectedMetadataName);
+    assertThat(namer.getMetadataIdentifier()).isEqualTo(expectedMetadataIdentifier);
   }
 
   @Test
@@ -53,8 +54,8 @@ public class PhpPackageMetadataNamerTest {
   public void testWithDomainLayerLocationParams(
       String packageName, String expectedMetadataName, String expectedMetadataIdentifier) {
     PhpPackageMetadataNamer namer = new PhpPackageMetadataNamer(packageName, "domain");
-    Truth.assertThat(namer.getMetadataName()).isEqualTo(expectedMetadataName);
-    Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo(expectedMetadataIdentifier);
+    assertThat(namer.getMetadataName()).isEqualTo(expectedMetadataName);
+    assertThat(namer.getMetadataIdentifier()).isEqualTo(expectedMetadataIdentifier);
   }
 
   @Test(expected = IllegalArgumentException.class)

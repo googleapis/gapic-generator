@@ -14,11 +14,12 @@
  */
 package com.google.api.codegen.configgen;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ListItemConfigNode;
 import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
-import com.google.common.truth.Truth;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class ListTransformerTest {
                     .setChild(new ScalarConfigNode(startLine, String.valueOf(element))));
     int index = 0;
     for (ConfigNode node : NodeFinder.getChildren(parent)) {
-      Truth.assertThat(node.getChild().getText()).isEqualTo(String.valueOf(elements.get(index++)));
+      assertThat(node.getChild().getText()).isEqualTo(String.valueOf(elements.get(index++)));
     }
   }
 
@@ -48,7 +49,7 @@ public class ListTransformerTest {
     ConfigNode listNode = ListTransformer.generateStringList(elements, parent);
     int index = 0;
     for (ConfigNode node : NodeFinder.getChildren(parent)) {
-      Truth.assertThat(node.getChild().getText()).isEqualTo(elements.get(index++));
+      assertThat(node.getChild().getText()).isEqualTo(elements.get(index++));
     }
   }
 }

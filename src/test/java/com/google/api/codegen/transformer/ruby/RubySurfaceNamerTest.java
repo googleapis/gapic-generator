@@ -14,9 +14,10 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
-import com.google.common.truth.Truth;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -26,14 +27,12 @@ public class RubySurfaceNamerTest {
     RubySurfaceNamer namer = new RubySurfaceNamer("Unused::Package::Name");
     MethodModel method = Mockito.mock(MethodModel.class);
     Mockito.when(method.getSimpleName()).thenReturn("PrintHTML");
-    Truth.assertThat(namer.getApiMethodName(method, VisibilityConfig.PUBLIC))
-        .isEqualTo("print_html");
+    assertThat(namer.getApiMethodName(method, VisibilityConfig.PUBLIC)).isEqualTo("print_html");
     Mockito.when(method.getSimpleName()).thenReturn("AMethod");
-    Truth.assertThat(namer.getApiMethodName(method, VisibilityConfig.PUBLIC)).isEqualTo("a_method");
+    assertThat(namer.getApiMethodName(method, VisibilityConfig.PUBLIC)).isEqualTo("a_method");
     Mockito.when(method.getSimpleName()).thenReturn("AnRpc");
-    Truth.assertThat(namer.getApiMethodName(method, VisibilityConfig.PUBLIC)).isEqualTo("an_rpc");
+    assertThat(namer.getApiMethodName(method, VisibilityConfig.PUBLIC)).isEqualTo("an_rpc");
     Mockito.when(method.getSimpleName()).thenReturn("SeeHTMLBooks");
-    Truth.assertThat(namer.getApiMethodName(method, VisibilityConfig.PUBLIC))
-        .isEqualTo("see_html_books");
+    assertThat(namer.getApiMethodName(method, VisibilityConfig.PUBLIC)).isEqualTo("see_html_books");
   }
 }

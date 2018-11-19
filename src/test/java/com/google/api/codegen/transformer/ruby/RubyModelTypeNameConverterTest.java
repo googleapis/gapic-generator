@@ -14,11 +14,12 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.api.codegen.transformer.ModelTypeNameConverterTestUtil;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.truth.Truth;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -34,7 +35,7 @@ public class RubyModelTypeNameConverterTest {
     EnumValue value = type.getEnumType().getValues().get(0);
     RubyModelTypeNameConverter converter = new RubyModelTypeNameConverter(packageName);
 
-    Truth.assertThat(
+    assertThat(
             converter
                 .getEnumValue(type, value)
                 .getValueAndSaveTypeNicknameIn(new RubyTypeTable(packageName)))

@@ -14,21 +14,22 @@
  */
 package com.google.api.codegen.util;
 
-import com.google.common.truth.Truth;
+import static com.google.common.truth.Truth.assertThat;
+
 import org.junit.Test;
 
 public class InflectorTest {
 
   @Test
   public void testSingularize() {
-    Truth.assertThat(Inflector.singularize("blesses")).isEqualTo("bless");
-    Truth.assertThat(Inflector.singularize("cares")).isEqualTo("care");
-    Truth.assertThat(Inflector.singularize("cars")).isEqualTo("car");
-    Truth.assertThat(Inflector.singularize("fishes")).isEqualTo("fish");
-    Truth.assertThat(Inflector.singularize("fuzzes")).isEqualTo("fuzz");
-    Truth.assertThat(Inflector.singularize("halves")).isEqualTo("half");
-    Truth.assertThat(Inflector.singularize("licenses")).isEqualTo("license");
-    Truth.assertThat(Inflector.singularize("scarves")).isEqualTo("scarf");
-    Truth.assertThat(Inflector.singularize("sneezes")).isEqualTo("sneeze");
+    assertThat(Inflector.singularize("blesses")).isEqualTo("bless");
+    assertThat(Inflector.singularize("cares")).isEqualTo("care");
+    assertThat(Inflector.singularize("cars")).isEqualTo("car");
+    assertThat(Inflector.singularize("fishes")).isEqualTo("fish");
+    assertThat(Inflector.singularize("fuzzes")).isEqualTo("fuzz");
+    assertThat(Inflector.singularize("halves")).isEqualTo("half");
+    assertThat(Inflector.singularize("licenses")).isEqualTo("license");
+    assertThat(Inflector.singularize("scarves")).isEqualTo("scarf");
+    assertThat(Inflector.singularize("sneezes")).isEqualTo("sneeze");
   }
 }
