@@ -759,14 +759,10 @@ jobs:
       - run:
           name: Conditionally run smoketests against all APIs
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] || [ "${CIRCLE_TAG}" != "" ]; then
-              docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --name smoketest artman /bin/bash -c "git clone https://github.com/googleapis/googleapis /tmp/googleapis_smoketest; python3 /artman/test/smoketest_artman.py --root-dir=/tmp/googleapis_smoketest --log=/tmp/smoketest.log" || OUT=$?
-              docker cp smoketest:/tmp/smoketest.log /tmp/smoketest.log
-              if [ $OUT -ne 0 ];then
-                exit $OUT
-              fi
-            else
-              echo "Skipping smoke tests in branch ${CIRCLE_BRANCH}."
+            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --name smoketest artman /bin/bash -c "git clone https://github.com/googleapis/googleapis /tmp/googleapis_smoketest; python3 /artman/test/smoketest_artman.py --root-dir=/tmp/googleapis_smoketest --log=/tmp/smoketest.log" || OUT=$?
+            docker cp smoketest:/tmp/smoketest.log /tmp/smoketest.log
+            if [ $OUT -ne 0 ];then
+              exit $OUT
             fi
       - store_artifacts:
           path: /tmp/actual_library_example.golden
