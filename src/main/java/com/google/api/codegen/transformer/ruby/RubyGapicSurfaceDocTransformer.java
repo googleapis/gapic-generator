@@ -95,8 +95,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer<Pr
             new ProtoApiModel(file.getModel()),
             productConfig,
             namer,
-            isSourceApiInterfaceFile(file) ? file : null,
-            false));
+            isSourceApiInterfaceFile(file) ? file : null));
     return doc.build();
   }
 
@@ -113,17 +112,11 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer<Pr
   }
 
   private List<ModuleView> generateModuleViews(
-      ApiModel model,
-      GapicProductConfig productConfig,
-      SurfaceNamer namer,
-      ProtoFile file,
-      boolean hasOverview) {
+      ApiModel model, GapicProductConfig productConfig, SurfaceNamer namer, ProtoFile file) {
     ImmutableList.Builder<ModuleView> moduleViews = ImmutableList.builder();
     for (String moduleName : namer.getApiModules()) {
       if (moduleName.equals(namer.getApiWrapperModuleVersion()) && file != null) {
         moduleViews.add(generateTocModuleView(model, file, productConfig, namer, moduleName));
-      } else if (moduleName.equals(namer.getModuleServiceName()) && hasOverview) {
-        moduleViews.add(generateOverviewView(model, productConfig));
       } else {
         moduleViews.add(SimpleModuleView.newBuilder().moduleName(moduleName).build());
       }
@@ -167,18 +160,6 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer<Pr
         .moduleName(moduleName)
         .fullName(model.getTitle())
         .contents(tocContents.build())
-        .build();
-  }
-
-  private ModuleView generateOverviewView(ApiModel model, GapicProductConfig productConfig) {
-    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
-    RubyPackageMetadataTransformer metadataTransformer =
-        new RubyPackageMetadataTransformer(packageConfig);
-    RubyPackageMetadataNamer packageNamer =
-        new RubyPackageMetadataNamer(productConfig.getPackageName());
-    return metadataTransformer
-        .generateReadmeMetadataView(model, productConfig, packageNamer)
-        .moduleName(namer.getModuleServiceName())
         .build();
   }
 }

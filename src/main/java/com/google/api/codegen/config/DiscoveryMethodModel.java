@@ -145,7 +145,6 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public GenericFieldSelector getInputFieldSelector(String fieldName) {
-    // TODO(andrealin): implement.
     return null;
   }
 
@@ -171,9 +170,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public boolean equals(Object o) {
-    return o != null
-        && o instanceof DiscoveryMethodModel
-        && ((DiscoveryMethodModel) o).method.equals(method);
+    return o instanceof DiscoveryMethodModel && ((DiscoveryMethodModel) o).method.equals(method);
   }
 
   @Override
