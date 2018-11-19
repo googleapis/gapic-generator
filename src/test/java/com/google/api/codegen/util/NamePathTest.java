@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen.util;
 
-import com.google.common.truth.Truth;
+import static com.google.common.truth.Truth.assertThat;
+
 import org.junit.Test;
 
 public class NamePathTest {
@@ -22,18 +23,18 @@ public class NamePathTest {
   @Test
   public void testSingleWord() {
     NamePath path = NamePath.dotted("Foo");
-    Truth.assertThat(path.toDotted()).isEqualTo("Foo");
-    Truth.assertThat(path.toBackslashed()).isEqualTo("Foo");
-    Truth.assertThat(path.getHead()).isEqualTo("Foo");
-    Truth.assertThat(path.withHead("Bar").toDotted()).isEqualTo("Bar");
+    assertThat(path.toDotted()).isEqualTo("Foo");
+    assertThat(path.toBackslashed()).isEqualTo("Foo");
+    assertThat(path.getHead()).isEqualTo("Foo");
+    assertThat(path.withHead("Bar").toDotted()).isEqualTo("Bar");
   }
 
   @Test
   public void testDottedPath() {
     NamePath path = NamePath.dotted("com.google.Foo");
-    Truth.assertThat(path.toDotted()).isEqualTo("com.google.Foo");
-    Truth.assertThat(path.toBackslashed()).isEqualTo("com\\google\\Foo");
-    Truth.assertThat(path.getHead()).isEqualTo("Foo");
-    Truth.assertThat(path.withHead("Bar").toDotted()).isEqualTo("com.google.Bar");
+    assertThat(path.toDotted()).isEqualTo("com.google.Foo");
+    assertThat(path.toBackslashed()).isEqualTo("com\\google\\Foo");
+    assertThat(path.getHead()).isEqualTo("Foo");
+    assertThat(path.withHead("Bar").toDotted()).isEqualTo("com.google.Bar");
   }
 }

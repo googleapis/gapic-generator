@@ -16,13 +16,13 @@ package com.google.api.codegen.util;
 
 import static com.google.api.codegen.util.LicenseHeaderUtil.DEFAULT_COPYRIGHT_FILE;
 import static com.google.api.codegen.util.LicenseHeaderUtil.DEFAULT_LICENSE_FILE;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
-import com.google.common.truth.Truth;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -83,10 +83,10 @@ public class LicenseHeaderUtilTest {
     List<String> defaultLicenseLines = defaultHeaderUtil.loadLicenseLines();
     List<String> explicitLicenseLines = explicitHeaderUtil.loadLicenseLines();
 
-    Truth.assertThat(explicitLicenseLines).isEqualTo(defaultLicenseLines);
-    Truth.assertThat(firstLicenseLine).isEqualTo(defaultLicenseLines.get(0));
-    Truth.assertThat(defaultHeaderUtil.getDiagCollector().getErrorCount()).isEqualTo(0);
-    Truth.assertThat(explicitHeaderUtil.getDiagCollector().getErrorCount()).isEqualTo(0);
+    assertThat(explicitLicenseLines).isEqualTo(defaultLicenseLines);
+    assertThat(firstLicenseLine).isEqualTo(defaultLicenseLines.get(0));
+    assertThat(defaultHeaderUtil.getDiagCollector().getErrorCount()).isEqualTo(0);
+    assertThat(explicitHeaderUtil.getDiagCollector().getErrorCount()).isEqualTo(0);
   }
 
   @Test
@@ -100,10 +100,10 @@ public class LicenseHeaderUtilTest {
     List<String> defaultCopyrightLines = defaultHeaderUtil.loadCopyrightLines();
     List<String> explicitCopyrightLines = explicitHeaderUtil.loadCopyrightLines();
 
-    Truth.assertThat(explicitCopyrightLines).isEqualTo(defaultCopyrightLines);
-    Truth.assertThat(firstCopyrightLine).isEqualTo(defaultCopyrightLines.get(0));
-    Truth.assertThat(defaultHeaderUtil.getDiagCollector().getErrorCount()).isEqualTo(0);
-    Truth.assertThat(explicitHeaderUtil.getDiagCollector().getErrorCount()).isEqualTo(0);
+    assertThat(explicitCopyrightLines).isEqualTo(defaultCopyrightLines);
+    assertThat(firstCopyrightLine).isEqualTo(defaultCopyrightLines.get(0));
+    assertThat(defaultHeaderUtil.getDiagCollector().getErrorCount()).isEqualTo(0);
+    assertThat(explicitHeaderUtil.getDiagCollector().getErrorCount()).isEqualTo(0);
   }
 
   @Test
@@ -112,7 +112,7 @@ public class LicenseHeaderUtilTest {
       langOverrideHeaderUtil.loadLicenseLines();
     } catch (RuntimeException e) {
       // This is supposed to happen because IMAGINARY_FILE doesn't exist.
-      Truth.assertThat(langOverrideHeaderUtil.getDiagCollector().getErrorCount()).isGreaterThan(0);
+      assertThat(langOverrideHeaderUtil.getDiagCollector().getErrorCount()).isGreaterThan(0);
       return;
     }
 
