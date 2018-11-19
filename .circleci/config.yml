@@ -739,6 +739,48 @@ jobs:
             go test .
   # TODO: test other language clients.
 
+  golden_and_smoke_tests:
+    working_directory: /tmp/
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Checkout googleapis
+          command: |
+            git clone --single-branch https://github.com/googleapis/googleapis.git googleapis
+      - run:
+          name: Checkout artman
+          command: |
+            git clone --single-branch https://github.com/googleapis/artman.git artman
+            cd artman
+            pip install -e .
+      - run:
+          name: Run golden tests
+          command: |
+            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --name golden artman /bin/bash -c "pip install pytest; py.test -vv artman/test/golden/artman_golden_test.py --googleapis-dir=googleapis" || OUT=$?
+            docker cp golden:artman/test/golden/actual_library_example.golden /tmp/actual_library_example.golden
+            if [ $OUT -ne 0 ];then
+              exit $OUT
+            fi
+      - run:
+          name: Conditionally run smoketests against all APIs
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ] || [ "${CIRCLE_TAG}" != "" ]; then
+              docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --name smoketest artman /bin/bash -c "git clone https://github.com/googleapis/googleapis /tmp/googleapis_smoketest; python3 /artman/test/smoketest_artman.py --root-dir=/tmp/googleapis_smoketest --log=/tmp/smoketest.log" || OUT=$?
+              docker cp smoketest:/tmp/smoketest.log /tmp/smoketest.log
+              if [ $OUT -ne 0 ];then
+                exit $OUT
+              fi
+            else
+              echo "Skipping smoke tests in branch ${CIRCLE_BRANCH}."
+            fi
+      - store_artifacts:
+          path: /tmp/actual_library_example.golden
+      - store_artifacts:
+          path: /tmp/smoketest.log
+
 # ======================= WORKFLOWS =======================
 
 workflows:
@@ -747,47 +789,50 @@ workflows:
     jobs:
       - install-gapic-generator
       - test-baselines
-      - compute-discovery-test:
+      - golden_and_smoke_tests:
           requires:
             - install-gapic-generator
-      - gapic-generator-bazel-test
-      - test-gapic-generator:
-          requires:
-            - test-baselines
-      - generate-clients:
-          requires:
-            - install-gapic-generator
-      - java-openjdk8-test:
-          requires:
-            - generate-clients
-      - python-test:
-          requires:
-            - generate-clients
-      - ruby-2.4-test:
-          requires:
-            - generate-clients
-      - python-system-test:
-          requires:
-            - generate-clients
-          filters:
-            branches:
-              only: master
-      - ruby-2.4-system-test:
-          requires:
-            - generate-clients
-          filters:
-            branches:
-              only: master
-      - php-7.2-test:
-          requires:
-            - generate-clients
-      # TODO: Other php versions
-      - go-1.10-test:
-          requires:
-            - generate-clients
-      - nodejs-8-test:
-          requires:
-            - generate-clients
+#      - compute-discovery-test:
+#          requires:
+#            - install-gapic-generator
+#      - gapic-generator-bazel-test
+#      - test-gapic-generator:
+#          requires:
+#            - test-baselines
+#      - generate-clients:
+#          requires:
+#            - install-gapic-generator
+#      - java-openjdk8-test:
+#          requires:
+#            - generate-clients
+#      - python-test:
+#          requires:
+#            - generate-clients
+#      - ruby-2.4-test:
+#          requires:
+#            - generate-clients
+#      - python-system-test:
+#          requires:
+#            - generate-clients
+#          filters:
+#            branches:
+#              only: master
+#      - ruby-2.4-system-test:
+#          requires:
+#            - generate-clients
+#          filters:
+#            branches:
+#              only: master
+#      - php-7.2-test:
+#          requires:
+#            - generate-clients
+#      # TODO: Other php versions
+#      - go-1.10-test:
+#          requires:
+#            - generate-clients
+#      - nodejs-8-test:
+#          requires:
+#            - generate-clients
 
 machine:
   services:
