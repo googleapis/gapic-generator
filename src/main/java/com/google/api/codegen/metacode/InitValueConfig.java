@@ -39,17 +39,6 @@ public abstract class InitValueConfig {
         .build();
   }
 
-  public static InitValueConfig create(
-      String apiWrapperName,
-      SingleResourceNameConfig singleResourceNameConfig,
-      ImmutableMap<String, InitValue> resourceNameBindingValues) {
-    return newBuilder()
-        .setApiWrapperName(apiWrapperName)
-        .setSingleResourceNameConfig(singleResourceNameConfig)
-        .setResourceNameBindingValues(resourceNameBindingValues)
-        .build();
-  }
-
   @Nullable
   public abstract String getApiWrapperName();
 

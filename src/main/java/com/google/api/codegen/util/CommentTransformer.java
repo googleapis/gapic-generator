@@ -47,28 +47,12 @@ public class CommentTransformer {
     private Builder() {}
 
     public Builder replace(Pattern pattern, final String replacement) {
-      transformations.add(
-          new Transformation(
-              pattern,
-              new Function<String, String>() {
-                @Override
-                public String apply(String s) {
-                  return replacement;
-                }
-              }));
+      transformations.add(new Transformation(pattern, s -> replacement));
       return this;
     }
 
     public Builder scopedReplace(Pattern pattern, final String target, final String replacement) {
-      return transform(
-          new Transformation(
-              pattern,
-              new Function<String, String>() {
-                @Override
-                public String apply(String matchedString) {
-                  return matchedString.replace(target, replacement);
-                }
-              }));
+      return transform(new Transformation(pattern, s -> s.replace(target, replacement)));
     }
 
     public Builder transform(Transformation transformation) {
