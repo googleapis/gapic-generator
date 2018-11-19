@@ -413,7 +413,6 @@ public class InitCodeNode {
     } else {
       children.values().forEach(child -> child.resolveSampleParamConfigs(context, fieldPath));
     }
-    
   }
 
   private static Name getChildSuggestedName(
