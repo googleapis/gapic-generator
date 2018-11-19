@@ -224,7 +224,11 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
   private TypeName getEnumTypeName(ProtoElement elem) {
     String packageName = getProtoElementPackage(elem);
     String shortName = getShortName(elem);
-    String importName = packageName + "." + shortName.substring(0, shortName.indexOf("."));
+    int indexOfSeparator = shortName.indexOf(".");
+    if (indexOfSeparator < 0) {
+      indexOfSeparator = shortName.length();
+    }
+    String importName = packageName + "." + shortName.substring(0, indexOfSeparator);
     String longName = packageName + "." + shortName;
 
     return TypeName.createOuterTypeName(longName, shortName, importName);
