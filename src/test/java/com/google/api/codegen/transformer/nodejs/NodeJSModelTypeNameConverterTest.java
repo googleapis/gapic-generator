@@ -14,11 +14,12 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.api.codegen.transformer.ModelTypeNameConverterTestUtil;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.truth.Truth;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -34,7 +35,7 @@ public class NodeJSModelTypeNameConverterTest {
     EnumValue value = type.getEnumType().getValues().get(0);
     NodeJSModelTypeNameConverter converter = new NodeJSModelTypeNameConverter(packageName);
 
-    Truth.assertThat(
+    assertThat(
             converter
                 .getEnumValue(type, value)
                 .getValueAndSaveTypeNicknameIn(new JSTypeTable(packageName)))

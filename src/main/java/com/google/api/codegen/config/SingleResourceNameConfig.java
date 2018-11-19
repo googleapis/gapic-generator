@@ -18,7 +18,6 @@ import com.google.api.Resource;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionLanguageOverridesProto;
 import com.google.api.codegen.common.TargetLanguage;
-import com.google.api.codegen.util.Inflector;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
@@ -26,10 +25,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import java.util.Arrays;
-import java.util.List;
 import javax.annotation.Nullable;
 
 /** SingleResourceNameConfig represents the collection configuration for a method. */
