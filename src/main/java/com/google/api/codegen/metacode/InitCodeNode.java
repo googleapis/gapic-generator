@@ -396,13 +396,13 @@ public class InitCodeNode {
       }
 
       // If sample_argument_name is specified in config, set identifier to this name if the name has
-      // not be used yet and error out otherwise.
+      // not been used yet and error out otherwise.
       if (sampleParamConfig.isSampleArgument()) {
         Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
         if (!argName.equals(identifier)) {
           Preconditions.checkArgument(
-              !context.symbolTable().isSymbolUsed(argName),
-              "sample_argument_name \"%s\" is not valid.",
+              !context.symbolTable().contains(argName),
+              "sample_argument_name \"%s\" is already in use.",
               sampleParamConfig.sampleArgumentName());
           identifier =
               context
@@ -410,8 +410,10 @@ public class InitCodeNode {
                   .getNewSymbol(Name.anyLower(sampleParamConfig.sampleArgumentName()));
         }
       }
+    } else {
+      children.values().forEach(child -> child.resolveSampleParamConfigs(context, fieldPath));
     }
-    children.values().forEach(child -> child.resolveSampleParamConfigs(context, fieldPath));
+    
   }
 
   private static Name getChildSuggestedName(
