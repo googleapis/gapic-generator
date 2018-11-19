@@ -84,8 +84,7 @@ public class ProtoInterfaceModel implements InterfaceModel {
 
   @Override
   public boolean equals(Object o) {
-    return o != null
-        && o instanceof ProtoInterfaceModel
+    return o instanceof ProtoInterfaceModel
         && ((ProtoInterfaceModel) o).protoInterface.equals(this.protoInterface);
   }
 }
