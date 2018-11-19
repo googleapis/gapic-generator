@@ -43,14 +43,7 @@ public class StandardImportSectionTransformer implements ImportSectionTransforme
         continue;
       }
       ImportTypeView.Builder imp = ImportTypeView.newBuilder();
-      switch (alias.getImportType()) {
-        case OuterImport:
-          imp.fullName(alias.getParentFullName());
-          break;
-        default:
-          imp.fullName(alias.getFullName());
-          break;
-      }
+      imp.fullName(alias.getFullName());
       imp.nickname(alias.getNickname());
       imp.type(alias.getImportType());
 

@@ -146,7 +146,7 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
       case TYPE_MESSAGE:
         return getTypeName(type.getMessageType());
       case TYPE_ENUM:
-        return getEnumTypeName(type.getEnumType());
+        return getTypeName(type.getEnumType());
       default:
         throw new IllegalArgumentException("unknown type kind: " + type.getKind());
     }
@@ -219,15 +219,6 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
     String longName = packageName + "." + shortName;
 
     return new TypeName(longName, shortName);
-  }
-
-  private TypeName getEnumTypeName(ProtoElement elem) {
-    String packageName = getProtoElementPackage(elem);
-    String shortName = getShortName(elem);
-    String importName = packageName + "." + shortName.substring(0, shortName.indexOf("."));
-    String longName = packageName + "." + shortName;
-
-    return TypeName.createOuterTypeName(longName, shortName, importName);
   }
 
   public static TypeName getGrpcTypeName(ProtoElement elem) {
