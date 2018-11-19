@@ -742,7 +742,7 @@ jobs:
   golden_and_smoke_tests:
     working_directory: /tmp/
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: googleapis/artman:0.16.0
     steps:
       - attach_workspace:
           at: workspace
@@ -756,14 +756,6 @@ jobs:
             git clone --single-branch https://github.com/googleapis/artman.git artman
             cd artman
             pip install -e .
-      - run:
-          name: Run golden tests
-          command: |
-            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --name golden artman /bin/bash -c "pip install pytest; py.test -vv artman/test/golden/artman_golden_test.py --googleapis-dir=googleapis" || OUT=$?
-            docker cp golden:artman/test/golden/actual_library_example.golden /tmp/actual_library_example.golden
-            if [ $OUT -ne 0 ];then
-              exit $OUT
-            fi
       - run:
           name: Conditionally run smoketests against all APIs
           command: |
