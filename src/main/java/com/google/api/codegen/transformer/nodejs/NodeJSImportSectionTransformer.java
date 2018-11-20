@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
@@ -27,6 +28,7 @@ import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Streams;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,7 +43,23 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
   @Override
   public ImportSectionView generateImportSection(
       MethodContext context, Iterable<InitCodeNode> specItemNodes) {
-    return new StandardImportSectionTransformer().generateImportSection(context, specItemNodes);
+    ImportSectionView view =
+        new StandardImportSectionTransformer()
+            .generateImportSection(context.getTypeTable().getImports(), null);
+    boolean importIOUtility =
+        Streams.stream(specItemNodes)
+            .anyMatch(node -> node.getLineType() == InitCodeLineType.ReadFileInitLine);
+    if (importIOUtility) {
+      view =
+          view.toBuilder()
+              .appImports(
+                  ImmutableList.<ImportFileView>builder()
+                      .addAll(view.appImports())
+                      .addAll(generateIOUtilityImports())
+                      .build())
+              .build();
+    }
+    return view;
   }
 
   private List<ImportFileView> generateExternalImports(InterfaceContext context) {
@@ -58,6 +76,10 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
       imports.add(createImport("protobuf", "protobufjs"));
     }
     return imports.build();
+  }
+
+  private List<ImportFileView> generateIOUtilityImports() {
+    return ImmutableList.of(createImport("fs", "fs"));
   }
 
   private ImportFileView createImport(String localName, String moduleName) {

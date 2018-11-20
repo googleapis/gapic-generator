@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.config.*;
+import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.*;
 import com.google.api.codegen.util.TypeAlias;
@@ -28,6 +29,7 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Streams;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -54,9 +56,24 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   @Override
   public ImportSectionView generateImportSection(
       MethodContext context, Iterable<InitCodeNode> specItemNodes) {
-    return ImportSectionView.newBuilder()
-        .appImports(generateInitCodeAppImports(((GapicMethodContext) context), specItemNodes))
-        .build();
+    boolean importIOUtility =
+        Streams.stream(specItemNodes)
+            .anyMatch(node -> node.getLineType() == InitCodeLineType.ReadFileInitLine);
+    ImportSectionView view =
+        ImportSectionView.newBuilder()
+            .appImports(generateInitCodeAppImports(((GapicMethodContext) context), specItemNodes))
+            .build();
+    if (importIOUtility) {
+      view =
+          view.toBuilder()
+              .appImports(
+                  ImmutableList.<ImportFileView>builder()
+                      .addAll(view.appImports())
+                      .addAll(generateIOUtilityImports())
+                      .build())
+              .build();
+    }
+    return view;
   }
 
   public ImportSectionView generateTestImportSection(GapicInterfaceContext context) {
@@ -522,5 +539,9 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     imports.add(createImport("os"));
     Collections.sort(imports, importFileViewComparator());
     return imports;
+  }
+
+  private List<ImportFileView> generateIOUtilityImports() {
+    return ImmutableList.of(createImport("io"));
   }
 }
