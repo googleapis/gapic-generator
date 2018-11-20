@@ -41,16 +41,16 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
 
   @Override
   public String getOutputPath(String elementFullName, ProductConfig config) {
-    return getOutputPath(elementFullName, config, null);
+    return getOutputPath(config, null);
   }
 
   @Override
   public String getSamplesOutputPath(
       String elementFullName, ProductConfig config, String methodName) {
-    return getOutputPath(elementFullName, config, methodName);
+    return getOutputPath(config, methodName);
   }
 
-  private String getOutputPath(String elementFullName, ProductConfig config, String methodSample) {
+  private String getOutputPath(ProductConfig config, String methodSample) {
     ArrayList<String> dirs = new ArrayList<>();
     boolean haveSample = !Strings.isNullOrEmpty(methodSample);
 
@@ -87,10 +87,6 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
 
   public static Builder newBuilder() {
     return new Builder();
-  }
-
-  public static CommonGapicCodePathMapper defaultInstance() {
-    return newBuilder().build();
   }
 
   public static class Builder {

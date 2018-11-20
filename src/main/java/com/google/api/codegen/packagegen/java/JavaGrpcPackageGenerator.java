@@ -24,7 +24,6 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,8 +51,7 @@ public class JavaGrpcPackageGenerator implements CodeGenerator<Doc> {
     ImmutableMap.Builder<String, GeneratedResult<Doc>> results = new ImmutableMap.Builder<>();
 
     ProtoApiModel apiModel = new ProtoApiModel(model);
-    ArrayList<PackageMetadataView> metadataViews = new ArrayList<>();
-    metadataViews.addAll(transformer.transform(apiModel, config));
+    List<PackageMetadataView> metadataViews = transformer.transform(apiModel, config);
 
     for (PackageMetadataView view : metadataViews) {
       CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view, false);

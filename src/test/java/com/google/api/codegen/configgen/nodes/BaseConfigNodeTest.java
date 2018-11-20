@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen.configgen.nodes;
 
-import com.google.common.truth.Truth;
+import static com.google.common.truth.Truth.assertThat;
+
 import org.junit.Test;
 
 public class BaseConfigNodeTest {
@@ -27,35 +28,35 @@ public class BaseConfigNodeTest {
   @Test
   public void testIsPresent() throws Exception {
     TestConfigNode node = new TestConfigNode(0, "foo");
-    Truth.assertThat(node.isPresent()).isTrue();
+    assertThat(node.isPresent()).isTrue();
   }
 
   @Test
   public void testGetStartLine() throws Exception {
     TestConfigNode node = new TestConfigNode(1, "foo");
-    Truth.assertThat(node.getStartLine()).isEqualTo(1);
+    assertThat(node.getStartLine()).isEqualTo(1);
   }
 
   @Test
   public void testGetText() throws Exception {
     TestConfigNode node = new TestConfigNode(0, "foo");
-    Truth.assertThat(node.getText()).isEqualTo("foo");
+    assertThat(node.getText()).isEqualTo("foo");
   }
 
   @Test
   public void testChild() throws Exception {
     TestConfigNode node = new TestConfigNode(0, "foo");
     ConfigNode child = new ScalarConfigNode(0, "bar");
-    Truth.assertThat(node.setChild(child)).isSameAs(node);
-    Truth.assertThat(node.getChild().isPresent()).isFalse();
+    assertThat(node.setChild(child)).isSameAs(node);
+    assertThat(node.getChild().isPresent()).isFalse();
   }
 
   @Test
   public void testNext() throws Exception {
     TestConfigNode node = new TestConfigNode(0, "foo");
     ConfigNode next = new ScalarConfigNode(0, "bar");
-    Truth.assertThat(node.getNext().isPresent()).isFalse();
-    Truth.assertThat(node.insertNext(next)).isSameAs(node);
-    Truth.assertThat(node.getNext()).isSameAs(next);
+    assertThat(node.getNext().isPresent()).isFalse();
+    assertThat(node.insertNext(next)).isSameAs(node);
+    assertThat(node.getNext()).isSameAs(next);
   }
 }

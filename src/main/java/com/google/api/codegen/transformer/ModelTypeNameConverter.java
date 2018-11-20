@@ -87,7 +87,7 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
   public abstract String renderPrimitiveValue(TypeRef type, String value);
 
   /** Renders the given value if it is a primitive type. */
-  public String renderValueAsString(String value) {
+  String renderValueAsString(String value) {
     return renderPrimitiveValue(TypeRef.of(Type.TYPE_STRING), value);
   }
 
