@@ -828,6 +828,7 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResourceAggregation");
+    typeTable.saveNicknameFor("com.google.api.gax.core.ResourceCloseException");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientContext");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
     typeTable.saveNicknameFor("java.io.IOException");
