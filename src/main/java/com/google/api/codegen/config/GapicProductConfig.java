@@ -216,6 +216,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         createInterfaceConfigMap(
             model.getDiagReporter().getDiagCollector(),
             configProto,
+            defaultPackage,
             settings,
             messageConfigs,
             resourceNameConfigs,
@@ -223,8 +224,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             language,
             protoParser);
 
-    ImmutableList<String> copyrightLines = null;
-    ImmutableList<String> licenseLines = null;
+    ImmutableList<String> copyrightLines;
+    ImmutableList<String> licenseLines;
     try {
       LicenseHeaderUtil licenseHeaderUtil =
           LicenseHeaderUtil.create(
@@ -377,6 +378,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
       DiagCollector diagCollector,
       ConfigProto configProto,
+      String defaultPackageName,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
@@ -401,6 +403,7 @@ public abstract class GapicProductConfig implements ProductConfig {
           GapicInterfaceConfig.createInterfaceConfig(
               diagCollector,
               language,
+              defaultPackageName,
               interfaceConfigProto,
               apiInterface,
               interfaceNameOverride,

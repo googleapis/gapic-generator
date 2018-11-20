@@ -108,6 +108,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   static GapicInterfaceConfig createInterfaceConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
+      String defaultPackageName,
       InterfaceConfigProto interfaceConfigProto,
       Interface apiInterface,
       String interfaceNameOverride,
@@ -128,6 +129,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
           createMethodConfigMap(
               diagCollector,
               language,
+              defaultPackageName,
               interfaceConfigProto,
               apiInterface,
               messageConfigs,
@@ -214,6 +216,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static ImmutableMap<String, GapicMethodConfig> createMethodConfigMap(
       DiagCollector diagCollector,
       TargetLanguage language,
+      String defaultPackageName,
       InterfaceConfigProto interfaceConfigProto,
       Interface apiInterface,
       ResourceNameMessageConfigs messageConfigs,
@@ -262,6 +265,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
           GapicMethodConfig.createMethodConfig(
               diagCollector,
               language,
+              defaultPackageName,
               methodConfigProto,
               method,
               messageConfigs,
