@@ -156,7 +156,6 @@ public class ResourceNameMessageConfigsTest {
 
   @Test
   public void testCreateResourceNamesWithProtoFilesOnly() {
-    DiagCollector diagCollector = new BoundedDiagCollector();
     ConfigProto emptyConfigProto = ConfigProto.getDefaultInstance();
     String defaultPackage = "";
 
@@ -175,7 +174,6 @@ public class ResourceNameMessageConfigsTest {
             allResourceDefs,
             allResourceSetDefs,
             protoParser);
-    assertThat(diagCollector.getErrorCount()).isEqualTo(0);
 
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(2);
     ResourceNameMessageConfig bookMessageConfig =
@@ -233,8 +231,6 @@ public class ResourceNameMessageConfigsTest {
 
   @Test
   public void testCreateResourceNames() {
-    DiagCollector diagCollector = new BoundedDiagCollector();
-
     Map<ResourceSet, ProtoFile> resourceSetDefs = new HashMap<>();
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
@@ -244,7 +240,7 @@ public class ResourceNameMessageConfigsTest {
             allResourceDefs,
             resourceSetDefs,
             protoParser);
-    assertThat(diagCollector.getErrorCount()).isEqualTo(0);
+    assertThat(messageConfigs).isNotNull();
     // TODO(more asserts)
   }
 

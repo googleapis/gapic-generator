@@ -49,6 +49,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 /** The SurfaceNamer for Java. */
 public class JavaSurfaceNamer extends SurfaceNamer {
@@ -293,18 +294,24 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
     String entityName = resourceNameConfig.getEntityName();
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
+    Function<String, Name> formatNameFunc;
+    if (entityName.length() > 0 && Character.isUpperCase(entityName.charAt(0))) {
+      formatNameFunc = Name::upperCamel;
+    } else {
+      formatNameFunc = Name::anyLower;
+    }
     switch (resourceNameType) {
       case ANY:
         return getAnyResourceTypeName();
       case FIXED:
-        return Name.anyLower(entityName).join("name_fixed");
+        return formatNameFunc.apply(entityName).join("name_fixed");
       case ONEOF:
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
         // with a collection config.
         entityName = StringUtil.removeSuffix(entityName, "_oneof");
-        return Name.anyLower(entityName).join("name");
+        return formatNameFunc.apply(entityName).join("name");
       case SINGLE:
-        return Name.anyLower(entityName).join("name");
+        return formatNameFunc.apply(entityName).join("name");
       case NONE:
       default:
         throw new UnsupportedOperationException("unexpected entity name type");

@@ -677,7 +677,9 @@ public class InitCodeTransformer {
         context.getNamer().getAndSaveElementResourceTypeName(context.getTypeTable(), fieldConfig);
     SingleResourceNameConfig singleResourceNameConfig =
         (SingleResourceNameConfig) fieldConfig.getResourceNameConfig();
-    List<String> varList = Lists.newArrayList(singleResourceNameConfig.getNameTemplate().vars());
+    PathTemplate escapedPathTemplate =
+        PathTemplate.create(singleResourceNameConfig.getNameTemplate().toString());
+    List<String> varList = Lists.newArrayList(escapedPathTemplate.vars());
 
     return ResourceNameInitValueView.newBuilder()
         .resourceTypeName(resourceName)
@@ -692,6 +694,7 @@ public class InitCodeTransformer {
           context
               .getTypeTable()
               .renderValueAsString("[" + Name.anyLower(entityName).toUpperUnderscore() + "]");
+
       if (initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
         InitValue initValue = initValueConfig.getResourceNameBindingValues().get(entityName);
         switch (initValue.getType()) {
