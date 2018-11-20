@@ -196,8 +196,6 @@ public class ProtoField implements FieldModel {
 
   @Override
   public boolean equals(Object o) {
-    return o != null
-        && o instanceof ProtoField
-        && ((ProtoField) o).protoField.equals(this.protoField);
+    return o instanceof ProtoField && ((ProtoField) o).protoField.equals(this.protoField);
   }
 }

@@ -32,7 +32,6 @@ import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SchemaTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
@@ -148,7 +147,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameForElementType(type);
+    return typeTable.getAndSaveNicknameForElementType(type);
   }
 
   @Override
@@ -379,7 +378,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  /** The name of the settings member name for the given method. */
+  /* The name of the settings member name for the given method. */
   public String getOperationSettingsMemberName(MethodModel method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationSettings"));
   }

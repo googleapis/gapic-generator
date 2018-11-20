@@ -118,14 +118,14 @@ public abstract class MethodConfig {
   public ImmutableList<FieldModel> getRequiredFields() {
     return getRequiredFieldConfigs()
         .stream()
-        .map(f -> f.getField())
+        .map(FieldConfig::getField)
         .collect(ImmutableList.toImmutableList());
   }
 
   public ImmutableList<FieldModel> getOptionalFields() {
     return getOptionalFieldConfigs()
         .stream()
-        .map(f -> f.getField())
+        .map(FieldConfig::getField)
         .collect(ImmutableList.toImmutableList());
   }
 

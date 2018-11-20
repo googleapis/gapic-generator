@@ -120,16 +120,6 @@ public abstract class Schema implements Node {
   }
 
   /**
-   * Returns true if this schema contains a property with the given name.
-   *
-   * @param name the name of the property.
-   * @return whether or not this schema has a property with the given name.
-   */
-  public boolean hasProperty(String name) {
-    return properties().keySet().contains(name);
-  }
-
-  /**
    * Returns a schema constructed from root, or an empty schema if root has no children.
    *
    * @param root the root node to parse.

@@ -48,7 +48,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.MockCombinedView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
-import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import java.io.File;
@@ -140,7 +139,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer<Pro
               .missingDefaultServiceAddress(
                   !context.getInterfaceConfig().hasDefaultServiceAddress())
               .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())
-              .mockServices(Collections.<MockServiceUsageView>emptyList())
+              .mockServices(Collections.emptyList())
               .build());
     }
 
