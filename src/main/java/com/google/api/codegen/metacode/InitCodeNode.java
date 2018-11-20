@@ -411,6 +411,8 @@ public class InitCodeNode {
         }
       }
     } else {
+      // We only recursively call this method when the parent config is null since the parameter
+      // configs can never overlap.
       children.values().forEach(child -> child.resolveSampleParamConfigs(context, fieldPath));
     }
   }
