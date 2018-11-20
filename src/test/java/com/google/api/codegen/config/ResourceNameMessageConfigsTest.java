@@ -56,6 +56,10 @@ import org.mockito.Mockito;
 public class ResourceNameMessageConfigsTest {
   private static final ProtoParser protoParser = Mockito.spy(ProtoParser.class);
   private static ConfigProto configProto;
+  private static final Method createShelvesMethod = Mockito.mock(Method.class);
+  private static final MessageType createShelvesRequest = Mockito.mock(MessageType.class);
+  private static final MessageType createShelvesResponse = Mockito.mock(MessageType.class);
+  private static final MessageType bookType = Mockito.mock(MessageType.class);
   private static final Field shelfName = Mockito.mock(Field.class);
   private static final Field shelfTheme = Mockito.mock(Field.class);
   private static final MessageType shelfMessage = Mockito.mock(MessageType.class);
@@ -64,6 +68,7 @@ public class ResourceNameMessageConfigsTest {
   private static final MessageType bookMessage = Mockito.mock(MessageType.class);
   private static final ProtoFile protoFile = Mockito.mock(ProtoFile.class);
   private static final ImmutableList<ProtoFile> sourceProtoFiles = ImmutableList.of(protoFile);
+  private static final Method insertBook = Mockito.mock(Method.class);
 
   private static final String DEFAULT_PACKAGE = "library";
   private static final String GAPIC_SHELF_PATH = "shelves/{shelf_id}";
@@ -71,6 +76,7 @@ public class ResourceNameMessageConfigsTest {
   private static final String ARCHIVED_BOOK_PATH = "archives/{archive_path}/books/{book_id=**}";
   private static final String PROTO_SHELF_PATH = "shelves/{shelf}";
   private static final String PROTO_BOOK_PATH = "bookShelves/{book}";
+  private static final String CREATE_SHELF_METHOD_NAME = "CreateShelf";
 
   private static final Map<Resource, ProtoFile> allResourceDefs =
       ImmutableMap.of(
@@ -138,6 +144,7 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(shelfMessage.getFullName()).thenReturn("library.Shelf");
     Mockito.when(shelfMessage.getFields()).thenReturn(ImmutableList.of(shelfName, shelfTheme));
     Mockito.when(shelfMessage.getSimpleName()).thenReturn("Shelf");
+    Mockito.when(shelfMessage.getFields()).thenReturn(ImmutableList.of(shelfName, shelfTheme));
 
     Mockito.when(bookName.getParent()).thenReturn(bookMessage);
     Mockito.when(bookName.getSimpleName()).thenReturn("name");
@@ -152,6 +159,16 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(protoFile.getMessages()).thenReturn(ImmutableList.of(bookMessage, shelfMessage));
 
     Mockito.doReturn("library").when(protoParser).getProtoPackage(protoFile);
+
+    Mockito.when(createShelvesMethod.getSimpleName()).thenReturn(CREATE_SHELF_METHOD_NAME);
+    Mockito.when(createShelvesMethod.getInputType()).thenReturn(TypeRef.of(createShelvesRequest));
+    Mockito.when(createShelvesMethod.getOutputType()).thenReturn(TypeRef.of(createShelvesResponse));
+
+    Mockito.doReturn(shelfMessage).when(createShelvesMethod).getInputMessage();
+
+    Mockito.doReturn(bookMessage).when(insertBook).getInputMessage();
+    Mockito.doReturn(protoFile).when(bookMessage).getParent();
+    // Mockito.doReturn("Book").when(protoParser).getResourceReference(bookName);
   }
 
   @Test
@@ -297,15 +314,6 @@ public class ResourceNameMessageConfigsTest {
 
   @Test
   public void testCreateFlattenings() {
-    String createShelfMethodName = "CreateShelf";
-    Method createShelvesMethod = Mockito.mock(Method.class);
-    Mockito.when(createShelvesMethod.getSimpleName()).thenReturn(createShelfMethodName);
-    MessageType createShelvesRequest = Mockito.mock(MessageType.class);
-    MessageType createShelvesResponse = Mockito.mock(MessageType.class);
-    MessageType bookType = Mockito.mock(MessageType.class);
-
-    Mockito.when(createShelvesMethod.getInputType()).thenReturn(TypeRef.of(createShelvesRequest));
-    Mockito.when(createShelvesMethod.getOutputType()).thenReturn(TypeRef.of(createShelvesResponse));
     ProtoMethodModel methodModel = new ProtoMethodModel(createShelvesMethod);
     Field bookField = Mockito.mock(Field.class);
     Mockito.when(bookField.getType()).thenReturn(TypeRef.of(bookType));
@@ -336,7 +344,7 @@ public class ResourceNameMessageConfigsTest {
     // Gapic config contributes flattenings {["book"]}.
     MethodConfigProto methodConfigProto =
         MethodConfigProto.newBuilder()
-            .setName(createShelfMethodName)
+            .setName(CREATE_SHELF_METHOD_NAME)
             .setFlattening(
                 FlatteningConfigProto.newBuilder()
                     .addGroups(
@@ -439,5 +447,38 @@ public class ResourceNameMessageConfigsTest {
         .isEqualTo(GAPIC_BOOK_PATH);
     assertThat(((ProtoTypeRef) bookConfig.getField().getType()).getProtoType().getMessageType())
         .isEqualTo(bookType);
+  }
+
+  @Test
+  public void testDefaultResourceNameTreatment() {
+    // Test GapicMethodConfig.defaultResourceNameTreatment().
+
+    Mockito.doReturn("Book").when(protoParser).getResourceReference(bookName);
+
+    MethodConfigProto noConfig = MethodConfigProto.getDefaultInstance();
+
+    ResourceNameTreatment noTreatment =
+        GapicMethodConfig.defaultResourceNameTreatment(
+            noConfig, createShelvesMethod, protoParser, DEFAULT_PACKAGE);
+    assertThat(noTreatment).isEqualTo(ResourceNameTreatment.NONE);
+
+    MethodConfigProto staticTypesMethodConfig =
+        MethodConfigProto.newBuilder()
+            .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
+            .build();
+
+    ResourceNameTreatment resourceNameTreatment =
+        GapicMethodConfig.defaultResourceNameTreatment(
+            staticTypesMethodConfig, createShelvesMethod, protoParser, DEFAULT_PACKAGE);
+    assertThat(resourceNameTreatment).isEqualTo(ResourceNameTreatment.STATIC_TYPES);
+
+    ResourceNameTreatment noConfigWithAnnotatedResourceReferenceTreatment =
+        GapicMethodConfig.defaultResourceNameTreatment(
+            noConfig, insertBook, protoParser, DEFAULT_PACKAGE);
+    assertThat(noConfigWithAnnotatedResourceReferenceTreatment)
+        .isEqualTo(ResourceNameTreatment.STATIC_TYPES);
+
+    // Reset the mock's behavior for the getResourceReference method.
+    Mockito.doReturn(null).when(protoParser).getResourceReference(bookName);
   }
 }

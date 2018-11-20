@@ -35,12 +35,14 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
@@ -67,7 +69,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       DiagCollector diagCollector,
       TargetLanguage language,
       String defaultPackageName,
-      MethodConfigProto methodConfigProto,
+      @Nonnull MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
@@ -156,29 +158,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
 
     ResourceNameTreatment defaultResourceNameTreatment =
-        methodConfigProto.getResourceNameTreatment();
-    if (defaultResourceNameTreatment == ResourceNameTreatment.UNSET_TREATMENT
-        && method
-            .getInputType()
-            .getMessageType()
-            .getFields()
-            .stream()
-            .anyMatch(f -> !Strings.isNullOrEmpty(protoParser.getResourceReference(f)))) {
-      String methodInputPackageName =
-          ((ProtoFile) method.getInputType().getMessageType().getParent()).getProto().getPackage();
-      if (!defaultPackageName.equals(methodInputPackageName)) {
-        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
-      } else {
-        defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
-      }
-    }
-    if (defaultResourceNameTreatment == null
-        || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
-      defaultResourceNameTreatment = ResourceNameTreatment.NONE;
-    }
+        defaultResourceNameTreatment(methodConfigProto, method, protoParser, defaultPackageName);
 
     List<String> requiredFields = protoParser.getRequiredFields(method);
-    if (requiredFields.isEmpty() && methodConfigProto != null) {
+    if (requiredFields.isEmpty()) {
       requiredFields = methodConfigProto.getRequiredFieldsList();
     }
 
@@ -203,8 +186,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       return null;
     }
 
-    List<String> sampleCodeInitFields = new ArrayList<>();
-    sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
+    List<String> sampleCodeInitFields =
+        new ArrayList<>(methodConfigProto.getSampleCodeInitFieldsList());
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
 
     String rerouteToGrpcInterface =
@@ -258,6 +241,37 @@ public abstract class GapicMethodConfig extends MethodConfig {
           longRunningConfig,
           headerRequestParams);
     }
+  }
+
+  @VisibleForTesting
+  static ResourceNameTreatment defaultResourceNameTreatment(
+      MethodConfigProto methodConfigProto,
+      Method method,
+      ProtoParser protoParser,
+      String defaultPackageName) {
+
+    ResourceNameTreatment defaultResourceNameTreatment =
+        methodConfigProto.getResourceNameTreatment();
+    if (defaultResourceNameTreatment == ResourceNameTreatment.UNSET_TREATMENT
+        && method
+            .getInputMessage()
+            .getFields()
+            .stream()
+            .anyMatch(f -> !Strings.isNullOrEmpty(protoParser.getResourceReference(f)))) {
+      String methodInputPackageName =
+          protoParser.getProtoPackage(((ProtoFile) method.getInputMessage().getParent()));
+      if (!defaultPackageName.equals(methodInputPackageName)) {
+        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
+      } else {
+        defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
+      }
+    }
+    if (defaultResourceNameTreatment == null
+        || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
+      defaultResourceNameTreatment = ResourceNameTreatment.NONE;
+    }
+
+    return defaultResourceNameTreatment;
   }
 
   /** Return the list of "one of" instances associated with the fields. */

@@ -241,6 +241,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
+
     String configSchemaVersion = null;
 
     try {
