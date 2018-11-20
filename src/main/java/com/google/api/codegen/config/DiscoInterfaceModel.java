@@ -74,8 +74,7 @@ public class DiscoInterfaceModel implements InterfaceModel {
 
   @Override
   public boolean equals(Object o) {
-    return o != null
-        && o instanceof DiscoInterfaceModel
+    return o instanceof DiscoInterfaceModel
         && ((DiscoInterfaceModel) o).interfaceName.equals(interfaceName)
         && ((DiscoInterfaceModel) o).apiModel.equals(apiModel);
   }

@@ -27,7 +27,6 @@ import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.gapic.GapicParser;
-import com.google.api.codegen.gapic.ProtoFiles;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -171,15 +170,11 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     }
 
     GrpcDocView enumFile =
-        generateEnumView(productConfig, modelTypeTable, namer, getProtoFiles(productConfig));
+        generateEnumView(productConfig, modelTypeTable, namer, apiModel.getProtoModel().getFiles());
     if (!enumFile.elementDocs().isEmpty()) {
       serviceSurfaces.add(enumFile);
     }
     return serviceSurfaces.build();
-  }
-
-  private List<ProtoFile> getProtoFiles(GapicProductConfig productConfig) {
-    return ImmutableList.copyOf(ProtoFiles.getProtoFiles(productConfig));
   }
 
   private void addApiImports(GapicInterfaceContext context) {

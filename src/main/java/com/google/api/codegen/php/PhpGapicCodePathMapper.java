@@ -39,15 +39,15 @@ public abstract class PhpGapicCodePathMapper implements GapicCodePathMapper {
 
   @Override
   public String getOutputPath(String elementFullName, ProductConfig config) {
-    return getOutputPath(elementFullName, config, null);
+    return getOutputPath(config, null);
   }
 
   @Override
   public String getSamplesOutputPath(String elementFullName, ProductConfig config, String method) {
-    return getOutputPath(elementFullName, config, method);
+    return getOutputPath(config, method);
   }
 
-  private String getOutputPath(String elementFullName, ProductConfig config, String methodSample) {
+  private String getOutputPath(ProductConfig config, String methodSample) {
     ArrayList<String> dirs = new ArrayList<>();
     String prefix = getPrefix();
     boolean haveSample = !Strings.isNullOrEmpty(methodSample);
