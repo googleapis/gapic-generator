@@ -36,8 +36,8 @@ public class GapicTestConfig extends TestConfig {
   public FileDescriptorSet getDescriptor() throws IOException {
     ExtensionRegistry registry = ExtensionRegistry.newInstance();
     AnnotationsProto.registerAllExtensions(registry);
-    OperationsProto.registerAllExtensions(registry);
     AuthProto.registerAllExtensions(registry);
+    OperationsProto.registerAllExtensions(registry);
     return FileDescriptorSet.parseFrom(Files.newInputStream(getDescriptorFile()), registry);
   }
 }
