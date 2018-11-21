@@ -19,6 +19,7 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.config.GapicProductConfig.GapicConfigPresence;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
@@ -88,7 +89,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
               retryCodesConfig,
               retrySettingsDefinition.keySet());
       methodConfigs =
-          GapicInterfaceConfig.createMethodConfigs(methodConfigMap, interfaceConfigProto);
+          GapicProductConfig.createMethodConfigs(
+              methodConfigMap, interfaceConfigProto, GapicConfigPresence.PROVIDED);
     }
 
     // TODO(andrealin)  Make non-null smokeTestConfig.

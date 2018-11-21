@@ -112,6 +112,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         getLicenseLines(),
         getResourceNameConfigs(),
         getTransportProtocol(),
+        isGapicConfigProvided(),
         getDefaultResourceNameFieldConfigMap(),
         getConfigSchemaVersion());
   }
@@ -178,8 +179,10 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     ProtoParser protoParser = new ProtoParser();
+    GapicConfigPresence configPresence = GapicConfigPresence.PROVIDED;
     if (configProto == null) {
       configProto = ConfigProto.getDefaultInstance();
+      configPresence = GapicConfigPresence.NOT_PROVIDED;
     }
 
     DiagCollector diagCollector = model.getDiagReporter().getDiagCollector();
@@ -234,7 +237,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             resourceNameConfigs,
             model.getSymbolTable(),
             language,
-            protoParser);
+            protoParser,
+            configPresence);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -347,6 +351,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         licenseLines,
         resourceNameConfigs,
         transportProtocol,
+        GapicConfigPresence.PROVIDED,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion);
   }
@@ -387,6 +392,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         ImmutableMap.of(),
         // Default to gRPC.
         TransportProtocol.GRPC,
+        GapicConfigPresence.NOT_PROVIDED,
         createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),
         configSchemaVersion);
   }
@@ -401,7 +407,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable,
       TargetLanguage language,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      GapicConfigPresence gapicConfigPresence) {
     // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
@@ -450,7 +457,8 @@ public abstract class GapicProductConfig implements ProductConfig {
                 interfaceNameOverride,
                 messageConfigs,
                 resourceNameConfigs,
-                protoParser);
+                protoParser,
+                gapicConfigPresence);
         if (interfaceConfig == null) {
           continue;
         }
@@ -853,5 +861,32 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
     return null;
+  }
+
+  public enum GapicConfigPresence {
+    NOT_PROVIDED,
+    PROVIDED
+  }
+
+  static <T> List<T> createMethodConfigs(
+      ImmutableMap<String, T> methodConfigMap,
+      InterfaceConfigProto interfaceConfigProto,
+      GapicConfigPresence gapicConfigPresence) {
+
+    // TODO(andrealin): After migration from GAPIC config, add in methods that aren't defined
+    // in the GAPIC config but are defined in the source protos.
+
+    if (gapicConfigPresence == GapicConfigPresence.PROVIDED) {
+      // Add in methods that aren't defined in the source protos but are defined in the GAPIC
+      // config.
+      return interfaceConfigProto
+          .getMethodsList()
+          .stream()
+          .map(m -> methodConfigMap.get(m.getName()))
+          .collect(Collectors.toList());
+    } else {
+      // No GAPIC config given, so use all MethodConfigs generated from Protofile.
+      return new ArrayList<>(methodConfigMap.values());
+    }
   }
 }
