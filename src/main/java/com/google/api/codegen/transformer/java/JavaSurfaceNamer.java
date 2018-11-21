@@ -294,6 +294,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
     String entityName = resourceNameConfig.getEntityName();
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
+    // Proto annotations use UpperCamelCase for resource names,
+    // and GAPIC config uses lower_snake_case, so we have to support both formats.
     Function<String, Name> formatNameFunc;
     if (entityName.length() > 0 && Character.isUpperCase(entityName.charAt(0))) {
       formatNameFunc = Name::upperCamel;
