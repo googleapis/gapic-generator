@@ -43,7 +43,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
-import com.google.gson.internal.LinkedTreeMap;
 import com.google.protobuf.DescriptorProtos;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -410,7 +409,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
     // Maps name of interfaces to found InterfaceConfigs from config yamls.
-    Map<String, InterfaceConfigProto> interfaceConfigProtos = new LinkedTreeMap<>();
+    Map<String, InterfaceConfigProto> interfaceConfigProtos = new LinkedHashMap<>();
 
     // Parse config for interfaceConfigProtos.
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
