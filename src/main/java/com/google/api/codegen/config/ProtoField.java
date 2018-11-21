@@ -25,7 +25,6 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Oneof;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -42,11 +41,7 @@ public class ProtoField implements FieldModel {
   public ProtoField(Field protoField) {
     Preconditions.checkNotNull(protoField);
     this.protoField = protoField;
-    TypeRef typeRef = protoField.getType();
-    if (typeRef == null) {
-      typeRef = TypeRef.of(protoField.getProto().getType());
-    }
-    this.protoTypeRef = ProtoTypeRef.create(typeRef);
+    this.protoTypeRef = ProtoTypeRef.create(protoField.getType());
   }
 
   Field getProtoField() {
