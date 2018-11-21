@@ -261,8 +261,7 @@ public class ResourceNameMessageConfigsTest {
             resourceSetDefs,
             protoParser);
     assertThat(messageConfigs).isNotNull();
-
-    // TODO(andrealin): more asserts
+    // TODO(more asserts)
   }
 
   @Test

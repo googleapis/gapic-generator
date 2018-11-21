@@ -4442,20 +4442,20 @@ import sys
 from google.cloud.example import library_v1
 import six
 
-def sample_publish_series(name, edition):
+def sample_publish_series(shelf_name, edition):
   """Testing calling forms"""
 
   # [START canonical_core]
 
   client = library_v1.LibraryServiceClient()
 
-  # name = 'Math'
+  # shelf_name = 'Math'
   # edition = 123
 
-  if isinstance(name, six.binary_type):
-    name = name.decode('utf-8')
+  if isinstance(shelf_name, six.binary_type):
+    shelf_name = shelf_name.decode('utf-8')
 
-  shelf = {'name': name}
+  shelf = {'name': shelf_name}
 
   # TODO: Initialize `books`:
   books = []
@@ -4476,11 +4476,11 @@ def main():
   import argparse
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--name', type=str, default='Math')
+  parser.add_argument('--shelf_name', type=str, default='Math')
   parser.add_argument('--edition', type=int, default=123)
   args = parser.parse_args()
 
-  sample_publish_series(args.name, args.edition)
+  sample_publish_series(args.shelf_name, args.edition)
 
 if __name__ == '__main__':
   main()
@@ -6072,4 +6072,5 @@ class TestLibraryServiceClient(object):
 
         with pytest.raises(CustomException):
             client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
+
 

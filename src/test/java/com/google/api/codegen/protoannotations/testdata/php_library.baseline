@@ -3228,16 +3228,16 @@ use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\SeriesUuid;
 use Google\Example\Library\V1\Shelf;
 
-function samplePublishSeries($name, $edition)
+function samplePublishSeries($shelfName, $edition)
 {
     // [START canonical_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    // $name = 'Math';
+    // $shelfName = 'Math';
     // $edition = 123;
     $shelf = new Shelf();
-    $shelf->setName($name);
+    $shelf->setName($shelfName);
     $books = [];
     $seriesString = 'xyz3141592654';
     $seriesUuid = new SeriesUuid();
@@ -3260,22 +3260,22 @@ function samplePublishSeries($name, $edition)
 // [END canonical]
 
 $opts = [
-    'name::',
+    'shelfName::',
     'edition::',
 ];
 
 $defaultOptions = [
-    'name' => 'Math',
+    'shelfName' => 'Math',
     'edition' => 123,
 ];
 
 $options = getopt('', $opts);
 $options += $defaultOptions;
 
-$name = $options['name'];
+$shelfName = $options['shelfName'];
 $edition = $options['edition'];
 
-samplePublishSeries($name, $edition);
+samplePublishSeries($shelfName, $edition);
 ============== file: src/V1/samples/publishSeries/PublishSeriesRequestSecondEdition.php ==============
 <?php
 /*
@@ -6093,3 +6093,4 @@ class LibraryServiceClientTest extends GeneratedTest
     }
 
 }
+

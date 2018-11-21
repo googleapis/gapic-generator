@@ -46,11 +46,11 @@ import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * A SurfaceNamer provides language-specific names for specific components of a view for a surface.
@@ -871,6 +871,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
     String entityName = resourceNameConfig.getEntityName();
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
+    // Proto annotations use UpperCamelCase for resource names,
+    // and GAPIC config uses lower_snake_case, so we have to support both formats.
     Function<String, Name> formatNameFunc;
     if (entityName.length() > 0 && Character.isUpperCase(entityName.charAt(0))) {
       formatNameFunc = Name::upperCamel;

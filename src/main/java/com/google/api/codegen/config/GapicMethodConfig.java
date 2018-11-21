@@ -263,10 +263,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
                         || !Strings.isNullOrEmpty(protoParser.getResourceOrSetEntityName(f)))) {
       String methodInputPackageName =
           protoParser.getProtoPackage(((ProtoFile) method.getInputMessage().getParent()));
-      if (!defaultPackageName.equals(methodInputPackageName)) {
-        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
-      } else {
+      if (defaultPackageName.equals(methodInputPackageName)) {
         defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
+      } else {
+        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
       }
     }
     if (defaultResourceNameTreatment == null

@@ -43,7 +43,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
-import com.google.gson.internal.LinkedTreeMap;
 import com.google.protobuf.DescriptorProtos;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -169,20 +168,18 @@ public abstract class GapicProductConfig implements ProductConfig {
             .filter(f -> f.getProto().getPackage().equals(defaultPackage))
             .collect(Collectors.toList());
 
-    if (protoPackage != null) {
-      if (configProto == null) {
-        if (sourceProtos.size() == 0) {
-          model
-              .getDiagReporter()
-              .getDiagCollector()
-              .addDiag(
-                  Diag.error(
-                      SimpleLocation.TOPLEVEL,
-                      "There are no source proto files with package %s",
-                      defaultPackage));
-        }
-        sourceProtos.forEach(model::addRoot);
+    if (protoPackage != null && configProto == null) {
+      if (sourceProtos.isEmpty()) {
+        model
+            .getDiagReporter()
+            .getDiagCollector()
+            .addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "There are no source proto files with package %s",
+                    defaultPackage));
       }
+      sourceProtos.forEach(model::addRoot);
     }
 
     ProtoParser protoParser = new ProtoParser();
@@ -249,7 +246,6 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
-
     String configSchemaVersion = null;
 
     try {
@@ -269,7 +265,6 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     if (!configProto.equals(ConfigProto.getDefaultInstance())) {
       configSchemaVersion = configProto.getConfigSchemaVersion();
-      // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
       if (Strings.isNullOrEmpty(configSchemaVersion)) {
         model
             .getDiagReporter()
@@ -385,7 +380,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   /** Creates an GapicProductConfig with fixed content. Exposed for testing. */
   @VisibleForTesting
-  public static GapicProductConfig createDummyInstance(
+  private static GapicProductConfig createDummyInstance(
       ImmutableMap<String, InterfaceConfig> interfaceConfigMap,
       String packageName,
       String domainLayerLocation,
@@ -423,7 +418,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
     // Maps name of interfaces to found InterfaceConfigs from config yamls.
-    Map<String, InterfaceConfigProto> interfaceConfigProtos = new LinkedTreeMap<>();
+    Map<String, InterfaceConfigProto> interfaceConfigProtos = new LinkedHashMap<>();
 
     // Parse config for interfaceConfigProtos.
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
