@@ -19,6 +19,7 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.config.GapicProductConfig.GapicConfigPresence;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -114,7 +115,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      GapicConfigPresence gapicConfigPresence) {
 
     RetryCodesConfig retryCodesConfig =
         RetryCodesConfig.create(diagCollector, interfaceConfigProto, apiInterface, protoParser);
@@ -130,13 +132,14 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               diagCollector,
               language,
               defaultPackageName,
-              interfaceConfigProto,
+              interfaceConfigProto.getMethodsList(),
               apiInterface,
               messageConfigs,
               resourceNameConfigs,
               retryCodesConfig,
               retrySettingsDefinition.keySet(),
-              protoParser);
+              protoParser,
+              gapicConfigPresence);
       if (methodConfigsMap == null) {
         diagCollector.addDiag(
             Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
@@ -217,30 +220,39 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       DiagCollector diagCollector,
       TargetLanguage language,
       String defaultPackageName,
-      InterfaceConfigProto interfaceConfigProto,
+      List<MethodConfigProto> methodConfigProtos,
       Interface apiInterface,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      GapicConfigPresence gapicConfigPresence) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new TreeMap<>();
+
+    // The methods defined by the proto file.
+    Map<String, Method> protoMethodsMap = new LinkedHashMap<>();
+    for (Method method : apiInterface.getMethods()) {
+      protoMethodsMap.put(method.getSimpleName(), method);
+    }
+
+    Map<String, MethodConfigProto> methodConfigProtoMap = new HashMap<>();
 
     // The order in which to create GapicMethodConfigs; only use methods defined in GAPIC config.
     LinkedHashSet<String> methodNames = new LinkedHashSet<>();
     // TODO(andrealin): After migration off GAPIC config is complete; generate all methods
     // from protofile even if they aren't included in the GAPIC config.
 
-    Map<String, Method> protoMethodsMap = new HashMap<>();
-    for (Method method : apiInterface.getMethods()) {
-      protoMethodsMap.put(method.getSimpleName(), method);
-    }
-
-    Map<String, MethodConfigProto> methodConfigProtoMap = new HashMap<>();
-    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      methodConfigProtoMap.put(methodConfigProto.getName(), methodConfigProto);
-      // Re-insertion of the same method name doesn't affect the existing order
-      methodNames.add(methodConfigProto.getName());
+    if (gapicConfigPresence.equals(GapicConfigPresence.NOT_PROVIDED)) {
+      // If the GAPIC config is empty, just generate all methods from the Protofile.
+      methodNames.addAll(protoMethodsMap.keySet());
+    } else {
+      // Get the set of methods defined by the GAPIC config. Only these methods will be generated.
+      for (MethodConfigProto methodConfigProto : methodConfigProtos) {
+        methodConfigProtoMap.put(methodConfigProto.getName(), methodConfigProto);
+        // Re-insertion of the same method name doesn't affect the existing order
+        methodNames.add(methodConfigProto.getName());
+      }
     }
 
     for (String methodName : methodNames) {

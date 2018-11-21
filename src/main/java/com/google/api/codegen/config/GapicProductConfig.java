@@ -91,6 +91,9 @@ public abstract class GapicProductConfig implements ProductConfig {
   /** Returns the type of transport for the generated client. Defaults to Grpc. */
   public abstract TransportProtocol getTransportProtocol();
 
+  /** Returns the package name. */
+  public abstract GapicConfigPresence isGapicConfigProvided();
+
   /**
    * Returns a map from fully qualified field names to FieldConfigs for all fields that have a
    * resource name type specified. This is the default field config for each field, and should be
@@ -113,6 +116,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         getLicenseLines(),
         getResourceNameConfigs(),
         getTransportProtocol(),
+        isGapicConfigProvided(),
         getDefaultResourceNameFieldConfigMap(),
         getConfigSchemaVersion());
   }
@@ -181,8 +185,10 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     ProtoParser protoParser = new ProtoParser();
+    GapicConfigPresence configPresence = GapicConfigPresence.PROVIDED;
     if (configProto == null) {
       configProto = ConfigProto.getDefaultInstance();
+      configPresence = GapicConfigPresence.NOT_PROVIDED;
     }
 
     DiagCollector diagCollector = model.getDiagReporter().getDiagCollector();
@@ -237,7 +243,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             resourceNameConfigs,
             model.getSymbolTable(),
             language,
-            protoParser);
+            protoParser,
+            configPresence);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -286,6 +293,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         licenseLines,
         resourceNameConfigs,
         transportProtocol,
+        configPresence,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion);
   }
@@ -352,6 +360,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         licenseLines,
         resourceNameConfigs,
         transportProtocol,
+        GapicConfigPresence.PROVIDED,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion);
   }
@@ -392,6 +401,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         ImmutableMap.of(),
         // Default to gRPC.
         TransportProtocol.GRPC,
+        GapicConfigPresence.NOT_PROVIDED,
         createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),
         configSchemaVersion);
   }
@@ -406,7 +416,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable,
       TargetLanguage language,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      GapicConfigPresence gapicConfigPresence) {
     // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
@@ -455,7 +466,8 @@ public abstract class GapicProductConfig implements ProductConfig {
                 interfaceNameOverride,
                 messageConfigs,
                 resourceNameConfigs,
-                protoParser);
+                protoParser,
+                gapicConfigPresence);
         if (interfaceConfig == null) {
           continue;
         }
@@ -858,5 +870,10 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
     return null;
+  }
+
+  public enum GapicConfigPresence {
+    NOT_PROVIDED,
+    PROVIDED
   }
 }
