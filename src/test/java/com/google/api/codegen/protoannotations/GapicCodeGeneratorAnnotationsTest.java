@@ -31,6 +31,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
   private final String apiName;
+  private final String testName;
 
   public GapicCodeGeneratorAnnotationsTest(
       TargetLanguage language,
@@ -44,6 +45,13 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
         language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline, protoPackage);
 
     this.apiName = apiName;
+
+    String gapicConfigStatus = "_gapic_config";
+    if (gapicConfigFileNames == null || gapicConfigFileNames.length == 0) {
+      gapicConfigStatus = "_no" + gapicConfigStatus;
+    }
+
+    this.testName = this.apiName + gapicConfigStatus;
     // Use the library.proto contained in this test package's testdata.
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
 
