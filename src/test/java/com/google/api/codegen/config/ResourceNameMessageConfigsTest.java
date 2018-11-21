@@ -173,7 +173,6 @@ public class ResourceNameMessageConfigsTest {
 
   @Test
   public void testCreateResourceNamesWithProtoFilesOnly() {
-    DiagCollector diagCollector = new BoundedDiagCollector();
     ConfigProto emptyConfigProto = ConfigProto.getDefaultInstance();
     String defaultPackage = "";
 
@@ -187,13 +186,11 @@ public class ResourceNameMessageConfigsTest {
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtoFiles,
-            diagCollector,
             emptyConfigProto,
             defaultPackage,
             allResourceDefs,
             allResourceSetDefs,
             protoParser);
-    assertThat(diagCollector.getErrorCount()).isEqualTo(0);
 
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(2);
     ResourceNameMessageConfig bookMessageConfig =
@@ -231,8 +228,7 @@ public class ResourceNameMessageConfigsTest {
     String defaultPackage = "library";
 
     ResourceNameMessageConfigs messageConfigs =
-        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            diagCollector, configProto, defaultPackage);
+        ResourceNameMessageConfigs.createMessageResourceTypesConfig(configProto, defaultPackage);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(messageConfigs).isNotNull();
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(3);
@@ -252,19 +248,17 @@ public class ResourceNameMessageConfigsTest {
 
   @Test
   public void testCreateResourceNames() {
-    DiagCollector diagCollector = new BoundedDiagCollector();
-
     Map<ResourceSet, ProtoFile> resourceSetDefs = new HashMap<>();
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtoFiles,
-            diagCollector,
             configProto,
             DEFAULT_PACKAGE,
             allResourceDefs,
             resourceSetDefs,
             protoParser);
-    assertThat(diagCollector.getErrorCount()).isEqualTo(0);
+    assertThat(messageConfigs).isNotNull();
+    // TODO(more asserts)
   }
 
   @Test
@@ -376,7 +370,6 @@ public class ResourceNameMessageConfigsTest {
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtoFiles,
-            diagCollector,
             configProto,
             DEFAULT_PACKAGE,
             allResourceDefs,

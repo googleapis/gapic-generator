@@ -18,7 +18,6 @@ import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.util.ProtoParser;
-import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -38,10 +37,8 @@ public abstract class ResourceNameMessageConfig {
   // contains a resource URL).
   abstract ImmutableMap<String, String> fieldEntityMap();
 
-  public static ResourceNameMessageConfig createResourceNameMessageConfig(
-      DiagCollector diagCollector,
-      ResourceNameMessageConfigProto messageResourceTypesProto,
-      String defaultPackage) {
+  static ResourceNameMessageConfig createResourceNameMessageConfig(
+      ResourceNameMessageConfigProto messageResourceTypesProto, String defaultPackage) {
     String messageName = messageResourceTypesProto.getMessageName();
     String fullyQualifiedMessageName = getFullyQualifiedMessageName(defaultPackage, messageName);
     ImmutableMap<String, String> fieldEntityMap =
