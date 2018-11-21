@@ -32,11 +32,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -119,7 +117,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       GapicConfigPresence gapicConfigPresence) {
 
     RetryCodesConfig retryCodesConfig =
-        RetryCodesConfig.create(diagCollector, interfaceConfigProto, apiInterface, protoParser);
+        RetryCodesConfig.create(
+            diagCollector, interfaceConfigProto, apiInterface, protoParser, gapicConfigPresence);
 
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
@@ -145,7 +144,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
             Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
         return null;
       }
-      methodConfigs = createMethodConfigs(methodConfigsMap, apiInterface, interfaceConfigProto);
+      methodConfigs =
+          GapicProductConfig.createMethodConfigs(
+              methodConfigsMap, interfaceConfigProto, gapicConfigPresence);
     } else {
       methodConfigsMap = ImmutableMap.of();
       methodConfigs = ImmutableList.of();
@@ -295,31 +296,6 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     } else {
       return ImmutableMap.copyOf(methodConfigMapBuilder);
     }
-  }
-
-  private static <T> List<T> createMethodConfigs(
-      ImmutableMap<String, T> methodConfigMap,
-      Interface apiInterface,
-      InterfaceConfigProto interfaceConfigProto) {
-    Map<String, T> methodConfigs = new LinkedHashMap<>();
-    // Add in methods that aren't defined in the source protos but are defined in the GAPIC config.
-    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      methodConfigs.put(
-          methodConfigProto.getName(), methodConfigMap.get(methodConfigProto.getName()));
-    }
-    // TODO(andrealin): After migration from GAPIC config, add in methods that aren't defined
-    // in the GAPIC config but are defined in the source protos.
-
-    return new LinkedList<>(methodConfigs.values());
-  }
-
-  static <T> List<T> createMethodConfigs(
-      ImmutableMap<String, T> methodConfigMap, InterfaceConfigProto interfaceConfigProto) {
-    List<T> methodConfigs = new ArrayList<>();
-    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      methodConfigs.add(methodConfigMap.get(methodConfigProto.getName()));
-    }
-    return methodConfigs;
   }
 
   /** Returns the GapicMethodConfig for the given method. */

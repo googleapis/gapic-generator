@@ -45,6 +45,7 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.protobuf.DescriptorProtos;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -875,5 +876,27 @@ public abstract class GapicProductConfig implements ProductConfig {
   public enum GapicConfigPresence {
     NOT_PROVIDED,
     PROVIDED
+  }
+
+  static <T> List<T> createMethodConfigs(
+      ImmutableMap<String, T> methodConfigMap,
+      InterfaceConfigProto interfaceConfigProto,
+      GapicConfigPresence gapicConfigPresence) {
+
+    // TODO(andrealin): After migration from GAPIC config, add in methods that aren't defined
+    // in the GAPIC config but are defined in the source protos.
+
+    if (gapicConfigPresence == GapicConfigPresence.PROVIDED) {
+      // Add in methods that aren't defined in the source protos but are defined in the GAPIC
+      // config.
+      return interfaceConfigProto
+          .getMethodsList()
+          .stream()
+          .map(m -> methodConfigMap.get(m.getName()))
+          .collect(Collectors.toList());
+    } else {
+      // No GAPIC config given, so use all MethodConfigs generated from Protofile.
+      return new ArrayList<>(methodConfigMap.values());
+    }
   }
 }
