@@ -44,6 +44,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.DescriptorProtos;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -89,6 +90,9 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   /** Returns the type of transport for the generated client. Defaults to Grpc. */
   public abstract TransportProtocol getTransportProtocol();
+
+  /** Returns the package name. */
+  public abstract GapicConfigPresence isGapicConfigProvided();
 
   /**
    * Returns a map from fully qualified field names to FieldConfigs for all fields that have a
@@ -285,6 +289,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         licenseLines,
         resourceNameConfigs,
         transportProtocol,
+        configPresence,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion);
   }
@@ -375,7 +380,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   /** Creates an GapicProductConfig with fixed content. Exposed for testing. */
   @VisibleForTesting
-  public static GapicProductConfig createDummyInstance(
+  private static GapicProductConfig createDummyInstance(
       ImmutableMap<String, InterfaceConfig> interfaceConfigMap,
       String packageName,
       String domainLayerLocation,
