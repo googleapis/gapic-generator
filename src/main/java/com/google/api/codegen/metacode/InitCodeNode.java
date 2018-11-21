@@ -43,6 +43,7 @@ import java.util.Set;
 public class InitCodeNode {
   private static final TypeModel INT_TYPE = ProtoTypeRef.create(TypeRef.of(Type.TYPE_UINT64));
   private static final String ROOT_KEY = "root";
+  private static final String FILE_NAME_KEY = "file_name";
   private String key;
   private InitCodeLineType lineType;
   private InitValueConfig initValueConfig;
@@ -393,21 +394,25 @@ public class InitCodeNode {
       // If read_file is set to true in config, change the line type to ReadFileInitLine.
       if (sampleParamConfig.readFromFile()) {
         setLineType(InitCodeLineType.ReadFileInitLine);
+        Preconditions.checkArgument(
+            children.isEmpty(), "Can only configure leaf node to read from file.");
+
+        Name childIdentifier =
+            sampleParamConfig.isSampleArgument()
+                ? getSampleArgumentName(context, sampleParamConfig.sampleArgumentName())
+                : context.symbolTable().getNewSymbol(Name.anyLower("file_name"));
+        InitCodeNode child = getChildForReadFileNode(childIdentifier);
+        children.put(FILE_NAME_KEY, child);
+        initValueConfig =
+            InitValueConfig.createWithValue(
+                InitValue.createVariable(childIdentifier.toLowerUnderscore()));
       }
 
       // If sample_argument_name is specified in config, set identifier to this name if the name has
       // not been used yet and error out otherwise.
-      if (sampleParamConfig.isSampleArgument()) {
-        Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
-        if (!argName.equals(identifier)) {
-          Preconditions.checkArgument(
-              !context.symbolTable().contains(argName),
-              "sample_argument_name \"%s\" is already in use.",
-              sampleParamConfig.sampleArgumentName());
-          identifier =
-              context
-                  .symbolTable()
-                  .getNewSymbol(Name.anyLower(sampleParamConfig.sampleArgumentName()));
+      else if (sampleParamConfig.isSampleArgument()) {
+        if (!identifier.equals(Name.anyLower(sampleParamConfig.sampleArgumentName()))) {
+          identifier = getSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
         }
       }
     } else {
@@ -429,6 +434,24 @@ public class InitCodeNode {
       default:
         throw new IllegalArgumentException("Cannot generate child name for " + parentType);
     }
+  }
+
+  private InitCodeNode getChildForReadFileNode(Name identifier) {
+    Preconditions.checkArgument(lineType == InitCodeLineType.ReadFileInitLine);
+    InitCodeNode node =
+        new InitCodeNode(FILE_NAME_KEY, InitCodeLineType.SimpleInitLine, initValueConfig);
+    node.typeRef = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
+    node.identifier = identifier;
+    return node;
+  }
+
+  private static Name getSampleArgumentName(InitCodeContext context, String name) {
+    Name argName = Name.anyLower(name);
+    Preconditions.checkArgument(
+        !context.symbolTable().contains(argName),
+        "sample_argument_name \"%s\" is already in use.",
+        name);
+    return context.symbolTable().getNewSymbol(argName);
   }
 
   private static void validateKeyValue(TypeModel parentType, String key) {

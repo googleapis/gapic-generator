@@ -263,7 +263,7 @@ module.exports.default = Object.assign({}, module.exports);
 //         className: "DiscussBookRequestStreamingBidiProg"
 //          valueSet: "prog" ("Programming Books")
 //       description: "Testing calling forms"
-//        [name=BASIC, comment.comment=comment_file]
+//        [name=BASIC, comment.comment=comment_file, image=image_file.jpg]
 //      apiMethod "discussBook" of type "OptionalArrayMethod"
 
 // [START turing_prog_request_streaming_bidi_core]
@@ -274,15 +274,18 @@ module.exports.default = Object.assign({}, module.exports);
 const stream = client.discussBook().on('data', response => {
   // doThingsWith(response)
 });
+// const imageFileName = 'image_file.jpg';
 const name = 'BASIC';
 const fileName = 'comment_file';
 const comment = fs.readFileSync(fileName).toString('base64');
 const comment2 = {
   comment: comment,
 };
+const image = fs.readFileSync(imageFileName).toString('base64');
 const request = {
   name: name,
   comment: comment2,
+  image: image,
 };
 // Write request objects.
 stream.write(request);
@@ -1610,6 +1613,8 @@ const UpdateBookIndexRequest = {
  *   The new comment.
  *
  *   This object should have the same structure as [Comment]{@link google.example.library.v1.Comment}
+ *
+ * @property {string} image
  *
  * @typedef DiscussBookRequest
  * @memberof google.example.library.v1
