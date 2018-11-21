@@ -342,8 +342,14 @@ public abstract class FlatteningConfig {
         }
       }
       FieldConfig fieldConfig =
-          FieldConfig.createMessageFieldConfig(
-              messageConfigs, resourceNameConfigs, parameterField, defaultResourceNameTreatment);
+          FieldConfig.createFieldConfig(
+              diagCollector,
+              messageConfigs,
+              methodConfigProto.getFieldNamePatternsMap(),
+              resourceNameConfigs,
+              parameterField,
+              defaultResourceNameTreatment,
+              defaultResourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }
     return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build(), null);
