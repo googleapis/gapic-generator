@@ -163,20 +163,18 @@ public abstract class GapicProductConfig implements ProductConfig {
             .filter(f -> f.getProto().getPackage().equals(defaultPackage))
             .collect(Collectors.toList());
 
-    if (protoPackage != null) {
-      if (configProto == null) {
-        if (sourceProtos.size() == 0) {
-          model
-              .getDiagReporter()
-              .getDiagCollector()
-              .addDiag(
-                  Diag.error(
-                      SimpleLocation.TOPLEVEL,
-                      "There are no source proto files with package %s",
-                      defaultPackage));
-        }
-        sourceProtos.forEach(model::addRoot);
+    if (protoPackage != null && configProto == null) {
+      if (sourceProtos.isEmpty()) {
+        model
+            .getDiagReporter()
+            .getDiagCollector()
+            .addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "There are no source proto files with package %s",
+                    defaultPackage));
       }
+      sourceProtos.forEach(model::addRoot);
     }
 
     ProtoParser protoParser = new ProtoParser();
