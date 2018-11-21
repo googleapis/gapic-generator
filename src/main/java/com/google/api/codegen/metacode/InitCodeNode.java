@@ -196,7 +196,7 @@ public class InitCodeNode {
     }
 
     root.resolveNamesAndTypes(context, context.initObjectType(), context.suggestedName(), null);
-    root.resolveSampleParamConfigs(context.sampleParamConfigMap(), "");
+    root.resolveSampleParamConfigs(context, "");
     return root;
   }
 
@@ -368,16 +368,16 @@ public class InitCodeNode {
   }
 
   /**
-   * Attach {@code sampleParamConfig} to the nodes in this tree. Also sets lineType to {@code
-   * InitCodeLineType.ReadFileInitLine} if specified in {@code sampleParamConfig}.
+   * Apply {@code sampleParamConfig} to the nodes in this tree.
    *
    * @param parentFieldPath The full path of the parent object of {@code typeRef}. Set to an empty
    *     string if {@code typeRef} is a top level proto object. We need to keep track of this
    *     because the keys in {@code sampleParamConfigMap} are full paths while {@code key} is a
    *     simple field name.
    */
-  private void resolveSampleParamConfigs(
-      ImmutableMap<String, SampleParameterConfig> sampleParamConfigMap, String parentFieldPath) {
+  private void resolveSampleParamConfigs(InitCodeContext context, String parentFieldPath) {
+    ImmutableMap<String, SampleParameterConfig> sampleParamConfigMap =
+        context.sampleParamConfigMap();
     String fieldPath;
     if (ROOT_KEY.equals(key)) {
       fieldPath = "";
@@ -387,12 +387,34 @@ public class InitCodeNode {
       fieldPath = parentFieldPath + "." + key;
     }
     this.sampleParamConfig = sampleParamConfigMap.get(fieldPath);
-    if (sampleParamConfig != null && sampleParamConfig.readFromFile()) {
-      setLineType(InitCodeLineType.ReadFileInitLine);
+
+    if (sampleParamConfig != null) {
+
+      // If read_file is set to true in config, change the line type to ReadFileInitLine.
+      if (sampleParamConfig.readFromFile()) {
+        setLineType(InitCodeLineType.ReadFileInitLine);
+      }
+
+      // If sample_argument_name is specified in config, set identifier to this name if the name has
+      // not been used yet and error out otherwise.
+      if (sampleParamConfig.isSampleArgument()) {
+        Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
+        if (!argName.equals(identifier)) {
+          Preconditions.checkArgument(
+              !context.symbolTable().contains(argName),
+              "sample_argument_name \"%s\" is already in use.",
+              sampleParamConfig.sampleArgumentName());
+          identifier =
+              context
+                  .symbolTable()
+                  .getNewSymbol(Name.anyLower(sampleParamConfig.sampleArgumentName()));
+        }
+      }
+    } else {
+      // We only recursively call this method when the parent config is null since the parameter
+      // configs can never overlap.
+      children.values().forEach(child -> child.resolveSampleParamConfigs(context, fieldPath));
     }
-    children
-        .values()
-        .forEach(child -> child.resolveSampleParamConfigs(sampleParamConfigMap, fieldPath));
   }
 
   private static Name getChildSuggestedName(

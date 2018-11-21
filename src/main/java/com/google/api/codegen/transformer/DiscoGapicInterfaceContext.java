@@ -30,11 +30,10 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The context for transforming a Discovery Doc API into a view model to use for client library
@@ -59,7 +58,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         featureConfig);
   }
 
-  public static DiscoGapicInterfaceContext createWithInterface(
+  private static DiscoGapicInterfaceContext createWithInterface(
       DiscoApiModel model,
       String interfaceName,
       GapicProductConfig productConfig,
@@ -187,30 +186,19 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   /* Returns a list of public methods, configured by FeatureConfig. Memoize the result. */
   public Iterable<MethodModel> getPublicMethods() {
-    return Iterables.filter(
-        getInterfaceConfigMethods(),
-        new Predicate<MethodModel>() {
-          @Override
-          public boolean apply(MethodModel methodModel) {
-            return isSupported(methodModel);
-          }
-        });
+    return getInterfaceConfigMethods()
+        .stream()
+        .filter(m -> isSupported(m))
+        .collect(Collectors.toList());
   }
 
   @Override
   /* Returns a list of supported methods, configured by FeatureConfig. Memoize the result. */
   public Iterable<MethodModel> getSupportedMethods() {
-    return Iterables.filter(
-        getInterfaceConfigMethods(),
-        new Predicate<MethodModel>() {
-          @Override
-          public boolean apply(MethodModel methodModel) {
-            return isSupported(methodModel);
-          }
-        });
+    return getPublicMethods();
   }
 
-  public boolean isSupported(MethodModel method) {
+  private boolean isSupported(MethodModel method) {
     return getInterfaceConfig().getMethodConfig(method).getVisibility()
         != VisibilityConfig.DISABLED;
   }

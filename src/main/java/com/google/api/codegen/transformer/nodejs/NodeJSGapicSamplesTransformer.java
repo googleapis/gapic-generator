@@ -72,7 +72,6 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<Pro
 
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    Iterable<? extends InterfaceModel> apiInterfaces = model.getInterfaces();
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     models.addAll(generateSampleClassesForModel(model, productConfig));
     return models.build();

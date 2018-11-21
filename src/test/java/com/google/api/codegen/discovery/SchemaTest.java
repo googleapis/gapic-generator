@@ -14,9 +14,10 @@
  */
 package com.google.api.codegen.discovery;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.truth.Truth;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,11 +44,11 @@ public class SchemaTest {
     List<Schema> appleToDogPath = apple.findChild("Dog");
 
     // The path fro
-    Truth.assertThat(appleToDogPath.get(0)).isEqualTo(apple);
-    Truth.assertThat(appleToDogPath.get(1).getIdentifier()).isEqualTo("items");
-    Truth.assertThat(appleToDogPath.get(2)).isEqualTo(banana);
-    Truth.assertThat(appleToDogPath.get(3)).isEqualTo(cat);
-    Truth.assertThat(appleToDogPath.get(4).getIdentifier()).isEqualTo("items");
-    Truth.assertThat(appleToDogPath.get(5)).isEqualTo(dog);
+    assertThat(appleToDogPath.get(0)).isEqualTo(apple);
+    assertThat(appleToDogPath.get(1).getIdentifier()).isEqualTo("items");
+    assertThat(appleToDogPath.get(2)).isEqualTo(banana);
+    assertThat(appleToDogPath.get(3)).isEqualTo(cat);
+    assertThat(appleToDogPath.get(4).getIdentifier()).isEqualTo("items");
+    assertThat(appleToDogPath.get(5)).isEqualTo(dog);
   }
 }
