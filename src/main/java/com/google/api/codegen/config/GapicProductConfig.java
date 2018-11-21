@@ -259,7 +259,6 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     if (!configProto.equals(ConfigProto.getDefaultInstance())) {
       configSchemaVersion = configProto.getConfigSchemaVersion();
-      // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
       if (Strings.isNullOrEmpty(configSchemaVersion)) {
         model
             .getDiagReporter()
