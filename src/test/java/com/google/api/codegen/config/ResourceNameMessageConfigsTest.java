@@ -33,6 +33,8 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.Diag.Kind;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
@@ -49,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -394,6 +397,18 @@ public class ResourceNameMessageConfigsTest {
                 methodConfigProto,
                 methodModel,
                 protoParser));
+    assertThat(diagCollector.getErrorCount()).isEqualTo(0);
+    List<Diag> warningDiags =
+        diagCollector
+            .getDiags()
+            .stream()
+            .filter(d -> d.getKind().equals(Kind.WARNING))
+            .collect(Collectors.toList());
+    assertThat(warningDiags).isNotEmpty();
+    assertThat(warningDiags.get(0).getMessage())
+        .contains(
+            "Resource[Set] entity archived_book from protofile clashes with a Resource[Set] of the same name from the GAPIC config. Using the GAPIC config entity.");
+
     assertThat(flatteningConfigs).isNotNull();
     assertThat(flatteningConfigs.size()).isEqualTo(3);
 
