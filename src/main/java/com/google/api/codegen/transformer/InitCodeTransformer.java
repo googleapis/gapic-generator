@@ -692,6 +692,7 @@ public class InitCodeTransformer {
           context
               .getTypeTable()
               .renderValueAsString("[" + Name.anyLower(entityName).toUpperUnderscore() + "]");
+
       if (initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
         InitValue initValue = initValueConfig.getResourceNameBindingValues().get(entityName);
         switch (initValue.getType()) {
