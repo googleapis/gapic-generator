@@ -677,6 +677,8 @@ public class InitCodeTransformer {
         context.getNamer().getAndSaveElementResourceTypeName(context.getTypeTable(), fieldConfig);
     SingleResourceNameConfig singleResourceNameConfig =
         (SingleResourceNameConfig) fieldConfig.getResourceNameConfig();
+    // Enforce consistency by escaping a template like "shelves/*" to the
+    // PathTemplate standard "shelves/{$0}".
     PathTemplate escapedPathTemplate =
         PathTemplate.create(singleResourceNameConfig.getNameTemplate().toString());
     List<String> varList = Lists.newArrayList(escapedPathTemplate.vars());
