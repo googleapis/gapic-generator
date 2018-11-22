@@ -111,21 +111,20 @@ public class GapicGeneratorApp extends ToolDriverBase {
 
     String protoPackage = Strings.emptyToNull(options.get(PROTO_PACKAGE));
 
-    // Read the YAML config and convert it to proto.
+    // Read the YAML config, it it was given, and convert it to proto.
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
-    if (configFileNames.size() == 0) {
-      error(String.format("--%s must be provided", GENERATOR_CONFIG_FILES.name()));
-      return;
-    }
+    ConfigProto configProto = null;
+    if (configFileNames.size() > 0) {
+      // Read the YAML config and convert it to proto.
+      ConfigSource configSource = loadConfigFromFiles(configFileNames);
+      if (configSource == null) {
+        return;
+      }
 
-    ConfigSource configSource = loadConfigFromFiles(configFileNames);
-    if (configSource == null) {
-      return;
-    }
-
-    ConfigProto configProto = (ConfigProto) configSource.getConfig();
-    if (configProto == null) {
-      return;
+      configProto = (ConfigProto) configSource.getConfig();
+      if (configProto == null) {
+        return;
+      }
     }
 
     model.establishStage(Merged.KEY);
@@ -151,12 +150,11 @@ public class GapicGeneratorApp extends ToolDriverBase {
     if (!Strings.isNullOrEmpty(options.get(LANGUAGE))) {
       language = TargetLanguage.fromString(options.get(LANGUAGE).toUpperCase());
     } else {
-      String languageStr = configProto.getLanguage();
-      if (Strings.isNullOrEmpty(languageStr)) {
+      if (configProto == null || Strings.isNullOrEmpty(configProto.getLanguage())) {
         throw new IllegalArgumentException(
             "Language not set by --language option or by gapic config.");
       }
-      language = TargetLanguage.fromString(languageStr.toUpperCase());
+      language = TargetLanguage.fromString(configProto.getLanguage().toUpperCase());
     }
 
     GapicProductConfig productConfig =

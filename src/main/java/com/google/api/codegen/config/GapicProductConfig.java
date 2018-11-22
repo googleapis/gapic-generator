@@ -43,6 +43,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
+import com.google.protobuf.DescriptorProtos;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -139,31 +140,47 @@ public abstract class GapicProductConfig implements ProductConfig {
       @Nullable String protoPackage,
       TargetLanguage language) {
 
-    // Get the proto file containing the first interface listed in the config proto, and use it as
-    // the assigned file for generated resource names, and to get the default message namespace
-    ProtoFile file =
-        model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
-    String defaultPackage = file.getProto().getPackage();
+    final String defaultPackage;
 
-    // TODO(andrealin): populate sourceProtos from --package flag.
+    if (protoPackage != null) {
+      // Default to using --package option for value of default package and first API protoFile.
+      defaultPackage = protoPackage;
+    } else if (configProto != null) {
+      // Otherwise use configProto to get the proto file containing the first interface listed in
+      // the config proto, and use it as
+      // the assigned file for generated resource names, and to get the default message namespace.
+      ProtoFile file =
+          model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
+      defaultPackage = file.getProto().getPackage();
+    } else {
+      throw new NullPointerException("configProto and protoPackage cannot both be null.");
+    }
+
     List<ProtoFile> sourceProtos =
         model
             .getFiles()
             .stream()
             .filter(f -> f.getProto().getPackage().equals(defaultPackage))
             .collect(Collectors.toList());
-    if (sourceProtos.isEmpty()) {
-      model
-          .getDiagReporter()
-          .getDiagCollector()
-          .addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "There are no source proto files with package %s",
-                  defaultPackage));
+
+    if (protoPackage != null && configProto == null) {
+      if (sourceProtos.isEmpty()) {
+        model
+            .getDiagReporter()
+            .getDiagCollector()
+            .addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "There are no source proto files with package %s",
+                    defaultPackage));
+      }
+      sourceProtos.forEach(model::addRoot);
     }
 
     ProtoParser protoParser = new ProtoParser();
+    if (configProto == null) {
+      configProto = ConfigProto.getDefaultInstance();
+    }
 
     DiagCollector diagCollector = model.getDiagReporter().getDiagCollector();
 
@@ -175,13 +192,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Get list of fields from proto
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            sourceProtos,
-            diagCollector,
-            configProto,
-            defaultPackage,
-            resourceDefs,
-            resourceSetDefs,
-            protoParser);
+            sourceProtos, configProto, defaultPackage, resourceDefs, resourceSetDefs, protoParser);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(
@@ -216,6 +227,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         createInterfaceConfigMap(
             model.getDiagReporter().getDiagCollector(),
             configProto,
+            sourceProtos,
+            defaultPackage,
             settings,
             messageConfigs,
             resourceNameConfigs,
@@ -223,8 +236,10 @@ public abstract class GapicProductConfig implements ProductConfig {
             language,
             protoParser);
 
-    ImmutableList<String> copyrightLines = null;
-    ImmutableList<String> licenseLines = null;
+    ImmutableList<String> copyrightLines;
+    ImmutableList<String> licenseLines;
+    String configSchemaVersion = null;
+
     try {
       LicenseHeaderUtil licenseHeaderUtil =
           LicenseHeaderUtil.create(
@@ -240,15 +255,17 @@ public abstract class GapicProductConfig implements ProductConfig {
       throw new RuntimeException(e);
     }
 
-    String configSchemaVersion = configProto.getConfigSchemaVersion();
-    if (Strings.isNullOrEmpty(configSchemaVersion)) {
-      model
-          .getDiagReporter()
-          .getDiagCollector()
-          .addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "config_schema_version field is required in GAPIC yaml."));
+    if (!configProto.equals(ConfigProto.getDefaultInstance())) {
+      configSchemaVersion = configProto.getConfigSchemaVersion();
+      if (Strings.isNullOrEmpty(configSchemaVersion)) {
+        model
+            .getDiagReporter()
+            .getDiagCollector()
+            .addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "config_schema_version field is required in GAPIC yaml."));
+      }
     }
 
     if (interfaceConfigMap == null || copyrightLines == null || licenseLines == null) {
@@ -337,7 +354,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
   @VisibleForTesting
   public static GapicProductConfig createDummyInstance() {
-    return createDummyInstance(ImmutableMap.<String, InterfaceConfig>of(), "", "", null, "1.0.0");
+    return createDummyInstance(ImmutableMap.of(), "", "", null, "1.0.0");
   }
 
   /** Creates an GapicProductConfig with fixed content. Exposed for testing. */
@@ -365,25 +382,33 @@ public abstract class GapicProductConfig implements ProductConfig {
         domainLayerLocation,
         ReleaseLevel.UNSET_RELEASE_LEVEL,
         messageConfigs,
-        ImmutableList.<String>of(),
-        ImmutableList.<String>of(),
-        ImmutableMap.<String, ResourceNameConfig>of(),
+        ImmutableList.of(),
+        ImmutableList.of(),
+        ImmutableMap.of(),
         // Default to gRPC.
         TransportProtocol.GRPC,
-        createResponseFieldConfigMap(messageConfigs, ImmutableMap.<String, ResourceNameConfig>of()),
+        createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),
         configSchemaVersion);
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
       DiagCollector diagCollector,
       ConfigProto configProto,
+      List<ProtoFile> sourceProtos,
+      String defaultPackageName,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable,
       TargetLanguage language,
       ProtoParser protoParser) {
+    // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
+
+    // Maps name of interfaces to found InterfaceConfigs from config yamls.
+    Map<String, InterfaceConfigProto> interfaceConfigProtos = new LinkedHashMap<>();
+
+    // Parse config for interfaceConfigProtos.
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
       if (apiInterface == null || !apiInterface.isReachable()) {
@@ -394,23 +419,43 @@ public abstract class GapicProductConfig implements ProductConfig {
                 interfaceConfigProto.getName()));
         continue;
       }
-      String interfaceNameOverride =
-          languageSettings.getInterfaceNamesMap().get(interfaceConfigProto.getName());
+      interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
+    }
 
-      GapicInterfaceConfig interfaceConfig =
-          GapicInterfaceConfig.createInterfaceConfig(
-              diagCollector,
-              language,
-              interfaceConfigProto,
-              apiInterface,
-              interfaceNameOverride,
-              messageConfigs,
-              resourceNameConfigs,
-              protoParser);
-      if (interfaceConfig == null) {
-        continue;
+    // Parse proto file for interfaces.
+    for (ProtoFile file : sourceProtos) {
+      if (file.getProto().getServiceList().size() == 0) continue;
+      for (DescriptorProtos.ServiceDescriptorProto service : file.getProto().getServiceList()) {
+        String serviceFullName =
+            String.format("%s.%s", file.getProto().getPackage(), service.getName());
+        Interface apiInterface = symbolTable.lookupInterface(serviceFullName);
+        if (apiInterface == null) {
+          diagCollector.addDiag(
+              Diag.error(SimpleLocation.TOPLEVEL, "interface not found: %s", service.getName()));
+          continue;
+        }
+        InterfaceConfigProto interfaceConfigProto = interfaceConfigProtos.get(serviceFullName);
+        if (interfaceConfigProto == null) {
+          interfaceConfigProto = InterfaceConfigProto.getDefaultInstance();
+        }
+        String interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
+
+        GapicInterfaceConfig interfaceConfig =
+            GapicInterfaceConfig.createInterfaceConfig(
+                diagCollector,
+                language,
+                defaultPackageName,
+                interfaceConfigProto,
+                apiInterface,
+                interfaceNameOverride,
+                messageConfigs,
+                resourceNameConfigs,
+                protoParser);
+        if (interfaceConfig == null) {
+          continue;
+        }
+        interfaceConfigMap.put(serviceFullName, interfaceConfig);
       }
-      interfaceConfigMap.put(interfaceConfigProto.getName(), interfaceConfig);
     }
 
     if (diagCollector.getErrorCount() > 0) {
