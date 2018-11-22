@@ -397,13 +397,13 @@ public class InitCodeNode {
       // If sample_argument_name is specified in config, set identifier to this name if the name has
       // not been used yet and error out otherwise.
       else if (sampleParamConfig.isSampleArgument()) {
-        if (!identifier.equals(Name.anyLower(sampleParamConfig.sampleArgumentName()))) {
-          Name name = Name.anyLower(sampleParamConfig.sampleArgumentName());
+        Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
+        if (!argName.equals(identifier)) {
           Preconditions.checkArgument(
-              !context.symbolTable().contains(name),
+              !context.symbolTable().contains(argName),
               "sample_argument_name \"%s\" is already in use.",
               sampleParamConfig.sampleArgumentName());
-          identifier = context.symbolTable().getNewSymbol(name);
+          identifier = context.symbolTable().getNewSymbol(argName);
         }
       }
     } else {
