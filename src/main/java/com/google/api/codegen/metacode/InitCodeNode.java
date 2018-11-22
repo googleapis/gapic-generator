@@ -43,7 +43,7 @@ import java.util.Set;
 public class InitCodeNode {
   private static final TypeModel INT_TYPE = ProtoTypeRef.create(TypeRef.of(Type.TYPE_UINT64));
   private static final String ROOT_KEY = "root";
-  private static final String FILE_NAME_KEY = "file_name";
+  public static final String FILE_NAME_KEY = "file_name";
   private String key;
   private InitCodeLineType lineType;
   private InitValueConfig initValueConfig;
@@ -390,29 +390,20 @@ public class InitCodeNode {
     this.sampleParamConfig = sampleParamConfigMap.get(fieldPath);
 
     if (sampleParamConfig != null) {
-
-      // If read_file is set to true in config, change the line type to ReadFileInitLine.
       if (sampleParamConfig.readFromFile()) {
-        setLineType(InitCodeLineType.ReadFileInitLine);
-        Preconditions.checkArgument(
-            children.isEmpty(), "Can only configure leaf node to read from file.");
-
-        Name childIdentifier =
-            sampleParamConfig.isSampleArgument()
-                ? getSampleArgumentName(context, sampleParamConfig.sampleArgumentName())
-                : context.symbolTable().getNewSymbol(Name.anyLower("file_name"));
-        InitCodeNode child = getChildForReadFileNode(childIdentifier);
-        children.put(FILE_NAME_KEY, child);
-        initValueConfig =
-            InitValueConfig.createWithValue(
-                InitValue.createVariable(childIdentifier.toLowerUnderscore()));
+        setupReadFileNode(context);
       }
 
       // If sample_argument_name is specified in config, set identifier to this name if the name has
       // not been used yet and error out otherwise.
       else if (sampleParamConfig.isSampleArgument()) {
         if (!identifier.equals(Name.anyLower(sampleParamConfig.sampleArgumentName()))) {
-          identifier = getSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
+          Name name = Name.anyLower(sampleParamConfig.sampleArgumentName());
+          Preconditions.checkArgument(
+              !context.symbolTable().contains(name),
+              "sample_argument_name \"%s\" is already in use.",
+              sampleParamConfig.sampleArgumentName());
+          identifier = context.symbolTable().getNewSymbol(name);
         }
       }
     } else {
@@ -436,22 +427,36 @@ public class InitCodeNode {
     }
   }
 
-  private InitCodeNode getChildForReadFileNode(Name identifier) {
-    Preconditions.checkArgument(lineType == InitCodeLineType.ReadFileInitLine);
-    InitCodeNode node =
-        new InitCodeNode(FILE_NAME_KEY, InitCodeLineType.SimpleInitLine, initValueConfig);
-    node.typeRef = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
-    node.identifier = identifier;
-    return node;
-  }
-
-  private static Name getSampleArgumentName(InitCodeContext context, String name) {
-    Name argName = Name.anyLower(name);
+  /**
+   * For a read-from-file node, we set up a simple child node to assign the file name to a local
+   * variable (e.g., String fileName = "file_name.jpg"). If sample_argument_name is specified, the
+   * local variable would honor the configuration. If not, the name of the local variable would be
+   * default to "file_name", and would be picked automatically by symbolTable if "file_name" is
+   * already in use. This allows us to pass in the file name as a sample function argument.
+   */
+  private void setupReadFileNode(InitCodeContext context) {
     Preconditions.checkArgument(
-        !context.symbolTable().contains(argName),
-        "sample_argument_name \"%s\" is already in use.",
-        name);
-    return context.symbolTable().getNewSymbol(argName);
+        children.isEmpty(), "Can only configure leaf node to read from file.");
+    setLineType(InitCodeLineType.ReadFileInitLine);
+    Name childIdentifier;
+    if (sampleParamConfig.isSampleArgument()) {
+      Name name = Name.anyLower(sampleParamConfig.sampleArgumentName());
+      Preconditions.checkArgument(
+          !context.symbolTable().contains(name),
+          "sample_argument_name \"%s\" is already in use.",
+          sampleParamConfig.sampleArgumentName());
+      childIdentifier = context.symbolTable().getNewSymbol(name);
+    } else {
+      childIdentifier = context.symbolTable().getNewSymbol(Name.anyLower(FILE_NAME_KEY));
+    }
+    InitCodeNode child =
+        new InitCodeNode(FILE_NAME_KEY, InitCodeLineType.SimpleInitLine, initValueConfig);
+    child.typeRef = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
+    child.identifier = childIdentifier;
+    children.put(FILE_NAME_KEY, child);
+    initValueConfig =
+        InitValueConfig.createWithValue(
+            InitValue.createVariable(childIdentifier.toLowerUnderscore()));
   }
 
   private static void validateKeyValue(TypeModel parentType, String key) {

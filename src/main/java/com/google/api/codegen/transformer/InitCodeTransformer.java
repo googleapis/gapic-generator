@@ -337,7 +337,7 @@ public class InitCodeTransformer {
     List<InitCodeLineView> argDefaultLines = new ArrayList<>();
     for (InitCodeNode param : sampleFuncParams) {
       if (param.getLineType() == InitCodeLineType.ReadFileInitLine) {
-        InitCodeNode child = param.getChildren().get("file_name");
+        InitCodeNode child = param.getChildren().get(InitCodeNode.FILE_NAME_KEY);
         InitCodeLineView view = generateSimpleInitCodeLine(context, child, false);
         argDefaultLines.add(view);
         argDefaultParams.add(view);
@@ -502,6 +502,10 @@ public class InitCodeTransformer {
   }
 
   // TODO(hzyi): generate necessary imports
+  /**
+   * @param isFirstReadFileView Used in Java. We need to reuse local variables "path" and "data" so
+   *     that if this is not the first time we render a ReadFileView, we don't re-initialize them.
+   */
   private InitCodeLineView generateReadFileInitCodeLine(
       MethodContext context, InitCodeNode item, boolean isFirstReadFileView) {
     ReadFileInitCodeLineView.Builder surfaceLine = ReadFileInitCodeLineView.newBuilder();
