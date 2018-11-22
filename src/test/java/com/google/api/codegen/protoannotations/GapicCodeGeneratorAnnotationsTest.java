@@ -17,7 +17,7 @@ package com.google.api.codegen.protoannotations;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.gapic.GapicTestBase2;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +31,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
   private final String apiName;
+  private final String testName;
 
   public GapicCodeGeneratorAnnotationsTest(
       TargetLanguage language,
@@ -40,17 +41,37 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       String apiName,
       String baseline,
       String protoPackage) {
-    super(language, null, null, snippetName, baseline, protoPackage);
+    super(
+        language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline, protoPackage);
 
     this.apiName = apiName;
+
+    String gapicConfigStatus = "_gapic_config";
+    if (gapicConfigFileNames == null || gapicConfigFileNames.length == 0) {
+      gapicConfigStatus = "_no" + gapicConfigStatus;
+    }
+
+    this.testName = this.apiName + gapicConfigStatus;
+    // Use the library.proto contained in this test package's testdata.
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
+
+    // Use the common yaml files from the codegen test package's testsrc/common.
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc");
+    // TODO(andrealin): Remove dependency on yaml files when proto annotations fully supported.
   }
 
   @Parameters(name = "{3}")
   public static List<Object[]> testedConfigs() {
-    return new LinkedList<>();
-    // TODO(andrealin): Implement parsing proto-annotations, make baseline files, write tests.
+    return Arrays.<Object[]>asList(
+        // Only Proto Annotations, no GAPIC config
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA,
+            null,
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1"));
+    // TODO(andrealin): More tests.
   }
 
   @Test
