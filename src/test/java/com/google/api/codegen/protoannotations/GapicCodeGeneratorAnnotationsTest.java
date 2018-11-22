@@ -63,7 +63,6 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
   @Parameters(name = "{3}")
   public static List<Object[]> testedConfigs() {
-    // return Arrays.asList();
     // TODO(andrealin): Add these back in after baselines are checked in.
     return Arrays.<Object[]>asList(
         GapicTestBase2.createTestConfig(

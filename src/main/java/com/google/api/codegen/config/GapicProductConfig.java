@@ -856,10 +856,10 @@ public abstract class GapicProductConfig implements ProductConfig {
    */
   public SingleResourceNameConfig getSingleResourceNameConfig(String entityName) {
     ResourceNameConfig resourceNameConfig = getResourceNameConfigs().get(entityName);
-    if (resourceNameConfig != null && resourceNameConfig instanceof SingleResourceNameConfig) {
+    if (resourceNameConfig instanceof SingleResourceNameConfig) {
       return (SingleResourceNameConfig) resourceNameConfig;
     }
-    if (resourceNameConfig != null && resourceNameConfig instanceof ResourceNameOneofConfig) {
+    if (resourceNameConfig instanceof ResourceNameOneofConfig) {
       ResourceNameOneofConfig oneofConfig = (ResourceNameOneofConfig) resourceNameConfig;
       if (Iterables.size(oneofConfig.getSingleResourceNameConfigs()) > 0) {
         return Iterables.get(oneofConfig.getSingleResourceNameConfigs(), 0);
@@ -868,6 +868,8 @@ public abstract class GapicProductConfig implements ProductConfig {
     return null;
   }
 
+  // Describes if a GAPIC config was given as input. This is a wrapper around checking
+  // `if (ConfigProto == null)`, and letting ConfigProto be non-null internally avoids NPEs.
   public enum GapicConfigPresence {
     NOT_PROVIDED,
     PROVIDED
