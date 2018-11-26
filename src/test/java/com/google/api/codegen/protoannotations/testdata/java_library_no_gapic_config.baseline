@@ -76,7 +76,7 @@ task allJars(type: Copy) {
   // Replace with `from configurations.testRuntime, jar` to include test dependencies
   from configurations.runtime, jar
 }
-============== file: src/main/java/com/google/cloud/example/library/v1/LibraryServiceClient.java ==============
+============== file: src/main/java/com/google/example/library/v1/LibraryClient.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -92,7 +92,7 @@ task allJars(type: Copy) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.example.library.v1;
+package com.google.example.library.v1;
 
 import com.google.api.core.ApiFunction;
 import com.google.api.core.ApiFuture;
@@ -113,8 +113,8 @@ import com.google.api.gax.rpc.PageContext;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.cloud.example.library.v1.stub.LibraryServiceStub;
-import com.google.cloud.example.library.v1.stub.LibraryServiceStubSettings;
+import com.google.example.library.v1.stub.LibraryServiceStub;
+import com.google.example.library.v1.stub.LibraryServiceStubSettings;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.example.library.v1.AddCommentsRequest;
@@ -187,19 +187,19 @@ import javax.annotation.Generated;
  *
  * <pre>
  * <code>
- * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+ * try (LibraryClient LibraryClient = LibraryClient.create()) {
  *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
  *   List&lt;Comment&gt; comments = new ArrayList&lt;&gt;();
  *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
  *     .setName(name.toString())
  *     .addAllComments(comments)
  *     .build();
- *   libraryServiceClient.addComments(request);
+ *   LibraryClient.addComments(request);
  * }
  * </code>
  * </pre>
  *
- * <p>Note: close() needs to be called on the libraryServiceClient object to clean up resources such
+ * <p>Note: close() needs to be called on the LibraryClient object to clean up resources such
  * as threads. In the example above, try-with-resources is used, which automatically calls
  * close().
  *
@@ -234,8 +234,8 @@ import javax.annotation.Generated;
  *     LibraryServiceSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
- * LibraryServiceClient libraryServiceClient =
- *     LibraryServiceClient.create(libraryServiceSettings);
+ * LibraryClient LibraryClient =
+ *     LibraryClient.create(libraryServiceSettings);
  * </code>
  * </pre>
  *
@@ -245,14 +245,14 @@ import javax.annotation.Generated;
  * <code>
  * LibraryServiceSettings libraryServiceSettings =
  *     LibraryServiceSettings.newBuilder().setEndpoint(myEndpoint).build();
- * LibraryServiceClient libraryServiceClient =
- *     LibraryServiceClient.create(libraryServiceSettings);
+ * LibraryClient LibraryClient =
+ *     LibraryClient.create(libraryServiceSettings);
  * </code>
  * </pre>
  */
 @Generated("by gapic-generator")
 @BetaApi
-public class LibraryServiceClient implements BackgroundResource {
+public class LibraryClient implements BackgroundResource {
   private final LibraryServiceSettings settings;
   private final LibraryServiceStub stub;
   private final OperationsClient operationsClient;
@@ -260,43 +260,43 @@ public class LibraryServiceClient implements BackgroundResource {
 
 
   /**
-   * Constructs an instance of LibraryServiceClient with default settings.
+   * Constructs an instance of LibraryClient with default settings.
    */
-  public static final LibraryServiceClient create() throws IOException {
+  public static final LibraryClient create() throws IOException {
     return create(LibraryServiceSettings.newBuilder().build());
   }
 
   /**
-   * Constructs an instance of LibraryServiceClient, using the given settings.
+   * Constructs an instance of LibraryClient, using the given settings.
    * The channels are created based on the settings passed in, or defaults for any
    * settings that are not set.
    */
-  public static final LibraryServiceClient create(LibraryServiceSettings settings) throws IOException {
-    return new LibraryServiceClient(settings);
+  public static final LibraryClient create(LibraryServiceSettings settings) throws IOException {
+    return new LibraryClient(settings);
   }
 
   /**
-   * Constructs an instance of LibraryServiceClient, using the given stub for making calls. This is for
+   * Constructs an instance of LibraryClient, using the given stub for making calls. This is for
    * advanced usage - prefer to use LibraryServiceSettings}.
    */
   @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
-  public static final LibraryServiceClient create(LibraryServiceStub stub) {
-    return new LibraryServiceClient(stub);
+  public static final LibraryClient create(LibraryServiceStub stub) {
+    return new LibraryClient(stub);
   }
 
   /**
-   * Constructs an instance of LibraryServiceClient, using the given settings.
+   * Constructs an instance of LibraryClient, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected LibraryServiceClient(LibraryServiceSettings settings) throws IOException {
+  protected LibraryClient(LibraryServiceSettings settings) throws IOException {
     this.settings = settings;
     this.stub = ((LibraryServiceStubSettings) settings.getStubSettings()).createStub();
     this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
   }
 
   @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
-  protected LibraryServiceClient(LibraryServiceStub stub) {
+  protected LibraryClient(LibraryServiceStub stub) {
     this.settings = null;
     this.stub = stub;
     this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
@@ -326,14 +326,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;Comment&gt; comments = new ArrayList&lt;&gt;();
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
    *     .setName(name.toString())
    *     .addAllComments(comments)
    *     .build();
-   *   libraryServiceClient.addComments(request);
+   *   LibraryClient.addComments(request);
    * }
    * </code></pre>
    *
@@ -350,14 +350,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;Comment&gt; comments = new ArrayList&lt;&gt;();
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
    *     .setName(name.toString())
    *     .addAllComments(comments)
    *     .build();
-   *   ApiFuture&lt;Void&gt; future = libraryServiceClient.addCommentsCallable().futureCall(request);
+   *   ApiFuture&lt;Void&gt; future = LibraryClient.addCommentsCallable().futureCall(request);
    *   // Do something
    *   future.get();
    * }
@@ -373,14 +373,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   String resource = "";
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
    *     .setResource(resource)
    *     .setTag(tag)
    *     .build();
-   *   AddTagResponse response = libraryServiceClient.addTag(request);
+   *   AddTagResponse response = LibraryClient.addTag(request);
    * }
    * </code></pre>
    *
@@ -397,14 +397,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   String resource = "";
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
    *     .setResource(resource)
    *     .setTag(tag)
    *     .build();
-   *   ApiFuture&lt;AddTagResponse&gt; future = libraryServiceClient.addTagCallable().futureCall(request);
+   *   ApiFuture&lt;AddTagResponse&gt; future = LibraryClient.addTagCallable().futureCall(request);
    *   // Do something
    *   AddTagResponse response = future.get();
    * }
@@ -420,14 +420,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .setBook(book)
    *     .build();
-   *   Book response = libraryServiceClient.createBook(request);
+   *   Book response = LibraryClient.createBook(request);
    * }
    * </code></pre>
    *
@@ -444,14 +444,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .setBook(book)
    *     .build();
-   *   ApiFuture&lt;Book&gt; future = libraryServiceClient.createBookCallable().futureCall(request);
+   *   ApiFuture&lt;Book&gt; future = LibraryClient.createBookCallable().futureCall(request);
    *   // Do something
    *   Book response = future.get();
    * }
@@ -468,12 +468,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
    *     .setShelf(shelf)
    *     .build();
-   *   Shelf response = libraryServiceClient.createShelf(request);
+   *   Shelf response = LibraryClient.createShelf(request);
    * }
    * </code></pre>
    *
@@ -491,12 +491,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
    *     .setShelf(shelf)
    *     .build();
-   *   ApiFuture&lt;Shelf&gt; future = libraryServiceClient.createShelfCallable().futureCall(request);
+   *   ApiFuture&lt;Shelf&gt; future = LibraryClient.createShelfCallable().futureCall(request);
    *   // Do something
    *   Shelf response = future.get();
    * }
@@ -512,12 +512,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   libraryServiceClient.deleteBook(request);
+   *   LibraryClient.deleteBook(request);
    * }
    * </code></pre>
    *
@@ -534,12 +534,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   ApiFuture&lt;Void&gt; future = libraryServiceClient.deleteBookCallable().futureCall(request);
+   *   ApiFuture&lt;Void&gt; future = LibraryClient.deleteBookCallable().futureCall(request);
    *   // Do something
    *   future.get();
    * }
@@ -555,12 +555,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   libraryServiceClient.deleteShelf(request);
+   *   LibraryClient.deleteShelf(request);
    * }
    * </code></pre>
    *
@@ -577,12 +577,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   ApiFuture&lt;Void&gt; future = libraryServiceClient.deleteShelfCallable().futureCall(request);
+   *   ApiFuture&lt;Void&gt; future = LibraryClient.deleteShelfCallable().futureCall(request);
    *   // Do something
    *   future.get();
    * }
@@ -599,9 +599,9 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BidiStream&lt;DiscussBookRequest, Comment&gt; bidiStream =
-   *       libraryServiceClient.discussBookCallable().call();
+   *       LibraryClient.discussBookCallable().call();
    *
    *   String name = "";
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
@@ -624,14 +624,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   List&lt;BookName&gt; names = new ArrayList&lt;&gt;();
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
    *     .addAllNames(BookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
-   *   FindRelatedBooksResponse response = libraryServiceClient.findRelatedBooks(request);
+   *   FindRelatedBooksResponse response = LibraryClient.findRelatedBooks(request);
    * }
    * </code></pre>
    *
@@ -648,14 +648,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   List&lt;BookName&gt; names = new ArrayList&lt;&gt;();
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
    *     .addAllNames(BookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
-   *   ApiFuture&lt;FindRelatedBooksResponse&gt; future = libraryServiceClient.findRelatedBooksCallable().futureCall(request);
+   *   ApiFuture&lt;FindRelatedBooksResponse&gt; future = LibraryClient.findRelatedBooksCallable().futureCall(request);
    *   // Do something
    *   FindRelatedBooksResponse response = future.get();
    * }
@@ -671,12 +671,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   Book response = libraryServiceClient.getBigBookAsync(request).get();
+   *   Book response = LibraryClient.getBigBookAsync(request).get();
    * }
    * </code></pre>
    *
@@ -694,12 +694,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   OperationFuture&lt;Operation&gt; future = libraryServiceClient.getBigBookOperationCallable().futureCall(request);
+   *   OperationFuture&lt;Operation&gt; future = LibraryClient.getBigBookOperationCallable().futureCall(request);
    *   // Do something
    *   Book response = future.get();
    * }
@@ -716,12 +716,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   ApiFuture&lt;Operation&gt; future = libraryServiceClient.getBigBookCallable().futureCall(request);
+   *   ApiFuture&lt;Operation&gt; future = LibraryClient.getBigBookCallable().futureCall(request);
    *   // Do something
    *   Operation response = future.get();
    * }
@@ -737,12 +737,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   Empty response = libraryServiceClient.getBigNothingAsync(request).get();
+   *   Empty response = LibraryClient.getBigNothingAsync(request).get();
    * }
    * </code></pre>
    *
@@ -760,12 +760,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   OperationFuture&lt;Operation&gt; future = libraryServiceClient.getBigNothingOperationCallable().futureCall(request);
+   *   OperationFuture&lt;Operation&gt; future = LibraryClient.getBigNothingOperationCallable().futureCall(request);
    *   // Do something
    *   Empty response = future.get();
    * }
@@ -782,12 +782,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   ApiFuture&lt;Operation&gt; future = libraryServiceClient.getBigNothingCallable().futureCall(request);
+   *   ApiFuture&lt;Operation&gt; future = LibraryClient.getBigNothingCallable().futureCall(request);
    *   // Do something
    *   future.get();
    * }
@@ -803,12 +803,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   Book response = libraryServiceClient.getBook(request);
+   *   Book response = LibraryClient.getBook(request);
    * }
    * </code></pre>
    *
@@ -825,12 +825,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   ApiFuture&lt;Book&gt; future = libraryServiceClient.getBookCallable().futureCall(request);
+   *   ApiFuture&lt;Book&gt; future = LibraryClient.getBookCallable().futureCall(request);
    *   // Do something
    *   Book response = future.get();
    * }
@@ -846,12 +846,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookOneOfName name = DeletedBookName.of();
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   BookFromAnywhere response = libraryServiceClient.getBookFromAbsolutelyAnywhere(request);
+   *   BookFromAnywhere response = LibraryClient.getBookFromAbsolutelyAnywhere(request);
    * }
    * </code></pre>
    *
@@ -868,12 +868,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookOneOfName name = DeletedBookName.of();
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   ApiFuture&lt;BookFromAnywhere&gt; future = libraryServiceClient.getBookFromAbsolutelyAnywhereCallable().futureCall(request);
+   *   ApiFuture&lt;BookFromAnywhere&gt; future = LibraryClient.getBookFromAbsolutelyAnywhereCallable().futureCall(request);
    *   // Do something
    *   BookFromAnywhere response = future.get();
    * }
@@ -889,14 +889,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookOneOfName name = DeletedBookName.of();
    *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .setAltBookName(altBookName.toString())
    *     .build();
-   *   BookFromAnywhere response = libraryServiceClient.getBookFromAnywhere(request);
+   *   BookFromAnywhere response = LibraryClient.getBookFromAnywhere(request);
    * }
    * </code></pre>
    *
@@ -913,14 +913,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookOneOfName name = DeletedBookName.of();
    *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .setAltBookName(altBookName.toString())
    *     .build();
-   *   ApiFuture&lt;BookFromAnywhere&gt; future = libraryServiceClient.getBookFromAnywhereCallable().futureCall(request);
+   *   ApiFuture&lt;BookFromAnywhere&gt; future = LibraryClient.getBookFromAnywhereCallable().futureCall(request);
    *   // Do something
    *   BookFromAnywhere response = future.get();
    * }
@@ -936,12 +936,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   BookFromArchive response = libraryServiceClient.getBookFromArchive(request);
+   *   BookFromArchive response = LibraryClient.getBookFromArchive(request);
    * }
    * </code></pre>
    *
@@ -958,12 +958,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   ApiFuture&lt;BookFromArchive&gt; future = libraryServiceClient.getBookFromArchiveCallable().futureCall(request);
+   *   ApiFuture&lt;BookFromArchive&gt; future = LibraryClient.getBookFromArchiveCallable().futureCall(request);
    *   // Do something
    *   BookFromArchive response = future.get();
    * }
@@ -979,14 +979,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
    *     .setName(name.toString())
    *     .setOptions(options)
    *     .build();
-   *   Shelf response = libraryServiceClient.getShelf(request);
+   *   Shelf response = LibraryClient.getShelf(request);
    * }
    * </code></pre>
    *
@@ -1003,14 +1003,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
    *     .setName(name.toString())
    *     .setOptions(options)
    *     .build();
-   *   ApiFuture&lt;Shelf&gt; future = libraryServiceClient.getShelfCallable().futureCall(request);
+   *   ApiFuture&lt;Shelf&gt; future = LibraryClient.getShelfCallable().futureCall(request);
    *   // Do something
    *   Shelf response = future.get();
    * }
@@ -1026,12 +1026,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   ListBooksResponse response = libraryServiceClient.listBooks(request);
+   *   ListBooksResponse response = LibraryClient.listBooks(request);
    * }
    * </code></pre>
    *
@@ -1048,12 +1048,12 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   ApiFuture&lt;ListBooksResponse&gt; future = libraryServiceClient.listBooksCallable().futureCall(request);
+   *   ApiFuture&lt;ListBooksResponse&gt; future = LibraryClient.listBooksCallable().futureCall(request);
    *   // Do something
    *   ListBooksResponse response = future.get();
    * }
@@ -1069,9 +1069,9 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
-   *   ListShelvesResponse response = libraryServiceClient.listShelves(request);
+   *   ListShelvesResponse response = LibraryClient.listShelves(request);
    * }
    * </code></pre>
    *
@@ -1088,9 +1088,9 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
-   *   ApiFuture&lt;ListShelvesResponse&gt; future = libraryServiceClient.listShelvesCallable().futureCall(request);
+   *   ApiFuture&lt;ListShelvesResponse&gt; future = LibraryClient.listShelvesCallable().futureCall(request);
    *   // Do something
    *   ListShelvesResponse response = future.get();
    * }
@@ -1106,9 +1106,9 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   ListStringsResponse response = libraryServiceClient.listStrings(request);
+   *   ListStringsResponse response = LibraryClient.listStrings(request);
    * }
    * </code></pre>
    *
@@ -1125,9 +1125,9 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   ApiFuture&lt;ListStringsResponse&gt; future = libraryServiceClient.listStringsCallable().futureCall(request);
+   *   ApiFuture&lt;ListStringsResponse&gt; future = LibraryClient.listStringsCallable().futureCall(request);
    *   // Do something
    *   ListStringsResponse response = future.get();
    * }
@@ -1145,14 +1145,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
    *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
    *     .setName(name.toString())
    *     .setOtherShelfName(otherShelfName.toString())
    *     .build();
-   *   Shelf response = libraryServiceClient.mergeShelves(request);
+   *   Shelf response = LibraryClient.mergeShelves(request);
    * }
    * </code></pre>
    *
@@ -1171,14 +1171,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
    *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
    *     .setName(name.toString())
    *     .setOtherShelfName(otherShelfName.toString())
    *     .build();
-   *   ApiFuture&lt;Shelf&gt; future = libraryServiceClient.mergeShelvesCallable().futureCall(request);
+   *   ApiFuture&lt;Shelf&gt; future = LibraryClient.mergeShelvesCallable().futureCall(request);
    *   // Do something
    *   Shelf response = future.get();
    * }
@@ -1195,7 +1195,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   ApiStreamObserver&lt;Comment&gt; responseObserver =
    *       new ApiStreamObserver&lt;Comment&gt;() {
    *         {@literal @}Override
@@ -1214,7 +1214,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *         }
    *       };
    *   ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
-   *       libraryServiceClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
+   *       LibraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
    *
    *   String name = "";
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
@@ -1234,14 +1234,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookOneOfName name = DeletedBookName.of();
    *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .setOtherShelfName(otherShelfName.toString())
    *     .build();
-   *   Book response = libraryServiceClient.moveBook(request);
+   *   Book response = LibraryClient.moveBook(request);
    * }
    * </code></pre>
    *
@@ -1258,14 +1258,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookOneOfName name = DeletedBookName.of();
    *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .setOtherShelfName(otherShelfName.toString())
    *     .build();
-   *   ApiFuture&lt;Book&gt; future = libraryServiceClient.moveBookCallable().futureCall(request);
+   *   ApiFuture&lt;Book&gt; future = LibraryClient.moveBookCallable().futureCall(request);
    *   // Do something
    *   Book response = future.get();
    * }
@@ -1281,7 +1281,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
@@ -1290,7 +1290,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *     .addAllBooks(books)
    *     .setSeriesUuid(seriesUuid)
    *     .build();
-   *   PublishSeriesResponse response = libraryServiceClient.publishSeries(request);
+   *   PublishSeriesResponse response = LibraryClient.publishSeries(request);
    * }
    * </code></pre>
    *
@@ -1307,7 +1307,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
@@ -1316,7 +1316,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *     .addAllBooks(books)
    *     .setSeriesUuid(seriesUuid)
    *     .build();
-   *   ApiFuture&lt;PublishSeriesResponse&gt; future = libraryServiceClient.publishSeriesCallable().futureCall(request);
+   *   ApiFuture&lt;PublishSeriesResponse&gt; future = LibraryClient.publishSeriesCallable().futureCall(request);
    *   // Do something
    *   PublishSeriesResponse response = future.get();
    * }
@@ -1333,13 +1333,13 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   String name = "";
    *   StreamBooksRequest request = StreamBooksRequest.newBuilder()
    *     .setName(name)
    *     .build();
    *
-   *   ServerStream&lt;Book&gt; stream = libraryServiceClient.streamBooksCallable().call(request);
+   *   ServerStream&lt;Book&gt; stream = LibraryClient.streamBooksCallable().call(request);
    *   for (Book response : stream) {
    *     // Do something when receive a response
    *   }
@@ -1357,10 +1357,10 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
    *
-   *   ServerStream&lt;StreamShelvesResponse&gt; stream = libraryServiceClient.streamShelvesCallable().call(request);
+   *   ServerStream&lt;StreamShelvesResponse&gt; stream = LibraryClient.streamShelvesCallable().call(request);
    *   for (StreamShelvesResponse response : stream) {
    *     // Do something when receive a response
    *   }
@@ -1377,7 +1377,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   int requiredSingularInt32 = 0;
    *   long requiredSingularInt64 = 0L;
    *   float requiredSingularFloat = 0.0F;
@@ -1438,7 +1438,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *     .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
    *     .putAllRequiredMap(requiredMap)
    *     .build();
-   *   TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.testOptionalRequiredFlatteningParams(request);
+   *   TestOptionalRequiredFlatteningParamsResponse response = LibraryClient.testOptionalRequiredFlatteningParams(request);
    * }
    * </code></pre>
    *
@@ -1455,7 +1455,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   int requiredSingularInt32 = 0;
    *   long requiredSingularInt64 = 0L;
    *   float requiredSingularFloat = 0.0F;
@@ -1516,7 +1516,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *     .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
    *     .putAllRequiredMap(requiredMap)
    *     .build();
-   *   ApiFuture&lt;TestOptionalRequiredFlatteningParamsResponse&gt; future = libraryServiceClient.testOptionalRequiredFlatteningParamsCallable().futureCall(request);
+   *   ApiFuture&lt;TestOptionalRequiredFlatteningParamsResponse&gt; future = LibraryClient.testOptionalRequiredFlatteningParamsCallable().futureCall(request);
    *   // Do something
    *   TestOptionalRequiredFlatteningParamsResponse response = future.get();
    * }
@@ -1532,14 +1532,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .setBook(book)
    *     .build();
-   *   Book response = libraryServiceClient.updateBook(request);
+   *   Book response = LibraryClient.updateBook(request);
    * }
    * </code></pre>
    *
@@ -1556,14 +1556,14 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .setBook(book)
    *     .build();
-   *   ApiFuture&lt;Book&gt; future = libraryServiceClient.updateBookCallable().futureCall(request);
+   *   ApiFuture&lt;Book&gt; future = LibraryClient.updateBookCallable().futureCall(request);
    *   // Do something
    *   Book response = future.get();
    * }
@@ -1579,7 +1579,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   String indexName = "";
    *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
@@ -1588,7 +1588,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *     .setIndexName(indexName)
    *     .putAllIndexMap(indexMap)
    *     .build();
-   *   libraryServiceClient.updateBookIndex(request);
+   *   LibraryClient.updateBookIndex(request);
    * }
    * </code></pre>
    *
@@ -1605,7 +1605,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient LibraryClient = LibraryClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   String indexName = "";
    *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
@@ -1614,7 +1614,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *     .setIndexName(indexName)
    *     .putAllIndexMap(indexMap)
    *     .build();
-   *   ApiFuture&lt;Void&gt; future = libraryServiceClient.updateBookIndexCallable().futureCall(request);
+   *   ApiFuture&lt;Void&gt; future = LibraryClient.updateBookIndexCallable().futureCall(request);
    *   // Do something
    *   future.get();
    * }
@@ -1656,7 +1656,7 @@ public class LibraryServiceClient implements BackgroundResource {
 
 
 }
-============== file: src/main/java/com/google/cloud/example/library/v1/LibraryServiceSettings.java ==============
+============== file: src/main/java/com/google/example/library/v1/LibrarySettings.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -1672,7 +1672,7 @@ public class LibraryServiceClient implements BackgroundResource {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.example.library.v1;
+package com.google.example.library.v1;
 
 import com.google.api.core.ApiFunction;
 import com.google.api.core.BetaApi;
@@ -1701,7 +1701,7 @@ import com.google.api.gax.rpc.StubSettings;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.auth.Credentials;
-import com.google.cloud.example.library.v1.stub.LibraryServiceStubSettings;
+import com.google.example.library.v1.stub.LibraryServiceStubSettings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -1756,7 +1756,7 @@ import org.threeten.bp.Duration;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
- * Settings class to configure an instance of {@link LibraryServiceClient}.
+ * Settings class to configure an instance of {@link LibraryClient}.
  *
  * <p>The default instance has everything set to sensible defaults:
  *
@@ -2314,7 +2314,7 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
     }
   }
 }
-============== file: src/main/java/com/google/cloud/example/library/v1/package-info.java ==============
+============== file: src/main/java/com/google/example/library/v1/package-info.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -2337,7 +2337,7 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
  * The interfaces provided are listed below, along with usage samples.
  *
  * ====================
- * LibraryServiceClient
+ * LibraryClient
  * ====================
  *
  * Service Description: This API represents a simple digital library.  It lets you manage Shelf
@@ -2355,25 +2355,25 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
  *
  * Service comment may include special characters: &lt;&gt;&amp;"`'{@literal @}.
  *
- * Sample for LibraryServiceClient:
+ * Sample for LibraryClient:
  * <pre>
  * <code>
- * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+ * try (LibraryClient LibraryClient = LibraryClient.create()) {
  *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
  *   List&lt;Comment&gt; comments = new ArrayList&lt;&gt;();
  *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
  *     .setName(name.toString())
  *     .addAllComments(comments)
  *     .build();
- *   libraryServiceClient.addComments(request);
+ *   LibraryClient.addComments(request);
  * }
  * </code>
  * </pre>
  *
  */
 
-package com.google.cloud.example.library.v1;
-============== file: src/main/java/com/google/cloud/example/library/v1/stub/GrpcLibraryServiceCallableFactory.java ==============
+package com.google.example.library.v1;
+============== file: src/main/java/com/google/example/library/v1/stub/GrpcLibraryServiceCallableFactory.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -2389,7 +2389,7 @@ package com.google.cloud.example.library.v1;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.example.library.v1.stub;
+package com.google.example.library.v1.stub;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
@@ -2412,7 +2412,7 @@ import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.StreamingCallSettings;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
-import com.google.cloud.example.library.v1.LibraryServiceSettings;
+import com.google.example.library.v1.LibraryServiceSettings;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.Book;
@@ -2529,7 +2529,7 @@ public class GrpcLibraryServiceCallableFactory implements GrpcStubCallableFactor
     return GrpcCallableFactory.createClientStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
   }
 }
-============== file: src/main/java/com/google/cloud/example/library/v1/stub/GrpcLibraryServiceStub.java ==============
+============== file: src/main/java/com/google/example/library/v1/stub/GrpcLibraryServiceStub.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -2545,7 +2545,7 @@ public class GrpcLibraryServiceCallableFactory implements GrpcStubCallableFactor
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.example.library.v1.stub;
+package com.google.example.library.v1.stub;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
@@ -2562,7 +2562,7 @@ import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
-import com.google.cloud.example.library.v1.LibraryServiceSettings;
+import com.google.example.library.v1.LibraryServiceSettings;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.Book;
@@ -3177,7 +3177,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   }
 
 }
-============== file: src/main/java/com/google/cloud/example/library/v1/stub/LibraryServiceStub.java ==============
+============== file: src/main/java/com/google/example/library/v1/stub/LibraryServiceStub.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -3193,7 +3193,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.example.library.v1.stub;
+package com.google.example.library.v1.stub;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
@@ -3384,7 +3384,7 @@ public abstract class LibraryServiceStub implements BackgroundResource {
   @Override
   public abstract void close();
 }
-============== file: src/main/java/com/google/cloud/example/library/v1/stub/LibraryServiceStubSettings.java ==============
+============== file: src/main/java/com/google/example/library/v1/stub/LibraryServiceStubSettings.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -3400,7 +3400,7 @@ public abstract class LibraryServiceStub implements BackgroundResource {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.example.library.v1.stub;
+package com.google.example.library.v1.stub;
 
 import com.google.api.core.ApiFunction;
 import com.google.api.core.BetaApi;
@@ -4474,7 +4474,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     }
   }
 }
-============== file: src/test/java/com/google/cloud/example/library/v1/LibraryServiceClientTest.java ==============
+============== file: src/test/java/com/google/example/library/v1/LibraryClientTest.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -4490,7 +4490,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.example.library.v1;
+package com.google.example.library.v1;
 
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.grpc.GaxGrpcProperties;
@@ -4533,10 +4533,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 @javax.annotation.Generated("by GAPIC")
-public class LibraryServiceClientTest {
+public class LibraryClientTest {
   private static MockLibraryService mockLibraryService;
   private static MockServiceHelper serviceHelper;
-  private LibraryServiceClient client;
+  private LibraryClient client;
   private LocalChannelProvider channelProvider;
 
   @BeforeClass
@@ -4559,7 +4559,7 @@ public class LibraryServiceClientTest {
         .setTransportChannelProvider(channelProvider)
         .setCredentialsProvider(NoCredentialsProvider.create())
         .build();
-    client = LibraryServiceClient.create(settings);
+    client = LibraryClient.create(settings);
   }
 
   @After
@@ -4724,7 +4724,7 @@ public class LibraryServiceClientTest {
   }
 
 }
-============== file: src/test/java/com/google/cloud/example/library/v1/MockLibraryService.java ==============
+============== file: src/test/java/com/google/example/library/v1/MockLibraryService.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -4740,7 +4740,7 @@ public class LibraryServiceClientTest {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.example.library.v1;
+package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.grpc.testing.MockGrpcService;
@@ -4782,7 +4782,7 @@ public class MockLibraryService implements MockGrpcService  {
     serviceImpl.reset();
   }
 }
-============== file: src/test/java/com/google/cloud/example/library/v1/MockLibraryServiceImpl.java ==============
+============== file: src/test/java/com/google/example/library/v1/MockLibraryServiceImpl.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -4798,7 +4798,7 @@ public class MockLibraryService implements MockGrpcService  {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.example.library.v1;
+package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.common.collect.Lists;
