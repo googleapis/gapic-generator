@@ -503,8 +503,8 @@ public class InitCodeTransformer {
 
   // TODO(hzyi): generate necessary imports
   /**
-   * @param isFirstReadFileView Used in Java. We need to reuse local variables "path" and "data" so
-   *     that if this is not the first time we render a ReadFileView, we don't re-initialize them.
+   * @param isFirstReadFileView Used in Java. We need to reuse local variables "path" and "data" if
+   *     we have rendered ReadFileViews before so that we don't declare them twice.
    */
   private InitCodeLineView generateReadFileInitCodeLine(
       MethodContext context, InitCodeNode item, boolean isFirstReadFileView) {

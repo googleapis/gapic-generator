@@ -430,7 +430,7 @@ public class InitCodeNode {
   /**
    * For a read-from-file node, we set up a simple child node to assign the file name to a local
    * variable (e.g., String fileName = "file_name.jpg"). If sample_argument_name is specified, the
-   * local variable would honor the configuration. If not, the name of the local variable would be
+   * local variable would honor the configuration. If not, the name of the local variable would
    * default to "file_name", and would be picked automatically by symbolTable if "file_name" is
    * already in use. This allows us to pass in the file name as a sample function argument.
    */
