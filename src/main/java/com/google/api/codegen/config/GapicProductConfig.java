@@ -92,7 +92,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   public abstract TransportProtocol getTransportProtocol();
 
   /** Returns whether or not the GAPIC config was provided as an input to the generator. */
-  public abstract GapicConfigPresence isGapicConfigProvided();
+  public abstract GapicConfigPresence getGapicConfigPresence();
 
   /**
    * Returns a map from fully qualified field names to FieldConfigs for all fields that have a
@@ -116,7 +116,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         getLicenseLines(),
         getResourceNameConfigs(),
         getTransportProtocol(),
-        isGapicConfigProvided(),
+        getGapicConfigPresence(),
         getDefaultResourceNameFieldConfigMap(),
         getConfigSchemaVersion());
   }
