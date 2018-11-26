@@ -46,17 +46,13 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.py.PythonTypeTable;
-import com.google.api.codegen.viewmodel.BatchingDescriptorView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcDocView;
 import com.google.api.codegen.viewmodel.GrpcElementDocView;
 import com.google.api.codegen.viewmodel.GrpcMessageDocView;
-import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
-import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ParamDocView;
-import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
@@ -170,7 +166,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     }
 
     GrpcDocView enumFile =
-        generateEnumView(productConfig, modelTypeTable, namer, apiModel.getProtoModel().getFiles());
+        generateEnumView(productConfig, modelTypeTable, namer, apiModel.getFiles());
     if (!enumFile.elementDocs().isEmpty()) {
       serviceSurfaces.add(enumFile);
     }
@@ -232,9 +228,9 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
     xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
-    xapiClass.batchingDescriptors(ImmutableList.<BatchingDescriptorView>of());
-    xapiClass.longRunningDescriptors(ImmutableList.<LongRunningOperationDetailView>of());
-    xapiClass.grpcStreamingDescriptors(ImmutableList.<GrpcStreamingDetailView>of());
+    xapiClass.batchingDescriptors(ImmutableList.of());
+    xapiClass.longRunningDescriptors(ImmutableList.of());
+    xapiClass.grpcStreamingDescriptors(ImmutableList.of());
     xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
     xapiClass.hasBatchingMethods(context.getInterfaceConfig().hasBatchingMethods());
     xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
@@ -244,7 +240,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
         pathTemplateTransformer.generateFormatResourceFunctions(context));
     xapiClass.parseResourceFunctions(
         pathTemplateTransformer.generateParseResourceFunctions(context));
-    xapiClass.pathTemplateGetterFunctions(ImmutableList.<PathTemplateGetterFunctionView>of());
+    xapiClass.pathTemplateGetterFunctions(ImmutableList.of());
 
     xapiClass.interfaceKey(context.getInterface().getFullName());
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
@@ -313,12 +309,12 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private Iterable<ViewModel> generateVersionedDirectoryViews(
       ProtoApiModel apiModel, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    views.add(generateTypesView(apiModel.getProtoModel(), productConfig));
+    views.add(generateTypesView(apiModel, productConfig));
     views.add(generateVersionedInitView(apiModel, productConfig));
     return views.build();
   }
 
-  private ViewModel generateTypesView(Model model, GapicProductConfig productConfig) {
+  private ViewModel generateTypesView(ProtoApiModel model, GapicProductConfig productConfig) {
     SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
     ImportSectionView imports =
         importSectionTransformer.generateTypesImportSection(model, productConfig);
@@ -372,12 +368,6 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
                     .fileName(namer.getNotImplementedString("VersionIndexRequireView.fileName"))
                     .build())
         .collect(ImmutableList.toImmutableList());
-  }
-
-  private ModelTypeTable emptyTypeTable(ProductConfig productConfig) {
-    return new ModelTypeTable(
-        new PythonTypeTable(productConfig.getPackageName()),
-        new PythonModelTypeNameConverter(productConfig.getPackageName()));
   }
 
   private String typesOutputFile(SurfaceNamer namer) {

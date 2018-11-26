@@ -161,6 +161,7 @@ public abstract class GapicProductConfig implements ProductConfig {
             .getFiles()
             .stream()
             .filter(f -> f.getProto().getPackage().equals(defaultPackage))
+            .sorted(Comparator.comparing(ProtoFile::getFullName))
             .collect(Collectors.toList());
 
     if (protoPackage != null && configProto == null) {
