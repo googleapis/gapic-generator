@@ -110,7 +110,8 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
         // Only Proto Annotations, no GAPIC config
 
-        // TODO(andrealin): generate this baseline with a GAPIC yaml but with samples etc removed for a leaner diff
+        // TODO(andrealin): generate this baseline with a GAPIC yaml but with samples etc removed
+        // for a leaner diff
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             null,
