@@ -739,17 +739,15 @@ jobs:
             go test .
   # TODO: test other language clients.
 
-  golden_and_smoke_tests:
+  artman_smoke_tests:
     working_directory: /tmp/
+    environment:
+      ARTMAN_USER_CONFIG: /tmp/workspace/gapic-generator/.circleci/artman_config.yaml
     docker:
       - image: googleapis/artman:0.16.0
     steps:
       - attach_workspace:
           at: workspace
-      - run:
-          name: Checkout googleapis
-          command: |
-            git clone --single-branch https://github.com/googleapis/googleapis.git googleapis
       - run:
           name: Checkout artman
           command: |
@@ -757,15 +755,9 @@ jobs:
             cd artman
             pip install -e .
       - run:
-          name: Conditionally run smoketests against all APIs
+          name: Run all artman on all APIs
           command: |
-            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --name smoketest artman /bin/bash -c "git clone https://github.com/googleapis/googleapis /tmp/googleapis_smoketest; python3 /artman/test/smoketest_artman.py --root-dir=/tmp/googleapis_smoketest --log=/tmp/smoketest.log" || OUT=$?
-            docker cp smoketest:/tmp/smoketest.log /tmp/smoketest.log
-            if [ $OUT -ne 0 ];then
-              exit $OUT
-            fi
-      - store_artifacts:
-          path: /tmp/actual_library_example.golden
+            python3 artman/test/smoketest_artman.py --root-dir=/tmp/workspace/googleapis --log=/tmp/smoketest.log --user-config=$ARTMAN_USER_CONFIG
       - store_artifacts:
           path: /tmp/smoketest.log
 
@@ -777,50 +769,51 @@ workflows:
     jobs:
       - install-gapic-generator
       - test-baselines
-      - golden_and_smoke_tests:
+      - artman_smoke_tests:
           requires:
             - install-gapic-generator
-#      - compute-discovery-test:
-#          requires:
-#            - install-gapic-generator
-#      - gapic-generator-bazel-test
-#      - test-gapic-generator:
-#          requires:
-#            - test-baselines
-#      - generate-clients:
-#          requires:
-#            - install-gapic-generator
-#      - java-openjdk8-test:
-#          requires:
-#            - generate-clients
-#      - python-test:
-#          requires:
-#            - generate-clients
-#      - ruby-2.4-test:
-#          requires:
-#            - generate-clients
-#      - python-system-test:
-#          requires:
-#            - generate-clients
-#          filters:
-#            branches:
-#              only: master
-#      - ruby-2.4-system-test:
-#          requires:
-#            - generate-clients
-#          filters:
-#            branches:
-#              only: master
-#      - php-7.2-test:
-#          requires:
-#            - generate-clients
-#      # TODO: Other php versions
-#      - go-1.10-test:
-#          requires:
-#            - generate-clients
-#      - nodejs-8-test:
-#          requires:
-#            - generate-clients
+          # TODO(andrealin): Only run this on the master branch after the job is shown to work
+      - compute-discovery-test:
+          requires:
+            - install-gapic-generator
+      - gapic-generator-bazel-test
+      - test-gapic-generator:
+          requires:
+            - test-baselines
+      - generate-clients:
+          requires:
+            - install-gapic-generator
+      - java-openjdk8-test:
+          requires:
+            - generate-clients
+      - python-test:
+          requires:
+            - generate-clients
+      - ruby-2.4-test:
+          requires:
+            - generate-clients
+      - python-system-test:
+          requires:
+            - generate-clients
+          filters:
+            branches:
+              only: master
+      - ruby-2.4-system-test:
+          requires:
+            - generate-clients
+          filters:
+            branches:
+              only: master
+      - php-7.2-test:
+          requires:
+            - generate-clients
+      # TODO: Other php versions
+      - go-1.10-test:
+          requires:
+            - generate-clients
+      - nodejs-8-test:
+          requires:
+            - generate-clients
 
 machine:
   services:
