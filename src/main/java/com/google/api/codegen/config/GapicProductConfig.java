@@ -416,7 +416,6 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     // Parse proto file for interfaces.
     for (ProtoFile file : sourceProtos) {
-      if (file.getProto().getServiceList().size() == 0) continue;
       for (DescriptorProtos.ServiceDescriptorProto service : file.getProto().getServiceList()) {
         String serviceFullName =
             String.format("%s.%s", file.getProto().getPackage(), service.getName());
