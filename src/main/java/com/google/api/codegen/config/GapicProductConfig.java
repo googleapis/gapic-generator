@@ -47,9 +47,11 @@ import com.google.protobuf.DescriptorProtos;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
@@ -405,22 +407,11 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
+    Set<String> serviceNames = new LinkedHashSet<>();
     // Maps name of interfaces to found InterfaceConfigs from config yamls.
-    Map<String, InterfaceConfigProto> interfaceConfigProtos = new LinkedHashMap<>();
-
-    // Parse config for interfaceConfigProtos.
-    for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
-      Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
-      if (apiInterface == null || !apiInterface.isReachable()) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "interface not found: %s",
-                interfaceConfigProto.getName()));
-        continue;
-      }
-      interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
-    }
+    Map<String, InterfaceConfigProto> interfaceConfigProtos = new HashMap<>();
+    // Maps name of interfaces to found interfaces from proto.
+    Map<String, Interface> protoInterfaces = new HashMap<>();
 
     // Parse proto file for interfaces.
     for (ProtoFile file : sourceProtos) {
@@ -434,28 +425,51 @@ public abstract class GapicProductConfig implements ProductConfig {
               Diag.error(SimpleLocation.TOPLEVEL, "interface not found: %s", service.getName()));
           continue;
         }
-        InterfaceConfigProto interfaceConfigProto = interfaceConfigProtos.get(serviceFullName);
-        if (interfaceConfigProto == null) {
-          interfaceConfigProto = InterfaceConfigProto.getDefaultInstance();
-        }
-        String interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
-
-        GapicInterfaceConfig interfaceConfig =
-            GapicInterfaceConfig.createInterfaceConfig(
-                diagCollector,
-                language,
-                defaultPackageName,
-                interfaceConfigProto,
-                apiInterface,
-                interfaceNameOverride,
-                messageConfigs,
-                resourceNameConfigs,
-                protoParser);
-        if (interfaceConfig == null) {
-          continue;
-        }
-        interfaceConfigMap.put(serviceFullName, interfaceConfig);
+        protoInterfaces.put(serviceFullName, apiInterface);
+        serviceNames.add(serviceFullName);
       }
+    }
+
+    // Parse config for interfaceConfigProtos.
+    for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
+      Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
+      if (apiInterface == null || !apiInterface.isReachable()) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "interface not found: %s",
+                interfaceConfigProto.getName()));
+        continue;
+      }
+      interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
+      protoInterfaces.put(interfaceConfigProto.getName(), apiInterface);
+      serviceNames.add(interfaceConfigProto.getName());
+    }
+
+    // Generate GapicInterfaceConfigs for the found proto interfaces and interfaceConfigProtos
+    for (String serviceFullName : serviceNames) {
+      InterfaceConfigProto interfaceConfigProto = interfaceConfigProtos.get(serviceFullName);
+      Interface apiInterface = protoInterfaces.get(serviceFullName);
+      if (interfaceConfigProto == null) {
+        interfaceConfigProto = InterfaceConfigProto.getDefaultInstance();
+      }
+      String interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
+
+      GapicInterfaceConfig interfaceConfig =
+          GapicInterfaceConfig.createInterfaceConfig(
+              diagCollector,
+              language,
+              defaultPackageName,
+              interfaceConfigProto,
+              apiInterface,
+              interfaceNameOverride,
+              messageConfigs,
+              resourceNameConfigs,
+              protoParser);
+      if (interfaceConfig == null) {
+        continue;
+      }
+      interfaceConfigMap.put(serviceFullName, interfaceConfig);
     }
 
     if (diagCollector.getErrorCount() > 0) {
