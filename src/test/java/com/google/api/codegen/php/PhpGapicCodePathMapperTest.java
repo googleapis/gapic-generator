@@ -14,10 +14,11 @@
  */
 package com.google.api.codegen.php;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.truth.Truth;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -40,8 +41,7 @@ public class PhpGapicCodePathMapperTest {
             "Google\\Cloud\\Sample\\Package\\V1",
             "",
             null);
-    Truth.assertThat(pathMapper.getOutputPath(null, configWithGoogleCloud))
-        .isEqualTo("prefix/V1/suffix");
+    assertThat(pathMapper.getOutputPath(null, configWithGoogleCloud)).isEqualTo("prefix/V1/suffix");
 
     GapicProductConfig configWithGoogleNonCloud =
         GapicProductConfig.createDummyInstance(
@@ -49,7 +49,7 @@ public class PhpGapicCodePathMapperTest {
             "Google\\NonCloud\\Sample\\Package\\V1",
             "",
             null);
-    Truth.assertThat(pathMapper.getOutputPath(null, configWithGoogleNonCloud))
+    assertThat(pathMapper.getOutputPath(null, configWithGoogleNonCloud))
         .isEqualTo("prefix/V1/suffix");
 
     GapicProductConfig configWithAlphabet =
@@ -58,7 +58,6 @@ public class PhpGapicCodePathMapperTest {
             "Alphabet\\Google\\Cloud\\Sample\\Package\\V1",
             "",
             null);
-    Truth.assertThat(pathMapper.getOutputPath(null, configWithAlphabet))
-        .isEqualTo("prefix/V1/suffix");
+    assertThat(pathMapper.getOutputPath(null, configWithAlphabet)).isEqualTo("prefix/V1/suffix");
   }
 }

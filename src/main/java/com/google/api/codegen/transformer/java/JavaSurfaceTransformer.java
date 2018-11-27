@@ -161,8 +161,7 @@ public class JavaSurfaceTransformer {
 
   private StaticLangFileView<StaticLangApiView> generateApiFile(
       InterfaceContext context, GapicProductConfig productConfig) {
-    StaticLangFileView.Builder<StaticLangApiView> apiFile =
-        StaticLangFileView.<StaticLangApiView>newBuilder();
+    StaticLangFileView.Builder<StaticLangApiView> apiFile = StaticLangFileView.newBuilder();
 
     apiFile.templateFileName(API_TEMPLATE_FILENAME);
 
@@ -488,7 +487,7 @@ public class JavaSurfaceTransformer {
   private StaticLangFileView<StaticLangStubInterfaceView> generateStubInterfaceFile(
       InterfaceContext context, GapicProductConfig productConfig) {
     StaticLangFileView.Builder<StaticLangStubInterfaceView> fileView =
-        StaticLangFileView.<StaticLangStubInterfaceView>newBuilder();
+        StaticLangFileView.newBuilder();
 
     fileView.classView(generateStubInterface(context, productConfig));
     fileView.templateFileName(STUB_INTERFACE_TEMPLATE_FILENAME);
@@ -955,7 +954,6 @@ public class JavaSurfaceTransformer {
       String apiClassName) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
-    ApiModel model = context.getApiModel();
     settingsDoc.serviceHostname(
         productServiceConfig.getServiceHostname(context.getServiceAddress()));
     settingsDoc.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));

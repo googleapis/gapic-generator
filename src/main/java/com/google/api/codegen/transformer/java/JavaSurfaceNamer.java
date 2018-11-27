@@ -32,7 +32,6 @@ import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SchemaTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
@@ -50,6 +49,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 /** The SurfaceNamer for Java. */
 public class JavaSurfaceNamer extends SurfaceNamer {
@@ -147,7 +147,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameForElementType(type);
+    return typeTable.getAndSaveNicknameForElementType(type);
   }
 
   @Override
@@ -294,18 +294,26 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
     String entityName = resourceNameConfig.getEntityName();
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
+    // Proto annotations use UpperCamelCase for resource names,
+    // and GAPIC config uses lower_snake_case, so we have to support both formats.
+    Function<String, Name> formatNameFunc;
+    if (entityName.length() > 0 && Character.isUpperCase(entityName.charAt(0))) {
+      formatNameFunc = Name::upperCamel;
+    } else {
+      formatNameFunc = Name::anyLower;
+    }
     switch (resourceNameType) {
       case ANY:
         return getAnyResourceTypeName();
       case FIXED:
-        return Name.anyLower(entityName).join("name_fixed");
+        return formatNameFunc.apply(entityName).join("name_fixed");
       case ONEOF:
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
         // with a collection config.
         entityName = StringUtil.removeSuffix(entityName, "_oneof");
-        return Name.anyLower(entityName).join("name");
+        return formatNameFunc.apply(entityName).join("name");
       case SINGLE:
-        return Name.anyLower(entityName).join("name");
+        return formatNameFunc.apply(entityName).join("name");
       case NONE:
       default:
         throw new UnsupportedOperationException("unexpected entity name type");
@@ -372,7 +380,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  /** The name of the settings member name for the given method. */
+  /* The name of the settings member name for the given method. */
   public String getOperationSettingsMemberName(MethodModel method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationSettings"));
   }

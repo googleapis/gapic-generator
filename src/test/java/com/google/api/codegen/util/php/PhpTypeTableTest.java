@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.util.php;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.api.codegen.util.TypeAlias;
-import com.google.common.truth.Truth;
 import java.util.Map;
 import org.junit.Test;
 
@@ -26,17 +27,16 @@ public class PhpTypeTableTest {
     String implicitPackage = "foo\\bar";
     Map<String, TypeAlias> imports;
     PhpTypeTable typeTable = new PhpTypeTable(implicitPackage);
-    Truth.assertThat(typeTable.getAndSaveNicknameFor(implicitPackage + "\\Baz")).isEqualTo("Baz");
+    assertThat(typeTable.getAndSaveNicknameFor(implicitPackage + "\\Baz")).isEqualTo("Baz");
 
     imports = typeTable.getImports();
-    Truth.assertThat(imports.size()).isEqualTo(0);
+    assertThat(imports.size()).isEqualTo(0);
 
-    Truth.assertThat(typeTable.getAndSaveNicknameFor(implicitPackage + "\\qux\\Corge"))
+    assertThat(typeTable.getAndSaveNicknameFor(implicitPackage + "\\qux\\Corge"))
         .isEqualTo("Corge");
 
     imports = typeTable.getImports();
-    Truth.assertThat(imports.size()).isEqualTo(1);
-    Truth.assertThat(imports.get(implicitPackage + "\\qux\\Corge").getNickname())
-        .isEqualTo("Corge");
+    assertThat(imports.size()).isEqualTo(1);
+    assertThat(imports.get(implicitPackage + "\\qux\\Corge").getNickname()).isEqualTo("Corge");
   }
 }

@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen.util;
 
-import com.google.common.truth.Truth;
+import static com.google.common.truth.Truth.assertThat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,12 +27,12 @@ public class TypeNameTest {
   @Test
   public void testSimple() {
     TypeName typeName = new TypeName("com.google.Foo", "Foo");
-    Truth.assertThat(typeName.getFullName()).isEqualTo("com.google.Foo");
-    Truth.assertThat(typeName.getNickname()).isEqualTo("Foo");
+    assertThat(typeName.getFullName()).isEqualTo("com.google.Foo");
+    assertThat(typeName.getNickname()).isEqualTo("Foo");
     MockTypeTable typeTable = new MockTypeTable();
-    Truth.assertThat(typeName.getAndSaveNicknameIn(typeTable)).isEqualTo("Foo");
+    assertThat(typeName.getAndSaveNicknameIn(typeTable)).isEqualTo("Foo");
     List<TypeAlias> expectedImports = Arrays.asList(TypeAlias.create("com.google.Foo", "Foo"));
-    Truth.assertThat(typeTable.imports).isEqualTo(expectedImports);
+    assertThat(typeTable.imports).isEqualTo(expectedImports);
   }
 
   @Test
@@ -39,16 +40,15 @@ public class TypeNameTest {
     TypeName typeName = new TypeName("com.google.Foo", "Foo");
     TypeName containerTypeName =
         new TypeName("com.google.Container", "Container", "%s<%i>", typeName);
-    Truth.assertThat(containerTypeName.getFullName())
-        .isEqualTo("com.google.Container<com.google.Foo>");
-    Truth.assertThat(containerTypeName.getNickname()).isEqualTo("Container<Foo>");
+    assertThat(containerTypeName.getFullName()).isEqualTo("com.google.Container<com.google.Foo>");
+    assertThat(containerTypeName.getNickname()).isEqualTo("Container<Foo>");
     MockTypeTable typeTable = new MockTypeTable();
-    Truth.assertThat(containerTypeName.getAndSaveNicknameIn(typeTable)).isEqualTo("Container<Foo>");
+    assertThat(containerTypeName.getAndSaveNicknameIn(typeTable)).isEqualTo("Container<Foo>");
     List<TypeAlias> expectedImports =
         Arrays.asList(
             TypeAlias.create("com.google.Container", "Container"),
             TypeAlias.create("com.google.Foo", "Foo"));
-    Truth.assertThat(typeTable.imports).isEqualTo(expectedImports);
+    assertThat(typeTable.imports).isEqualTo(expectedImports);
   }
 
   private static class MockTypeTable implements TypeTable {

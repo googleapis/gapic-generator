@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
 
 /** A field declaration wrapper around a Discovery Schema. */
 public class DiscoveryField implements FieldModel, TypeModel {
-  public static final String DEFAULT_NAMESPACE = "com.google.api.codegen.discovery";
+  private static final String DEFAULT_NAMESPACE = "com.google.api.codegen.discovery";
 
   private final List<DiscoveryField> properties;
   private final DiscoApiModel apiModel;
@@ -59,7 +59,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   // Comparator for Schemas that have children schemas.
   private static Comparator<Schema> messageSchemaComparator =
-      (Schema s1, Schema s2) -> s1.getIdentifier().compareTo(s2.getIdentifier());
+      Comparator.comparing(Schema::getIdentifier);
 
   private static Comparator<String> caseInsensitiveComparator =
       (String s1, String s2) -> s1.compareToIgnoreCase(s2);
@@ -108,8 +108,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
       // First create a DiscoveryField for the underlying referenced Schema.
       create(schema.dereference(), rootApiModel);
     }
-    DiscoveryField field = new DiscoveryField(schema, rootApiModel);
-    return field;
+    return new DiscoveryField(schema, rootApiModel);
   }
 
   /** @return the underlying dereferenced Discovery Schema. */
@@ -473,8 +472,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean equals(Object o) {
-    return o != null
-        && o instanceof DiscoveryField
+    return o instanceof DiscoveryField
         && ((DiscoveryField) o).schema.equals(this.schema)
         && getParentFullName().equals(((DiscoveryField) o).getParentFullName());
   }

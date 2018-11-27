@@ -67,11 +67,6 @@ public class ProtoInterfaceModel implements InterfaceModel {
   }
 
   @Override
-  public String getFileFullName() {
-    return protoInterface.getFile().getFullName();
-  }
-
-  @Override
   public List<MethodModel> getMethods() {
     ImmutableList.Builder<MethodModel> methods = ImmutableList.builder();
     for (Method method : protoInterface.getMethods()) {
@@ -89,8 +84,7 @@ public class ProtoInterfaceModel implements InterfaceModel {
 
   @Override
   public boolean equals(Object o) {
-    return o != null
-        && o instanceof ProtoInterfaceModel
+    return o instanceof ProtoInterfaceModel
         && ((ProtoInterfaceModel) o).protoInterface.equals(this.protoInterface);
   }
 }

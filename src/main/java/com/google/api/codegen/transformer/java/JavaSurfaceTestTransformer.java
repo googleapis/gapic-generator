@@ -388,18 +388,6 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     return mockServiceImplFile.build();
   }
 
-  /////////////////////////////////// General Helpers //////////////////////////////////////
-
-  /** Package-private */
-  InterfaceContext createContext(InterfaceModel apiInterface, GapicProductConfig productConfig) {
-    return surfaceTransformer.createInterfaceContext(
-        apiInterface,
-        productConfig,
-        surfaceTransformer.createSurfaceNamer(productConfig),
-        surfaceTransformer.createTypeTable(productConfig.getPackageName()),
-        productConfig.getResourceNameMessageConfigs().isEmpty());
-  }
-
   /////////////////////////////////// Imports //////////////////////////////////////
 
   private void addUnitTestImports(InterfaceContext context) {

@@ -31,7 +31,9 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -50,6 +52,9 @@ public class ProtoParserTest {
   private static Method getBigBookMethod;
   private static MessageType book;
   private static MessageType shelf;
+  private static Map<Resource, ProtoFile> resourceDefs;
+  private static Map<ResourceSet, ProtoFile> resourceSetDefs;
+  private static final DiagCollector diagCollector = new BoundedDiagCollector();
 
   // Object under test.
   private static ProtoParser protoParser = new ProtoParser();
@@ -61,7 +66,9 @@ public class ProtoParserTest {
     testDataLocator = TestDataLocator.create(GapicCodeGeneratorAnnotationsTest.class);
     testDataLocator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
 
-    model = CodegenTestUtil.readModel(testDataLocator, tempDir, protoFiles, new String[0]);
+    model =
+        CodegenTestUtil.readModel(
+            testDataLocator, tempDir, protoFiles, new String[] {"library.yaml"});
 
     libraryProtoFile =
         model
@@ -98,6 +105,16 @@ public class ProtoParserTest {
     libraryService = libraryProtoFile.getInterfaces().get(0);
     deleteShelfMethod = libraryService.lookupMethod("DeleteShelf");
     getBigBookMethod = libraryService.lookupMethod("GetBigBook");
+
+    resourceDefs = protoParser.getResourceDefs(Arrays.asList(libraryProtoFile), diagCollector);
+    resourceSetDefs =
+        protoParser.getResourceSetDefs(Arrays.asList(libraryProtoFile), diagCollector);
+  }
+
+  @Test
+  public void testGetPackageName() {
+    String packageName = protoParser.getPackageName(model);
+    assertThat(packageName).isEqualTo("google.example.library.v1");
   }
 
   @Test
@@ -142,41 +159,78 @@ public class ProtoParserTest {
 
   @Test
   public void testGetAllResourceDefs() {
-    DiagCollector diagCollector = new BoundedDiagCollector();
-    List<Resource> resources = protoParser.getResourceDefs(libraryProtoFile, diagCollector);
-    assertThat(resources).hasSize(4);
-    assertThat(resources)
-        .contains(Resource.newBuilder().setName("Shelf").setPath("shelves/{shelf_id}").build());
-    assertThat(resources)
-        .contains(Resource.newBuilder().setName("Project").setPath("projects/{project}").build());
-    assertThat(resources)
-        .contains(
+    // resourceDefs has already been computed in the setUp() method.
+
+    assertThat(resourceDefs).hasSize(4);
+    assertThat(resourceDefs)
+        .containsEntry(
+            Resource.newBuilder().setName("Shelf").setPath("shelves/{shelf_id}").build(),
+            libraryProtoFile);
+    assertThat(resourceDefs)
+        .containsEntry(
+            Resource.newBuilder().setName("Project").setPath("projects/{project}").build(),
+            libraryProtoFile);
+    assertThat(resourceDefs)
+        .containsEntry(
             Resource.newBuilder()
                 .setName("Book")
                 .setPath("shelves/{shelf_id}/books/{book_id}")
-                .build());
-    assertThat(resources)
-        .contains(
+                .build(),
+            libraryProtoFile);
+    assertThat(resourceDefs)
+        .containsEntry(
             Resource.newBuilder()
                 .setName("ArchivedBook")
                 .setPath("archives/{archive_path}/books/{book_id=**}")
-                .build());
+                .build(),
+            libraryProtoFile);
   }
 
   @Test
   public void testGetAllResourceSetDefs() {
-    DiagCollector diagCollector = new BoundedDiagCollector();
-    List<ResourceSet> resources = protoParser.getResourceSetDefs(libraryProtoFile, diagCollector);
-    assertThat(resources).hasSize(1);
-    assertThat(resources)
-        .contains(
+    // resourceSetDefs has already been computed in the setUp() method.
+    assertThat(resourceSetDefs).hasSize(1);
+    assertThat(resourceSetDefs)
+        .containsEntry(
             ResourceSet.newBuilder()
                 .setName("BookOneOf")
                 .addResources(
                     Resource.newBuilder().setName("DeletedBook").setPath("_deleted-book_"))
                 .addResourceReferences("ArchivedBook")
                 .addResourceReferences("Book")
-                .build());
+                .build(),
+            libraryProtoFile);
+  }
+
+  @Test
+  public void testGetResourceTypeEntityNameFromOneof() {
+    MessageType getBookFromAnywhereRequest =
+        libraryProtoFile
+            .getMessages()
+            .stream()
+            .filter(m -> m.getSimpleName().equals("GetBookFromAnywhereRequest"))
+            .findFirst()
+            .get();
+    Field nameField =
+        getBookFromAnywhereRequest
+            .getFields()
+            .stream()
+            .filter(f -> f.getSimpleName().equals("name"))
+            .findFirst()
+            .get();
+    assertThat(protoParser.getResourceReferenceName(nameField, resourceDefs, resourceSetDefs))
+        .isEqualTo("BookOneOf");
+
+    Field altBookNameField =
+        getBookFromAnywhereRequest
+            .getFields()
+            .stream()
+            .filter(f -> f.getSimpleName().equals("alt_book_name"))
+            .findFirst()
+            .get();
+    assertThat(
+            protoParser.getResourceReferenceName(altBookNameField, resourceDefs, resourceSetDefs))
+        .isEqualTo("Book");
   }
 
   @Test
@@ -231,7 +285,7 @@ public class ProtoParserTest {
             .filter(f -> f.getSimpleName().equals("name"))
             .findFirst()
             .get();
-    String shelfType = protoParser.getResourceType(shelves);
+    String shelfType = protoParser.getResourceReference(shelves);
     assertThat(shelfType).isEqualTo("Shelf");
   }
 

@@ -73,12 +73,6 @@ public class DiscoApiModel implements ApiModel {
 
   @Override
   public InterfaceModel getInterface(String interfaceName) {
-    for (InterfaceModel interfaceModel : getInterfaces()) {
-      if (interfaceModel.getSimpleName().equals(interfaceName)
-          || interfaceModel.getFullName().equals(interfaceName)) {
-        return interfaceModel;
-      }
-    }
     return null;
   }
 
@@ -109,7 +103,7 @@ public class DiscoApiModel implements ApiModel {
 
   @Override
   public boolean equals(Object o) {
-    return o != null && o instanceof DiscoApiModel && ((DiscoApiModel) o).document.equals(document);
+    return o instanceof DiscoApiModel && ((DiscoApiModel) o).document.equals(document);
   }
 
   public String getDefaultPackageName() {

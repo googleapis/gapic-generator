@@ -50,6 +50,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * A SurfaceNamer provides language-specific names for specific components of a view for a surface.
@@ -870,6 +871,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
     String entityName = resourceNameConfig.getEntityName();
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
+    // Proto annotations use UpperCamelCase for resource names,
+    // and GAPIC config uses lower_snake_case, so we have to support both formats.
+    Function<String, Name> formatNameFunc;
+    if (entityName.length() > 0 && Character.isUpperCase(entityName.charAt(0))) {
+      formatNameFunc = Name::upperCamel;
+    } else {
+      formatNameFunc = Name::anyLower;
+    }
     switch (resourceNameType) {
       case ANY:
         return getAnyResourceTypeName();
@@ -879,9 +888,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
         // with a collection config.
         entityName = StringUtil.removeSuffix(entityName, "_oneof");
-        return Name.anyLower(entityName).join("name_oneof");
+        return formatNameFunc.apply(entityName).join("name_oneof");
       case SINGLE:
-        return Name.anyLower(entityName).join("name");
+        return formatNameFunc.apply(entityName).join("name");
       case NONE:
       default:
         throw new UnsupportedOperationException("unexpected entity name type");

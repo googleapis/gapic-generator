@@ -116,7 +116,7 @@ import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.example.library.v1.stub.LibraryServiceStub;
 import com.google.example.library.v1.stub.LibraryServiceStubSettings;
@@ -4633,7 +4633,7 @@ import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
@@ -4800,7 +4800,7 @@ import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
@@ -5514,7 +5514,7 @@ import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
@@ -7582,13 +7582,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PublishSeriesFlattenedPiVersion {
-  public static void samplePublishSeries(String name, int edition) {
+  public static void samplePublishSeries(String shelfName, int edition) {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String name = "Math";
+      // String shelfName = "Math";
       // int edition = 123;
       Shelf shelf = Shelf.newBuilder()
-        .setName(name)
+        .setName(shelfName)
         .build();
       List<Book> books = new ArrayList<>();
       String seriesString = "xyz3141592654";
@@ -7614,7 +7614,7 @@ public class PublishSeriesFlattenedPiVersion {
         Option.builder("")
           .required(false)
           .hasArg(true)
-          .longOpt("name")
+          .longOpt("shelfName")
           .build());
     options.addOption(
         Option.builder("")
@@ -7624,13 +7624,13 @@ public class PublishSeriesFlattenedPiVersion {
           .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
-    String name = cl.getOptionValue("name", "Math");
+    String shelfName = cl.getOptionValue("shelfName", "Math");
     int edition =
         cl.getOptionValue("edition") != null
             ? Integer.parseInt(cl.getOptionValue("edition"))
             : 123;
 
-    samplePublishSeries(name, edition);
+    samplePublishSeries(shelfName, edition);
   }
 }
 // FIXME: Insert here clean-up code.
@@ -7689,13 +7689,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PublishSeriesRequestPiVersion {
-  public static void samplePublishSeries(String name, int edition) {
+  public static void samplePublishSeries(String shelfName, int edition) {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String name = "Math";
+      // String shelfName = "Math";
       // int edition = 123;
       Shelf shelf = Shelf.newBuilder()
-        .setName(name)
+        .setName(shelfName)
         .build();
       List<Book> books = new ArrayList<>();
       String seriesString = "xyz3141592654";
@@ -7727,7 +7727,7 @@ public class PublishSeriesRequestPiVersion {
         Option.builder("")
           .required(false)
           .hasArg(true)
-          .longOpt("name")
+          .longOpt("shelfName")
           .build());
     options.addOption(
         Option.builder("")
@@ -7737,13 +7737,13 @@ public class PublishSeriesRequestPiVersion {
           .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
-    String name = cl.getOptionValue("name", "Math");
+    String shelfName = cl.getOptionValue("shelfName", "Math");
     int edition =
         cl.getOptionValue("edition") != null
             ? Integer.parseInt(cl.getOptionValue("edition"))
             : 123;
 
-    samplePublishSeries(name, edition);
+    samplePublishSeries(shelfName, edition);
   }
 }
 // FIXME: Insert here clean-up code.
@@ -7809,13 +7809,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PublishSeriesCallableCallablePiVersion {
-  public static void samplePublishSeries(String name, int edition) {
+  public static void samplePublishSeries(String shelfName, int edition) {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String name = "Math";
+      // String shelfName = "Math";
       // int edition = 123;
       Shelf shelf = Shelf.newBuilder()
-        .setName(name)
+        .setName(shelfName)
         .build();
       List<Book> books = new ArrayList<>();
       String seriesString = "xyz3141592654";
@@ -7851,7 +7851,7 @@ public class PublishSeriesCallableCallablePiVersion {
         Option.builder("")
           .required(false)
           .hasArg(true)
-          .longOpt("name")
+          .longOpt("shelfName")
           .build());
     options.addOption(
         Option.builder("")
@@ -7861,13 +7861,13 @@ public class PublishSeriesCallableCallablePiVersion {
           .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
-    String name = cl.getOptionValue("name", "Math");
+    String shelfName = cl.getOptionValue("shelfName", "Math");
     int edition =
         cl.getOptionValue("edition") != null
             ? Integer.parseInt(cl.getOptionValue("edition"))
             : 123;
 
-    samplePublishSeries(name, edition);
+    samplePublishSeries(shelfName, edition);
   }
 }
 // FIXME: Insert here clean-up code.
@@ -8018,13 +8018,13 @@ import com.google.api.gax.rpc.StatusCode;
 import com.google.api.resourcenames.ResourceName;
 import com.google.cloud.ProjectName;
 import com.google.common.collect.Lists;
-import com.google.example.library.v1.Comment.Stage;
+import com.google.example.library.v1.Comment;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
-import com.google.example.library.v1.SomeMessage2.SomeMessage3.Alignment;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
+import com.google.example.library.v1.SomeMessage2;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Any;
@@ -9846,7 +9846,7 @@ package com.google.example.library.v1;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.example.library.v1.Book.Rating;
+import com.google.example.library.v1.Book;
 import com.google.protobuf.FieldMask;
 import java.util.Arrays;
 import java.util.List;
