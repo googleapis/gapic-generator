@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -405,10 +406,28 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
-    // Maps name of interfaces to found InterfaceConfigs from config yamls.
-    Map<String, InterfaceConfigProto> interfaceConfigProtos = new LinkedHashMap<>();
+    // Maps name of interfaces to found interfaces from proto.
+    Map<String, Interface> protoInterfaces = new LinkedHashMap<>();
 
-    // Parse config for interfaceConfigProtos.
+    // Parse proto file for interfaces.
+    for (ProtoFile file : sourceProtos) {
+      for (DescriptorProtos.ServiceDescriptorProto service : file.getProto().getServiceList()) {
+        String serviceFullName =
+            String.format("%s.%s", file.getProto().getPackage(), service.getName());
+        Interface apiInterface = symbolTable.lookupInterface(serviceFullName);
+        if (apiInterface == null) {
+          diagCollector.addDiag(
+              Diag.error(SimpleLocation.TOPLEVEL, "interface not found: %s", service.getName()));
+          continue;
+        }
+        protoInterfaces.put(serviceFullName, apiInterface);
+      }
+    }
+
+    // Maps name of interfaces to found InterfaceConfigs from config yamls.
+    Map<String, InterfaceConfigProto> interfaceConfigProtos = new HashMap<>();
+
+    // Parse GAPIC config for interfaceConfigProtos and their corresponding proto interfaces.
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
       if (apiInterface == null || !apiInterface.isReachable()) {
@@ -420,42 +439,33 @@ public abstract class GapicProductConfig implements ProductConfig {
         continue;
       }
       interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
+      protoInterfaces.put(interfaceConfigProto.getName(), apiInterface);
     }
 
-    // Parse proto file for interfaces.
-    for (ProtoFile file : sourceProtos) {
-      if (file.getProto().getServiceList().size() == 0) continue;
-      for (DescriptorProtos.ServiceDescriptorProto service : file.getProto().getServiceList()) {
-        String serviceFullName =
-            String.format("%s.%s", file.getProto().getPackage(), service.getName());
-        Interface apiInterface = symbolTable.lookupInterface(serviceFullName);
-        if (apiInterface == null) {
-          diagCollector.addDiag(
-              Diag.error(SimpleLocation.TOPLEVEL, "interface not found: %s", service.getName()));
-          continue;
-        }
-        InterfaceConfigProto interfaceConfigProto = interfaceConfigProtos.get(serviceFullName);
-        if (interfaceConfigProto == null) {
-          interfaceConfigProto = InterfaceConfigProto.getDefaultInstance();
-        }
-        String interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
+    // Generate GapicInterfaceConfigs from the proto interfaces and interfaceConfigProtos.
+    for (Entry<String, Interface> interfaceEntry : protoInterfaces.entrySet()) {
+      String serviceFullName = interfaceEntry.getKey();
+      InterfaceConfigProto interfaceConfigProto =
+          interfaceConfigProtos.getOrDefault(
+              serviceFullName, InterfaceConfigProto.getDefaultInstance());
+      Interface apiInterface = interfaceEntry.getValue();
+      String interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
 
-        GapicInterfaceConfig interfaceConfig =
-            GapicInterfaceConfig.createInterfaceConfig(
-                diagCollector,
-                language,
-                defaultPackageName,
-                interfaceConfigProto,
-                apiInterface,
-                interfaceNameOverride,
-                messageConfigs,
-                resourceNameConfigs,
-                protoParser);
-        if (interfaceConfig == null) {
-          continue;
-        }
-        interfaceConfigMap.put(serviceFullName, interfaceConfig);
+      GapicInterfaceConfig interfaceConfig =
+          GapicInterfaceConfig.createInterfaceConfig(
+              diagCollector,
+              language,
+              defaultPackageName,
+              interfaceConfigProto,
+              apiInterface,
+              interfaceNameOverride,
+              messageConfigs,
+              resourceNameConfigs,
+              protoParser);
+      if (interfaceConfig == null) {
+        continue;
       }
+      interfaceConfigMap.put(serviceFullName, interfaceConfig);
     }
 
     if (diagCollector.getErrorCount() > 0) {
