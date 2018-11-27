@@ -47,11 +47,10 @@ import com.google.protobuf.DescriptorProtos;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
@@ -407,16 +406,11 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
-    // Insertion-ordered set of interface names for which we will create GapicInterfaceConfigs.
-    Set<String> serviceNames = new LinkedHashSet<>();
-    // Maps name of interfaces to found InterfaceConfigs from config yamls.
-    Map<String, InterfaceConfigProto> interfaceConfigProtos = new HashMap<>();
     // Maps name of interfaces to found interfaces from proto.
-    Map<String, Interface> protoInterfaces = new HashMap<>();
+    Map<String, Interface> protoInterfaces = new LinkedHashMap<>();
 
     // Parse proto file for interfaces.
     for (ProtoFile file : sourceProtos) {
-      if (file.getProto().getServiceList().size() == 0) continue;
       for (DescriptorProtos.ServiceDescriptorProto service : file.getProto().getServiceList()) {
         String serviceFullName =
             String.format("%s.%s", file.getProto().getPackage(), service.getName());
@@ -427,9 +421,11 @@ public abstract class GapicProductConfig implements ProductConfig {
           continue;
         }
         protoInterfaces.put(serviceFullName, apiInterface);
-        serviceNames.add(serviceFullName);
       }
     }
+
+    // Maps name of interfaces to found InterfaceConfigs from config yamls.
+    Map<String, InterfaceConfigProto> interfaceConfigProtos = new HashMap<>();
 
     // Parse GAPIC config for interfaceConfigProtos and their corresponding proto interfaces.
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
@@ -444,16 +440,15 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
       interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
       protoInterfaces.put(interfaceConfigProto.getName(), apiInterface);
-      serviceNames.add(interfaceConfigProto.getName());
     }
 
     // Generate GapicInterfaceConfigs from the proto interfaces and interfaceConfigProtos.
-    for (String serviceFullName : serviceNames) {
-      InterfaceConfigProto interfaceConfigProto = interfaceConfigProtos.get(serviceFullName);
-      Interface apiInterface = protoInterfaces.get(serviceFullName);
-      if (interfaceConfigProto == null) {
-        interfaceConfigProto = InterfaceConfigProto.getDefaultInstance();
-      }
+    for (Entry<String, Interface> interfaceEntry : protoInterfaces.entrySet()) {
+      String serviceFullName = interfaceEntry.getKey();
+      InterfaceConfigProto interfaceConfigProto =
+          interfaceConfigProtos.getOrDefault(
+              serviceFullName, InterfaceConfigProto.getDefaultInstance());
+      Interface apiInterface = interfaceEntry.getValue();
       String interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
 
       GapicInterfaceConfig interfaceConfig =
