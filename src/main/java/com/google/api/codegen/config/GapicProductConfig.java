@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -442,11 +443,12 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     // Generate GapicInterfaceConfigs from the proto interfaces and interfaceConfigProtos.
-    for (String serviceFullName : protoInterfaces.keySet()) {
+    for (Entry<String, Interface> interfaceEntry : protoInterfaces.entrySet()) {
+      String serviceFullName = interfaceEntry.getKey();
       InterfaceConfigProto interfaceConfigProto =
           interfaceConfigProtos.getOrDefault(
               serviceFullName, InterfaceConfigProto.getDefaultInstance());
-      Interface apiInterface = protoInterfaces.get(serviceFullName);
+      Interface apiInterface = interfaceEntry.getValue();
       String interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
 
       GapicInterfaceConfig interfaceConfig =
