@@ -91,8 +91,10 @@ public abstract class GapicProductConfig implements ProductConfig {
   /** Returns the type of transport for the generated client. Defaults to Grpc. */
   public abstract TransportProtocol getTransportProtocol();
 
-  /** Returns a GapicConfigPresence whose value is determined by whether or not a GAPIC config
-   *  was provided as an input to the generator. */
+  /**
+   * Returns a GapicConfigPresence whose value is determined by whether or not a GAPIC config was
+   * provided as an input to the generator.
+   */
   public abstract GapicConfigPresence getGapicConfigPresence();
 
   /**
