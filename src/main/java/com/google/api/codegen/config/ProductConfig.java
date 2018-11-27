@@ -26,4 +26,6 @@ public interface ProductConfig {
   ImmutableList<String> getLicenseLines();
 
   InterfaceConfig getInterfaceConfig(InterfaceModel interfaceModel);
+
+  boolean hasInterfaceConfig(InterfaceModel interfaceModel);
 }

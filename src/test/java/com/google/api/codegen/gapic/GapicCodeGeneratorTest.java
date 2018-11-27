@@ -27,23 +27,23 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorTest extends GapicTestBase2 {
 
-  private final String apiName;
+  private final String[] baseNames;
 
   public GapicCodeGeneratorTest(
       TargetLanguage language,
       String[] gapicConfigFileNames,
       String packageConfigFileName,
       List<String> snippetName,
-      String apiName,
       String baseline,
-      String protoPackage) {
+      String protoPackage,
+      String[] baseNames) {
     super(
         language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline, protoPackage);
-    this.apiName = apiName;
+    this.baseNames = baseNames;
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
   }
 
-  @Parameters(name = "{5}")
+  @Parameters(name = "{4}")
   public static List<Object[]> testedConfigs() {
     return Arrays.asList(
         GapicTestBase2.createTestConfig(
@@ -93,7 +93,8 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             new String[] {"multiple_services_gapic.yaml"},
             "multiple_services_pkg2.yaml",
             "multiple_services",
-            null),
+            null,
+            "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
             new String[] {"longrunning_gapic.yaml"},
@@ -117,7 +118,8 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             new String[] {"multiple_services_gapic.yaml"},
             "multiple_services_pkg2.yaml",
             "multiple_services",
-            null),
+            null,
+            "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.NODEJS,
             new String[] {"library_gapic.yaml"},
@@ -135,7 +137,8 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             new String[] {"multiple_services_gapic.yaml"},
             "multiple_services_pkg2.yaml",
             "multiple_services",
-            null),
+            null,
+            "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.CSHARP,
             new String[] {"library_gapic.yaml"},
@@ -146,6 +149,6 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
 
   @Test
   public void test() throws Exception {
-    test(apiName);
+    test(baseNames);
   }
 }

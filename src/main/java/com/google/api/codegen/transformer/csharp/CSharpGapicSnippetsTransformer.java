@@ -36,6 +36,7 @@ import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ClientMethodType;
@@ -73,24 +74,31 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
 
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    List<ViewModel> surfaceDocs = new ArrayList<>();
+    return model
+        .getInterfaces()
+        .stream()
+        .filter(productConfig::hasInterfaceConfig)
+        .map(i -> createInterfaceContext(i, productConfig))
+        .peek(csharpCommonTransformer::addCommonImports)
+        .peek(this::addImports)
+        .map(this::generateSnippets)
+        .collect(ImmutableList.toImmutableList());
+  }
+
+  private GapicInterfaceContext createInterfaceContext(
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
+    return GapicInterfaceContext.create(
+        apiInterface,
+        productConfig,
+        csharpCommonTransformer.createTypeTable(namer.getExamplePackageName(), ALIAS_MODE),
+        namer,
+        new CSharpFeatureConfig());
+  }
 
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      GapicInterfaceContext context =
-          GapicInterfaceContext.create(
-              apiInterface,
-              productConfig,
-              csharpCommonTransformer.createTypeTable(namer.getExamplePackageName(), ALIAS_MODE),
-              namer,
-              new CSharpFeatureConfig());
-      csharpCommonTransformer.addCommonImports(context);
-      context.getImportTypeTable().saveNicknameFor("Google.Protobuf.Bytestring");
-      context.getImportTypeTable().saveNicknameFor("System.Linq.__import__");
-      surfaceDocs.add(generateSnippets(context));
-    }
-
-    return surfaceDocs;
+  private void addImports(TransformationContext context) {
+    context.getImportTypeTable().saveNicknameFor("Google.Protobuf.Bytestring");
+    context.getImportTypeTable().saveNicknameFor("System.Linq.__import__");
   }
 
   @Override

@@ -18,6 +18,7 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -29,7 +30,6 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /** Responsible for producing package metadata related views for Python */
@@ -233,13 +234,13 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
   }
 
   private boolean hasSmokeTests(ApiModel apiModel, GapicProductConfig productConfig) {
-    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
-      InterfaceContext context = createContext(apiInterface, productConfig);
-      if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        return true;
-      }
-    }
-    return false;
+    return apiModel
+        .getInterfaces()
+        .stream()
+        .map(productConfig::getInterfaceConfig)
+        .filter(Objects::nonNull)
+        .map(InterfaceConfig::getSmokeTestConfig)
+        .anyMatch(Objects::nonNull);
   }
 
   private List<PackageDependencyView> generateProtoPackageDependencies() {
@@ -296,30 +297,31 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
   //  the example methods may be configured separately.
   private List<ApiMethodView> generateExampleMethods(
       ApiModel model, GapicProductConfig productConfig) {
-    ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
-        FlatteningConfig flatteningGroup =
-            testCaseTransformer.getSmokeTestFlatteningGroup(
-                context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-        GapicMethodContext flattenedMethodContext =
-            context.asFlattenedMethodContext(method, flatteningGroup);
-        exampleMethods.add(createExampleApiMethodView(flattenedMethodContext));
-      }
-    }
-    return exampleMethods.build();
+    return model
+        .getInterfaces()
+        .stream()
+        .filter(productConfig::hasInterfaceConfig)
+        .map(i -> createContext(i, productConfig))
+        .filter(c -> c.getInterfaceConfig().getSmokeTestConfig() != null)
+        .map(this::createExampleApiMethodView)
+        .collect(ImmutableList.toImmutableList());
   }
 
-  private OptionalArrayMethodView createExampleApiMethodView(GapicMethodContext context) {
+  private OptionalArrayMethodView createExampleApiMethodView(GapicInterfaceContext context) {
+    MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    FlatteningConfig flatteningGroup =
+        testCaseTransformer.getSmokeTestFlatteningGroup(
+            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
+    GapicMethodContext flattenedMethodContext =
+        context.asFlattenedMethodContext(method, flatteningGroup);
+
     PythonMethodViewGenerator methodViewGenerator =
         new PythonMethodViewGenerator(
             new DynamicLangApiMethodTransformer(
                 new PythonApiMethodParamTransformer(),
                 new InitCodeTransformer(new PythonImportSectionTransformer())));
 
-    return methodViewGenerator.generateOneApiMethod(context);
+    return methodViewGenerator.generateOneApiMethod(flattenedMethodContext);
   }
 
   /**

@@ -36,20 +36,17 @@ import java.util.Map;
 public class MockServiceTransformer {
   public List<InterfaceModel> getGrpcInterfacesToMock(
       ApiModel model, GapicProductConfig productConfig) {
-    Map<String, InterfaceModel> interfaces = new LinkedHashMap<>();
-
     if (!productConfig.getTransportProtocol().equals(TransportProtocol.GRPC)) {
       return ImmutableList.of();
     }
 
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      if (!apiInterface.isReachable()) {
-        continue;
-      }
-      interfaces.putAll(getGrpcInterfacesForService(model, productConfig, apiInterface));
-    }
-
-    return new ArrayList<>(interfaces.values());
+    return model
+        .getInterfaces()
+        .stream()
+        .filter(productConfig::hasInterfaceConfig)
+        .filter(InterfaceModel::isReachable)
+        .flatMap(i -> getGrpcInterfacesForService(model, productConfig, i).values().stream())
+        .collect(ImmutableList.toImmutableList());
   }
 
   public Map<String, InterfaceModel> getGrpcInterfacesForService(

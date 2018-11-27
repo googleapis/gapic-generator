@@ -114,22 +114,27 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
 
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    List<ViewModel> surfaceDocs = new ArrayList<>();
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      ModelTypeTable modelTypeTable =
-          new ModelTypeTable(
-              new PhpTypeTable(productConfig.getPackageName()),
-              new PhpModelTypeNameConverter(productConfig.getPackageName()));
-      GapicInterfaceContext context =
-          GapicInterfaceContext.create(
-              apiInterface,
-              productConfig,
-              modelTypeTable,
-              new PhpSurfaceNamer(productConfig.getPackageName()),
-              new PhpFeatureConfig());
-      surfaceDocs.addAll(transform(context));
-    }
-    return surfaceDocs;
+    return model
+        .getInterfaces()
+        .stream()
+        .filter(productConfig::hasInterfaceConfig)
+        .map(i -> createInterfaceContext(i, productConfig))
+        .flatMap(c -> transform(c).stream())
+        .collect(ImmutableList.toImmutableList());
+  }
+
+  private static GapicInterfaceContext createInterfaceContext(
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
+    ModelTypeTable modelTypeTable =
+        new ModelTypeTable(
+            new PhpTypeTable(productConfig.getPackageName()),
+            new PhpModelTypeNameConverter(productConfig.getPackageName()));
+    return GapicInterfaceContext.create(
+        apiInterface,
+        productConfig,
+        modelTypeTable,
+        new PhpSurfaceNamer(productConfig.getPackageName()),
+        new PhpFeatureConfig());
   }
 
   public List<ViewModel> transform(GapicInterfaceContext context) {

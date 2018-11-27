@@ -27,11 +27,12 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
@@ -48,6 +49,7 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
+import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,28 +79,35 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
 
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    List<ViewModel> surfaceDocs = new ArrayList<>();
+    return model
+        .getInterfaces()
+        .stream()
+        .filter(productConfig::hasInterfaceConfig)
+        .map(i -> createInterfaceContext(i, productConfig))
+        .peek(csharpCommonTransformer::addCommonImports)
+        .peek(this::addImports)
+        .map(this::generateUnitTest)
+        .collect(ImmutableList.toImmutableList());
+  }
+
+  private GapicInterfaceContext createInterfaceContext(
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
+    return GapicInterfaceContext.create(
+        apiInterface,
+        productConfig,
+        csharpCommonTransformer.createTypeTable(namer.getTestPackageName(), ALIAS_MODE),
+        namer,
+        new CSharpFeatureConfig());
+  }
 
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      GapicInterfaceContext context =
-          GapicInterfaceContext.create(
-              apiInterface,
-              productConfig,
-              csharpCommonTransformer.createTypeTable(namer.getTestPackageName(), ALIAS_MODE),
-              namer,
-              new CSharpFeatureConfig());
-      csharpCommonTransformer.addCommonImports(context);
-      ModelTypeTable typeTable = context.getImportTypeTable();
-      typeTable.saveNicknameFor("Xunit.FactAttribute");
-      typeTable.saveNicknameFor("Moq.Mock");
-      if (context.getLongRunningMethods().iterator().hasNext()) {
-        typeTable.saveNicknameFor("Google.LongRunning.Operations");
-      }
-      surfaceDocs.add(generateUnitTest(context));
+  private void addImports(InterfaceContext context) {
+    ImportTypeTable typeTable = context.getImportTypeTable();
+    typeTable.saveNicknameFor("Xunit.FactAttribute");
+    typeTable.saveNicknameFor("Moq.Mock");
+    if (context.getLongRunningMethods().iterator().hasNext()) {
+      typeTable.saveNicknameFor("Google.LongRunning.Operations");
     }
-
-    return surfaceDocs;
   }
 
   @Override

@@ -16,9 +16,9 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -33,6 +33,8 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Streams;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,25 +60,24 @@ public class CSharpGapicClientPackageTransformer implements ModelToViewTransform
 
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    List<ViewModel> surfaceDocs = new ArrayList<>();
+    return Streams.findLast(
+            model.getInterfaces().stream().filter(productConfig::hasInterfaceConfig))
+        .map(i -> createInterfaceContext(i, productConfig))
+        .map(this::generateCsProjView)
+        .<List<ViewModel>>map(ImmutableList::of)
+        .orElse(ImmutableList.of());
+  }
+
+  private GapicInterfaceContext createInterfaceContext(
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
     CSharpFeatureConfig featureConfig = new CSharpFeatureConfig();
-
-    List<ProtoInterfaceModel> apiInterfaces = model.getInterfaces();
-    if (apiInterfaces.isEmpty()) {
-      return surfaceDocs;
-    }
-
-    GapicInterfaceContext context =
-        GapicInterfaceContext.create(
-            apiInterfaces.get(apiInterfaces.size() - 1),
-            productConfig,
-            csharpCommonTransformer.createTypeTable(productConfig.getPackageName(), ALIAS_MODE),
-            namer,
-            featureConfig);
-    surfaceDocs.add(generateCsProjView(context));
-
-    return surfaceDocs;
+    return GapicInterfaceContext.create(
+        apiInterface,
+        productConfig,
+        csharpCommonTransformer.createTypeTable(productConfig.getPackageName(), ALIAS_MODE),
+        namer,
+        featureConfig);
   }
 
   @Override

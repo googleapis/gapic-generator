@@ -32,6 +32,7 @@ import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -127,17 +128,18 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
   /**
    * Creates the constructor arguments to be passed onto this class (GapicTestBase2) to create test
-   * methods. The idForFactory String is passed to GapicGeneratorFactory to get the GapicGenerators
-   * provided by that id, and then the snippet file names are scraped from those generators, and a
-   * set of arguments is created for each combination of CodeGenerator x snippet that
-   * GapicGeneratorFactory returns.
+   * methods. The language is passed to GapicGeneratorFactory to get the GapicGenerators provided by
+   * that language, and then the snippet file names are scraped from those generators, and a set of
+   * arguments is created for each combination of CodeGenerator x snippet that GapicGeneratorFactory
+   * returns.
    */
   public static Object[] createTestConfig(
       TargetLanguage language,
       String[] gapicConfigFileNames,
       String packageConfigFileName,
       String apiName,
-      String protoPackage) {
+      String protoPackage,
+      String... baseNames) {
     Model model = Model.create(Service.getDefaultInstance());
     GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
     PackageMetadataConfig packageConfig = PackageMetadataConfig.createDummyPackageMetadataConfig();
@@ -155,15 +157,16 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     }
 
     String baseline = language.toString().toLowerCase() + "_" + apiName + ".baseline";
+    baseNames = Lists.asList(apiName, baseNames).toArray(new String[0]);
 
     return new Object[] {
       language,
       gapicConfigFileNames,
       packageConfigFileName,
       snippetNames,
-      apiName,
       baseline,
-      protoPackage
+      protoPackage,
+      baseNames
     };
   }
 

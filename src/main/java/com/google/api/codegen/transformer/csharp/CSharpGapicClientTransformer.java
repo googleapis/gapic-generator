@@ -116,6 +116,10 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
 
     InterfaceModel lastApiInterface = null;
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,

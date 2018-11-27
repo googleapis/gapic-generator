@@ -104,6 +104,10 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
 
     List<ViewModel> views = new ArrayList<>();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
       ImportTypeTable typeTable =
           surfaceTransformer.createTypeTable(productConfig.getPackageName());
       InterfaceContext context =

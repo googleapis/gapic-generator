@@ -90,23 +90,26 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
 
   private Iterable<ViewModel> generateSampleFiles(
       ProtoApiModel apiModel, GapicProductConfig productConfig) {
+    return apiModel
+        .getInterfaces()
+        .stream()
+        .filter(productConfig::hasInterfaceConfig)
+        .map(i -> createInterfaceContext(i, productConfig))
+        .peek(this::addApiImports)
+        .flatMap(c -> generateSampleClasses(c).stream())
+        .collect(ImmutableList.toImmutableList());
+  }
+
+  private static GapicInterfaceContext createInterfaceContext(
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     ModelTypeTable modelTypeTable =
         new ModelTypeTable(
             new PythonTypeTable(productConfig.getPackageName()),
             new PythonModelTypeNameConverter(productConfig.getPackageName()));
     SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
     FeatureConfig featureConfig = new DefaultFeatureConfig();
-    ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
-
-    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
-      GapicInterfaceContext context =
-          GapicInterfaceContext.create(
-              apiInterface, productConfig, modelTypeTable, namer, featureConfig);
-      addApiImports(context);
-      serviceSurfaces.addAll(generateSampleClasses(context));
-    }
-
-    return serviceSurfaces.build();
+    return GapicInterfaceContext.create(
+        apiInterface, productConfig, modelTypeTable, namer, featureConfig);
   }
 
   private void addApiImports(GapicInterfaceContext context) {

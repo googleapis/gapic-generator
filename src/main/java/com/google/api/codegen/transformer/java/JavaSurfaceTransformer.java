@@ -116,6 +116,10 @@ public class JavaSurfaceTransformer {
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
       boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
       ImportTypeTable typeTable =
           surfaceTransformer.createTypeTable(productConfig.getPackageName());
@@ -702,9 +706,14 @@ public class JavaSurfaceTransformer {
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
 
-    InterfaceModel firstInterface = model.getInterfaces().iterator().next();
-    String outputPath = pathMapper.getOutputPath(firstInterface.getFullName(), productConfig);
-    packageInfo.outputPath(outputPath + File.separator + "package-info.java");
+    model
+        .getInterfaces()
+        .stream()
+        .filter(productConfig::hasInterfaceConfig)
+        .map(InterfaceModel::getFullName)
+        .findFirst()
+        .map(name -> pathMapper.getOutputPath(name, productConfig))
+        .ifPresent(path -> packageInfo.outputPath(path + File.separator + "package-info.java"));
     packageInfo.releaseLevel(productConfig.getReleaseLevel());
 
     return packageInfo.build();

@@ -75,6 +75,9 @@ public class LegacyGapicGenerator implements CodeGenerator<Doc> {
     // Run the generator for each service.
     Map<String, GeneratedResult<Doc>> generated = new TreeMap<>();
     for (Interface modelInterface : ProtoModels.getInterfaces(model)) {
+      if (context.getApiConfig().getInterfaceConfig(modelInterface) == null) {
+        continue;
+      }
 
       String subPath;
       if (modelInterface == null) {

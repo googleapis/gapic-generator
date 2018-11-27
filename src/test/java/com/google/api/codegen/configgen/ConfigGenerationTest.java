@@ -87,6 +87,6 @@ public class ConfigGenerationTest extends ConfigBaselineTestCase {
 
   @Test
   public void multiple_services() throws Exception {
-    test("multiple_services");
+    test("multiple_services", "multiple_services_v2");
   }
 }
