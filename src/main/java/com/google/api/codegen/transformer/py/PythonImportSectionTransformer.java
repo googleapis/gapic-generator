@@ -199,10 +199,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     imports
         .add(generateApiImport(context.getNamer()))
         .addAll(generateProtoImports(context, specItemNodes));
-    boolean importIOUtility =
+    boolean needIOUtility =
         Streams.stream(specItemNodes)
             .anyMatch(node -> node.getLineType() == InitCodeLineType.ReadFileInitLine);
-    if (importIOUtility) {
+    if (needIOUtility) {
       imports.addAll(generateIOUtilityImports());
     }
     return imports.build();

@@ -35,10 +35,10 @@ public class StandardImportSectionTransformer implements ImportSectionTransforme
   @Override
   public ImportSectionView generateImportSection(
       MethodContext context, Iterable<InitCodeNode> specItemNodes) {
-    boolean importIOUtility =
+    boolean needIOUtility =
         Streams.stream(specItemNodes)
             .anyMatch(node -> node.getLineType() == InitCodeLineType.ReadFileInitLine);
-    if (importIOUtility) {
+    if (needIOUtility) {
       generateIOUtilityImports(context);
     }
     return generateImportSection(context.getTypeTable().getImports(), null);
