@@ -203,7 +203,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         Streams.stream(specItemNodes)
             .anyMatch(node -> node.getLineType() == InitCodeLineType.ReadFileInitLine);
     if (needIOUtility) {
-      imports.addAll(generateIOUtilityImports());
+      imports.add(createImport("io"));
     }
     return imports.build();
   }
@@ -531,9 +531,5 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     imports.add(createImport("os"));
     Collections.sort(imports, importFileViewComparator());
     return imports;
-  }
-
-  private List<ImportFileView> generateIOUtilityImports() {
-    return ImmutableList.of(createImport("io"));
   }
 }
