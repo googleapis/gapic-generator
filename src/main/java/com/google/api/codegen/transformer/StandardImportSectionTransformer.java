@@ -23,7 +23,6 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
-import java.util.List;
 import java.util.Map;
 
 /** fmt */
@@ -39,18 +38,10 @@ public class StandardImportSectionTransformer implements ImportSectionTransforme
     boolean importIOUtility =
         Streams.stream(specItemNodes)
             .anyMatch(node -> node.getLineType() == InitCodeLineType.ReadFileInitLine);
-    ImportSectionView view = generateImportSection(context.getTypeTable().getImports(), null);
     if (importIOUtility) {
-      view =
-          view.toBuilder()
-              .appImports(
-                  ImmutableList.<ImportFileView>builder()
-                      .addAll(view.appImports())
-                      .addAll(generateIOUtilityImports())
-                      .build())
-              .build();
+      generateIOUtilityImports(context);
     }
-    return view;
+    return generateImportSection(context.getTypeTable().getImports(), null);
   }
 
   public ImportSectionView generateImportSection(
@@ -107,35 +98,10 @@ public class StandardImportSectionTransformer implements ImportSectionTransforme
     return true;
   }
 
-  private static List<ImportFileView> generateIOUtilityImports() {
-    ImportTypeView file =
-        ImportTypeView.newBuilder()
-            .fullName("java.nio.File")
-            .nickname("File")
-            .type(ImportType.SimpleImport)
-            .build();
-    ImportTypeView files =
-        ImportTypeView.newBuilder()
-            .fullName("java.nio.Files")
-            .nickname("Files")
-            .type(ImportType.SimpleImport)
-            .build();
-    ImportTypeView path =
-        ImportTypeView.newBuilder()
-            .fullName("java.nio.Path")
-            .nickname("Path")
-            .type(ImportType.SimpleImport)
-            .build();
-    ImportTypeView paths =
-        ImportTypeView.newBuilder()
-            .fullName("java.nio.Paths")
-            .nickname("Paths")
-            .type(ImportType.SimpleImport)
-            .build();
-    return ImmutableList.of(
-        ImportFileView.newBuilder()
-            .moduleName("java.nio")
-            .types(ImmutableList.of(file, files, path, paths))
-            .build());
+  private static void generateIOUtilityImports(MethodContext context) {
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.File");
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.Files");
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.Path");
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.Paths");
   }
 }

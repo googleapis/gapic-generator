@@ -56,24 +56,9 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   @Override
   public ImportSectionView generateImportSection(
       MethodContext context, Iterable<InitCodeNode> specItemNodes) {
-    boolean importIOUtility =
-        Streams.stream(specItemNodes)
-            .anyMatch(node -> node.getLineType() == InitCodeLineType.ReadFileInitLine);
-    ImportSectionView view =
-        ImportSectionView.newBuilder()
-            .appImports(generateInitCodeAppImports(((GapicMethodContext) context), specItemNodes))
-            .build();
-    if (importIOUtility) {
-      view =
-          view.toBuilder()
-              .appImports(
-                  ImmutableList.<ImportFileView>builder()
-                      .addAll(view.appImports())
-                      .addAll(generateIOUtilityImports())
-                      .build())
-              .build();
-    }
-    return view;
+    return ImportSectionView.newBuilder()
+        .appImports(generateInitCodeAppImports(((GapicMethodContext) context), specItemNodes))
+        .build();
   }
 
   public ImportSectionView generateTestImportSection(GapicInterfaceContext context) {
@@ -210,10 +195,17 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
   private List<ImportFileView> generateInitCodeAppImports(
       GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
-    return ImmutableList.<ImportFileView>builder()
+    ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
+    imports
         .add(generateApiImport(context.getNamer()))
-        .addAll(generateProtoImports(context, specItemNodes))
-        .build();
+        .addAll(generateProtoImports(context, specItemNodes));
+    boolean importIOUtility =
+        Streams.stream(specItemNodes)
+            .anyMatch(node -> node.getLineType() == InitCodeLineType.ReadFileInitLine);
+    if (importIOUtility) {
+      imports.addAll(generateIOUtilityImports());
+    }
+    return imports.build();
   }
 
   private ImportFileView generateApiImport(SurfaceNamer namer) {

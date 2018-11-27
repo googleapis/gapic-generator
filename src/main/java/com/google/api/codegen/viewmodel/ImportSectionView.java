@@ -52,16 +52,6 @@ public abstract class ImportSectionView {
         .serviceImports(ImmutableList.<ImportFileView>of());
   }
 
-  public Builder toBuilder() {
-    return new AutoValue_ImportSectionView.Builder()
-        .standardImports(standardImports())
-        .externalImports(externalImports())
-        .appImports(appImports())
-        .localImports(localImports())
-        .sharedImports(sharedImports())
-        .serviceImports(serviceImports());
-  }
-
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder standardImports(List<ImportFileView> val);

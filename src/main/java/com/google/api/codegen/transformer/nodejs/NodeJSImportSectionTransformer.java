@@ -24,6 +24,7 @@ import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.TransformationContext;
+import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
@@ -43,23 +44,14 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
   @Override
   public ImportSectionView generateImportSection(
       MethodContext context, Iterable<InitCodeNode> specItemNodes) {
-    ImportSectionView view =
-        new StandardImportSectionTransformer()
-            .generateImportSection(context.getTypeTable().getImports(), null);
     boolean importIOUtility =
         Streams.stream(specItemNodes)
             .anyMatch(node -> node.getLineType() == InitCodeLineType.ReadFileInitLine);
     if (importIOUtility) {
-      view =
-          view.toBuilder()
-              .appImports(
-                  ImmutableList.<ImportFileView>builder()
-                      .addAll(view.appImports())
-                      .addAll(generateIOUtilityImports())
-                      .build())
-              .build();
+      context.getTypeTable().getAndSaveNicknameFor(TypeAlias.create("fs", "fs"));
     }
-    return view;
+    return new StandardImportSectionTransformer()
+        .generateImportSection(context.getTypeTable().getImports(), null);
   }
 
   private List<ImportFileView> generateExternalImports(InterfaceContext context) {
