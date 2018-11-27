@@ -50,8 +50,7 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
     if (needIOUtility) {
       context.getTypeTable().getAndSaveNicknameFor(TypeAlias.create("fs", "fs"));
     }
-    return new StandardImportSectionTransformer()
-        .generateImportSection(context.getTypeTable().getImports(), null);
+    return new StandardImportSectionTransformer().generateImportSection(context, specItemNodes);
   }
 
   private List<ImportFileView> generateExternalImports(InterfaceContext context) {
@@ -68,10 +67,6 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
       imports.add(createImport("protobuf", "protobufjs"));
     }
     return imports.build();
-  }
-
-  private List<ImportFileView> generateIOUtilityImports() {
-    return ImmutableList.of(createImport("fs", "fs"));
   }
 
   private ImportFileView createImport(String localName, String moduleName) {

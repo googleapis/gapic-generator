@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
 import java.util.Map;
 
-/** fmt */
 public class StandardImportSectionTransformer implements ImportSectionTransformer {
   @Override
   public ImportSectionView generateImportSection(TransformationContext context, String className) {
