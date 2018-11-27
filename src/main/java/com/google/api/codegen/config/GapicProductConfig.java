@@ -407,6 +407,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
+    // Insertion-ordered set of interface names for which we will create GapicInterfaceConfigs.
     Set<String> serviceNames = new LinkedHashSet<>();
     // Maps name of interfaces to found InterfaceConfigs from config yamls.
     Map<String, InterfaceConfigProto> interfaceConfigProtos = new HashMap<>();
@@ -430,7 +431,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
 
-    // Parse config for interfaceConfigProtos.
+    // Parse GAPIC config for interfaceConfigProtos and their corresponding proto interfaces.
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
       if (apiInterface == null || !apiInterface.isReachable()) {
@@ -446,7 +447,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       serviceNames.add(interfaceConfigProto.getName());
     }
 
-    // Generate GapicInterfaceConfigs for the found proto interfaces and interfaceConfigProtos
+    // Generate GapicInterfaceConfigs from the proto interfaces and interfaceConfigProtos.
     for (String serviceFullName : serviceNames) {
       InterfaceConfigProto interfaceConfigProto = interfaceConfigProtos.get(serviceFullName);
       Interface apiInterface = protoInterfaces.get(serviceFullName);
