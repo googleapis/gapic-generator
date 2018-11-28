@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -85,11 +86,11 @@ public class RetryCodesConfig {
   public static RetryCodesConfig create(
       DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
-      Collection<Method> methodsToSurface,
+      List<Method> methodsToGenerate,
       ProtoParser protoParser) {
     RetryCodesConfig retryCodesConfig = new RetryCodesConfig();
     retryCodesConfig.populateRetryCodesDefinition(
-        diagCollector, interfaceConfigProto, methodsToSurface, protoParser);
+        diagCollector, interfaceConfigProto, methodsToGenerate, protoParser);
     if (retryCodesConfig.error) {
       return null;
     }
@@ -148,9 +149,8 @@ public class RetryCodesConfig {
   private void populateRetryCodesDefinition(
       DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
-      Collection<Method> methodsToCreateConfigsFor,
+      Collection<Method> methodsToGenerate,
       ProtoParser protoParser) {
-
     // First create the retry codes definitions from the GAPIC config.
     populateRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
     if (error) {
@@ -159,7 +159,7 @@ public class RetryCodesConfig {
 
     // Then create the retry codes defs from the proto annotations, but don't overwrite
     // existing retry codes defs from the GAPIC config.
-    populateRetryCodesDefinitionWithProtoFile(methodsToCreateConfigsFor, protoParser);
+    populateRetryCodesDefinitionWithProtoFile(methodsToGenerate, protoParser);
   }
 
   /**
