@@ -25,12 +25,20 @@ import java.util.Map;
 @AutoValue
 public abstract class GapicInterfaceInput {
 
+  /** The Interface to generate a client for. */
   public abstract Interface getInterface();
 
+  /** The full name of the Interface service. */
+  String getServiceFullName() {
+    return getInterface().getFullName();
+  }
+
+  /** A non-null but possibly empty InterfaceConfigProto. */
   public abstract InterfaceConfigProto getInterfaceConfigProto();
 
   /**
    * Get this client's appropriately-rerouted methods and their corresponding GAPIC method configs.
+   * This map contains only methods that will be generated on the surface.
    */
   public abstract Map<Method, MethodConfigProto> getMethodsToGenerate();
 

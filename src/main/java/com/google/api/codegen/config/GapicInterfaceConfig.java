@@ -106,13 +106,15 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       DiagCollector diagCollector,
       TargetLanguage language,
       String defaultPackageName,
-      InterfaceConfigProto interfaceConfigProto,
-      Interface apiInterface,
+      GapicInterfaceInput interfaceInput,
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Map<Method, MethodConfigProto> methodsToGenerate,
       ProtoParser protoParser) {
+
+    Interface apiInterface = interfaceInput.getInterface();
+    Map<Method, MethodConfigProto> methodsToGenerate = interfaceInput.getMethodsToGenerate();
+    InterfaceConfigProto interfaceConfigProto = interfaceInput.getInterfaceConfigProto();
 
     RetryCodesConfig retryCodesConfig =
         RetryCodesConfig.create(

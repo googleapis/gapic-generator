@@ -540,11 +540,8 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
     for (GapicInterfaceInput interfaceInput : interfaceInputs) {
-      Interface apiInterface = interfaceInput.getInterface();
-      Map<Method, MethodConfigProto> clientMethodsToGenerate =
-          interfaceInput.getMethodsToGenerate();
-      InterfaceConfigProto interfaceConfigProto = interfaceInput.getInterfaceConfigProto();
-      String serviceFullName = apiInterface.getFullName();
+
+      String serviceFullName = interfaceInput.getServiceFullName();
       String interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
 
       GapicInterfaceConfig interfaceConfig =
@@ -552,12 +549,10 @@ public abstract class GapicProductConfig implements ProductConfig {
               diagCollector,
               language,
               defaultPackageName,
-              interfaceConfigProto,
-              apiInterface,
+              interfaceInput,
               interfaceNameOverride,
               messageConfigs,
               resourceNameConfigs,
-              clientMethodsToGenerate,
               protoParser);
       if (interfaceConfig == null) {
         continue;
