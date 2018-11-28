@@ -228,6 +228,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       clientPackageName = settings.getPackageName();
     }
 
+    // Collect the interfaces (clients) and methods that we will generate on the surface.
+    // Not all methods defined in the protofiles will be generated on the surface.
     ImmutableMap<Interface, InterfaceConfigProto> interfacesMap =
         createInterfacesMap(
             diagCollector, configProto.getInterfacesList(), sourceProtos, model.getSymbolTable());
@@ -447,7 +449,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       protoInterfaces.put(interfaceConfigProto.getName(), apiInterface);
     }
 
-    // Parse proto file for interfaces.
+    // Store each Interface with its corresponding InterfaceConfigProto,
+    // or an empty one if it does not exist.
     for (Entry<String, Interface> interfaceEntry : protoInterfaces.entrySet()) {
       String serviceFullName = interfaceEntry.getKey();
       InterfaceConfigProto interfaceConfigProto =
