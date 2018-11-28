@@ -151,11 +151,14 @@ public class RetryCodesConfig {
       Collection<Method> methodsToCreateConfigsFor,
       ProtoParser protoParser) {
 
+    // First create the retry codes definitions from the GAPIC config.
     populateRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
     if (error) {
       return;
     }
 
+    // Then create the retry codes defs from the proto annotations, but don't overwrite
+    // existing retry codes defs from the GAPIC config.
     populateRetryCodesDefinitionWithProtoFile(methodsToCreateConfigsFor, protoParser);
   }
 
