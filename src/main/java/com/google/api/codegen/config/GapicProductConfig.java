@@ -230,17 +230,21 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     // Collect the interfaces (clients) and methods that we will generate on the surface.
     // Not all methods defined in the protofiles will be generated on the surface.
-    ImmutableMap<Interface, InterfaceConfigProto> interfacesMap =
+    ImmutableList<GapicInterfaceInput> interfaceInputs =
         createInterfacesMap(
-            diagCollector, configProto.getInterfacesList(), sourceProtos, model.getSymbolTable());
-    ImmutableMap<Method, MethodConfigProto> methodsMap =
-        createMethodsMap(interfacesMap, diagCollector, configPresence);
+            diagCollector,
+            configProto.getInterfacesList(),
+            sourceProtos,
+            model.getSymbolTable(),
+            configPresence);
+    if (interfaceInputs == null) {
+      return null;
+    }
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
             diagCollector,
-            interfacesMap,
-            methodsMap,
+            interfaceInputs,
             defaultPackage,
             settings,
             messageConfigs,
@@ -403,12 +407,13 @@ public abstract class GapicProductConfig implements ProductConfig {
         configSchemaVersion);
   }
 
-  /** Return the list of clients to be generated, and their corresponding InterfaceConfigProtos. */
-  private static ImmutableMap<Interface, InterfaceConfigProto> createInterfacesMap(
+  /** Return the list of information about clients to be generated. */
+  private static ImmutableList<GapicInterfaceInput> createInterfacesMap(
       DiagCollector diagCollector,
       List<InterfaceConfigProto> interfaceConfigProtosList,
       List<ProtoFile> sourceProtos,
-      SymbolTable symbolTable) {
+      SymbolTable symbolTable,
+      boolean gapicConfigPresent) {
 
     // Maps name of interfaces to found interfaces from proto.
     Map<String, Interface> protoInterfaces = new LinkedHashMap<>();
@@ -460,14 +465,32 @@ public abstract class GapicProductConfig implements ProductConfig {
       interfaceMap.put(apiInterface, interfaceConfigProto);
     }
 
-    return interfaceMap.build();
+    ImmutableList.Builder<GapicInterfaceInput> interfaceInputs = ImmutableList.builder();
+    for (Entry<Interface, InterfaceConfigProto> interfaceEntry : interfaceMap.build().entrySet()) {
+      Interface apiInterface = interfaceEntry.getKey();
+      InterfaceConfigProto interfaceConfigProto = interfaceEntry.getValue();
+      GapicInterfaceInput interfaceInput =
+          createInterfaceInput(
+              apiInterface, interfaceConfigProto, diagCollector, gapicConfigPresent);
+      if (interfaceInput == null) {
+        return null;
+      }
+      interfaceInputs.add(interfaceInput);
+    }
+
+    return interfaceInputs.build();
   }
 
-  /** Return the list of methods to be generated, and their corresponding MethodConfigProtos. */
-  private static ImmutableMap<Method, MethodConfigProto> createMethodsMap(
-      ImmutableMap<Interface, InterfaceConfigProto> interfaces,
+  /** Return a data object representing the generated surface of a client. */
+  private static GapicInterfaceInput createInterfaceInput(
+      Interface apiInterface,
+      InterfaceConfigProto interfaceConfigProto,
       DiagCollector diagCollector,
       boolean gapicConfigPresent) {
+    GapicInterfaceInput.Builder clientConfig = GapicInterfaceInput.newBuilder();
+    clientConfig.setInterface(apiInterface);
+    clientConfig.setInterfaceConfigProto(interfaceConfigProto);
+
     ImmutableMap.Builder<Method, MethodConfigProto> methodsToSurface = ImmutableMap.builder();
 
     if (!gapicConfigPresent) {
@@ -475,22 +498,10 @@ public abstract class GapicProductConfig implements ProductConfig {
       // from protofile even if they aren't included in the GAPIC config.
 
       // If the GAPIC config is empty, just generate all methods from the Protofile.
-      interfaces
-          .keySet()
-          .stream()
-          .forEach(
-              i ->
-                  i.getMethods()
-                      .forEach(
-                          m -> methodsToSurface.put(m, MethodConfigProto.getDefaultInstance())));
-      return methodsToSurface.build();
-    }
-
-    for (Entry<Interface, InterfaceConfigProto> interfaceEntry : interfaces.entrySet()) {
-      Interface apiInterface = interfaceEntry.getKey();
-
-      InterfaceConfigProto interfaceConfigProto = interfaceEntry.getValue();
-
+      apiInterface
+          .getMethods()
+          .forEach(m -> methodsToSurface.put(m, MethodConfigProto.getDefaultInstance()));
+    } else {
       // Get the set of methods defined by the GAPIC config. Only these methods will be generated.
       for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
         Interface targetInterface =
@@ -508,16 +519,17 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
 
+    clientConfig.setMethodsToGenerate(methodsToSurface.build());
+
     if (diagCollector.getErrorCount() > 0) {
       return null;
     }
-    return methodsToSurface.build();
+    return clientConfig.build();
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
       DiagCollector diagCollector,
-      Map<Interface, InterfaceConfigProto> interfacesMap,
-      Map<Method, MethodConfigProto> methodsToSurfaceMap,
+      List<GapicInterfaceInput> interfaceInputs,
       String defaultPackageName,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
@@ -527,9 +539,11 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
-    for (Entry<Interface, InterfaceConfigProto> interfaceEntry : interfacesMap.entrySet()) {
-      Interface apiInterface = interfaceEntry.getKey();
-      InterfaceConfigProto interfaceConfigProto = interfaceEntry.getValue();
+    for (GapicInterfaceInput interfaceInput : interfaceInputs) {
+      Interface apiInterface = interfaceInput.getInterface();
+      Map<Method, MethodConfigProto> clientMethodsToGenerate =
+          interfaceInput.getMethodsToGenerate();
+      InterfaceConfigProto interfaceConfigProto = interfaceInput.getInterfaceConfigProto();
       String serviceFullName = apiInterface.getFullName();
       String interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
 
@@ -543,7 +557,7 @@ public abstract class GapicProductConfig implements ProductConfig {
               interfaceNameOverride,
               messageConfigs,
               resourceNameConfigs,
-              methodsToSurfaceMap,
+              clientMethodsToGenerate,
               protoParser);
       if (interfaceConfig == null) {
         continue;
