@@ -215,7 +215,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       DiagCollector diagCollector,
       TargetLanguage language,
       String defaultPackageName,
-      Map<Method, MethodConfigProto> methodsToSurface,
+      Map<Method, MethodConfigProto> methodsToGenerate,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
@@ -223,7 +223,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ProtoParser protoParser) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new TreeMap<>();
 
-    for (Entry<Method, MethodConfigProto> methodEntry : methodsToSurface.entrySet()) {
+    for (Entry<Method, MethodConfigProto> methodEntry : methodsToGenerate.entrySet()) {
       MethodConfigProto methodConfigProto = methodEntry.getValue();
       Method method = methodEntry.getKey();
       GapicMethodConfig methodConfig =
@@ -251,11 +251,11 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  /** Return a list of configs for method in the order given by the GAPIC config interface. */
+  /** Return a list of configs for method in the order given by the GAPIC interface config. */
   static <T> List<T> createMethodConfigs(
       ImmutableMap<String, T> methodConfigMap, InterfaceConfigProto interfaceConfigProto) {
     if (interfaceConfigProto.equals(InterfaceConfigProto.getDefaultInstance())) {
-      // InterfaceConfigProto was not given, so just return the order of methodConfigMap.
+      // InterfaceConfigProto was not given, so just return the order in methodConfigMap.
       return methodConfigMap.values().asList();
     }
     List<T> methodConfigs = new ArrayList<>();

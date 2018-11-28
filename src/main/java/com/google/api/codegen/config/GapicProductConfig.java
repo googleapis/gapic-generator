@@ -54,7 +54,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 
@@ -402,10 +401,11 @@ public abstract class GapicProductConfig implements ProductConfig {
         configSchemaVersion);
   }
 
+  /** Return the list of clients to be generated, and their corresponding InterfaceConfigProtos. */
   private static ImmutableMap<Interface, InterfaceConfigProto> createInterfacesMap(
       DiagCollector diagCollector,
       List<InterfaceConfigProto> interfaceConfigProtosList,
-      @Nonnull List<ProtoFile> sourceProtos,
+      List<ProtoFile> sourceProtos,
       SymbolTable symbolTable) {
 
     // Return value; maps interfaces to their corresponding InterfaceConfigProto.
@@ -449,49 +449,55 @@ public abstract class GapicProductConfig implements ProductConfig {
     return interfaceMap.build();
   }
 
+  /** Return the list of methods to be generated, and their corresponding MethodConfigProtos. */
   private static ImmutableMap<Method, MethodConfigProto> createMethodsMap(
       Map<Interface, InterfaceConfigProto> interfaces,
       DiagCollector diagCollector,
       boolean gapicConfigPresent) {
     ImmutableMap.Builder<Method, MethodConfigProto> methodsToSurface = ImmutableMap.builder();
 
+    if (!gapicConfigPresent) {
+      // TODO(andrealin): After migration off GAPIC config is complete; generate all methods
+      // from protofile even if they aren't included in the GAPIC config.
+
+      // If the GAPIC config is empty, just generate all methods from the Protofile.
+      interfaces
+          .keySet()
+          .stream()
+          .forEach(
+              i ->
+                  i.getMethods()
+                      .forEach(
+                          m -> methodsToSurface.put(m, MethodConfigProto.getDefaultInstance())));
+      return methodsToSurface.build();
+    }
+
     for (Entry<Interface, InterfaceConfigProto> interfaceEntry : interfaces.entrySet()) {
       Interface apiInterface = interfaceEntry.getKey();
 
-      if (!gapicConfigPresent) {
-        // TODO(andrealin): After migration off GAPIC config is complete; generate all methods
-        // from protofile even if they aren 't included in the GAPIC config.
+      InterfaceConfigProto interfaceConfigProto = interfaceEntry.getValue();
 
-        // If the GAPIC config is empty, just generate all methods from the Protofile.
-        apiInterface
-            .getMethods()
-            .forEach(m -> methodsToSurface.put(m, MethodConfigProto.getDefaultInstance()));
-      } else {
-        InterfaceConfigProto interfaceConfigProto = interfaceEntry.getValue();
+      // Get the set of methods defined by the GAPIC config. Only these methods will be generated.
+      for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
+        Interface targetInterface =
+            GapicInterfaceConfig.getTargetInterface(
+                apiInterface, methodConfigProto.getRerouteToGrpcInterface());
+        Method protoMethod = targetInterface.lookupMethod(methodConfigProto.getName());
 
-        // Get the set of methods defined by the GAPIC config. Only these methods will be generated.
-        for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-          Interface targetInterface =
-              GapicInterfaceConfig.getTargetInterface(
-                  apiInterface, methodConfigProto.getRerouteToGrpcInterface());
-          Method protoMethod = targetInterface.lookupMethod(methodConfigProto.getName());
-
-          if (protoMethod == null) {
-            diagCollector.addDiag(
-                Diag.error(
-                    SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
-            continue;
-          }
-          methodsToSurface.put(protoMethod, methodConfigProto);
+        if (protoMethod == null) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
+          continue;
         }
+        methodsToSurface.put(protoMethod, methodConfigProto);
       }
     }
 
     if (diagCollector.getErrorCount() > 0) {
       return null;
-    } else {
-      return methodsToSurface.build();
     }
+    return methodsToSurface.build();
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
@@ -927,25 +933,4 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
     return null;
   }
-
-  // static <T> List<T> createMethodConfigs(
-  //     ImmutableMap<String, T> methodConfigMap,
-  //     InterfaceConfigProto interfaceConfigProto) {
-  //
-  //   // TODO(andrealin): After migration from GAPIC config, add in methods that aren't defined
-  //   // in the GAPIC config but are defined in the source protos.
-  //
-  //   if (gapicConfigPresence == GapicConfigPresence.PROVIDED) {
-  //     // Add in methods that aren't defined in the source protos but are defined in the GAPIC
-  //     // config.
-  //     return interfaceConfigProto
-  //         .getMethodsList()
-  //         .stream()
-  //         .map(m -> methodConfigMap.get(m.getName()))
-  //         .collect(Collectors.toList());
-  //   } else {
-  //     // No GAPIC config given, so use all MethodConfigs generated from Protofile.
-  //     return new ArrayList<>(methodConfigMap.values());
-  //   }
-  // }
 }
