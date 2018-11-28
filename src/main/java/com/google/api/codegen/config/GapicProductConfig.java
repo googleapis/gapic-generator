@@ -385,7 +385,6 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   /** Creates an GapicProductConfig with fixed content. Exposed for testing. */
-  @VisibleForTesting
   private static GapicProductConfig createDummyInstance(
       ImmutableMap<String, InterfaceConfig> interfaceConfigMap,
       String packageName,
@@ -460,62 +459,72 @@ public abstract class GapicProductConfig implements ProductConfig {
               serviceFullName, InterfaceConfigProto.getDefaultInstance());
       Interface apiInterface = interfaceEntry.getValue();
 
-      GapicInterfaceInput interfaceInput =
-          createInterfaceInput(
-              apiInterface, interfaceConfigProto, diagCollector, gapicConfigPresent);
-      if (interfaceInput == null) {
+      GapicInterfaceInput.Builder interfaceInput = GapicInterfaceInput.newBuilder();
+      interfaceInput.setInterface(apiInterface);
+      interfaceInput.setInterfaceConfigProto(interfaceConfigProto);
+
+      Map<Method, MethodConfigProto> methodsToGenerate;
+      if (gapicConfigPresent) {
+        methodsToGenerate =
+            findMethodsToGenerateWithConfigYaml(apiInterface, interfaceConfigProto, diagCollector);
+      } else {
+        methodsToGenerate = findMethodsToGenerateWithoutConfigYaml(apiInterface);
+      }
+      if (methodsToGenerate == null) {
         return null;
       }
-      interfaceInputs.add(interfaceInput);
+      interfaceInput.setMethodsToGenerate(methodsToGenerate);
+      interfaceInputs.add(interfaceInput.build());
     }
 
     return interfaceInputs.build();
   }
 
-  /** Return a data object containing the client entities to be generated. */
-  private static GapicInterfaceInput createInterfaceInput(
-      Interface apiInterface,
-      InterfaceConfigProto interfaceConfigProto,
-      DiagCollector diagCollector,
-      boolean gapicConfigPresent) {
-    GapicInterfaceInput.Builder clientConfig = GapicInterfaceInput.newBuilder();
-    clientConfig.setInterface(apiInterface);
-    clientConfig.setInterfaceConfigProto(interfaceConfigProto);
-
+  /** Find the methods that should be generated on the surface when no GAPIC config was given. */
+  private static ImmutableMap<Method, MethodConfigProto> findMethodsToGenerateWithoutConfigYaml(
+      Interface apiInterface) {
     ImmutableMap.Builder<Method, MethodConfigProto> methodsToSurface = ImmutableMap.builder();
 
-    if (!gapicConfigPresent) {
-      // TODO(andrealin): After migration off GAPIC config is complete; generate all methods
-      // from protofile even if they aren't included in the GAPIC config.
+    // TODO(andrealin): After migration off GAPIC config is complete; generate all methods
+    // from protofile even if they aren't included in the GAPIC config.
 
-      // If the GAPIC config is empty, just generate all methods from the Protofile.
-      apiInterface
-          .getMethods()
-          .forEach(m -> methodsToSurface.put(m, MethodConfigProto.getDefaultInstance()));
-    } else {
-      // Get the set of methods defined by the GAPIC config. Only these methods will be generated.
-      for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-        Interface targetInterface =
-            GapicInterfaceConfig.getTargetInterface(
-                apiInterface, methodConfigProto.getRerouteToGrpcInterface());
-        Method protoMethod = targetInterface.lookupMethod(methodConfigProto.getName());
+    // Just generate all methods defined in the protos.
+    apiInterface
+        .getMethods()
+        .forEach(m -> methodsToSurface.put(m, MethodConfigProto.getDefaultInstance()));
 
-        if (protoMethod == null) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
-          continue;
-        }
-        methodsToSurface.put(protoMethod, methodConfigProto);
+    return methodsToSurface.build();
+  }
+
+  /** Find the methods that should be generated on the surface when a GAPIC config was given. */
+  @Nullable
+  private static ImmutableMap<Method, MethodConfigProto> findMethodsToGenerateWithConfigYaml(
+      Interface apiInterface,
+      InterfaceConfigProto interfaceConfigProto,
+      DiagCollector diagCollector) {
+    ImmutableMap.Builder<Method, MethodConfigProto> methodsToSurface = ImmutableMap.builder();
+
+    // Get the set of methods defined by the GAPIC config. Only these methods will be generated.
+    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
+      Interface targetInterface =
+          GapicInterfaceConfig.getTargetInterface(
+              apiInterface, methodConfigProto.getRerouteToGrpcInterface());
+      Method protoMethod = targetInterface.lookupMethod(methodConfigProto.getName());
+
+      if (protoMethod == null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
+        continue;
       }
+      methodsToSurface.put(protoMethod, methodConfigProto);
     }
-
-    clientConfig.setMethodsToGenerate(methodsToSurface.build());
 
     if (diagCollector.getErrorCount() > 0) {
       return null;
     }
-    return clientConfig.build();
+
+    return methodsToSurface.build();
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
