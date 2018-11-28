@@ -22,7 +22,6 @@ import static com.google.rpc.Code.RESOURCE_EXHAUSTED;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
-import com.google.api.codegen.config.GapicProductConfig.GapicConfigPresence;
 import com.google.api.codegen.config.RetryCodesConfig;
 import com.google.api.codegen.configgen.transformer.RetryTransformer;
 import com.google.api.codegen.util.ProtoParser;
@@ -109,11 +108,7 @@ public class RetryDefinitionsTransformerTest {
 
     RetryCodesConfig retryCodesConfig =
         RetryCodesConfig.create(
-            diagCollector,
-            interfaceConfigProto,
-            apiInterface,
-            protoParser,
-            GapicConfigPresence.PROVIDED);
+            diagCollector, interfaceConfigProto, apiInterface.getMethods(), protoParser);
 
     Map<String, ImmutableList<String>> retryCodesDef = retryCodesConfig.getRetryCodesDefinition();
     Map<String, String> retryCodesMap = retryCodesConfig.getMethodRetryNames();
@@ -162,11 +157,7 @@ public class RetryDefinitionsTransformerTest {
 
     RetryCodesConfig retryCodesConfig =
         RetryCodesConfig.create(
-            diagCollector,
-            bareBonesConfigProto,
-            apiInterface,
-            protoParser,
-            GapicConfigPresence.NOT_PROVIDED);
+            diagCollector, bareBonesConfigProto, apiInterface.getMethods(), protoParser);
 
     Map<String, ImmutableList<String>> retryCodesDef = retryCodesConfig.getRetryCodesDefinition();
     Map<String, String> retryCodesMap = retryCodesConfig.getMethodRetryNames();
