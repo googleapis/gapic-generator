@@ -137,8 +137,6 @@ public abstract class FlatteningConfig {
     flatteningConfigs.putAll(flatteningConfigsFromProtoFile);
     flatteningConfigs.putAll(flatteningConfigsFromGapicConfig);
 
-    flatteningConfigs.putAll(flatteningConfigsFromGapicConfig);
-
     return ImmutableList.copyOf(flatteningConfigs.values());
   }
 

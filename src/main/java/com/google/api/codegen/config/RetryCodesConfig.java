@@ -20,26 +20,21 @@ import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETR
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
-import com.google.api.codegen.config.GapicProductConfig.GapicConfigPresence;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 public class RetryCodesConfig {
 
@@ -54,8 +49,6 @@ public class RetryCodesConfig {
   private ImmutableMap<String, ImmutableList<String>> finalRetryCodesDefinition;
   private ImmutableMap<String, String> finalMethodRetryNames;
   private boolean error = false;
-
-  private final GapicConfigPresence gapicConfigPresence;
 
   /**
    * A map of retry config names to the list of codes to retry on, e.g. { "idempotent" :
@@ -72,13 +65,11 @@ public class RetryCodesConfig {
     return finalMethodRetryNames;
   }
 
-  private RetryCodesConfig(GapicConfigPresence gapicConfigPresence) {
-    this.gapicConfigPresence = gapicConfigPresence;
-  }
+  private RetryCodesConfig() {}
 
   public static RetryCodesConfig create(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    RetryCodesConfig retryCodesConfig = new RetryCodesConfig(GapicConfigPresence.PROVIDED);
+    RetryCodesConfig retryCodesConfig = new RetryCodesConfig();
 
     retryCodesConfig.populateRetryCodesDefinitionFromConfigProto(
         diagCollector, interfaceConfigProto);
@@ -94,12 +85,11 @@ public class RetryCodesConfig {
   public static RetryCodesConfig create(
       DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
-      Interface apiInterface,
-      ProtoParser protoParser,
-      GapicConfigPresence gapicConfigPresence) {
-    RetryCodesConfig retryCodesConfig = new RetryCodesConfig(gapicConfigPresence);
+      Collection<Method> methodsToSurface,
+      ProtoParser protoParser) {
+    RetryCodesConfig retryCodesConfig = new RetryCodesConfig();
     retryCodesConfig.populateRetryCodesDefinition(
-        diagCollector, interfaceConfigProto, apiInterface, protoParser);
+        diagCollector, interfaceConfigProto, methodsToSurface, protoParser);
     if (retryCodesConfig.error) {
       return null;
     }
@@ -122,6 +112,7 @@ public class RetryCodesConfig {
     return builder.build();
   }
 
+  @Nullable
   private static ImmutableMap<String, ImmutableList<String>>
       createRetryCodesDefinitionFromConfigProto(
           DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
@@ -157,17 +148,18 @@ public class RetryCodesConfig {
   private void populateRetryCodesDefinition(
       DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
-      Interface apiInterface,
+      Collection<Method> methodsToCreateConfigsFor,
       ProtoParser protoParser) {
 
-    if (gapicConfigPresence == GapicConfigPresence.PROVIDED) {
-      populateRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
-      if (error) {
-        return;
-      }
+    // First create the retry codes definitions from the GAPIC config.
+    populateRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
+    if (error) {
+      return;
     }
 
-    populateRetryCodesDefinitionWithProtoFile(apiInterface, interfaceConfigProto, protoParser);
+    // Then create the retry codes defs from the proto annotations, but don't overwrite
+    // existing retry codes defs from the GAPIC config.
+    populateRetryCodesDefinitionWithProtoFile(methodsToCreateConfigsFor, protoParser);
   }
 
   /**
@@ -180,12 +172,13 @@ public class RetryCodesConfig {
 
     ImmutableMap<String, ImmutableList<String>> retryCodesDefFromConfigProto =
         createRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
+    if (retryCodesDefFromConfigProto == null) {
+      return;
+    }
 
     Map<String, String> methodRetryNamesFromConfigProto =
         createMethodRetryNamesFromConfigProto(interfaceConfigProto);
-    if (diagCollector.getErrorCount() > 0) {
-      return;
-    }
+
     retryCodesDefinition.putAll(retryCodesDefFromConfigProto);
     methodRetryNames.putAll(methodRetryNamesFromConfigProto);
   }
@@ -194,35 +187,18 @@ public class RetryCodesConfig {
    * Returns a mapping of a retryCodeDef name to the list of retry codes it contains. Also populates
    * the @param methodNameToRetryCodeNames with a mapping of a Method name to its retry code
    * settings name.
+   *
+   * <p>If this object already contains a retry entry for a given Method, don't overwrite the
+   * existing retry entry.
    */
   private void populateRetryCodesDefinitionWithProtoFile(
-      Interface apiInterface, InterfaceConfigProto interfaceConfigProto, ProtoParser protoParser) {
+      Collection<Method> methodsToCreateRetriesFor, ProtoParser protoParser) {
 
     SymbolTable symbolTable = new SymbolTable();
 
     for (String retryCodesName : retryCodesDefinition.keySet()) {
       // Record all the preexisting retryCodeNames from configProto.
       symbolTable.getNewSymbol(retryCodesName);
-    }
-
-    // For now, only create retryCodeDef for methods that are also defined in the GAPIC config.
-    Map<String, Method> methodsFromProtoFile = new LinkedHashMap<>();
-    for (Method method : apiInterface.getMethods()) {
-      methodsFromProtoFile.put(method.getSimpleName(), method);
-    }
-
-    List<Method> methodsToCreateRetriesFor;
-    if (gapicConfigPresence == GapicConfigPresence.PROVIDED) {
-      methodsToCreateRetriesFor =
-          interfaceConfigProto
-              .getMethodsList()
-              .stream()
-              .map(m -> methodsFromProtoFile.get(m.getName()))
-              .filter(Objects::nonNull)
-              .collect(Collectors.toList());
-    } else {
-      // No GAPIC was provided, so we can make retry configs for all methods in proto interface.
-      methodsToCreateRetriesFor = new ArrayList<>(methodsFromProtoFile.values());
     }
 
     // Unite all HTTP GET methods that have no additional retry codes under one retry code name to
