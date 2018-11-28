@@ -29,8 +29,8 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -83,13 +83,9 @@ public class RetryCodesConfig {
   }
 
   public static RetryCodesConfig create(
-      DiagCollector diagCollector,
-      InterfaceConfigProto interfaceConfigProto,
-      Collection<Method> methodsToSurface,
-      ProtoParser protoParser) {
+      DiagCollector diagCollector, GapicInterfaceInput interfaceInput, ProtoParser protoParser) {
     RetryCodesConfig retryCodesConfig = new RetryCodesConfig();
-    retryCodesConfig.populateRetryCodesDefinition(
-        diagCollector, interfaceConfigProto, methodsToSurface, protoParser);
+    retryCodesConfig.populateRetryCodesDefinition(diagCollector, interfaceInput, protoParser);
     if (retryCodesConfig.error) {
       return null;
     }
@@ -146,19 +142,18 @@ public class RetryCodesConfig {
    * settings name.
    */
   private void populateRetryCodesDefinition(
-      DiagCollector diagCollector,
-      InterfaceConfigProto interfaceConfigProto,
-      Collection<Method> methodsToCreateConfigsFor,
-      ProtoParser protoParser) {
-
+      DiagCollector diagCollector, GapicInterfaceInput interfaceInput, ProtoParser protoParser) {
     // First create the retry codes definitions from the GAPIC config.
-    populateRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
+    populateRetryCodesDefinitionFromConfigProto(
+        diagCollector, interfaceInput.getInterfaceConfigProto());
     if (error) {
       return;
     }
 
     // Then create the retry codes defs from the proto annotations, but don't overwrite
     // existing retry codes defs from the GAPIC config.
+    Iterator<Method> methodsToCreateConfigsFor =
+        interfaceInput.getMethodsToGenerate().keySet().iterator();
     populateRetryCodesDefinitionWithProtoFile(methodsToCreateConfigsFor, protoParser);
   }
 
@@ -192,7 +187,7 @@ public class RetryCodesConfig {
    * existing retry entry.
    */
   private void populateRetryCodesDefinitionWithProtoFile(
-      Collection<Method> methodsToCreateRetriesFor, ProtoParser protoParser) {
+      Iterator<Method> methodsToCreateRetriesFor, ProtoParser protoParser) {
 
     SymbolTable symbolTable = new SymbolTable();
 
@@ -209,7 +204,8 @@ public class RetryCodesConfig {
     String noRetryName = symbolTable.getNewSymbol(NO_RETRY_CODE_DEF_NAME);
 
     // Check proto annotations for retry settings.
-    for (Method method : methodsToCreateRetriesFor) {
+    while (methodsToCreateRetriesFor.hasNext()) {
+      Method method = methodsToCreateRetriesFor.next();
       if (methodRetryNames.containsKey(method.getSimpleName())) {
         // https://github.com/googleapis/gapic-generator/issues/2311.
         // For now, let GAPIC config take precedent over proto annotations, for retry code

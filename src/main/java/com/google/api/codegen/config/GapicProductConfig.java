@@ -231,7 +231,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Collect the interfaces (clients) and methods that we will generate on the surface.
     // Not all methods defined in the protofiles will be generated on the surface.
     ImmutableList<GapicInterfaceInput> interfaceInputs =
-        createInterfacesMap(
+        createInterfaceInputs(
             diagCollector,
             configProto.getInterfacesList(),
             sourceProtos,
@@ -408,7 +408,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   /** Return the list of information about clients to be generated. */
-  private static ImmutableList<GapicInterfaceInput> createInterfacesMap(
+  private static ImmutableList<GapicInterfaceInput> createInterfaceInputs(
       DiagCollector diagCollector,
       List<InterfaceConfigProto> interfaceConfigProtosList,
       List<ProtoFile> sourceProtos,
