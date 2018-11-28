@@ -439,7 +439,9 @@ public abstract class GapicProductConfig implements ProductConfig {
               Diag.error(SimpleLocation.TOPLEVEL, "interface not found: %s", service.getName()));
           continue;
         }
-        InterfaceConfigProto interfaceConfigProto = interfaceConfigProtos.get(serviceFullName);
+        InterfaceConfigProto interfaceConfigProto =
+            interfaceConfigProtos.getOrDefault(
+                serviceFullName, InterfaceConfigProto.getDefaultInstance());
         interfaceMap.put(apiInterface, interfaceConfigProto);
       }
     }

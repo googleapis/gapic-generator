@@ -251,8 +251,13 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
+  /** Return a list of configs for method in the order given by the GAPIC config interface. */
   static <T> List<T> createMethodConfigs(
       ImmutableMap<String, T> methodConfigMap, InterfaceConfigProto interfaceConfigProto) {
+    if (interfaceConfigProto.equals(InterfaceConfigProto.getDefaultInstance())) {
+      // InterfaceConfigProto was not given, so just return the order of methodConfigMap.
+      return methodConfigMap.values().asList();
+    }
     List<T> methodConfigs = new ArrayList<>();
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
       methodConfigs.add(methodConfigMap.get(methodConfigProto.getName()));
