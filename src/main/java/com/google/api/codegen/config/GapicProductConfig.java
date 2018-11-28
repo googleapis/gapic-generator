@@ -408,6 +408,24 @@ public abstract class GapicProductConfig implements ProductConfig {
       List<ProtoFile> sourceProtos,
       SymbolTable symbolTable) {
 
+    // Maps name of interfaces to found interfaces from proto.
+    Map<String, Interface> protoInterfaces = new LinkedHashMap<>();
+
+    // Parse proto file for interfaces.
+    for (ProtoFile file : sourceProtos) {
+      for (DescriptorProtos.ServiceDescriptorProto service : file.getProto().getServiceList()) {
+        String serviceFullName =
+            String.format("%s.%s", file.getProto().getPackage(), service.getName());
+        Interface apiInterface = symbolTable.lookupInterface(serviceFullName);
+        if (apiInterface == null) {
+          diagCollector.addDiag(
+              Diag.error(SimpleLocation.TOPLEVEL, "interface not found: %s", service.getName()));
+          continue;
+        }
+        protoInterfaces.put(serviceFullName, apiInterface);
+      }
+    }
+
     // Return value; maps interfaces to their corresponding InterfaceConfigProto.
     ImmutableMap.Builder<Interface, InterfaceConfigProto> interfaceMap = ImmutableMap.builder();
 
@@ -426,24 +444,17 @@ public abstract class GapicProductConfig implements ProductConfig {
         continue;
       }
       interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
+      protoInterfaces.put(interfaceConfigProto.getName(), apiInterface);
     }
 
     // Parse proto file for interfaces.
-    for (ProtoFile file : sourceProtos) {
-      for (DescriptorProtos.ServiceDescriptorProto service : file.getProto().getServiceList()) {
-        String serviceFullName =
-            String.format("%s.%s", file.getProto().getPackage(), service.getName());
-        Interface apiInterface = symbolTable.lookupInterface(serviceFullName);
-        if (apiInterface == null) {
-          diagCollector.addDiag(
-              Diag.error(SimpleLocation.TOPLEVEL, "interface not found: %s", service.getName()));
-          continue;
-        }
-        InterfaceConfigProto interfaceConfigProto =
-            interfaceConfigProtos.getOrDefault(
-                serviceFullName, InterfaceConfigProto.getDefaultInstance());
-        interfaceMap.put(apiInterface, interfaceConfigProto);
-      }
+    for (Entry<String, Interface> interfaceEntry : protoInterfaces.entrySet()) {
+      String serviceFullName = interfaceEntry.getKey();
+      InterfaceConfigProto interfaceConfigProto =
+          interfaceConfigProtos.getOrDefault(
+              serviceFullName, InterfaceConfigProto.getDefaultInstance());
+      Interface apiInterface = interfaceEntry.getValue();
+      interfaceMap.put(apiInterface, interfaceConfigProto);
     }
 
     return interfaceMap.build();
@@ -451,7 +462,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   /** Return the list of methods to be generated, and their corresponding MethodConfigProtos. */
   private static ImmutableMap<Method, MethodConfigProto> createMethodsMap(
-      Map<Interface, InterfaceConfigProto> interfaces,
+      ImmutableMap<Interface, InterfaceConfigProto> interfaces,
       DiagCollector diagCollector,
       boolean gapicConfigPresent) {
     ImmutableMap.Builder<Method, MethodConfigProto> methodsToSurface = ImmutableMap.builder();
