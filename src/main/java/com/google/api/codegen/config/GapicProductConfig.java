@@ -433,9 +433,6 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
 
-    // Return value; maps interfaces to their corresponding InterfaceConfigProto.
-    ImmutableMap.Builder<Interface, InterfaceConfigProto> interfaceMap = ImmutableMap.builder();
-
     // Maps name of interfaces to found InterfaceConfigs from config yamls.
     Map<String, InterfaceConfigProto> interfaceConfigProtos = new LinkedHashMap<>();
 
@@ -454,21 +451,15 @@ public abstract class GapicProductConfig implements ProductConfig {
       protoInterfaces.put(interfaceConfigProto.getName(), apiInterface);
     }
 
-    // Store each Interface with its corresponding InterfaceConfigProto,
-    // or an empty one if it does not exist.
+    // Store info about each Interface in a GapicInterfaceInput object.
+    ImmutableList.Builder<GapicInterfaceInput> interfaceInputs = ImmutableList.builder();
     for (Entry<String, Interface> interfaceEntry : protoInterfaces.entrySet()) {
       String serviceFullName = interfaceEntry.getKey();
       InterfaceConfigProto interfaceConfigProto =
           interfaceConfigProtos.getOrDefault(
               serviceFullName, InterfaceConfigProto.getDefaultInstance());
       Interface apiInterface = interfaceEntry.getValue();
-      interfaceMap.put(apiInterface, interfaceConfigProto);
-    }
 
-    ImmutableList.Builder<GapicInterfaceInput> interfaceInputs = ImmutableList.builder();
-    for (Entry<Interface, InterfaceConfigProto> interfaceEntry : interfaceMap.build().entrySet()) {
-      Interface apiInterface = interfaceEntry.getKey();
-      InterfaceConfigProto interfaceConfigProto = interfaceEntry.getValue();
       GapicInterfaceInput interfaceInput =
           createInterfaceInput(
               apiInterface, interfaceConfigProto, diagCollector, gapicConfigPresent);
@@ -481,7 +472,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     return interfaceInputs.build();
   }
 
-  /** Return a data object representing the generated surface of a client. */
+  /** Return a data object containing the client entities to be generated. */
   private static GapicInterfaceInput createInterfaceInput(
       Interface apiInterface,
       InterfaceConfigProto interfaceConfigProto,

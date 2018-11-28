@@ -21,7 +21,10 @@ import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
 import java.util.Map;
 
-/** Struct class that holds a proto interface, and its corresponding GAPIC interface config. */
+/**
+ * Struct class that holds info about a proto interface and its corresponding GAPIC interface
+ * config.
+ */
 @AutoValue
 public abstract class GapicInterfaceInput {
 
@@ -33,7 +36,10 @@ public abstract class GapicInterfaceInput {
     return getInterface().getFullName();
   }
 
-  /** A non-null but possibly empty InterfaceConfigProto. */
+  /**
+   * The corresponding GAPIC config value for the interface. This value is non-null but can be
+   * empty.
+   */
   public abstract InterfaceConfigProto getInterfaceConfigProto();
 
   /**
