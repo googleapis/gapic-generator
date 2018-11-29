@@ -34,7 +34,7 @@ import java.util.List;
 
 public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
 
-  /** A map from primitive types in proto to Java counterparts. */
+  /** A map from primitive types in proto to C# counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "bool")

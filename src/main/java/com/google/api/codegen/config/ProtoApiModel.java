@@ -21,13 +21,11 @@ import com.google.api.codegen.gapic.ProtoModels;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Type;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -40,7 +38,6 @@ import java.util.TreeSet;
 public class ProtoApiModel implements ApiModel {
   private final Model protoModel;
   private ImmutableList<ProtoInterfaceModel> interfaceModels;
-  private ImmutableList<ProtoFile> protoFiles;
 
   public ProtoApiModel(Model protoModel) {
     this.protoModel = protoModel;
@@ -48,16 +45,6 @@ public class ProtoApiModel implements ApiModel {
 
   public Model getProtoModel() {
     return protoModel;
-  }
-
-  /** Return a deterministically (alphabetically) ordered list of the protofiles in this model. */
-  public List<ProtoFile> getFiles() {
-    if (protoFiles == null) {
-      protoFiles =
-          ImmutableList.sortedCopyOf(
-              Comparator.comparing(ProtoFile::getFullName), protoModel.getFiles());
-    }
-    return protoFiles;
   }
 
   @Override

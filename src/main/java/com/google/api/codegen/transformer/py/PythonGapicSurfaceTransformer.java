@@ -278,6 +278,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     return enumFile.build();
   }
 
+  /** Returns list of enum file elements, sorted alphabetically by name. */
   private List<GrpcElementDocView> generateEnumFileElements(
       ModelTypeTable typeTable, SurfaceNamer namer, List<ProtoFile> containerElements) {
     ImmutableSortedSet.Builder<GrpcElementDocView> elements =
