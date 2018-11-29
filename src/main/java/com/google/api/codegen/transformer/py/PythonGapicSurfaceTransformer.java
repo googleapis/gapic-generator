@@ -168,7 +168,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     }
 
     GrpcDocView enumFile =
-        generateEnumView(productConfig, modelTypeTable, namer, apiModel.getFiles());
+        generateEnumView(productConfig, modelTypeTable, namer, apiModel.getProtoModel().getFiles());
     if (!enumFile.elementDocs().isEmpty()) {
       serviceSurfaces.add(enumFile);
     }
@@ -313,12 +313,12 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private Iterable<ViewModel> generateVersionedDirectoryViews(
       ProtoApiModel apiModel, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    views.add(generateTypesView(apiModel, productConfig));
+    views.add(generateTypesView(apiModel.getProtoModel(), productConfig));
     views.add(generateVersionedInitView(apiModel, productConfig));
     return views.build();
   }
 
-  private ViewModel generateTypesView(ProtoApiModel model, GapicProductConfig productConfig) {
+  private ViewModel generateTypesView(Model model, GapicProductConfig productConfig) {
     SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
     ImportSectionView imports =
         importSectionTransformer.generateTypesImportSection(model, productConfig);

@@ -23,6 +23,7 @@ import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
@@ -355,7 +356,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   public ImportSectionView generateTypesImportSection(
-      ProtoApiModel model, GapicProductConfig productConfig) {
+      Model model, GapicProductConfig productConfig) {
     ImportSectionView.Builder importView = generateTypesProtoImports(model, productConfig);
     return importView
         .externalImports(generateTypesExternalImports())
@@ -364,7 +365,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private ImportSectionView.Builder generateTypesProtoImports(
-      ProtoApiModel model, GapicProductConfig productConfig) {
+      Model model, GapicProductConfig productConfig) {
     ImportSectionView.Builder importView = ImportSectionView.newBuilder();
 
     ModelTypeTable allTypeTable = emptyTypeTable(productConfig);
@@ -380,7 +381,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     Set<String> localImportNames = new HashSet<>();
     Set<String> sharedImportNames = new HashSet<>();
 
-    String serviceFullName = model.getProtoModel().getRoots().iterator().next().getFullName();
+    String serviceFullName = model.getRoots().iterator().next().getFullName();
     String packageName = serviceFullName.substring(0, serviceFullName.lastIndexOf("."));
 
     // Save proto file import names to the type table for disambiguation.
