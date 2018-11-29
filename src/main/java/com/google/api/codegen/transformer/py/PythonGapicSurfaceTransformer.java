@@ -62,7 +62,9 @@ import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedSet;
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -278,11 +280,12 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
 
   private List<GrpcElementDocView> generateEnumFileElements(
       ModelTypeTable typeTable, SurfaceNamer namer, List<ProtoFile> containerElements) {
-    ImmutableList.Builder<GrpcElementDocView> elements = ImmutableList.builder();
+    ImmutableSortedSet.Builder<GrpcElementDocView> elements =
+        ImmutableSortedSet.orderedBy(Comparator.comparing(GrpcElementDocView::name));
     for (ProtoContainerElement containerElement : containerElements) {
       elements.addAll(generateEnumFileElements(typeTable, namer, containerElement));
     }
-    return elements.build();
+    return elements.build().asList();
   }
 
   private List<GrpcElementDocView> generateEnumFileElements(
