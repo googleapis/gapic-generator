@@ -7421,28 +7421,19 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 // DO NOT EDIT! This is a generated sample ("CallableStreamingBidi",  "prog")
 package com.google.example.examples.library.v1.snippets;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
 // [START turing_prog_callable_streaming_bidi]
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.protobuf.ByteString;
-import java.nio.File;
-import java.nio.Files;
-import java.nio.Path;
-import java.nio.Paths;
 
 public class DiscussBookCallableCallableStreamingBidiProg {
-  public static void sampleDiscussBook(String imageFileName) {
+  public static void sampleDiscussBook() {
     // [START turing_prog_callable_streaming_bidi_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
       BidiStream<DiscussBookRequest, Comment> bidiStream =
           libraryClient.discussBookCallable().call();
 
-      // String imageFileName = "image_file.jpg";
       String name = "BASIC";
       String fileName = "comment_file";
       Path path = Paths.get(fileName);
@@ -7451,13 +7442,9 @@ public class DiscussBookCallableCallableStreamingBidiProg {
       Comment comment2 = Comment.newBuilder()
         .setComment(comment)
         .build();
-      path = Paths.get(imageFileName);
-      data = Files.readAllBytes(path);
-      ByteString image = ByteString.copyFrom(data);
       DiscussBookRequest request = DiscussBookRequest.newBuilder()
         .setName(name)
         .setComment(comment2)
-        .setImage(image)
         .build();
       bidiStream.send(request);
       for (Comment responseItem : bidiStream) {
@@ -7470,18 +7457,7 @@ public class DiscussBookCallableCallableStreamingBidiProg {
   }
 
   public static void main(String[] args) {
-    Options options = new Options();
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("imageFileName")
-          .build());
-
-    CommandLine cl = (new DefaultParser()).parse(options, args);
-    String imageFileName = cl.getOptionValue("imageFileName", "image_file.jpg");
-
-    sampleDiscussBook(imageFileName);
+    sampleDiscussBook();
   }
 }
 // FIXME: Insert here clean-up code.
