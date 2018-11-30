@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.util;
 
+import static com.google.api.FieldBehavior.REQUIRED;
+
 import com.google.api.AnnotationsProto;
-import com.google.api.FieldBehavior;
 import com.google.api.MethodSignature;
 import com.google.api.OAuth;
 import com.google.api.OperationData;
@@ -41,8 +42,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
+import com.google.protobuf.ProtocolMessageEnum;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +76,21 @@ public class ProtoParser {
     // annotations processing in one place.
     if (featureConfig.enableProtoAnnotations()) {
       return (T) element.getOptionFields().get(extension.getDescriptor());
+    } else {
+      return null;
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Nullable
+  // GeneratedMessage.GeneratedExtension<DescriptorProtos.FieldOptions, List<FieldBehavior>>
+  private <T extends ProtocolMessageEnum, O extends Message, E extends ProtoElement>
+      List<EnumValueDescriptor> getProtoExtensionForEnumValue(
+          E element, GeneratedExtension<O, List<T>> extension) {
+    // Use this method as the chokepoint for all annotations processing for enum values
+    // so we can toggle on/off annotations processing in one place.
+    if (featureConfig.enableProtoAnnotations()) {
+      return (List<EnumValueDescriptor>) element.getOptionFields().get(extension.getDescriptor());
     } else {
       return null;
     }
@@ -311,8 +329,10 @@ public class ProtoParser {
   @SuppressWarnings("unchecked")
   /* Returns if a field is required, according to the proto annotations. */
   private boolean isFieldRequired(Field field) {
-    List<FieldBehavior> fieldBehaviors = getProtoExtension(field, AnnotationsProto.fieldBehavior);
-    return fieldBehaviors != null && fieldBehaviors.contains(FieldBehavior.REQUIRED);
+    // return (T) element.getOptionFields().get(extension.getDescriptor());
+    List<EnumValueDescriptor> fieldBehaviors =
+        getProtoExtensionForEnumValue(field, AnnotationsProto.fieldBehavior);
+    return fieldBehaviors != null && fieldBehaviors.contains(REQUIRED.getValueDescriptor());
   }
 
   /** Return the resource reference for the given field, according to the proto annotations. */

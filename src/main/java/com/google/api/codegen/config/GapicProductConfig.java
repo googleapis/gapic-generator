@@ -354,7 +354,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         copyrightLines,
         licenseLines,
         resourceNameConfigs,
-        null,
+        new ProtoParser(new DefaultFeatureConfig()),
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion);
