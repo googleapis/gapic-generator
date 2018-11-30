@@ -92,6 +92,6 @@ public class DefaultFeatureConfig implements FeatureConfig {
 
   @Override
   public boolean enableProtoAnnotations() {
-    return true;
+    return false;
   };
 }
