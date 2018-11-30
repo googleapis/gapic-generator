@@ -29,6 +29,8 @@ import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedSet;
+import java.util.Comparator;
 import java.util.List;
 
 public class GrpcElementDocTransformer {
@@ -77,9 +79,11 @@ public class GrpcElementDocTransformer {
     return propertyDocs.build();
   }
 
-  public List<GrpcElementDocView> generateEnumDocs(
+  /** Return a list of enums, sorted alphabetically by name. */
+  public List<GrpcEnumDocView> generateEnumDocs(
       ModelTypeTable typeTable, SurfaceNamer namer, ProtoContainerElement containerElement) {
-    ImmutableList.Builder<GrpcElementDocView> enumDocs = ImmutableList.builder();
+    ImmutableSortedSet.Builder<GrpcEnumDocView> enumDocs =
+        ImmutableSortedSet.orderedBy(Comparator.comparing(GrpcEnumDocView::name));
     for (EnumType enumElement : containerElement.getEnums()) {
       if (!enumElement.isReachable()) {
         continue;
@@ -91,7 +95,7 @@ public class GrpcElementDocTransformer {
       doc.packageName(enumElement.getFile().getFullName());
       enumDocs.add(doc.build());
     }
-    return enumDocs.build();
+    return enumDocs.build().asList();
   }
 
   private List<GrpcEnumValueDocView> generateEnumValueDocs(
