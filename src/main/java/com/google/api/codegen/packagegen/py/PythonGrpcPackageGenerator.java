@@ -19,6 +19,8 @@ import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.snippet.Doc;
@@ -59,7 +61,7 @@ public class PythonGrpcPackageGenerator implements CodeGenerator<Doc> {
 
     results.putAll(copierResult.results());
     PythonGrpcPackageTransformer pythonTransformer = new PythonGrpcPackageTransformer(copierResult);
-    ProtoApiModel apiModel = new ProtoApiModel(model);
+    ProtoApiModel apiModel = new ProtoApiModel(model, new ProtoParser(new DefaultFeatureConfig()));
     metadataViews.addAll(pythonTransformer.transform(apiModel, config));
 
     for (PackageMetadataView view : metadataViews) {

@@ -26,6 +26,7 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.transformer.LanguageTransformer;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -88,6 +89,9 @@ public abstract class GapicProductConfig implements ProductConfig {
   /** Returns a map from entity names to resource name configs. */
   public abstract ImmutableMap<String, ResourceNameConfig> getResourceNameConfigs();
 
+  /** Returns a map from entity names to resource name configs. */
+  public abstract ProtoParser getProtoParser();
+
   /** Returns the type of transport for the generated client. Defaults to Grpc. */
   public abstract TransportProtocol getTransportProtocol();
 
@@ -112,6 +116,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         getCopyrightLines(),
         getLicenseLines(),
         getResourceNameConfigs(),
+        getProtoParser(),
         getTransportProtocol(),
         getDefaultResourceNameFieldConfigMap(),
         getConfigSchemaVersion());
@@ -178,7 +183,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       sourceProtos.forEach(model::addRoot);
     }
 
-    ProtoParser protoParser = new ProtoParser();
+    ProtoParser protoParser =
+        new ProtoParser(DefaultFeatureConfig.getDefaultLanguageFeatureConfig(language));
     if (configProto == null) {
       configProto = ConfigProto.getDefaultInstance();
     }
@@ -281,6 +287,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         copyrightLines,
         licenseLines,
         resourceNameConfigs,
+        protoParser,
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion);
@@ -347,6 +354,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         copyrightLines,
         licenseLines,
         resourceNameConfigs,
+        null,
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion);
@@ -386,6 +394,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         ImmutableList.of(),
         ImmutableList.of(),
         ImmutableMap.of(),
+        new ProtoParser(new DefaultFeatureConfig()),
         // Default to gRPC.
         TransportProtocol.GRPC,
         createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),

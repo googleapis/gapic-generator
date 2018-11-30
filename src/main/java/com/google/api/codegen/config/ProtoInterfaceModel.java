@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SymbolTable;
@@ -32,9 +33,9 @@ public class ProtoInterfaceModel implements InterfaceModel {
 
   private final ProtoApiModel apiModel;
 
-  public ProtoInterfaceModel(Interface protoInterface) {
+  public ProtoInterfaceModel(Interface protoInterface, ProtoParser protoParser) {
     this.protoInterface = protoInterface;
-    apiModel = new ProtoApiModel(protoInterface.getModel());
+    apiModel = new ProtoApiModel(protoInterface.getModel(), protoParser);
   }
 
   @Override

@@ -27,7 +27,6 @@ import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.ProtoModels;
-import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -48,7 +47,6 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class GapicInterfaceContext implements InterfaceContext {
   private ImmutableList<MethodModel> interfaceMethods;
-  private ProtoParser protoParser = new ProtoParser();
 
   public static GapicInterfaceContext create(
       Interface apiInterface,
@@ -57,7 +55,11 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
     return create(
-        new ProtoInterfaceModel(apiInterface), productConfig, typeTable, namer, featureConfig);
+        new ProtoInterfaceModel(apiInterface, productConfig.getProtoParser()),
+        productConfig,
+        typeTable,
+        namer,
+        featureConfig);
   }
 
   public static GapicInterfaceContext create(
@@ -184,7 +186,8 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         (ProtoMethodModel) method,
         getMethodConfig(method),
         flatteningConfig,
-        getFeatureConfig());
+        getFeatureConfig(),
+        getProductConfig().getProtoParser());
   }
 
   @Override
@@ -198,7 +201,8 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         (ProtoMethodModel) method,
         getMethodConfig(method),
         null,
-        getFeatureConfig());
+        getFeatureConfig(),
+        getProductConfig().getProtoParser());
   }
 
   @Override
@@ -212,7 +216,8 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         (ProtoMethodModel) method,
         getMethodConfig(method),
         null,
-        getFeatureConfig());
+        getFeatureConfig(),
+        getProductConfig().getProtoParser());
   }
 
   @Override
@@ -331,7 +336,8 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
 
   @Override
   public String getServiceAddress() {
-    String hostFromProtoFile = protoParser.getServiceAddress(getInterface());
+    String hostFromProtoFile =
+        getProductConfig().getProtoParser().getServiceAddress(getInterface());
     if (!Strings.isNullOrEmpty(hostFromProtoFile)) {
       return hostFromProtoFile;
     }

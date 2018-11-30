@@ -31,4 +31,9 @@ public class CSharpFeatureConfig extends DefaultFeatureConfig {
   public boolean resourceNameProtoAccessorsEnabled() {
     return resourceNameTypesEnabled();
   }
+
+  @Override
+  public boolean enableProtoAnnotations() {
+    return false;
+  };
 }

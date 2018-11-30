@@ -30,6 +30,7 @@ import com.google.api.codegen.transformer.GrpcElementDocTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.GrpcDocView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
@@ -53,6 +54,8 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer<Pr
   private final PackageMetadataConfig packageConfig;
   private final FileHeaderTransformer fileHeaderTransformer = new FileHeaderTransformer(null);
   private final GrpcElementDocTransformer elementDocTransformer = new GrpcElementDocTransformer();
+  private final RubyFeatureConfig rubyFeatureConfig = new RubyFeatureConfig();
+  private final ProtoParser protoParser = new ProtoParser(rubyFeatureConfig);
 
   public RubyGapicSurfaceDocTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
@@ -92,7 +95,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer<Pr
     doc.elementDocs(elementDocTransformer.generateElementDocs(typeTable, namer, file));
     doc.modules(
         generateModuleViews(
-            new ProtoApiModel(file.getModel()),
+            new ProtoApiModel(file.getModel(), protoParser),
             productConfig,
             namer,
             isSourceApiInterfaceFile(file) ? file : null));
@@ -140,7 +143,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer<Pr
       String description =
           RubyUtil.getSentence(namer.getDocLines(GapicParser.getDocString(apiInterface)));
       InterfaceConfig interfaceConfig =
-          productConfig.getInterfaceConfig(new ProtoInterfaceModel(apiInterface));
+          productConfig.getInterfaceConfig(new ProtoInterfaceModel(apiInterface, protoParser));
       tocContents.add(
           metadataTransformer.generateTocContent(
               description,

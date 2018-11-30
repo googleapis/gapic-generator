@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
@@ -38,7 +39,8 @@ public abstract class GapicMethodContext implements MethodContext {
       ProtoMethodModel method,
       GapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
-      FeatureConfig featureConfig) {
+      FeatureConfig featureConfig,
+      ProtoParser protoParser) {
     return new AutoValue_GapicMethodContext(
         productConfig,
         namer,
@@ -48,7 +50,8 @@ public abstract class GapicMethodContext implements MethodContext {
         methodConfig,
         surfaceTransformerContext,
         typeTable,
-        new ProtoInterfaceModel(apiInterface));
+        new ProtoInterfaceModel(apiInterface, protoParser),
+        protoParser);
   }
 
   /** The Method for which this object is a transformation context. */
@@ -75,6 +78,8 @@ public abstract class GapicMethodContext implements MethodContext {
   @Override
   public abstract ProtoInterfaceModel getInterfaceModel();
 
+  public abstract ProtoParser getProtoParser();
+
   @Override
   public boolean isFlattenedMethodContext() {
     return getFlatteningConfig() != null;
@@ -84,7 +89,8 @@ public abstract class GapicMethodContext implements MethodContext {
   public ProtoInterfaceModel getTargetInterface() {
     return new ProtoInterfaceModel(
         GapicInterfaceConfig.getTargetInterface(
-            getInterface(), getMethodConfig().getRerouteToGrpcInterface()));
+            getInterface(), getMethodConfig().getRerouteToGrpcInterface()),
+        getProtoParser());
   }
 
   @Override
@@ -108,7 +114,8 @@ public abstract class GapicMethodContext implements MethodContext {
         getMethodModel(),
         getMethodConfig(),
         getFlatteningConfig(),
-        getFeatureConfig());
+        getFeatureConfig(),
+        getProtoParser());
   }
 
   @Override
@@ -129,6 +136,7 @@ public abstract class GapicMethodContext implements MethodContext {
         getFlatteningConfig() == null
             ? null
             : getFlatteningConfig().withResourceNamesInSamplesOnly(),
-        getFeatureConfig());
+        getFeatureConfig(),
+        getProtoParser());
   }
 }

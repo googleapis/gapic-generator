@@ -149,7 +149,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
 
     SmokeTestConfig smokeTestConfig =
-        createSmokeTestConfig(diagCollector, apiInterface, interfaceConfigProto);
+        createSmokeTestConfig(diagCollector, apiInterface, interfaceConfigProto, protoParser);
 
     ImmutableList<String> requiredConstructorParams =
         ImmutableList.copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
@@ -187,7 +187,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     } else {
       return new AutoValue_GapicInterfaceConfig(
           interfaceNameOverride,
-          new ProtoInterfaceModel(apiInterface),
+          new ProtoInterfaceModel(apiInterface, protoParser),
           methodConfigs,
           smokeTestConfig,
           methodConfigsMap,
@@ -202,10 +202,11 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static SmokeTestConfig createSmokeTestConfig(
       DiagCollector diagCollector,
       Interface apiInterface,
-      InterfaceConfigProto interfaceConfigProto) {
+      InterfaceConfigProto interfaceConfigProto,
+      ProtoParser protoParser) {
     if (interfaceConfigProto.hasSmokeTest()) {
       return SmokeTestConfig.createSmokeTestConfig(
-          new ProtoInterfaceModel(apiInterface),
+          new ProtoInterfaceModel(apiInterface, protoParser),
           interfaceConfigProto.getSmokeTest(),
           diagCollector);
     } else {

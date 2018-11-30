@@ -22,6 +22,7 @@ import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.protoannotations.GapicCodeGeneratorAnnotationsTest;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -57,7 +58,7 @@ public class ProtoParserTest {
   private static final DiagCollector diagCollector = new BoundedDiagCollector();
 
   // Object under test.
-  private static ProtoParser protoParser = new ProtoParser();
+  private static ProtoParser protoParser = new ProtoParser(new DefaultFeatureConfig());
 
   @BeforeClass
   public static void startUp() {

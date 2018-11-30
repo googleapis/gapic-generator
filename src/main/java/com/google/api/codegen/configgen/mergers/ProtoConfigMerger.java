@@ -21,12 +21,13 @@ import com.google.api.codegen.configgen.ProtoInterfaceTransformer;
 import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.configgen.ProtoPageStreamingTransformer;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Model;
 
 /** Merges the gapic config from a proto Model into a ConfigNode. */
 public class ProtoConfigMerger {
-  private ProtoParser protoParser = new ProtoParser();
+  private ProtoParser protoParser = new ProtoParser(new DefaultFeatureConfig());
 
   public ConfigNode mergeConfig(Model model, String fileName) {
     ConfigMerger configMerger = createMerger(model, fileName);
@@ -34,7 +35,7 @@ public class ProtoConfigMerger {
       return null;
     }
 
-    return configMerger.mergeConfig(new ProtoApiModel(model));
+    return configMerger.mergeConfig(new ProtoApiModel(model, protoParser));
   }
 
   private ConfigMerger createMerger(Model model, String fileName) {

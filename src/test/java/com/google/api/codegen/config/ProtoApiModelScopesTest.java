@@ -31,8 +31,8 @@ import org.mockito.Mockito;
 
 public class ProtoApiModelScopesTest {
   private static final Model protoModel = Mockito.mock(Model.class);
-  private static final ProtoApiModel apiModel = new ProtoApiModel(protoModel);
   private static final ProtoParser protoParser = Mockito.mock(ProtoParser.class);
+  private static final ProtoApiModel apiModel = new ProtoApiModel(protoModel, protoParser);
   private static final Interface libraryService = Mockito.mock(Interface.class);
   private static final Interface foodService = Mockito.mock(Interface.class);
 
@@ -75,7 +75,8 @@ public class ProtoApiModelScopesTest {
   public void testGetAuthScopes() {
     List<ProtoInterfaceModel> interfaces =
         Arrays.asList(
-            new ProtoInterfaceModel(libraryService), new ProtoInterfaceModel(foodService));
+            new ProtoInterfaceModel(libraryService, protoParser),
+            new ProtoInterfaceModel(foodService, protoParser));
     List<String> scopes = apiModel.getAuthScopes(protoParser, interfaces);
     assertThat(scopes.size()).isEqualTo(6);
     assertThat(scopes.contains("https://www.googleapis.com/auth/calendar")).isTrue();

@@ -38,9 +38,11 @@ import java.util.TreeSet;
 public class ProtoApiModel implements ApiModel {
   private final Model protoModel;
   private ImmutableList<ProtoInterfaceModel> interfaceModels;
+  private final ProtoParser protoParser;
 
-  public ProtoApiModel(Model protoModel) {
+  public ProtoApiModel(Model protoModel, ProtoParser protoParser) {
     this.protoModel = protoModel;
+    this.protoParser = protoParser;
   }
 
   public Model getProtoModel() {
@@ -54,7 +56,7 @@ public class ProtoApiModel implements ApiModel {
 
   @Override
   public List<String> getAuthScopes() {
-    return getAuthScopes(new ProtoParser(), getInterfaces());
+    return getAuthScopes(protoParser, getInterfaces());
   }
 
   @VisibleForTesting
@@ -81,7 +83,8 @@ public class ProtoApiModel implements ApiModel {
 
   @Override
   public ProtoInterfaceModel getInterface(String interfaceName) {
-    return new ProtoInterfaceModel(protoModel.getSymbolTable().lookupInterface(interfaceName));
+    return new ProtoInterfaceModel(
+        protoModel.getSymbolTable().lookupInterface(interfaceName), protoParser);
   }
 
   @Override
@@ -105,7 +108,7 @@ public class ProtoApiModel implements ApiModel {
       interfaceModels =
           ProtoModels.getInterfaces(protoModel)
               .stream()
-              .map(ProtoInterfaceModel::new)
+              .map(i -> new ProtoInterfaceModel(i, protoParser))
               .collect(ImmutableList.toImmutableList());
     }
     return interfaceModels;

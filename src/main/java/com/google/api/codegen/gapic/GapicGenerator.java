@@ -61,7 +61,8 @@ public class GapicGenerator implements CodeGenerator<Doc> {
     }
 
     List<ViewModel> surfaceDocs =
-        modelToViewTransformer.transform(new ProtoApiModel(model), productConfig);
+        modelToViewTransformer.transform(
+            new ProtoApiModel(model, productConfig.getProtoParser()), productConfig);
     if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
       return null;
     }

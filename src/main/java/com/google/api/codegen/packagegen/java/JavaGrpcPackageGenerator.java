@@ -19,6 +19,8 @@ import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.java.JavaFeatureConfig;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.snippet.Doc;
@@ -50,7 +52,8 @@ public class JavaGrpcPackageGenerator implements CodeGenerator<Doc> {
   public Map<String, GeneratedResult<Doc>> generate() {
     ImmutableMap.Builder<String, GeneratedResult<Doc>> results = new ImmutableMap.Builder<>();
 
-    ProtoApiModel apiModel = new ProtoApiModel(model);
+    ProtoApiModel apiModel =
+        new ProtoApiModel(model, new ProtoParser(JavaFeatureConfig.newBuilder().build()));
     List<PackageMetadataView> metadataViews = transformer.transform(apiModel, config);
 
     for (PackageMetadataView view : metadataViews) {

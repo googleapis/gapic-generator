@@ -14,14 +14,15 @@
  */
 package com.google.api.codegen.util;
 
-import static com.google.api.FieldBehavior.REQUIRED;
-
 import com.google.api.AnnotationsProto;
+import com.google.api.FieldBehavior;
 import com.google.api.MethodSignature;
 import com.google.api.OAuth;
 import com.google.api.OperationData;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -33,13 +34,13 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
 import java.util.LinkedHashMap;
@@ -52,15 +53,29 @@ import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
+  private final FeatureConfig featureConfig;
 
-  // TODO(andrealin): Make constructor that takes in a FeatureConfig to decide whether to
-  // turn on/off Proto annotations parsing.
+  @VisibleForTesting
+  // Used for testing only.
+  public ProtoParser() {
+    this.featureConfig = new DefaultFeatureConfig();
+  }
+
+  public ProtoParser(FeatureConfig featureConfig) {
+    this.featureConfig = featureConfig;
+  }
 
   @SuppressWarnings("unchecked")
   @Nullable
   private <T, O extends Message, E extends ProtoElement> T getProtoExtension(
       E element, GeneratedExtension<O, T> extension) {
-    return (T) element.getOptionFields().get(extension.getDescriptor());
+    // Use this method as the chokepoint for all annotations processing, so we can toggle on/off
+    // annotations processing in one place.
+    if (featureConfig.enableProtoAnnotations()) {
+      return (T) element.getOptionFields().get(extension.getDescriptor());
+    } else {
+      return null;
+    }
   }
 
   @Nullable
@@ -296,10 +311,8 @@ public class ProtoParser {
   @SuppressWarnings("unchecked")
   /* Returns if a field is required, according to the proto annotations. */
   private boolean isFieldRequired(Field field) {
-    List<EnumValueDescriptor> fieldBehaviors =
-        (List<EnumValueDescriptor>)
-            field.getOptionFields().get(AnnotationsProto.fieldBehavior.getDescriptor());
-    return fieldBehaviors != null && fieldBehaviors.contains(REQUIRED.getValueDescriptor());
+    List<FieldBehavior> fieldBehaviors = getProtoExtension(field, AnnotationsProto.fieldBehavior);
+    return fieldBehaviors != null && fieldBehaviors.contains(FieldBehavior.REQUIRED);
   }
 
   /** Return the resource reference for the given field, according to the proto annotations. */
