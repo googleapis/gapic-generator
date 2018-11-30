@@ -182,8 +182,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         (ProtoMethodModel) method,
         getMethodConfig(method),
         flatteningConfig,
-        getFeatureConfig(),
-        getProductConfig().getProtoParser());
+        getFeatureConfig());
   }
 
   @Override
@@ -197,8 +196,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         (ProtoMethodModel) method,
         getMethodConfig(method),
         null,
-        getFeatureConfig(),
-        getProductConfig().getProtoParser());
+        getFeatureConfig());
   }
 
   @Override
@@ -212,8 +210,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         (ProtoMethodModel) method,
         getMethodConfig(method),
         null,
-        getFeatureConfig(),
-        getProductConfig().getProtoParser());
+        getFeatureConfig());
   }
 
   @Override

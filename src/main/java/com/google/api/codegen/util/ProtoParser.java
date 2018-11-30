@@ -61,6 +61,10 @@ public class ProtoParser {
     this.enableProtoAnnotations = true;
   }
 
+  public ProtoParser(boolean enableProtoAnnotations) {
+    this.enableProtoAnnotations = enableProtoAnnotations;
+  }
+
   public ProtoParser(FeatureConfig featureConfig) {
     this.enableProtoAnnotations = featureConfig.enableProtoAnnotations();
   }

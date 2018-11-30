@@ -38,7 +38,6 @@ import java.util.TreeSet;
 public class ProtoApiModel implements ApiModel {
   private final Model protoModel;
   private ImmutableList<ProtoInterfaceModel> interfaceModels;
-  // private final ProtoParser protoParser;
 
   public ProtoApiModel(Model protoModel) {
     this.protoModel = protoModel;
