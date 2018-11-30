@@ -2030,6 +2030,13 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
     return ((LibraryServiceStubSettings) getStubSettings()).testOptionalRequiredFlatteningParamsSettings();
   }
 
+  /**
+   * Returns the object with the settings used for calls to privateGetBook.
+   */
+  public UnaryCallSettings<GetBookRequest, Book> privateGetBookSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).privateGetBookSettings();
+  }
+
 
   public static final LibraryServiceSettings create(LibraryServiceStubSettings stub) throws IOException {
     return new LibraryServiceSettings.Builder(stub.toBuilder()).build();
@@ -2347,6 +2354,13 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
      */
     public UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
       return getStubSettingsBuilder().testOptionalRequiredFlatteningParamsSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to privateGetBook.
+     */
+    public UnaryCallSettings.Builder<GetBookRequest, Book> privateGetBookSettings() {
+      return getStubSettingsBuilder().privateGetBookSettings();
     }
 
     @Override
@@ -2852,6 +2866,13 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setRequestMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsResponse.getDefaultInstance()))
           .build();
+  private static final MethodDescriptor<GetBookRequest, Book> privateGetBookMethodDescriptor =
+      MethodDescriptor.<GetBookRequest, Book>newBuilder()
+          .setType(MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName("google.example.library.v1.LibraryService/PrivateGetBook")
+          .setRequestMarshaller(ProtoUtils.marshaller(GetBookRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(Book.getDefaultInstance()))
+          .build();
 
 
   private final BackgroundResource backgroundResources;
@@ -2886,6 +2907,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable;
   private final OperationCallable<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationCallable;
   private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
+  private final UnaryCallable<GetBookRequest, Book> privateGetBookCallable;
 
   private final GrpcStubCallableFactory callableFactory;
 
@@ -3027,6 +3049,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
         GrpcCallSettings.<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>newBuilder()
             .setMethodDescriptor(testOptionalRequiredFlatteningParamsMethodDescriptor)
             .build();
+    GrpcCallSettings<GetBookRequest, Book> privateGetBookTransportSettings =
+        GrpcCallSettings.<GetBookRequest, Book>newBuilder()
+            .setMethodDescriptor(privateGetBookMethodDescriptor)
+            .build();
 
     this.createShelfCallable = callableFactory.createUnaryCallable(createShelfTransportSettings,settings.createShelfSettings(), clientContext);
     this.getShelfCallable = callableFactory.createUnaryCallable(getShelfTransportSettings,settings.getShelfSettings(), clientContext);
@@ -3059,6 +3085,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.getBigNothingOperationCallable = callableFactory.createOperationCallable(
         getBigNothingTransportSettings,settings.getBigNothingOperationSettings(), clientContext, this.operationsStub);
     this.testOptionalRequiredFlatteningParamsCallable = callableFactory.createUnaryCallable(testOptionalRequiredFlatteningParamsTransportSettings,settings.testOptionalRequiredFlatteningParamsSettings(), clientContext);
+    this.privateGetBookCallable = callableFactory.createUnaryCallable(privateGetBookTransportSettings,settings.privateGetBookSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
@@ -3183,6 +3210,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable() {
     return testOptionalRequiredFlatteningParamsCallable;
+  }
+
+  public UnaryCallable<GetBookRequest, Book> privateGetBookCallable() {
+    return privateGetBookCallable;
   }
 
   @Override
@@ -3420,6 +3451,10 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: testOptionalRequiredFlatteningParamsCallable()");
   }
 
+  public UnaryCallable<GetBookRequest, Book> privateGetBookCallable() {
+    throw new UnsupportedOperationException("Not implemented: privateGetBookCallable()");
+  }
+
   @Override
   public abstract void close();
 }
@@ -3587,6 +3622,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final UnaryCallSettings<GetBookRequest, Operation> getBigNothingSettings;
   private final OperationCallSettings<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
   private final UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
+  private final UnaryCallSettings<GetBookRequest, Book> privateGetBookSettings;
 
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -3793,6 +3829,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     return testOptionalRequiredFlatteningParamsSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to privateGetBook.
+   */
+  public UnaryCallSettings<GetBookRequest, Book> privateGetBookSettings() {
+    return privateGetBookSettings;
+  }
+
 
   @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public LibraryServiceStub createStub() throws IOException {
@@ -3907,6 +3950,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     getBigNothingSettings = settingsBuilder.getBigNothingSettings().build();
     getBigNothingOperationSettings = settingsBuilder.getBigNothingOperationSettings().build();
     testOptionalRequiredFlatteningParamsSettings = settingsBuilder.testOptionalRequiredFlatteningParamsSettings().build();
+    privateGetBookSettings = settingsBuilder.privateGetBookSettings().build();
   }
 
 
@@ -3947,6 +3991,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final UnaryCallSettings.Builder<GetBookRequest, Operation> getBigNothingSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
     private final UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
+    private final UnaryCallSettings.Builder<GetBookRequest, Book> privateGetBookSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -4044,6 +4089,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       testOptionalRequiredFlatteningParamsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
+      privateGetBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           createShelfSettings,
           getShelfSettings,
@@ -4067,7 +4114,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           addTagSettings,
           getBigBookSettings,
           getBigNothingSettings,
-          testOptionalRequiredFlatteningParamsSettings
+          testOptionalRequiredFlatteningParamsSettings,
+          privateGetBookSettings
       );
 
       initDefaults(this);
@@ -4183,6 +4231,10 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       builder.testOptionalRequiredFlatteningParamsSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.privateGetBookSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("http_get"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
       builder
           .getBigBookOperationSettings()
           .setInitialCallSettings(
@@ -4259,6 +4311,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
       getBigNothingOperationSettings = settings.getBigNothingOperationSettings.toBuilder();
       testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
+      privateGetBookSettings = settings.privateGetBookSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           createShelfSettings,
@@ -4283,7 +4336,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           addTagSettings,
           getBigBookSettings,
           getBigNothingSettings,
-          testOptionalRequiredFlatteningParamsSettings
+          testOptionalRequiredFlatteningParamsSettings,
+          privateGetBookSettings
       );
     }
 
@@ -4505,6 +4559,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
      */
     public UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
       return testOptionalRequiredFlatteningParamsSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to privateGetBook.
+     */
+    public UnaryCallSettings.Builder<GetBookRequest, Book> privateGetBookSettings() {
+      return privateGetBookSettings;
     }
 
     @Override
@@ -5347,6 +5408,21 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
     if (response instanceof TestOptionalRequiredFlatteningParamsResponse) {
       requests.add(request);
       responseObserver.onNext((TestOptionalRequiredFlatteningParamsResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public void privateGetBook(GetBookRequest request,
+    StreamObserver<Book> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof Book) {
+      requests.add(request);
+      responseObserver.onNext((Book) response);
       responseObserver.onCompleted();
     } else if (response instanceof Exception) {
       responseObserver.onError((Exception) response);
