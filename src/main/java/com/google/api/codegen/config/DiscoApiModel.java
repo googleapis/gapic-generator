@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.common.collect.ImmutableList;
@@ -92,7 +93,7 @@ public class DiscoApiModel implements ApiModel {
   }
 
   @Override
-  public List<String> getAuthScopes() {
+  public List<String> getAuthScopes(ProtoParser protoParser) {
     return document.authScopes();
   }
 

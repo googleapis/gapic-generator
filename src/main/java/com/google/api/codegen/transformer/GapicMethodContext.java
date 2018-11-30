@@ -50,7 +50,7 @@ public abstract class GapicMethodContext implements MethodContext {
         methodConfig,
         surfaceTransformerContext,
         typeTable,
-        new ProtoInterfaceModel(apiInterface, protoParser),
+        new ProtoInterfaceModel(apiInterface),
         protoParser);
   }
 
@@ -89,8 +89,7 @@ public abstract class GapicMethodContext implements MethodContext {
   public ProtoInterfaceModel getTargetInterface() {
     return new ProtoInterfaceModel(
         GapicInterfaceConfig.getTargetInterface(
-            getInterface(), getMethodConfig().getRerouteToGrpcInterface()),
-        getProtoParser());
+            getInterface(), getMethodConfig().getRerouteToGrpcInterface()));
   }
 
   @Override

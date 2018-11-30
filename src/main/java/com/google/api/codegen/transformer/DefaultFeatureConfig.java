@@ -14,32 +14,9 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.transformer.csharp.CSharpFeatureConfig;
-import com.google.api.codegen.transformer.java.JavaFeatureConfig;
-import com.google.api.codegen.transformer.nodejs.NodeJSFeatureConfig;
-import com.google.api.codegen.transformer.php.PhpFeatureConfig;
-import com.google.api.codegen.transformer.ruby.RubyFeatureConfig;
 
 public class DefaultFeatureConfig implements FeatureConfig {
-
-  public static FeatureConfig getDefaultLanguageFeatureConfig(TargetLanguage targetLanguage) {
-    switch (targetLanguage) {
-      case JAVA:
-        return JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build();
-      case CSHARP:
-        return new CSharpFeatureConfig();
-      case NODEJS:
-        return new NodeJSFeatureConfig();
-      case PHP:
-        return new PhpFeatureConfig();
-      case RUBY:
-        return new RubyFeatureConfig();
-      default:
-        return new DefaultFeatureConfig();
-    }
-  }
 
   @Override
   public boolean resourceNameTypesEnabled() {

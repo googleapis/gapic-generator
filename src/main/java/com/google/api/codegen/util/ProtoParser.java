@@ -22,7 +22,6 @@ import com.google.api.OAuth;
 import com.google.api.OperationData;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
-import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -30,7 +29,6 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -39,7 +37,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
@@ -56,16 +53,16 @@ import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
-  private final FeatureConfig featureConfig;
+  private final boolean enableProtoAnnotations;
 
   @VisibleForTesting
   // Used for testing only.
   public ProtoParser() {
-    this.featureConfig = new DefaultFeatureConfig();
+    this.enableProtoAnnotations = true;
   }
 
   public ProtoParser(FeatureConfig featureConfig) {
-    this.featureConfig = featureConfig;
+    this.enableProtoAnnotations = featureConfig.enableProtoAnnotations();
   }
 
   @SuppressWarnings("unchecked")
@@ -74,7 +71,7 @@ public class ProtoParser {
       E element, GeneratedExtension<O, T> extension) {
     // Use this method as the chokepoint for all annotations processing, so we can toggle on/off
     // annotations processing in one place.
-    if (featureConfig.enableProtoAnnotations()) {
+    if (enableProtoAnnotations) {
       return (T) element.getOptionFields().get(extension.getDescriptor());
     } else {
       return null;
@@ -89,7 +86,7 @@ public class ProtoParser {
           E element, GeneratedExtension<O, List<T>> extension) {
     // Use this method as the chokepoint for all annotations processing for enum values
     // so we can toggle on/off annotations processing in one place.
-    if (featureConfig.enableProtoAnnotations()) {
+    if (enableProtoAnnotations) {
       return (List<EnumValueDescriptor>) element.getOptionFields().get(extension.getDescriptor());
     } else {
       return null;
@@ -105,19 +102,6 @@ public class ProtoParser {
   @Nullable
   public ResourceSet getResourceSet(Field element) {
     return getProtoExtension(element, AnnotationsProto.resourceSet);
-  }
-
-  /** Returns a base package name for an API's client. */
-  @Nullable
-  public String getPackageName(Model model) {
-    if (model.getServiceConfig().getApisCount() > 0) {
-      Api api = model.getServiceConfig().getApis(0);
-      Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
-      if (apiInterface != null) {
-        return apiInterface.getFile().getFullName();
-      }
-    }
-    return null;
   }
 
   /**

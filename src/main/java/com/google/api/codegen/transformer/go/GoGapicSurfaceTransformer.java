@@ -236,7 +236,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     packageInfo.packageDoc(
         CommonRenderingUtil.getDocLines(model.getDocumentationSummary(), COMMENT_LINE_LENGTH));
     packageInfo.domainLayerLocation(productConfig.getDomainLayerLocation());
-    packageInfo.authScopes(model.getAuthScopes());
+    packageInfo.authScopes(model.getAuthScopes(productConfig.getProtoParser()));
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(

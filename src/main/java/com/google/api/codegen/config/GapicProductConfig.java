@@ -27,6 +27,12 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.transformer.LanguageTransformer;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
+import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.csharp.CSharpFeatureConfig;
+import com.google.api.codegen.transformer.java.JavaFeatureConfig;
+import com.google.api.codegen.transformer.nodejs.NodeJSFeatureConfig;
+import com.google.api.codegen.transformer.php.PhpFeatureConfig;
+import com.google.api.codegen.transformer.ruby.RubyFeatureConfig;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -44,6 +50,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
+import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -183,8 +190,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       sourceProtos.forEach(model::addRoot);
     }
 
-    ProtoParser protoParser =
-        new ProtoParser(DefaultFeatureConfig.getDefaultLanguageFeatureConfig(language));
+    ProtoParser protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, false));
     if (configProto == null) {
       configProto = ConfigProto.getDefaultInstance();
     }
@@ -200,6 +206,9 @@ public abstract class GapicProductConfig implements ProductConfig {
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtos, configProto, defaultPackage, resourceDefs, resourceSetDefs, protoParser);
+
+    protoParser =
+        new ProtoParser(getDefaultLanguageFeatureConfig(language, messageConfigs.isEmpty()));
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(
@@ -222,8 +231,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
-      String basePackageName =
-          Optional.ofNullable(protoPackage).orElse(protoParser.getPackageName(model));
+      String basePackageName = Optional.ofNullable(protoPackage).orElse(getPackageName(model));
       clientPackageName =
           LanguageTransformer.getFormattedPackageName(language.name(), basePackageName);
     } else {
@@ -872,5 +880,36 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
     return null;
+  }
+
+  /** Returns a base package name for an API's client. */
+  @Nullable
+  public static String getPackageName(Model model) {
+    if (model.getServiceConfig().getApisCount() > 0) {
+      Api api = model.getServiceConfig().getApis(0);
+      Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
+      if (apiInterface != null) {
+        return apiInterface.getFile().getFullName();
+      }
+    }
+    return null;
+  }
+
+  private static FeatureConfig getDefaultLanguageFeatureConfig(
+      TargetLanguage targetLanguage, boolean enableStringFormatFunctions) {
+    switch (targetLanguage) {
+      case JAVA:
+        return JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build();
+      case CSHARP:
+        return new CSharpFeatureConfig();
+      case NODEJS:
+        return new NodeJSFeatureConfig();
+      case PHP:
+        return new PhpFeatureConfig();
+      case RUBY:
+        return new RubyFeatureConfig();
+      default:
+        return new DefaultFeatureConfig();
+    }
   }
 }

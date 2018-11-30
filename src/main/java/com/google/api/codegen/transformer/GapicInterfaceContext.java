@@ -55,11 +55,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
     return create(
-        new ProtoInterfaceModel(apiInterface, productConfig.getProtoParser()),
-        productConfig,
-        typeTable,
-        namer,
-        featureConfig);
+        new ProtoInterfaceModel(apiInterface), productConfig, typeTable, namer, featureConfig);
   }
 
   public static GapicInterfaceContext create(
