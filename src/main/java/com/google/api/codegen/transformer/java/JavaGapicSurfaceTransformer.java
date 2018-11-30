@@ -84,16 +84,13 @@ public class JavaGapicSurfaceTransformer
       InterfaceModel apiInterface,
       GapicProductConfig productConfig,
       SurfaceNamer namer,
-      ImportTypeTable typeTable,
-      boolean enableStringFormatFunctions) {
+      ImportTypeTable typeTable) {
     return GapicInterfaceContext.create(
         apiInterface,
         productConfig,
         (ModelTypeTable) typeTable,
         namer,
-        JavaFeatureConfig.newBuilder()
-            .enableStringFormatFunctions(enableStringFormatFunctions)
-            .build());
+        JavaFeatureConfig.create(productConfig.getResourceNameMessageConfigs()));
   }
 
   @Override

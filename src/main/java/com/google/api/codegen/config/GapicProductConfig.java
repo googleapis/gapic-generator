@@ -190,7 +190,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       sourceProtos.forEach(model::addRoot);
     }
 
-    ProtoParser protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, false));
+    ProtoParser protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, null));
     if (configProto == null) {
       configProto = ConfigProto.getDefaultInstance();
     }
@@ -207,8 +207,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtos, configProto, defaultPackage, resourceDefs, resourceSetDefs, protoParser);
 
-    protoParser =
-        new ProtoParser(getDefaultLanguageFeatureConfig(language, messageConfigs.isEmpty()));
+    protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, messageConfigs));
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(
@@ -362,7 +361,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         copyrightLines,
         licenseLines,
         resourceNameConfigs,
-        new ProtoParser(new DefaultFeatureConfig()),
+        new ProtoParser(false),
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion);
@@ -402,7 +401,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         ImmutableList.of(),
         ImmutableList.of(),
         ImmutableMap.of(),
-        new ProtoParser(new DefaultFeatureConfig()),
+        new ProtoParser(true),
         // Default to gRPC.
         TransportProtocol.GRPC,
         createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),
@@ -896,10 +895,13 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   private static FeatureConfig getDefaultLanguageFeatureConfig(
-      TargetLanguage targetLanguage, boolean enableStringFormatFunctions) {
+      TargetLanguage targetLanguage, ResourceNameMessageConfigs resourceNameMessageConfigs) {
     switch (targetLanguage) {
       case JAVA:
-        return JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build();
+        return JavaFeatureConfig.newBuilder()
+            .enableStringFormatFunctions(
+                resourceNameMessageConfigs == null || resourceNameMessageConfigs.isEmpty())
+            .build();
       case CSHARP:
         return new CSharpFeatureConfig();
       case NODEJS:

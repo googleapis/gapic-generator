@@ -116,12 +116,10 @@ public class JavaSurfaceTransformer {
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
-      boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
       ImportTypeTable typeTable =
           surfaceTransformer.createTypeTable(productConfig.getPackageName());
       InterfaceContext context =
-          surfaceTransformer.createInterfaceContext(
-              apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
+          surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable);
       StaticLangFileView<StaticLangApiView> apiFile = generateApiFile(context, productConfig);
       surfaceDocs.add(apiFile);
 
