@@ -53,6 +53,9 @@ import javax.annotation.Nullable;
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
 
+  // TODO(andrealin): Make constructor that takes in a FeatureConfig to decide whether to
+  // turn on/off Proto annotations parsing.
+
   @SuppressWarnings("unchecked")
   @Nullable
   private <T, O extends Message, E extends ProtoElement> T getProtoExtension(
