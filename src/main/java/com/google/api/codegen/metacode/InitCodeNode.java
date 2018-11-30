@@ -43,7 +43,8 @@ import java.util.Set;
 public class InitCodeNode {
   private static final TypeModel INT_TYPE = ProtoTypeRef.create(TypeRef.of(Type.TYPE_UINT64));
   private static final String ROOT_KEY = "root";
-  public static final String FILE_NAME_KEY = "file_name";
+  private static final String LOCAL_DEFAULT_FILENAME = "file_name";
+  public static final String FILE_NAME_KEY = "@file_name";
   private String key;
   private InitCodeLineType lineType;
   private InitValueConfig initValueConfig;
@@ -392,11 +393,10 @@ public class InitCodeNode {
     if (sampleParamConfig != null) {
       if (sampleParamConfig.readFromFile()) {
         setupReadFileNode(context);
-      }
-
-      // If sample_argument_name is specified in config, set identifier to this name if the name has
-      // not been used yet and error out otherwise.
-      else if (sampleParamConfig.isSampleArgument()) {
+      } else if (sampleParamConfig.isSampleArgument()) {
+        // If sample_argument_name is specified in config, set identifier to this name if the name
+        // has
+        // not been used yet and error out otherwise.
         Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
         if (!argName.equals(identifier)) {
           Preconditions.checkArgument(
@@ -428,11 +428,17 @@ public class InitCodeNode {
   }
 
   /**
-   * For a read-from-file node, we set up a simple child node to assign the file name to a local
+   * Configures the node so that InitCodeTransformer renders it as reading from files.
+   *
+   * <p>For a read-from-file node, we set up a simple child node to assign the file name to a local
    * variable (e.g., String fileName = "file_name.jpg"). If sample_argument_name is specified, the
-   * local variable would honor the configuration. If not, the name of the local variable would
-   * default to "file_name", and would be picked automatically by symbolTable if "file_name" is
-   * already in use. This allows us to pass in the file name as a sample function argument.
+   * local variable would honor the configuration. If sample_argument_name is not specified, the
+   * name of the local variable defaults to "file_name", or whatever collision-avoiding variant
+   * symbolTable selects if "file_name" is already in use. already in use.
+   *
+   * <p>Adding the child node enables us to split initializing a local variable for the file name
+   * from the logic of reading from a file, so that we can pass in the file name as a sample
+   * function parameter and render how to read from a file within the sample.
    */
   private void setupReadFileNode(InitCodeContext context) {
     Preconditions.checkArgument(
@@ -447,7 +453,7 @@ public class InitCodeNode {
           sampleParamConfig.sampleArgumentName());
       childIdentifier = context.symbolTable().getNewSymbol(name);
     } else {
-      childIdentifier = context.symbolTable().getNewSymbol(Name.anyLower(FILE_NAME_KEY));
+      childIdentifier = context.symbolTable().getNewSymbol(Name.anyLower(LOCAL_DEFAULT_FILENAME));
     }
     InitCodeNode child =
         new InitCodeNode(FILE_NAME_KEY, InitCodeLineType.SimpleInitLine, initValueConfig);
