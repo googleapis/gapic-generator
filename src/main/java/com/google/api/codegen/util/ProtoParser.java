@@ -317,7 +317,6 @@ public class ProtoParser {
   @SuppressWarnings("unchecked")
   /* Returns if a field is required, according to the proto annotations. */
   private boolean isFieldRequired(Field field) {
-    // return (T) element.getOptionFields().get(extension.getDescriptor());
     List<EnumValueDescriptor> fieldBehaviors =
         getProtoExtensionForEnumValue(field, AnnotationsProto.fieldBehavior);
     return fieldBehaviors != null && fieldBehaviors.contains(REQUIRED.getValueDescriptor());

@@ -190,6 +190,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       sourceProtos.forEach(model::addRoot);
     }
 
+    // Toggle on/off proto annotations parsing.
     ProtoParser protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, null));
     if (configProto == null) {
       configProto = ConfigProto.getDefaultInstance();
@@ -207,6 +208,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtos, configProto, defaultPackage, resourceDefs, resourceSetDefs, protoParser);
 
+    // Update the protoParser with new info.
     protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, messageConfigs));
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
