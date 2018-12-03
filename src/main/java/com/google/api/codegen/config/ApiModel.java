@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.DiagCollector;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public interface ApiModel {
   String getTitle();
 
   /** Return a list of scopes for authentication. */
-  List<String> getAuthScopes(ProtoParser protoParser);
+  List<String> getAuthScopes(GapicProductConfig gapicProductConfig);
 
   List<? extends InterfaceModel> getInterfaces();
 

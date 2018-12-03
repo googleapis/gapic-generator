@@ -353,7 +353,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     settingsClass.serviceHostname(
         productServiceConfig.getServiceHostname(context.getServiceAddress()));
     settingsClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
-    settingsClass.authScopes(model.getAuthScopes(context.getProductConfig().getProtoParser()));
+    settingsClass.authScopes(model.getAuthScopes(context.getProductConfig()));
     settingsClass.callSettings(generateCallSettings(context));
     settingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));

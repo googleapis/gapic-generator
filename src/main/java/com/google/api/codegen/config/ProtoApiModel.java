@@ -53,8 +53,8 @@ public class ProtoApiModel implements ApiModel {
   }
 
   @Override
-  public List<String> getAuthScopes(ProtoParser protoParser) {
-    return getAuthScopes(protoParser, getInterfaces());
+  public List<String> getAuthScopes(GapicProductConfig gapicProductConfig) {
+    return getAuthScopes(gapicProductConfig.getProtoParser(), getInterfaces());
   }
 
   @VisibleForTesting

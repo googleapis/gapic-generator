@@ -437,7 +437,7 @@ public class JavaSurfaceTransformer {
     xsettingsClass.serviceHostname(
         productServiceConfig.getServiceHostname(context.getServiceAddress()));
     xsettingsClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
-    xsettingsClass.authScopes(model.getAuthScopes(productConfig.getProtoParser()));
+    xsettingsClass.authScopes(model.getAuthScopes(productConfig));
     if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
       xsettingsClass.useDefaultServicePortInEndpoint(false);
     }
@@ -694,7 +694,7 @@ public class JavaSurfaceTransformer {
     packageInfo.serviceTitle(model.getTitle());
     packageInfo.serviceDocs(serviceDocs);
     packageInfo.domainLayerLocation(productConfig.getDomainLayerLocation());
-    packageInfo.authScopes(model.getAuthScopes(productConfig.getProtoParser()));
+    packageInfo.authScopes(model.getAuthScopes(productConfig));
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
