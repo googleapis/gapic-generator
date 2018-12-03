@@ -33,7 +33,6 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -54,12 +53,6 @@ import javax.annotation.Nullable;
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
   private final boolean enableProtoAnnotations;
-
-  @VisibleForTesting
-  // Used for testing only.
-  public ProtoParser() {
-    this.enableProtoAnnotations = true;
-  }
 
   public ProtoParser(boolean enableProtoAnnotations) {
     this.enableProtoAnnotations = enableProtoAnnotations;
