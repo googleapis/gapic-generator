@@ -209,7 +209,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            method, diagCollector, methodConfigProto.getLongRunning(), new ProtoParser());
+            method, diagCollector, methodConfigProto.getLongRunning(), protoParser);
     if (diagCollector.getErrorCount() > 0) {
       error = true;
     }

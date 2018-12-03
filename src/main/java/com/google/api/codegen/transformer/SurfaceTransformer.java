@@ -24,8 +24,7 @@ public interface SurfaceTransformer {
       InterfaceModel apiInterface,
       GapicProductConfig productConfig,
       SurfaceNamer namer,
-      ImportTypeTable typeTable,
-      boolean enableStringFormatFunctions);
+      ImportTypeTable typeTable);
 
   ImportTypeTable createTypeTable(String implicitPackageName);
 

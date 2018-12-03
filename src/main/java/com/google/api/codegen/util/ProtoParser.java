@@ -22,13 +22,13 @@ import com.google.api.OAuth;
 import com.google.api.OperationData;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -36,12 +36,12 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
+import com.google.protobuf.ProtocolMessageEnum;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,15 +52,42 @@ import javax.annotation.Nullable;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
+  private final boolean enableProtoAnnotations;
 
-  // TODO(andrealin): Make constructor that takes in a FeatureConfig to decide whether to
-  // turn on/off Proto annotations parsing.
+  public ProtoParser(boolean enableProtoAnnotations) {
+    this.enableProtoAnnotations = enableProtoAnnotations;
+  }
+
+  public ProtoParser(FeatureConfig featureConfig) {
+    this.enableProtoAnnotations = featureConfig.enableProtoAnnotations();
+  }
 
   @SuppressWarnings("unchecked")
   @Nullable
   private <T, O extends Message, E extends ProtoElement> T getProtoExtension(
       E element, GeneratedExtension<O, T> extension) {
-    return (T) element.getOptionFields().get(extension.getDescriptor());
+    // Use this method as the chokepoint for all annotations processing, so we can toggle on/off
+    // annotations processing in one place.
+    if (enableProtoAnnotations) {
+      return (T) element.getOptionFields().get(extension.getDescriptor());
+    } else {
+      return null;
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Nullable
+  // GeneratedMessage.GeneratedExtension<DescriptorProtos.FieldOptions, List<FieldBehavior>>
+  private <T extends ProtocolMessageEnum, O extends Message, E extends ProtoElement>
+      List<EnumValueDescriptor> getProtoExtensionForEnumValue(
+          E element, GeneratedExtension<O, List<T>> extension) {
+    // Use this method as the chokepoint for all annotations processing for enum values
+    // so we can toggle on/off annotations processing in one place.
+    if (enableProtoAnnotations) {
+      return (List<EnumValueDescriptor>) element.getOptionFields().get(extension.getDescriptor());
+    } else {
+      return null;
+    }
   }
 
   @Nullable
@@ -72,19 +99,6 @@ public class ProtoParser {
   @Nullable
   public ResourceSet getResourceSet(Field element) {
     return getProtoExtension(element, AnnotationsProto.resourceSet);
-  }
-
-  /** Returns a base package name for an API's client. */
-  @Nullable
-  public String getPackageName(Model model) {
-    if (model.getServiceConfig().getApisCount() > 0) {
-      Api api = model.getServiceConfig().getApis(0);
-      Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
-      if (apiInterface != null) {
-        return apiInterface.getFile().getFullName();
-      }
-    }
-    return null;
   }
 
   /**
@@ -297,8 +311,7 @@ public class ProtoParser {
   /* Returns if a field is required, according to the proto annotations. */
   private boolean isFieldRequired(Field field) {
     List<EnumValueDescriptor> fieldBehaviors =
-        (List<EnumValueDescriptor>)
-            field.getOptionFields().get(AnnotationsProto.fieldBehavior.getDescriptor());
+        getProtoExtensionForEnumValue(field, AnnotationsProto.fieldBehavior);
     return fieldBehaviors != null && fieldBehaviors.contains(REQUIRED.getValueDescriptor());
   }
 
