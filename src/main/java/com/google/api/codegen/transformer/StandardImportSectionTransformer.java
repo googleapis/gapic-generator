@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.util.ImportType;
 import com.google.api.codegen.util.TypeAlias;
@@ -21,6 +22,7 @@ import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Streams;
 import java.util.Map;
 
 public class StandardImportSectionTransformer implements ImportSectionTransformer {
@@ -32,6 +34,12 @@ public class StandardImportSectionTransformer implements ImportSectionTransforme
   @Override
   public ImportSectionView generateImportSection(
       MethodContext context, Iterable<InitCodeNode> specItemNodes) {
+    boolean needIOUtility =
+        Streams.stream(specItemNodes)
+            .anyMatch(node -> node.getLineType() == InitCodeLineType.ReadFileInitLine);
+    if (needIOUtility) {
+      generateIOUtilityImports(context);
+    }
     return generateImportSection(context.getTypeTable().getImports(), null);
   }
 
@@ -87,5 +95,12 @@ public class StandardImportSectionTransformer implements ImportSectionTransforme
       }
     }
     return true;
+  }
+
+  private static void generateIOUtilityImports(MethodContext context) {
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.File");
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.Files");
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.Path");
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.Paths");
   }
 }

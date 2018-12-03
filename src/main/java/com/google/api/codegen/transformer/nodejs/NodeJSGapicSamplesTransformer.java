@@ -54,7 +54,9 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<Pro
       new FileHeaderTransformer(new NodeJSImportSectionTransformer());
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
-          new NodeJSApiMethodParamTransformer(), new InitCodeTransformer(), SampleType.STANDALONE);
+          new NodeJSApiMethodParamTransformer(),
+          new InitCodeTransformer(new NodeJSImportSectionTransformer()),
+          SampleType.STANDALONE);
   private final NodeJSMethodViewGenerator methodGenerator =
       new NodeJSMethodViewGenerator(apiMethodTransformer);
   private final PackageMetadataConfig packageConfig;

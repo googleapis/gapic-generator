@@ -7426,6 +7426,10 @@ import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.protobuf.ByteString;
+import java.nio.File;
+import java.nio.Files;
+import java.nio.Path;
+import java.nio.Paths;
 
 public class DiscussBookCallableCallableStreamingBidiProg {
   public static void sampleDiscussBook() {
@@ -7643,7 +7647,8 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       Book response = libraryClient.getBigBookAsync(name.toString()).get();
-      System.out.println(response);
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
@@ -7675,7 +7680,8 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap {
         .setName(name.toString())
         .build();
       Book response = libraryClient.getBigBookAsync(request).get();
-      System.out.println(response);
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
@@ -7711,7 +7717,8 @@ public class GetBigBookCallableCallableWap {
       // Do something
 
       Operation response = future.get();
-      System.out.println(response);
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
@@ -7747,7 +7754,8 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
       // Do something
 
       Book response = future.get();
-      System.out.println(response);
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
