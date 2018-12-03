@@ -367,8 +367,46 @@ service LibraryService {
         "optional_repeated_resource_name_common",
         "optional_repeated_fixed32",
         "optional_repeated_fixed64",
-        "optional_map"]
+        "optional_map",
+        "any_value",
+        "struct_value",
+        "value_value",
+        "list_value_value",
+        "time_value",
+        "duration_value",
+        "field_mask_value",
+        "int32_value",
+        "uint32_value",
+        "int64_value",
+        "uint64_value",
+        "float_value",
+        "double_value",
+        "string_value",
+        "bool_value",
+        "bytes_value",
+        "repeated_any_value",
+        "repeated_struct_value",
+        "repeated_value_value",
+        "repeated_list_value_value",
+        "repeated_time_value",
+        "repeated_duration_value",
+        "repeated_field_mask_value",
+        "repeated_int32_value",
+        "repeated_uint32_value",
+        "repeated_int64_value",
+        "repeated_uint64_value",
+        "repeated_float_value",
+        "repeated_double_value",
+        "repeated_string_value",
+        "repeated_bool_value",
+        "repeated_bytes_value"]
     };
+  }
+
+  // This method is not exposed in the GAPIC config.
+  rpc PrivateGetBook(GetBookRequest) returns (Book)  {
+    // http_get retry codes should not be generated from this private method.
+    option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}" };
   }
 }
 
@@ -483,14 +521,6 @@ message SomeMessage {
 message SomeMessage2 {
   int32 field1 = 1;
 
-  // Another enum with duplicated simple name
-  enum Alignment {
-    FLUSH_LEFT = 0;
-    FLUSH_RIGHT = 1;
-    CENTERED = 2;
-    JUSTIFIED = 3;
-  }
-
   message SomeMessage3 {
 
     // Tests Python nested enums
@@ -502,6 +532,14 @@ message SomeMessage2 {
       // 64-bit
       DOUBLE = 2;
     }
+  }
+
+  // Another enum with duplicated simple name
+  enum Alignment {
+    FLUSH_LEFT = 0;
+    FLUSH_RIGHT = 1;
+    CENTERED = 2;
+    JUSTIFIED = 3;
   }
 
   Alignment format = 2;
@@ -981,7 +1019,39 @@ message TestOptionalRequiredFlatteningParamsRequest {
 
   map<int32, string> optional_map = 91;
 
+    google.protobuf.Any any_value = 100;
+    google.protobuf.Struct struct_value = 101;
+    google.protobuf.Value value_value = 102;
+    google.protobuf.ListValue list_value_value = 103;
+    google.protobuf.Timestamp time_value = 104;
+    google.protobuf.Duration duration_value = 105;
+    google.protobuf.FieldMask field_mask_value = 106;
+    google.protobuf.Int32Value int32_value = 107;
+    google.protobuf.UInt32Value uint32_value = 108;
+    google.protobuf.Int64Value int64_value = 109;
+    google.protobuf.UInt64Value uint64_value = 110;
+    google.protobuf.FloatValue float_value = 111;
+    google.protobuf.DoubleValue double_value = 112;
+    google.protobuf.StringValue string_value = 113;
+    google.protobuf.BoolValue bool_value = 114;
+    google.protobuf.BytesValue bytes_value = 115;
 
+    repeated google.protobuf.Any repeated_any_value = 120;
+    repeated google.protobuf.Struct repeated_struct_value = 121;
+    repeated google.protobuf.Value repeated_value_value = 122;
+    repeated google.protobuf.ListValue repeated_list_value_value = 123;
+    repeated google.protobuf.Timestamp repeated_time_value = 124;
+    repeated google.protobuf.Duration repeated_duration_value = 125;
+    repeated google.protobuf.FieldMask repeated_field_mask_value = 126;
+    repeated google.protobuf.Int32Value repeated_int32_value = 127;
+    repeated google.protobuf.UInt32Value repeated_uint32_value = 128;
+    repeated google.protobuf.Int64Value repeated_int64_value = 129;
+    repeated google.protobuf.UInt64Value repeated_uint64_value = 130;
+    repeated google.protobuf.FloatValue repeated_float_value = 131;
+    repeated google.protobuf.DoubleValue repeated_double_value = 132;
+    repeated google.protobuf.StringValue repeated_string_value = 133;
+    repeated google.protobuf.BoolValue repeated_bool_value = 134;
+    repeated google.protobuf.BytesValue repeated_bytes_value = 135;
 }
 
 message TestOptionalRequiredFlatteningParamsResponse {

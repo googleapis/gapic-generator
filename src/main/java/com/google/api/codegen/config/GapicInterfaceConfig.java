@@ -32,10 +32,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 /**
@@ -226,7 +226,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames,
       ProtoParser protoParser) {
-    Map<String, GapicMethodConfig> methodConfigMapBuilder = new TreeMap<>();
+    Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
 
     for (Entry<Method, MethodConfigProto> methodEntry : methodsToGenerate.entrySet()) {
       MethodConfigProto methodConfigProto = methodEntry.getValue();
