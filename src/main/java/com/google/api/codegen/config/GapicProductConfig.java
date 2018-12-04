@@ -26,6 +26,13 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.transformer.LanguageTransformer;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
+import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.csharp.CSharpFeatureConfig;
+import com.google.api.codegen.transformer.java.JavaFeatureConfig;
+import com.google.api.codegen.transformer.nodejs.NodeJSFeatureConfig;
+import com.google.api.codegen.transformer.php.PhpFeatureConfig;
+import com.google.api.codegen.transformer.ruby.RubyFeatureConfig;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -43,6 +50,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
+import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -88,6 +96,9 @@ public abstract class GapicProductConfig implements ProductConfig {
   /** Returns a map from entity names to resource name configs. */
   public abstract ImmutableMap<String, ResourceNameConfig> getResourceNameConfigs();
 
+  /** Returns a map from entity names to resource name configs. */
+  public abstract ProtoParser getProtoParser();
+
   /** Returns the type of transport for the generated client. Defaults to Grpc. */
   public abstract TransportProtocol getTransportProtocol();
 
@@ -112,6 +123,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         getCopyrightLines(),
         getLicenseLines(),
         getResourceNameConfigs(),
+        getProtoParser(),
         getTransportProtocol(),
         getDefaultResourceNameFieldConfigMap(),
         getConfigSchemaVersion());
@@ -178,7 +190,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       sourceProtos.forEach(model::addRoot);
     }
 
-    ProtoParser protoParser = new ProtoParser();
+    // Toggle on/off proto annotations parsing.
+    ProtoParser protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, null));
     if (configProto == null) {
       configProto = ConfigProto.getDefaultInstance();
     }
@@ -194,6 +207,9 @@ public abstract class GapicProductConfig implements ProductConfig {
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtos, configProto, defaultPackage, resourceDefs, resourceSetDefs, protoParser);
+
+    // Update the protoParser with new info.
+    protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, messageConfigs));
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(
@@ -216,8 +232,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
-      String basePackageName =
-          Optional.ofNullable(protoPackage).orElse(protoParser.getPackageName(model));
+      String basePackageName = Optional.ofNullable(protoPackage).orElse(getPackageName(model));
       clientPackageName =
           LanguageTransformer.getFormattedPackageName(language.name(), basePackageName);
     } else {
@@ -281,6 +296,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         copyrightLines,
         licenseLines,
         resourceNameConfigs,
+        protoParser,
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion);
@@ -347,6 +363,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         copyrightLines,
         licenseLines,
         resourceNameConfigs,
+        new ProtoParser(false),
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion);
@@ -386,6 +403,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         ImmutableList.of(),
         ImmutableList.of(),
         ImmutableMap.of(),
+        new ProtoParser(true),
         // Default to gRPC.
         TransportProtocol.GRPC,
         createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),
@@ -863,5 +881,39 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
     return null;
+  }
+
+  /** Returns a base package name for an API's client. */
+  @Nullable
+  public static String getPackageName(Model model) {
+    if (model.getServiceConfig().getApisCount() > 0) {
+      Api api = model.getServiceConfig().getApis(0);
+      Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
+      if (apiInterface != null) {
+        return apiInterface.getFile().getFullName();
+      }
+    }
+    return null;
+  }
+
+  private static FeatureConfig getDefaultLanguageFeatureConfig(
+      TargetLanguage targetLanguage, ResourceNameMessageConfigs resourceNameMessageConfigs) {
+    switch (targetLanguage) {
+      case JAVA:
+        return JavaFeatureConfig.newBuilder()
+            .enableStringFormatFunctions(
+                resourceNameMessageConfigs == null || resourceNameMessageConfigs.isEmpty())
+            .build();
+      case CSHARP:
+        return new CSharpFeatureConfig();
+      case NODEJS:
+        return new NodeJSFeatureConfig();
+      case PHP:
+        return new PhpFeatureConfig();
+      case RUBY:
+        return new RubyFeatureConfig();
+      default:
+        return new DefaultFeatureConfig();
+    }
   }
 }

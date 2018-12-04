@@ -89,7 +89,7 @@ public class JavaDiscoGapicSchemaToViewTransformer
             productConfig,
             createTypeTable(productConfig.getPackageName(), surfaceNamer),
             surfaceNamer,
-            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
+            JavaFeatureConfig.create(productConfig.getResourceNameMessageConfigs()));
 
     for (Schema schema : context.getDocument().schemas().values()) {
       Map<SchemaTransformationContext, StaticLangApiMessageView> contextViews =
