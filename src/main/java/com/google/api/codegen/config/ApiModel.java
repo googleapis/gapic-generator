@@ -32,7 +32,7 @@ public interface ApiModel {
   String getTitle();
 
   /** Return a list of scopes for authentication. */
-  List<String> getAuthScopes();
+  List<String> getAuthScopes(GapicProductConfig gapicProductConfig);
 
   List<? extends InterfaceModel> getInterfaces();
 
