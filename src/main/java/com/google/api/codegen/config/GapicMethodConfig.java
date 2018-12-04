@@ -17,7 +17,6 @@ package com.google.api.codegen.config;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
 
 import com.google.api.codegen.BatchingConfigProto;
-import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.ReleaseLevel;
@@ -31,8 +30,8 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
@@ -106,19 +105,17 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    ImmutableList<FlatteningConfig> flattening = null;
-    if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
-      flattening =
-          FlatteningConfig.createFlatteningConfigs(
-              diagCollector,
-              messageConfigs,
-              resourceNameConfigs,
-              methodConfigProto,
-              methodModel,
-              protoParser);
-      if (flattening == null) {
-        error = true;
-      }
+    ImmutableList<FlatteningConfig> flattening =
+        FlatteningConfig.createFlatteningConfigs(
+            diagCollector,
+            defaultPackageName,
+            messageConfigs,
+            resourceNameConfigs,
+            methodConfigProto,
+            methodModel,
+            protoParser);
+    if (diagCollector.getErrorCount() > 0) {
+      error = true;
     }
 
     BatchingConfig batching = null;
@@ -246,23 +243,20 @@ public abstract class GapicMethodConfig extends MethodConfig {
   @VisibleForTesting
   static ResourceNameTreatment defaultResourceNameTreatment(
       MethodConfigProto methodConfigProto,
-      Method method,
+      List<Field> fields,
       ProtoParser protoParser,
       String defaultPackageName) {
 
     ResourceNameTreatment defaultResourceNameTreatment =
         methodConfigProto.getResourceNameTreatment();
     if (defaultResourceNameTreatment == ResourceNameTreatment.UNSET_TREATMENT
-        && method
-            .getInputMessage()
-            .getFields()
+        && fields
             .stream()
             .anyMatch(
                 f ->
                     !Strings.isNullOrEmpty(protoParser.getResourceReference(f))
                         || !Strings.isNullOrEmpty(protoParser.getResourceOrSetEntityName(f)))) {
-      String methodInputPackageName =
-          protoParser.getProtoPackage(((ProtoFile) method.getInputMessage().getParent()));
+      String methodInputPackageName = protoParser.getProtoPackage(fields.get(0).getFile());
       if (defaultPackageName.equals(methodInputPackageName)) {
         defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
       } else {
@@ -275,6 +269,17 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
 
     return defaultResourceNameTreatment;
+  }
+
+  @VisibleForTesting
+  static ResourceNameTreatment defaultResourceNameTreatment(
+      MethodConfigProto methodConfigProto,
+      Method method,
+      ProtoParser protoParser,
+      String defaultPackageName) {
+
+    return defaultResourceNameTreatment(
+        methodConfigProto, method.getInputMessage().getFields(), protoParser, defaultPackageName);
   }
 
   /** Return the list of "one of" instances associated with the fields. */

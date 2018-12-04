@@ -172,6 +172,10 @@ public class ResourceNameMessageConfigsTest {
 
     Mockito.doReturn(bookMessage).when(insertBook).getInputMessage();
     Mockito.doReturn(protoFile).when(bookMessage).getParent();
+    Mockito.doReturn(protoFile).when(shelfName).getFile();
+    Mockito.doReturn(protoFile).when(shelfTheme).getFile();
+    Mockito.doReturn(protoFile).when(bookName).getFile();
+    Mockito.doReturn(protoFile).when(bookAuthor).getFile();
     // Mockito.doReturn("Book").when(protoParser).getResourceReference(bookName);
   }
 
@@ -317,6 +321,7 @@ public class ResourceNameMessageConfigsTest {
 
   @Test
   public void testCreateFlattenings() {
+    String defaultPackageName = "library";
     ProtoMethodModel methodModel = new ProtoMethodModel(createShelvesMethod);
     Field bookField = Mockito.mock(Field.class);
     Mockito.when(bookField.getType()).thenReturn(TypeRef.of(bookType));
@@ -393,6 +398,7 @@ public class ResourceNameMessageConfigsTest {
         new ArrayList<>(
             FlatteningConfig.createFlatteningConfigs(
                 diagCollector,
+                defaultPackageName,
                 messageConfigs,
                 resourceNameConfigs,
                 methodConfigProto,
