@@ -402,6 +402,12 @@ service LibraryService {
         "repeated_bytes_value"]
     };
   }
+
+  // This method is not exposed in the GAPIC config.
+  rpc PrivateGetBook(GetBookRequest) returns (Book)  {
+    // http_get retry codes should not be generated from this private method.
+    option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}" };
+  }
 }
 
 // A single book in the library.
@@ -515,14 +521,6 @@ message SomeMessage {
 message SomeMessage2 {
   int32 field1 = 1;
 
-  // Another enum with duplicated simple name
-  enum Alignment {
-    FLUSH_LEFT = 0;
-    FLUSH_RIGHT = 1;
-    CENTERED = 2;
-    JUSTIFIED = 3;
-  }
-
   message SomeMessage3 {
 
     // Tests Python nested enums
@@ -534,6 +532,14 @@ message SomeMessage2 {
       // 64-bit
       DOUBLE = 2;
     }
+  }
+
+  // Another enum with duplicated simple name
+  enum Alignment {
+    FLUSH_LEFT = 0;
+    FLUSH_RIGHT = 1;
+    CENTERED = 2;
+    JUSTIFIED = 3;
   }
 
   Alignment format = 2;
@@ -851,6 +857,10 @@ message GetBookFromAbsolutelyAnywhereRequest {
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = "google.example.library.v1.Book"];
+
+  // An alternate book name, used to test proper processing of placeholders
+  // within additional bindings.
+  string alt_book_name = 2;
 }
 
 // Request message for LibraryService.UpdateBookIndex.

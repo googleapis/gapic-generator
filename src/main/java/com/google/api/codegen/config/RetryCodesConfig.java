@@ -24,19 +24,18 @@ import com.google.api.codegen.util.ProtoParser;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 public class RetryCodesConfig {
 
@@ -87,11 +86,11 @@ public class RetryCodesConfig {
   public static RetryCodesConfig create(
       DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
-      Interface apiInterface,
+      List<Method> methodsToGenerate,
       ProtoParser protoParser) {
     RetryCodesConfig retryCodesConfig = new RetryCodesConfig();
     retryCodesConfig.populateRetryCodesDefinition(
-        diagCollector, interfaceConfigProto, apiInterface, protoParser);
+        diagCollector, interfaceConfigProto, methodsToGenerate, protoParser);
     if (retryCodesConfig.error) {
       return null;
     }
@@ -114,6 +113,7 @@ public class RetryCodesConfig {
     return builder.build();
   }
 
+  @Nullable
   private static ImmutableMap<String, ImmutableList<String>>
       createRetryCodesDefinitionFromConfigProto(
           DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
@@ -149,15 +149,17 @@ public class RetryCodesConfig {
   private void populateRetryCodesDefinition(
       DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
-      Interface apiInterface,
+      Collection<Method> methodsToGenerate,
       ProtoParser protoParser) {
-
+    // First create the retry codes definitions from the GAPIC config.
     populateRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
     if (error) {
       return;
     }
 
-    populateRetryCodesDefinitionWithProtoFile(apiInterface, interfaceConfigProto, protoParser);
+    // Then create the retry codes defs from the proto annotations, but don't overwrite
+    // existing retry codes defs from the GAPIC config.
+    populateRetryCodesDefinitionWithProtoFile(methodsToGenerate, protoParser);
   }
 
   /**
@@ -170,12 +172,13 @@ public class RetryCodesConfig {
 
     ImmutableMap<String, ImmutableList<String>> retryCodesDefFromConfigProto =
         createRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
+    if (retryCodesDefFromConfigProto == null) {
+      return;
+    }
 
     Map<String, String> methodRetryNamesFromConfigProto =
         createMethodRetryNamesFromConfigProto(interfaceConfigProto);
-    if (diagCollector.getErrorCount() > 0) {
-      return;
-    }
+
     retryCodesDefinition.putAll(retryCodesDefFromConfigProto);
     methodRetryNames.putAll(methodRetryNamesFromConfigProto);
   }
@@ -184,9 +187,12 @@ public class RetryCodesConfig {
    * Returns a mapping of a retryCodeDef name to the list of retry codes it contains. Also populates
    * the @param methodNameToRetryCodeNames with a mapping of a Method name to its retry code
    * settings name.
+   *
+   * <p>If this object already contains a retry entry for a given Method, don't overwrite the
+   * existing retry entry.
    */
   private void populateRetryCodesDefinitionWithProtoFile(
-      Interface apiInterface, InterfaceConfigProto interfaceConfigProto, ProtoParser protoParser) {
+      Collection<Method> methodsToCreateRetriesFor, ProtoParser protoParser) {
 
     SymbolTable symbolTable = new SymbolTable();
 
@@ -194,17 +200,6 @@ public class RetryCodesConfig {
       // Record all the preexisting retryCodeNames from configProto.
       symbolTable.getNewSymbol(retryCodesName);
     }
-
-    // For now, only create retryCodeDef for methods that are also defined in the GAPIC config.
-    Map<String, Method> methodsFromProtoFile =
-        apiInterface.getMethods().stream().collect(Collectors.toMap(Method::getSimpleName, m -> m));
-    List<Method> methodsFromGapicConfig =
-        interfaceConfigProto
-            .getMethodsList()
-            .stream()
-            .map(m -> methodsFromProtoFile.get(m.getName()))
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
 
     // Unite all HTTP GET methods that have no additional retry codes under one retry code name to
     // reduce duplication.
@@ -214,7 +209,7 @@ public class RetryCodesConfig {
     String noRetryName = symbolTable.getNewSymbol(NO_RETRY_CODE_DEF_NAME);
 
     // Check proto annotations for retry settings.
-    for (Method method : methodsFromGapicConfig) {
+    for (Method method : methodsToCreateRetriesFor) {
       if (methodRetryNames.containsKey(method.getSimpleName())) {
         // https://github.com/googleapis/gapic-generator/issues/2311.
         // For now, let GAPIC config take precedent over proto annotations, for retry code
