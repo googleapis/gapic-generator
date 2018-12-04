@@ -236,17 +236,17 @@ public abstract class GapicProductConfig implements ProductConfig {
     String clientPackageName;
     LanguageSettingsProto settings =
         configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
-   if (settings == null) {
+    if (settings == null) {
       // TODO(andrealin): infer package name
       settings = LanguageSettingsProto.getDefaultInstance();
 
-     if (!Strings.isNullOrEmpty(clientPackage)) {
-       clientPackageName = clientPackage;
-     } else {
-       String basePackageName = Optional.ofNullable(protoPackage).orElse(getPackageName(model));
-       clientPackageName = LanguageSettingsMerger
-           .getFormattedPackageName(language, basePackageName);
-     }
+      if (!Strings.isNullOrEmpty(clientPackage)) {
+        clientPackageName = clientPackage;
+      } else {
+        String basePackageName = Optional.ofNullable(protoPackage).orElse(getPackageName(model));
+        clientPackageName =
+            LanguageSettingsMerger.getFormattedPackageName(language, basePackageName);
+      }
     } else {
       clientPackageName = settings.getPackageName();
     }
