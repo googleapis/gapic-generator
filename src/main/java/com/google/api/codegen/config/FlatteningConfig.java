@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.api.codegen.ResourceNameTreatment.NONE;
+
 import com.google.api.MethodSignature;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -250,7 +252,7 @@ public abstract class FlatteningConfig {
       ResourceNameTreatment defaultResourceNameTreatment =
           methodConfigProto.getResourceNameTreatment();
       if (!parameterField.mayBeInResourceName()) {
-        defaultResourceNameTreatment = ResourceNameTreatment.NONE;
+        defaultResourceNameTreatment = NONE;
       }
       if (defaultResourceNameTreatment == null
           || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
@@ -332,8 +334,13 @@ public abstract class FlatteningConfig {
 
       // Use the GAPIC config default ResourceNameTreatment if it is set,
       // otherwise use STATIC_TYPES if this field is a Resource, otherwise default to VALIDATE.
-      ResourceNameTreatment defaultResourceNameTreatment =
-          methodConfigProto.getResourceNameTreatment();
+      ResourceNameTreatment defaultResourceNameTreatment;
+      if (MethodConfigProto.getDefaultInstance().equals(methodConfigProto)) {
+        defaultResourceNameTreatment = NONE;
+      } else {
+        defaultResourceNameTreatment =
+            methodConfigProto.getResourceNameTreatment();
+      }
       if (defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
         String resourceNameType = protoParser.getResourceReference(parameterField.getProtoField());
         if (!Strings.isNullOrEmpty(resourceNameType)) {

@@ -106,9 +106,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    ImmutableList<FlatteningConfig> flattening = null;
-    if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
-      flattening =
+    ImmutableList<FlatteningConfig> flattening =
           FlatteningConfig.createFlatteningConfigs(
               diagCollector,
               messageConfigs,
@@ -116,9 +114,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
               methodConfigProto,
               methodModel,
               protoParser);
-      if (flattening == null) {
-        error = true;
-      }
+    if (diagCollector.getErrorCount() > 0) {
+      error = true;
     }
 
     BatchingConfig batching = null;

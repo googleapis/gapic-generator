@@ -1,0 +1,598 @@
+# This is a library_gapic.yaml that only contains features available in API config spec.
+type: com.google.api.codegen.ConfigProto
+config_schema_version: 1.0.0
+language_settings:
+  java:
+    package_name: com.google.example.library.v1
+collections:
+- name_pattern: shelves/{shelf_id}
+  entity_name: shelf
+# This pattern is present here and not in the interface configuration to test
+# the restriction of generated parse/format methods
+- name_pattern: archives/{archive_path}/books/{book_id=**}
+  entity_name: archived_book
+fixed_resource_name_values:
+- entity_name: deleted_book
+  fixed_value: _deleted-book_
+collection_oneofs:
+- oneof_name: book_oneof
+  collection_names:
+  - book
+  - archived_book
+  - deleted_book
+interfaces:
+- name: google.example.library.v1.LibraryService
+  collections:
+  - name_pattern: shelves/{shelf_id}
+    entity_name: shelf
+  - name_pattern: shelves/{shelf_id}/books/{book_id}
+    entity_name: book
+    language_overrides:
+    - language: java
+      entity_name: shelf_book
+  # To test the case that entity name / variable which happens to be
+  # a language keyword. See: https://github.com/googleapis/toolkit/issues/618
+  - name_pattern: shelves/{shelf}/books/{book}/returns/{return}
+    entity_name: return
+  - name_pattern: projects/{project}
+    entity_name: project
+  methods:
+  - name: CreateShelf
+    flattening:
+      groups:
+      - parameters:
+        - shelf
+    required_fields:
+    - shelf
+    resource_name_treatment: STATIC_TYPES
+  - name: GetShelf
+    flattening:
+      groups:
+      - parameters:
+        - name
+        parameter_resource_name_treatment:
+          name: STATIC_TYPES
+      - parameters:
+        - name
+        - message
+        parameter_resource_name_treatment:
+          name: VALIDATE
+      - parameters:
+        - name
+        - message
+        - string_builder
+        parameter_resource_name_treatment:
+          name: NONE
+    required_fields:
+    - name
+    - options
+    field_name_patterns:
+      name: shelf
+  - name: ListShelves
+    flattening:
+      groups:
+      - parameters: []
+    page_streaming:
+      request:
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: shelves
+  - name: DeleteShelf
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: shelf
+  - name: MergeShelves
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - other_shelf_name
+    required_fields:
+    - name
+    - other_shelf_name
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: shelf
+      other_shelf_name: shelf
+  - name: CreateBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - book
+    required_fields:
+    - name
+    - book
+    # Test resource_name_treatment set to NONE with field_name_patterns
+    resource_name_treatment: NONE
+    field_name_patterns:
+      name: shelf
+  - name: PublishSeries
+    flattening:
+      groups:
+      - parameters:
+        - shelf
+        - books
+        - edition
+        - series_uuid
+    required_fields:
+    - shelf
+    - books
+    - series_uuid
+    resource_name_treatment: STATIC_TYPES
+  - name: GetBook
+    flattening:
+      groups:
+      - flattening_group_name: get_book_1
+        parameters:
+        - name
+    required_fields:
+    - name
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book
+  - name: ListBooks
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - filter
+    required_fields:
+    - name
+    page_streaming:
+      request:
+        page_size_field: page_size
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: books
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: shelf
+  - name: DeleteBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    # leaving commented out to test the default
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book
+  - name: UpdateBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - book
+      - parameters:
+        - name
+        - optional_foo
+        - book
+        - update_mask
+        - physical_mask
+    required_fields:
+    - name
+    - book
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book
+  - name: MoveBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - other_shelf_name
+    required_fields:
+    - name
+    - other_shelf_name
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book
+      other_shelf_name: shelf
+  - name: ListStrings
+    flattening:
+      groups:
+      - parameters: []
+      - parameters:
+        - name
+    page_streaming:
+      request:
+        page_size_field: page_size
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: strings
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: "*"
+  - name: AddComments
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - comments
+    required_fields:
+    - name
+    - comments
+    # Test resource_name_treatment unset, so using default
+    # resource_name_treatment: VALIDATE
+    field_name_patterns:
+      name: book
+  - name: GetBookFromArchive
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: archived_book
+  - name: GetBookFromAnywhere
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - alt_book_name
+    required_fields:
+    - name
+    - alt_book_name
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book_oneof
+      alt_book_name: book
+  - name: GetBookFromAbsolutelyAnywhere
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book_oneof
+  - name: UpdateBookIndex
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - index_name
+        - index_map
+    required_fields:
+    - name
+    - index_name
+    - index_map
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    field_name_patterns:
+      name: book
+    sample_code_init_fields:
+    - index_name="default index"
+    - index_map{"default_key"}
+  - name: StreamShelves
+    grpc_streaming:
+      response:
+        resources_field: shelves
+  - name: StreamBooks
+    resource_name_treatment: STATIC_TYPES
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+  - name: DiscussBook
+    # required_fields makes a difference on sample code.
+    required_fields:
+    - name
+  - name: MonologAboutBook
+    # required_fields makes a difference on sample code.
+    required_fields:
+    - name
+  - name: FindRelatedBooks
+    flattening:
+      groups:
+      - parameters:
+        - names
+        - shelves
+    required_fields:
+    - names
+    - shelves
+    page_streaming:
+      request:
+        token_field: page_token
+        page_size_field: page_size
+      response:
+        token_field: next_page_token
+        resources_field: names
+    resource_name_treatment: STATIC_TYPES
+  - name: AddTag
+    flattening:
+      groups:
+      - parameters:
+        - resource
+        - tag
+    required_fields:
+    - resource
+    - tag
+    resource_name_treatment: VALIDATE
+    field_name_patterns:
+      resource: book
+  - name: AddLabel
+    flattening:
+      groups:
+      - parameters:
+        - resource
+        - label
+    required_fields:
+    - resource
+    - label
+    resource_name_treatment: VALIDATE
+    field_name_patterns:
+      resource: book
+    reroute_to_grpc_interface: google.tagger.v1.Labeler
+  - name: GetBigBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book
+    long_running:
+      return_type: google.example.library.v1.Book
+      metadata_type: google.example.library.v1.GetBigBookMetadata
+      implements_cancel: true
+      initial_poll_delay_millis: 3000
+      poll_delay_multiplier: 1.3
+      max_poll_delay_millis: 30000
+      total_poll_timeout_millis: 86400000
+  - name: GetBigNothing
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: book
+    long_running:
+      return_type: google.protobuf.Empty
+      metadata_type: google.example.library.v1.GetBigBookMetadata
+      implements_delete: true
+      initial_poll_delay_millis: 3000
+      poll_delay_multiplier: 1.3
+      max_poll_delay_millis: 60000
+      total_poll_timeout_millis: 600000
+  - name: TestOptionalRequiredFlatteningParams
+    flattening:
+      groups:
+      - parameters: [] # Test empty flattening
+      - parameters:
+        - required_singular_int32
+        - required_singular_int64
+        - required_singular_float
+        - required_singular_double
+        - required_singular_bool
+        - required_singular_enum
+        - required_singular_string
+        - required_singular_bytes
+        - required_singular_message
+        - required_singular_resource_name
+        - required_singular_resource_name_oneof
+        - required_singular_resource_name_common
+        - required_singular_fixed32
+        - required_singular_fixed64
+        - required_repeated_int32
+        - required_repeated_int64
+        - required_repeated_float
+        - required_repeated_double
+        - required_repeated_bool
+        - required_repeated_enum
+        - required_repeated_string
+        - required_repeated_bytes
+        - required_repeated_message
+        - required_repeated_resource_name
+        - required_repeated_resource_name_oneof
+        - required_repeated_resource_name_common
+        - required_repeated_fixed32
+        - required_repeated_fixed64
+        - required_map
+        - optional_singular_int32
+        - optional_singular_int64
+        - optional_singular_float
+        - optional_singular_double
+        - optional_singular_bool
+        - optional_singular_enum
+        - optional_singular_string
+        - optional_singular_bytes
+        - optional_singular_message
+        - optional_singular_resource_name
+        - optional_singular_resource_name_oneof
+        - optional_singular_resource_name_common
+        - optional_singular_fixed32
+        - optional_singular_fixed64
+        - optional_repeated_int32
+        - optional_repeated_int64
+        - optional_repeated_float
+        - optional_repeated_double
+        - optional_repeated_bool
+        - optional_repeated_enum
+        - optional_repeated_string
+        - optional_repeated_bytes
+        - optional_repeated_message
+        - optional_repeated_resource_name
+        - optional_repeated_resource_name_oneof
+        - optional_repeated_resource_name_common
+        - optional_repeated_fixed32
+        - optional_repeated_fixed64
+        - optional_map
+        - any_value
+        - struct_value
+        - value_value
+        - list_value_value
+        - time_value
+        - duration_value
+        - field_mask_value
+        - int32_value
+        - uint32_value
+        - int64_value
+        - uint64_value
+        - float_value
+        - double_value
+        - string_value
+        - bool_value
+        - bytes_value
+        - repeated_any_value
+        - repeated_struct_value
+        - repeated_value_value
+        - repeated_list_value_value
+        - repeated_time_value
+        - repeated_duration_value
+        - repeated_field_mask_value
+        - repeated_int32_value
+        - repeated_uint32_value
+        - repeated_int64_value
+        - repeated_uint64_value
+        - repeated_float_value
+        - repeated_double_value
+        - repeated_string_value
+        - repeated_bool_value
+        - repeated_bytes_value
+    required_fields:
+    - required_singular_int32
+    - required_singular_int64
+    - required_singular_float
+    - required_singular_double
+    - required_singular_bool
+    - required_singular_enum
+    - required_singular_string
+    - required_singular_bytes
+    - required_singular_message
+    - required_singular_resource_name
+    - required_singular_resource_name_oneof
+    - required_singular_resource_name_common
+    - required_singular_fixed32
+    - required_singular_fixed64
+    - required_repeated_int32
+    - required_repeated_int64
+    - required_repeated_float
+    - required_repeated_double
+    - required_repeated_bool
+    - required_repeated_enum
+    - required_repeated_string
+    - required_repeated_bytes
+    - required_repeated_message
+    - required_repeated_resource_name
+    - required_repeated_resource_name_oneof
+    - required_repeated_resource_name_common
+    - required_repeated_fixed32
+    - required_repeated_fixed64
+    - required_map
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      required_repeated_resource_name: book
+      required_repeated_resource_name_oneof: book_oneof
+      optional_repeated_resource_name: book
+      optional_repeated_resource_name_oneof: book_oneof
+  # Intentionally leave out PrivateGetBook method from GAPIC config.
+resource_name_generation:
+- message_name: Book
+  field_entity_map:
+    name: book
+# Test using fully qualified name
+- message_name: google.example.library.v1.BookFromArchive
+  field_entity_map:
+    name: archived_book
+- message_name: BookFromAnywhere
+  field_entity_map:
+    name: book_oneof
+- message_name: Shelf
+  field_entity_map:
+    name: shelf
+- message_name: GetShelfRequest
+  field_entity_map:
+    name: shelf
+- message_name: DeleteShelfRequest
+  field_entity_map:
+    name: shelf
+- message_name: MergeShelvesRequest
+  field_entity_map:
+    name: shelf
+    other_shelf_name: shelf
+- message_name: CreateBookRequest
+  field_entity_map:
+    name: shelf
+- message_name: GetBookRequest
+  field_entity_map:
+    name: book
+- message_name: ListBooksRequest
+  field_entity_map:
+    name: shelf
+- message_name: UpdateBookRequest
+  field_entity_map:
+    name: book
+- message_name: DeleteBookRequest
+  field_entity_map:
+    name: book
+- message_name: MoveBookRequest
+  field_entity_map:
+    name: book
+    other_shelf_name: shelf
+- message_name: ListStringsRequest
+  field_entity_map:
+    name: "*"
+- message_name: ListStringsResponse
+  field_entity_map:
+    strings: "*"
+- message_name: GetBookFromArchiveRequest
+  field_entity_map:
+    name: archived_book
+- message_name: GetBookFromAnywhereRequest
+  field_entity_map:
+    name: book_oneof
+    alt_book_name: book_oneof
+- message_name: GetBookFromAbsolutelyAnywhereRequest
+  field_entity_map:
+    name: "*"
+- message_name: UpdateBookIndexRequest
+  field_entity_map:
+    name: book
+- message_name: FindRelatedBooksRequest
+  field_entity_map:
+    names: book
+    shelves: shelf
+- message_name: FindRelatedBooksResponse
+  field_entity_map:
+    names: book
+- message_name: TestOptionalRequiredFlatteningParamsRequest
+  field_entity_map:
+    required_singular_resource_name: book
+    required_singular_resource_name_oneof: book_oneof
+    required_singular_resource_name_common: project
+    required_repeated_resource_name: book
+    required_repeated_resource_name_oneof: book_oneof
+    required_repeated_resource_name_common: project
+    optional_singular_resource_name: book
+    optional_singular_resource_name_oneof: book_oneof
+    optional_singular_resource_name_common: project
+    optional_repeated_resource_name: book
+    optional_repeated_resource_name_oneof: book_oneof
+    optional_repeated_resource_name_common: project

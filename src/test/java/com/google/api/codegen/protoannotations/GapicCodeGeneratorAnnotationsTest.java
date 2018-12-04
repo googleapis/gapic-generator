@@ -40,9 +40,16 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       List<String> snippetName,
       String apiName,
       String baseline,
-      String protoPackage) {
+      String protoPackage,
+      String clientPackage) {
     super(
-        language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline, protoPackage);
+        language,
+        gapicConfigFileNames,
+        packageConfigFileName,
+        snippetName,
+        baseline,
+        protoPackage,
+        clientPackage);
 
     this.apiName = apiName;
 
@@ -65,42 +72,48 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
   public static List<Object[]> testedConfigs() {
     // TODO(andrealin): Add these back in after baselines are checked in.
     return Arrays.<Object[]>asList(
-        GapicTestBase2.createTestConfig(
-            TargetLanguage.PHP,
-            new String[] {"libraryproto/library_gapic.yaml"},
-            "library_pkg2.yaml",
-            "library",
-            "google.example.library.v1"),
-        GapicTestBase2.createTestConfig(
-            TargetLanguage.NODEJS,
-            new String[] {"libraryproto/library_gapic.yaml"},
-            "library_pkg2.yaml",
-            "library",
-            "google.example.library.v1"),
-        GapicTestBase2.createTestConfig(
-            TargetLanguage.CSHARP,
-            new String[] {"libraryproto/library_gapic.yaml"},
-            "library_pkg2.yaml",
-            "library",
-            "google.example.library.v1"),
-        GapicTestBase2.createTestConfig(
-            TargetLanguage.RUBY,
-            new String[] {"libraryproto/library_gapic.yaml"},
-            "library_pkg2.yaml",
-            "library",
-            "google.example.library.v1"),
-        GapicTestBase2.createTestConfig(
-            TargetLanguage.PYTHON,
-            new String[] {"libraryproto/library_gapic.yaml"},
-            "library_pkg2.yaml",
-            "library",
-            "google.example.library.v1"),
-        GapicTestBase2.createTestConfig(
-            TargetLanguage.GO,
-            new String[] {"libraryproto/library_gapic.yaml"},
-            "library_pkg2.yaml",
-            "library",
-            "google.example.library.v1"),
+        // GapicTestBase2.createTestConfig(
+        //     TargetLanguage.PHP,
+        //     new String[] {"libraryproto/library_gapic.yaml"},
+        //     "library_pkg2.yaml",
+        //     "library",
+        //     "google.example.library.v1",
+        //     null),
+        // GapicTestBase2.createTestConfig(
+        //     TargetLanguage.NODEJS,
+        //     new String[] {"libraryproto/library_gapic.yaml"},
+        //     "library_pkg2.yaml",
+        //     "library",
+        //     "google.example.library.v1",
+        //     null),
+        // GapicTestBase2.createTestConfig(
+        //     TargetLanguage.CSHARP,
+        //     new String[] {"libraryproto/library_gapic.yaml"},
+        //     "library_pkg2.yaml",
+        //     "library",
+        //     "google.example.library.v1",
+        //     null),
+        // GapicTestBase2.createTestConfig(
+        //     TargetLanguage.RUBY,
+        //     new String[] {"libraryproto/library_gapic.yaml"},
+        //     "library_pkg2.yaml",
+        //     "library",
+        //     "google.example.library.v1",
+        //     null),
+        // GapicTestBase2.createTestConfig(
+        //     TargetLanguage.PYTHON,
+        //     new String[] {"libraryproto/library_gapic.yaml"},
+        //     "library_pkg2.yaml",
+        //     "library",
+        //     "google.example.library.v1",
+        //     null),
+        // GapicTestBase2.createTestConfig(
+        //     TargetLanguage.GO,
+        //     new String[] {"libraryproto/library_gapic.yaml"},
+        //     "library_pkg2.yaml",
+        //     "library",
+        //     "google.example.library.v1",
+        //     null),
         // GapicTestBase2.createTestConfig(
         //     TargetLanguage.JAVA,
         //     new String[] {"libraryproto/library_gapic.yaml"},
@@ -117,7 +130,17 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             "library_pkg2.yaml",
             "library",
-            "google.example.library.v1"));
+            "google.example.library.v1",
+            "com.google.example.library.v1"),
+        // TODO(andrealin): generate this baseline with a GAPIC yaml but with samples etc removed
+        // for a leaner diff
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA,
+            new String[] {"library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "com.google.example.library.v1"));
   }
 
   @Test
