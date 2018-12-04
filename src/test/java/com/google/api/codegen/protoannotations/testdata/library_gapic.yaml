@@ -5,21 +5,21 @@ language_settings:
   java:
     package_name: com.google.example.library.v1
 collections:
-- name_pattern: shelves/{shelf_id}
-  entity_name: shelf
-# This pattern is present here and not in the interface configuration to test
-# the restriction of generated parse/format methods
-- name_pattern: archives/{archive_path}/books/{book_id=**}
-  entity_name: archived_book
+  - name_pattern: shelves/{shelf_id}
+    entity_name: shelf
+  # This pattern is present here and not in the interface configuration to test
+  # the restriction of generated parse/format methods
+  - name_pattern: archives/{archive_path}/books/{book_id=**}
+    entity_name: archived_book
 fixed_resource_name_values:
-- entity_name: deleted_book
-  fixed_value: _deleted-book_
+  - entity_name: deleted_book
+    fixed_value: _deleted-book_
 collection_oneofs:
-- oneof_name: book_oneof
-  collection_names:
-  - book
-  - archived_book
-  - deleted_book
+  - oneof_name: book_oneof
+    collection_names:
+    - book
+    - archived_book
+    - deleted_book
 interfaces:
 - name: google.example.library.v1.LibraryService
   collections:
@@ -43,7 +43,7 @@ interfaces:
       - parameters:
         - shelf
     required_fields:
-    - shelf
+      - shelf
     resource_name_treatment: STATIC_TYPES
   - name: GetShelf
     flattening:
@@ -64,8 +64,8 @@ interfaces:
         parameter_resource_name_treatment:
           name: NONE
     required_fields:
-    - name
-    - options
+      - name
+      - options
     field_name_patterns:
       name: shelf
   - name: ListShelves
@@ -84,7 +84,7 @@ interfaces:
       - parameters:
         - name
     required_fields:
-    - name
+      - name
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
@@ -95,8 +95,8 @@ interfaces:
         - name
         - other_shelf_name
     required_fields:
-    - name
-    - other_shelf_name
+      - name
+      - other_shelf_name
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
@@ -108,8 +108,8 @@ interfaces:
         - name
         - book
     required_fields:
-    - name
-    - book
+      - name
+      - book
     # Test resource_name_treatment set to NONE with field_name_patterns
     resource_name_treatment: NONE
     field_name_patterns:
@@ -123,9 +123,9 @@ interfaces:
         - edition
         - series_uuid
     required_fields:
-    - shelf
-    - books
-    - series_uuid
+      - shelf
+      - books
+      - series_uuid
     resource_name_treatment: STATIC_TYPES
   - name: GetBook
     flattening:
@@ -134,7 +134,7 @@ interfaces:
         parameters:
         - name
     required_fields:
-    - name
+      - name
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
@@ -145,7 +145,7 @@ interfaces:
         - name
         - filter
     required_fields:
-    - name
+      - name
     page_streaming:
       request:
         page_size_field: page_size
@@ -162,7 +162,7 @@ interfaces:
       - parameters:
         - name
     required_fields:
-    - name
+     - name
     # leaving commented out to test the default
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
@@ -170,18 +170,20 @@ interfaces:
   - name: UpdateBook
     flattening:
       groups:
-      - parameters:
+      - flattening_group_name: update_book_1
+        parameters:
         - name
         - book
-      - parameters:
+      - flattening_group_name: update_book_2
+        parameters:
         - name
         - optional_foo
         - book
         - update_mask
         - physical_mask
     required_fields:
-    - name
-    - book
+      - name
+      - book
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
@@ -192,8 +194,8 @@ interfaces:
         - name
         - other_shelf_name
     required_fields:
-    - name
-    - other_shelf_name
+      - name
+      - other_shelf_name
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
@@ -221,8 +223,8 @@ interfaces:
         - name
         - comments
     required_fields:
-    - name
-    - comments
+      - name
+      - comments
     # Test resource_name_treatment unset, so using default
     # resource_name_treatment: VALIDATE
     field_name_patterns:
@@ -233,7 +235,7 @@ interfaces:
       - parameters:
         - name
     required_fields:
-    - name
+     - name
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: archived_book
@@ -244,8 +246,8 @@ interfaces:
         - name
         - alt_book_name
     required_fields:
-    - name
-    - alt_book_name
+      - name
+      - alt_book_name
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book_oneof
@@ -256,7 +258,7 @@ interfaces:
       - parameters:
         - name
     required_fields:
-    - name
+      - name
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
@@ -281,8 +283,8 @@ interfaces:
     field_name_patterns:
       name: book
     sample_code_init_fields:
-    - index_name="default index"
-    - index_map{"default_key"}
+      - index_name="default index"
+      - index_map{"default_key"}
   - name: StreamShelves
     grpc_streaming:
       response:

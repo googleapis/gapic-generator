@@ -28,7 +28,6 @@ import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -105,6 +104,7 @@ public abstract class FlatteningConfig {
   @Nullable
   static ImmutableList<FlatteningConfig> createFlatteningConfigs(
       DiagCollector diagCollector,
+      String defaultPackageName,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
@@ -122,6 +122,7 @@ public abstract class FlatteningConfig {
     Map<String, FlatteningConfig> flatteningConfigsFromProtoFile =
         createFlatteningConfigsFromProtoFile(
             diagCollector,
+            defaultPackageName,
             messageConfigs,
             resourceNameConfigs,
             methodConfigProto,
@@ -149,6 +150,7 @@ public abstract class FlatteningConfig {
   @Nullable
   private static Map<String, FlatteningConfig> createFlatteningConfigsFromProtoFile(
       DiagCollector diagCollector,
+      String defaultPackageName,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
@@ -182,6 +184,7 @@ public abstract class FlatteningConfig {
           FlatteningConfig.createFlatteningFromProtoFile(
               diagCollector,
               messageConfigs,
+              defaultPackageName,
               resourceNameConfigs,
               signature,
               methodConfigProto,
@@ -290,6 +293,7 @@ public abstract class FlatteningConfig {
   private static FlatteningConfig createFlatteningFromProtoFile(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
+      String defaultPackageName,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodSignature methodSignature,
       MethodConfigProto methodConfigProto,
@@ -332,22 +336,9 @@ public abstract class FlatteningConfig {
         oneofNames.add(oneofName);
       }
 
-      // Use the GAPIC config default ResourceNameTreatment if it is set,
-      // otherwise use STATIC_TYPES if this field is a Resource, otherwise default to VALIDATE.
-      ResourceNameTreatment defaultResourceNameTreatment;
-      if (MethodConfigProto.getDefaultInstance().equals(methodConfigProto)) {
-        defaultResourceNameTreatment = NONE;
-      } else {
-        defaultResourceNameTreatment = methodConfigProto.getResourceNameTreatment();
-      }
-      if (defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
-        String resourceNameType = protoParser.getResourceReference(parameterField.getProtoField());
-        if (!Strings.isNullOrEmpty(resourceNameType)) {
-          defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
-        } else {
-          defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
-        }
-      }
+      ResourceNameTreatment defaultResourceNameTreatment =
+          GapicMethodConfig.defaultResourceNameTreatment(
+              methodConfigProto, method.getProtoMethod(), protoParser, defaultPackageName);
       FieldConfig fieldConfig =
           FieldConfig.createFieldConfig(
               diagCollector,

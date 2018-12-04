@@ -114,33 +114,34 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
         //     "library",
         //     "google.example.library.v1",
         //     null),
-        // GapicTestBase2.createTestConfig(
-        //     TargetLanguage.JAVA,
-        //     new String[] {"libraryproto/library_gapic.yaml"},
-        //     "library_pkg2.yaml",
-        //     "library",
-        //     "google.example.library.v1"),
-
-        // Only Proto Annotations, no GAPIC config
-
-        // TODO(andrealin): generate this baseline with a GAPIC yaml but with samples etc removed
-        // for a leaner diff
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
-            null,
+            new String[] {"libraryproto/library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
             "google.example.library.v1",
-            "com.google.example.library.v1"),
-        // TODO(andrealin): generate this baseline with a GAPIC yaml but with samples etc removed
-        // for a leaner diff
-        GapicTestBase2.createTestConfig(
-            TargetLanguage.JAVA,
-            new String[] {"library_gapic.yaml"},
-            "library_pkg2.yaml",
-            "library",
-            "google.example.library.v1",
-            "com.google.example.library.v1"));
+            null));
+
+    // Only Proto Annotations, no GAPIC config
+
+    // TODO(andrealin): generate this baseline with a GAPIC yaml but with samples etc removed
+    // for a leaner diff
+    // GapicTestBase2.createTestConfig(
+    //     TargetLanguage.JAVA,
+    //     null,
+    //     "library_pkg2.yaml",
+    //     "library",
+    //     "google.example.library.v1",
+    //     "com.google.example.library.v1"),
+    // TODO(andrealin): generate this baseline with a GAPIC yaml but with samples etc removed
+    // for a leaner diff
+    // GapicTestBase2.createTestConfig(
+    //     TargetLanguage.JAVA,
+    //     new String[] {"library_gapic.yaml"},
+    //     "library_pkg2.yaml",
+    //     "library",
+    //     "google.example.library.v1",
+    //     "com.google.example.library.v1"));
   }
 
   @Test
