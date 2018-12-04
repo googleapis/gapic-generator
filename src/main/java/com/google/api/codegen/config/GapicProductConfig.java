@@ -267,6 +267,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (interfaceInputs == null) {
       return null;
     }
+
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
             diagCollector,
