@@ -107,7 +107,8 @@ public class RetryDefinitionsTransformerTest {
     DiagCollector diagCollector = new BoundedDiagCollector();
 
     RetryCodesConfig retryCodesConfig =
-        RetryCodesConfig.create(diagCollector, interfaceConfigProto, apiInterface, protoParser);
+        RetryCodesConfig.create(
+            diagCollector, interfaceConfigProto, apiInterface.getMethods(), protoParser);
 
     Map<String, ImmutableList<String>> retryCodesDef = retryCodesConfig.getRetryCodesDefinition();
     Map<String, String> retryCodesMap = retryCodesConfig.getMethodRetryNames();
@@ -155,7 +156,8 @@ public class RetryDefinitionsTransformerTest {
     DiagCollector diagCollector = new BoundedDiagCollector();
 
     RetryCodesConfig retryCodesConfig =
-        RetryCodesConfig.create(diagCollector, bareBonesConfigProto, apiInterface, protoParser);
+        RetryCodesConfig.create(
+            diagCollector, bareBonesConfigProto, apiInterface.getMethods(), protoParser);
 
     Map<String, ImmutableList<String>> retryCodesDef = retryCodesConfig.getRetryCodesDefinition();
     Map<String, String> retryCodesMap = retryCodesConfig.getMethodRetryNames();
