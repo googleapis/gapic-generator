@@ -31,6 +31,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -338,7 +339,10 @@ public abstract class FlatteningConfig {
 
       ResourceNameTreatment defaultResourceNameTreatment =
           GapicMethodConfig.defaultResourceNameTreatment(
-              methodConfigProto, method.getProtoMethod(), protoParser, defaultPackageName);
+              methodConfigProto,
+              Arrays.asList(parameterField.getProtoField()),
+              protoParser,
+              defaultPackageName);
       FieldConfig fieldConfig =
           FieldConfig.createFieldConfig(
               diagCollector,

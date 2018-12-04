@@ -172,6 +172,10 @@ public class ResourceNameMessageConfigsTest {
 
     Mockito.doReturn(bookMessage).when(insertBook).getInputMessage();
     Mockito.doReturn(protoFile).when(bookMessage).getParent();
+    Mockito.doReturn(protoFile).when(shelfName).getFile();
+    Mockito.doReturn(protoFile).when(shelfTheme).getFile();
+    Mockito.doReturn(protoFile).when(bookName).getFile();
+    Mockito.doReturn(protoFile).when(bookAuthor).getFile();
     // Mockito.doReturn("Book").when(protoParser).getResourceReference(bookName);
   }
 
