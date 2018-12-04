@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.auto.value.AutoValue;
@@ -62,6 +63,11 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
     return true;
   }
 
+  @Override
+  public boolean enableProtoAnnotations() {
+    return true;
+  }
+
   public static Builder newBuilder() {
     return new AutoValue_JavaFeatureConfig.Builder();
   }
@@ -72,5 +78,12 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
     public abstract Builder enableStringFormatFunctions(boolean value);
 
     public abstract JavaFeatureConfig build();
+  }
+
+  public static JavaFeatureConfig create(ResourceNameMessageConfigs resourceNameMessageConfigs) {
+    return JavaFeatureConfig.newBuilder()
+        .enableStringFormatFunctions(
+            resourceNameMessageConfigs == null || resourceNameMessageConfigs.isEmpty())
+        .build();
   }
 }
