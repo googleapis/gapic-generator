@@ -34,7 +34,7 @@ public class RetryTransformer {
   public static final int DEFAULT_MAX_RPC_TIMEOUT_MILLIS = 20000;
   public static final int DEFAULT_TOTAL_TIMEOUT_MILLIS = 600000;
 
-  public void generateRetryDefinitions(
+  void generateRetryDefinitions(
       InterfaceView.Builder interfaceView,
       List<String> idempotentRetryCodes,
       List<String> nonIdempotentRetryCodes) {
