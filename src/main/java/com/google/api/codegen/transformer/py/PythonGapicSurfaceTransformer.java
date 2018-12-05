@@ -292,7 +292,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private List<GrpcElementDocView> generateEnumFileElements(
       ModelTypeTable typeTable, SurfaceNamer namer, ProtoContainerElement containerElement) {
     ImmutableList.Builder<GrpcElementDocView> elements = ImmutableList.builder();
-    elements.addAll(elementDocTransformer.generateEnumDocs(typeTable, namer, containerElement));
+    elements.addAll(
+        elementDocTransformer.generateEnumDocs(typeTable, namer, containerElement.getEnums()));
     for (MessageType message : containerElement.getMessages()) {
       List<GrpcElementDocView> elementDocs = generateEnumFileElements(typeTable, namer, message);
       if (!elementDocs.isEmpty()) {
