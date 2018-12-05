@@ -89,7 +89,8 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer<Pr
     doc.fileHeader(
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
-    doc.elementDocs(elementDocTransformer.generateElementDocs(typeTable, namer, file));
+    doc.elementDocs(
+        elementDocTransformer.generateElementDocs(productConfig, typeTable, namer, file));
     doc.modules(
         generateModuleViews(
             new ProtoApiModel(file.getModel()),
