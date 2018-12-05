@@ -162,7 +162,6 @@ interfaces:
         - name
     required_fields:
      - name
-    # leaving commented out to test the default
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
@@ -224,8 +223,7 @@ interfaces:
     required_fields:
       - name
       - comments
-    # Test resource_name_treatment unset, so using default
-    # resource_name_treatment: VALIDATE
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
   - name: GetBookFromArchive
@@ -276,15 +274,10 @@ interfaces:
     - index_name
     - index_map
     resource_name_treatment: STATIC_TYPES
-    retry_codes_name: idempotent
-    retry_params_name: default
-    timeout_millis: 10000
     field_name_patterns:
       name: book
-    sample_code_init_fields:
-      - index_name="default index"
-      - index_map{"default_key"}
   - name: StreamShelves
+    resource_name_treatment: STATIC_TYPES
     grpc_streaming:
       response:
         resources_field: shelves
