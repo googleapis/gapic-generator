@@ -26,7 +26,7 @@ import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
-import com.google.api.codegen.configgen.transformer.LanguageTransformer;
+import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.csharp.CSharpFeatureConfig;
@@ -237,8 +237,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
       String basePackageName = Optional.ofNullable(protoPackage).orElse(getPackageName(model));
-      clientPackageName =
-          LanguageTransformer.getFormattedPackageName(language.name(), basePackageName);
+      clientPackageName = LanguageSettingsMerger.getFormattedPackageName(language, basePackageName);
     } else {
       clientPackageName = settings.getPackageName();
     }
