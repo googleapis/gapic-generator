@@ -19,6 +19,7 @@ import java.util.List;
 
 @AutoValue
 public abstract class GrpcMessageDocView implements GrpcElementDocView {
+  @Override
   public abstract String name();
 
   public abstract String fullName();

@@ -92,7 +92,7 @@ public class DiscoApiModel implements ApiModel {
   }
 
   @Override
-  public List<String> getAuthScopes() {
+  public List<String> getAuthScopes(GapicProductConfig productConfig) {
     return document.authScopes();
   }
 
