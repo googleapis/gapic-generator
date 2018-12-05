@@ -395,8 +395,7 @@ public class InitCodeNode {
         setupReadFileNode(context);
       } else if (sampleParamConfig.isSampleArgument()) {
         // If sample_argument_name is specified in config, set identifier to this name if the name
-        // has
-        // not been used yet and error out otherwise.
+        // has not been used yet; otherwise, error out.
         Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
         if (!argName.equals(identifier)) {
           Preconditions.checkArgument(
@@ -434,7 +433,7 @@ public class InitCodeNode {
    * variable (e.g., String fileName = "file_name.jpg"). If sample_argument_name is specified, the
    * local variable would honor the configuration. If sample_argument_name is not specified, the
    * name of the local variable defaults to "file_name", or whatever collision-avoiding variant
-   * symbolTable selects if "file_name" is already in use. already in use.
+   * symbolTable selects if "file_name" is already in use.
    *
    * <p>Adding the child node enables us to split initializing a local variable for the file name
    * from the logic of reading from a file, so that we can pass in the file name as a sample
