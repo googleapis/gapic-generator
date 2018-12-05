@@ -145,6 +145,15 @@ public abstract class FlatteningConfig {
   /**
    * Returns a map of a string representing a list of the fields in a flattening, to the flattening
    * config created from a method from the proto file.
+   *
+   * <p>Two flattenings are semantically equivalent if they have the same ordered list of
+   * parameters. If there is a flattening defined in the proto-sourced method that is equivalent to
+   * a flattening defined in the GAPIC config for that method, then don't generate a
+   * FlatteningConfig from the protofile-based method. (The FlatteningConfig will be separately
+   * generated from the GAPIC config in {@link #createFlatteningsFromGapicConfig(DiagCollector,
+   * ResourceNameMessageConfigs, ImmutableMap, MethodConfigProto, MethodModel)}
+   * flatteningConfigsFromGapicConfig}). This preserves the status of GAPIC config as an
+   * unoverrideable source of truth.
    */
   @Nullable
   private static Map<String, FlatteningConfig> createFlatteningConfigsFromProtoFile(
