@@ -93,19 +93,16 @@ public abstract class GapicMethodConfig extends MethodConfig {
     } else if (MethodConfigProto.getDefaultInstance().equals(methodConfigProto)) {
       // When GAPIC config not available, toggle pagination based on presence of paging params.
       // See https://cloud.google.com/apis/design/design_patterns for API pagination pattern.
-      String pageTokenName = ProtoPagingParameters.nameForPageToken();
-      String pageSizeName = ProtoPagingParameters.nameForPageSize();
-      String nextPageTokenName = ProtoPagingParameters.nameForNextPageToken();
-      ProtoField tokenField = methodModel.getInputField(pageTokenName);
-      ProtoField pageSizeField = methodModel.getInputField(pageSizeName);
-      ProtoField responseTokenField = methodModel.getOutputField(nextPageTokenName);
-      PagingFields pagingFields =
-          PagingFields.newBuilder()
-              .setResponseTokenField(responseTokenField)
-              .setResponseTokenField(tokenField)
-              .setPageSizeField(pageSizeField)
-              .build();
+      ProtoField tokenField = methodModel.getInputField(ProtoPagingParameters.nameForPageToken());
+      ProtoField pageSizeField = methodModel.getInputField(ProtoPagingParameters.nameForPageSize());
+      ProtoField responseTokenField = methodModel.getOutputField(ProtoPagingParameters.nameForNextPageToken());
       if (tokenField != null && responseTokenField != null) {
+        PagingFields pagingFields =
+            PagingFields.newBuilder()
+                .setResponseTokenField(responseTokenField)
+                .setRequestTokenField(tokenField)
+                .setPageSizeField(pageSizeField)
+                .build();
         pageStreaming =
             PageStreamingConfig.createPageStreamingFromProtoFile(
                 diagCollector,
