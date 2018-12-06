@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
-import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.ProtoInterfaceModel;
+import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.configgen.InterfaceTransformer;
 import com.google.api.codegen.configgen.ListTransformer;
 import com.google.api.codegen.configgen.MissingFieldTransformer;
@@ -44,7 +44,7 @@ public class InterfaceMerger {
     this.interfaceTransformer = interfaceTransformer;
   }
 
-  public void mergeInterfaces(ProtoApiModel model, ConfigNode configNode) {
+  public void mergeInterfaces(ApiModel model, ConfigNode configNode) {
     FieldConfigNode interfacesNode =
         MissingFieldTransformer.append("interfaces", configNode).generate();
     if (NodeFinder.hasContent(interfacesNode.getChild())) {
@@ -59,8 +59,7 @@ public class InterfaceMerger {
         .setComment(new DefaultComment("A list of API interface configurations."));
   }
 
-  private ListItemConfigNode generateInterfaceNode(
-      int startLine, ProtoInterfaceModel apiInterface) {
+  private ListItemConfigNode generateInterfaceNode(int startLine, InterfaceModel apiInterface) {
     Map<String, String> collectionNameMap =
         interfaceTransformer.getResourceToEntityNameMap(apiInterface);
     ListItemConfigNode interfaceNode = new ListItemConfigNode(startLine);

@@ -190,7 +190,7 @@ public abstract class PageStreamingConfig {
     FieldModel requestTokenField = pagingFields.getRequestTokenField();
     FieldModel responseTokenField = pagingFields.getResponseTokenField();
 
-    FieldModel resourcesField = ProtoPageStreamingTransformer.getResourcesFieldName(method);
+    FieldModel resourcesField = ProtoPageStreamingTransformer.getResourcesField(method);
     FieldConfig resourcesFieldConfig;
 
     if (resourcesField == null) {

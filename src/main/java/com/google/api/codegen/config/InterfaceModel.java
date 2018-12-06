@@ -30,7 +30,7 @@ public interface InterfaceModel {
 
   String getFileSimpleName();
 
-  List<? extends MethodModel> getMethods();
+  List<MethodModel> getMethods();
 
   /* @return true if the element is reachable with the current scoper. */
   boolean isReachable();

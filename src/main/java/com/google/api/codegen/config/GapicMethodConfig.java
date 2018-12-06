@@ -95,7 +95,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       // See https://cloud.google.com/apis/design/design_patterns for API pagination pattern.
       ProtoField tokenField = methodModel.getInputField(ProtoPagingParameters.nameForPageToken());
       ProtoField pageSizeField = methodModel.getInputField(ProtoPagingParameters.nameForPageSize());
-      ProtoField responseTokenField = methodModel.getOutputField(ProtoPagingParameters.nameForNextPageToken());
+      ProtoField responseTokenField =
+          methodModel.getOutputField(ProtoPagingParameters.nameForNextPageToken());
       if (tokenField != null && responseTokenField != null) {
         PagingFields pagingFields =
             PagingFields.newBuilder()
