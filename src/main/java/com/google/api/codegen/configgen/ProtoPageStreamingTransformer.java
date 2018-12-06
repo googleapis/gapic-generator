@@ -63,7 +63,11 @@ public class ProtoPageStreamingTransformer implements PageStreamingTransformer {
     return tokenField != null;
   }
 
-  public static FieldModel getResourcesFieldName(MethodModel method) {
+  /**
+   * Get the paged resource field. We assume it will be the FIRST REPEATED field in the response
+   * message.
+   */
+  public static FieldModel getResourcesField(MethodModel method) {
     for (FieldModel field : method.getOutputFields()) {
       // Return the first repeated field.
       if (field.isRepeated()) {
@@ -74,7 +78,7 @@ public class ProtoPageStreamingTransformer implements PageStreamingTransformer {
   }
 
   private String getResourcesFieldName(MethodModel method, ConfigHelper helper) {
-    FieldModel resourcesField = getResourcesFieldName(method);
+    FieldModel resourcesField = getResourcesField(method);
     if (resourcesField != null) {
       return resourcesField.getSimpleName();
     }
