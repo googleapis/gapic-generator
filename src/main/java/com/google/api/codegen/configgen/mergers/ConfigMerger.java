@@ -15,7 +15,7 @@
 package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.ConfigProto;
-import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.MissingFieldTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
@@ -53,7 +53,7 @@ public class ConfigMerger {
     this.helper = helper;
   }
 
-  public ConfigNode mergeConfig(ApiModel model) {
+  public ConfigNode mergeConfig(ProtoApiModel model) {
     FieldConfigNode configNode = mergeConfig(model, new FieldConfigNode(0, ""));
     if (configNode == null) {
       return null;
@@ -62,7 +62,7 @@ public class ConfigMerger {
     return configNode.setComment(new FixmeComment(CONFIG_COMMENT));
   }
 
-  private FieldConfigNode mergeConfig(ApiModel model, FieldConfigNode configNode) {
+  private FieldConfigNode mergeConfig(ProtoApiModel model, FieldConfigNode configNode) {
     ConfigNode typeNode = mergeType(configNode);
     if (typeNode == null) {
       return null;

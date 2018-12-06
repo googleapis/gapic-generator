@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
-import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
+import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.configgen.ListTransformer;
 import com.google.api.codegen.configgen.MethodTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
@@ -28,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Merges the methods property from an API interface into a ConfigNode. */
-public class MethodMerger {
+class MethodMerger {
   // Do not apply flattening if the parameter count exceeds the threshold.
   // TODO(garrettjones): Investigate a more intelligent way to handle this.
   private static final int FLATTENING_THRESHOLD = 4;
@@ -98,7 +99,9 @@ public class MethodMerger {
   }
 
   public void generateMethodsNode(
-      ConfigNode parentNode, InterfaceModel apiInterface, Map<String, String> collectionNameMap) {
+      ConfigNode parentNode,
+      ProtoInterfaceModel apiInterface,
+      Map<String, String> collectionNameMap) {
     ConfigNode prevNode = NodeFinder.getLastChild(parentNode);
     FieldConfigNode methodsNode =
         new FieldConfigNode(NodeFinder.getNextLine(prevNode), "methods")
@@ -109,7 +112,7 @@ public class MethodMerger {
 
   private ConfigNode generateMethodsValueNode(
       ConfigNode parentNode,
-      InterfaceModel apiInterface,
+      ProtoInterfaceModel apiInterface,
       final Map<String, String> collectionNameMap) {
     return ListTransformer.generateList(
         apiInterface.getMethods(),
@@ -118,7 +121,7 @@ public class MethodMerger {
   }
 
   private ListItemConfigNode generateMethodNode(
-      int startLine, MethodModel method, Map<String, String> collectionNameMap) {
+      int startLine, ProtoMethodModel method, Map<String, String> collectionNameMap) {
     ListItemConfigNode methodNode = new ListItemConfigNode(startLine);
     ConfigNode nameNode =
         FieldConfigNode.createStringPair(startLine, "name", method.getSimpleName());
@@ -128,7 +131,7 @@ public class MethodMerger {
     prevNode = retryMerger.generateRetryNamesNode(prevNode, method);
     prevNode = generateFieldNamePatterns(prevNode, method, collectionNameMap);
     if (method.getOutputType().toString().contains("google.longrunning.Operation")) {
-      prevNode = generateLongRunningNode(prevNode, method);
+      prevNode = generateLongRunningNode(prevNode);
     }
 
     generateTimeout(prevNode, method);
@@ -159,7 +162,7 @@ public class MethodMerger {
     return prevNode;
   }
 
-  private ConfigNode generateLongRunningNode(ConfigNode prevNode, MethodModel methodModel) {
+  private ConfigNode generateLongRunningNode(ConfigNode prevNode) {
     ConfigNode longRunningNode =
         new FieldConfigNode(NodeFinder.getNextLine(prevNode), "long_running")
             .setComment(new FixmeComment("Configure long running operation."));

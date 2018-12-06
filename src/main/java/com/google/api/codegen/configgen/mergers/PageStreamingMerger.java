@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
-import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.NodeFinder;
 import com.google.api.codegen.configgen.PageStreamingTransformer;
@@ -23,17 +23,17 @@ import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.NullConfigNode;
 
 /** Merges page streaming properties from a MethodModel into a ConfigNode. */
-public class PageStreamingMerger {
-  private final PageStreamingTransformer pageStreamingTransformer;
+class PageStreamingMerger {
+  private final PageStreamingTransformer<ProtoMethodModel> pageStreamingTransformer;
   private final ConfigHelper helper;
 
-  public PageStreamingMerger(
-      PageStreamingTransformer pageStreamingTransformer, ConfigHelper helper) {
+  PageStreamingMerger(
+      PageStreamingTransformer<ProtoMethodModel> pageStreamingTransformer, ConfigHelper helper) {
     this.pageStreamingTransformer = pageStreamingTransformer;
     this.helper = helper;
   }
 
-  public ConfigNode generatePageStreamingNode(ConfigNode prevNode, MethodModel method) {
+  ConfigNode generatePageStreamingNode(ConfigNode prevNode, ProtoMethodModel method) {
     ConfigNode pageStreamingNode =
         new FieldConfigNode(NodeFinder.getNextLine(prevNode), "page_streaming");
     ConfigNode requestNode = generatePageStreamingRequestNode(pageStreamingNode, method);
@@ -50,7 +50,8 @@ public class PageStreamingMerger {
     return pageStreamingNode;
   }
 
-  private ConfigNode generatePageStreamingRequestNode(ConfigNode parentNode, MethodModel method) {
+  private ConfigNode generatePageStreamingRequestNode(
+      ConfigNode parentNode, ProtoMethodModel method) {
     ConfigNode requestNode = new FieldConfigNode(NodeFinder.getNextLine(parentNode), "request");
     parentNode.setChild(requestNode);
     ConfigNode requestValueNode =
@@ -60,12 +61,12 @@ public class PageStreamingMerger {
   }
 
   private ConfigNode generatePageStreamingRequestValueNode(
-      ConfigNode parentNode, int startLine, MethodModel method) {
+      ConfigNode parentNode, int startLine, ProtoMethodModel method) {
     String pageTokenName = pageStreamingTransformer.getNameForPageToken();
     String pageSizeName = pageStreamingTransformer.getNameForPageSize();
     boolean hasTokenField = method.getInputField(pageTokenName) != null;
     boolean hasPageSizeField = method.getInputField(pageSizeName) != null;
-    ConfigNode requestValueNode = null;
+    ConfigNode requestValueNode;
     if (hasPageSizeField) {
       requestValueNode =
           FieldConfigNode.createStringPair(startLine, "page_size_field", pageSizeName);
@@ -85,7 +86,8 @@ public class PageStreamingMerger {
     return requestValueNode;
   }
 
-  private ConfigNode generatePageStreamingResponseNode(ConfigNode prevNode, MethodModel method) {
+  private ConfigNode generatePageStreamingResponseNode(
+      ConfigNode prevNode, ProtoMethodModel method) {
     ConfigNode responseNode = new FieldConfigNode(NodeFinder.getNextLine(prevNode), "response");
     ConfigNode responseValueNode =
         pageStreamingTransformer.generateResponseValueNode(responseNode, method, helper);

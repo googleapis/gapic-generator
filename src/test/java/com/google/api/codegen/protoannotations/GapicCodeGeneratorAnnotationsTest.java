@@ -123,26 +123,26 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
         //     null),
 
         // Only Proto Annotations, no GAPIC config
-
+        //
         // TODO(andrealin): generate this baseline with a GAPIC yaml but with samples etc removed
         // for a leaner diff
-        // GapicTestBase2.createTestConfig(
-        //     TargetLanguage.JAVA,
-        //     null,
-        //     "library_pkg2.yaml",
-        //     "library",
-        //     "google.example.library.v1",
-        //     "com.google.example.library.v1"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA,
+            null,
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "com.google.example.library.v1"));
     // // // TODO(andrealin): This is generate this baseline with a GAPIC yaml but with samples etc
     // removed
     // // // for a leaner diff
-    GapicTestBase2.createTestConfig(
-        TargetLanguage.JAVA,
-        new String[] {"library_gapic.yaml"}, // This is the lean diff.
-        "library_pkg2.yaml",
-        "library",
-        "google.example.library.v1",
-        "com.google.example.library.v1"));
+    // GapicTestBase2.createTestConfig(
+    //     TargetLanguage.JAVA,
+    //     new String[] {"library_gapic.yaml"}, // This is the lean diff.
+    //     "library_pkg2.yaml",
+    //     "library",
+    //     "google.example.library.v1",
+    //     "com.google.example.library.v1"));
   }
 
   @Test

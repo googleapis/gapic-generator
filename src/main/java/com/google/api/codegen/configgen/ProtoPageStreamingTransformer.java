@@ -15,14 +15,14 @@
 package com.google.api.codegen.configgen;
 
 import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.NullConfigNode;
 
 /** PageStreamingTransformer implementation for proto Methods. */
-public class ProtoPageStreamingTransformer implements PageStreamingTransformer {
+public class ProtoPageStreamingTransformer implements PageStreamingTransformer<ProtoMethodModel> {
   private static final PagingParameters PAGING_PARAMETERS = new ProtoPagingParameters();
 
   @Override
@@ -37,7 +37,7 @@ public class ProtoPageStreamingTransformer implements PageStreamingTransformer {
 
   @Override
   public ConfigNode generateResponseValueNode(
-      ConfigNode parentNode, MethodModel method, ConfigHelper helper) {
+      ConfigNode parentNode, ProtoMethodModel method, ConfigHelper helper) {
     if (!hasResponseTokenField(method)) {
       return new NullConfigNode();
     }
@@ -59,21 +59,29 @@ public class ProtoPageStreamingTransformer implements PageStreamingTransformer {
     return tokenFieldNode.insertNext(resourcesFieldNode);
   }
 
-  private boolean hasResponseTokenField(MethodModel method) {
+  private boolean hasResponseTokenField(ProtoMethodModel method) {
     FieldModel tokenField = method.getOutputField(PAGING_PARAMETERS.getNameForNextPageToken());
     return tokenField != null;
   }
 
-  private String getResourcesFieldName(MethodModel method, ConfigHelper helper) {
-    for (FieldModel field : method.getOutputFields()) {
+  public static ProtoField getResourcesFieldName(ProtoMethodModel method) {
+    for (ProtoField field : method.getOutputFields()) {
       // Return the first repeated field.
       if (field.isRepeated()) {
-        return field.getSimpleName();
+        return field;
       }
+    }
+    return null;
+  }
+
+  private String getResourcesFieldName(ProtoMethodModel method, ConfigHelper helper) {
+    FieldModel resourcesField = getResourcesFieldName(method);
+    if (resourcesField != null) {
+      return resourcesField.getSimpleName();
     }
 
     helper.error(
-        ((ProtoMethodModel) method).getProtoMethod().getLocation(),
+        method.getProtoMethod().getLocation(),
         "Page streaming resources field could not be heuristically determined for "
             + "method '%s'%n",
         method.getSimpleName());

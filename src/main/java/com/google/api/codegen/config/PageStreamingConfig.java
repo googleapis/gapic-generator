@@ -16,6 +16,9 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
+import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.configgen.ProtoPageStreamingTransformer;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -27,14 +30,62 @@ import javax.annotation.Nullable;
 /** PageStreamingConfig represents the page streaming configuration for a method. */
 @AutoValue
 public abstract class PageStreamingConfig {
-  public abstract FieldModel getRequestTokenField();
+  @AutoValue
+  public abstract static class PagingFields {
 
-  @Nullable
-  public abstract FieldModel getPageSizeField();
+    public abstract FieldModel getRequestTokenField();
 
-  public abstract FieldModel getResponseTokenField();
+    @Nullable
+    public abstract FieldModel getPageSizeField();
+
+    public abstract FieldModel getResponseTokenField();
+
+    public static PagingFields.Builder newBuilder() {
+      return new AutoValue_PageStreamingConfig_PagingFields.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+      public abstract PagingFields.Builder setRequestTokenField(FieldModel val);
+
+      public abstract PagingFields.Builder setPageSizeField(FieldModel val);
+
+      public abstract PagingFields.Builder setResponseTokenField(FieldModel val);
+
+      public abstract PagingFields build();
+    }
+  }
+
+  public abstract PagingFields getPagingFields();
 
   public abstract FieldConfig getResourcesFieldConfig();
+
+  @Nullable
+  public FieldModel getPageSizeField() {
+    return getPagingFields().getPageSizeField();
+  }
+
+  public FieldModel getResponseTokenField() {
+    return getPagingFields().getResponseTokenField();
+  }
+
+  public FieldModel getRequestTokenField() {
+    return getPagingFields().getRequestTokenField();
+  }
+
+  /** Returns whether there is a field for page size. */
+  public boolean hasPageSizeField() {
+    return getPageSizeField() != null;
+  }
+
+  public FieldModel getResourcesField() {
+    return getResourcesFieldConfig().getField();
+  }
+
+  public String getResourcesFieldName() {
+    return getResourcesField().getSimpleName();
+  }
 
   /**
    * Creates an instance of PageStreamingConfig based on PageStreamingConfigProto, linking it up
@@ -42,7 +93,7 @@ public abstract class PageStreamingConfig {
    * diag collector.
    */
   @Nullable
-  static PageStreamingConfig createPageStreaming(
+  static PageStreamingConfig createPageStreamingFromGapicConfig(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
@@ -113,20 +164,58 @@ public abstract class PageStreamingConfig {
     if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {
       return null;
     }
-    return new AutoValue_PageStreamingConfig(
-        requestTokenField, pageSizeField, responseTokenField, resourcesFieldConfig);
+    PagingFields pagingFields =
+        PagingFields.newBuilder()
+            .setPageSizeField(pageSizeField)
+            .setRequestTokenField(requestTokenField)
+            .setResponseTokenField(responseTokenField)
+            .build();
+    return new AutoValue_PageStreamingConfig(pagingFields, resourcesFieldConfig);
   }
 
-  /** Returns whether there is a field for page size. */
-  public boolean hasPageSizeField() {
-    return getPageSizeField() != null;
-  }
+  /**
+   * Creates an instance of PageStreamingConfig based on PageStreamingConfigProto, linking it up
+   * with the provided method. On errors, null will be returned, and diagnostics are reported to the
+   * diag collector.
+   */
+  @Nullable
+  static PageStreamingConfig createPageStreamingFromProtoFile(
+      DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      ProtoMethodModel method,
+      PagingFields pagingFields,
+      ProtoParser protoParser,
+      String defaultPackageName) {
+    FieldModel requestTokenField = pagingFields.getRequestTokenField();
+    FieldModel responseTokenField = pagingFields.getResponseTokenField();
 
-  public FieldModel getResourcesField() {
-    return getResourcesFieldConfig().getField();
-  }
+    FieldModel resourcesField = ProtoPageStreamingTransformer.getResourcesFieldName(method);
+    FieldConfig resourcesFieldConfig;
 
-  public String getResourcesFieldName() {
-    return getResourcesField().getSimpleName();
+    if (resourcesField == null) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Resources field missing for page streaming: method = %s, message type = %s",
+              method.getFullName(),
+              method.getOutputFullName()));
+      resourcesFieldConfig = null;
+    } else {
+      ResourceNameTreatment resourceNameTreatment =
+          GapicMethodConfig.defaultResourceNameTreatment(
+              MethodConfigProto.getDefaultInstance(),
+              method.getProtoMethod(),
+              protoParser,
+              defaultPackageName);
+      resourcesFieldConfig =
+          FieldConfig.createMessageFieldConfig(
+              messageConfigs, resourceNameConfigs, resourcesField, resourceNameTreatment);
+    }
+
+    if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {
+      return null;
+    }
+    return new AutoValue_PageStreamingConfig(pagingFields, resourcesFieldConfig);
   }
 }

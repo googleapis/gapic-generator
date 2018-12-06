@@ -24,7 +24,9 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.config.PageStreamingConfig.PagingFields;
 import com.google.api.codegen.configgen.ProtoMethodTransformer;
+import com.google.api.codegen.configgen.ProtoPagingParameters;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoParser;
@@ -83,10 +85,39 @@ public abstract class GapicMethodConfig extends MethodConfig {
     if (!PageStreamingConfigProto.getDefaultInstance()
         .equals(methodConfigProto.getPageStreaming())) {
       pageStreaming =
-          PageStreamingConfig.createPageStreaming(
+          PageStreamingConfig.createPageStreamingFromGapicConfig(
               diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
       if (pageStreaming == null) {
         error = true;
+      }
+    } else if (MethodConfigProto.getDefaultInstance().equals(methodConfigProto)) {
+      // When GAPIC config not available, toggle pagination based on presence of paging params.
+      // See https://cloud.google.com/apis/design/design_patterns for API pagination pattern.
+      String pageTokenName = ProtoPagingParameters.nameForPageToken();
+      String pageSizeName = ProtoPagingParameters.nameForPageSize();
+      String nextPageTokenName = ProtoPagingParameters.nameForNextPageToken();
+      ProtoField tokenField = methodModel.getInputField(pageTokenName);
+      ProtoField pageSizeField = methodModel.getInputField(pageSizeName);
+      ProtoField responseTokenField = methodModel.getOutputField(nextPageTokenName);
+      PagingFields pagingFields =
+          PagingFields.newBuilder()
+              .setResponseTokenField(responseTokenField)
+              .setResponseTokenField(tokenField)
+              .setPageSizeField(pageSizeField)
+              .build();
+      if (tokenField != null && responseTokenField != null) {
+        pageStreaming =
+            PageStreamingConfig.createPageStreamingFromProtoFile(
+                diagCollector,
+                messageConfigs,
+                resourceNameConfigs,
+                methodModel,
+                pagingFields,
+                protoParser,
+                defaultPackageName);
+        if (pageStreaming == null) {
+          error = true;
+        }
       }
     }
 

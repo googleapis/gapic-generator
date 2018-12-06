@@ -67,8 +67,8 @@ public class ProtoInterfaceModel implements InterfaceModel {
   }
 
   @Override
-  public List<MethodModel> getMethods() {
-    ImmutableList.Builder<MethodModel> methods = ImmutableList.builder();
+  public List<ProtoMethodModel> getMethods() {
+    ImmutableList.Builder<ProtoMethodModel> methods = ImmutableList.builder();
     for (Method method : protoInterface.getMethods()) {
       methods.add(new ProtoMethodModel(method));
     }

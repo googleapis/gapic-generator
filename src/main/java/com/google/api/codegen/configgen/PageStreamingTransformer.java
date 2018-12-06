@@ -18,11 +18,10 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 
 /** Generates API source specific page streaming nodes. */
-public interface PageStreamingTransformer {
+public interface PageStreamingTransformer<T extends MethodModel> {
   String getNameForPageToken();
 
   String getNameForPageSize();
 
-  ConfigNode generateResponseValueNode(
-      ConfigNode parentNode, MethodModel method, ConfigHelper helper);
+  ConfigNode generateResponseValueNode(ConfigNode parentNode, T method, ConfigHelper helper);
 }
