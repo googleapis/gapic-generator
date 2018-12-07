@@ -34,7 +34,7 @@ public abstract class LongRunningConfig {
   // Default values for LongRunningConfig fields.
   static final boolean LRO_IMPLEMENTS_CANCEL = true;
   static final boolean LRO_IMPLEMENTS_DELETE = true;
-  static final int LRO_INITIAL_POLL_DELAY_MILLIS = 30000;
+  static final int LRO_INITIAL_POLL_DELAY_MILLIS = 500;
   static final double LRO_POLL_DELAY_MULTIPLIER = 1.5;
   static final int LRO_MAX_POLL_DELAY_MILLIS = 5000;
   static final int LRO_TOTAL_POLL_TIMEOUT_MILLS = 300000;
