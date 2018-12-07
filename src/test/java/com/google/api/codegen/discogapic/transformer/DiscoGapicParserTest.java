@@ -27,14 +27,14 @@ public class DiscoGapicParserTest {
   public void testCanonicalPath() {
     // The test inputs to the getCanonicalPath() are examples from the Compute Discovery Doc API.
     assertThat(DiscoGapicParser.getCanonicalPath("{project}/backendBuckets/{backendBucket}"))
-        .isEqualTo("projects/{project}/backendBuckets/{backendBucket}");
+        .isEqualTo("{project}/backendBuckets/{backendBucket}");
     assertThat(DiscoGapicParser.getCanonicalPath("{project}/global/backendBuckets/{backendBucket}"))
-        .isEqualTo("projects/{project}/global/backendBuckets/{backendBucket}");
+        .isEqualTo("{project}/global/backendBuckets/{backendBucket}");
     assertThat(
             DiscoGapicParser.getCanonicalPath("{project}/zones/{zone}/disks/{resource}/setLabels"))
-        .isEqualTo("projects/{project}/zones/{zone}/disks/{resource}");
+        .isEqualTo("{project}/zones/{zone}/disks/{resource}");
     assertThat(DiscoGapicParser.getCanonicalPath("{project}/global/images/{resource}/setLabels"))
-        .isEqualTo("projects/{project}/global/images/{resource}");
+        .isEqualTo("{project}/global/images/{resource}");
   }
 
   @Test
