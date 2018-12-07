@@ -124,9 +124,9 @@ public abstract class FlatteningConfig {
     // flattening.
     Map<String, FlatteningConfig> flatteningConfigs = new LinkedHashMap<>();
 
-    flatteningConfigs.putAll(flatteningConfigsFromGapicConfig);
-    // Let flattenings from proto annotations override flattenings from GAPIC config.
+    // Let flattenings from GAPIC config override flattenings from proto annotations.
     flatteningConfigs.putAll(flatteningConfigsFromProtoFile);
+    flatteningConfigs.putAll(flatteningConfigsFromGapicConfig);
 
     return ImmutableList.copyOf(flatteningConfigs.values());
   }
@@ -305,7 +305,7 @@ public abstract class FlatteningConfig {
       }
 
       ResourceNameTreatment resourceNameTreatment = ResourceNameTreatment.NONE;
-      String resourceNameType = protoParser.getResourceType(parameterField.getProtoField());
+      String resourceNameType = protoParser.getResourceReference(parameterField.getProtoField());
       if (!Strings.isNullOrEmpty(resourceNameType)) {
         resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
       }

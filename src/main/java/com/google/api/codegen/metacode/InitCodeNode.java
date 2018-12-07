@@ -18,6 +18,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -41,7 +42,7 @@ import java.util.Set;
  */
 public class InitCodeNode {
   private static final TypeModel INT_TYPE = ProtoTypeRef.create(TypeRef.of(Type.TYPE_UINT64));
-
+  private static final String ROOT_KEY = "root";
   private String key;
   private InitCodeLineType lineType;
   private InitValueConfig initValueConfig;
@@ -51,6 +52,7 @@ public class InitCodeNode {
   private Name identifier;
   private OneofConfig oneofConfig;
   private String varName;
+  private SampleParameterConfig sampleParamConfig;
 
   /*
    * Get the key associated with the node. For InitCodeNode objects that are not a root object, they
@@ -160,7 +162,7 @@ public class InitCodeNode {
 
   /** Creates a node to be used as the root of the initialization tree. */
   public static InitCodeNode newRoot() {
-    return new InitCodeNode("root", InitCodeLineType.StructureInitLine, InitValueConfig.create());
+    return new InitCodeNode(ROOT_KEY, InitCodeLineType.StructureInitLine, InitValueConfig.create());
   }
 
   /**
@@ -194,6 +196,7 @@ public class InitCodeNode {
     }
 
     root.resolveNamesAndTypes(context, context.initObjectType(), context.suggestedName(), null);
+    root.resolveSampleParamConfigs(context, "");
     return root;
   }
 
@@ -361,6 +364,56 @@ public class InitCodeNode {
         break;
       default:
         throw new IllegalArgumentException("unexpected InitcodeLineType: " + lineType);
+    }
+  }
+
+  /**
+   * Apply {@code sampleParamConfig} to the nodes in this tree.
+   *
+   * @param parentFieldPath The full path of the parent object of {@code typeRef}. Set to an empty
+   *     string if {@code typeRef} is a top level proto object. We need to keep track of this
+   *     because the keys in {@code sampleParamConfigMap} are full paths while {@code key} is a
+   *     simple field name.
+   */
+  private void resolveSampleParamConfigs(InitCodeContext context, String parentFieldPath) {
+    ImmutableMap<String, SampleParameterConfig> sampleParamConfigMap =
+        context.sampleParamConfigMap();
+    String fieldPath;
+    if (ROOT_KEY.equals(key)) {
+      fieldPath = "";
+    } else if (parentFieldPath.isEmpty()) {
+      fieldPath = key;
+    } else {
+      fieldPath = parentFieldPath + "." + key;
+    }
+    this.sampleParamConfig = sampleParamConfigMap.get(fieldPath);
+
+    if (sampleParamConfig != null) {
+
+      // If read_file is set to true in config, change the line type to ReadFileInitLine.
+      if (sampleParamConfig.readFromFile()) {
+        setLineType(InitCodeLineType.ReadFileInitLine);
+      }
+
+      // If sample_argument_name is specified in config, set identifier to this name if the name has
+      // not been used yet and error out otherwise.
+      if (sampleParamConfig.isSampleArgument()) {
+        Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
+        if (!argName.equals(identifier)) {
+          Preconditions.checkArgument(
+              !context.symbolTable().contains(argName),
+              "sample_argument_name \"%s\" is already in use.",
+              sampleParamConfig.sampleArgumentName());
+          identifier =
+              context
+                  .symbolTable()
+                  .getNewSymbol(Name.anyLower(sampleParamConfig.sampleArgumentName()));
+        }
+      }
+    } else {
+      // We only recursively call this method when the parent config is null since the parameter
+      // configs can never overlap.
+      children.values().forEach(child -> child.resolveSampleParamConfigs(context, fieldPath));
     }
   }
 

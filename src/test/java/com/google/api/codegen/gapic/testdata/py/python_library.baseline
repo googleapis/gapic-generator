@@ -219,7 +219,7 @@ Python Client for Google Example Library API (`Production/Stable`_)
 
 .. _Production/Stable: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/README.rst
 .. _Google Example Library API: https://cloud.google.com/library
-.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library/usage.html
+.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/latest/library/usage.html
 .. _Product Documentation:  https://cloud.google.com/library
 
 Quick Start
@@ -235,7 +235,7 @@ In order to use this library, you first need to go through the following steps:
 .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
 .. _Enable billing for your project.: https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project
 .. _Enable the Google Example Library API.:  https://cloud.google.com/library
-.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/core/auth.html
+.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/latest/core/auth.html
 
 Installation
 ~~~~~~~~~~~~
@@ -647,7 +647,7 @@ Python Client for Google Example Library API (`Production/Stable`_)
 
 .. _Production/Stable: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/README.rst
 .. _Google Example Library API: https://cloud.google.com/library
-.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library/usage.html
+.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/latest/library/usage.html
 .. _Product Documentation:  https://cloud.google.com/library
 
 Quick Start
@@ -663,7 +663,7 @@ In order to use this library, you first need to go through the following steps:
 .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
 .. _Enable billing for your project.: https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project
 .. _Enable the Google Example Library API.:  https://cloud.google.com/library
-.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/core/auth.html
+.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/latest/core/auth.html
 
 Installation
 ~~~~~~~~~~~~
@@ -893,6 +893,32 @@ class NullValue(enum.IntEnum):
     NULL_VALUE = 0
 
 
+class Book(object):
+    class Rating(enum.IntEnum):
+        """
+        Attributes:
+          GOOD (int): GOOD enum description
+          BAD (int): Enum description with special characters: <>&"`'@.
+        """
+        GOOD = 0
+        BAD = 1
+
+
+class Comment(object):
+    class Stage(enum.IntEnum):
+        """
+        Attributes:
+          UNSET (int)
+          DRAFT (int)
+          PUBLISHED (int)
+          DELETED (int)
+        """
+        UNSET = 0
+        DRAFT = 1
+        PUBLISHED = 2
+        DELETED = 3
+
+
 class FieldMask(object):
     class Material(enum.IntEnum):
         """
@@ -908,17 +934,6 @@ class FieldMask(object):
         PORCELAIN = 2
         SEQUINS = 3
         CARDBOARD = 4
-
-
-class Book(object):
-    class Rating(enum.IntEnum):
-        """
-        Attributes:
-          GOOD (int): GOOD enum description
-          BAD (int): Enum description with special characters: <>&"`'@.
-        """
-        GOOD = 0
-        BAD = 1
 
 
 class SomeMessage(object):
@@ -966,21 +981,6 @@ class SomeMessage2(object):
             CHAR = 0
             INT = 1
             DOUBLE = 2
-
-
-class Comment(object):
-    class Stage(enum.IntEnum):
-        """
-        Attributes:
-          UNSET (int)
-          DRAFT (int)
-          PUBLISHED (int)
-          DELETED (int)
-        """
-        UNSET = 0
-        DRAFT = 1
-        PUBLISHED = 2
-        DELETED = 3
 
 
 class TestOptionalRequiredFlatteningParamsRequest(object):
@@ -1041,8 +1041,13 @@ from google.cloud.example.library_v1.proto import library_pb2_grpc
 from google.cloud.example.library_v1.proto import tagger_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2_grpc
 from google.longrunning import operations_pb2
+from google.protobuf import any_pb2
+from google.protobuf import duration_pb2
 from google.protobuf import empty_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
+from google.protobuf import struct_pb2
+from google.protobuf import timestamp_pb2
+from google.protobuf import wrappers_pb2
 
 
 
@@ -1144,8 +1149,7 @@ class LibraryServiceClient(object):
         )
 
     def __init__(self, transport=None, channel=None, credentials=None,
-            client_config=library_service_client_config.config,
-            client_info=None):
+            client_config=None, client_info=None):
         """Constructor.
 
         Args:
@@ -1177,12 +1181,16 @@ class LibraryServiceClient(object):
                 your own client library.
         """
         # Raise deprecation warnings for things we want to go away.
-        if client_config:
+        if client_config is not None:
             warnings.warn('The `client_config` argument is deprecated.',
-                          PendingDeprecationWarning)
+                          PendingDeprecationWarning, stacklevel=2)
+        else:
+            client_config = library_service_client_config.config
+
         if channel:
             warnings.warn('The `channel` argument is deprecated; use '
-                          '`transport` instead.', PendingDeprecationWarning)
+                          '`transport` instead.',
+                          PendingDeprecationWarning, stacklevel=2)
 
         # Instantiate the transport.
         # The transport is responsible for handling serialization and
@@ -1380,7 +1388,7 @@ class LibraryServiceClient(object):
             >>> # Alternatively:
             >>>
             >>> # Iterate over results one page at a time
-            >>> for page in client.list_shelves(options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.list_shelves().pages:
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -1777,7 +1785,7 @@ class LibraryServiceClient(object):
             >>> # Alternatively:
             >>>
             >>> # Iterate over results one page at a time
-            >>> for page in client.list_books(name, filter=filter_, options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.list_books(name, filter=filter_).pages:
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -2044,7 +2052,7 @@ class LibraryServiceClient(object):
             >>> # Alternatively:
             >>>
             >>> # Iterate over results one page at a time
-            >>> for page in client.list_strings(options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.list_strings().pages:
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -2276,6 +2284,7 @@ class LibraryServiceClient(object):
     def get_book_from_absolutely_anywhere(
             self,
             name,
+            alt_book_name=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -2293,6 +2302,8 @@ class LibraryServiceClient(object):
 
         Args:
             name (str): The name of the book to retrieve.
+            alt_book_name (str): An alternate book name, used to test proper processing of placeholders
+                within additional bindings.
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will not
                 be retried.
@@ -2323,6 +2334,7 @@ class LibraryServiceClient(object):
 
         request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(
             name=name,
+            alt_book_name=alt_book_name,
         )
         return self._inner_api_calls['get_book_from_absolutely_anywhere'](request, retry=retry, timeout=timeout, metadata=metadata)
 
@@ -2640,7 +2652,7 @@ class LibraryServiceClient(object):
             >>> # Alternatively:
             >>>
             >>> # Iterate over results one page at a time
-            >>> for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
+            >>> for page in client.find_related_books(names, shelves).pages:
             ...     for element in page:
             ...         # process element
             ...         pass
@@ -3017,6 +3029,38 @@ class LibraryServiceClient(object):
             optional_repeated_fixed32=None,
             optional_repeated_fixed64=None,
             optional_map=None,
+            any_value=None,
+            struct_value=None,
+            value_value=None,
+            list_value_value=None,
+            time_value=None,
+            duration_value=None,
+            field_mask_value=None,
+            int32_value=None,
+            uint32_value=None,
+            int64_value=None,
+            uint64_value=None,
+            float_value=None,
+            double_value=None,
+            string_value=None,
+            bool_value=None,
+            bytes_value=None,
+            repeated_any_value=None,
+            repeated_struct_value=None,
+            repeated_value_value=None,
+            repeated_list_value_value=None,
+            repeated_time_value=None,
+            repeated_duration_value=None,
+            repeated_field_mask_value=None,
+            repeated_int32_value=None,
+            repeated_uint32_value=None,
+            repeated_int64_value=None,
+            repeated_uint64_value=None,
+            repeated_float_value=None,
+            repeated_double_value=None,
+            repeated_string_value=None,
+            repeated_bool_value=None,
+            repeated_bytes_value=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -3185,6 +3229,102 @@ class LibraryServiceClient(object):
             optional_repeated_fixed32 (list[int])
             optional_repeated_fixed64 (list[long])
             optional_map (dict[int -> str])
+            any_value (Union[dict, ~google.cloud.example.library_v1.types.Any]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Any`
+            struct_value (Union[dict, ~google.cloud.example.library_v1.types.Struct]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Struct`
+            value_value (Union[dict, ~google.cloud.example.library_v1.types.Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Value`
+            list_value_value (Union[dict, ~google.cloud.example.library_v1.types.ListValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.ListValue`
+            time_value (Union[dict, ~google.cloud.example.library_v1.types.Timestamp]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Timestamp`
+            duration_value (Union[dict, ~google.cloud.example.library_v1.types.Duration]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Duration`
+            field_mask_value (Union[dict, ~google.cloud.example.library_v1.types.FieldMask]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FieldMask`
+            int32_value (Union[dict, ~google.cloud.example.library_v1.types.Int32Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Int32Value`
+            uint32_value (Union[dict, ~google.cloud.example.library_v1.types.UInt32Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.UInt32Value`
+            int64_value (Union[dict, ~google.cloud.example.library_v1.types.Int64Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Int64Value`
+            uint64_value (Union[dict, ~google.cloud.example.library_v1.types.UInt64Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.UInt64Value`
+            float_value (Union[dict, ~google.cloud.example.library_v1.types.FloatValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FloatValue`
+            double_value (Union[dict, ~google.cloud.example.library_v1.types.DoubleValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.DoubleValue`
+            string_value (Union[dict, ~google.cloud.example.library_v1.types.StringValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.StringValue`
+            bool_value (Union[dict, ~google.cloud.example.library_v1.types.BoolValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.BoolValue`
+            bytes_value (Union[dict, ~google.cloud.example.library_v1.types.BytesValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.BytesValue`
+            repeated_any_value (list[Union[dict, ~google.cloud.example.library_v1.types.Any]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Any`
+            repeated_struct_value (list[Union[dict, ~google.cloud.example.library_v1.types.Struct]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Struct`
+            repeated_value_value (list[Union[dict, ~google.cloud.example.library_v1.types.Value]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Value`
+            repeated_list_value_value (list[Union[dict, ~google.cloud.example.library_v1.types.ListValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.ListValue`
+            repeated_time_value (list[Union[dict, ~google.cloud.example.library_v1.types.Timestamp]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Timestamp`
+            repeated_duration_value (list[Union[dict, ~google.cloud.example.library_v1.types.Duration]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Duration`
+            repeated_field_mask_value (list[Union[dict, ~google.cloud.example.library_v1.types.FieldMask]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FieldMask`
+            repeated_int32_value (list[Union[dict, ~google.cloud.example.library_v1.types.Int32Value]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Int32Value`
+            repeated_uint32_value (list[Union[dict, ~google.cloud.example.library_v1.types.UInt32Value]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.UInt32Value`
+            repeated_int64_value (list[Union[dict, ~google.cloud.example.library_v1.types.Int64Value]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Int64Value`
+            repeated_uint64_value (list[Union[dict, ~google.cloud.example.library_v1.types.UInt64Value]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.UInt64Value`
+            repeated_float_value (list[Union[dict, ~google.cloud.example.library_v1.types.FloatValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FloatValue`
+            repeated_double_value (list[Union[dict, ~google.cloud.example.library_v1.types.DoubleValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.DoubleValue`
+            repeated_string_value (list[Union[dict, ~google.cloud.example.library_v1.types.StringValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.StringValue`
+            repeated_bool_value (list[Union[dict, ~google.cloud.example.library_v1.types.BoolValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.BoolValue`
+            repeated_bytes_value (list[Union[dict, ~google.cloud.example.library_v1.types.BytesValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.BytesValue`
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will not
                 be retried.
@@ -3272,6 +3412,38 @@ class LibraryServiceClient(object):
             optional_repeated_fixed32=optional_repeated_fixed32,
             optional_repeated_fixed64=optional_repeated_fixed64,
             optional_map=optional_map,
+            any_value=any_value,
+            struct_value=struct_value,
+            value_value=value_value,
+            list_value_value=list_value_value,
+            time_value=time_value,
+            duration_value=duration_value,
+            field_mask_value=field_mask_value,
+            int32_value=int32_value,
+            uint32_value=uint32_value,
+            int64_value=int64_value,
+            uint64_value=uint64_value,
+            float_value=float_value,
+            double_value=double_value,
+            string_value=string_value,
+            bool_value=bool_value,
+            bytes_value=bytes_value,
+            repeated_any_value=repeated_any_value,
+            repeated_struct_value=repeated_struct_value,
+            repeated_value_value=repeated_value_value,
+            repeated_list_value_value=repeated_list_value_value,
+            repeated_time_value=repeated_time_value,
+            repeated_duration_value=repeated_duration_value,
+            repeated_field_mask_value=repeated_field_mask_value,
+            repeated_int32_value=repeated_int32_value,
+            repeated_uint32_value=repeated_uint32_value,
+            repeated_int64_value=repeated_int64_value,
+            repeated_uint64_value=repeated_uint64_value,
+            repeated_float_value=repeated_float_value,
+            repeated_double_value=repeated_double_value,
+            repeated_string_value=repeated_string_value,
+            repeated_bool_value=repeated_bool_value,
+            repeated_bytes_value=repeated_bytes_value,
         )
         return self._inner_api_calls['test_optional_required_flattening_params'](request, retry=retry, timeout=timeout, metadata=metadata)
 
@@ -3527,6 +3699,8 @@ class LibraryServiceGrpcTransport(object):
                 credentials=credentials,
             )
 
+        self._channel = channel
+
         # gRPC uses objects called "stubs" that are bound to the
         # channel and provide a basic method for each RPC.
         self._stubs = {
@@ -3564,8 +3738,17 @@ class LibraryServiceGrpcTransport(object):
         )
 
     @property
+    def channel(self):
+        """The gRPC channel used by the transport.
+
+        Returns:
+            grpc.Channel: A gRPC channel object.
+        """
+        return self._channel
+
+    @property
     def create_shelf(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.create_shelf`.
 
         Creates a shelf, and returns the new Shelf.
         RPC method comment may include special characters: <>&"`'@.
@@ -3579,7 +3762,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_shelf(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_shelf`.
 
         Gets a shelf.
 
@@ -3592,7 +3775,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def list_shelves(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.list_shelves`.
 
         Lists shelves.
 
@@ -3605,7 +3788,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def delete_shelf(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.delete_shelf`.
 
         Deletes a shelf.
 
@@ -3618,7 +3801,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def merge_shelves(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.merge_shelves`.
 
         Merges two shelves by adding all books from the shelf named
         `other_shelf_name` to shelf `name`, and deletes
@@ -3633,7 +3816,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def create_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.create_book`.
 
         Creates a book.
 
@@ -3646,7 +3829,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def publish_series(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.publish_series`.
 
         Creates a series of books.
 
@@ -3659,7 +3842,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_book`.
 
         Gets a book.
 
@@ -3672,7 +3855,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def list_books(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.list_books`.
 
         Lists books in a shelf.
 
@@ -3685,7 +3868,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def delete_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.delete_book`.
 
         Deletes a book.
 
@@ -3698,7 +3881,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def update_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.update_book`.
 
         Updates a book.
 
@@ -3711,7 +3894,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def move_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.move_book`.
 
         Moves a book to another shelf, and returns the new book.
 
@@ -3724,7 +3907,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def list_strings(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.list_strings`.
 
         Lists a primitive resource. To test go page streaming.
 
@@ -3737,7 +3920,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def add_comments(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.add_comments`.
 
         Adds comments to a book
 
@@ -3750,7 +3933,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_book_from_archive(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_book_from_archive`.
 
         Gets a book from an archive.
 
@@ -3763,7 +3946,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_book_from_anywhere(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_book_from_anywhere`.
 
         Gets a book from a shelf or archive.
 
@@ -3776,7 +3959,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_book_from_absolutely_anywhere(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_book_from_absolutely_anywhere`.
 
         Test proper OneOf-Any resource name mapping
 
@@ -3789,7 +3972,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def update_book_index(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.update_book_index`.
 
         Updates the index of a book.
 
@@ -3802,7 +3985,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def stream_shelves(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.stream_shelves`.
 
         Test server streaming
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -3816,7 +3999,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def stream_books(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.stream_books`.
 
         Test server streaming, non-paged responses.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -3830,7 +4013,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def discuss_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.discuss_book`.
 
         Test bidi-streaming.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -3844,7 +4027,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def monolog_about_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.monolog_about_book`.
 
         Test client streaming.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -3858,7 +4041,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def find_related_books(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.find_related_books`.
 
 
         Returns:
@@ -3870,7 +4053,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def add_tag(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.add_tag`.
 
         Adds a tag to the book. This RPC is a mixin.
 
@@ -3883,7 +4066,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def add_label(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.add_label`.
 
         Adds a label to the entity.
 
@@ -3896,7 +4079,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_big_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_big_book`.
 
         Test long-running operations
 
@@ -3909,7 +4092,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_big_nothing(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_big_nothing`.
 
         Test long-running operations with empty return type.
 
@@ -3922,7 +4105,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def test_optional_required_flattening_params(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.test_optional_required_flattening_params`.
 
         Test optional flattening parameters of all types
 
@@ -4064,7 +4247,7 @@ def unit(session, py):
     session.virtualenv_dirname = 'unit-' + py
 
     # Install all test dependencies, then install this package in-place.
-    session.install('pytest')
+    session.install('pytest', 'mock')
     session.install('-e', '.')
 
     # Run py.test against the unit tests.
@@ -4133,6 +4316,7 @@ import sys
 # [START turing_prog_request_streaming_bidi]
 
 from google.cloud.example import library_v1
+import io
 
 def sample_discuss_book():
   """Testing calling forms"""
@@ -4142,7 +4326,11 @@ def sample_discuss_book():
   client = library_v1.LibraryServiceClient()
 
   name = 'BASIC'
-  request = {'name': name}
+  file_name = 'comment_file'
+  with io.open(file_name, 'rb') as f:
+    comment = f.read()
+  comment_2 = {'comment': comment}
+  request = {'name': name, 'comment': comment_2}
 
   requests = [request]
   for response_item in client.discuss_book(requests):
@@ -4260,7 +4448,7 @@ def sample_find_related_books():
   shelves = [shelves_element]
 
   # Iterate over results one page at a time
-  for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
+  for page in client.find_related_books(names, shelves).pages:
       for response_item in page:
           book = response_item
           print('Here\'s a related book: {}'.format(book))
@@ -4320,7 +4508,8 @@ def sample_get_big_book():
   print('Waiting for operation to complete...')
   response = operation.result()
 
-  print(response)
+  print('name: {}'.format(response.name))
+  print('author: {}'.format(response.author))
 
   # [END hopper_core]
 # [END hopper]
@@ -4420,20 +4609,20 @@ import sys
 from google.cloud.example import library_v1
 import six
 
-def sample_publish_series(name, edition):
+def sample_publish_series(shelf_name, edition):
   """Testing calling forms"""
 
   # [START canonical_core]
 
   client = library_v1.LibraryServiceClient()
 
-  # name = 'Math'
+  # shelf_name = 'Math'
   # edition = 123
 
-  if isinstance(name, six.binary_type):
-    name = name.decode('utf-8')
+  if isinstance(shelf_name, six.binary_type):
+    shelf_name = shelf_name.decode('utf-8')
 
-  shelf = {'name': name}
+  shelf = {'name': shelf_name}
 
   # TODO: Initialize `books`:
   books = []
@@ -4454,11 +4643,11 @@ def main():
   import argparse
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--name', type=str, default='Math')
+  parser.add_argument('--shelf_name', type=str, default='Math')
   parser.add_argument('--edition', type=int, default=123)
   args = parser.parse_args()
 
-  sample_publish_series(args.name, args.edition)
+  sample_publish_series(args.shelf_name, args.edition)
 
 if __name__ == '__main__':
   main()
@@ -4660,7 +4849,7 @@ description = 'Google Example Library API API client library'
 version = '0.1.0'
 release_status = '5 - Production/Stable'
 dependencies = [
-  'google-api-core[grpc] >= 1.1.0, < 2.0.0dev',
+  'google-api-core[grpc] >= 1.4.1, < 2.0.0dev',
 
   'python-other-package >= 12.1.0, < 13.5.1',
   'enum34; python_version < "3.4"',
@@ -4772,6 +4961,7 @@ class TestSystemLibraryService(object):
 
 """Unit tests."""
 
+import mock
 import pytest
 
 from google.rpc import status_pb2
@@ -4845,8 +5035,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         shelf = {}
@@ -4862,8 +5054,10 @@ class TestLibraryServiceClient(object):
     def test_create_shelf_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         shelf = {}
@@ -4881,8 +5075,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.shelf_path('[SHELF_ID]')
@@ -4899,8 +5095,10 @@ class TestLibraryServiceClient(object):
     def test_get_shelf_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.shelf_path('[SHELF_ID]')
@@ -4919,8 +5117,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         paged_list_response = client.list_shelves()
         resources = list(paged_list_response)
@@ -4935,8 +5135,10 @@ class TestLibraryServiceClient(object):
 
     def test_list_shelves_exception(self):
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         paged_list_response = client.list_shelves()
         with pytest.raises(CustomException):
@@ -4944,8 +5146,10 @@ class TestLibraryServiceClient(object):
 
     def test_delete_shelf(self):
         channel = ChannelStub()
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.shelf_path('[SHELF_ID]')
@@ -4960,8 +5164,10 @@ class TestLibraryServiceClient(object):
     def test_delete_shelf_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.shelf_path('[SHELF_ID]')
@@ -4979,8 +5185,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.shelf_path('[SHELF_ID]')
@@ -4997,8 +5205,10 @@ class TestLibraryServiceClient(object):
     def test_merge_shelves_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.shelf_path('[SHELF_ID]')
@@ -5018,8 +5228,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.shelf_path('[SHELF_ID]')
@@ -5036,8 +5248,10 @@ class TestLibraryServiceClient(object):
     def test_create_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.shelf_path('[SHELF_ID]')
@@ -5055,8 +5269,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         shelf = {}
@@ -5075,8 +5291,10 @@ class TestLibraryServiceClient(object):
     def test_publish_series_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         shelf = {}
@@ -5098,8 +5316,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5115,8 +5335,10 @@ class TestLibraryServiceClient(object):
     def test_get_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5134,8 +5356,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.shelf_path('[SHELF_ID]')
@@ -5154,8 +5378,10 @@ class TestLibraryServiceClient(object):
 
     def test_list_books_exception(self):
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.shelf_path('[SHELF_ID]')
@@ -5167,8 +5393,10 @@ class TestLibraryServiceClient(object):
 
     def test_delete_book(self):
         channel = ChannelStub()
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5183,8 +5411,10 @@ class TestLibraryServiceClient(object):
     def test_delete_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5203,8 +5433,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5221,8 +5453,10 @@ class TestLibraryServiceClient(object):
     def test_update_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5242,8 +5476,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5260,8 +5496,10 @@ class TestLibraryServiceClient(object):
     def test_move_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5280,8 +5518,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         paged_list_response = client.list_strings()
         resources = list(paged_list_response)
@@ -5296,8 +5536,10 @@ class TestLibraryServiceClient(object):
 
     def test_list_strings_exception(self):
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         paged_list_response = client.list_strings()
         with pytest.raises(CustomException):
@@ -5305,8 +5547,10 @@ class TestLibraryServiceClient(object):
 
     def test_add_comments(self):
         channel = ChannelStub()
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5326,8 +5570,10 @@ class TestLibraryServiceClient(object):
     def test_add_comments_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5351,8 +5597,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
@@ -5368,8 +5616,10 @@ class TestLibraryServiceClient(object):
     def test_get_book_from_archive_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
@@ -5388,8 +5638,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5406,8 +5658,10 @@ class TestLibraryServiceClient(object):
     def test_get_book_from_anywhere_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5427,8 +5681,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5444,8 +5700,10 @@ class TestLibraryServiceClient(object):
     def test_get_book_from_absolutely_anywhere_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5455,8 +5713,10 @@ class TestLibraryServiceClient(object):
 
     def test_update_book_index(self):
         channel = ChannelStub()
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5474,8 +5734,10 @@ class TestLibraryServiceClient(object):
     def test_update_book_index_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5495,8 +5757,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [iter([expected_response])])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
 
         response = client.stream_shelves()
@@ -5512,8 +5776,10 @@ class TestLibraryServiceClient(object):
     def test_stream_shelves_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         with pytest.raises(CustomException):
             client.stream_shelves()
@@ -5529,8 +5795,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [iter([expected_response])])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
 
         # Setup Request
@@ -5549,8 +5817,10 @@ class TestLibraryServiceClient(object):
     def test_stream_books_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = 'name3373707'
@@ -5567,8 +5837,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [iter([expected_response])])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = 'name3373707'
@@ -5590,8 +5862,10 @@ class TestLibraryServiceClient(object):
     def test_discuss_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = 'name3373707'
@@ -5612,8 +5886,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = 'name3373707'
@@ -5633,8 +5909,10 @@ class TestLibraryServiceClient(object):
     def test_monolog_about_book_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         name = 'name3373707'
@@ -5656,8 +5934,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         names_element = 'namesElement-249113339'
@@ -5677,8 +5957,10 @@ class TestLibraryServiceClient(object):
 
     def test_find_related_books_exception(self):
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         names_element = 'namesElement-249113339'
@@ -5696,8 +5978,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5714,8 +5998,10 @@ class TestLibraryServiceClient(object):
     def test_add_tag_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5731,8 +6017,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5749,8 +6037,10 @@ class TestLibraryServiceClient(object):
     def test_add_label_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5772,8 +6062,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses=[operation])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5796,8 +6088,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses=[operation])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5815,8 +6109,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses=[operation])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5839,8 +6135,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses=[operation])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -5856,8 +6154,10 @@ class TestLibraryServiceClient(object):
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
-        client = library_v1.LibraryServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup Request
         required_singular_int32 = 72313594
@@ -5901,8 +6201,10 @@ class TestLibraryServiceClient(object):
     def test_test_optional_required_flattening_params_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = library_v1.LibraryServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
 
         # Setup request
         required_singular_int32 = 72313594

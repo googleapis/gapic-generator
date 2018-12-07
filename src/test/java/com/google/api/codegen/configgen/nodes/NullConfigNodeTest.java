@@ -14,51 +14,52 @@
  */
 package com.google.api.codegen.configgen.nodes;
 
-import com.google.common.truth.Truth;
+import static com.google.common.truth.Truth.assertThat;
+
 import org.junit.Test;
 
 public class NullConfigNodeTest {
   @Test
   public void testIsPresent() throws Exception {
     NullConfigNode node = new NullConfigNode();
-    Truth.assertThat(node.isPresent()).isFalse();
+    assertThat(node.isPresent()).isFalse();
   }
 
   @Test
   public void testGetStartLine() throws Exception {
     NullConfigNode node = new NullConfigNode();
-    Truth.assertThat(node.getStartLine()).isEqualTo(0);
+    assertThat(node.getStartLine()).isEqualTo(0);
   }
 
   @Test
   public void testGetText() throws Exception {
     NullConfigNode node = new NullConfigNode();
-    Truth.assertThat(node.getText()).isEqualTo("");
+    assertThat(node.getText()).isEqualTo("");
   }
 
   @Test
   public void testGetNext() throws Exception {
     NullConfigNode node = new NullConfigNode();
-    Truth.assertThat(node.getNext().isPresent()).isFalse();
+    assertThat(node.getNext().isPresent()).isFalse();
   }
 
   @Test
   public void testGetChild() throws Exception {
     NullConfigNode node = new NullConfigNode();
-    Truth.assertThat(node.getChild().isPresent()).isFalse();
+    assertThat(node.getChild().isPresent()).isFalse();
   }
 
   @Test
   public void testSetChild() throws Exception {
     NullConfigNode node = new NullConfigNode();
     ConfigNode child = new ScalarConfigNode(0, "foo");
-    Truth.assertThat(node.setChild(child)).isSameAs(node);
+    assertThat(node.setChild(child)).isSameAs(node);
   }
 
   @Test
   public void testInsertNext() throws Exception {
     NullConfigNode node = new NullConfigNode();
     ConfigNode next = new ScalarConfigNode(0, "foo");
-    Truth.assertThat(node.insertNext(next)).isSameAs(next);
+    assertThat(node.insertNext(next)).isSameAs(next);
   }
 }

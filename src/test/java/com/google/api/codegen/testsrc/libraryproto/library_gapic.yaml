@@ -2,7 +2,7 @@ type: com.google.api.codegen.ConfigProto
 config_schema_version: 1.0.0
 language_settings:
   java:
-    package_name: com.google.gcloud.pubsub.v1
+    package_name: com.google.example.library.v1
     interface_names:
       google.example.library.v1.LibraryService: Library
     release_level: GA
@@ -240,7 +240,7 @@ interfaces:
         - edition=123
         attributes:
         - parameter: shelf.name
-          sample_argument_name: name
+          sample_argument_name: shelf_name
         - parameter: edition
           sample_argument_name: edition
       on_success:
@@ -574,6 +574,10 @@ interfaces:
       parameters:
         defaults:
         - name=BASIC
+        - comment.comment=comment_file
+        attributes:
+        - parameter: comment.comment
+          read_file: true
     samples:
       in_code:
       - calling_forms: ".*"
@@ -739,6 +743,13 @@ interfaces:
       parameters:
         defaults:
         - name="War and Peace"
+      on_success:
+      - print:
+        - "name: %s"
+        - $resp.name
+      - print:
+        - "author: %s"
+        - $resp.author
     samples:
       standalone:
       - calling_forms: ".*"
@@ -828,6 +839,38 @@ interfaces:
         - optional_repeated_fixed32
         - optional_repeated_fixed64
         - optional_map
+        - any_value
+        - struct_value
+        - value_value
+        - list_value_value
+        - time_value
+        - duration_value
+        - field_mask_value
+        - int32_value
+        - uint32_value
+        - int64_value
+        - uint64_value
+        - float_value
+        - double_value
+        - string_value
+        - bool_value
+        - bytes_value
+        - repeated_any_value
+        - repeated_struct_value
+        - repeated_value_value
+        - repeated_list_value_value
+        - repeated_time_value
+        - repeated_duration_value
+        - repeated_field_mask_value
+        - repeated_int32_value
+        - repeated_uint32_value
+        - repeated_int64_value
+        - repeated_uint64_value
+        - repeated_float_value
+        - repeated_double_value
+        - repeated_string_value
+        - repeated_bool_value
+        - repeated_bytes_value
     required_fields:
     - required_singular_int32
     - required_singular_int64

@@ -53,8 +53,8 @@ public class ProtoApiModel implements ApiModel {
   }
 
   @Override
-  public List<String> getAuthScopes() {
-    return getAuthScopes(new ProtoParser(), getInterfaces());
+  public List<String> getAuthScopes(GapicProductConfig gapicProductConfig) {
+    return getAuthScopes(gapicProductConfig.getProtoParser(), getInterfaces());
   }
 
   @VisibleForTesting
@@ -135,8 +135,6 @@ public class ProtoApiModel implements ApiModel {
 
   @Override
   public boolean equals(Object o) {
-    return o != null
-        && o instanceof ProtoApiModel
-        && ((ProtoApiModel) o).protoModel.equals(protoModel);
+    return o instanceof ProtoApiModel && ((ProtoApiModel) o).protoModel.equals(protoModel);
   }
 }

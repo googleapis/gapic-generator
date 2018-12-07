@@ -14,12 +14,13 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.api.codegen.transformer.ModelTypeNameConverterTestUtil;
 import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.truth.Truth;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -36,7 +37,7 @@ public class CSharpModelTypeNameConverterTest {
     CSharpTypeTable typeTable = new CSharpTypeTable(packageName, CSharpAliasMode.Global);
     CSharpModelTypeNameConverter converter = new CSharpModelTypeNameConverter(typeTable);
 
-    Truth.assertThat(converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(typeTable))
+    assertThat(converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(typeTable))
         .isEqualTo("Book.Types.Rating.Good");
   }
 }

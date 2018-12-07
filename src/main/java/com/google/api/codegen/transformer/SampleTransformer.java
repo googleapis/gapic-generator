@@ -15,11 +15,11 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.OutputSpec;
-import com.google.api.codegen.SampleInitAttribute;
 import com.google.api.codegen.SampleParameters;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.SampleSpec.ValueSetAndTags;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -34,6 +34,7 @@ import com.google.api.codegen.viewmodel.SampleValueSetView;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -237,10 +238,15 @@ public class SampleTransformer {
                       .getParameters()
                       .getAttributesList()
                       .stream()
-                      // TODO(#2366) honor the configured name.
-                      .filter(attr -> !attr.getSampleArgumentName().isEmpty())
-                      .map(SampleInitAttribute::getParameter)
-                      .collect(ImmutableList.toImmutableList()));
+                      .collect(
+                          ImmutableMap.toImmutableMap(
+                              attr -> attr.getParameter(),
+                              attr ->
+                                  SampleParameterConfig.newBuilder()
+                                      .identifier(attr.getParameter())
+                                      .readFromFile(attr.getReadFile())
+                                      .sampleArgumentName(attr.getSampleArgumentName())
+                                      .build())));
         }
         InitCodeView initCodeView = sampleGenerator.generate(thisContext);
         List<OutputSpec> outputs = valueSet.getOnSuccessList();
@@ -296,12 +302,12 @@ public class SampleTransformer {
       Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
       List<String> sampleCodeDefaultValues,
-      List<String> sampleFunctionArguments) {
+      ImmutableMap<String, SampleParameterConfig> sampleParamConfigMap) {
     return InitCodeContext.newBuilder()
         .initObjectType(context.getMethodModel().getInputType())
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(sampleCodeDefaultValues)
-        .sampleArgStrings(ImmutableList.copyOf(sampleFunctionArguments))
+        .sampleParamConfigMap(sampleParamConfigMap)
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
         .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
         .outputType(initCodeOutputType)

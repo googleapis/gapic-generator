@@ -219,7 +219,7 @@ Python Client for Google Example API (`Production/Stable`_)
 
 .. _Production/Stable: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/README.rst
 .. _Google Example API: https://cloud.google.com/multiple_services
-.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/multiple_services/usage.html
+.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/latest/multiple_services/usage.html
 .. _Product Documentation:  https://cloud.google.com/multiple_services
 
 Quick Start
@@ -235,7 +235,7 @@ In order to use this library, you first need to go through the following steps:
 .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
 .. _Enable billing for your project.: https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project
 .. _Enable the Google Example API.:  https://cloud.google.com/multiple_services
-.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/core/auth.html
+.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/latest/core/auth.html
 
 Installation
 ~~~~~~~~~~~~
@@ -628,7 +628,7 @@ Python Client for Google Example API (`Production/Stable`_)
 
 .. _Production/Stable: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/README.rst
 .. _Google Example API: https://cloud.google.com/multiple_services
-.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/multiple_services/usage.html
+.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/latest/multiple_services/usage.html
 .. _Product Documentation:  https://cloud.google.com/multiple_services
 
 Quick Start
@@ -644,7 +644,7 @@ In order to use this library, you first need to go through the following steps:
 .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
 .. _Enable billing for your project.: https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project
 .. _Enable the Google Example API.:  https://cloud.google.com/multiple_services
-.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/core/auth.html
+.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/latest/core/auth.html
 
 Installation
 ~~~~~~~~~~~~
@@ -895,8 +895,7 @@ class DecrementerServiceClient(object):
     from_service_account_json = from_service_account_file
 
     def __init__(self, transport=None, channel=None, credentials=None,
-            client_config=decrementer_service_client_config.config,
-            client_info=None):
+            client_config=None, client_info=None):
         """Constructor.
 
         Args:
@@ -928,12 +927,16 @@ class DecrementerServiceClient(object):
                 your own client library.
         """
         # Raise deprecation warnings for things we want to go away.
-        if client_config:
+        if client_config is not None:
             warnings.warn('The `client_config` argument is deprecated.',
-                          PendingDeprecationWarning)
+                          PendingDeprecationWarning, stacklevel=2)
+        else:
+            client_config = decrementer_service_client_config.config
+
         if channel:
             warnings.warn('The `channel` argument is deprecated; use '
-                          '`transport` instead.', PendingDeprecationWarning)
+                          '`transport` instead.',
+                          PendingDeprecationWarning, stacklevel=2)
 
         # Instantiate the transport.
         # The transport is responsible for handling serialization and
@@ -1126,8 +1129,7 @@ class IncrementerServiceClient(object):
     from_service_account_json = from_service_account_file
 
     def __init__(self, transport=None, channel=None, credentials=None,
-            client_config=incrementer_service_client_config.config,
-            client_info=None):
+            client_config=None, client_info=None):
         """Constructor.
 
         Args:
@@ -1159,12 +1161,16 @@ class IncrementerServiceClient(object):
                 your own client library.
         """
         # Raise deprecation warnings for things we want to go away.
-        if client_config:
+        if client_config is not None:
             warnings.warn('The `client_config` argument is deprecated.',
-                          PendingDeprecationWarning)
+                          PendingDeprecationWarning, stacklevel=2)
+        else:
+            client_config = incrementer_service_client_config.config
+
         if channel:
             warnings.warn('The `channel` argument is deprecated; use '
-                          '`transport` instead.', PendingDeprecationWarning)
+                          '`transport` instead.',
+                          PendingDeprecationWarning, stacklevel=2)
 
         # Instantiate the transport.
         # The transport is responsible for handling serialization and
@@ -1352,6 +1358,8 @@ class DecrementerServiceGrpcTransport(object):
                 credentials=credentials,
             )
 
+        self._channel = channel
+
         # gRPC uses objects called "stubs" that are bound to the
         # channel and provide a basic method for each RPC.
         self._stubs = {
@@ -1384,8 +1392,17 @@ class DecrementerServiceGrpcTransport(object):
         )
 
     @property
+    def channel(self):
+        """The gRPC channel used by the transport.
+
+        Returns:
+            grpc.Channel: A gRPC channel object.
+        """
+        return self._channel
+
+    @property
     def decrement(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`DecrementerServiceClient.decrement`.
 
         Decrement.
 
@@ -1461,6 +1478,8 @@ class IncrementerServiceGrpcTransport(object):
                 credentials=credentials,
             )
 
+        self._channel = channel
+
         # gRPC uses objects called "stubs" that are bound to the
         # channel and provide a basic method for each RPC.
         self._stubs = {
@@ -1493,8 +1512,17 @@ class IncrementerServiceGrpcTransport(object):
         )
 
     @property
+    def channel(self):
+        """The gRPC channel used by the transport.
+
+        Returns:
+            grpc.Channel: A gRPC channel object.
+        """
+        return self._channel
+
+    @property
     def increment(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`IncrementerServiceClient.increment`.
 
         Increment.
 
@@ -1612,7 +1640,7 @@ def unit(session, py):
     session.virtualenv_dirname = 'unit-' + py
 
     # Install all test dependencies, then install this package in-place.
-    session.install('pytest')
+    session.install('pytest', 'mock')
     session.install('-e', '.')
 
     # Run py.test against the unit tests.
@@ -1659,7 +1687,7 @@ description = 'Google Example API API client library'
 version = '0.1.0'
 release_status = '5 - Production/Stable'
 dependencies = [
-  'google-api-core[grpc] >= 1.1.0, < 2.0.0dev',
+  'google-api-core[grpc] >= 1.4.1, < 2.0.0dev',
 
   'python-other-package >= 12.1.0, < 13.5.1',
   'enum34; python_version < "3.4"',
@@ -1731,6 +1759,7 @@ setuptools.setup(
 
 """Unit tests."""
 
+import mock
 import pytest
 
 from google.cloud import example_v1
@@ -1778,8 +1807,10 @@ class TestDecrementerServiceClient(object):
 
     def test_decrement(self):
         channel = ChannelStub()
-        client = example_v1.DecrementerServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = example_v1.DecrementerServiceClient()
 
         client.decrement()
 
@@ -1791,8 +1822,10 @@ class TestDecrementerServiceClient(object):
     def test_decrement_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = example_v1.DecrementerServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = example_v1.DecrementerServiceClient()
 
         with pytest.raises(CustomException):
             client.decrement()
@@ -1816,6 +1849,7 @@ class TestDecrementerServiceClient(object):
 
 """Unit tests."""
 
+import mock
 import pytest
 
 from google.cloud import example_v1
@@ -1863,8 +1897,10 @@ class TestIncrementerServiceClient(object):
 
     def test_increment(self):
         channel = ChannelStub()
-        client = example_v1.IncrementerServiceClient(
-            channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = example_v1.IncrementerServiceClient()
 
         client.increment()
 
@@ -1876,8 +1912,10 @@ class TestIncrementerServiceClient(object):
     def test_increment_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
-        client = example_v1.IncrementerServiceClient(
-             channel=channel)
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = example_v1.IncrementerServiceClient()
 
         with pytest.raises(CustomException):
             client.increment()

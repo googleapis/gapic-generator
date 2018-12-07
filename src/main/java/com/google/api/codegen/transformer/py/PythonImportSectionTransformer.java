@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.config.*;
+import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.*;
 import com.google.api.codegen.util.TypeAlias;
@@ -28,6 +29,7 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Streams;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -193,10 +195,17 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
   private List<ImportFileView> generateInitCodeAppImports(
       GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
-    return ImmutableList.<ImportFileView>builder()
+    ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
+    imports
         .add(generateApiImport(context.getNamer()))
-        .addAll(generateProtoImports(context, specItemNodes))
-        .build();
+        .addAll(generateProtoImports(context, specItemNodes));
+    boolean needIOUtility =
+        Streams.stream(specItemNodes)
+            .anyMatch(node -> node.getLineType() == InitCodeLineType.ReadFileInitLine);
+    if (needIOUtility) {
+      imports.add(createImport("io"));
+    }
+    return imports.build();
   }
 
   private ImportFileView generateApiImport(SurfaceNamer namer) {
@@ -224,7 +233,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private List<ImportFileView> generateTestStandardImports() {
-    return ImmutableList.of(createImport("pytest"));
+    ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
+    imports.add(createImport("mock"));
+    imports.add(createImport("pytest"));
+    return imports.build();
   }
 
   private List<ImportFileView> generateSmokeTestStandardImports(boolean requireProjectId) {

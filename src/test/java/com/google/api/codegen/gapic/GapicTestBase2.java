@@ -154,7 +154,13 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       snippetNames.addAll(generator.getInputFileNames());
     }
 
-    String baseline = language.toString().toLowerCase() + "_" + apiName + ".baseline";
+    StringBuilder gapic_config_missing = new StringBuilder();
+    if (gapicConfigFileNames == null || gapicConfigFileNames.length == 0) {
+      gapic_config_missing.append("_no_gapic_config");
+    }
+
+    String baseline =
+        language.toString().toLowerCase() + "_" + apiName + gapic_config_missing + ".baseline";
 
     return new Object[] {
       language,

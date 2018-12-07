@@ -116,12 +116,10 @@ public class JavaSurfaceTransformer {
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
-      boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
       ImportTypeTable typeTable =
           surfaceTransformer.createTypeTable(productConfig.getPackageName());
       InterfaceContext context =
-          surfaceTransformer.createInterfaceContext(
-              apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
+          surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable);
       StaticLangFileView<StaticLangApiView> apiFile = generateApiFile(context, productConfig);
       surfaceDocs.add(apiFile);
 
@@ -161,8 +159,7 @@ public class JavaSurfaceTransformer {
 
   private StaticLangFileView<StaticLangApiView> generateApiFile(
       InterfaceContext context, GapicProductConfig productConfig) {
-    StaticLangFileView.Builder<StaticLangApiView> apiFile =
-        StaticLangFileView.<StaticLangApiView>newBuilder();
+    StaticLangFileView.Builder<StaticLangApiView> apiFile = StaticLangFileView.newBuilder();
 
     apiFile.templateFileName(API_TEMPLATE_FILENAME);
 
@@ -440,7 +437,7 @@ public class JavaSurfaceTransformer {
     xsettingsClass.serviceHostname(
         productServiceConfig.getServiceHostname(context.getServiceAddress()));
     xsettingsClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
-    xsettingsClass.authScopes(model.getAuthScopes());
+    xsettingsClass.authScopes(model.getAuthScopes(productConfig));
     if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
       xsettingsClass.useDefaultServicePortInEndpoint(false);
     }
@@ -488,7 +485,7 @@ public class JavaSurfaceTransformer {
   private StaticLangFileView<StaticLangStubInterfaceView> generateStubInterfaceFile(
       InterfaceContext context, GapicProductConfig productConfig) {
     StaticLangFileView.Builder<StaticLangStubInterfaceView> fileView =
-        StaticLangFileView.<StaticLangStubInterfaceView>newBuilder();
+        StaticLangFileView.newBuilder();
 
     fileView.classView(generateStubInterface(context, productConfig));
     fileView.templateFileName(STUB_INTERFACE_TEMPLATE_FILENAME);
@@ -697,7 +694,7 @@ public class JavaSurfaceTransformer {
     packageInfo.serviceTitle(model.getTitle());
     packageInfo.serviceDocs(serviceDocs);
     packageInfo.domainLayerLocation(productConfig.getDomainLayerLocation());
-    packageInfo.authScopes(model.getAuthScopes());
+    packageInfo.authScopes(model.getAuthScopes(productConfig));
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
@@ -896,12 +893,12 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.PagedCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.BatchingCallSettings");
-    typeTable.saveNicknameFor("com.google.longrunning.Operation");
 
     switch (context.getProductConfig().getTransportProtocol()) {
       case GRPC:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStubCallableFactory");
+        typeTable.saveNicknameFor("com.google.longrunning.Operation");
         typeTable.saveNicknameFor("com.google.longrunning.stub.OperationsStub");
         break;
       case HTTP:
@@ -954,7 +951,6 @@ public class JavaSurfaceTransformer {
       String apiClassName) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
-    ApiModel model = context.getApiModel();
     settingsDoc.serviceHostname(
         productServiceConfig.getServiceHostname(context.getServiceAddress()));
     settingsDoc.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));

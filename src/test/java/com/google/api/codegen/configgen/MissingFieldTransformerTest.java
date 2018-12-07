@@ -14,10 +14,11 @@
  */
 package com.google.api.codegen.configgen;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.truth.Truth;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class MissingFieldTransformerTest {
     List<String> fieldNames = Arrays.asList("A", "B", "C");
     int index = 0;
     for (ConfigNode node : NodeFinder.getChildren(parent)) {
-      Truth.assertThat(node.getText()).isEqualTo(fieldNames.get(index++));
+      assertThat(node.getText()).isEqualTo(fieldNames.get(index++));
     }
   }
 
@@ -55,7 +56,7 @@ public class MissingFieldTransformerTest {
     List<String> fieldNames = Arrays.asList("A", "B", "C");
     int index = 0;
     for (ConfigNode node : NodeFinder.getChildren(parent)) {
-      Truth.assertThat(node.getText()).isEqualTo(fieldNames.get(index++));
+      assertThat(node.getText()).isEqualTo(fieldNames.get(index++));
     }
   }
 
@@ -72,7 +73,7 @@ public class MissingFieldTransformerTest {
     List<String> fieldNames = Arrays.asList("A", "B", "C");
     int index = 0;
     for (ConfigNode node : NodeFinder.getChildren(parent)) {
-      Truth.assertThat(node.getText()).isEqualTo(fieldNames.get(index++));
+      assertThat(node.getText()).isEqualTo(fieldNames.get(index++));
     }
   }
 }

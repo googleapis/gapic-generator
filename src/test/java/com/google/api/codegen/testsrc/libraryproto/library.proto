@@ -131,7 +131,7 @@ service LibraryService {
     option (google.api.http) = {
       post: "/v1/{name=archives/*/books/*}"
       additional_bindings {
-        post: "/v1/{name=bookShelves/*/books/*}"
+        post: "/v1/{alt_book_name=bookShelves/*/books/*}"
       }
     };
   }
@@ -291,14 +291,6 @@ message SomeMessage {
 message SomeMessage2 {
   int32 field1 = 1;
 
-  // Another enum with duplicated simple name
-  enum Alignment {
-    FLUSH_LEFT = 0;
-    FLUSH_RIGHT = 1;
-    CENTERED = 2;
-    JUSTIFIED = 3;
-  }
-
   message SomeMessage3 {
 
     // Tests Python nested enums
@@ -310,6 +302,14 @@ message SomeMessage2 {
       // 64-bit
       DOUBLE = 2;
     }
+  }
+
+  // Another enum with duplicated simple name
+  enum Alignment {
+    FLUSH_LEFT = 0;
+    FLUSH_RIGHT = 1;
+    CENTERED = 2;
+    JUSTIFIED = 3;
   }
 
   Alignment format = 2;
@@ -583,6 +583,10 @@ message GetBookFromAnywhereRequest {
 message GetBookFromAbsolutelyAnywhereRequest {
   // The name of the book to retrieve.
   string name = 1;
+
+  // An alternate book name, used to test proper processing of placeholders
+  // within additional bindings.
+  string alt_book_name = 2;
 }
 
 // Request message for LibraryService.UpdateBookIndex.
@@ -706,7 +710,39 @@ message TestOptionalRequiredFlatteningParamsRequest {
 
     map<int32, string> optional_map = 91;
 
+    google.protobuf.Any any_value = 100;
+    google.protobuf.Struct struct_value = 101;
+    google.protobuf.Value value_value = 102;
+    google.protobuf.ListValue list_value_value = 103;
+    google.protobuf.Timestamp time_value = 104;
+    google.protobuf.Duration duration_value = 105;
+    google.protobuf.FieldMask field_mask_value = 106;
+    google.protobuf.Int32Value int32_value = 107;
+    google.protobuf.UInt32Value uint32_value = 108;
+    google.protobuf.Int64Value int64_value = 109;
+    google.protobuf.UInt64Value uint64_value = 110;
+    google.protobuf.FloatValue float_value = 111;
+    google.protobuf.DoubleValue double_value = 112;
+    google.protobuf.StringValue string_value = 113;
+    google.protobuf.BoolValue bool_value = 114;
+    google.protobuf.BytesValue bytes_value = 115;
 
+    repeated google.protobuf.Any repeated_any_value = 120;
+    repeated google.protobuf.Struct repeated_struct_value = 121;
+    repeated google.protobuf.Value repeated_value_value = 122;
+    repeated google.protobuf.ListValue repeated_list_value_value = 123;
+    repeated google.protobuf.Timestamp repeated_time_value = 124;
+    repeated google.protobuf.Duration repeated_duration_value = 125;
+    repeated google.protobuf.FieldMask repeated_field_mask_value = 126;
+    repeated google.protobuf.Int32Value repeated_int32_value = 127;
+    repeated google.protobuf.UInt32Value repeated_uint32_value = 128;
+    repeated google.protobuf.Int64Value repeated_int64_value = 129;
+    repeated google.protobuf.UInt64Value repeated_uint64_value = 130;
+    repeated google.protobuf.FloatValue repeated_float_value = 131;
+    repeated google.protobuf.DoubleValue repeated_double_value = 132;
+    repeated google.protobuf.StringValue repeated_string_value = 133;
+    repeated google.protobuf.BoolValue repeated_bool_value = 134;
+    repeated google.protobuf.BytesValue repeated_bytes_value = 135;
 }
 
 message TestOptionalRequiredFlatteningParamsResponse {

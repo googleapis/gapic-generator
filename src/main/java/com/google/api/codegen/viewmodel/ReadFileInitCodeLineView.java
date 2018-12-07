@@ -1,4 +1,4 @@
-/* Copyright 2017 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,38 +14,30 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
 @AutoValue
-public abstract class GrpcEnumDocView implements GrpcElementDocView {
-  @Override
-  public abstract String name();
-
-  public abstract List<String> lines();
-
-  public abstract List<GrpcEnumValueDocView> values();
-
-  public abstract String packageName();
-
-  public static Builder newBuilder() {
-    return new AutoValue_GrpcEnumDocView.Builder();
+public abstract class ReadFileInitCodeLineView implements InitCodeLineView {
+  public InitCodeLineType lineType() {
+    return InitCodeLineType.ReadFileInitLine;
   }
 
-  public String type() {
-    return GrpcEnumDocView.class.getSimpleName();
+  public abstract String identifier();
+
+  public abstract InitValueView fileName();
+
+  public static Builder newBuilder() {
+    return new AutoValue_ReadFileInitCodeLineView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder name(String val);
 
-    public abstract Builder lines(List<String> val);
+    public abstract Builder identifier(String val);
 
-    public abstract Builder values(List<GrpcEnumValueDocView> val);
+    public abstract Builder fileName(InitValueView val);
 
-    public abstract Builder packageName(String val);
-
-    public abstract GrpcEnumDocView build();
+    public abstract ReadFileInitCodeLineView build();
   }
 }

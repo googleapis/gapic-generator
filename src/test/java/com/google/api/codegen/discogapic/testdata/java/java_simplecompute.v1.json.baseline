@@ -11232,7 +11232,8 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
         }
         @Override
         public Iterable<AddressesScopedList> extractResources(AddressAggregatedList payload) {
-          return payload.getItemsMap().values();
+          return payload.getItemsMap() != null ? payload.getItemsMap().values() :
+            ImmutableList.<AddressesScopedList>of();
         }
       };
 
@@ -11266,7 +11267,8 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
         }
         @Override
         public Iterable<Address> extractResources(AddressList payload) {
-          return payload.getItemsList();
+          return payload.getItemsList() != null ? payload.getItemsList() :
+            ImmutableList.<Address>of();
         }
       };
 
@@ -13203,7 +13205,8 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
         }
         @Override
         public Iterable<Address> extractResources(ProjectsGetDummyObjectResources payload) {
-          return payload.getResourcesList();
+          return payload.getResourcesList() != null ? payload.getResourcesList() :
+            ImmutableList.<Address>of();
         }
       };
 
@@ -13705,7 +13708,6 @@ import com.google.cloud.simplecompute.v1.ProjectName;
 import com.google.cloud.simplecompute.v1.ProjectsGetDummyObjectResources;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
-import com.google.longrunning.Operation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

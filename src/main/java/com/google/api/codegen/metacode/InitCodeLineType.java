@@ -20,5 +20,6 @@ public enum InitCodeLineType {
   ListInitLine,
   SimpleInitLine,
   MapInitLine,
+  ReadFileInitLine,
   Unknown
 }
