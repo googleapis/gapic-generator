@@ -14,6 +14,15 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
+import static com.google.api.codegen.common.TargetLanguage.CSHARP;
+import static com.google.api.codegen.common.TargetLanguage.GO;
+import static com.google.api.codegen.common.TargetLanguage.JAVA;
+import static com.google.api.codegen.common.TargetLanguage.NODEJS;
+import static com.google.api.codegen.common.TargetLanguage.PHP;
+import static com.google.api.codegen.common.TargetLanguage.PYTHON;
+import static com.google.api.codegen.common.TargetLanguage.RUBY;
+
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.ListTransformer;
 import com.google.api.codegen.configgen.MissingFieldTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
@@ -29,6 +38,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import java.util.LinkedList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /** Merges the language_settings property from a package into a ConfigNode. */
 public class LanguageSettingsMerger {
@@ -40,15 +50,15 @@ public class LanguageSettingsMerger {
   private static final ImmutableList<RewriteRule> COMMON_REWRITE_RULES =
       ImmutableList.of(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
 
-  private static final ImmutableMap<String, LanguageFormatter> LANGUAGE_FORMATTERS =
-      ImmutableMap.<String, LanguageFormatter>builder()
-          .put("java", new SimpleLanguageFormatter(".", JAVA_REWRITE_RULES, false))
-          .put("python", new PythonLanguageFormatter())
-          .put("go", new GoLanguageFormatter())
-          .put("csharp", new SimpleLanguageFormatter(".", ImmutableList.of(), true))
-          .put("ruby", new SimpleLanguageFormatter("::", COMMON_REWRITE_RULES, true))
-          .put("php", new SimpleLanguageFormatter("\\", COMMON_REWRITE_RULES, true))
-          .put("nodejs", new NodeJSLanguageFormatter())
+  public static final ImmutableMap<TargetLanguage, LanguageFormatter> LANGUAGE_FORMATTERS =
+      ImmutableMap.<TargetLanguage, LanguageFormatter>builder()
+          .put(JAVA, new SimpleLanguageFormatter(".", JAVA_REWRITE_RULES, false))
+          .put(PYTHON, new PythonLanguageFormatter())
+          .put(GO, new GoLanguageFormatter())
+          .put(CSHARP, new SimpleLanguageFormatter(".", ImmutableList.of(), true))
+          .put(RUBY, new SimpleLanguageFormatter("::", COMMON_REWRITE_RULES, true))
+          .put(PHP, new SimpleLanguageFormatter("\\", COMMON_REWRITE_RULES, true))
+          .put(NODEJS, new NodeJSLanguageFormatter())
           .build();
 
   public ConfigNode mergeLanguageSettings(
@@ -64,13 +74,20 @@ public class LanguageSettingsMerger {
             LANGUAGE_FORMATTERS.entrySet(),
             languageSettingsNode,
             (startLine, entry) -> {
-              ConfigNode languageNode = new FieldConfigNode(startLine, entry.getKey());
+              ConfigNode languageNode =
+                  new FieldConfigNode(startLine, entry.getKey().name().toLowerCase());
               mergeLanguageSetting(languageNode, entry.getValue(), packageName);
               return languageNode;
             });
     return languageSettingsNode
         .setChild(languageSettingsValueNode)
         .setComment(new DefaultComment("The settings of generated code in a specific language."));
+  }
+
+  @Nullable
+  public static String getFormattedPackageName(TargetLanguage language, String basePackageName) {
+    LanguageFormatter formatter = LANGUAGE_FORMATTERS.get(language);
+    return formatter.getFormattedPackageName(basePackageName);
   }
 
   private ConfigNode mergeLanguageSetting(
@@ -91,7 +108,7 @@ public class LanguageSettingsMerger {
     return packageNameValueNode;
   }
 
-  private interface LanguageFormatter {
+  public interface LanguageFormatter {
     String getFormattedPackageName(String packageName);
   }
 
