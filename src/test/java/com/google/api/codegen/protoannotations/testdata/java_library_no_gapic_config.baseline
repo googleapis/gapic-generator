@@ -121,6 +121,7 @@ import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
+import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
@@ -418,15 +419,18 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
-   *   ListShelvesResponse response = libraryServiceClient.listShelves(request);
+   *   for (Shelf element : libraryServiceClient.listShelves(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
    * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final ListShelvesResponse listShelves(ListShelvesRequest request) {
-    return listShelvesCallable().call(request);
+  public final ListShelvesPagedResponse listShelves(ListShelvesRequest request) {
+    return listShelvesPagedCallable()
+        .call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -437,9 +441,38 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
-   *   ApiFuture&lt;ListShelvesResponse&gt; future = libraryServiceClient.listShelvesCallable().futureCall(request);
+   *   ApiFuture&lt;ListShelvesPagedResponse&gt; future = libraryServiceClient.listShelvesPagedCallable().futureCall(request);
    *   // Do something
-   *   ListShelvesResponse response = future.get();
+   *   for (Shelf element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable() {
+    return stub.listShelvesPagedCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
+   *   while (true) {
+   *     ListShelvesResponse response = libraryServiceClient.listShelvesCallable().call(request);
+   *     for (Shelf element : response.getShelvesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
    * }
    * </code></pre>
    */
@@ -693,15 +726,18 @@ public class LibraryServiceClient implements BackgroundResource {
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   ListBooksResponse response = libraryServiceClient.listBooks(request);
+   *   for (Book element : libraryServiceClient.listBooks(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
    * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final ListBooksResponse listBooks(ListBooksRequest request) {
-    return listBooksCallable().call(request);
+  public final ListBooksPagedResponse listBooks(ListBooksRequest request) {
+    return listBooksPagedCallable()
+        .call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -715,9 +751,41 @@ public class LibraryServiceClient implements BackgroundResource {
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   ApiFuture&lt;ListBooksResponse&gt; future = libraryServiceClient.listBooksCallable().futureCall(request);
+   *   ApiFuture&lt;ListBooksPagedResponse&gt; future = libraryServiceClient.listBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   ListBooksResponse response = future.get();
+   *   for (Book element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable() {
+    return stub.listBooksPagedCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists books in a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   ListBooksRequest request = ListBooksRequest.newBuilder()
+   *     .setName(name.toString())
+   *     .build();
+   *   while (true) {
+   *     ListBooksResponse response = libraryServiceClient.listBooksCallable().call(request);
+   *     for (Book element : response.getBooksList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
    * }
    * </code></pre>
    */
@@ -870,15 +938,18 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   ListStringsResponse response = libraryServiceClient.listStrings(request);
+   *   for (String element : libraryServiceClient.listStrings(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
    * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final ListStringsResponse listStrings(ListStringsRequest request) {
-    return listStringsCallable().call(request);
+  public final ListStringsPagedResponse listStrings(ListStringsRequest request) {
+    return listStringsPagedCallable()
+        .call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -889,9 +960,38 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   ApiFuture&lt;ListStringsResponse&gt; future = libraryServiceClient.listStringsCallable().futureCall(request);
+   *   ApiFuture&lt;ListStringsPagedResponse&gt; future = libraryServiceClient.listStringsPagedCallable().futureCall(request);
    *   // Do something
-   *   ListStringsResponse response = future.get();
+   *   for (String element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable() {
+    return stub.listStringsPagedCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
+   *   while (true) {
+   *     ListStringsResponse response = libraryServiceClient.listStringsCallable().call(request);
+   *     for (String element : response.getStringsList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
    * }
    * </code></pre>
    */
@@ -1254,15 +1354,18 @@ public class LibraryServiceClient implements BackgroundResource {
    *     .addAllNames(BookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
-   *   FindRelatedBooksResponse response = libraryServiceClient.findRelatedBooks(request);
+   *   for (BookName element : libraryServiceClient.findRelatedBooks(request).iterateAllAsBookName()) {
+   *     // doThingsWith(element);
+   *   }
    * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final FindRelatedBooksResponse findRelatedBooks(FindRelatedBooksRequest request) {
-    return findRelatedBooksCallable().call(request);
+  public final FindRelatedBooksPagedResponse findRelatedBooks(FindRelatedBooksRequest request) {
+    return findRelatedBooksPagedCallable()
+        .call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1278,9 +1381,43 @@ public class LibraryServiceClient implements BackgroundResource {
    *     .addAllNames(BookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
-   *   ApiFuture&lt;FindRelatedBooksResponse&gt; future = libraryServiceClient.findRelatedBooksCallable().futureCall(request);
+   *   ApiFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryServiceClient.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   FindRelatedBooksResponse response = future.get();
+   *   for (BookName element : future.get().iterateAllAsBookName()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
+    return stub.findRelatedBooksPagedCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   List&lt;BookName&gt; names = new ArrayList&lt;&gt;();
+   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+   *     .addAllNames(BookName.toStringList(names))
+   *     .addAllShelves(ShelfName.toStringList(shelves))
+   *     .build();
+   *   while (true) {
+   *     FindRelatedBooksResponse response = libraryServiceClient.findRelatedBooksCallable().call(request);
+   *     for (BookName element : BookName.parseList(response.getNamesList())) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
    * }
    * </code></pre>
    */
@@ -1695,7 +1832,386 @@ public class LibraryServiceClient implements BackgroundResource {
     return stub.awaitTermination(duration, unit);
   }
 
+  public static class ListShelvesPagedResponse extends AbstractPagedListResponse<
+      ListShelvesRequest,
+      ListShelvesResponse,
+      Shelf,
+      ListShelvesPage,
+      ListShelvesFixedSizeCollection> {
 
+    public static ApiFuture<ListShelvesPagedResponse> createAsync(
+        PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context,
+        ApiFuture<ListShelvesResponse> futureResponse) {
+      ApiFuture<ListShelvesPage> futurePage =
+          ListShelvesPage.createEmptyPage().createPageAsync(context, futureResponse);
+      return ApiFutures.transform(
+          futurePage,
+          new ApiFunction<ListShelvesPage, ListShelvesPagedResponse>() {
+            @Override
+            public ListShelvesPagedResponse apply(ListShelvesPage input) {
+              return new ListShelvesPagedResponse(input);
+            }
+          });
+    }
+
+    private ListShelvesPagedResponse(ListShelvesPage page) {
+      super(page, ListShelvesFixedSizeCollection.createEmptyCollection());
+    }
+
+
+  }
+
+  public static class ListShelvesPage extends AbstractPage<
+      ListShelvesRequest,
+      ListShelvesResponse,
+      Shelf,
+      ListShelvesPage> {
+
+    private ListShelvesPage(
+        PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context,
+        ListShelvesResponse response) {
+      super(context, response);
+    }
+
+    private static ListShelvesPage createEmptyPage() {
+      return new ListShelvesPage(null, null);
+    }
+
+    @Override
+    protected ListShelvesPage createPage(
+        PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context,
+        ListShelvesResponse response) {
+      return new ListShelvesPage(context, response);
+    }
+
+    @Override
+    public ApiFuture<ListShelvesPage> createPageAsync(
+        PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context,
+        ApiFuture<ListShelvesResponse> futureResponse) {
+      return super.createPageAsync(context, futureResponse);
+    }
+
+
+
+
+  }
+
+  public static class ListShelvesFixedSizeCollection extends AbstractFixedSizeCollection<
+      ListShelvesRequest,
+      ListShelvesResponse,
+      Shelf,
+      ListShelvesPage,
+      ListShelvesFixedSizeCollection> {
+
+    private ListShelvesFixedSizeCollection(List<ListShelvesPage> pages, int collectionSize) {
+      super(pages, collectionSize);
+    }
+
+    private static ListShelvesFixedSizeCollection createEmptyCollection() {
+      return new ListShelvesFixedSizeCollection(null, 0);
+    }
+
+    @Override
+    protected ListShelvesFixedSizeCollection createCollection(
+        List<ListShelvesPage> pages, int collectionSize) {
+      return new ListShelvesFixedSizeCollection(pages, collectionSize);
+    }
+
+
+  }
+  public static class ListBooksPagedResponse extends AbstractPagedListResponse<
+      ListBooksRequest,
+      ListBooksResponse,
+      Book,
+      ListBooksPage,
+      ListBooksFixedSizeCollection> {
+
+    public static ApiFuture<ListBooksPagedResponse> createAsync(
+        PageContext<ListBooksRequest, ListBooksResponse, Book> context,
+        ApiFuture<ListBooksResponse> futureResponse) {
+      ApiFuture<ListBooksPage> futurePage =
+          ListBooksPage.createEmptyPage().createPageAsync(context, futureResponse);
+      return ApiFutures.transform(
+          futurePage,
+          new ApiFunction<ListBooksPage, ListBooksPagedResponse>() {
+            @Override
+            public ListBooksPagedResponse apply(ListBooksPage input) {
+              return new ListBooksPagedResponse(input);
+            }
+          });
+    }
+
+    private ListBooksPagedResponse(ListBooksPage page) {
+      super(page, ListBooksFixedSizeCollection.createEmptyCollection());
+    }
+
+
+  }
+
+  public static class ListBooksPage extends AbstractPage<
+      ListBooksRequest,
+      ListBooksResponse,
+      Book,
+      ListBooksPage> {
+
+    private ListBooksPage(
+        PageContext<ListBooksRequest, ListBooksResponse, Book> context,
+        ListBooksResponse response) {
+      super(context, response);
+    }
+
+    private static ListBooksPage createEmptyPage() {
+      return new ListBooksPage(null, null);
+    }
+
+    @Override
+    protected ListBooksPage createPage(
+        PageContext<ListBooksRequest, ListBooksResponse, Book> context,
+        ListBooksResponse response) {
+      return new ListBooksPage(context, response);
+    }
+
+    @Override
+    public ApiFuture<ListBooksPage> createPageAsync(
+        PageContext<ListBooksRequest, ListBooksResponse, Book> context,
+        ApiFuture<ListBooksResponse> futureResponse) {
+      return super.createPageAsync(context, futureResponse);
+    }
+
+
+
+
+  }
+
+  public static class ListBooksFixedSizeCollection extends AbstractFixedSizeCollection<
+      ListBooksRequest,
+      ListBooksResponse,
+      Book,
+      ListBooksPage,
+      ListBooksFixedSizeCollection> {
+
+    private ListBooksFixedSizeCollection(List<ListBooksPage> pages, int collectionSize) {
+      super(pages, collectionSize);
+    }
+
+    private static ListBooksFixedSizeCollection createEmptyCollection() {
+      return new ListBooksFixedSizeCollection(null, 0);
+    }
+
+    @Override
+    protected ListBooksFixedSizeCollection createCollection(
+        List<ListBooksPage> pages, int collectionSize) {
+      return new ListBooksFixedSizeCollection(pages, collectionSize);
+    }
+
+
+  }
+  public static class ListStringsPagedResponse extends AbstractPagedListResponse<
+      ListStringsRequest,
+      ListStringsResponse,
+      String,
+      ListStringsPage,
+      ListStringsFixedSizeCollection> {
+
+    public static ApiFuture<ListStringsPagedResponse> createAsync(
+        PageContext<ListStringsRequest, ListStringsResponse, String> context,
+        ApiFuture<ListStringsResponse> futureResponse) {
+      ApiFuture<ListStringsPage> futurePage =
+          ListStringsPage.createEmptyPage().createPageAsync(context, futureResponse);
+      return ApiFutures.transform(
+          futurePage,
+          new ApiFunction<ListStringsPage, ListStringsPagedResponse>() {
+            @Override
+            public ListStringsPagedResponse apply(ListStringsPage input) {
+              return new ListStringsPagedResponse(input);
+            }
+          });
+    }
+
+    private ListStringsPagedResponse(ListStringsPage page) {
+      super(page, ListStringsFixedSizeCollection.createEmptyCollection());
+    }
+
+
+  }
+
+  public static class ListStringsPage extends AbstractPage<
+      ListStringsRequest,
+      ListStringsResponse,
+      String,
+      ListStringsPage> {
+
+    private ListStringsPage(
+        PageContext<ListStringsRequest, ListStringsResponse, String> context,
+        ListStringsResponse response) {
+      super(context, response);
+    }
+
+    private static ListStringsPage createEmptyPage() {
+      return new ListStringsPage(null, null);
+    }
+
+    @Override
+    protected ListStringsPage createPage(
+        PageContext<ListStringsRequest, ListStringsResponse, String> context,
+        ListStringsResponse response) {
+      return new ListStringsPage(context, response);
+    }
+
+    @Override
+    public ApiFuture<ListStringsPage> createPageAsync(
+        PageContext<ListStringsRequest, ListStringsResponse, String> context,
+        ApiFuture<ListStringsResponse> futureResponse) {
+      return super.createPageAsync(context, futureResponse);
+    }
+
+
+
+
+  }
+
+  public static class ListStringsFixedSizeCollection extends AbstractFixedSizeCollection<
+      ListStringsRequest,
+      ListStringsResponse,
+      String,
+      ListStringsPage,
+      ListStringsFixedSizeCollection> {
+
+    private ListStringsFixedSizeCollection(List<ListStringsPage> pages, int collectionSize) {
+      super(pages, collectionSize);
+    }
+
+    private static ListStringsFixedSizeCollection createEmptyCollection() {
+      return new ListStringsFixedSizeCollection(null, 0);
+    }
+
+    @Override
+    protected ListStringsFixedSizeCollection createCollection(
+        List<ListStringsPage> pages, int collectionSize) {
+      return new ListStringsFixedSizeCollection(pages, collectionSize);
+    }
+
+
+  }
+  public static class FindRelatedBooksPagedResponse extends AbstractPagedListResponse<
+      FindRelatedBooksRequest,
+      FindRelatedBooksResponse,
+      String,
+      FindRelatedBooksPage,
+      FindRelatedBooksFixedSizeCollection> {
+
+    public static ApiFuture<FindRelatedBooksPagedResponse> createAsync(
+        PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> context,
+        ApiFuture<FindRelatedBooksResponse> futureResponse) {
+      ApiFuture<FindRelatedBooksPage> futurePage =
+          FindRelatedBooksPage.createEmptyPage().createPageAsync(context, futureResponse);
+      return ApiFutures.transform(
+          futurePage,
+          new ApiFunction<FindRelatedBooksPage, FindRelatedBooksPagedResponse>() {
+            @Override
+            public FindRelatedBooksPagedResponse apply(FindRelatedBooksPage input) {
+              return new FindRelatedBooksPagedResponse(input);
+            }
+          });
+    }
+
+    private FindRelatedBooksPagedResponse(FindRelatedBooksPage page) {
+      super(page, FindRelatedBooksFixedSizeCollection.createEmptyCollection());
+    }
+    public Iterable<BookName> iterateAllAsBookName() {
+      return Iterables.transform(iterateAll(), new Function<String, BookName>() {
+          @Override
+          public BookName apply(String arg0) {
+            return BookName.parse(arg0);
+          }
+        }
+      );
+    }
+
+  }
+
+  public static class FindRelatedBooksPage extends AbstractPage<
+      FindRelatedBooksRequest,
+      FindRelatedBooksResponse,
+      String,
+      FindRelatedBooksPage> {
+
+    private FindRelatedBooksPage(
+        PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> context,
+        FindRelatedBooksResponse response) {
+      super(context, response);
+    }
+
+    private static FindRelatedBooksPage createEmptyPage() {
+      return new FindRelatedBooksPage(null, null);
+    }
+
+    @Override
+    protected FindRelatedBooksPage createPage(
+        PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> context,
+        FindRelatedBooksResponse response) {
+      return new FindRelatedBooksPage(context, response);
+    }
+
+    @Override
+    public ApiFuture<FindRelatedBooksPage> createPageAsync(
+        PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> context,
+        ApiFuture<FindRelatedBooksResponse> futureResponse) {
+      return super.createPageAsync(context, futureResponse);
+    }
+    public Iterable<BookName> iterateAllAsBookName() {
+      return Iterables.transform(iterateAll(), new Function<String, BookName>() {
+          @Override
+          public BookName apply(String arg0) {
+            return BookName.parse(arg0);
+          }
+        }
+      );
+    }
+
+    public Iterable<BookName> getValuesAsBookName() {
+      return Iterables.transform(getValues(), new Function<String, BookName>() {
+          @Override
+          public BookName apply(String arg0) {
+            return BookName.parse(arg0);
+          }
+        }
+      );
+    }
+
+  }
+
+  public static class FindRelatedBooksFixedSizeCollection extends AbstractFixedSizeCollection<
+      FindRelatedBooksRequest,
+      FindRelatedBooksResponse,
+      String,
+      FindRelatedBooksPage,
+      FindRelatedBooksFixedSizeCollection> {
+
+    private FindRelatedBooksFixedSizeCollection(List<FindRelatedBooksPage> pages, int collectionSize) {
+      super(pages, collectionSize);
+    }
+
+    private static FindRelatedBooksFixedSizeCollection createEmptyCollection() {
+      return new FindRelatedBooksFixedSizeCollection(null, 0);
+    }
+
+    @Override
+    protected FindRelatedBooksFixedSizeCollection createCollection(
+        List<FindRelatedBooksPage> pages, int collectionSize) {
+      return new FindRelatedBooksFixedSizeCollection(pages, collectionSize);
+    }
+    public Iterable<BookName> getValuesAsBookName() {
+      return Iterables.transform(getValues(), new Function<String, BookName>() {
+          @Override
+          public BookName apply(String arg0) {
+            return BookName.parse(arg0);
+          }
+        }
+      );
+    }
+
+  }
 }
 ============== file: src/main/java/com/google/cloud/example/library/v1/LibraryServiceSettings.java ==============
 /*
@@ -1716,6 +2232,7 @@ public class LibraryServiceClient implements BackgroundResource {
 package com.google.cloud.example.library.v1;
 
 import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
@@ -1730,18 +2247,28 @@ import com.google.api.gax.grpc.ProtoOperationTransformers;
 import com.google.api.gax.longrunning.OperationSnapshot;
 import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
 import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.ApiClientHeaderProvider;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.ClientSettings;
 import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.PagedListDescriptor;
+import com.google.api.gax.rpc.PagedListResponseFactory;
 import com.google.api.gax.rpc.ServerStreamingCallSettings;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.api.gax.rpc.StreamingCallSettings;
 import com.google.api.gax.rpc.StubSettings;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListShelvesPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
 import com.google.cloud.example.library.v1.stub.LibraryServiceStubSettings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -1842,7 +2369,7 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
   /**
    * Returns the object with the settings used for calls to listShelves.
    */
-  public UnaryCallSettings<ListShelvesRequest, ListShelvesResponse> listShelvesSettings() {
+  public PagedCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).listShelvesSettings();
   }
 
@@ -1884,7 +2411,7 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
   /**
    * Returns the object with the settings used for calls to listBooks.
    */
-  public UnaryCallSettings<ListBooksRequest, ListBooksResponse> listBooksSettings() {
+  public PagedCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).listBooksSettings();
   }
 
@@ -1912,7 +2439,7 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
   /**
    * Returns the object with the settings used for calls to listStrings.
    */
-  public UnaryCallSettings<ListStringsRequest, ListStringsResponse> listStringsSettings() {
+  public PagedCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).listStringsSettings();
   }
 
@@ -1982,7 +2509,7 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
   /**
    * Returns the object with the settings used for calls to findRelatedBooks.
    */
-  public UnaryCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksSettings() {
+  public PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).findRelatedBooksSettings();
   }
 
@@ -2168,7 +2695,7 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
     /**
      * Returns the builder for the settings used for calls to listShelves.
      */
-    public UnaryCallSettings.Builder<ListShelvesRequest, ListShelvesResponse> listShelvesSettings() {
+    public PagedCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
       return getStubSettingsBuilder().listShelvesSettings();
     }
 
@@ -2210,7 +2737,7 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
     /**
      * Returns the builder for the settings used for calls to listBooks.
      */
-    public UnaryCallSettings.Builder<ListBooksRequest, ListBooksResponse> listBooksSettings() {
+    public PagedCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
       return getStubSettingsBuilder().listBooksSettings();
     }
 
@@ -2238,7 +2765,7 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
     /**
      * Returns the builder for the settings used for calls to listStrings.
      */
-    public UnaryCallSettings.Builder<ListStringsRequest, ListStringsResponse> listStringsSettings() {
+    public PagedCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
       return getStubSettingsBuilder().listStringsSettings();
     }
 
@@ -2308,7 +2835,7 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
     /**
      * Returns the builder for the settings used for calls to findRelatedBooks.
      */
-    public UnaryCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksSettings() {
+    public PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
       return getStubSettingsBuilder().findRelatedBooksSettings();
     }
 
@@ -2465,12 +2992,17 @@ import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.StreamingCallSettings;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListShelvesPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
 import com.google.cloud.example.library.v1.LibraryServiceSettings;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
+import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
@@ -2615,12 +3147,17 @@ import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListShelvesPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
 import com.google.cloud.example.library.v1.LibraryServiceSettings;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
+import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
@@ -2881,16 +3418,19 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable;
   private final UnaryCallable<GetShelfRequest, Shelf> getShelfCallable;
   private final UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
+  private final UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable;
   private final UnaryCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
   private final UnaryCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
   private final UnaryCallable<CreateBookRequest, Book> createBookCallable;
   private final UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
   private final UnaryCallable<GetBookRequest, Book> getBookCallable;
   private final UnaryCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
+  private final UnaryCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable;
   private final UnaryCallable<DeleteBookRequest, Empty> deleteBookCallable;
   private final UnaryCallable<UpdateBookRequest, Book> updateBookCallable;
   private final UnaryCallable<MoveBookRequest, Book> moveBookCallable;
   private final UnaryCallable<ListStringsRequest, ListStringsResponse> listStringsCallable;
+  private final UnaryCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable;
   private final UnaryCallable<AddCommentsRequest, Empty> addCommentsCallable;
   private final UnaryCallable<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveCallable;
   private final UnaryCallable<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereCallable;
@@ -2901,6 +3441,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final BidiStreamingCallable<DiscussBookRequest, Comment> discussBookCallable;
   private final ClientStreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
+  private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
   private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
   private final UnaryCallable<GetBookRequest, Operation> getBigBookCallable;
   private final OperationCallable<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationCallable;
@@ -3057,16 +3598,19 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.createShelfCallable = callableFactory.createUnaryCallable(createShelfTransportSettings,settings.createShelfSettings(), clientContext);
     this.getShelfCallable = callableFactory.createUnaryCallable(getShelfTransportSettings,settings.getShelfSettings(), clientContext);
     this.listShelvesCallable = callableFactory.createUnaryCallable(listShelvesTransportSettings,settings.listShelvesSettings(), clientContext);
+    this.listShelvesPagedCallable = callableFactory.createPagedCallable(listShelvesTransportSettings,settings.listShelvesSettings(), clientContext);
     this.deleteShelfCallable = callableFactory.createUnaryCallable(deleteShelfTransportSettings,settings.deleteShelfSettings(), clientContext);
     this.mergeShelvesCallable = callableFactory.createUnaryCallable(mergeShelvesTransportSettings,settings.mergeShelvesSettings(), clientContext);
     this.createBookCallable = callableFactory.createUnaryCallable(createBookTransportSettings,settings.createBookSettings(), clientContext);
     this.publishSeriesCallable = callableFactory.createUnaryCallable(publishSeriesTransportSettings,settings.publishSeriesSettings(), clientContext);
     this.getBookCallable = callableFactory.createUnaryCallable(getBookTransportSettings,settings.getBookSettings(), clientContext);
     this.listBooksCallable = callableFactory.createUnaryCallable(listBooksTransportSettings,settings.listBooksSettings(), clientContext);
+    this.listBooksPagedCallable = callableFactory.createPagedCallable(listBooksTransportSettings,settings.listBooksSettings(), clientContext);
     this.deleteBookCallable = callableFactory.createUnaryCallable(deleteBookTransportSettings,settings.deleteBookSettings(), clientContext);
     this.updateBookCallable = callableFactory.createUnaryCallable(updateBookTransportSettings,settings.updateBookSettings(), clientContext);
     this.moveBookCallable = callableFactory.createUnaryCallable(moveBookTransportSettings,settings.moveBookSettings(), clientContext);
     this.listStringsCallable = callableFactory.createUnaryCallable(listStringsTransportSettings,settings.listStringsSettings(), clientContext);
+    this.listStringsPagedCallable = callableFactory.createPagedCallable(listStringsTransportSettings,settings.listStringsSettings(), clientContext);
     this.addCommentsCallable = callableFactory.createUnaryCallable(addCommentsTransportSettings,settings.addCommentsSettings(), clientContext);
     this.getBookFromArchiveCallable = callableFactory.createUnaryCallable(getBookFromArchiveTransportSettings,settings.getBookFromArchiveSettings(), clientContext);
     this.getBookFromAnywhereCallable = callableFactory.createUnaryCallable(getBookFromAnywhereTransportSettings,settings.getBookFromAnywhereSettings(), clientContext);
@@ -3077,6 +3621,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.discussBookCallable = callableFactory.createBidiStreamingCallable(discussBookTransportSettings,settings.discussBookSettings(), clientContext);
     this.monologAboutBookCallable = callableFactory.createClientStreamingCallable(monologAboutBookTransportSettings,settings.monologAboutBookSettings(), clientContext);
     this.findRelatedBooksCallable = callableFactory.createUnaryCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
+    this.findRelatedBooksPagedCallable = callableFactory.createPagedCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
     this.addTagCallable = callableFactory.createUnaryCallable(addTagTransportSettings,settings.addTagSettings(), clientContext);
     this.getBigBookCallable = callableFactory.createUnaryCallable(getBigBookTransportSettings,settings.getBigBookSettings(), clientContext);
     this.getBigBookOperationCallable = callableFactory.createOperationCallable(
@@ -3100,6 +3645,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public UnaryCallable<GetShelfRequest, Shelf> getShelfCallable() {
     return getShelfCallable;
+  }
+
+  public UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable() {
+    return listShelvesPagedCallable;
   }
 
   public UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
@@ -3126,6 +3675,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     return getBookCallable;
   }
 
+  public UnaryCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable() {
+    return listBooksPagedCallable;
+  }
+
   public UnaryCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
     return listBooksCallable;
   }
@@ -3140,6 +3693,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public UnaryCallable<MoveBookRequest, Book> moveBookCallable() {
     return moveBookCallable;
+  }
+
+  public UnaryCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable() {
+    return listStringsPagedCallable;
   }
 
   public UnaryCallable<ListStringsRequest, ListStringsResponse> listStringsCallable() {
@@ -3180,6 +3737,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public ClientStreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable() {
     return monologAboutBookCallable;
+  }
+
+  public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
+    return findRelatedBooksPagedCallable;
   }
 
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
@@ -3273,10 +3834,15 @@ import com.google.api.gax.rpc.ClientStreamingCallable;
 import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListShelvesPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
+import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
@@ -3339,6 +3905,10 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: getShelfCallable()");
   }
 
+  public UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable() {
+    throw new UnsupportedOperationException("Not implemented: listShelvesPagedCallable()");
+  }
+
   public UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
     throw new UnsupportedOperationException("Not implemented: listShelvesCallable()");
   }
@@ -3363,6 +3933,10 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: getBookCallable()");
   }
 
+  public UnaryCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable() {
+    throw new UnsupportedOperationException("Not implemented: listBooksPagedCallable()");
+  }
+
   public UnaryCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
     throw new UnsupportedOperationException("Not implemented: listBooksCallable()");
   }
@@ -3377,6 +3951,10 @@ public abstract class LibraryServiceStub implements BackgroundResource {
 
   public UnaryCallable<MoveBookRequest, Book> moveBookCallable() {
     throw new UnsupportedOperationException("Not implemented: moveBookCallable()");
+  }
+
+  public UnaryCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable() {
+    throw new UnsupportedOperationException("Not implemented: listStringsPagedCallable()");
   }
 
   public UnaryCallable<ListStringsRequest, ListStringsResponse> listStringsCallable() {
@@ -3417,6 +3995,10 @@ public abstract class LibraryServiceStub implements BackgroundResource {
 
   public ClientStreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable() {
     throw new UnsupportedOperationException("Not implemented: monologAboutBookCallable()");
+  }
+
+  public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
+    throw new UnsupportedOperationException("Not implemented: findRelatedBooksPagedCallable()");
   }
 
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
@@ -3477,6 +4059,7 @@ public abstract class LibraryServiceStub implements BackgroundResource {
 package com.google.cloud.example.library.v1.stub;
 
 import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
@@ -3491,18 +4074,28 @@ import com.google.api.gax.grpc.ProtoOperationTransformers;
 import com.google.api.gax.longrunning.OperationSnapshot;
 import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
 import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.ApiClientHeaderProvider;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.ClientSettings;
 import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.PagedListDescriptor;
+import com.google.api.gax.rpc.PagedListResponseFactory;
 import com.google.api.gax.rpc.ServerStreamingCallSettings;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.api.gax.rpc.StreamingCallSettings;
 import com.google.api.gax.rpc.StubSettings;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListShelvesPagedResponse;
+import static com.google.cloud.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -3595,17 +4188,17 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
   private final UnaryCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
   private final UnaryCallSettings<GetShelfRequest, Shelf> getShelfSettings;
-  private final UnaryCallSettings<ListShelvesRequest, ListShelvesResponse> listShelvesSettings;
+  private final PagedCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
   private final UnaryCallSettings<DeleteShelfRequest, Empty> deleteShelfSettings;
   private final UnaryCallSettings<MergeShelvesRequest, Shelf> mergeShelvesSettings;
   private final UnaryCallSettings<CreateBookRequest, Book> createBookSettings;
   private final UnaryCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
   private final UnaryCallSettings<GetBookRequest, Book> getBookSettings;
-  private final UnaryCallSettings<ListBooksRequest, ListBooksResponse> listBooksSettings;
+  private final PagedCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
   private final UnaryCallSettings<DeleteBookRequest, Empty> deleteBookSettings;
   private final UnaryCallSettings<UpdateBookRequest, Book> updateBookSettings;
   private final UnaryCallSettings<MoveBookRequest, Book> moveBookSettings;
-  private final UnaryCallSettings<ListStringsRequest, ListStringsResponse> listStringsSettings;
+  private final PagedCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
   private final UnaryCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
   private final UnaryCallSettings<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
   private final UnaryCallSettings<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
@@ -3615,7 +4208,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final ServerStreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
-  private final UnaryCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksSettings;
+  private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
   private final UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final UnaryCallSettings<GetBookRequest, Operation> getBigBookSettings;
   private final OperationCallSettings<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationSettings;
@@ -3641,7 +4234,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   /**
    * Returns the object with the settings used for calls to listShelves.
    */
-  public UnaryCallSettings<ListShelvesRequest, ListShelvesResponse> listShelvesSettings() {
+  public PagedCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
     return listShelvesSettings;
   }
 
@@ -3683,7 +4276,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   /**
    * Returns the object with the settings used for calls to listBooks.
    */
-  public UnaryCallSettings<ListBooksRequest, ListBooksResponse> listBooksSettings() {
+  public PagedCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
     return listBooksSettings;
   }
 
@@ -3711,7 +4304,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   /**
    * Returns the object with the settings used for calls to listStrings.
    */
-  public UnaryCallSettings<ListStringsRequest, ListStringsResponse> listStringsSettings() {
+  public PagedCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
     return listStringsSettings;
   }
 
@@ -3781,7 +4374,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   /**
    * Returns the object with the settings used for calls to findRelatedBooks.
    */
-  public UnaryCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksSettings() {
+  public PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
     return findRelatedBooksSettings;
   }
 
@@ -3953,7 +4546,198 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     privateGetBookSettings = settingsBuilder.privateGetBookSettings().build();
   }
 
+  private static final PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
+      new PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf>() {
+        @Override
+        public String emptyToken() {
+          return "";
+        }
+        @Override
+        public ListShelvesRequest injectToken(ListShelvesRequest payload, String token) {
+          return ListShelvesRequest
+            .newBuilder(payload)
+            .setPageToken(token)
+            .build();
+        }
+        @Override
+        public ListShelvesRequest injectPageSize(ListShelvesRequest payload, int pageSize) {
+          throw new UnsupportedOperationException("page size is not supported by this API method");
+        }
+        @Override
+        public Integer extractPageSize(ListShelvesRequest payload) {
+          throw new UnsupportedOperationException("page size is not supported by this API method");
+        }
+        @Override
+        public String extractNextToken(ListShelvesResponse payload) {
+          return payload.getNextPageToken();
+        }
+        @Override
+        public Iterable<Shelf> extractResources(ListShelvesResponse payload) {
+          return payload.getShelvesList() != null ? payload.getShelvesList() :
+            ImmutableList.<Shelf>of();
+        }
+      };
 
+  private static final PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_STR_DESC =
+      new PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book>() {
+        @Override
+        public String emptyToken() {
+          return "";
+        }
+        @Override
+        public ListBooksRequest injectToken(ListBooksRequest payload, String token) {
+          return ListBooksRequest
+            .newBuilder(payload)
+            .setPageToken(token)
+            .build();
+        }
+        @Override
+        public ListBooksRequest injectPageSize(ListBooksRequest payload, int pageSize) {
+          return ListBooksRequest
+            .newBuilder(payload)
+            .setPageSize(pageSize)
+            .build();
+        }
+        @Override
+        public Integer extractPageSize(ListBooksRequest payload) {
+          return payload.getPageSize();
+        }
+        @Override
+        public String extractNextToken(ListBooksResponse payload) {
+          return payload.getNextPageToken();
+        }
+        @Override
+        public Iterable<Book> extractResources(ListBooksResponse payload) {
+          return payload.getBooksList() != null ? payload.getBooksList() :
+            ImmutableList.<Book>of();
+        }
+      };
+
+  private static final PagedListDescriptor<ListStringsRequest, ListStringsResponse, String> LIST_STRINGS_PAGE_STR_DESC =
+      new PagedListDescriptor<ListStringsRequest, ListStringsResponse, String>() {
+        @Override
+        public String emptyToken() {
+          return "";
+        }
+        @Override
+        public ListStringsRequest injectToken(ListStringsRequest payload, String token) {
+          return ListStringsRequest
+            .newBuilder(payload)
+            .setPageToken(token)
+            .build();
+        }
+        @Override
+        public ListStringsRequest injectPageSize(ListStringsRequest payload, int pageSize) {
+          return ListStringsRequest
+            .newBuilder(payload)
+            .setPageSize(pageSize)
+            .build();
+        }
+        @Override
+        public Integer extractPageSize(ListStringsRequest payload) {
+          return payload.getPageSize();
+        }
+        @Override
+        public String extractNextToken(ListStringsResponse payload) {
+          return payload.getNextPageToken();
+        }
+        @Override
+        public Iterable<String> extractResources(ListStringsResponse payload) {
+          return payload.getStringsList() != null ? payload.getStringsList() :
+            ImmutableList.<String>of();
+        }
+      };
+
+  private static final PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String> FIND_RELATED_BOOKS_PAGE_STR_DESC =
+      new PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String>() {
+        @Override
+        public String emptyToken() {
+          return "";
+        }
+        @Override
+        public FindRelatedBooksRequest injectToken(FindRelatedBooksRequest payload, String token) {
+          return FindRelatedBooksRequest
+            .newBuilder(payload)
+            .setPageToken(token)
+            .build();
+        }
+        @Override
+        public FindRelatedBooksRequest injectPageSize(FindRelatedBooksRequest payload, int pageSize) {
+          return FindRelatedBooksRequest
+            .newBuilder(payload)
+            .setPageSize(pageSize)
+            .build();
+        }
+        @Override
+        public Integer extractPageSize(FindRelatedBooksRequest payload) {
+          return payload.getPageSize();
+        }
+        @Override
+        public String extractNextToken(FindRelatedBooksResponse payload) {
+          return payload.getNextPageToken();
+        }
+        @Override
+        public Iterable<String> extractResources(FindRelatedBooksResponse payload) {
+          return payload.getNamesList() != null ? payload.getNamesList() :
+            ImmutableList.<String>of();
+        }
+      };
+
+  private static final PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> LIST_SHELVES_PAGE_STR_FACT =
+      new PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse>() {
+        @Override
+        public ApiFuture<ListShelvesPagedResponse> getFuturePagedResponse(
+            UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
+            ListShelvesRequest request,
+            ApiCallContext context,
+            ApiFuture<ListShelvesResponse> futureResponse) {
+          PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> pageContext =
+              PageContext.create(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
+          return ListShelvesPagedResponse.createAsync(pageContext, futureResponse);
+        }
+      };
+
+  private static final PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> LIST_BOOKS_PAGE_STR_FACT =
+      new PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse>() {
+        @Override
+        public ApiFuture<ListBooksPagedResponse> getFuturePagedResponse(
+            UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
+            ListBooksRequest request,
+            ApiCallContext context,
+            ApiFuture<ListBooksResponse> futureResponse) {
+          PageContext<ListBooksRequest, ListBooksResponse, Book> pageContext =
+              PageContext.create(callable, LIST_BOOKS_PAGE_STR_DESC, request, context);
+          return ListBooksPagedResponse.createAsync(pageContext, futureResponse);
+        }
+      };
+
+  private static final PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> LIST_STRINGS_PAGE_STR_FACT =
+      new PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse>() {
+        @Override
+        public ApiFuture<ListStringsPagedResponse> getFuturePagedResponse(
+            UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
+            ListStringsRequest request,
+            ApiCallContext context,
+            ApiFuture<ListStringsResponse> futureResponse) {
+          PageContext<ListStringsRequest, ListStringsResponse, String> pageContext =
+              PageContext.create(callable, LIST_STRINGS_PAGE_STR_DESC, request, context);
+          return ListStringsPagedResponse.createAsync(pageContext, futureResponse);
+        }
+      };
+
+  private static final PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> FIND_RELATED_BOOKS_PAGE_STR_FACT =
+      new PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse>() {
+        @Override
+        public ApiFuture<FindRelatedBooksPagedResponse> getFuturePagedResponse(
+            UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
+            FindRelatedBooksRequest request,
+            ApiCallContext context,
+            ApiFuture<FindRelatedBooksResponse> futureResponse) {
+          PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageContext =
+              PageContext.create(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
+          return FindRelatedBooksPagedResponse.createAsync(pageContext, futureResponse);
+        }
+      };
 
 
   /**
@@ -3964,17 +4748,17 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
     private final UnaryCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings;
     private final UnaryCallSettings.Builder<GetShelfRequest, Shelf> getShelfSettings;
-    private final UnaryCallSettings.Builder<ListShelvesRequest, ListShelvesResponse> listShelvesSettings;
+    private final PagedCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
     private final UnaryCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings;
     private final UnaryCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings;
     private final UnaryCallSettings.Builder<CreateBookRequest, Book> createBookSettings;
     private final UnaryCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
     private final UnaryCallSettings.Builder<GetBookRequest, Book> getBookSettings;
-    private final UnaryCallSettings.Builder<ListBooksRequest, ListBooksResponse> listBooksSettings;
+    private final PagedCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
     private final UnaryCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings;
     private final UnaryCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings;
     private final UnaryCallSettings.Builder<MoveBookRequest, Book> moveBookSettings;
-    private final UnaryCallSettings.Builder<ListStringsRequest, ListStringsResponse> listStringsSettings;
+    private final PagedCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
     private final UnaryCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
     private final UnaryCallSettings.Builder<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
     private final UnaryCallSettings.Builder<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
@@ -3984,7 +4768,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final ServerStreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings;
-    private final UnaryCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksSettings;
+    private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
     private final UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final UnaryCallSettings.Builder<GetBookRequest, Operation> getBigBookSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationSettings;
@@ -4035,7 +4819,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       getShelfSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
-      listShelvesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+      listShelvesSettings = PagedCallSettings.newBuilder(
+          LIST_SHELVES_PAGE_STR_FACT);
 
       deleteShelfSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
@@ -4047,7 +4832,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       getBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
-      listBooksSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+      listBooksSettings = PagedCallSettings.newBuilder(
+          LIST_BOOKS_PAGE_STR_FACT);
 
       deleteBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
@@ -4055,7 +4841,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       moveBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
-      listStringsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+      listStringsSettings = PagedCallSettings.newBuilder(
+          LIST_STRINGS_PAGE_STR_FACT);
 
       addCommentsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
@@ -4075,7 +4862,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       monologAboutBookSettings = StreamingCallSettings.newBuilder();
 
-      findRelatedBooksSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+      findRelatedBooksSettings = PagedCallSettings.newBuilder(
+          FIND_RELATED_BOOKS_PAGE_STR_FACT);
 
       addTagSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
@@ -4373,7 +5161,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     /**
      * Returns the builder for the settings used for calls to listShelves.
      */
-    public UnaryCallSettings.Builder<ListShelvesRequest, ListShelvesResponse> listShelvesSettings() {
+    public PagedCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
       return listShelvesSettings;
     }
 
@@ -4415,7 +5203,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     /**
      * Returns the builder for the settings used for calls to listBooks.
      */
-    public UnaryCallSettings.Builder<ListBooksRequest, ListBooksResponse> listBooksSettings() {
+    public PagedCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
       return listBooksSettings;
     }
 
@@ -4443,7 +5231,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     /**
      * Returns the builder for the settings used for calls to listStrings.
      */
-    public UnaryCallSettings.Builder<ListStringsRequest, ListStringsResponse> listStringsSettings() {
+    public PagedCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
       return listStringsSettings;
     }
 
@@ -4513,7 +5301,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     /**
      * Returns the builder for the settings used for calls to findRelatedBooks.
      */
-    public UnaryCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksSettings() {
+    public PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
       return findRelatedBooksSettings;
     }
 
