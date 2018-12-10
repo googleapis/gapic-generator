@@ -261,8 +261,8 @@ public abstract class Schema implements Node {
   public abstract String pattern();
 
   /**
-   * @return the map of property names to schemas, in the same order they are defined in the API
-   *     IDL.
+   * @return the map of property names to schemas, in the same order they are defined in the
+   *     Discovery document.
    */
   public abstract ImmutableMap<String, Schema> properties();
 

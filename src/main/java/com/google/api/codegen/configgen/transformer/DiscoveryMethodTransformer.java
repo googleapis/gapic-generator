@@ -94,12 +94,6 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
         continue;
       }
 
-      // Schema itemCollectionSchema =
-      //     field.getDiscoveryField().properties().get(PAGING_RESOURCE_FIELD_NAME);
-      // if (itemCollectionSchema == null) {
-      //   continue;
-      // }
-
       resourcesName = getResourcesField(field.getDiscoveryField());
     }
 

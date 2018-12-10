@@ -27,10 +27,13 @@ import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,10 +91,9 @@ public class DiscoConfigTransformer {
   }
 
   private String getPackageName(Document model) {
-    int periodIndex = model.ownerDomain().indexOf(".");
-    if (periodIndex < 0) periodIndex = model.ownerDomain().length();
-    String org = model.ownerDomain().substring(0, periodIndex);
-    return String.format("%s.%s.%s", org, model.name(), model.version());
+    String reverseDomain =
+        Joiner.on(".").join(Lists.reverse(Arrays.asList(model.ownerDomain().split("\\."))));
+    return String.format("%s.%s.%s", reverseDomain, model.name(), model.version());
   }
 
   private LicenseView generateLicense() {
