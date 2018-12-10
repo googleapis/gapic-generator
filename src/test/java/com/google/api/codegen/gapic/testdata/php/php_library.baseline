@@ -3198,7 +3198,8 @@ function sampleGetBigBook()
         }
         if ($newOperationResponse->operationSucceeded()) {
           $response = $newOperationResponse->getResult();
-          printf("%s" . PHP_EOL, print_r($response, true));
+          printf("name: %s" . PHP_EOL, $response->getName());
+          printf("author: %s" . PHP_EOL, $response->getAuthor());
         } else {
           $error = $newOperationResponse->getError();
           // handleError($error)
@@ -3252,7 +3253,8 @@ function sampleGetBigBook()
         $operationResponse->pollUntilComplete();
         if ($operationResponse->operationSucceeded()) {
             $response = $operationResponse->getResult();
-            printf("%s" . PHP_EOL, print_r($response, true));
+            printf("name: %s" . PHP_EOL, $response->getName());
+            printf("author: %s" . PHP_EOL, $response->getAuthor());
         } else {
             $error = $operationResponse->getError();
             // handleError($error)

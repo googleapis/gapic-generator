@@ -71,7 +71,8 @@ public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer<
     doc.fileHeader(
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
-    doc.elementDocs(grpcElementDocTransformer.generateElementDocs(typeTable, namer, file));
+    doc.elementDocs(
+        grpcElementDocTransformer.generateElementDocs(productConfig, typeTable, namer, file));
     return doc.build();
   }
 

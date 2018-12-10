@@ -225,7 +225,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     xapiClass.serviceHostname(productServiceConfig.getServiceHostname(context.getServiceAddress()));
     xapiClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
     xapiClass.serviceTitle(model.getTitle());
-    xapiClass.authScopes(model.getAuthScopes());
+    xapiClass.authScopes(model.getAuthScopes(context.getProductConfig()));
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
@@ -292,7 +292,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private List<GrpcElementDocView> generateEnumFileElements(
       ModelTypeTable typeTable, SurfaceNamer namer, ProtoContainerElement containerElement) {
     ImmutableList.Builder<GrpcElementDocView> elements = ImmutableList.builder();
-    elements.addAll(elementDocTransformer.generateEnumDocs(typeTable, namer, containerElement));
+    elements.addAll(
+        elementDocTransformer.generateEnumDocs(typeTable, namer, containerElement.getEnums()));
     for (MessageType message : containerElement.getMessages()) {
       List<GrpcElementDocView> elementDocs = generateEnumFileElements(typeTable, namer, message);
       if (!elementDocs.isEmpty()) {

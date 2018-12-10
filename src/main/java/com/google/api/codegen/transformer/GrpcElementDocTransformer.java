@@ -16,6 +16,9 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.gapic.GapicParser;
 import com.google.api.codegen.viewmodel.GrpcElementDocView;
 import com.google.api.codegen.viewmodel.GrpcEnumDocView;
@@ -29,23 +32,53 @@ import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Stream;
 
 public class GrpcElementDocTransformer {
   public List<GrpcElementDocView> generateElementDocs(
-      ModelTypeTable typeTable, SurfaceNamer namer, ProtoContainerElement containerElement) {
+      GapicProductConfig productConfig,
+      ModelTypeTable typeTable,
+      SurfaceNamer namer,
+      ProtoContainerElement containerElement) {
     ImmutableList.Builder<GrpcElementDocView> children = ImmutableList.builder();
-    children.addAll(generateMessageDocs(typeTable, namer, containerElement));
-    children.addAll(generateEnumDocs(typeTable, namer, containerElement));
+    Set<String> lroTypes =
+        productConfig
+            .getInterfaceConfigMap()
+            .values()
+            .stream()
+            .flatMap(i -> i.getMethodConfigs().stream())
+            .map(MethodConfig::getLongRunningConfig)
+            .filter(Objects::nonNull)
+            .flatMap(lro -> Stream.of(lro.getReturnType(), lro.getMetadataType()))
+            .map(t -> ((ProtoTypeRef) t).getProtoType())
+            .map(TypeRef::getMessageType)
+            .map(MessageType::getFullName)
+            .collect(ImmutableSet.toImmutableSet());
+    Collection<MessageType> messages =
+        containerElement
+            .getMessages()
+            .stream()
+            .filter(m -> m.isReachable() || lroTypes.contains(m.getFullName()))
+            .collect(ImmutableList.toImmutableList());
+    children.addAll(generateMessageDocs(productConfig, typeTable, namer, messages));
+    children.addAll(generateEnumDocs(typeTable, namer, containerElement.getEnums()));
     return children.build();
   }
 
   private List<GrpcElementDocView> generateMessageDocs(
-      ModelTypeTable typeTable, SurfaceNamer namer, ProtoContainerElement containerElement) {
+      GapicProductConfig productConfig,
+      ModelTypeTable typeTable,
+      SurfaceNamer namer,
+      Collection<MessageType> messages) {
     ImmutableList.Builder<GrpcElementDocView> messageDocs = ImmutableList.builder();
-    for (MessageType message : containerElement.getMessages()) {
+    for (MessageType message : messages) {
       // Doesn't have to document map entries because a dictionary is used.
       if (message.isMapEntry()) {
         continue;
@@ -59,7 +92,7 @@ public class GrpcElementDocTransformer {
       doc.properties(
           generateMessagePropertyDocs(
               typeTable, namer, FieldConfig.toFieldTypeIterableFromField(message.getFields())));
-      doc.elementDocs(generateElementDocs(typeTable, namer, message));
+      doc.elementDocs(generateElementDocs(productConfig, typeTable, namer, message));
       doc.packageName(message.getFile().getFullName());
       messageDocs.add(doc.build());
     }
@@ -67,7 +100,7 @@ public class GrpcElementDocTransformer {
   }
 
   private List<ParamDocView> generateMessagePropertyDocs(
-      ModelTypeTable typeTable, SurfaceNamer namer, Iterable<FieldModel> fields) {
+      ModelTypeTable typeTable, SurfaceNamer namer, Collection<FieldModel> fields) {
     ImmutableList.Builder<ParamDocView> propertyDocs = ImmutableList.builder();
     for (FieldModel field : fields) {
       SimpleParamDocView.Builder doc = SimpleParamDocView.newBuilder();
@@ -81,17 +114,17 @@ public class GrpcElementDocTransformer {
 
   /** Return a list of enums, sorted alphabetically by name. */
   public List<GrpcEnumDocView> generateEnumDocs(
-      ModelTypeTable typeTable, SurfaceNamer namer, ProtoContainerElement containerElement) {
+      ModelTypeTable typeTable, SurfaceNamer namer, Collection<EnumType> enumElements) {
     ImmutableSortedSet.Builder<GrpcEnumDocView> enumDocs =
         ImmutableSortedSet.orderedBy(Comparator.comparing(GrpcEnumDocView::name));
-    for (EnumType enumElement : containerElement.getEnums()) {
+    for (EnumType enumElement : enumElements) {
       if (!enumElement.isReachable()) {
         continue;
       }
       GrpcEnumDocView.Builder doc = GrpcEnumDocView.newBuilder();
       doc.name(namer.getEnumTypeName(typeTable, enumElement));
       doc.lines(namer.getDocLines(GapicParser.getDocString(enumElement)));
-      doc.values(generateEnumValueDocs(namer, enumElement));
+      doc.values(generateEnumValueDocs(namer, enumElement.getValues()));
       doc.packageName(enumElement.getFile().getFullName());
       enumDocs.add(doc.build());
     }
@@ -99,9 +132,9 @@ public class GrpcElementDocTransformer {
   }
 
   private List<GrpcEnumValueDocView> generateEnumValueDocs(
-      SurfaceNamer namer, EnumType enumElement) {
+      SurfaceNamer namer, Collection<EnumValue> values) {
     ImmutableList.Builder<GrpcEnumValueDocView> valueDocs = ImmutableList.builder();
-    for (EnumValue value : enumElement.getValues()) {
+    for (EnumValue value : values) {
       GrpcEnumValueDocView.Builder doc = GrpcEnumValueDocView.newBuilder();
       doc.name(value.getSimpleName());
       doc.number(value.getNumber());

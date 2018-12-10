@@ -55,9 +55,10 @@ import java.util.stream.Collectors;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 
 public class ResourceNameMessageConfigsTest {
-  private static final ProtoParser protoParser = Mockito.spy(ProtoParser.class);
+  @Spy private static final ProtoParser protoParser = Mockito.spy(new ProtoParser(true));
   private static ConfigProto configProto;
   private static final Method createShelvesMethod = Mockito.mock(Method.class);
   private static final MessageType createShelvesRequest = Mockito.mock(MessageType.class);
