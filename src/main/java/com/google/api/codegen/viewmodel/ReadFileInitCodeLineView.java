@@ -27,6 +27,8 @@ public abstract class ReadFileInitCodeLineView implements InitCodeLineView {
 
   public abstract InitValueView fileName();
 
+  public abstract boolean isFirstReadFileView();
+
   public static Builder newBuilder() {
     return new AutoValue_ReadFileInitCodeLineView.Builder();
   }
@@ -37,6 +39,8 @@ public abstract class ReadFileInitCodeLineView implements InitCodeLineView {
     public abstract Builder identifier(String val);
 
     public abstract Builder fileName(InitValueView val);
+
+    public abstract Builder isFirstReadFileView(boolean val);
 
     public abstract ReadFileInitCodeLineView build();
   }

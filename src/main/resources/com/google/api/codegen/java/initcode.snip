@@ -55,10 +55,15 @@
 @end
 
 @private initLineReadFile(line)
-  String fileName = {@renderInitValue(line.fileName)};
-  Path path = Paths.get(fileName);
-  byte[] data = Files.readAllBytes(path);
-  ByteString {@line.identifier} = ByteString.copyFrom(data);
+  @if line.isFirstReadFileView
+    Path path = Paths.get({@renderInitValue(line.fileName)});
+    byte[] data = Files.readAllBytes(path);
+    ByteString {@line.identifier} = ByteString.copyFrom(data);
+  @else
+    path = Paths.get({@renderInitValue(line.fileName)});
+    data = Files.readAllBytes(path);
+    ByteString {@line.identifier} = ByteString.copyFrom(data);
+  @end
 @end
 
 @snippet renderInitValue(initValue)
