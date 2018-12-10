@@ -16,7 +16,6 @@ package com.google.api.codegen.configgen;
 
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.NullConfigNode;
@@ -64,16 +63,28 @@ public class ProtoPageStreamingTransformer implements PageStreamingTransformer {
     return tokenField != null;
   }
 
-  private String getResourcesFieldName(MethodModel method, ConfigHelper helper) {
+  /**
+   * Get the paged resource field. We assume it will be the FIRST REPEATED field in the response
+   * message.
+   */
+  public static FieldModel getResourcesField(MethodModel method) {
     for (FieldModel field : method.getOutputFields()) {
       // Return the first repeated field.
       if (field.isRepeated()) {
-        return field.getSimpleName();
+        return field;
       }
+    }
+    return null;
+  }
+
+  private String getResourcesFieldName(MethodModel method, ConfigHelper helper) {
+    FieldModel resourcesField = getResourcesField(method);
+    if (resourcesField != null) {
+      return resourcesField.getSimpleName();
     }
 
     helper.error(
-        ((ProtoMethodModel) method).getProtoMethod().getLocation(),
+        method.getFullName(),
         "Page streaming resources field could not be heuristically determined for "
             + "method '%s'%n",
         method.getSimpleName());

@@ -135,7 +135,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public static GapicProductConfig create(
       Model model, ConfigProto configProto, TargetLanguage language) {
-    return create(model, configProto, null, language);
+    return create(model, configProto, null, null, language);
   }
 
   /**
@@ -147,6 +147,7 @@ public abstract class GapicProductConfig implements ProductConfig {
    * @param configProto The parsed set of config files from input
    * @param protoPackage The source proto package, as opposed to imported protos, that we will
    *     generate clients for.
+   * @param clientPackage The desired package name for the generated client.
    * @param language The language that this config will be used to generate a client in.
    */
   @Nullable
@@ -154,6 +155,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       Model model,
       @Nullable ConfigProto configProto,
       @Nullable String protoPackage,
+      @Nullable String clientPackage,
       TargetLanguage language) {
 
     final String defaultPackage;
@@ -236,8 +238,14 @@ public abstract class GapicProductConfig implements ProductConfig {
         configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
-      String basePackageName = Optional.ofNullable(protoPackage).orElse(getPackageName(model));
-      clientPackageName = LanguageSettingsMerger.getFormattedPackageName(language, basePackageName);
+
+      if (!Strings.isNullOrEmpty(clientPackage)) {
+        clientPackageName = clientPackage;
+      } else {
+        String basePackageName = Optional.ofNullable(protoPackage).orElse(getPackageName(model));
+        clientPackageName =
+            LanguageSettingsMerger.getFormattedPackageName(language, basePackageName);
+      }
     } else {
       clientPackageName = settings.getPackageName();
     }
