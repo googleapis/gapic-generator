@@ -25,6 +25,7 @@ import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 import javax.annotation.Nullable;
 
 /** Discovery-doc-specific functions for transforming method models into views for configgen. */
@@ -81,19 +82,25 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
         continue;
       }
       // Verify that the paging response object contains a paging token.
-      for (Schema property : field.getDiscoveryField().properties().values()) {
-        if (property.getIdentifier().equals(PAGING_PARAMETERS.getNameForNextPageToken())) {
-          hasNextPageToken = true;
-          break;
-        }
-      }
+      hasNextPageToken =
+          field
+              .getDiscoveryField()
+              .properties()
+              .values()
+              .stream()
+              .anyMatch(p -> p.getIdentifier().equals(PAGING_PARAMETERS.getNameForNextPageToken()));
 
-      Schema itemCollectionSchema =
-          field.getDiscoveryField().properties().get(PAGING_RESOURCE_FIELD_NAME);
-      if (itemCollectionSchema == null) {
+      if (!hasNextPageToken) {
         continue;
       }
-      resourcesName = PAGING_RESOURCE_FIELD_NAME;
+
+      // Schema itemCollectionSchema =
+      //     field.getDiscoveryField().properties().get(PAGING_RESOURCE_FIELD_NAME);
+      // if (itemCollectionSchema == null) {
+      //   continue;
+      // }
+
+      resourcesName = getResourcesField(field.getDiscoveryField());
     }
 
     if (!hasNextPageToken) {
@@ -113,5 +120,20 @@ public class DiscoveryMethodTransformer implements InputSpecificMethodTransforme
         .tokenField(PAGING_PARAMETERS.getNameForNextPageToken())
         .resourcesField(configResourcesName)
         .build();
+  }
+
+  /**
+   * Get the paged resource field. We assume it will be the FIRST REPEATED field in the response
+   * message.
+   */
+  @Nullable
+  private static String getResourcesField(Schema responseObject) {
+    for (ImmutableMap.Entry<String, Schema> entry : responseObject.properties().entrySet()) {
+      // Return the first repeated field.
+      if (entry.getValue().isRepeated() || entry.getValue().isMap()) {
+        return entry.getKey();
+      }
+    }
+    return null;
   }
 }
