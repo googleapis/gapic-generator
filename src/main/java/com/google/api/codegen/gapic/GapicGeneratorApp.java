@@ -66,6 +66,12 @@ public class GapicGeneratorApp extends ToolDriverBase {
           "The proto package designating the files actually intended for output.\n"
               + "This option is required if the GAPIC generator config files are not given.",
           "");
+  public static final Option<String> CLIENT_PACKAGE =
+      ToolOptions.createOption(
+          String.class,
+          "client_package",
+          "The desired package name for the generated Java client. \n",
+          "");
 
   public static final Option<List<String>> GENERATOR_CONFIG_FILES =
       ToolOptions.createOption(
@@ -157,8 +163,10 @@ public class GapicGeneratorApp extends ToolDriverBase {
       language = TargetLanguage.fromString(configProto.getLanguage().toUpperCase());
     }
 
+    String clientPackage = Strings.emptyToNull(options.get(CLIENT_PACKAGE));
+
     GapicProductConfig productConfig =
-        GapicProductConfig.create(model, configProto, protoPackage, language);
+        GapicProductConfig.create(model, configProto, protoPackage, clientPackage, language);
     if (productConfig == null) {
       return;
     }
