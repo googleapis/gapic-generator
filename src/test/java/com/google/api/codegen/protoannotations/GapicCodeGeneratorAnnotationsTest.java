@@ -40,9 +40,16 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       List<String> snippetName,
       String apiName,
       String baseline,
-      String protoPackage) {
+      String protoPackage,
+      String clientPackage) {
     super(
-        language, gapicConfigFileNames, packageConfigFileName, snippetName, baseline, protoPackage);
+        language,
+        gapicConfigFileNames,
+        packageConfigFileName,
+        snippetName,
+        baseline,
+        protoPackage,
+        clientPackage);
 
     this.apiName = apiName;
 
@@ -70,8 +77,8 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             "library_pkg2.yaml",
             "library",
-            "google.example.library.v1"));
-    // TODO(andrealin): More tests.
+            "google.example.library.v1",
+            "com.google.example.library.v1"));
   }
 
   @Test
