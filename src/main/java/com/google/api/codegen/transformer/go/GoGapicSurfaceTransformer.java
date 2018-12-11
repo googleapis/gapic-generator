@@ -236,7 +236,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     packageInfo.packageDoc(
         CommonRenderingUtil.getDocLines(model.getDocumentationSummary(), COMMENT_LINE_LENGTH));
     packageInfo.domainLayerLocation(productConfig.getDomainLayerLocation());
-    packageInfo.authScopes(model.getAuthScopes());
+    packageInfo.authScopes(model.getAuthScopes(productConfig));
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
@@ -317,8 +317,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   @VisibleForTesting
   void addXApiImports(InterfaceContext context, Collection<MethodModel> methods) {
     ImportTypeTable typeTable = context.getImportTypeTable();
-    typeTable.saveNicknameFor("cloud.google.com/go/internal/version;;;");
-    typeTable.saveNicknameFor("golang.org/x/net/context;;;");
+    typeTable.saveNicknameFor("context;;;");
     typeTable.saveNicknameFor("google.golang.org/grpc;;;");
     typeTable.saveNicknameFor("github.com/googleapis/gax-go;gax;;");
     typeTable.saveNicknameFor("google.golang.org/api/option;;;");
@@ -331,7 +330,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   @VisibleForTesting
   void addXExampleImports(InterfaceContext context, Iterable<MethodModel> methods) {
     ImportTypeTable typeTable = context.getImportTypeTable();
-    typeTable.saveNicknameFor("golang.org/x/net/context;;;");
+    typeTable.saveNicknameFor("context;;;");
     typeTable.saveNicknameFor(context.getProductConfig().getPackageName() + ";;;");
 
     for (MethodModel method : methods) {

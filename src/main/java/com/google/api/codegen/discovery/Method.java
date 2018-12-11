@@ -42,10 +42,6 @@ public abstract class Method implements Comparable<Method>, Node {
     String id = root.getString("id");
     String path = root.getString("path");
     String flatPath = root.has("flatPath") ? root.getString("flatPath") : path;
-    List<String> parameterOrder = new ArrayList<>();
-    for (DiscoveryNode nameNode : root.getArray("parameterOrder").getElements()) {
-      parameterOrder.add(nameNode.asText());
-    }
 
     DiscoveryNode parametersNode = root.getObject("parameters");
     Map<String, Schema> parameters = new HashMap<>();
@@ -89,7 +85,6 @@ public abstract class Method implements Comparable<Method>, Node {
             flatPath,
             httpMethod,
             id,
-            parameterOrder,
             parameters,
             path,
             pathParams,
@@ -142,9 +137,6 @@ public abstract class Method implements Comparable<Method>, Node {
   /** @return the ID. This should be unique, within the context of the parent Document. */
   @Override
   public abstract String id();
-
-  /** @return the order of parameter names. */
-  public abstract List<String> parameterOrder();
 
   /** @return the map of parameter names to schemas. */
   public abstract Map<String, Schema> parameters();

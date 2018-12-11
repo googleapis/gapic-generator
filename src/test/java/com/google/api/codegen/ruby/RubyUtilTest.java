@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.ruby;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.collect.ImmutableList;
-import com.google.common.truth.Truth;
 import org.junit.Test;
 
 public class RubyUtilTest {
@@ -24,13 +25,13 @@ public class RubyUtilTest {
     String sentence =
         RubyUtil.getSentence(
             ImmutableList.of("Lorem ipsum dolor sit amet,", "consectetur adipiscing elit"));
-    Truth.assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet, consectetur adipiscing elit");
+    assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet, consectetur adipiscing elit");
   }
 
   @Test
   public void testGetSentence_endingSentence() {
     String sentence = RubyUtil.getSentence(ImmutableList.of("Lorem ipsum dolor sit amet."));
-    Truth.assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet.");
+    assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet.");
   }
 
   @Test
@@ -39,7 +40,7 @@ public class RubyUtilTest {
         RubyUtil.getSentence(
             ImmutableList.of(
                 "Lorem ipsum dolor sit amet. Vivamus condimentum rhoncus est volutpat venenatis."));
-    Truth.assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet.");
+    assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet.");
   }
 
   @Test
@@ -49,7 +50,7 @@ public class RubyUtilTest {
             ImmutableList.of(
                 "Lorem ipsum dolor sit amet.",
                 "Vivamus condimentum rhoncus est volutpat venenatis."));
-    Truth.assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet.");
+    assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet.");
   }
 
   @Test
@@ -57,8 +58,7 @@ public class RubyUtilTest {
     String sentence =
         RubyUtil.getSentence(
             ImmutableList.of("Lorem ipsum.dolor.sit amet,", "consectetur adipiscing elit."));
-    Truth.assertThat(sentence)
-        .isEqualTo("Lorem ipsum.dolor.sit amet, consectetur adipiscing elit.");
+    assertThat(sentence).isEqualTo("Lorem ipsum.dolor.sit amet, consectetur adipiscing elit.");
   }
 
   @Test
@@ -66,7 +66,7 @@ public class RubyUtilTest {
     String sentence =
         RubyUtil.getSentence(
             ImmutableList.of("", "Lorem ipsum dolor sit amet,", "consectetur adipiscing elit"));
-    Truth.assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet, consectetur adipiscing elit");
+    assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet, consectetur adipiscing elit");
   }
 
   @Test
@@ -74,26 +74,26 @@ public class RubyUtilTest {
     String sentence =
         RubyUtil.getSentence(
             ImmutableList.of("Lorem ipsum dolor sit amet", " ", "consectetur adipiscing elit"));
-    Truth.assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet");
+    assertThat(sentence).isEqualTo("Lorem ipsum dolor sit amet");
   }
 
   @Test
   public void testHasMajorVersion() {
-    Truth.assertThat(RubyUtil.hasMajorVersion("One::Two::Three::V1")).isTrue();
+    assertThat(RubyUtil.hasMajorVersion("One::Two::Three::V1")).isTrue();
   }
 
   @Test
   public void testHasMajorVersion_notVersion() {
-    Truth.assertThat(RubyUtil.hasMajorVersion("One::Two::Three::Version")).isFalse();
+    assertThat(RubyUtil.hasMajorVersion("One::Two::Three::Version")).isFalse();
   }
 
   @Test
   public void testHasMajorVersion_pointVersion() {
-    Truth.assertThat(RubyUtil.hasMajorVersion("One::Two::Three::V1p2beta4")).isTrue();
+    assertThat(RubyUtil.hasMajorVersion("One::Two::Three::V1p2beta4")).isTrue();
   }
 
   @Test
   public void testHasMajorVersion_alphaVersion() {
-    Truth.assertThat(RubyUtil.hasMajorVersion("One::Two::Three::V9alpha4")).isTrue();
+    assertThat(RubyUtil.hasMajorVersion("One::Two::Three::V9alpha4")).isTrue();
   }
 }

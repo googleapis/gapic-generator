@@ -34,7 +34,7 @@ import java.util.List;
 
 public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
 
-  /** A map from primitive types in proto to Java counterparts. */
+  /** A map from primitive types in proto to C# counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "bool")
@@ -52,6 +52,20 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
           .put(Type.TYPE_SFIXED32, "int")
           .put(Type.TYPE_STRING, "string")
           .put(Type.TYPE_BYTES, "Google.Protobuf.ByteString")
+          .build();
+
+  /** A map from wrapper types in proto to C# counterparts. */
+  private static final ImmutableMap<String, String> WRAPPER_TYPE_MAP =
+      ImmutableMap.<String, String>builder()
+          .put("google.protobuf.BoolValue", "bool?")
+          .put("google.protobuf.Int32Value", "int?")
+          .put("google.protobuf.UInt32Value", "uint?")
+          .put("google.protobuf.Int64Value", "long?")
+          .put("google.protobuf.UInt64Value", "ulong?")
+          .put("google.protobuf.FloatValue", "float?")
+          .put("google.protobuf.DoubleValue", "double?")
+          .put("google.protobuf.StringValue", "string")
+          .put("google.protobuf.BytesValue", "Google.Protobuf.ByteString")
           .build();
 
   /** A map from primitive types in proto to zero values in C#. */
@@ -124,9 +138,13 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
     }
   }
 
-  // TODO: Change this to use CSharpTypeTable.getTypeName
   @Override
   public TypeName getTypeName(ProtoElement elem) {
+    // Handle special wrapper types first
+    String wrapper = WRAPPER_TYPE_MAP.getOrDefault(elem.getFullName(), null);
+    if (wrapper != null) {
+      return typeNameConverter.getTypeName(wrapper);
+    }
     // Handle nested types, construct the required type prefix
     ProtoElement parentEl = elem.getParent();
     String shortNamePrefix = "";
@@ -148,7 +166,6 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
     }
     String shortName = shortNamePrefix + elem.getSimpleName();
     return typeNameConverter.getTypeName(prefix + shortName);
-    // return new TypeName(prefix + shortName, shortName);
   }
 
   @Override
@@ -173,6 +190,9 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
               listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
       return TypedValue.create(genericListTypeName, "new %s()");
     } else if (type.isMessage()) {
+      if (WRAPPER_TYPE_MAP.containsKey(type.getMessageType().getFullName())) {
+        return TypedValue.create(getTypeName(type), "null");
+      }
       return TypedValue.create(getTypeName(type), "new %s()");
     } else if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
@@ -211,6 +231,9 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
               elementTypeName);
       return TypedValue.create(emptyTypeName, "%s()");
     } else if (type.isMessage()) {
+      if (WRAPPER_TYPE_MAP.containsKey(type.getMessageType().getFullName())) {
+        return TypedValue.create(getTypeName(type), "null");
+      }
       return TypedValue.create(getTypeName(type), "new %s()");
     } else if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));

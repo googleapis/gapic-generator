@@ -29,6 +29,7 @@ import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.RetryCodesConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
@@ -57,6 +58,7 @@ import com.google.api.codegen.viewmodel.ResourceNameSingleView;
 import com.google.api.codegen.viewmodel.ResourceNameView;
 import com.google.api.codegen.viewmodel.ResourceProtoFieldView;
 import com.google.api.codegen.viewmodel.ResourceProtoView;
+import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiAndSettingsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
@@ -351,13 +353,22 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     settingsClass.serviceHostname(
         productServiceConfig.getServiceHostname(context.getServiceAddress()));
     settingsClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
-    settingsClass.authScopes(model.getAuthScopes());
+    settingsClass.authScopes(model.getAuthScopes(context.getProductConfig()));
     settingsClass.callSettings(generateCallSettings(context));
     settingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
     settingsClass.batchingDescriptors(batchingTransformer.generateDescriptorClasses(context));
-    settingsClass.retryCodesDefinitions(
-        retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
+    // Remove additional retry codes, added due to the change in retry when using proto annotations.
+    List<RetryCodesDefinitionView> retryCodes =
+        retryDefinitionsTransformer
+            .generateRetryCodesDefinitions(context)
+            .stream()
+            .filter(
+                x ->
+                    !x.key().equals(RetryCodesConfig.HTTP_RETRY_CODE_DEF_NAME)
+                        && !x.key().equals(RetryCodesConfig.NO_RETRY_CODE_DEF_NAME))
+            .collect(Collectors.toList());
+    settingsClass.retryCodesDefinitions(retryCodes);
     settingsClass.retryParamsDefinitions(
         retryDefinitionsTransformer.generateRetryParamsDefinitions(context));
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
@@ -518,7 +529,6 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
   public SettingsDocView generateSettingsDoc(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
-    ApiModel model = context.getApiModel();
     settingsDoc.serviceHostname(
         productServiceConfig.getServiceHostname(context.getServiceAddress()));
     settingsDoc.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));

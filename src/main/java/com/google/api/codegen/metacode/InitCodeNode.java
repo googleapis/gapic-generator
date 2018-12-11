@@ -18,6 +18,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -41,7 +42,9 @@ import java.util.Set;
  */
 public class InitCodeNode {
   private static final TypeModel INT_TYPE = ProtoTypeRef.create(TypeRef.of(Type.TYPE_UINT64));
-
+  private static final String ROOT_KEY = "root";
+  private static final String LOCAL_DEFAULT_FILENAME = "file_name";
+  public static final String FILE_NAME_KEY = "@file_name";
   private String key;
   private InitCodeLineType lineType;
   private InitValueConfig initValueConfig;
@@ -51,6 +54,7 @@ public class InitCodeNode {
   private Name identifier;
   private OneofConfig oneofConfig;
   private String varName;
+  private SampleParameterConfig sampleParamConfig;
 
   /*
    * Get the key associated with the node. For InitCodeNode objects that are not a root object, they
@@ -160,7 +164,7 @@ public class InitCodeNode {
 
   /** Creates a node to be used as the root of the initialization tree. */
   public static InitCodeNode newRoot() {
-    return new InitCodeNode("root", InitCodeLineType.StructureInitLine, InitValueConfig.create());
+    return new InitCodeNode(ROOT_KEY, InitCodeLineType.StructureInitLine, InitValueConfig.create());
   }
 
   /**
@@ -194,6 +198,7 @@ public class InitCodeNode {
     }
 
     root.resolveNamesAndTypes(context, context.initObjectType(), context.suggestedName(), null);
+    root.resolveSampleParamConfigs(context, "");
     return root;
   }
 
@@ -364,6 +369,49 @@ public class InitCodeNode {
     }
   }
 
+  /**
+   * Apply {@code sampleParamConfig} to the nodes in this tree.
+   *
+   * @param parentFieldPath The full path of the parent object of {@code typeRef}. Set to an empty
+   *     string if {@code typeRef} is a top level proto object. We need to keep track of this
+   *     because the keys in {@code sampleParamConfigMap} are full paths while {@code key} is a
+   *     simple field name.
+   */
+  private void resolveSampleParamConfigs(InitCodeContext context, String parentFieldPath) {
+    ImmutableMap<String, SampleParameterConfig> sampleParamConfigMap =
+        context.sampleParamConfigMap();
+    String fieldPath;
+    if (ROOT_KEY.equals(key)) {
+      fieldPath = "";
+    } else if (parentFieldPath.isEmpty()) {
+      fieldPath = key;
+    } else {
+      fieldPath = parentFieldPath + "." + key;
+    }
+    this.sampleParamConfig = sampleParamConfigMap.get(fieldPath);
+
+    if (sampleParamConfig != null) {
+      if (sampleParamConfig.readFromFile()) {
+        setupReadFileNode(context);
+      } else if (sampleParamConfig.isSampleArgument()) {
+        // If sample_argument_name is specified in config, set identifier to this name if the name
+        // has not been used yet; otherwise, error out.
+        Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
+        if (!argName.equals(identifier)) {
+          Preconditions.checkArgument(
+              !context.symbolTable().contains(argName),
+              "sample_argument_name \"%s\" is already in use.",
+              sampleParamConfig.sampleArgumentName());
+          identifier = context.symbolTable().getNewSymbol(argName);
+        }
+      }
+    } else {
+      // We only recursively call this method when the parent config is null since the parameter
+      // configs can never overlap.
+      children.values().forEach(child -> child.resolveSampleParamConfigs(context, fieldPath));
+    }
+  }
+
   private static Name getChildSuggestedName(
       Name parentName, InitCodeLineType parentType, InitCodeNode child) {
     switch (parentType) {
@@ -376,6 +424,44 @@ public class InitCodeNode {
       default:
         throw new IllegalArgumentException("Cannot generate child name for " + parentType);
     }
+  }
+
+  /**
+   * Configures the node so that InitCodeTransformer renders it as reading from files.
+   *
+   * <p>For a read-from-file node, we set up a simple child node to assign the file name to a local
+   * variable (e.g., String fileName = "file_name.jpg"). If sample_argument_name is specified, the
+   * local variable would honor the configuration. If sample_argument_name is not specified, the
+   * name of the local variable defaults to "file_name", or whatever collision-avoiding variant
+   * symbolTable selects if "file_name" is already in use.
+   *
+   * <p>Adding the child node enables us to split initializing a local variable for the file name
+   * from the logic of reading from a file, so that we can pass in the file name as a sample
+   * function parameter and render how to read from a file within the sample.
+   */
+  private void setupReadFileNode(InitCodeContext context) {
+    Preconditions.checkArgument(
+        children.isEmpty(), "Can only configure leaf node to read from file.");
+    setLineType(InitCodeLineType.ReadFileInitLine);
+    Name childIdentifier;
+    if (sampleParamConfig.isSampleArgument()) {
+      Name name = Name.anyLower(sampleParamConfig.sampleArgumentName());
+      Preconditions.checkArgument(
+          !context.symbolTable().contains(name),
+          "sample_argument_name \"%s\" is already in use.",
+          sampleParamConfig.sampleArgumentName());
+      childIdentifier = context.symbolTable().getNewSymbol(name);
+    } else {
+      childIdentifier = context.symbolTable().getNewSymbol(Name.anyLower(LOCAL_DEFAULT_FILENAME));
+    }
+    InitCodeNode child =
+        new InitCodeNode(FILE_NAME_KEY, InitCodeLineType.SimpleInitLine, initValueConfig);
+    child.typeRef = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
+    child.identifier = childIdentifier;
+    children.put(FILE_NAME_KEY, child);
+    initValueConfig =
+        InitValueConfig.createWithValue(
+            InitValue.createVariable(childIdentifier.toLowerUnderscore()));
   }
 
   private static void validateKeyValue(TypeModel parentType, String key) {

@@ -19,7 +19,6 @@ import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
@@ -57,7 +56,6 @@ import java.util.TreeMap;
 public class JavaDiscoGapicSchemaToViewTransformer
     implements ModelToViewTransformer<DiscoApiModel> {
   private final GapicCodePathMapper pathMapper;
-  private final PackageMetadataConfig packageConfig;
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -72,11 +70,8 @@ public class JavaDiscoGapicSchemaToViewTransformer
 
   private static final String SCHEMA_TEMPLATE_FILENAME = "java/message.snip";
 
-  public JavaDiscoGapicSchemaToViewTransformer(
-      GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
+  public JavaDiscoGapicSchemaToViewTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
-    this.packageConfig = packageMetadataConfig;
-    // TODO use packageMetadataConfig
   }
 
   public List<String> getTemplateFileNames() {
@@ -94,7 +89,7 @@ public class JavaDiscoGapicSchemaToViewTransformer
             productConfig,
             createTypeTable(productConfig.getPackageName(), surfaceNamer),
             surfaceNamer,
-            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
+            JavaFeatureConfig.create(productConfig.getResourceNameMessageConfigs()));
 
     for (Schema schema : context.getDocument().schemas().values()) {
       Map<SchemaTransformationContext, StaticLangApiMessageView> contextViews =

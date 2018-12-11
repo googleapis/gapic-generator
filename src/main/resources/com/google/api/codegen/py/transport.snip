@@ -52,6 +52,8 @@
                     credentials=credentials,
                 )
 
+            self._channel = channel
+
             @# gRPC uses objects called "stubs" that are bound to the
             @# channel and provide a basic method for each RPC.
             self._stubs = {
@@ -92,13 +94,22 @@
                 scopes=cls._OAUTH_SCOPES,
             )
 
+        @@property
+        def channel(self):
+            """The gRPC channel used by the transport.
+
+            Returns:
+                grpc.Channel: A gRPC channel object.
+            """
+            return self._channel
+
         # ----- RPC CALLS -----
         @join apiMethod : api.apiMethods on BREAK.add(BREAK)
             @@property
             def {@apiMethod.name}(self):
-                """Return the gRPC stub for {$apiMethod.name}.
+                """Return the gRPC stub for :meth:`{@api.name}.{@apiMethod.name}`.
 
-                @join line : util.trimDocs(apiMethod.doc.mainDocLines)
+                @join line : apiMethod.doc.mainDocLines
                     {@line}
                 @end
 

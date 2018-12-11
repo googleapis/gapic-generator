@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -120,16 +121,6 @@ public abstract class Schema implements Node {
   }
 
   /**
-   * Returns true if this schema contains a property with the given name.
-   *
-   * @param name the name of the property.
-   * @return whether or not this schema has a property with the given name.
-   */
-  public boolean hasProperty(String name) {
-    return properties().keySet().contains(name);
-  }
-
-  /**
    * Returns a schema constructed from root, or an empty schema if root has no children.
    *
    * @param root the root node to parse.
@@ -157,11 +148,12 @@ public abstract class Schema implements Node {
     String location = root.getString("location");
     String pattern = root.getString("pattern");
 
-    Map<String, Schema> properties = new HashMap<>();
+    ImmutableMap.Builder<String, Schema> propertiesBuilder = ImmutableMap.builder();
     DiscoveryNode propertiesNode = root.getObject("properties");
     for (String name : propertiesNode.getFieldNames()) {
-      properties.put(name, Schema.from(propertiesNode.getObject(name), name, null));
+      propertiesBuilder.put(name, Schema.from(propertiesNode.getObject(name), name, null));
     }
+    ImmutableMap<String, Schema> properties = propertiesBuilder.build();
 
     String reference = root.getString("$ref");
     boolean repeated = root.getBoolean("repeated");
@@ -268,8 +260,11 @@ public abstract class Schema implements Node {
   /** @return the pattern. */
   public abstract String pattern();
 
-  /** @return the map of property names to schemas. */
-  public abstract Map<String, Schema> properties();
+  /**
+   * @return the map of property names to schemas, in the same order they are defined in the API
+   *     IDL.
+   */
+  public abstract ImmutableMap<String, Schema> properties();
 
   /** @return the reference. */
   public abstract String reference();

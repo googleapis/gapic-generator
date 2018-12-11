@@ -14,7 +14,10 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
 import com.google.api.codegen.config.ResourceNameType;
@@ -38,6 +41,7 @@ import com.google.api.codegen.viewmodel.ListInitCodeLineView;
 import com.google.api.codegen.viewmodel.MapEntryView;
 import com.google.api.codegen.viewmodel.MapInitCodeLineView;
 import com.google.api.codegen.viewmodel.OneofConfigView;
+import com.google.api.codegen.viewmodel.ReadFileInitCodeLineView;
 import com.google.api.codegen.viewmodel.RepeatedResourceNameInitValueView;
 import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
 import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
@@ -46,6 +50,7 @@ import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
 import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -54,6 +59,7 @@ import com.google.common.collect.Lists;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +114,7 @@ public class InitCodeTransformer {
   public InitCodeContext createRequestInitCodeContext(
       MethodContext context,
       SymbolTable symbolTable,
-      Iterable<FieldConfig> fieldConfigs,
+      Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType outputType,
       TestValueGenerator valueGenerator) {
     return InitCodeContext.newBuilder()
@@ -330,15 +336,23 @@ public class InitCodeTransformer {
     List<InitCodeLineView> argDefaultParams = new ArrayList<>();
     List<InitCodeLineView> argDefaultLines = new ArrayList<>();
     for (InitCodeNode param : sampleFuncParams) {
-      List<InitCodeNode> paramInits = param.listInInitializationOrder();
-      argDefaultLines.addAll(generateSurfaceInitCodeLines(context, paramInits));
+      if (param.getLineType() == InitCodeLineType.ReadFileInitLine) {
+        InitCodeNode child = param.getChildren().get(InitCodeNode.FILE_NAME_KEY);
+        InitCodeLineView view = generateSimpleInitCodeLine(context, child, false);
+        argDefaultLines.add(view);
+        argDefaultParams.add(view);
+        orderedItems.remove(child);
+      } else {
+        List<InitCodeNode> paramInits = param.listInInitializationOrder();
+        argDefaultLines.addAll(generateSurfaceInitCodeLines(context, paramInits));
 
-      // The param itself is always at the end.
-      argDefaultParams.add(argDefaultLines.get(argDefaultLines.size() - 1));
+        // The param itself is always at the end.
+        argDefaultParams.add(argDefaultLines.get(argDefaultLines.size() - 1));
 
-      // Since we're going to write the inits for the params here,
-      // remove so we don't init twice.
-      orderedItems.removeAll(paramInits);
+        // Since we're going to write the inits for the params here,
+        // remove so we don't init twice.
+        orderedItems.removeAll(paramInits);
+      }
     }
 
     return InitCodeView.newBuilder()
@@ -356,15 +370,22 @@ public class InitCodeTransformer {
 
   private List<InitCodeLineView> generateSurfaceInitCodeLines(
       MethodContext context, Iterable<InitCodeNode> specItemNode) {
+    boolean isFirstReadFileView = true;
     List<InitCodeLineView> surfaceLines = new ArrayList<>();
     for (InitCodeNode item : specItemNode) {
-      surfaceLines.add(generateSurfaceInitCodeLine(context, item, surfaceLines.isEmpty()));
+      surfaceLines.add(
+          generateSurfaceInitCodeLine(context, item, surfaceLines.isEmpty(), isFirstReadFileView));
+      isFirstReadFileView =
+          isFirstReadFileView && item.getLineType() != InitCodeLineType.ReadFileInitLine;
     }
     return surfaceLines;
   }
 
   private InitCodeLineView generateSurfaceInitCodeLine(
-      MethodContext context, InitCodeNode specItemNode, boolean isFirstItem) {
+      MethodContext context,
+      InitCodeNode specItemNode,
+      boolean isFirstItem,
+      boolean isFirstReadFileView) {
     switch (specItemNode.getLineType()) {
       case StructureInitLine:
         return generateStructureInitCodeLine(context, specItemNode);
@@ -374,6 +395,8 @@ public class InitCodeTransformer {
         return generateSimpleInitCodeLine(context, specItemNode, isFirstItem);
       case MapInitLine:
         return generateMapInitCodeLine(context, specItemNode);
+      case ReadFileInitLine:
+        return generateReadFileInitCodeLine(context, specItemNode, isFirstReadFileView);
       default:
         throw new RuntimeException("unhandled line type: " + specItemNode.getLineType());
     }
@@ -445,7 +468,7 @@ public class InitCodeTransformer {
     List<InitCodeLineView> elements = new ArrayList<>();
     for (InitCodeNode child : item.getChildren().values()) {
       entries.add(namer.localVarName(child.getIdentifier()));
-      elements.add(generateSurfaceInitCodeLine(context, child, elements.isEmpty()));
+      elements.add(generateSurfaceInitCodeLine(context, child, elements.isEmpty(), false));
     }
     surfaceLine.elementIdentifiers(entries);
     surfaceLine.elements(elements);
@@ -469,12 +492,52 @@ public class InitCodeTransformer {
       MapEntryView.Builder mapEntry = MapEntryView.newBuilder();
       mapEntry.key(typeTable.renderPrimitiveValue(item.getType().getMapKeyType(), entry.getKey()));
       mapEntry.valueString(context.getNamer().localVarName(entry.getValue().getIdentifier()));
-      mapEntry.value(generateSurfaceInitCodeLine(context, entry.getValue(), entries.isEmpty()));
+      mapEntry.value(
+          generateSurfaceInitCodeLine(context, entry.getValue(), entries.isEmpty(), false));
       entries.add(mapEntry.build());
     }
     surfaceLine.initEntries(entries);
 
     return surfaceLine.build();
+  }
+
+  // TODO(hzyi): generate necessary imports
+  /**
+   * @param isFirstReadFileView Used in Java. We need to reuse local variables "path" and "data" if
+   *     we have rendered ReadFileViews before so that we don't declare them twice.
+   */
+  private InitCodeLineView generateReadFileInitCodeLine(
+      MethodContext context, InitCodeNode item, boolean isFirstReadFileView) {
+    ReadFileInitCodeLineView.Builder surfaceLine = ReadFileInitCodeLineView.newBuilder();
+    SurfaceNamer namer = context.getNamer();
+    ImportTypeTable typeTable = context.getTypeTable();
+    checkState(
+        item.getType().isBytesType(),
+        "Error setting %s to be read from file. "
+            + "Replacing field value with file contents is only allowed for fields of type 'bytes', "
+            + "but the type is %s.",
+        item.getIdentifier(),
+        item.getType());
+    typeTable.getAndSaveNicknameFor(item.getType());
+    String value = item.getInitValueConfig().getInitialValue().getValue();
+    switch (item.getInitValueConfig().getInitialValue().getType()) {
+      case Literal:
+        // File names are always strings
+        value =
+            typeTable.renderPrimitiveValue(
+                ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")), value);
+        break;
+      case Variable:
+        value = namer.localVarReference(Name.anyLower(value));
+        break;
+      default:
+        throw new IllegalArgumentException("Unhandled init value type");
+    }
+    return surfaceLine
+        .identifier(namer.localVarName(item.getIdentifier()))
+        .fileName(SimpleInitValueView.newBuilder().initialValue(value).build())
+        .isFirstReadFileView(isFirstReadFileView)
+        .build();
   }
 
   private void setInitValueAndComments(
@@ -651,6 +714,7 @@ public class InitCodeTransformer {
           context
               .getTypeTable()
               .renderValueAsString("[" + Name.anyLower(entityName).toUpperUnderscore() + "]");
+
       if (initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
         InitValue initValue = initValueConfig.getResourceNameBindingValues().get(entityName);
         switch (initValue.getType()) {
@@ -694,7 +758,8 @@ public class InitCodeTransformer {
           namer.getFieldGetFunctionName(item.getType(), Name.anyLower(item.getVarName())));
 
       fieldSetting.identifier(getVariableName(context, item));
-      fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item, allSettings.isEmpty()));
+      fieldSetting.initCodeLine(
+          generateSurfaceInitCodeLine(context, item, allSettings.isEmpty(), false));
       fieldSetting.fieldName(context.getNamer().publicFieldName(Name.anyLower(item.getVarName())));
 
       fieldSetting.isMap(item.getType().isMap());

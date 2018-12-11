@@ -17,7 +17,6 @@ package com.google.api.codegen.discogapic.transformer.java;
 import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -42,7 +41,6 @@ import java.util.List;
 public class JavaDiscoGapicSurfaceTransformer
     implements ModelToViewTransformer<DiscoApiModel>, SurfaceTransformer {
   private final GapicCodePathMapper pathMapper;
-  private final PackageMetadataConfig packageMetadataConfig;
 
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
 
@@ -57,13 +55,8 @@ public class JavaDiscoGapicSurfaceTransformer
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
 
-  public JavaDiscoGapicSurfaceTransformer(
-      GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
+  public JavaDiscoGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = Preconditions.checkNotNull(pathMapper);
-    this.packageMetadataConfig =
-        Preconditions.checkNotNull(
-            packageMetadataConfig,
-            "packageMetadataConfig is missing, but is required for JavaDiscoGapicSurfaceTransformer");
   }
 
   @Override
@@ -92,26 +85,21 @@ public class JavaDiscoGapicSurfaceTransformer
       InterfaceModel apiInterface,
       GapicProductConfig productConfig,
       SurfaceNamer namer,
-      ImportTypeTable importTypeTable,
-      boolean enableStringFormatFunctions) {
-    return newInterfaceContext(
-        apiInterface, productConfig, namer, importTypeTable, enableStringFormatFunctions);
+      ImportTypeTable importTypeTable) {
+    return newInterfaceContext(apiInterface, productConfig, namer, importTypeTable);
   }
 
   static DiscoGapicInterfaceContext newInterfaceContext(
       InterfaceModel apiInterface,
       GapicProductConfig productConfig,
       SurfaceNamer namer,
-      ImportTypeTable importTypeTable,
-      boolean enableStringFormatFunctions) {
+      ImportTypeTable importTypeTable) {
     return DiscoGapicInterfaceContext.createWithInterface(
         apiInterface,
         productConfig,
         importTypeTable,
         namer,
-        JavaFeatureConfig.newBuilder()
-            .enableStringFormatFunctions(enableStringFormatFunctions)
-            .build());
+        JavaFeatureConfig.create(productConfig.getResourceNameMessageConfigs()));
   }
 
   @Override

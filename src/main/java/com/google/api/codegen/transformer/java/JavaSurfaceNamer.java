@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -30,7 +32,6 @@ import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SchemaTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
@@ -48,6 +49,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 /** The SurfaceNamer for Java. */
 public class JavaSurfaceNamer extends SurfaceNamer {
@@ -145,7 +147,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameForElementType(type);
+    return typeTable.getAndSaveNicknameForElementType(type);
   }
 
   @Override
@@ -292,18 +294,26 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
     String entityName = resourceNameConfig.getEntityName();
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
+    // Proto annotations use UpperCamelCase for resource names,
+    // and GAPIC config uses lower_snake_case, so we have to support both formats.
+    Function<String, Name> formatNameFunc;
+    if (entityName.length() > 0 && Character.isUpperCase(entityName.charAt(0))) {
+      formatNameFunc = Name::upperCamel;
+    } else {
+      formatNameFunc = Name::anyLower;
+    }
     switch (resourceNameType) {
       case ANY:
         return getAnyResourceTypeName();
       case FIXED:
-        return Name.anyLower(entityName).join("name_fixed");
+        return formatNameFunc.apply(entityName).join("name_fixed");
       case ONEOF:
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
         // with a collection config.
         entityName = StringUtil.removeSuffix(entityName, "_oneof");
-        return Name.anyLower(entityName).join("name");
+        return formatNameFunc.apply(entityName).join("name");
       case SINGLE:
-        return Name.anyLower(entityName).join("name");
+        return formatNameFunc.apply(entityName).join("name");
       case NONE:
       default:
         throw new UnsupportedOperationException("unexpected entity name type");
@@ -370,7 +380,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  /** The name of the settings member name for the given method. */
+  /* The name of the settings member name for the given method. */
   public String getOperationSettingsMemberName(MethodModel method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationSettings"));
   }
@@ -403,5 +413,33 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
     return typeTable.getAndSaveNicknameForElementType(type);
+  }
+
+  /**
+   * Returns the package name of standalone samples.
+   *
+   * <p>Currently we assume that package names always start with "com.google.". For example, if
+   * package name is "com.google.foo", the sample package name returned by this method will be
+   * "com.google.foo.examples.snippets". If package name is "com.google.foo.bar", the sample package
+   * name returned by this method will be "com.google.foo.examples.bar.snippets".
+   *
+   * <p>We structure the example package name in this way because in the case of a package named
+   * "com.google.foo.bar", 'foo' is very often the organization name, and this lets us group
+   * examples from the same org into a common package. E.g. "com.google.cloud.library.v1"
+   */
+  @Override
+  public String getExamplePackageName() {
+    String packageName = getPackageName();
+    checkArgument(
+        packageName.startsWith("com.google."),
+        "We currently only support packages beginning with 'com.google'");
+    packageName = packageName.replaceFirst("com.google.", "");
+    checkArgument(
+        !packageName.isEmpty(),
+        "package name should have at least one more component than 'com.google'");
+    int index = packageName.indexOf('.');
+    String firstComponent = index < 0 ? packageName : packageName.substring(0, index);
+    String remainingComponents = packageName.replaceFirst(firstComponent, "");
+    return "com.google." + firstComponent + ".examples" + remainingComponents + ".snippets";
   }
 }

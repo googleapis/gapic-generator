@@ -14,23 +14,18 @@
  */
 package com.google.api.codegen.config;
 
-import autovalue.shaded.com.google.common.common.annotations.VisibleForTesting;
+import com.google.api.Resource;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionLanguageOverridesProto;
 import com.google.api.codegen.common.TargetLanguage;
-import com.google.api.codegen.util.Inflector;
-import com.google.api.codegen.util.ProtoParser;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
-import java.util.Arrays;
-import java.util.List;
 import javax.annotation.Nullable;
 
 /** SingleResourceNameConfig represents the collection configuration for a method. */
@@ -50,8 +45,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     String namePattern = collectionConfigProto.getNamePattern();
     PathTemplate nameTemplate;
     try {
-      String nameTemplateString = escapePathTemplate(namePattern);
-      nameTemplate = PathTemplate.create(nameTemplateString);
+      nameTemplate = PathTemplate.create(namePattern);
     } catch (ValidationException e) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
       return null;
@@ -77,49 +71,22 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
         namePattern, nameTemplate, entityId, entityName, commonResourceName, file);
   }
 
-  // Wrapper for PathTemplate.create().
-  // If there are literal '*' wildcards, replace them with an appropriate string representing a
-  // resource.
-  // e.g. createPathTemplate("bookShelves/*/books/{book}") returns
-  // PathTemplate.create("bookShelves/{bookShelf}/books/{book}")
-  @VisibleForTesting
-  static String escapePathTemplate(String template) {
-    String[] pieces = template.split("/");
-    List<String> newPieces = Arrays.asList(pieces);
-    // Iterate only over wildcard pieces.
-    for (int i = 1; i < pieces.length; i = i + 2) {
-      String piece = pieces[i];
-      String prevPiece = pieces[i - 1];
-      if (piece.equals("*")) {
-        piece = String.format("{%s}", Inflector.singularize(prevPiece));
-        newPieces.set(i, piece);
-      }
-    }
-
-    return String.join("/", newPieces);
-  }
-
   /**
    * Creates an instance of SingleResourceNameConfig based on a field. On errors, null will be
    * returned, and diagnostics are reported to the diag collector.
    */
-  @Nullable
-  public static SingleResourceNameConfig createSingleResourceName(
-      DiagCollector diagCollector, Field resourceField, ProtoFile file, ProtoParser protoParser) {
-    String namePattern = protoParser.getResourcePath(resourceField);
+  static SingleResourceNameConfig createSingleResourceName(
+      Resource resource, String pathTemplate, ProtoFile file, DiagCollector diagCollector) {
     PathTemplate nameTemplate;
     try {
-      String nameTemplateString = escapePathTemplate(namePattern);
-      nameTemplate = PathTemplate.create(nameTemplateString);
+      nameTemplate = PathTemplate.create(pathTemplate);
     } catch (ValidationException e) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
       return null;
     }
-    String entityId = protoParser.getResourceEntityName(resourceField);
-    String entityName = entityId;
-    String commonResourceName = null;
+
     return new AutoValue_SingleResourceNameConfig(
-        namePattern, nameTemplate, entityId, entityName, commonResourceName, file);
+        pathTemplate, nameTemplate, resource.getName(), resource.getName(), null, file);
   }
 
   /** Returns the name pattern for the resource name config. */

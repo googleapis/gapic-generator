@@ -21,7 +21,6 @@ import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
@@ -76,8 +75,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer
 
   private static final String RESOURCE_NAME_TEMPLATE_FILENAME = "java/resource_name.snip";
 
-  public JavaDiscoGapicResourceNameToViewTransformer(
-      GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
+  public JavaDiscoGapicResourceNameToViewTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
   }
 
@@ -98,7 +96,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer
             productConfig,
             createTypeTable(productConfig.getPackageName(), surfaceNamer),
             surfaceNamer,
-            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
+            JavaFeatureConfig.create(productConfig.getResourceNameMessageConfigs()));
 
     // Keep track of which name patterns have been generated to avoid duplicate classes.
     Set<String> namePatterns = new HashSet<>();

@@ -14,8 +14,10 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.config.TypeModel;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
+import javax.annotation.Nullable;
 
 public interface OutputView {
 
@@ -113,7 +115,7 @@ public interface OutputView {
 
     public abstract String format();
 
-    public abstract ImmutableList<VariableView> args();
+    public abstract ImmutableList<PrintArgView> args();
 
     public Kind kind() {
       return Kind.PRINT;
@@ -127,7 +129,7 @@ public interface OutputView {
     public abstract static class Builder {
       public abstract Builder format(String val);
 
-      public abstract Builder args(ImmutableList<VariableView> val);
+      public abstract Builder args(ImmutableList<PrintArgView> val);
 
       public abstract PrintView build();
     }
@@ -138,7 +140,10 @@ public interface OutputView {
 
     public abstract String variable();
 
-    public abstract ImmutableList<String> accessors();
+    public abstract ImmutableList<AccessorView> accessors();
+
+    @Nullable
+    public abstract TypeModel type();
 
     public static Builder newBuilder() {
       return new AutoValue_OutputView_VariableView.Builder();
@@ -148,7 +153,9 @@ public interface OutputView {
     public abstract static class Builder {
       public abstract Builder variable(String val);
 
-      public abstract Builder accessors(ImmutableList<String> val);
+      public abstract Builder accessors(ImmutableList<AccessorView> val);
+
+      public abstract Builder type(TypeModel val);
 
       public abstract VariableView build();
     }

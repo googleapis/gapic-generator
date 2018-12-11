@@ -145,7 +145,6 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public GenericFieldSelector getInputFieldSelector(String fieldName) {
-    // TODO(andrealin): implement.
     return null;
   }
 
@@ -171,9 +170,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public boolean equals(Object o) {
-    return o != null
-        && o instanceof DiscoveryMethodModel
-        && ((DiscoveryMethodModel) o).method.equals(method);
+    return o instanceof DiscoveryMethodModel && ((DiscoveryMethodModel) o).method.equals(method);
   }
 
   @Override
@@ -206,14 +203,13 @@ public final class DiscoveryMethodModel implements MethodModel {
     return method.description();
   }
 
-  @Override
-  public List<DiscoveryField> getResourceNameInputFields() {
+  private List<DiscoveryField> getResourceNameInputFields() {
     if (resourceNameInputFields != null) {
       return resourceNameInputFields;
     }
 
     ImmutableList.Builder<DiscoveryField> params = ImmutableList.builder();
-    for (DiscoveryField field : inputFields) {
+    for (DiscoveryField field : getInputFields()) {
       if (field.getDiscoveryField().isPathParam()) {
         params.add(field);
       }

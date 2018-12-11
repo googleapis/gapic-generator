@@ -54,7 +54,9 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<Pro
       new FileHeaderTransformer(new NodeJSImportSectionTransformer());
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
-          new NodeJSApiMethodParamTransformer(), new InitCodeTransformer(), SampleType.STANDALONE);
+          new NodeJSApiMethodParamTransformer(),
+          new InitCodeTransformer(new NodeJSImportSectionTransformer()),
+          SampleType.STANDALONE);
   private final NodeJSMethodViewGenerator methodGenerator =
       new NodeJSMethodViewGenerator(apiMethodTransformer);
   private final PackageMetadataConfig packageConfig;
@@ -72,7 +74,6 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<Pro
 
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    Iterable<? extends InterfaceModel> apiInterfaces = model.getInterfaces();
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     models.addAll(generateSampleClassesForModel(model, productConfig));
     return models.build();

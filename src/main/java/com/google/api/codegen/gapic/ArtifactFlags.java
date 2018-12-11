@@ -39,11 +39,14 @@ public class ArtifactFlags {
 
   public boolean codeFilesEnabled() {
     return artifactType == ArtifactType.LEGACY_GAPIC_AND_PACKAGE
-        || artifactType == ArtifactType.GAPIC_CODE;
+        || artifactType == ArtifactType.GAPIC_CODE
+        || artifactType == ArtifactType.LEGACY_DISCOGAPIC_AND_PACKAGE
+        || artifactType == ArtifactType.DISCOGAPIC_CODE;
   }
 
   public boolean packagingFilesEnabled() {
     return artifactType == ArtifactType.LEGACY_GAPIC_AND_PACKAGE
-        || artifactType == ArtifactType.GAPIC_PACKAGE;
+        || artifactType == ArtifactType.GAPIC_PACKAGE
+        || artifactType == ArtifactType.LEGACY_DISCOGAPIC_AND_PACKAGE;
   }
 }

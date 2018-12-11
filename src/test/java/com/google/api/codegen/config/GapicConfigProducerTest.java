@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.common.TargetLanguage;
@@ -21,7 +23,6 @@ import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
-import com.google.common.truth.Truth;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -47,11 +48,11 @@ public class GapicConfigProducerTest {
             model.getDiagReporter().getDiagCollector(),
             locator,
             new String[] {"missing_config_schema_version.yaml"});
-    productConfig = GapicProductConfig.create(model, configProto, null, TargetLanguage.JAVA);
+    productConfig = GapicProductConfig.create(model, configProto, null, null, TargetLanguage.JAVA);
     Diag expectedError =
         Diag.error(
             SimpleLocation.TOPLEVEL, "config_schema_version field is required in GAPIC yaml.");
-    Truth.assertThat(model.getDiagReporter().getDiagCollector().hasErrors()).isTrue();
-    Truth.assertThat(model.getDiagReporter().getDiagCollector().getDiags()).contains(expectedError);
+    assertThat(model.getDiagReporter().getDiagCollector().hasErrors()).isTrue();
+    assertThat(model.getDiagReporter().getDiagCollector().getDiags()).contains(expectedError);
   }
 }

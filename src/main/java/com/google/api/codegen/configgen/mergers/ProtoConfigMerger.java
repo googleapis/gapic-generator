@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.InterfaceTransformer;
@@ -21,12 +22,10 @@ import com.google.api.codegen.configgen.ProtoInterfaceTransformer;
 import com.google.api.codegen.configgen.ProtoMethodTransformer;
 import com.google.api.codegen.configgen.ProtoPageStreamingTransformer;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
-import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Model;
 
 /** Merges the gapic config from a proto Model into a ConfigNode. */
 public class ProtoConfigMerger {
-  ProtoParser protoParser = new ProtoParser();
 
   public ConfigNode mergeConfig(Model model, String fileName) {
     ConfigMerger configMerger = createMerger(model, fileName);
@@ -39,7 +38,7 @@ public class ProtoConfigMerger {
 
   private ConfigMerger createMerger(Model model, String fileName) {
     ConfigHelper helper = new ConfigHelper(model.getDiagReporter().getDiagCollector(), fileName);
-    String packageName = protoParser.getPackageName(model);
+    String packageName = GapicProductConfig.getPackageName(model);
     if (packageName == null) {
       helper.error(model.getLocation(), "Failed to determine package name.");
       return null;

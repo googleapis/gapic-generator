@@ -16,10 +16,10 @@ service NoTemplatesAPIService {
 
   // Increments something.
   //   Sometimes the comments are indented, but Sphinx doesn't like that. So
-  //  in Python we trim all
-  //      leading
-  //         and trailing
-  //    whitespace.
+  //  in Python we apply a pandoc transformation before the comments
+  //      get
+  //         to gapic-generator, and we don't need
+  //    to do anything here.
   rpc Increment(IncrementRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { post: "/v1/me:increment" body: "*" };
   }

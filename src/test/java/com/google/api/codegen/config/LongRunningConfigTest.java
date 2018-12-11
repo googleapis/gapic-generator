@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.OperationData;
 import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
@@ -25,7 +26,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SymbolTable;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.longrunning.OperationTypes;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -37,10 +37,10 @@ public class LongRunningConfigTest {
   private static final String ANNOTATIONS_METADATA_TYPE = "FooterType";
   private static final boolean TEST_IMPLEMENTS_DELETE = false;
   private static final boolean TEST_IMPLEMENTS_CANCEL = false;
-  private static int TEST_INITIAL_POLL_DELAY = 5;
-  private static double TEST_POLL_DELAY_MULTIPLIER = 10;
-  private static long TEST_MAX_POLL_DELAY = 12500;
-  private static int TEST_TOTAL_POLL_TIMEOUT = 50000;
+  private static final int TEST_INITIAL_POLL_DELAY = 5;
+  private static final double TEST_POLL_DELAY_MULTIPLIER = 10;
+  private static final long TEST_MAX_POLL_DELAY = 12500;
+  private static final int TEST_TOTAL_POLL_TIMEOUT = 50000;
 
   private static final ProtoParser protoParser = Mockito.mock(ProtoParser.class);
 
@@ -84,9 +84,9 @@ public class LongRunningConfigTest {
 
     Mockito.when(protoParser.getLongRunningOperation(lroAnnotatedMethod))
         .thenReturn(
-            OperationTypes.newBuilder()
-                .setMetadata(ANNOTATIONS_METADATA_TYPE)
-                .setResponse(ANNOTATIONS_RETURN_TYPE_NAME)
+            OperationData.newBuilder()
+                .setMetadataType(ANNOTATIONS_METADATA_TYPE)
+                .setResponseType(ANNOTATIONS_RETURN_TYPE_NAME)
                 .build());
 
     Mockito.when(symbolTable.lookupType(GAPIC_CONFIG_METADATA_TYPE))
@@ -190,6 +190,42 @@ public class LongRunningConfigTest {
         .isEqualTo(LongRunningConfig.LRO_IMPLEMENTS_CANCEL);
     assertThat(longRunningConfig.implementsDelete())
         .isEqualTo(LongRunningConfig.LRO_IMPLEMENTS_DELETE);
+  }
+
+  @Test
+  public void testCreateSameLROFromProtoFileAndGapicConfig() {
+    // Given a Protobuf LRO method annotated with the same Return and Metadata Type
+    // as in the GAPIC config, use the GAPIC config settings.
+    DiagCollector diagCollector = new BoundedDiagCollector();
+
+    // Use a GAPIC config with the same return and metadata types as the LRO proto annotations.
+    LongRunningConfigProto longRunningConfigProto =
+        lroConfigProtoWithPollSettings
+            .toBuilder()
+            .setMetadataType(ANNOTATIONS_METADATA_TYPE)
+            .setReturnType(ANNOTATIONS_RETURN_TYPE_NAME)
+            .build();
+    LongRunningConfig longRunningConfig =
+        LongRunningConfig.createLongRunningConfig(
+            lroAnnotatedMethod, diagCollector, longRunningConfigProto, protoParser);
+
+    assertThat(diagCollector.getErrorCount()).isEqualTo(0);
+    assertThat(longRunningConfig).isNotNull();
+
+    // Assert that we are using gapic config LRO settings.
+    ProtoTypeRef metadataTypeModel = (ProtoTypeRef) longRunningConfig.getMetadataType();
+    assertThat(metadataTypeModel.getProtoType()).isEqualTo(annotationsMetadataType);
+    ProtoTypeRef returnTypeModel = (ProtoTypeRef) longRunningConfig.getReturnType();
+    assertThat(returnTypeModel.getProtoType()).isEqualTo(annotationsReturnType);
+
+    assertThat(longRunningConfig.getInitialPollDelay().toMillis())
+        .isEqualTo(TEST_INITIAL_POLL_DELAY);
+    assertThat(longRunningConfig.getMaxPollDelay().toMillis()).isEqualTo(TEST_MAX_POLL_DELAY);
+    assertThat(longRunningConfig.getPollDelayMultiplier()).isEqualTo(TEST_POLL_DELAY_MULTIPLIER);
+    assertThat(longRunningConfig.getTotalPollTimeout().toMillis())
+        .isEqualTo(TEST_TOTAL_POLL_TIMEOUT);
+    assertThat(longRunningConfig.implementsCancel()).isEqualTo(TEST_IMPLEMENTS_CANCEL);
+    assertThat(longRunningConfig.implementsDelete()).isEqualTo(TEST_IMPLEMENTS_DELETE);
   }
 
   @Test

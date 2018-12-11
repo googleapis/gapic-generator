@@ -46,17 +46,13 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.py.PythonTypeTable;
-import com.google.api.codegen.viewmodel.BatchingDescriptorView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcDocView;
 import com.google.api.codegen.viewmodel.GrpcElementDocView;
 import com.google.api.codegen.viewmodel.GrpcMessageDocView;
-import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
-import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ParamDocView;
-import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
@@ -66,7 +62,9 @@ import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedSet;
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -227,14 +225,14 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     xapiClass.serviceHostname(productServiceConfig.getServiceHostname(context.getServiceAddress()));
     xapiClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
     xapiClass.serviceTitle(model.getTitle());
-    xapiClass.authScopes(model.getAuthScopes());
+    xapiClass.authScopes(model.getAuthScopes(context.getProductConfig()));
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
     xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
-    xapiClass.batchingDescriptors(ImmutableList.<BatchingDescriptorView>of());
-    xapiClass.longRunningDescriptors(ImmutableList.<LongRunningOperationDetailView>of());
-    xapiClass.grpcStreamingDescriptors(ImmutableList.<GrpcStreamingDetailView>of());
+    xapiClass.batchingDescriptors(ImmutableList.of());
+    xapiClass.longRunningDescriptors(ImmutableList.of());
+    xapiClass.grpcStreamingDescriptors(ImmutableList.of());
     xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
     xapiClass.hasBatchingMethods(context.getInterfaceConfig().hasBatchingMethods());
     xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
@@ -244,7 +242,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
         pathTemplateTransformer.generateFormatResourceFunctions(context));
     xapiClass.parseResourceFunctions(
         pathTemplateTransformer.generateParseResourceFunctions(context));
-    xapiClass.pathTemplateGetterFunctions(ImmutableList.<PathTemplateGetterFunctionView>of());
+    xapiClass.pathTemplateGetterFunctions(ImmutableList.of());
 
     xapiClass.interfaceKey(context.getInterface().getFullName());
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
@@ -280,19 +278,22 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     return enumFile.build();
   }
 
+  /** Returns list of enum file elements, sorted alphabetically by name. */
   private List<GrpcElementDocView> generateEnumFileElements(
       ModelTypeTable typeTable, SurfaceNamer namer, List<ProtoFile> containerElements) {
-    ImmutableList.Builder<GrpcElementDocView> elements = ImmutableList.builder();
+    ImmutableSortedSet.Builder<GrpcElementDocView> elements =
+        ImmutableSortedSet.orderedBy(Comparator.comparing(GrpcElementDocView::name));
     for (ProtoContainerElement containerElement : containerElements) {
       elements.addAll(generateEnumFileElements(typeTable, namer, containerElement));
     }
-    return elements.build();
+    return elements.build().asList();
   }
 
   private List<GrpcElementDocView> generateEnumFileElements(
       ModelTypeTable typeTable, SurfaceNamer namer, ProtoContainerElement containerElement) {
     ImmutableList.Builder<GrpcElementDocView> elements = ImmutableList.builder();
-    elements.addAll(elementDocTransformer.generateEnumDocs(typeTable, namer, containerElement));
+    elements.addAll(
+        elementDocTransformer.generateEnumDocs(typeTable, namer, containerElement.getEnums()));
     for (MessageType message : containerElement.getMessages()) {
       List<GrpcElementDocView> elementDocs = generateEnumFileElements(typeTable, namer, message);
       if (!elementDocs.isEmpty()) {
@@ -372,12 +373,6 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
                     .fileName(namer.getNotImplementedString("VersionIndexRequireView.fileName"))
                     .build())
         .collect(ImmutableList.toImmutableList());
-  }
-
-  private ModelTypeTable emptyTypeTable(ProductConfig productConfig) {
-    return new ModelTypeTable(
-        new PythonTypeTable(productConfig.getPackageName()),
-        new PythonModelTypeNameConverter(productConfig.getPackageName()));
   }
 
   private String typesOutputFile(SurfaceNamer namer) {

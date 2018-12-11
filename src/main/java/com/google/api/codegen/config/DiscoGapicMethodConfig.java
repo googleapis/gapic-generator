@@ -94,7 +94,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     if (!PageStreamingConfigProto.getDefaultInstance()
         .equals(methodConfigProto.getPageStreaming())) {
       pageStreaming =
-          PageStreamingConfig.createPageStreaming(
+          PageStreamingConfig.createPageStreamingFromGapicConfig(
               diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
       if (pageStreaming == null) {
         error = true;
@@ -104,7 +104,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
-          createFlattening(
+          FlatteningConfig.createFlatteningConfigs(
               diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
       if (flattening == null) {
         error = true;

@@ -76,7 +76,7 @@ task allJars(type: Copy) {
   // Replace with `from configurations.testRuntime, jar` to include test dependencies
   from configurations.runtime, jar
 }
-============== file: src/main/java/com/google/gcloud/pubsub/v1/LibraryClient.java ==============
+============== file: src/main/java/com/google/example/library/v1/LibraryClient.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -92,7 +92,7 @@ task allJars(type: Copy) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.v1;
+package com.google.example.library.v1;
 
 import com.google.api.core.ApiFunction;
 import com.google.api.core.ApiFuture;
@@ -116,57 +116,30 @@ import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
-import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.ArchivedBookName;
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.BookFromAnywhere;
-import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.BookName;
-import com.google.example.library.v1.Comment;
-import com.google.example.library.v1.CreateBookRequest;
-import com.google.example.library.v1.CreateShelfRequest;
-import com.google.example.library.v1.DeleteBookRequest;
-import com.google.example.library.v1.DeleteShelfRequest;
-import com.google.example.library.v1.DiscussBookRequest;
-import com.google.example.library.v1.FindRelatedBooksRequest;
-import com.google.example.library.v1.FindRelatedBooksResponse;
-import com.google.example.library.v1.GetBigBookMetadata;
-import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
-import com.google.example.library.v1.GetBookFromAnywhereRequest;
-import com.google.example.library.v1.GetBookFromArchiveRequest;
-import com.google.example.library.v1.GetBookRequest;
-import com.google.example.library.v1.GetShelfRequest;
-import com.google.example.library.v1.ListBooksRequest;
-import com.google.example.library.v1.ListBooksResponse;
-import com.google.example.library.v1.ListShelvesRequest;
-import com.google.example.library.v1.ListShelvesResponse;
-import com.google.example.library.v1.ListStringsRequest;
-import com.google.example.library.v1.ListStringsResponse;
-import com.google.example.library.v1.MergeShelvesRequest;
-import com.google.example.library.v1.MoveBookRequest;
-import com.google.example.library.v1.PublishSeriesRequest;
-import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.SeriesUuid;
-import com.google.example.library.v1.Shelf;
-import com.google.example.library.v1.ShelfBookName;
-import com.google.example.library.v1.ShelfName;
-import com.google.example.library.v1.SomeMessage;
-import com.google.example.library.v1.StreamBooksRequest;
-import com.google.example.library.v1.StreamShelvesRequest;
-import com.google.example.library.v1.StreamShelvesResponse;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
-import com.google.example.library.v1.UpdateBookIndexRequest;
-import com.google.example.library.v1.UpdateBookRequest;
-import com.google.gcloud.pubsub.v1.stub.LibraryServiceStub;
-import com.google.gcloud.pubsub.v1.stub.LibraryServiceStubSettings;
+import com.google.example.library.v1.stub.LibraryServiceStub;
+import com.google.example.library.v1.stub.LibraryServiceStubSettings;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
+import com.google.protobuf.Any;
+import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.BytesValue;
+import com.google.protobuf.DoubleValue;
+import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
+import com.google.protobuf.FloatValue;
+import com.google.protobuf.Int32Value;
+import com.google.protobuf.Int64Value;
+import com.google.protobuf.ListValue;
+import com.google.protobuf.StringValue;
+import com.google.protobuf.Struct;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.UInt32Value;
+import com.google.protobuf.UInt64Value;
+import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
 import com.google.tagger.v1.TaggerProto.AddTagRequest;
@@ -1637,7 +1610,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = ShelfName.of("[SHELF_ID]");
+   *   ResourceName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   for (ResourceName element : libraryClient.listStrings(name).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
@@ -1662,7 +1635,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = ShelfName.of("[SHELF_ID]");
+   *   ResourceName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   for (ResourceName element : libraryClient.listStrings(name.toString()).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
@@ -2952,7 +2925,39 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;Integer&gt; optionalRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; optionalRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; optionalMap = new HashMap&lt;&gt;();
-   *   TestOptionalRequiredFlatteningParamsResponse response = libraryClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName.toString(), requiredSingularResourceNameOneof.toString(), requiredSingularResourceNameCommon.toString(), requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, formattedRequiredRepeatedResourceName, formattedRequiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName.toString(), optionalSingularResourceNameOneof.toString(), optionalSingularResourceNameCommon.toString(), optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, formattedOptionalRepeatedResourceName, formattedOptionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
+   *   Any anyValue = Any.newBuilder().build();
+   *   Struct structValue = Struct.newBuilder().build();
+   *   Value valueValue = Value.newBuilder().build();
+   *   ListValue listValueValue = ListValue.newBuilder().build();
+   *   Timestamp timeValue = Timestamp.newBuilder().build();
+   *   Duration durationValue = Duration.newBuilder().build();
+   *   FieldMask fieldMaskValue = FieldMask.newBuilder().build();
+   *   Int32Value int32Value = Int32Value.newBuilder().build();
+   *   UInt32Value uint32Value = UInt32Value.newBuilder().build();
+   *   Int64Value int64Value = Int64Value.newBuilder().build();
+   *   UInt64Value uint64Value = UInt64Value.newBuilder().build();
+   *   FloatValue floatValue = FloatValue.newBuilder().build();
+   *   DoubleValue doubleValue = DoubleValue.newBuilder().build();
+   *   StringValue stringValue = StringValue.newBuilder().build();
+   *   BoolValue boolValue = BoolValue.newBuilder().build();
+   *   BytesValue bytesValue = BytesValue.newBuilder().build();
+   *   List&lt;Any&gt; repeatedAnyValue = new ArrayList&lt;&gt;();
+   *   List&lt;Struct&gt; repeatedStructValue = new ArrayList&lt;&gt;();
+   *   List&lt;Value&gt; repeatedValueValue = new ArrayList&lt;&gt;();
+   *   List&lt;ListValue&gt; repeatedListValueValue = new ArrayList&lt;&gt;();
+   *   List&lt;Timestamp&gt; repeatedTimeValue = new ArrayList&lt;&gt;();
+   *   List&lt;Duration&gt; repeatedDurationValue = new ArrayList&lt;&gt;();
+   *   List&lt;FieldMask&gt; repeatedFieldMaskValue = new ArrayList&lt;&gt;();
+   *   List&lt;Int32Value&gt; repeatedInt32Value = new ArrayList&lt;&gt;();
+   *   List&lt;UInt32Value&gt; repeatedUint32Value = new ArrayList&lt;&gt;();
+   *   List&lt;Int64Value&gt; repeatedInt64Value = new ArrayList&lt;&gt;();
+   *   List&lt;UInt64Value&gt; repeatedUint64Value = new ArrayList&lt;&gt;();
+   *   List&lt;FloatValue&gt; repeatedFloatValue = new ArrayList&lt;&gt;();
+   *   List&lt;DoubleValue&gt; repeatedDoubleValue = new ArrayList&lt;&gt;();
+   *   List&lt;StringValue&gt; repeatedStringValue = new ArrayList&lt;&gt;();
+   *   List&lt;BoolValue&gt; repeatedBoolValue = new ArrayList&lt;&gt;();
+   *   List&lt;BytesValue&gt; repeatedBytesValue = new ArrayList&lt;&gt;();
+   *   TestOptionalRequiredFlatteningParamsResponse response = libraryClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName.toString(), requiredSingularResourceNameOneof.toString(), requiredSingularResourceNameCommon.toString(), requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, formattedRequiredRepeatedResourceName, formattedRequiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName.toString(), optionalSingularResourceNameOneof.toString(), optionalSingularResourceNameCommon.toString(), optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, formattedOptionalRepeatedResourceName, formattedOptionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
    * }
    * </code></pre>
    *
@@ -3014,9 +3019,41 @@ public class LibraryClient implements BackgroundResource {
    * @param optionalRepeatedFixed32
    * @param optionalRepeatedFixed64
    * @param optionalMap
+   * @param anyValue
+   * @param structValue
+   * @param valueValue
+   * @param listValueValue
+   * @param timeValue
+   * @param durationValue
+   * @param fieldMaskValue
+   * @param int32Value
+   * @param uint32Value
+   * @param int64Value
+   * @param uint64Value
+   * @param floatValue
+   * @param doubleValue
+   * @param stringValue
+   * @param boolValue
+   * @param bytesValue
+   * @param repeatedAnyValue
+   * @param repeatedStructValue
+   * @param repeatedValueValue
+   * @param repeatedListValueValue
+   * @param repeatedTimeValue
+   * @param repeatedDurationValue
+   * @param repeatedFieldMaskValue
+   * @param repeatedInt32Value
+   * @param repeatedUint32Value
+   * @param repeatedInt64Value
+   * @param repeatedUint64Value
+   * @param repeatedFloatValue
+   * @param repeatedDoubleValue
+   * @param repeatedStringValue
+   * @param repeatedBoolValue
+   * @param repeatedBytesValue
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, String requiredSingularResourceName, String requiredSingularResourceNameOneof, String requiredSingularResourceNameCommon, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<String> requiredRepeatedResourceName, List<String> requiredRepeatedResourceNameOneof, List<String> requiredRepeatedResourceNameCommon, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, String optionalSingularResourceName, String optionalSingularResourceNameOneof, String optionalSingularResourceNameCommon, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<String> optionalRepeatedResourceName, List<String> optionalRepeatedResourceNameOneof, List<String> optionalRepeatedResourceNameCommon, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap) {
+  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, String requiredSingularResourceName, String requiredSingularResourceNameOneof, String requiredSingularResourceNameCommon, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<String> requiredRepeatedResourceName, List<String> requiredRepeatedResourceNameOneof, List<String> requiredRepeatedResourceNameCommon, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, String optionalSingularResourceName, String optionalSingularResourceNameOneof, String optionalSingularResourceNameCommon, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<String> optionalRepeatedResourceName, List<String> optionalRepeatedResourceNameOneof, List<String> optionalRepeatedResourceNameCommon, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap, Any anyValue, Struct structValue, Value valueValue, ListValue listValueValue, Timestamp timeValue, Duration durationValue, FieldMask fieldMaskValue, Int32Value int32Value, UInt32Value uint32Value, Int64Value int64Value, UInt64Value uint64Value, FloatValue floatValue, DoubleValue doubleValue, StringValue stringValue, BoolValue boolValue, BytesValue bytesValue, List<Any> repeatedAnyValue, List<Struct> repeatedStructValue, List<Value> repeatedValueValue, List<ListValue> repeatedListValueValue, List<Timestamp> repeatedTimeValue, List<Duration> repeatedDurationValue, List<FieldMask> repeatedFieldMaskValue, List<Int32Value> repeatedInt32Value, List<UInt32Value> repeatedUint32Value, List<Int64Value> repeatedInt64Value, List<UInt64Value> repeatedUint64Value, List<FloatValue> repeatedFloatValue, List<DoubleValue> repeatedDoubleValue, List<StringValue> repeatedStringValue, List<BoolValue> repeatedBoolValue, List<BytesValue> repeatedBytesValue) {
 
     TestOptionalRequiredFlatteningParamsRequest request =
         TestOptionalRequiredFlatteningParamsRequest.newBuilder()
@@ -3078,6 +3115,38 @@ public class LibraryClient implements BackgroundResource {
         .addAllOptionalRepeatedFixed32(optionalRepeatedFixed32)
         .addAllOptionalRepeatedFixed64(optionalRepeatedFixed64)
         .putAllOptionalMap(optionalMap)
+        .setAnyValue(anyValue)
+        .setStructValue(structValue)
+        .setValueValue(valueValue)
+        .setListValueValue(listValueValue)
+        .setTimeValue(timeValue)
+        .setDurationValue(durationValue)
+        .setFieldMaskValue(fieldMaskValue)
+        .setInt32Value(int32Value)
+        .setUint32Value(uint32Value)
+        .setInt64Value(int64Value)
+        .setUint64Value(uint64Value)
+        .setFloatValue(floatValue)
+        .setDoubleValue(doubleValue)
+        .setStringValue(stringValue)
+        .setBoolValue(boolValue)
+        .setBytesValue(bytesValue)
+        .addAllRepeatedAnyValue(repeatedAnyValue)
+        .addAllRepeatedStructValue(repeatedStructValue)
+        .addAllRepeatedValueValue(repeatedValueValue)
+        .addAllRepeatedListValueValue(repeatedListValueValue)
+        .addAllRepeatedTimeValue(repeatedTimeValue)
+        .addAllRepeatedDurationValue(repeatedDurationValue)
+        .addAllRepeatedFieldMaskValue(repeatedFieldMaskValue)
+        .addAllRepeatedInt32Value(repeatedInt32Value)
+        .addAllRepeatedUint32Value(repeatedUint32Value)
+        .addAllRepeatedInt64Value(repeatedInt64Value)
+        .addAllRepeatedUint64Value(repeatedUint64Value)
+        .addAllRepeatedFloatValue(repeatedFloatValue)
+        .addAllRepeatedDoubleValue(repeatedDoubleValue)
+        .addAllRepeatedStringValue(repeatedStringValue)
+        .addAllRepeatedBoolValue(repeatedBoolValue)
+        .addAllRepeatedBytesValue(repeatedBytesValue)
         .build();
     return testOptionalRequiredFlatteningParams(request);
   }
@@ -3147,7 +3216,39 @@ public class LibraryClient implements BackgroundResource {
    *   List&lt;Integer&gt; optionalRepeatedFixed32 = new ArrayList&lt;&gt;();
    *   List&lt;Long&gt; optionalRepeatedFixed64 = new ArrayList&lt;&gt;();
    *   Map&lt;Integer, String&gt; optionalMap = new HashMap&lt;&gt;();
-   *   TestOptionalRequiredFlatteningParamsResponse response = libraryClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, formattedRequiredRepeatedResourceName, formattedRequiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, formattedOptionalRepeatedResourceName, formattedOptionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
+   *   Any anyValue = Any.newBuilder().build();
+   *   Struct structValue = Struct.newBuilder().build();
+   *   Value valueValue = Value.newBuilder().build();
+   *   ListValue listValueValue = ListValue.newBuilder().build();
+   *   Timestamp timeValue = Timestamp.newBuilder().build();
+   *   Duration durationValue = Duration.newBuilder().build();
+   *   FieldMask fieldMaskValue = FieldMask.newBuilder().build();
+   *   Int32Value int32Value = Int32Value.newBuilder().build();
+   *   UInt32Value uint32Value = UInt32Value.newBuilder().build();
+   *   Int64Value int64Value = Int64Value.newBuilder().build();
+   *   UInt64Value uint64Value = UInt64Value.newBuilder().build();
+   *   FloatValue floatValue = FloatValue.newBuilder().build();
+   *   DoubleValue doubleValue = DoubleValue.newBuilder().build();
+   *   StringValue stringValue = StringValue.newBuilder().build();
+   *   BoolValue boolValue = BoolValue.newBuilder().build();
+   *   BytesValue bytesValue = BytesValue.newBuilder().build();
+   *   List&lt;Any&gt; repeatedAnyValue = new ArrayList&lt;&gt;();
+   *   List&lt;Struct&gt; repeatedStructValue = new ArrayList&lt;&gt;();
+   *   List&lt;Value&gt; repeatedValueValue = new ArrayList&lt;&gt;();
+   *   List&lt;ListValue&gt; repeatedListValueValue = new ArrayList&lt;&gt;();
+   *   List&lt;Timestamp&gt; repeatedTimeValue = new ArrayList&lt;&gt;();
+   *   List&lt;Duration&gt; repeatedDurationValue = new ArrayList&lt;&gt;();
+   *   List&lt;FieldMask&gt; repeatedFieldMaskValue = new ArrayList&lt;&gt;();
+   *   List&lt;Int32Value&gt; repeatedInt32Value = new ArrayList&lt;&gt;();
+   *   List&lt;UInt32Value&gt; repeatedUint32Value = new ArrayList&lt;&gt;();
+   *   List&lt;Int64Value&gt; repeatedInt64Value = new ArrayList&lt;&gt;();
+   *   List&lt;UInt64Value&gt; repeatedUint64Value = new ArrayList&lt;&gt;();
+   *   List&lt;FloatValue&gt; repeatedFloatValue = new ArrayList&lt;&gt;();
+   *   List&lt;DoubleValue&gt; repeatedDoubleValue = new ArrayList&lt;&gt;();
+   *   List&lt;StringValue&gt; repeatedStringValue = new ArrayList&lt;&gt;();
+   *   List&lt;BoolValue&gt; repeatedBoolValue = new ArrayList&lt;&gt;();
+   *   List&lt;BytesValue&gt; repeatedBytesValue = new ArrayList&lt;&gt;();
+   *   TestOptionalRequiredFlatteningParamsResponse response = libraryClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, formattedRequiredRepeatedResourceName, formattedRequiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, formattedOptionalRepeatedResourceName, formattedOptionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
    * }
    * </code></pre>
    *
@@ -3209,9 +3310,41 @@ public class LibraryClient implements BackgroundResource {
    * @param optionalRepeatedFixed32
    * @param optionalRepeatedFixed64
    * @param optionalMap
+   * @param anyValue
+   * @param structValue
+   * @param valueValue
+   * @param listValueValue
+   * @param timeValue
+   * @param durationValue
+   * @param fieldMaskValue
+   * @param int32Value
+   * @param uint32Value
+   * @param int64Value
+   * @param uint64Value
+   * @param floatValue
+   * @param doubleValue
+   * @param stringValue
+   * @param boolValue
+   * @param bytesValue
+   * @param repeatedAnyValue
+   * @param repeatedStructValue
+   * @param repeatedValueValue
+   * @param repeatedListValueValue
+   * @param repeatedTimeValue
+   * @param repeatedDurationValue
+   * @param repeatedFieldMaskValue
+   * @param repeatedInt32Value
+   * @param repeatedUint32Value
+   * @param repeatedInt64Value
+   * @param repeatedUint64Value
+   * @param repeatedFloatValue
+   * @param repeatedDoubleValue
+   * @param repeatedStringValue
+   * @param repeatedBoolValue
+   * @param repeatedBytesValue
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, String requiredSingularResourceName, String requiredSingularResourceNameOneof, String requiredSingularResourceNameCommon, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<String> requiredRepeatedResourceName, List<String> requiredRepeatedResourceNameOneof, List<String> requiredRepeatedResourceNameCommon, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, String optionalSingularResourceName, String optionalSingularResourceNameOneof, String optionalSingularResourceNameCommon, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<String> optionalRepeatedResourceName, List<String> optionalRepeatedResourceNameOneof, List<String> optionalRepeatedResourceNameCommon, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap) {
+  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, String requiredSingularResourceName, String requiredSingularResourceNameOneof, String requiredSingularResourceNameCommon, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<String> requiredRepeatedResourceName, List<String> requiredRepeatedResourceNameOneof, List<String> requiredRepeatedResourceNameCommon, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, String optionalSingularResourceName, String optionalSingularResourceNameOneof, String optionalSingularResourceNameCommon, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<String> optionalRepeatedResourceName, List<String> optionalRepeatedResourceNameOneof, List<String> optionalRepeatedResourceNameCommon, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap, Any anyValue, Struct structValue, Value valueValue, ListValue listValueValue, Timestamp timeValue, Duration durationValue, FieldMask fieldMaskValue, Int32Value int32Value, UInt32Value uint32Value, Int64Value int64Value, UInt64Value uint64Value, FloatValue floatValue, DoubleValue doubleValue, StringValue stringValue, BoolValue boolValue, BytesValue bytesValue, List<Any> repeatedAnyValue, List<Struct> repeatedStructValue, List<Value> repeatedValueValue, List<ListValue> repeatedListValueValue, List<Timestamp> repeatedTimeValue, List<Duration> repeatedDurationValue, List<FieldMask> repeatedFieldMaskValue, List<Int32Value> repeatedInt32Value, List<UInt32Value> repeatedUint32Value, List<Int64Value> repeatedInt64Value, List<UInt64Value> repeatedUint64Value, List<FloatValue> repeatedFloatValue, List<DoubleValue> repeatedDoubleValue, List<StringValue> repeatedStringValue, List<BoolValue> repeatedBoolValue, List<BytesValue> repeatedBytesValue) {
 
     TestOptionalRequiredFlatteningParamsRequest request =
         TestOptionalRequiredFlatteningParamsRequest.newBuilder()
@@ -3273,6 +3406,38 @@ public class LibraryClient implements BackgroundResource {
         .addAllOptionalRepeatedFixed32(optionalRepeatedFixed32)
         .addAllOptionalRepeatedFixed64(optionalRepeatedFixed64)
         .putAllOptionalMap(optionalMap)
+        .setAnyValue(anyValue)
+        .setStructValue(structValue)
+        .setValueValue(valueValue)
+        .setListValueValue(listValueValue)
+        .setTimeValue(timeValue)
+        .setDurationValue(durationValue)
+        .setFieldMaskValue(fieldMaskValue)
+        .setInt32Value(int32Value)
+        .setUint32Value(uint32Value)
+        .setInt64Value(int64Value)
+        .setUint64Value(uint64Value)
+        .setFloatValue(floatValue)
+        .setDoubleValue(doubleValue)
+        .setStringValue(stringValue)
+        .setBoolValue(boolValue)
+        .setBytesValue(bytesValue)
+        .addAllRepeatedAnyValue(repeatedAnyValue)
+        .addAllRepeatedStructValue(repeatedStructValue)
+        .addAllRepeatedValueValue(repeatedValueValue)
+        .addAllRepeatedListValueValue(repeatedListValueValue)
+        .addAllRepeatedTimeValue(repeatedTimeValue)
+        .addAllRepeatedDurationValue(repeatedDurationValue)
+        .addAllRepeatedFieldMaskValue(repeatedFieldMaskValue)
+        .addAllRepeatedInt32Value(repeatedInt32Value)
+        .addAllRepeatedUint32Value(repeatedUint32Value)
+        .addAllRepeatedInt64Value(repeatedInt64Value)
+        .addAllRepeatedUint64Value(repeatedUint64Value)
+        .addAllRepeatedFloatValue(repeatedFloatValue)
+        .addAllRepeatedDoubleValue(repeatedDoubleValue)
+        .addAllRepeatedStringValue(repeatedStringValue)
+        .addAllRepeatedBoolValue(repeatedBoolValue)
+        .addAllRepeatedBytesValue(repeatedBytesValue)
         .build();
     return testOptionalRequiredFlatteningParams(request);
   }
@@ -3875,7 +4040,7 @@ public class LibraryClient implements BackgroundResource {
 
   }
 }
-============== file: src/main/java/com/google/gcloud/pubsub/v1/LibrarySettings.java ==============
+============== file: src/main/java/com/google/example/library/v1/LibrarySettings.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -3891,7 +4056,7 @@ public class LibraryClient implements BackgroundResource {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.v1;
+package com.google.example.library.v1;
 
 import com.google.api.core.ApiFunction;
 import com.google.api.core.ApiFuture;
@@ -3941,48 +4106,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.BookFromAnywhere;
-import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.Comment;
-import com.google.example.library.v1.CreateBookRequest;
-import com.google.example.library.v1.CreateShelfRequest;
-import com.google.example.library.v1.DeleteBookRequest;
-import com.google.example.library.v1.DeleteShelfRequest;
-import com.google.example.library.v1.DiscussBookRequest;
-import com.google.example.library.v1.FindRelatedBooksRequest;
-import com.google.example.library.v1.FindRelatedBooksResponse;
-import com.google.example.library.v1.GetBigBookMetadata;
-import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
-import com.google.example.library.v1.GetBookFromAnywhereRequest;
-import com.google.example.library.v1.GetBookFromArchiveRequest;
-import com.google.example.library.v1.GetBookRequest;
-import com.google.example.library.v1.GetShelfRequest;
-import com.google.example.library.v1.LibraryServiceGrpc;
-import com.google.example.library.v1.ListBooksRequest;
-import com.google.example.library.v1.ListBooksResponse;
-import com.google.example.library.v1.ListShelvesRequest;
-import com.google.example.library.v1.ListShelvesResponse;
-import com.google.example.library.v1.ListStringsRequest;
-import com.google.example.library.v1.ListStringsResponse;
-import com.google.example.library.v1.MergeShelvesRequest;
-import com.google.example.library.v1.MoveBookRequest;
-import com.google.example.library.v1.PublishSeriesRequest;
-import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.Shelf;
-import com.google.example.library.v1.StreamBooksRequest;
-import com.google.example.library.v1.StreamShelvesRequest;
-import com.google.example.library.v1.StreamShelvesResponse;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
-import com.google.example.library.v1.UpdateBookIndexRequest;
-import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.gcloud.pubsub.v1.LibraryClient.FindRelatedBooksPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListShelvesPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListStringsPagedResponse;
-import com.google.gcloud.pubsub.v1.stub.LibraryServiceStubSettings;
+import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
+import com.google.example.library.v1.stub.LibraryServiceStubSettings;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import com.google.tagger.v1.LabelerGrpc;
@@ -4571,7 +4699,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     }
   }
 }
-============== file: src/main/java/com/google/gcloud/pubsub/v1/package-info.java ==============
+============== file: src/main/java/com/google/example/library/v1/package-info.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -4626,8 +4754,8 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
  *
  */
 
-package com.google.gcloud.pubsub.v1;
-============== file: src/main/java/com/google/gcloud/pubsub/v1/stub/GrpcLibraryServiceCallableFactory.java ==============
+package com.google.example.library.v1;
+============== file: src/main/java/com/google/example/library/v1/stub/GrpcLibraryServiceCallableFactory.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -4643,7 +4771,7 @@ package com.google.gcloud.pubsub.v1;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.v1.stub;
+package com.google.example.library.v1.stub;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
@@ -4688,6 +4816,11 @@ import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
+import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
+import com.google.example.library.v1.LibrarySettings;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
 import com.google.example.library.v1.ListShelvesRequest;
@@ -4707,22 +4840,32 @@ import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.gcloud.pubsub.v1.LibraryClient.FindRelatedBooksPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListShelvesPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListStringsPagedResponse;
-import com.google.gcloud.pubsub.v1.LibrarySettings;
 import com.google.longrunning.Operation;
 import com.google.longrunning.stub.GrpcOperationsStub;
 import com.google.longrunning.stub.OperationsStub;
+import com.google.protobuf.Any;
+import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.BytesValue;
+import com.google.protobuf.DoubleValue;
+import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
+import com.google.protobuf.FloatValue;
+import com.google.protobuf.Int32Value;
+import com.google.protobuf.Int64Value;
+import com.google.protobuf.ListValue;
+import com.google.protobuf.StringValue;
+import com.google.protobuf.Struct;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.UInt32Value;
+import com.google.protobuf.UInt64Value;
+import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
 import com.google.tagger.v1.TaggerProto.AddTagRequest;
@@ -4800,7 +4943,7 @@ public class GrpcLibraryServiceCallableFactory implements GrpcStubCallableFactor
     return GrpcCallableFactory.createClientStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
   }
 }
-============== file: src/main/java/com/google/gcloud/pubsub/v1/stub/GrpcLibraryServiceStub.java ==============
+============== file: src/main/java/com/google/example/library/v1/stub/GrpcLibraryServiceStub.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -4816,7 +4959,7 @@ public class GrpcLibraryServiceCallableFactory implements GrpcStubCallableFactor
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.v1.stub;
+package com.google.example.library.v1.stub;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
@@ -4855,6 +4998,11 @@ import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
+import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
+import com.google.example.library.v1.LibrarySettings;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
 import com.google.example.library.v1.ListShelvesRequest;
@@ -4874,21 +5022,31 @@ import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.gcloud.pubsub.v1.LibraryClient.FindRelatedBooksPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListShelvesPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListStringsPagedResponse;
-import com.google.gcloud.pubsub.v1.LibrarySettings;
 import com.google.longrunning.Operation;
 import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Any;
+import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.BytesValue;
+import com.google.protobuf.DoubleValue;
+import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
+import com.google.protobuf.FloatValue;
+import com.google.protobuf.Int32Value;
+import com.google.protobuf.Int64Value;
+import com.google.protobuf.ListValue;
+import com.google.protobuf.StringValue;
+import com.google.protobuf.Struct;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.UInt32Value;
+import com.google.protobuf.UInt64Value;
+import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
 import com.google.tagger.v1.TaggerProto.AddTagRequest;
@@ -5517,7 +5675,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   }
 
 }
-============== file: src/main/java/com/google/gcloud/pubsub/v1/stub/LibraryServiceStub.java ==============
+============== file: src/main/java/com/google/example/library/v1/stub/LibraryServiceStub.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -5533,7 +5691,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.v1.stub;
+package com.google.example.library.v1.stub;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
@@ -5564,6 +5722,10 @@ import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
+import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
 import com.google.example.library.v1.ListShelvesRequest;
@@ -5583,20 +5745,31 @@ import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.gcloud.pubsub.v1.LibraryClient.FindRelatedBooksPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListShelvesPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.longrunning.Operation;
 import com.google.longrunning.stub.OperationsStub;
+import com.google.protobuf.Any;
+import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.BytesValue;
+import com.google.protobuf.DoubleValue;
+import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
+import com.google.protobuf.FloatValue;
+import com.google.protobuf.Int32Value;
+import com.google.protobuf.Int64Value;
+import com.google.protobuf.ListValue;
+import com.google.protobuf.StringValue;
+import com.google.protobuf.Struct;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.UInt32Value;
+import com.google.protobuf.UInt64Value;
+import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
 import com.google.tagger.v1.TaggerProto.AddTagRequest;
@@ -5764,7 +5937,7 @@ public abstract class LibraryServiceStub implements BackgroundResource {
   @Override
   public abstract void close();
 }
-============== file: src/main/java/com/google/gcloud/pubsub/v1/stub/LibraryServiceStubSettings.java ==============
+============== file: src/main/java/com/google/example/library/v1/stub/LibraryServiceStubSettings.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -5780,7 +5953,7 @@ public abstract class LibraryServiceStub implements BackgroundResource {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.v1.stub;
+package com.google.example.library.v1.stub;
 
 import com.google.api.core.ApiFunction;
 import com.google.api.core.ApiFuture;
@@ -5848,6 +6021,10 @@ import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
+import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibraryServiceGrpc;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
@@ -5867,10 +6044,6 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.gcloud.pubsub.v1.LibraryClient.FindRelatedBooksPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListShelvesPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import com.google.tagger.v1.LabelerGrpc;
@@ -6310,7 +6483,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
         }
         @Override
         public Iterable<Shelf> extractResources(ListShelvesResponse payload) {
-          return payload.getShelvesList();
+          return payload.getShelvesList() != null ? payload.getShelvesList() :
+            ImmutableList.<Shelf>of();
         }
       };
 
@@ -6344,7 +6518,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
         }
         @Override
         public Iterable<Book> extractResources(ListBooksResponse payload) {
-          return payload.getBooksList();
+          return payload.getBooksList() != null ? payload.getBooksList() :
+            ImmutableList.<Book>of();
         }
       };
 
@@ -6378,7 +6553,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
         }
         @Override
         public Iterable<String> extractResources(ListStringsResponse payload) {
-          return payload.getStringsList();
+          return payload.getStringsList() != null ? payload.getStringsList() :
+            ImmutableList.<String>of();
         }
       };
 
@@ -6412,7 +6588,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
         }
         @Override
         public Iterable<String> extractResources(FindRelatedBooksResponse payload) {
-          return payload.getNamesList();
+          return payload.getNamesList() != null ? payload.getNamesList() :
+            ImmutableList.<String>of();
         }
       };
 
@@ -7240,786 +7417,848 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     }
   }
 }
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/discussbookcallable/DiscussBookCallableCallableStreamingBidiProg.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "DiscussBookCallableCallableStreamingBidiProg" ]
-//// STUB standalone sample "DiscussBookCallableCallableStreamingBidiProg" /////
+============== file: src/main/java/samples/com/google/example/library/v1/discussbookcallable/DiscussBookCallableCallableStreamingBidiProg.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingBidi",  "prog")
+package com.google.example.examples.library.v1.snippets;
 
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 // [START turing_prog_callable_streaming_bidi]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "CallableStreamingBidi"
-//        region tag: "turing_prog_callable_streaming_bidi"
-//         className: "DiscussBookCallableCallableStreamingBidiProg"
-//          valueSet: "prog" ("Programming Books")
-//       description: "Testing calling forms"
-//        [name=BASIC]
-//      apiMethod "discussBookCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.Comment;
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.protobuf.ByteString;
+import java.nio.File;
+import java.nio.Files;
+import java.nio.Path;
+import java.nio.Paths;
 
 public class DiscussBookCallableCallableStreamingBidiProg {
-  public static void main(String[] args) {
+  public static void sampleDiscussBook(String imageFileName) {
     // [START turing_prog_callable_streaming_bidi_core]
-    BidiStream<DiscussBookRequest, Comment> bidiStream =
-        libraryClient.discussBookCallable().call();
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      BidiStream<DiscussBookRequest, Comment> bidiStream =
+          libraryClient.discussBookCallable().call();
 
-    String name = "BASIC";
-    DiscussBookRequest request = DiscussBookRequest.newBuilder()
-      .setName(name)
-      .build();
-    bidiStream.send(request);
-    for (Comment responseItem : bidiStream) {
-      System.out.println(responseItem);
+      // String imageFileName = "image_file.jpg";
+      String name = "BASIC";
+      String fileName = "comment_file";
+      Path path = Paths.get(fileName);
+      byte[] data = Files.readAllBytes(path);
+      ByteString comment = ByteString.copyFrom(data);
+      Comment comment2 = Comment.newBuilder()
+        .setComment(comment)
+        .build();
+      path = Paths.get(imageFileName);
+      data = Files.readAllBytes(path);
+      ByteString image = ByteString.copyFrom(data);
+      DiscussBookRequest request = DiscussBookRequest.newBuilder()
+        .setName(name)
+        .setComment(comment2)
+        .setImage(image)
+        .build();
+      bidiStream.send(request);
+      for (Comment responseItem : bidiStream) {
+        System.out.println(responseItem);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END turing_prog_callable_streaming_bidi_core]
   }
-}
 
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("imageFileName")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String imageFileName = cl.getOptionValue("imageFileName", "image_file.jpg");
+
+    sampleDiscussBook(imageFileName);
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END turing_prog_callable_streaming_bidi]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/findrelatedbooks/FindRelatedBooksFlattenedPagedOdyssey.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksFlattenedPagedOdyssey" ]
-//// STUB standalone sample "FindRelatedBooksFlattenedPagedOdyssey" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+============== file: src/main/java/samples/com/google/example/library/v1/findrelatedbooks/FindRelatedBooksFlattenedPagedOdyssey.java ==============
+// DO NOT EDIT! This is a generated sample ("FlattenedPaged",  "odyssey")
+package com.google.example.examples.library.v1.snippets;
 
 // [START sample]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "FlattenedPaged"
-//        region tag: "sample"
-//         className: "FindRelatedBooksFlattenedPagedOdyssey"
-//          valueSet: "odyssey" ("The Odyssey")
-//       description: "Testing calling forms"
-//        [names[0]=Odyssey, shelves[0]=Classics]
-//      apiMethod "findRelatedBooks" of type "PagedFlattenedMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.LibraryClient;
 
 public class FindRelatedBooksFlattenedPagedOdyssey {
-  public static void main(String[] args) {
+  public static void sampleFindRelatedBooks() {
     // [START sample_core]
-    String namesElement = "Odyssey";
-    List<String> names = Arrays.asList(namesElement);
-    String shelvesElement = "Classics";
-    List<String> shelves = Arrays.asList(shelvesElement);
-    ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(names, shelves);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      String namesElement = "Odyssey";
+      List<String> names = Arrays.asList(namesElement);
+      String shelvesElement = "Classics";
+      List<String> shelves = Arrays.asList(shelvesElement);
+      ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(names, shelves);
 
-    // Do something
+      // Do something
 
-    for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
-      ShelfBookName book = responseItem;
-      System.out.printf("Here's a related book: %s\n", book);
-    }
-    // [END sample_core]
-  }
-}
-
-// FIXME: Insert here clean-up code.
-
-// [END sample]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/findrelatedbooks/FindRelatedBooksRequestPagedOdyssey.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksRequestPagedOdyssey" ]
-//// STUB standalone sample "FindRelatedBooksRequestPagedOdyssey" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-
-// [START sample]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "RequestPaged"
-//        region tag: "sample"
-//         className: "FindRelatedBooksRequestPagedOdyssey"
-//          valueSet: "odyssey" ("The Odyssey")
-//       description: "Testing calling forms"
-//        [names[0]=Odyssey, shelves[0]=Classics]
-//      apiMethod "findRelatedBooks" of type "PagedRequestObjectMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-public class FindRelatedBooksRequestPagedOdyssey {
-  public static void main(String[] args) {
-    // [START sample_core]
-    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    List<ShelfBookName> names = Arrays.asList(namesElement);
-    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-    List<ShelfName> shelves = Arrays.asList(shelvesElement);
-    FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(ShelfBookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
-      .build();
-    for (ShelfBookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
-      ShelfBookName book = responseItem;
-      System.out.printf("Here's a related book: %s\n", book);
-    }
-    // [END sample_core]
-  }
-}
-
-// FIXME: Insert here clean-up code.
-
-// [END sample]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/findrelatedbookscallable/FindRelatedBooksCallableCallableListOdyssey.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksCallableCallableListOdyssey" ]
-//// STUB standalone sample "FindRelatedBooksCallableCallableListOdyssey" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-
-// [START sample]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "CallableList"
-//        region tag: "sample"
-//         className: "FindRelatedBooksCallableCallableListOdyssey"
-//          valueSet: "odyssey" ("The Odyssey")
-//       description: "Testing calling forms"
-//        [names[0]=Odyssey, shelves[0]=Classics]
-//      apiMethod "findRelatedBooksCallable" of type "UnpagedListCallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-public class FindRelatedBooksCallableCallableListOdyssey {
-  public static void main(String[] args) {
-    // [START sample_core]
-    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    List<ShelfBookName> names = Arrays.asList(namesElement);
-    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-    List<ShelfName> shelves = Arrays.asList(shelvesElement);
-    FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(ShelfBookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
-      .build();
-    while (true) {
-      FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-      for (ShelfBookName responseItem : ShelfBookName.parseList(response.getNamesList())) {
+      for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
         ShelfBookName book = responseItem;
         System.out.printf("Here's a related book: %s\n", book);
       }
-      String nextPageToken = response.getNextPageToken();
-      if (!Strings.isNullOrEmpty(nextPageToken)) {
-        request = request.toBuilder().setPageToken(nextPageToken).build();
-      } else {
-        break;
-      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END sample_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END sample]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/findrelatedbookspagedcallable/FindRelatedBooksPagedCallableCallablePagedOdyssey.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "FindRelatedBooksPagedCallableCallablePagedOdyssey" ]
-//// STUB standalone sample "FindRelatedBooksPagedCallableCallablePagedOdyssey" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+============== file: src/main/java/samples/com/google/example/library/v1/findrelatedbooks/FindRelatedBooksRequestPagedOdyssey.java ==============
+// DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
+package com.google.example.examples.library.v1.snippets;
 
 // [START sample]
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
 
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
+public class FindRelatedBooksRequestPagedOdyssey {
+  public static void sampleFindRelatedBooks() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<ShelfBookName> names = Arrays.asList(namesElement);
+      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+      List<ShelfName> shelves = Arrays.asList(shelvesElement);
+      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+        .addAllNames(ShelfBookName.toStringList(names))
+        .addAllShelves(ShelfName.toStringList(shelves))
+        .build();
+      for (ShelfBookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
+        ShelfBookName book = responseItem;
+        System.out.printf("Here's a related book: %s\n", book);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
 
-//      calling form: "CallablePaged"
-//        region tag: "sample"
-//         className: "FindRelatedBooksPagedCallableCallablePagedOdyssey"
-//          valueSet: "odyssey" ("The Odyssey")
-//       description: "Testing calling forms"
-//        [names[0]=Odyssey, shelves[0]=Classics]
-//      apiMethod "findRelatedBooksPagedCallable" of type "PagedCallableMethod"
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
+// FIXME: Insert here clean-up code.
 
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+// [END sample]
+============== file: src/main/java/samples/com/google/example/library/v1/findrelatedbookscallable/FindRelatedBooksCallableCallableListOdyssey.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableList",  "odyssey")
+package com.google.example.examples.library.v1.snippets;
+
+// [START sample]
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+
+public class FindRelatedBooksCallableCallableListOdyssey {
+  public static void sampleFindRelatedBooks() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<ShelfBookName> names = Arrays.asList(namesElement);
+      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+      List<ShelfName> shelves = Arrays.asList(shelvesElement);
+      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+        .addAllNames(ShelfBookName.toStringList(names))
+        .addAllShelves(ShelfName.toStringList(shelves))
+        .build();
+      while (true) {
+        FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
+        for (ShelfBookName responseItem : ShelfBookName.parseList(response.getNamesList())) {
+          ShelfBookName book = responseItem;
+          System.out.printf("Here's a related book: %s\n", book);
+        }
+        String nextPageToken = response.getNextPageToken();
+        if (!Strings.isNullOrEmpty(nextPageToken)) {
+          request = request.toBuilder().setPageToken(nextPageToken).build();
+        } else {
+          break;
+        }
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: src/main/java/samples/com/google/example/library/v1/findrelatedbookspagedcallable/FindRelatedBooksPagedCallableCallablePagedOdyssey.java ==============
+// DO NOT EDIT! This is a generated sample ("CallablePaged",  "odyssey")
+package com.google.example.examples.library.v1.snippets;
+
+// [START sample]
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
 
 public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
-  public static void main(String[] args) {
+  public static void sampleFindRelatedBooks() {
     // [START sample_core]
-    ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    List<ShelfBookName> names = Arrays.asList(namesElement);
-    ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-    List<ShelfName> shelves = Arrays.asList(shelvesElement);
-    FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-      .addAllNames(ShelfBookName.toStringList(names))
-      .addAllShelves(ShelfName.toStringList(shelves))
-      .build();
-    ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<ShelfBookName> names = Arrays.asList(namesElement);
+      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+      List<ShelfName> shelves = Arrays.asList(shelvesElement);
+      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+        .addAllNames(ShelfBookName.toStringList(names))
+        .addAllShelves(ShelfName.toStringList(shelves))
+        .build();
+      ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
 
-    // Do something
+      // Do something
 
-    for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
-      ShelfBookName book = responseItem;
-      System.out.printf("Here's a related book: %s\n", book);
+      for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
+        ShelfBookName book = responseItem;
+        System.out.printf("Here's a related book: %s\n", book);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END sample_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END sample]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/getbigbookasync/GetBigBookAsyncLongRunningFlattenedAsyncWap.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookAsyncLongRunningFlattenedAsyncWap" ]
-//// STUB standalone sample "GetBigBookAsyncLongRunningFlattenedAsyncWap" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+============== file: src/main/java/samples/com/google/example/library/v1/getbigbookasync/GetBigBookAsyncLongRunningFlattenedAsyncWap.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "wap")
+package com.google.example.examples.library.v1.snippets;
 
 // [START hopper]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "LongRunningFlattenedAsync"
-//        region tag: "hopper"
-//         className: "GetBigBookAsyncLongRunningFlattenedAsyncWap"
-//          valueSet: "wap" ("GetBigBook: 'War and Peace'")
-//       description: "Testing calling forms"
-//        [name="War and Peace"]
-//      apiMethod "getBigBookAsync" of type "AsyncOperationFlattenedMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
 
 public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
-  public static void main(String[] args) {
+  public static void sampleGetBigBook() {
     // [START hopper_core]
-    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    Book response = libraryClient.getBigBookAsync(name.toString()).get();
-    System.out.println(response);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      Book response = libraryClient.getBigBookAsync(name.toString()).get();
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END hopper_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleGetBigBook();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/getbigbookasync/GetBigBookAsyncLongRunningRequestAsyncWap.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookAsyncLongRunningRequestAsyncWap" ]
-//// STUB standalone sample "GetBigBookAsyncLongRunningRequestAsyncWap" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+============== file: src/main/java/samples/com/google/example/library/v1/getbigbookasync/GetBigBookAsyncLongRunningRequestAsyncWap.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
+package com.google.example.examples.library.v1.snippets;
 
 // [START hopper]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "LongRunningRequestAsync"
-//        region tag: "hopper"
-//         className: "GetBigBookAsyncLongRunningRequestAsyncWap"
-//          valueSet: "wap" ("GetBigBook: 'War and Peace'")
-//       description: "Testing calling forms"
-//        [name="War and Peace"]
-//      apiMethod "getBigBookAsync" of type "AsyncOperationRequestObjectMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
 
 public class GetBigBookAsyncLongRunningRequestAsyncWap {
-  public static void main(String[] args) {
+  public static void sampleGetBigBook() {
     // [START hopper_core]
-    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    GetBookRequest request = GetBookRequest.newBuilder()
-      .setName(name.toString())
-      .build();
-    Book response = libraryClient.getBigBookAsync(request).get();
-    System.out.println(response);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      Book response = libraryClient.getBigBookAsync(request).get();
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END hopper_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleGetBigBook();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/getbigbookcallable/GetBigBookCallableCallableWap.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookCallableCallableWap" ]
-//// STUB standalone sample "GetBigBookCallableCallableWap" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+============== file: src/main/java/samples/com/google/example/library/v1/getbigbookcallable/GetBigBookCallableCallableWap.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "wap")
+package com.google.example.examples.library.v1.snippets;
 
 // [START hopper]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Callable"
-//        region tag: "hopper"
-//         className: "GetBigBookCallableCallableWap"
-//          valueSet: "wap" ("GetBigBook: 'War and Peace'")
-//       description: "Testing calling forms"
-//        [name="War and Peace"]
-//      apiMethod "getBigBookCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
 
 public class GetBigBookCallableCallableWap {
-  public static void main(String[] args) {
+  public static void sampleGetBigBook() {
     // [START hopper_core]
-    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    GetBookRequest request = GetBookRequest.newBuilder()
-      .setName(name.toString())
-      .build();
-    ApiFuture<Operation> future = libraryClient.getBigBookCallable().futureCall(request);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Operation> future = libraryClient.getBigBookCallable().futureCall(request);
 
-    // Do something
+      // Do something
 
-    Operation response = future.get();
-    System.out.println(response);
+      Operation response = future.get();
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END hopper_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleGetBigBook();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/getbigbookoperationcallable/GetBigBookOperationCallableLongRunningCallableWap.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookOperationCallableLongRunningCallableWap" ]
-//// STUB standalone sample "GetBigBookOperationCallableLongRunningCallableWap" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+============== file: src/main/java/samples/com/google/example/library/v1/getbigbookoperationcallable/GetBigBookOperationCallableLongRunningCallableWap.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "wap")
+package com.google.example.examples.library.v1.snippets;
 
 // [START hopper]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "LongRunningCallable"
-//        region tag: "hopper"
-//         className: "GetBigBookOperationCallableLongRunningCallableWap"
-//          valueSet: "wap" ("GetBigBook: 'War and Peace'")
-//       description: "Testing calling forms"
-//        [name="War and Peace"]
-//      apiMethod "getBigBookOperationCallable" of type "OperationCallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
 
 public class GetBigBookOperationCallableLongRunningCallableWap {
-  public static void main(String[] args) {
+  public static void sampleGetBigBook() {
     // [START hopper_core]
-    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-    GetBookRequest request = GetBookRequest.newBuilder()
-      .setName(name.toString())
-      .build();
-    OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
 
-    // Do something
+      // Do something
 
-    Book response = future.get();
-    System.out.println(response);
+      Book response = future.get();
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END hopper_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleGetBigBook();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/monologaboutbookcallable/MonologAboutBookCallableCallableStreamingClientProg.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "MonologAboutBookCallableCallableStreamingClientProg" ]
-//// STUB standalone sample "MonologAboutBookCallableCallableStreamingClientProg" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+============== file: src/main/java/samples/com/google/example/library/v1/monologaboutbookcallable/MonologAboutBookCallableCallableStreamingClientProg.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "prog")
+package com.google.example.examples.library.v1.snippets;
 
 // [START sample]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "CallableStreamingClient"
-//        region tag: "sample"
-//         className: "MonologAboutBookCallableCallableStreamingClientProg"
-//          valueSet: "prog" ("Programming Books")
-//       description: "Testing calling forms"
-//        [name=BASIC]
-//      apiMethod "monologAboutBookCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
 
 public class MonologAboutBookCallableCallableStreamingClientProg {
-  public static void main(String[] args) {
+  public static void sampleMonologAboutBook() {
     // [START sample_core]
-    ApiStreamObserver<Comment> responseObserver =
-        new ApiStreamObserver<Comment>() {
-          @Override
-          public void onNext(Comment response) {
-            System.out.println(response);
-          }
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ApiStreamObserver<Comment> responseObserver =
+          new ApiStreamObserver<Comment>() {
+            @Override
+            public void onNext(Comment response) {
+              System.out.printf("The stage of the comment is: %s\n", response.getStage());
+            }
 
-          @Override
-          public void onError(Throwable t) {
-            // Add error-handling
-          }
+            @Override
+            public void onError(Throwable t) {
+              // Add error-handling
+            }
 
-          @Override
-          public void onCompleted() {
-            // Do something when complete.
-          }
-        };
-    ApiStreamObserver<DiscussBookRequest> requestObserver =
-        libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
+            @Override
+            public void onCompleted() {
+              // Do something when complete.
+            }
+          };
+      ApiStreamObserver<DiscussBookRequest> requestObserver =
+          libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
 
-    String name = "BASIC";
-    DiscussBookRequest request = DiscussBookRequest.newBuilder()
-      .setName(name)
-      .build();
-    requestObserver.onNext(request);
+      String name = "BASIC";
+      DiscussBookRequest request = DiscussBookRequest.newBuilder()
+        .setName(name)
+        .build();
+      requestObserver.onNext(request);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END sample_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleMonologAboutBook();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END sample]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesFlattenedPiVersion.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesFlattenedPiVersion" ]
-//// STUB standalone sample "PublishSeriesFlattenedPiVersion" /////
+============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesFlattenedPiVersion.java ==============
+// DO NOT EDIT! This is a generated sample ("Flattened",  "pi_version")
+package com.google.example.examples.library.v1.snippets;
 
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 // [START canonical]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Flattened"
-//        region tag: "canonical"
-//         className: "PublishSeriesFlattenedPiVersion"
-//          valueSet: "pi_version" ("Pi version")
-//       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
-//      apiMethod "publishSeries" of type "FlattenedMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PublishSeriesFlattenedPiVersion {
-  public static void main(String[] args) {
+  public static void samplePublishSeries(String shelfName, int edition) {
     // [START canonical_core]
-    // String name = "Math";
-    // int edition = 123;
-    Shelf shelf = Shelf.newBuilder()
-      .setName(name)
-      .build();
-    List<Book> books = new ArrayList<>();
-    String seriesString = "xyz3141592654";
-    SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-      .setSeriesString(seriesString)
-      .build();
-    PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
-    for (String title : response.getBookNamesList()) {
-      System.out.printf("Title: %s\n", title);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelfName = "Math";
+      // int edition = 123;
+      Shelf shelf = Shelf.newBuilder()
+        .setName(shelfName)
+        .build();
+      List<Book> books = new ArrayList<>();
+      String seriesString = "xyz3141592654";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+      for (String title : response.getBookNamesList()) {
+        System.out.printf("Title: %s\n", title);
+      }
+      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
+      System.out.println("That's all!");
+      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
-    System.out.println("That's all!");
-    System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
     // [END canonical_core]
   }
-}
 
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelfName")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("edition")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelfName = cl.getOptionValue("shelfName", "Math");
+    int edition =
+        cl.getOptionValue("edition") != null
+            ? Integer.parseInt(cl.getOptionValue("edition"))
+            : 123;
+
+    samplePublishSeries(shelfName, edition);
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesFlattenedSecondEdition.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesFlattenedSecondEdition" ]
-//// STUB standalone sample "PublishSeriesFlattenedSecondEdition" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesFlattenedSecondEdition.java ==============
+// DO NOT EDIT! This is a generated sample ("Flattened",  "second_edition")
+package com.google.example.examples.library.v1.snippets;
 
 // [START canonical]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Flattened"
-//        region tag: "canonical"
-//         className: "PublishSeriesFlattenedSecondEdition"
-//          valueSet: "second_edition" ("Second edition")
-//       description: "Testing calling forms"
-//        [edition=2]
-//      apiMethod "publishSeries" of type "FlattenedMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PublishSeriesFlattenedSecondEdition {
-  public static void main(String[] args) {
+  public static void samplePublishSeries() {
     // [START canonical_core]
-    Shelf shelf = Shelf.newBuilder().build();
-    List<Book> books = new ArrayList<>();
-    int edition = 2;
-    SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-    PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
-    System.out.println(response);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      int edition = 2;
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END canonical_core]
   }
-}
 
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesRequestPiVersion.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesRequestPiVersion" ]
-//// STUB standalone sample "PublishSeriesRequestPiVersion" /////
+============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesRequestPiVersion.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
+package com.google.example.examples.library.v1.snippets;
 
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 // [START canonical]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Request"
-//        region tag: "canonical"
-//         className: "PublishSeriesRequestPiVersion"
-//          valueSet: "pi_version" ("Pi version")
-//       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
-//      apiMethod "publishSeries" of type "RequestObjectMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PublishSeriesRequestPiVersion {
-  public static void main(String[] args) {
+  public static void samplePublishSeries(String shelfName, int edition) {
     // [START canonical_core]
-    // String name = "Math";
-    // int edition = 123;
-    Shelf shelf = Shelf.newBuilder()
-      .setName(name)
-      .build();
-    List<Book> books = new ArrayList<>();
-    String seriesString = "xyz3141592654";
-    SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-      .setSeriesString(seriesString)
-      .build();
-    PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-      .setShelf(shelf)
-      .addAllBooks(books)
-      .setSeriesUuid(seriesUuid)
-      .setEdition(edition)
-      .build();
-    PublishSeriesResponse response = libraryClient.publishSeries(request);
-    for (String title : response.getBookNamesList()) {
-      System.out.printf("Title: %s\n", title);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelfName = "Math";
+      // int edition = 123;
+      Shelf shelf = Shelf.newBuilder()
+        .setName(shelfName)
+        .build();
+      List<Book> books = new ArrayList<>();
+      String seriesString = "xyz3141592654";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(request);
+      for (String title : response.getBookNamesList()) {
+        System.out.printf("Title: %s\n", title);
+      }
+      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
+      System.out.println("That's all!");
+      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
-    System.out.println("That's all!");
-    System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
     // [END canonical_core]
   }
-}
 
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelfName")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("edition")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelfName = cl.getOptionValue("shelfName", "Math");
+    int edition =
+        cl.getOptionValue("edition") != null
+            ? Integer.parseInt(cl.getOptionValue("edition"))
+            : 123;
+
+    samplePublishSeries(shelfName, edition);
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseries/PublishSeriesRequestSecondEdition.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesRequestSecondEdition" ]
-//// STUB standalone sample "PublishSeriesRequestSecondEdition" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesRequestSecondEdition.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
+package com.google.example.examples.library.v1.snippets;
 
 // [START canonical]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Request"
-//        region tag: "canonical"
-//         className: "PublishSeriesRequestSecondEdition"
-//          valueSet: "second_edition" ("Second edition")
-//       description: "Testing calling forms"
-//        [edition=2]
-//      apiMethod "publishSeries" of type "RequestObjectMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PublishSeriesRequestSecondEdition {
-  public static void main(String[] args) {
+  public static void samplePublishSeries() {
     // [START canonical_core]
-    Shelf shelf = Shelf.newBuilder().build();
-    List<Book> books = new ArrayList<>();
-    SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-    int edition = 2;
-    PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-      .setShelf(shelf)
-      .addAllBooks(books)
-      .setSeriesUuid(seriesUuid)
-      .setEdition(edition)
-      .build();
-    PublishSeriesResponse response = libraryClient.publishSeries(request);
-    System.out.println(response);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+      int edition = 2;
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(request);
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END canonical_core]
   }
-}
 
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseriescallable/PublishSeriesCallableCallablePiVersion.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesCallableCallablePiVersion" ]
-//// STUB standalone sample "PublishSeriesCallableCallablePiVersion" /////
+============== file: src/main/java/samples/com/google/example/library/v1/publishseriescallable/PublishSeriesCallableCallablePiVersion.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "pi_version")
+package com.google.example.examples.library.v1.snippets;
 
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 // [START canonical]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Callable"
-//        region tag: "canonical"
-//         className: "PublishSeriesCallableCallablePiVersion"
-//          valueSet: "pi_version" ("Pi version")
-//       description: "Testing calling forms"
-//        [shelf.name=Math, series_uuid.series_string=xyz3141592654, edition=123]
-//      apiMethod "publishSeriesCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PublishSeriesCallableCallablePiVersion {
-  public static void main(String[] args) {
+  public static void samplePublishSeries(String shelfName, int edition) {
     // [START canonical_core]
-    // String name = "Math";
-    // int edition = 123;
-    Shelf shelf = Shelf.newBuilder()
-      .setName(name)
-      .build();
-    List<Book> books = new ArrayList<>();
-    String seriesString = "xyz3141592654";
-    SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-      .setSeriesString(seriesString)
-      .build();
-    PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-      .setShelf(shelf)
-      .addAllBooks(books)
-      .setSeriesUuid(seriesUuid)
-      .setEdition(edition)
-      .build();
-    ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelfName = "Math";
+      // int edition = 123;
+      Shelf shelf = Shelf.newBuilder()
+        .setName(shelfName)
+        .build();
+      List<Book> books = new ArrayList<>();
+      String seriesString = "xyz3141592654";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
 
-    // Do something
+      // Do something
 
-    PublishSeriesResponse response = future.get();
-    for (String title : response.getBookNamesList()) {
-      System.out.printf("Title: %s\n", title);
+      PublishSeriesResponse response = future.get();
+      for (String title : response.getBookNamesList()) {
+        System.out.printf("Title: %s\n", title);
+      }
+      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
+      System.out.println("That's all!");
+      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
-    System.out.println("That's all!");
-    System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
     // [END canonical_core]
   }
-}
 
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelfName")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("edition")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelfName = cl.getOptionValue("shelfName", "Math");
+    int edition =
+        cl.getOptionValue("edition") != null
+            ? Integer.parseInt(cl.getOptionValue("edition"))
+            : 123;
+
+    samplePublishSeries(shelfName, edition);
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/publishseriescallable/PublishSeriesCallableCallableSecondEdition.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "PublishSeriesCallableCallableSecondEdition" ]
-//// STUB standalone sample "PublishSeriesCallableCallableSecondEdition" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+============== file: src/main/java/samples/com/google/example/library/v1/publishseriescallable/PublishSeriesCallableCallableSecondEdition.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "second_edition")
+package com.google.example.examples.library.v1.snippets;
 
 // [START canonical]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "Callable"
-//        region tag: "canonical"
-//         className: "PublishSeriesCallableCallableSecondEdition"
-//          valueSet: "second_edition" ("Second edition")
-//       description: "Testing calling forms"
-//        [edition=2]
-//      apiMethod "publishSeriesCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PublishSeriesCallableCallableSecondEdition {
-  public static void main(String[] args) {
+  public static void samplePublishSeries() {
     // [START canonical_core]
-    Shelf shelf = Shelf.newBuilder().build();
-    List<Book> books = new ArrayList<>();
-    SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-    int edition = 2;
-    PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-      .setShelf(shelf)
-      .addAllBooks(books)
-      .setSeriesUuid(seriesUuid)
-      .setEdition(edition)
-      .build();
-    ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+      int edition = 2;
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
 
-    // Do something
+      // Do something
 
-    PublishSeriesResponse response = future.get();
-    System.out.println(response);
+      PublishSeriesResponse response = future.get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
     // [END canonical_core]
   }
-}
 
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/streambookscallable/StreamBooksCallableCallableStreamingServerProg.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamBooksCallableCallableStreamingServerProg" ]
-//// STUB standalone sample "StreamBooksCallableCallableStreamingServerProg" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+============== file: src/main/java/samples/com/google/example/library/v1/streambookscallable/StreamBooksCallableCallableStreamingServerProg.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "prog")
+package com.google.example.examples.library.v1.snippets;
 
 // [START babbage]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "CallableStreamingServer"
-//        region tag: "babbage"
-//         className: "StreamBooksCallableCallableStreamingServerProg"
-//          valueSet: "prog" ("Programming Books")
-//       description: "Testing calling forms"
-//        [name=BASIC]
-//      apiMethod "streamBooksCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.StreamBooksRequest;
 
 public class StreamBooksCallableCallableStreamingServerProg {
-  public static void main(String[] args) {
+  public static void sampleStreamBooks() {
     // [START babbage_core]
-    String name = "BASIC";
-    StreamBooksRequest request = StreamBooksRequest.newBuilder()
-      .setName(name)
-      .build();
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      String name = "BASIC";
+      StreamBooksRequest request = StreamBooksRequest.newBuilder()
+        .setName(name)
+        .build();
 
-    ServerStream<Book> stream = libraryClient.streamBooksCallable().call(request);
-    for (Book responseItem : stream) {
-      System.out.println(responseItem);
+      ServerStream<Book> stream = libraryClient.streamBooksCallable().call(request);
+      for (Book responseItem : stream) {
+        System.out.println(responseItem);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END babbage_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleStreamBooks();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END babbage]
-============== file: src/main/java/samples/com/google/gcloud/pubsub/v1/streamshelvescallable/StreamShelvesCallableCallableStreamingServerEmpty.java ==============
-//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "StreamShelvesCallableCallableStreamingServerEmpty" ]
-//// STUB standalone sample "StreamShelvesCallableCallableStreamingServerEmpty" /////
-
-// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+============== file: src/main/java/samples/com/google/example/library/v1/streamshelvescallable/StreamShelvesCallableCallableStreamingServerEmpty.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "empty")
+package com.google.example.examples.library.v1.snippets;
 
 // [START sample]
-
-// FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-//      calling form: "CallableStreamingServer"
-//        region tag: "sample"
-//         className: "StreamShelvesCallableCallableStreamingServerEmpty"
-//          valueSet: "empty" ("Server streaming")
-//       description: "Testing calling forms"
-//        []
-//      apiMethod "streamShelvesCallable" of type "CallableMethod"
-
-// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.StreamShelvesRequest;
 
 public class StreamShelvesCallableCallableStreamingServerEmpty {
-  public static void main(String[] args) {
+  public static void sampleStreamShelves() {
     // [START sample_core]
-    StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
 
-    ServerStream<StreamShelvesResponse> stream = libraryClient.streamShelvesCallable().call(request);
-    for (StreamShelvesResponse responseItem : stream) {
-      System.out.println(responseItem);
+      ServerStream<StreamShelvesResponse> stream = libraryClient.streamShelvesCallable().call(request);
+      for (StreamShelvesResponse responseItem : stream) {
+        System.out.println(responseItem);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END sample_core]
   }
-}
 
+  public static void main(String[] args) {
+    sampleStreamShelves();
+  }
+}
 // FIXME: Insert here clean-up code.
 
 // [END sample]
-============== file: src/test/java/com/google/gcloud/pubsub/v1/LibraryClientTest.java ==============
+============== file: src/test/java/com/google/example/library/v1/LibraryClientTest.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -8035,7 +8274,7 @@ public class StreamShelvesCallableCallableStreamingServerEmpty {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.v1;
+package com.google.example.library.v1;
 
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.grpc.GaxGrpcProperties;
@@ -8053,62 +8292,34 @@ import com.google.api.gax.rpc.StatusCode;
 import com.google.api.resourcenames.ResourceName;
 import com.google.cloud.ProjectName;
 import com.google.common.collect.Lists;
-import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.ArchivedBookName;
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.BookFromAnywhere;
-import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.BookName;
-import com.google.example.library.v1.BookNames;
 import com.google.example.library.v1.Comment;
-import com.google.example.library.v1.Comment.Stage;
-import com.google.example.library.v1.CreateBookRequest;
-import com.google.example.library.v1.CreateShelfRequest;
-import com.google.example.library.v1.DeleteBookRequest;
-import com.google.example.library.v1.DeleteShelfRequest;
-import com.google.example.library.v1.DiscussBookRequest;
-import com.google.example.library.v1.FindRelatedBooksRequest;
-import com.google.example.library.v1.FindRelatedBooksResponse;
-import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
-import com.google.example.library.v1.GetBookFromAnywhereRequest;
-import com.google.example.library.v1.GetBookFromArchiveRequest;
-import com.google.example.library.v1.GetBookRequest;
-import com.google.example.library.v1.GetShelfRequest;
-import com.google.example.library.v1.ListBooksRequest;
-import com.google.example.library.v1.ListBooksResponse;
-import com.google.example.library.v1.ListShelvesRequest;
-import com.google.example.library.v1.ListShelvesResponse;
-import com.google.example.library.v1.ListStringsRequest;
-import com.google.example.library.v1.ListStringsResponse;
-import com.google.example.library.v1.MergeShelvesRequest;
-import com.google.example.library.v1.MoveBookRequest;
-import com.google.example.library.v1.PublishSeriesRequest;
-import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.SeriesUuid;
-import com.google.example.library.v1.Shelf;
-import com.google.example.library.v1.ShelfBookName;
-import com.google.example.library.v1.ShelfName;
-import com.google.example.library.v1.SomeMessage;
-import com.google.example.library.v1.SomeMessage2.SomeMessage3.Alignment;
-import com.google.example.library.v1.StreamBooksRequest;
-import com.google.example.library.v1.StreamShelvesRequest;
-import com.google.example.library.v1.StreamShelvesResponse;
+import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
+import com.google.example.library.v1.SomeMessage2;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
-import com.google.example.library.v1.UpdateBookIndexRequest;
-import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.gcloud.pubsub.v1.LibraryClient.FindRelatedBooksPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListShelvesPagedResponse;
-import static com.google.gcloud.pubsub.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Any;
+import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.BytesValue;
+import com.google.protobuf.DoubleValue;
+import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
+import com.google.protobuf.FloatValue;
 import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.Int32Value;
+import com.google.protobuf.Int64Value;
+import com.google.protobuf.ListValue;
+import com.google.protobuf.StringValue;
+import com.google.protobuf.Struct;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.UInt32Value;
+import com.google.protobuf.UInt64Value;
+import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
 import com.google.tagger.v1.TaggerProto.AddTagRequest;
@@ -8902,7 +9113,7 @@ public class LibraryClientTest {
   @SuppressWarnings("all")
   public void listStringsTest() {
     String nextPageToken = "";
-    ResourceName stringsElement = ShelfName.of("[SHELF_ID]");
+    ResourceName stringsElement = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
     List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
@@ -8952,7 +9163,7 @@ public class LibraryClientTest {
   @SuppressWarnings("all")
   public void listStringsTest2() {
     String nextPageToken = "";
-    ResourceName stringsElement = ShelfName.of("[SHELF_ID]");
+    ResourceName stringsElement = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
     List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
@@ -8960,7 +9171,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ResourceName name = ShelfName.of("[SHELF_ID]");
+    ResourceName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
 
     ListStringsPagedResponse pagedListResponse = client.listStrings(name);
 
@@ -8990,7 +9201,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      ResourceName name = ShelfName.of("[SHELF_ID]");
+      ResourceName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
 
       client.listStrings(name);
       Assert.fail("No exception raised");
@@ -9756,9 +9967,41 @@ public class LibraryClientTest {
     List<Integer> optionalRepeatedFixed32 = new ArrayList<>();
     List<Long> optionalRepeatedFixed64 = new ArrayList<>();
     Map<Integer, String> optionalMap = new HashMap<>();
+    Any anyValue = Any.newBuilder().build();
+    Struct structValue = Struct.newBuilder().build();
+    Value valueValue = Value.newBuilder().build();
+    ListValue listValueValue = ListValue.newBuilder().build();
+    Timestamp timeValue = Timestamp.newBuilder().build();
+    Duration durationValue = Duration.newBuilder().build();
+    FieldMask fieldMaskValue = FieldMask.newBuilder().build();
+    Int32Value int32Value = Int32Value.newBuilder().build();
+    UInt32Value uint32Value = UInt32Value.newBuilder().build();
+    Int64Value int64Value = Int64Value.newBuilder().build();
+    UInt64Value uint64Value = UInt64Value.newBuilder().build();
+    FloatValue floatValue = FloatValue.newBuilder().build();
+    DoubleValue doubleValue = DoubleValue.newBuilder().build();
+    StringValue stringValue = StringValue.newBuilder().build();
+    BoolValue boolValue = BoolValue.newBuilder().build();
+    BytesValue bytesValue = BytesValue.newBuilder().build();
+    List<Any> repeatedAnyValue = new ArrayList<>();
+    List<Struct> repeatedStructValue = new ArrayList<>();
+    List<Value> repeatedValueValue = new ArrayList<>();
+    List<ListValue> repeatedListValueValue = new ArrayList<>();
+    List<Timestamp> repeatedTimeValue = new ArrayList<>();
+    List<Duration> repeatedDurationValue = new ArrayList<>();
+    List<FieldMask> repeatedFieldMaskValue = new ArrayList<>();
+    List<Int32Value> repeatedInt32Value = new ArrayList<>();
+    List<UInt32Value> repeatedUint32Value = new ArrayList<>();
+    List<Int64Value> repeatedInt64Value = new ArrayList<>();
+    List<UInt64Value> repeatedUint64Value = new ArrayList<>();
+    List<FloatValue> repeatedFloatValue = new ArrayList<>();
+    List<DoubleValue> repeatedDoubleValue = new ArrayList<>();
+    List<StringValue> repeatedStringValue = new ArrayList<>();
+    List<BoolValue> repeatedBoolValue = new ArrayList<>();
+    List<BytesValue> repeatedBytesValue = new ArrayList<>();
 
     TestOptionalRequiredFlatteningParamsResponse actualResponse =
-        client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, formattedRequiredRepeatedResourceName, formattedRequiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, formattedOptionalRepeatedResourceName, formattedOptionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
+        client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, formattedRequiredRepeatedResourceName, formattedRequiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, formattedOptionalRepeatedResourceName, formattedOptionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
@@ -9823,6 +10066,38 @@ public class LibraryClientTest {
     Assert.assertEquals(optionalRepeatedFixed32, actualRequest.getOptionalRepeatedFixed32List());
     Assert.assertEquals(optionalRepeatedFixed64, actualRequest.getOptionalRepeatedFixed64List());
     Assert.assertEquals(optionalMap, actualRequest.getOptionalMapMap());
+    Assert.assertEquals(anyValue, actualRequest.getAnyValue());
+    Assert.assertEquals(structValue, actualRequest.getStructValue());
+    Assert.assertEquals(valueValue, actualRequest.getValueValue());
+    Assert.assertEquals(listValueValue, actualRequest.getListValueValue());
+    Assert.assertEquals(timeValue, actualRequest.getTimeValue());
+    Assert.assertEquals(durationValue, actualRequest.getDurationValue());
+    Assert.assertEquals(fieldMaskValue, actualRequest.getFieldMaskValue());
+    Assert.assertEquals(int32Value, actualRequest.getInt32Value());
+    Assert.assertEquals(uint32Value, actualRequest.getUint32Value());
+    Assert.assertEquals(int64Value, actualRequest.getInt64Value());
+    Assert.assertEquals(uint64Value, actualRequest.getUint64Value());
+    Assert.assertEquals(floatValue, actualRequest.getFloatValue());
+    Assert.assertEquals(doubleValue, actualRequest.getDoubleValue());
+    Assert.assertEquals(stringValue, actualRequest.getStringValue());
+    Assert.assertEquals(boolValue, actualRequest.getBoolValue());
+    Assert.assertEquals(bytesValue, actualRequest.getBytesValue());
+    Assert.assertEquals(repeatedAnyValue, actualRequest.getRepeatedAnyValueList());
+    Assert.assertEquals(repeatedStructValue, actualRequest.getRepeatedStructValueList());
+    Assert.assertEquals(repeatedValueValue, actualRequest.getRepeatedValueValueList());
+    Assert.assertEquals(repeatedListValueValue, actualRequest.getRepeatedListValueValueList());
+    Assert.assertEquals(repeatedTimeValue, actualRequest.getRepeatedTimeValueList());
+    Assert.assertEquals(repeatedDurationValue, actualRequest.getRepeatedDurationValueList());
+    Assert.assertEquals(repeatedFieldMaskValue, actualRequest.getRepeatedFieldMaskValueList());
+    Assert.assertEquals(repeatedInt32Value, actualRequest.getRepeatedInt32ValueList());
+    Assert.assertEquals(repeatedUint32Value, actualRequest.getRepeatedUint32ValueList());
+    Assert.assertEquals(repeatedInt64Value, actualRequest.getRepeatedInt64ValueList());
+    Assert.assertEquals(repeatedUint64Value, actualRequest.getRepeatedUint64ValueList());
+    Assert.assertEquals(repeatedFloatValue, actualRequest.getRepeatedFloatValueList());
+    Assert.assertEquals(repeatedDoubleValue, actualRequest.getRepeatedDoubleValueList());
+    Assert.assertEquals(repeatedStringValue, actualRequest.getRepeatedStringValueList());
+    Assert.assertEquals(repeatedBoolValue, actualRequest.getRepeatedBoolValueList());
+    Assert.assertEquals(repeatedBytesValue, actualRequest.getRepeatedBytesValueList());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -9894,8 +10169,40 @@ public class LibraryClientTest {
       List<Integer> optionalRepeatedFixed32 = new ArrayList<>();
       List<Long> optionalRepeatedFixed64 = new ArrayList<>();
       Map<Integer, String> optionalMap = new HashMap<>();
+      Any anyValue = Any.newBuilder().build();
+      Struct structValue = Struct.newBuilder().build();
+      Value valueValue = Value.newBuilder().build();
+      ListValue listValueValue = ListValue.newBuilder().build();
+      Timestamp timeValue = Timestamp.newBuilder().build();
+      Duration durationValue = Duration.newBuilder().build();
+      FieldMask fieldMaskValue = FieldMask.newBuilder().build();
+      Int32Value int32Value = Int32Value.newBuilder().build();
+      UInt32Value uint32Value = UInt32Value.newBuilder().build();
+      Int64Value int64Value = Int64Value.newBuilder().build();
+      UInt64Value uint64Value = UInt64Value.newBuilder().build();
+      FloatValue floatValue = FloatValue.newBuilder().build();
+      DoubleValue doubleValue = DoubleValue.newBuilder().build();
+      StringValue stringValue = StringValue.newBuilder().build();
+      BoolValue boolValue = BoolValue.newBuilder().build();
+      BytesValue bytesValue = BytesValue.newBuilder().build();
+      List<Any> repeatedAnyValue = new ArrayList<>();
+      List<Struct> repeatedStructValue = new ArrayList<>();
+      List<Value> repeatedValueValue = new ArrayList<>();
+      List<ListValue> repeatedListValueValue = new ArrayList<>();
+      List<Timestamp> repeatedTimeValue = new ArrayList<>();
+      List<Duration> repeatedDurationValue = new ArrayList<>();
+      List<FieldMask> repeatedFieldMaskValue = new ArrayList<>();
+      List<Int32Value> repeatedInt32Value = new ArrayList<>();
+      List<UInt32Value> repeatedUint32Value = new ArrayList<>();
+      List<Int64Value> repeatedInt64Value = new ArrayList<>();
+      List<UInt64Value> repeatedUint64Value = new ArrayList<>();
+      List<FloatValue> repeatedFloatValue = new ArrayList<>();
+      List<DoubleValue> repeatedDoubleValue = new ArrayList<>();
+      List<StringValue> repeatedStringValue = new ArrayList<>();
+      List<BoolValue> repeatedBoolValue = new ArrayList<>();
+      List<BytesValue> repeatedBytesValue = new ArrayList<>();
 
-      client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, formattedRequiredRepeatedResourceName, formattedRequiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, formattedOptionalRepeatedResourceName, formattedOptionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
+      client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, formattedRequiredRepeatedResourceName, formattedRequiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, formattedOptionalRepeatedResourceName, formattedOptionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -9903,7 +10210,7 @@ public class LibraryClientTest {
   }
 
 }
-============== file: src/test/java/com/google/gcloud/pubsub/v1/LibrarySmokeTest.java ==============
+============== file: src/test/java/com/google/example/library/v1/LibrarySmokeTest.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -9919,14 +10226,11 @@ public class LibraryClientTest {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.v1;
+package com.google.example.library.v1;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.Book;
-import com.google.example.library.v1.Book.Rating;
-import com.google.example.library.v1.ShelfBookName;
-import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.FieldMask;
 import java.util.Arrays;
 import java.util.List;
@@ -9980,7 +10284,7 @@ public class LibrarySmokeTest {
     return projectId;
   }
 }
-============== file: src/test/java/com/google/gcloud/pubsub/v1/MockLabeler.java ==============
+============== file: src/test/java/com/google/example/library/v1/MockLabeler.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -9996,7 +10300,7 @@ public class LibrarySmokeTest {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.v1;
+package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.grpc.testing.MockGrpcService;
@@ -10038,7 +10342,7 @@ public class MockLabeler implements MockGrpcService  {
     serviceImpl.reset();
   }
 }
-============== file: src/test/java/com/google/gcloud/pubsub/v1/MockLabelerImpl.java ==============
+============== file: src/test/java/com/google/example/library/v1/MockLabelerImpl.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -10054,7 +10358,7 @@ public class MockLabeler implements MockGrpcService  {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.v1;
+package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.common.collect.Lists;
@@ -10116,7 +10420,7 @@ public class MockLabelerImpl extends LabelerImplBase {
   }
 
 }
-============== file: src/test/java/com/google/gcloud/pubsub/v1/MockLibraryService.java ==============
+============== file: src/test/java/com/google/example/library/v1/MockLibraryService.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -10132,7 +10436,7 @@ public class MockLabelerImpl extends LabelerImplBase {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.v1;
+package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.grpc.testing.MockGrpcService;
@@ -10174,7 +10478,7 @@ public class MockLibraryService implements MockGrpcService  {
     serviceImpl.reset();
   }
 }
-============== file: src/test/java/com/google/gcloud/pubsub/v1/MockLibraryServiceImpl.java ==============
+============== file: src/test/java/com/google/example/library/v1/MockLibraryServiceImpl.java ==============
 /*
  * Copyright 2018 Google LLC
  *
@@ -10190,46 +10494,11 @@ public class MockLibraryService implements MockGrpcService  {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.v1;
+package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.common.collect.Lists;
-import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.BookFromAnywhere;
-import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.Comment;
-import com.google.example.library.v1.CreateBookRequest;
-import com.google.example.library.v1.CreateShelfRequest;
-import com.google.example.library.v1.DeleteBookRequest;
-import com.google.example.library.v1.DeleteShelfRequest;
-import com.google.example.library.v1.DiscussBookRequest;
-import com.google.example.library.v1.FindRelatedBooksRequest;
-import com.google.example.library.v1.FindRelatedBooksResponse;
-import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
-import com.google.example.library.v1.GetBookFromAnywhereRequest;
-import com.google.example.library.v1.GetBookFromArchiveRequest;
-import com.google.example.library.v1.GetBookRequest;
-import com.google.example.library.v1.GetShelfRequest;
 import com.google.example.library.v1.LibraryServiceGrpc.LibraryServiceImplBase;
-import com.google.example.library.v1.ListBooksRequest;
-import com.google.example.library.v1.ListBooksResponse;
-import com.google.example.library.v1.ListShelvesRequest;
-import com.google.example.library.v1.ListShelvesResponse;
-import com.google.example.library.v1.ListStringsRequest;
-import com.google.example.library.v1.ListStringsResponse;
-import com.google.example.library.v1.MergeShelvesRequest;
-import com.google.example.library.v1.MoveBookRequest;
-import com.google.example.library.v1.PublishSeriesRequest;
-import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.Shelf;
-import com.google.example.library.v1.StreamBooksRequest;
-import com.google.example.library.v1.StreamShelvesRequest;
-import com.google.example.library.v1.StreamShelvesResponse;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
-import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
-import com.google.example.library.v1.UpdateBookIndexRequest;
-import com.google.example.library.v1.UpdateBookRequest;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import com.google.protobuf.GeneratedMessageV3;

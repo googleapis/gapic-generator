@@ -50,7 +50,6 @@ import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
-import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
@@ -61,7 +60,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 /** Responsible for producing GAPIC surface views for NodeJS */
 public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
@@ -140,7 +138,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     xapiClass.serviceHostname(productServiceConfig.getServiceHostname(context.getServiceAddress()));
     xapiClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
     xapiClass.serviceTitle(model.getTitle());
-    xapiClass.authScopes(model.getAuthScopes());
+    xapiClass.authScopes(model.getAuthScopes(context.getProductConfig()));
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
@@ -157,7 +155,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
         pathTemplateTransformer.generateFormatResourceFunctions(context));
     xapiClass.parseResourceFunctions(
         pathTemplateTransformer.generateParseResourceFunctions(context));
-    xapiClass.pathTemplateGetterFunctions(ImmutableList.<PathTemplateGetterFunctionView>of());
+    xapiClass.pathTemplateGetterFunctions(ImmutableList.of());
 
     xapiClass.interfaceKey(context.getInterface().getFullName());
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
@@ -165,7 +163,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), context.getInterfaceModel()));
 
-    xapiClass.apiMethods(methods.stream().collect(Collectors.toList()));
+    xapiClass.apiMethods(new ArrayList<>(methods));
 
     xapiClass.apiVersion(packageConfig.apiVersion());
 

@@ -2,39 +2,45 @@
 @extends "java/initcode.snip"
 
 #FIXME: currently the variable of output of an api call is hardcoded to "response"
-# and "response_item". We should fix it by saving the variable name in the view model  
+# and "response_item". We should fix it by saving the variable name in the view model
 @snippet generate(sampleFile)
-  //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "{@sampleFile.classView.name}" ]
-  //// STUB standalone sample "{@sampleFile.classView.name}" /////
-
-  // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
-   
   @let apiMethod = sampleFile.classView.libraryMethod, \
        sample = apiMethod.samples.get(0)
+    // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+    package {@sampleFile.fileHeader.examplePackageName};
+    
+    @if sample.initCode.argDefaultParams.size
+      import org.apache.commons.cli.CommandLine;
+      import org.apache.commons.cli.DefaultParser;
+      import org.apache.commons.cli.Option;
+      import org.apache.commons.cli.Options;     
+    @end
     // [START {@sample.regionTag}]
-
-    // FIXME: Insert here boilerplate code not directly related to the method call itself.
-       
-    //      calling form: "{@sample.callingForm.toString}"
-    //        region tag: "{@sample.regionTag}"
-    //         className: "{@sampleFile.classView.name}"
-    //          valueSet: "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
-    //       description: "{@sample.valueSet.description}"
-    //        {@sample.valueSet.parameters}
-    //      apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
-
-    // FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
+    @if sample.initCode.importSection.appImports.size
+      {@importList(sample.initCode.importSection.appImports)}
+    
+    @end
     public class {@sampleFile.classView.name} {
-      public static void main(String[] args) {
+      public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.initCode.argDefaultParams)}) {
         // [START {@sample.regionTag}_core]
-        @let coreSampleCode = generateSample(apiMethod, sample)
-          {@methodLines(coreSampleCode)}
-        @end
+        try ({@apiMethod.apiClassName} {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.create()) {
+          @let coreSampleCode = generateSample(apiMethod, sample)
+            {@methodLines(coreSampleCode)}
+          @end
+        } catch (Exception exception) {
+          System.err.println("Failed to create the client due to: " + exception);          
+        }
         // [END {@sample.regionTag}_core]
       }
-    }
 
+      public static void main(String[] args) {
+        @if sample.initCode.argDefaultParams.size
+          {@processCliArguments(sample)}
+
+        @end
+        {@sample.sampleFunctionName}({@commaSeparatedArgs(sample.initCode.argDefaultParams)});
+      }
+    }
     // FIXME: Insert here clean-up code.
 
     // [END {@sample.regionTag}]
@@ -53,7 +59,7 @@
     {@syncMethodSampleCode(apiMethod, sample)}
     {@processResponse(sample)}
   @case "FlattenedPaged"
-    {@pagedCallableMethodSampleCode(apiMethod, sample)}      
+    {@pagedCallableMethodSampleCode(apiMethod, sample)}
   @case "Callable"
     {@callableMethodSampleCode(apiMethod, sample)}
     {@processResponse(sample)}
@@ -62,7 +68,7 @@
   @case "CallablePaged"
     {@pagedCallableMethodSampleCode(apiMethod, sample)}
   @case "CallableStreamingBidi"
-    {@bidiStreamingCallableSampleCode(apiMethod, sample)} 
+    {@bidiStreamingCallableSampleCode(apiMethod, sample)}
   @case "CallableStreamingClient"
     {@clientStreamingCallableSampleCode(apiMethod, sample)}
   @case "CallableStreamingServer"
@@ -81,7 +87,7 @@
   @end
 @end
 
-# The snippets are modified versions of those in method_sample.snip 
+# The snippets are modified versions of those in method_sample.snip
 # since standalone samples can perform more sophisticated response handling
 @private pagedIterableMethodSampleCode(apiMethod, sample)
   {@initCode(sample.initCode)}
@@ -162,7 +168,7 @@
   OperationFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
 
   // Do something
-  
+
   {@apiMethod.responseTypeName} response = future.get();
 @end
 
@@ -217,6 +223,55 @@
   @end
 @end
 
+@private processCliArguments(sample)
+  Options options = new Options();
+  @join param : sample.initCode.argDefaultParams
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("{@param.identifier}")
+          .build());
+  @end
+
+  CommandLine cl = (new DefaultParser()).parse(options, args);
+  @join param : sample.initCode.argDefaultParams
+    @switch param.typeName
+    @case "String"
+      String {@param.identifier} = cl.getOptionValue("{@param.identifier}", {@renderInitValue(param.initValue)});
+    @case "int"
+      int {@param.identifier} = 
+          cl.getOptionValue("{@param.identifier}") != null
+              ? Integer.parseInt(cl.getOptionValue("{@param.identifier}"))
+              : {@renderInitValue(param.initValue)};
+    @case "double"
+      double {@param.identifier} = 
+          cl.getOptionValue("{@param.identifier}") != null
+              ? Double.parseDouble(cl.getOptionValue("{@param.identifier}"))
+              : {@renderInitValue(param.initValue)};
+    @case "boolean"
+      boolean {@param.identifier} =
+          cl.getOptionValue("{@param.identifier}") != null
+              ? Boolean.parseBoolean(cl.getOptionValue("{@param.identifier}"))
+              : {@renderInitValue(param.initValue)};
+    @default
+      $unhandledCase: {@param.typeName}$
+    @end
+  @end
+@end
+
+@private commaSeparatedArgs(args)
+  @join arg : args on ", "
+    {@arg.identifier}
+  @end
+@end
+
+@private commaSeparatedArgAndTypes(args)
+  @join arg : args on ", "
+    {@arg.typeName} {@arg.identifier}
+  @end
+@end
+
 @private processResponse(sample)
   @if sample.outputs.size == 0
     System.out.println(response);
@@ -255,12 +310,12 @@
     System.out.println("{@view.format}");
   @else
     @if view.format == ""
-      System.out.println({@variableField(view.args.get(0))});
+      System.out.println({@printVariableField(view.args.get(0))});
     @else
       @if view.format == "%s"
-        System.out.println({@variableField(view.args.get(0))});
+        System.out.println({@printVariableField(view.args.get(0))});
       @else
-        System.out.printf("{@view.format}\n", {@concatenatedArgs(view.args)});
+        System.out.printf("{@view.format}\n", {@commaSeparatedFields(view.args)});
       @end
     @end
   @end
@@ -272,9 +327,22 @@
   }
 @end
 
-@private concatenatedArgs(args)
+@private commaSeparatedFields(args)
   @join arg : args on ", "
-    {@variableField(arg)}
+    {@printVariableField(arg)}
+  @end
+@end
+
+@private printVariableField(arg)
+  @join segment : arg.segments
+    @switch segment.kind
+      @case "TEXT"
+        {@segment.text}
+      @case "VARIABLE"
+        {@variableField(segment.variable)}
+      @default
+        $unhandledPrintArgView: arg
+    @end
   @end
 @end
 
@@ -284,7 +352,13 @@
 
 @private accessor(accessors)
   @join field : accessors on ""
-    .{@field}()
+    @switch field.kind
+    @case "FIELD"
+      .{@field.field}()
+    @case "INDEX"
+      # Assume that sample config is right; no need to check bounds.
+      .get({@field.index})
+    @end
   @end
 @end
 

@@ -45,4 +45,16 @@ public class ProtoPagingParameters implements PagingParameters {
   public List<String> getIgnoredParameters() {
     return IGNORED_PARAMETERS;
   }
+
+  public static String nameForPageToken() {
+    return PARAMETER_PAGE_TOKEN;
+  }
+
+  public static String nameForPageSize() {
+    return PARAMETER_MAX_RESULTS;
+  }
+
+  public static String nameForNextPageToken() {
+    return PARAMETER_NEXT_PAGE_TOKEN;
+  }
 }

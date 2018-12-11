@@ -161,7 +161,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     xapiClass.serviceHostname(productServiceConfig.getServiceHostname(context.getServiceAddress()));
     xapiClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
     xapiClass.serviceTitle(model.getTitle());
-    xapiClass.authScopes(model.getAuthScopes());
+    xapiClass.authScopes(model.getAuthScopes(context.getProductConfig()));
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
@@ -317,7 +317,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
         .pathEnvVars(pathEnvVars)
         .jsonEnvVars(jsonEnvVars)
         .defaultPaths(DEFAULT_PATHS)
-        .scopes(model.getAuthScopes())
+        .scopes(model.getAuthScopes(productConfig))
         .build();
   }
 

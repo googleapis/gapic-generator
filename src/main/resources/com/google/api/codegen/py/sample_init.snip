@@ -12,6 +12,8 @@
       {@initLineSimple(line)}
     @case "MapInitLine"
       {@initLineMap(line)}
+    @case "ReadFileInitLine"
+      {@initLineReadFile(line)}
     @default
       {@unhandledCase()}
     @end
@@ -50,6 +52,11 @@
 # Generate a Map argument
 @private initLineMap(line)
   {@line.identifier} = {{@renderInitMap(line)}}
+@end
+
+@private initLineReadFile(line)
+  with io.open({@renderInitValue(line.fileName)}, 'rb') as f:
+    {@line.identifier} = f.read()
 @end
 
 # Helper method for initLineMap()

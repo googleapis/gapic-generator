@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
+
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -23,20 +25,26 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.config.PageStreamingConfig.PagingFields;
+import com.google.api.codegen.configgen.ProtoMethodTransformer;
+import com.google.api.codegen.configgen.ProtoPagingParameters;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
@@ -62,12 +70,14 @@ public abstract class GapicMethodConfig extends MethodConfig {
   static GapicMethodConfig createMethodConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
-      MethodConfigProto methodConfigProto,
+      String defaultPackageName,
+      @Nonnull MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      ProtoParser protoParser) {
 
     boolean error = false;
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
@@ -76,10 +86,37 @@ public abstract class GapicMethodConfig extends MethodConfig {
     if (!PageStreamingConfigProto.getDefaultInstance()
         .equals(methodConfigProto.getPageStreaming())) {
       pageStreaming =
-          PageStreamingConfig.createPageStreaming(
+          PageStreamingConfig.createPageStreamingFromGapicConfig(
               diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
       if (pageStreaming == null) {
         error = true;
+      }
+    } else if (MethodConfigProto.getDefaultInstance().equals(methodConfigProto)) {
+      // When GAPIC config not available, toggle pagination based on presence of paging params.
+      // See https://cloud.google.com/apis/design/design_patterns for API pagination pattern.
+      ProtoField tokenField = methodModel.getInputField(ProtoPagingParameters.nameForPageToken());
+      ProtoField pageSizeField = methodModel.getInputField(ProtoPagingParameters.nameForPageSize());
+      ProtoField responseTokenField =
+          methodModel.getOutputField(ProtoPagingParameters.nameForNextPageToken());
+      if (tokenField != null && responseTokenField != null) {
+        PagingFields pagingFields =
+            PagingFields.newBuilder()
+                .setResponseTokenField(responseTokenField)
+                .setRequestTokenField(tokenField)
+                .setPageSizeField(pageSizeField)
+                .build();
+        pageStreaming =
+            PageStreamingConfig.createPageStreamingFromProtoFile(
+                diagCollector,
+                messageConfigs,
+                resourceNameConfigs,
+                methodModel,
+                pagingFields,
+                protoParser,
+                defaultPackageName);
+        if (pageStreaming == null) {
+          error = true;
+        }
       }
     }
 
@@ -101,8 +138,13 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
-          createFlattening(
-              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+          FlatteningConfig.createFlatteningConfigs(
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              methodModel,
+              protoParser);
       if (flattening == null) {
         error = true;
       }
@@ -125,7 +167,13 @@ public abstract class GapicMethodConfig extends MethodConfig {
             methodConfigProto, diagCollector, retryParamsConfigNames);
     error |= (retryParamsName == null);
 
-    Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
+    long defaultTimeout = methodConfigProto.getTimeoutMillis();
+    if (defaultTimeout <= 0) {
+      defaultTimeout = DEFAULT_MAX_RETRY_DELAY;
+    }
+    long timeoutMillis = ProtoMethodTransformer.getTimeoutMillis(methodModel, defaultTimeout);
+
+    Duration timeout = Duration.ofMillis(timeoutMillis);
     if (timeout.toMillis() <= 0) {
       diagCollector.addDiag(
           Diag.error(
@@ -139,10 +187,11 @@ public abstract class GapicMethodConfig extends MethodConfig {
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
 
     ResourceNameTreatment defaultResourceNameTreatment =
-        methodConfigProto.getResourceNameTreatment();
-    if (defaultResourceNameTreatment == null
-        || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
-      defaultResourceNameTreatment = ResourceNameTreatment.NONE;
+        defaultResourceNameTreatment(methodConfigProto, method, protoParser, defaultPackageName);
+
+    List<String> requiredFields = protoParser.getRequiredFields(method);
+    if (requiredFields.isEmpty()) {
+      requiredFields = methodConfigProto.getRequiredFieldsList();
     }
 
     ImmutableList<FieldConfig> requiredFieldConfigs =
@@ -152,8 +201,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getRequiredFields(
-                diagCollector, methodModel, methodConfigProto.getRequiredFieldsList()));
+            getRequiredFields(diagCollector, methodModel, requiredFields));
 
     ImmutableList<FieldConfig> optionalFieldConfigs =
         createFieldNameConfigs(
@@ -167,8 +215,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       return null;
     }
 
-    List<String> sampleCodeInitFields = new ArrayList<>();
-    sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
+    List<String> sampleCodeInitFields =
+        new ArrayList<>(methodConfigProto.getSampleCodeInitFieldsList());
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
 
     String rerouteToGrpcInterface =
@@ -190,7 +238,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            method, diagCollector, methodConfigProto.getLongRunning(), new ProtoParser());
+            method, diagCollector, methodConfigProto.getLongRunning(), protoParser);
     if (diagCollector.getErrorCount() > 0) {
       error = true;
     }
@@ -222,6 +270,40 @@ public abstract class GapicMethodConfig extends MethodConfig {
           longRunningConfig,
           headerRequestParams);
     }
+  }
+
+  @VisibleForTesting
+  static ResourceNameTreatment defaultResourceNameTreatment(
+      MethodConfigProto methodConfigProto,
+      Method method,
+      ProtoParser protoParser,
+      String defaultPackageName) {
+
+    ResourceNameTreatment defaultResourceNameTreatment =
+        methodConfigProto.getResourceNameTreatment();
+    if (defaultResourceNameTreatment == ResourceNameTreatment.UNSET_TREATMENT
+        && method
+            .getInputMessage()
+            .getFields()
+            .stream()
+            .anyMatch(
+                f ->
+                    !Strings.isNullOrEmpty(protoParser.getResourceReference(f))
+                        || !Strings.isNullOrEmpty(protoParser.getResourceOrSetEntityName(f)))) {
+      String methodInputPackageName =
+          protoParser.getProtoPackage(((ProtoFile) method.getInputMessage().getParent()));
+      if (defaultPackageName.equals(methodInputPackageName)) {
+        defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
+      } else {
+        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
+      }
+    }
+    if (defaultResourceNameTreatment == null
+        || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
+      defaultResourceNameTreatment = ResourceNameTreatment.NONE;
+    }
+
+    return defaultResourceNameTreatment;
   }
 
   /** Return the list of "one of" instances associated with the fields. */

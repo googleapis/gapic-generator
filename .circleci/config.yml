@@ -353,6 +353,46 @@ jobs:
             - googleapis
             - showcase-protos
             - showcase-protos-patched
+  test-baselines:
+    docker:
+      - image: circleci/golang:1.11
+    steps:
+      - checkout
+      - run:
+          name: Test baselines
+          command: |
+            ./testutils/check-baselines.sh
+            go test testutils/check-calling-form-in-baseline/*.go
+            go run $(find testutils/check-calling-form-in-baseline -type f | grep -v _test) -yaml src/test/java/com/google/api/codegen/testsrc/libraryproto/library_gapic.yaml src/test
+            go test testutils/check-lang-uses-form/*.go
+            go run $(find testutils/check-lang-uses-form -type f | grep -v _test) -forms src/main/java/com/google/api/codegen/viewmodel/CallingForm.java src/test
+  gapic-generator-bazel-test:
+    working_directory: /tmp/
+    environment:
+      TEST_REPORTS_DIR: /tmp/workspace/bazel/reports/gapic-generator
+    docker:
+      - image: l.gcr.io/google/bazel:0.19.0
+    steps:
+      - checkout:
+          path: gapic-generator
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Make reports directory
+          command: |
+            mkdir -p ${TEST_REPORTS_DIR}
+      - run:
+          name: Run unit tests for gapic-generator
+          command: |
+            cd gapic-generator
+            bazel test //... \
+              --local_resources=3072,2.0,1.0 \
+              --experimental_enable_repo_mapping
+            find . -type f -regex ".*/bazel-testlogs/.*xml" -exec cp {} ${TEST_REPORTS_DIR} \;
+      - store_test_results:
+          path: bazel/reports/gapic-generator
+      - store_artifacts:
+          path: bazel/reports/gapic-generator
   test-gapic-generator:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -361,26 +401,18 @@ jobs:
       - checkout:
           path: gapic-generator
       - run:
-          name: Make reports directory
-          command: |
-            mkdir -p reports/gapic-generator
-      - run:
           name: Run unit tests for gapic-generator
           command: |
+            mkdir -p /tmp/workspace/reports/gapic-generator
             cd gapic-generator
-            ./gradlew clean test
-            export TEST_REPORTS_DIR=/tmp/workspace/reports/gapic-generator
-            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${TEST_REPORTS_DIR} \;
+            ./gradlew check
+            bash <(curl -s https://codecov.io/bash)
+            find -type f -regex ".*/build/test-results/.*xml" | xargs cp -t /tmp/workspace/reports/gapic-generator
           when: always
       - store_test_results:
           path: reports/gapic-generator
       - store_artifacts:
           path: reports/gapic-generator
-      - persist_to_workspace:
-          # Save all generated directories in workspace for later CircleCI jobs.
-          root: /tmp/workspace
-          paths:
-            - reports/gapic-generator
   generate-clients:
     docker:
       - image: googleapis/artman:0.15.9
@@ -460,6 +492,44 @@ jobs:
           paths:
             - gapic-generator/artman-genfiles
             - reports
+  compute-discovery-test:
+    # Generate the Discovery Compute client and run its tests.
+    working_directory: /tmp/
+    environment:
+      # Directory to output the generated Compute client.
+      COMPUTE_OUT: /tmp/discogapic_out
+      # Commit hash to use the discover-artifact-manager repo from
+      DISCOVERY_REPO_VERSION: 661dacf3b5c7d2ca359d9788e5498025e6ce0437
+      DISCOVERY_REPO_PATH: https://raw.githubusercontent.com/googleapis/discovery-artifact-manager
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Download Discovery files
+          command: |
+            mkdir discovery
+            cd discovery
+            wget -K $DISCOVERY_REPO_PATH/$DISCOVERY_REPO_VERSION/discoveries/compute.v1.json
+            wget -K $DISCOVERY_REPO_PATH/$DISCOVERY_REPO_VERSION/gapic/google/compute/v1/compute_gapic.yaml
+      - run:
+          name: Generate and build the Java Compute client
+          command: |
+            java -Xmx1024m -cp workspace/gapic-generator/build/libs/gapic-generator-0.0.5-fatjar.jar \
+                com.google.api.codegen.GeneratorMain DISCOGAPIC_CODE \
+                --discovery_doc discovery/compute.v1.json -o $COMPUTE_OUT \
+                --gapic_yaml discovery/compute_gapic.yaml --language java
+      - run:
+          name: Copy over the build.gradle file for the generated client
+          command: |
+            cd workspace/gapic-generator
+            cp .circleci/discogapic_compute_build.gradle $COMPUTE_OUT/build.gradle
+      - run:
+          name: Run generated tests for Compute
+          command: |
+            cd $COMPUTE_OUT
+            gradle test
   java-openjdk8-test:
     working_directory: /tmp/
     environment:
@@ -669,6 +739,28 @@ jobs:
             go test .
   # TODO: test other language clients.
 
+  artman_smoke_tests:
+    working_directory: /tmp/
+    environment:
+      ARTMAN_USER_CONFIG: /tmp/workspace/gapic-generator/.circleci/artman_config.yaml
+    docker:
+      - image: googleapis/artman:0.16.0
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Checkout artman
+          command: |
+            git clone --single-branch https://github.com/googleapis/artman.git artman
+            cd artman
+            pip install -e .
+      - run:
+          name: Run all artman on all APIs
+          command: |
+            python3 artman/test/smoketest_artman.py --root-dir=/tmp/workspace/googleapis --log=/tmp/smoketest.log --user-config=$ARTMAN_USER_CONFIG
+      - store_artifacts:
+          path: /tmp/smoketest.log
+
 # ======================= WORKFLOWS =======================
 
 workflows:
@@ -676,9 +768,18 @@ workflows:
   run_generated_tests:
     jobs:
       - install-gapic-generator
-      - test-gapic-generator:
+      - test-baselines
+      - artman_smoke_tests:
           requires:
             - install-gapic-generator
+          # TODO(andrealin): Only run this on the master branch after the job is shown to work
+      - compute-discovery-test:
+          requires:
+            - install-gapic-generator
+      - gapic-generator-bazel-test
+      - test-gapic-generator:
+          requires:
+            - test-baselines
       - generate-clients:
           requires:
             - install-gapic-generator

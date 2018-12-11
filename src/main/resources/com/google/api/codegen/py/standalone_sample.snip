@@ -25,6 +25,9 @@
   @# [START {@sample.regionTag}]
 
   {@importList(sample.initCode.importSection.appImports)}
+  @if sample.outputImports.size
+    {@importList(sample.outputImports)}
+  @end
   @let convertTextCode = convertText(sample)
     @if convertTextCode
       import six
@@ -181,8 +184,8 @@
 # Render the API method call for page streaming
 @private pagedMethodCallSampleCode(apiMethod, initCode)
   client.{@apiMethod.name}(\
-    {@sampleMethodCallArgListAndComma(initCode)}\
-    options=CallOptions(page_token=INITIAL_PAGE))
+    {@sampleMethodCallArgList(initCode)}\
+    ).pages
 @end
 
 @private sampleMethodCallArgListAndComma(initCode)
@@ -236,9 +239,9 @@
     print('{@view.format}')
   @else
     @if view.format == "{}"
-      print({@variableField(view.args.get(0))})
+      print({@printVariableField(view.args.get(0))})
     @else
-      print('{@view.format}'.format({@concatenatedArgs(view.args)}))
+      print('{@view.format}'.format({@commaSeparatedFields(view.args)}))
     @end
   @end
 @end
@@ -257,9 +260,22 @@
 @end
 
 
-@private concatenatedArgs(args)
+@private commaSeparatedFields(args)
   @join arg : args on ", "
-    {@variableField(arg)}
+    {@printVariableField(arg)}
+  @end
+@end
+
+@private printVariableField(arg)
+  @join segment : arg.segments on ""
+    @switch segment.kind
+      @case "TEXT"
+        {@segment.text}
+      @case "VARIABLE"
+        {@variableField(segment.variable)}
+      @default
+        $unhandledPrintArgView: arg
+    @end
   @end
 @end
 
@@ -269,6 +285,12 @@
 
 @private accessor(accessors)
   @join field : accessors on ""
-    .{@field}
+    @switch field.kind
+    @case "FIELD"
+      .{@field.field}
+    @case "INDEX"
+      # Assume that sample config is right; no need to check bounds.
+      [{@field.index}]
+    @end
   @end
 @end

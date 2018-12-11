@@ -20,11 +20,11 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /** FieldConfig represents a configuration for a Field, derived from the GAPIC config. */
@@ -66,10 +66,6 @@ public abstract class FieldConfig {
         field, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
   }
 
-  static FieldConfig createFieldConfig(FieldModel field) {
-    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
-  }
-
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
   public static FieldConfig createDefaultFieldConfig(FieldModel field) {
     return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
@@ -97,7 +93,7 @@ public abstract class FieldConfig {
       Map<String, String> fieldNamePatterns,
       Map<String, ResourceNameConfig> resourceNameConfigs,
       FieldModel field,
-      ResourceNameTreatment treatment,
+      @Nullable ResourceNameTreatment treatment,
       ResourceNameTreatment defaultResourceNameTreatment) {
     String messageFieldEntityName = null;
     String flattenedFieldEntityName = null;
@@ -139,8 +135,10 @@ public abstract class FieldConfig {
         ok = oneofConfig.getResourceNameConfigs().contains(flattenedFieldResourceNameConfig);
       }
       if (!ok) {
-        Diag error =
-            Diag.error(
+        // Prefer using entity name from flattening config, which is derived from GAPIC config,
+        // than the entity name from method config, which might be defined in proto annotations.
+        Diag warning =
+            Diag.warning(
                 SimpleLocation.TOPLEVEL,
                 "Multiple entity names specified for field: "
                     + field.getFullName()
@@ -148,12 +146,9 @@ public abstract class FieldConfig {
                     + flattenedFieldEntityName
                     + ", "
                     + messageFieldEntityName
-                    + "]");
-        if (diagCollector == null) {
-          throw new IllegalArgumentException(error.toString());
-        }
-        diagCollector.addDiag(error);
-        return null;
+                    + "], using flattening config instead of message config.");
+        diagCollector.addDiag(warning);
+        messageFieldResourceNameConfig = flattenedFieldResourceNameConfig;
       }
     }
 
@@ -271,43 +266,17 @@ public abstract class FieldConfig {
     }
   }
 
-  private static Function<FieldConfig, FieldModel> selectFieldFunction() {
-    return new Function<FieldConfig, FieldModel>() {
-      @Override
-      public FieldModel apply(FieldConfig fieldConfig) {
-        return fieldConfig.getField();
-      }
-    };
+  public static Collection<FieldModel> toFieldTypeIterable(Collection<FieldConfig> fieldConfigs) {
+    return fieldConfigs.stream().map(FieldConfig::getField).collect(Collectors.toList());
   }
 
-  private static Function<Field, FieldModel> createFieldTypeFunction() {
-    return new Function<Field, FieldModel>() {
-      @Override
-      public FieldModel apply(Field field) {
-        return new ProtoField(field);
-      }
-    };
-  }
-
-  private static Function<FieldConfig, String> selectFieldLongNameFunction() {
-    return new Function<FieldConfig, String>() {
-      @Override
-      public String apply(FieldConfig fieldConfig) {
-        return fieldConfig.getField().getFullName();
-      }
-    };
-  }
-
-  public static Iterable<FieldModel> toFieldTypeIterable(Iterable<FieldConfig> fieldConfigs) {
-    return Iterables.transform(fieldConfigs, selectFieldFunction());
-  }
-
-  public static Iterable<FieldModel> toFieldTypeIterableFromField(Iterable<Field> fieldConfigs) {
-    return Iterables.transform(fieldConfigs, createFieldTypeFunction());
+  public static Collection<FieldModel> toFieldTypeIterableFromField(
+      Collection<Field> fieldConfigs) {
+    return fieldConfigs.stream().map(ProtoField::new).collect(Collectors.toList());
   }
 
   public static ImmutableMap<String, FieldConfig> toFieldConfigMap(
       Iterable<FieldConfig> fieldConfigs) {
-    return Maps.uniqueIndex(fieldConfigs, selectFieldLongNameFunction());
+    return Maps.uniqueIndex(fieldConfigs, f -> f.getField().getFullName());
   }
 }

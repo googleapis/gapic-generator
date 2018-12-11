@@ -14,11 +14,17 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.Resource;
+import com.google.api.ResourceSet;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
-import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 /** Configuration of the resource name types for fields of a single message. */
 @AutoValue
@@ -31,10 +37,8 @@ public abstract class ResourceNameMessageConfig {
   // contains a resource URL).
   abstract ImmutableMap<String, String> fieldEntityMap();
 
-  public static ResourceNameMessageConfig createResourceNameMessageConfig(
-      DiagCollector diagCollector,
-      ResourceNameMessageConfigProto messageResourceTypesProto,
-      String defaultPackage) {
+  static ResourceNameMessageConfig createResourceNameMessageConfig(
+      ResourceNameMessageConfigProto messageResourceTypesProto, String defaultPackage) {
     String messageName = messageResourceTypesProto.getMessageName();
     String fullyQualifiedMessageName = getFullyQualifiedMessageName(defaultPackage, messageName);
     ImmutableMap<String, String> fieldEntityMap =
@@ -43,15 +47,36 @@ public abstract class ResourceNameMessageConfig {
     return new AutoValue_ResourceNameMessageConfig(fullyQualifiedMessageName, fieldEntityMap);
   }
 
-  public static ResourceNameMessageConfig createResourceNameMessageConfig(Field field) {
-    String messageName = field.getParent().getFullName();
-    ImmutableMap<String, String> fieldEntityMap =
-        ImmutableMap.of(field.getSimpleName(), field.getParent().getSimpleName().toLowerCase());
+  static ResourceNameMessageConfig createResourceNameMessageConfig(
+      MessageType message,
+      Map<Resource, ProtoFile> allResources,
+      Map<ResourceSet, ProtoFile> allResourceSets,
+      ProtoParser protoParser) {
+    ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+    for (Field field : message.getFields()) {
+      String baseName = protoParser.getResourceOrSetEntityName(field);
+      if (!Strings.isNullOrEmpty(baseName)) {
+        builder.put(field.getSimpleName(), baseName);
+        continue;
+      }
 
-    return new AutoValue_ResourceNameMessageConfig(messageName, fieldEntityMap);
+      String resourceType =
+          protoParser.getResourceReferenceName(field, allResources, allResourceSets);
+      if (!Strings.isNullOrEmpty(resourceType)) {
+        builder.put(field.getSimpleName(), resourceType);
+      }
+    }
+
+    ImmutableMap<String, String> fieldEntityMap = builder.build();
+    if (fieldEntityMap.isEmpty()) {
+      // Return a null config when no fields were resource types; this is so empty proto annotations
+      // don't override the GAPIC config resource name configs.
+      return null;
+    }
+    return new AutoValue_ResourceNameMessageConfig(message.getFullName(), fieldEntityMap);
   }
 
-  public static String getFullyQualifiedMessageName(String defaultPackage, String messageName) {
+  static String getFullyQualifiedMessageName(String defaultPackage, String messageName) {
     if (messageName.contains(".")) {
       return messageName;
     } else {
@@ -59,7 +84,7 @@ public abstract class ResourceNameMessageConfig {
     }
   }
 
-  public String getEntityNameForField(String fieldSimpleName) {
+  String getEntityNameForField(String fieldSimpleName) {
     return fieldEntityMap().get(fieldSimpleName);
   }
 }

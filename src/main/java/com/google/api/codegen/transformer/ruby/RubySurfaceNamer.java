@@ -267,7 +267,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
           "object.");
     }
 
-    return ImmutableList.<String>of();
+    return ImmutableList.of();
   }
 
   /** The file name for an API interface. */
