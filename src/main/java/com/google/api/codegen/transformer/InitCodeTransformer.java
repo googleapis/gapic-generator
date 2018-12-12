@@ -23,6 +23,7 @@ import com.google.api.codegen.config.ResourceNameOneofConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.metacode.FieldStructureParser;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
@@ -30,6 +31,7 @@ import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
@@ -253,7 +255,7 @@ public class InitCodeTransformer {
         context,
         orderedItems,
         ImmutableList.copyOf(root.getChildren().values()),
-        subTrees(root, initCodeContext.sampleArgStrings()));
+        sampleFuncParams(root, initCodeContext.sampleArgStrings()));
   }
 
   private InitCodeView buildInitCodeViewRequestObject(
@@ -263,11 +265,25 @@ public class InitCodeTransformer {
         context,
         root.listInInitializationOrder(),
         ImmutableList.of(root),
-        subTrees(root, initCodeContext.sampleArgStrings()));
+        sampleFuncParams(root, initCodeContext.sampleArgStrings()));
   }
 
-  private List<InitCodeNode> subTrees(InitCodeNode root, List<String> paths) {
-    return paths.stream().map(path -> root.subTree(path)).collect(ImmutableList.toImmutableList());
+  private List<InitCodeNode> sampleFuncParams(InitCodeNode root, List<String> paths) {
+    List<InitCodeNode> params = new ArrayList<>();
+    for (String path : paths) {
+      Scanner scanner = new Scanner(path);
+      InitCodeNode node = FieldStructureParser.parsePath(root, scanner);
+      int token = scanner.lastToken();
+      if (token == '%') {
+        scanner.scan();
+        params.add(node.getChildren().get(scanner.tokenStr()));
+      } else if (node.getLineType() == InitCodeLineType.ReadFileInitLine) {
+        params.add(node.getChildren().get(InitCodeNode.FILE_NAME_KEY));
+      } else {
+        params.add(node);
+      }
+    }
+    return params;
   }
 
   /**
@@ -336,23 +352,15 @@ public class InitCodeTransformer {
     List<InitCodeLineView> argDefaultParams = new ArrayList<>();
     List<InitCodeLineView> argDefaultLines = new ArrayList<>();
     for (InitCodeNode param : sampleFuncParams) {
-      if (param.getLineType() == InitCodeLineType.ReadFileInitLine) {
-        InitCodeNode child = param.getChildren().get(InitCodeNode.FILE_NAME_KEY);
-        InitCodeLineView view = generateSimpleInitCodeLine(context, child, false);
-        argDefaultLines.add(view);
-        argDefaultParams.add(view);
-        orderedItems.remove(child);
-      } else {
-        List<InitCodeNode> paramInits = param.listInInitializationOrder();
-        argDefaultLines.addAll(generateSurfaceInitCodeLines(context, paramInits));
+      List<InitCodeNode> paramInits = param.listInInitializationOrder();
+      argDefaultLines.addAll(generateSurfaceInitCodeLines(context, paramInits));
 
-        // The param itself is always at the end.
-        argDefaultParams.add(argDefaultLines.get(argDefaultLines.size() - 1));
+      // The param itself is always at the end.
+      argDefaultParams.add(argDefaultLines.get(argDefaultLines.size() - 1));
 
-        // Since we're going to write the inits for the params here,
-        // remove so we don't init twice.
-        orderedItems.removeAll(paramInits);
-      }
+      // Since we're going to write the inits for the params here,
+      // remove so we don't init twice.
+      orderedItems.removeAll(paramInits);
     }
 
     return InitCodeView.newBuilder()
