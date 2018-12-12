@@ -388,10 +388,8 @@ public class InitCodeNode {
   /** Apply {@code sampleParamConfig} to this node. */
   private void resolveSampleParamConfig(
       InitCodeContext context, SampleParameterConfig sampleParamConfig) {
-    this.sampleParamConfig = sampleParamConfig;
-
     if (sampleParamConfig.readFromFile()) {
-      setupReadFileNode(context);
+      setupReadFileNode(context, sampleParamConfig);
     } else if (sampleParamConfig.sampleArgumentName() != null) {
       Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
       if (!argName.equals(identifier)) {
@@ -450,7 +448,7 @@ public class InitCodeNode {
    * from the logic of reading from a file, so that we can pass in the file name as a sample
    * function parameter and render how to read from a file within the sample.
    */
-  private void setupReadFileNode(InitCodeContext context) {
+  private void setupReadFileNode(InitCodeContext context, SampleParameterConfig sampleParamConfig) {
     Preconditions.checkArgument(
         children.isEmpty(), "Can only configure leaf node to read from file.");
     setLineType(InitCodeLineType.ReadFileInitLine);
