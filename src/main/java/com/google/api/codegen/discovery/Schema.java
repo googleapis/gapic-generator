@@ -261,8 +261,8 @@ public abstract class Schema implements Node {
   public abstract String pattern();
 
   /**
-   * @return the map of property names to schemas, in the same order they are defined in the API
-   *     IDL.
+   * @return the map of property names to schemas, in the same order they are defined in the
+   *     Discovery document.
    */
   public abstract ImmutableMap<String, Schema> properties();
 
@@ -277,6 +277,10 @@ public abstract class Schema implements Node {
 
   /** @return whether or not the schema is a map. */
   public abstract boolean isMap();
+
+  public boolean isRepeated() {
+    return type() == Type.ARRAY;
+  };
 
   /** @return the type. */
   public abstract Type type();
@@ -422,7 +426,7 @@ public abstract class Schema implements Node {
         .setDescription("")
         .setLocation("")
         .setPattern("")
-        .setProperties(new HashMap<>())
+        .setProperties(ImmutableMap.of())
         .setReference("");
   }
 
@@ -450,7 +454,7 @@ public abstract class Schema implements Node {
 
     public abstract Builder setPattern(String val);
 
-    public abstract Builder setProperties(Map<String, Schema> val);
+    public abstract Builder setProperties(ImmutableMap<String, Schema> val);
 
     public abstract Builder setReference(String val);
 

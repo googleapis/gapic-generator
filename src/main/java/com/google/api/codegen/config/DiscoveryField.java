@@ -188,7 +188,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isRepeated() {
-    return schema.type() == Type.ARRAY;
+    return schema.isRepeated();
   }
 
   @Override
