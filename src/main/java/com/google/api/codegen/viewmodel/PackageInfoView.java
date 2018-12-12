@@ -53,6 +53,9 @@ public abstract class PackageInfoView implements ViewModel {
 
   public abstract ReleaseLevel releaseLevel();
 
+  // If we can infer from the package name that this is a beta version API.
+  public abstract boolean isInferredBeta();
+
   @Nullable
   public abstract String importPath();
 
@@ -65,7 +68,7 @@ public abstract class PackageInfoView implements ViewModel {
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_PackageInfoView.Builder();
+    return new AutoValue_PackageInfoView.Builder().isInferredBeta(false);
   }
 
   @AutoValue.Builder
@@ -93,6 +96,8 @@ public abstract class PackageInfoView implements ViewModel {
     public abstract Builder domainLayerLocation(String val);
 
     public abstract Builder releaseLevel(ReleaseLevel val);
+
+    public abstract Builder isInferredBeta(boolean val);
 
     public abstract Builder importPath(String val);
 
