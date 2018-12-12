@@ -390,7 +390,7 @@ public class InitCodeNode {
       InitCodeContext context, SampleParameterConfig sampleParamConfig) {
     if (sampleParamConfig.readFromFile()) {
       setupReadFileNode(context, sampleParamConfig);
-    } else if (sampleParamConfig.sampleArgumentName() != null) {
+    } else if (sampleParamConfig.isSampleArgument()) {
       Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
       if (!argName.equals(identifier)) {
         identifier =
