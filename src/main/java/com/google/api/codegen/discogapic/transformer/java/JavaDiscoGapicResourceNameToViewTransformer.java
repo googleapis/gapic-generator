@@ -167,6 +167,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer
     resourceNameView.name(resourceName);
     resourceNameView.typeName(nameFormatter.publicClassName(Name.anyCamel(resourceName)));
     resourceNameView.pathTemplate(nameConfig.getNamePattern());
+    resourceNameView.serviceAddress(context.getDocContext().getServiceAddress());
 
     List<StaticLangMemberView> properties = new LinkedList<>();
     for (Map.Entry<String, Schema> entry : method.parameters().entrySet()) {
