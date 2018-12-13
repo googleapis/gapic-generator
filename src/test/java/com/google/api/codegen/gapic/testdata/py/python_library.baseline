@@ -4317,20 +4317,27 @@ import sys
 
 from google.cloud.example import library_v1
 import io
+import six
 
-def sample_discuss_book():
+def sample_discuss_book(image_file_name):
   """Testing calling forms"""
 
   # [START turing_prog_request_streaming_bidi_core]
 
   client = library_v1.LibraryServiceClient()
 
+  # image_file_name = 'image_file.jpg'
+
+  if isinstance(image_file_name, six.binary_type):
+    image_file_name = image_file_name.decode('utf-8')
   name = 'BASIC'
   file_name = 'comment_file'
   with io.open(file_name, 'rb') as f:
     comment = f.read()
   comment_2 = {'comment': comment}
-  request = {'name': name, 'comment': comment_2}
+  with io.open(image_file_name, 'rb') as f:
+    image = f.read()
+  request = {'name': name, 'comment': comment_2, 'image': image}
 
   requests = [request]
   for response_item in client.discuss_book(requests):
@@ -4343,9 +4350,10 @@ def main():
   import argparse
 
   parser = argparse.ArgumentParser()
+  parser.add_argument('--image_file_name', type=str, default='image_file.jpg')
   args = parser.parse_args()
 
-  sample_discuss_book()
+  sample_discuss_book(args.image_file_name)
 
 if __name__ == '__main__':
   main()

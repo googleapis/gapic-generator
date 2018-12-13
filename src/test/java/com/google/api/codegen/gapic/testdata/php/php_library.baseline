@@ -2905,19 +2905,23 @@ use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\Example\Library\V1\Comment;
 use Google\Example\Library\V1\DiscussBookRequest;
 
-function sampleDiscussBook()
+function sampleDiscussBook($imageFileName)
 {
     // [START turing_prog_request_streaming_bidi_async_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
+    // $imageFileName = 'image_file.jpg';
     $name = 'BASIC';
-    $comment = file_get_contents('comment_file');
+    $fileName = 'comment_file';
+    $comment = file_get_contents($fileName);
     $comment2 = new Comment();
     $comment2->setComment($comment);
+    $image = file_get_contents($imageFileName);
     $request = new DiscussBookRequest();
     $request->setName($name);
     $request->setComment($comment2);
+    $request->setImage($image);
 
     try {
         // Write requests individually, making read() calls if
@@ -2945,7 +2949,20 @@ function sampleDiscussBook()
 }
 // [END turing_prog_request_streaming_bidi_async]
 
-sampleDiscussBook();
+$opts = [
+    'imageFileName::',
+];
+
+$defaultOptions = [
+    'imageFileName' => 'image_file.jpg',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$imageFileName = $options['imageFileName'];
+
+sampleDiscussBook($imageFileName);
 ============== file: src/V1/samples/discussBook/DiscussBookRequestStreamingBidiProg.php ==============
 <?php
 /*
@@ -2975,19 +2992,23 @@ use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\Example\Library\V1\Comment;
 use Google\Example\Library\V1\DiscussBookRequest;
 
-function sampleDiscussBook()
+function sampleDiscussBook($imageFileName)
 {
     // [START turing_prog_request_streaming_bidi_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
+    // $imageFileName = 'image_file.jpg';
     $name = 'BASIC';
-    $comment = file_get_contents('comment_file');
+    $fileName = 'comment_file';
+    $comment = file_get_contents($fileName);
     $comment2 = new Comment();
     $comment2->setComment($comment);
+    $image = file_get_contents($imageFileName);
     $request = new DiscussBookRequest();
     $request->setName($name);
     $request->setComment($comment2);
+    $request->setImage($image);
 
     try {
         // Write all requests to the server, then read all responses until the
@@ -3006,7 +3027,20 @@ function sampleDiscussBook()
 }
 // [END turing_prog_request_streaming_bidi]
 
-sampleDiscussBook();
+$opts = [
+    'imageFileName::',
+];
+
+$defaultOptions = [
+    'imageFileName' => 'image_file.jpg',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$imageFileName = $options['imageFileName'];
+
+sampleDiscussBook($imageFileName);
 ============== file: src/V1/samples/findRelatedBooks/FindRelatedBooksRequestPagedAllOdyssey.php ==============
 <?php
 /*

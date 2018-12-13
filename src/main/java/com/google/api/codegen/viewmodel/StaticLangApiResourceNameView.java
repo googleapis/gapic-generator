@@ -32,6 +32,10 @@ public abstract class StaticLangApiResourceNameView
   // The template for the path, e.g. "projects/{projects}/topic/{topic}"
   public abstract String pathTemplate();
 
+  // The leading protocol+hostname string that qualifies a resource path.
+  // e.g. "https://www.googleapis.com/compute/v1/projects/"
+  public abstract String serviceAddress();
+
   // The list of path parameter views.
   public abstract List<StaticLangMemberView> pathParams();
 
@@ -46,6 +50,8 @@ public abstract class StaticLangApiResourceNameView
     public abstract Builder typeName(String val);
 
     public abstract Builder pathTemplate(String val);
+
+    public abstract Builder serviceAddress(String val);
 
     public abstract Builder pathParams(List<StaticLangMemberView> val);
 
