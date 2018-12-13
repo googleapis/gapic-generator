@@ -76,6 +76,10 @@ public abstract class InitValueConfig {
     return toBuilder().setResourceNameBindingValues(ImmutableMap.of(entityName, value)).build();
   }
 
+  /**
+   * Creates an updated InitValueConfig with the provided value. If entityName already exists in
+   * resourceNameBindingValues, update the value.
+   */
   public InitValueConfig withUpdatedInitialCollectionValue(String entityName, InitValue value) {
     Map<String, InitValue> map = new HashMap<>();
     map.putAll(getResourceNameBindingValues());

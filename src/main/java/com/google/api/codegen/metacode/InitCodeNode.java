@@ -198,23 +198,8 @@ public class InitCodeNode {
     }
 
     root.resolveNamesAndTypes(context, context.initObjectType(), context.suggestedName(), null);
+    root.resolveSampleParamConfigs(context, context.sampleParamConfigMap());
 
-    for (Map.Entry<String, SampleParameterConfig> entry :
-        context.sampleParamConfigMap().entrySet()) {
-      Scanner scanner = new Scanner(entry.getKey());
-      InitCodeNode parent = FieldStructureParser.parsePath(root, scanner);
-      int token = scanner.lastToken();
-      if (token == Scanner.EOF) {
-        parent.resolveSampleParamConfig(context, entry.getValue());
-      } else if (token == '%') {
-        Preconditions.checkArgument(
-            scanner.scan() == Scanner.IDENT, "expected ident after '%': %s", entry.getKey());
-        String entityName = scanner.tokenStr();
-        Preconditions.checkArgument(
-            scanner.scan() == Scanner.EOF, "expected EOF after entity name: %s", entityName);
-        parent.resolveSampleParamConfig(context, entityName, entry.getValue());
-      }
-    }
     return root;
   }
 
@@ -385,6 +370,25 @@ public class InitCodeNode {
     }
   }
 
+  private void resolveSampleParamConfigs(
+      InitCodeContext context, Map<String, SampleParameterConfig> configs) {
+    for (Map.Entry<String, SampleParameterConfig> entry : configs.entrySet()) {
+      Scanner scanner = new Scanner(entry.getKey());
+      InitCodeNode parent = FieldStructureParser.parsePath(this, scanner);
+      int token = scanner.lastToken();
+      if (token == Scanner.EOF) {
+        parent.resolveSampleParamConfig(context, entry.getValue());
+      } else if (token == '%') {
+        Preconditions.checkArgument(
+            scanner.scan() == Scanner.IDENT, "expected IDENT after '%': %s", entry.getKey());
+        String entityName = scanner.tokenStr();
+        Preconditions.checkArgument(
+            scanner.scan() == Scanner.EOF, "expected EOF after entity name: %s", entityName);
+        parent.resolveSampleParamConfig(context, entityName, entry.getValue());
+      }
+    }
+  }
+
   /** Apply {@code sampleParamConfig} to this node. */
   private void resolveSampleParamConfig(
       InitCodeContext context, SampleParameterConfig sampleParamConfig) {
@@ -404,21 +408,22 @@ public class InitCodeNode {
       InitCodeContext context, String entityName, SampleParameterConfig sampleParamConfig) {
     Preconditions.checkArgument(
         !sampleParamConfig.readFromFile(),
-        "cannot configure a resource name entity to read from file.");
-    if (sampleParamConfig.sampleArgumentName() != null) {
-      Name entityIdentifier =
-          identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
-      addChildNodeForSampleParameter(
-          context,
-          entityName,
-          ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
-          entityIdentifier,
-          InitValueConfig.createWithValue(
-              initValueConfig.getResourceNameBindingValues().get(entityName)));
-      initValueConfig =
-          initValueConfig.withUpdatedInitialCollectionValue(
-              entityName, InitValue.createVariable(entityIdentifier.toLowerUnderscore()));
+        "cannot configure a resource name entity to read from file");
+    if (!sampleParamConfig.isSampleArgument()) {
+      return;
     }
+    Name entityIdentifier =
+        identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
+    addChildNodeForSampleParameter(
+        context,
+        entityName,
+        ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
+        entityIdentifier,
+        InitValueConfig.createWithValue(
+            initValueConfig.getResourceNameBindingValues().get(entityName)));
+    initValueConfig =
+        initValueConfig.withUpdatedInitialCollectionValue(
+            entityName, InitValue.createVariable(entityIdentifier.toLowerUnderscore()));
   }
 
   private static Name getChildSuggestedName(
