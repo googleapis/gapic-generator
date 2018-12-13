@@ -28,10 +28,9 @@ import com.google.common.collect.ImmutableList;
 public class PhpSamplePrintArgTransformer implements OutputTransformer.PrintArgTransformer {
 
   /**
-   * Converts the VariableView to a PrintArgView that knows how to print proto types nicely. when
-   * printing a enum, we call SomeEnum::name(x) to convert the enum value to its name first. When
-   * printing a message, we call `print_r(x, true)` to convert the object to a meaningful string
-   * first.
+   * Converts the VariableView to a PrintArgView that knows how to print proto types nicely. To
+   * print an enum, we first call SomeEnum::name(x) to convert the enum value to its name. To print
+   * a message, we first call `print_r(x, true)` to convert the object to a meaningful string.
    */
   @Override
   public PrintArgView generatePrintArg(
