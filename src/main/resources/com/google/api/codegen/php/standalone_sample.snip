@@ -411,20 +411,12 @@
 
 @private commaSeparatedFields(args)
     @join arg : args on ", "
-        # FIXME(hzyi): print enums directly will just get us an int
-        # Fix this by creating a mapping between enums and meaningful display names
-        # until https://github.com/protocolbuffers/protobuf/pull/4534 is merged
-        @if arg.segments.get(0).variable.type.isMessage
-        # FIXME(hzyi): change to use OutputTranformer.PrintArgTransformer
-            print_r({@printVariableField(arg)}, true)
-        @else
-            {@printVariableField(arg)}
-        @end
+        {@printVariableField(arg)}
     @end
 @end
 
 @private printVariableField(arg)
-  @join segment : arg.segments
+  @join segment : arg.segments on ""
     @switch segment.kind
       @case "TEXT"
         {@segment.text}

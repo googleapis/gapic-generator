@@ -3314,7 +3314,7 @@ function sampleMonologAboutBook()
             $stream->write($request);
         }
         $response = $stream->readResponse();
-        printf("The stage of the comment is: %s" . PHP_EOL, $response->getStage());
+        printf("The stage of the comment is: %s" . PHP_EOL, Comment_Stage::name($response->getStage()));
     } finally {
         $libraryServiceClient->close();
     }
@@ -3367,7 +3367,7 @@ function sampleMonologAboutBook()
         $requests = [$request];
         $stream = $libraryServiceClient->monologAboutBook();
         $response = $stream->writeAllAndReadResponse($requests);
-        printf("The stage of the comment is: %s" . PHP_EOL, $response->getStage());
+        printf("The stage of the comment is: %s" . PHP_EOL, Comment_Stage::name($response->getStage()));
     } finally {
         $libraryServiceClient->close();
     }
