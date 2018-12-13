@@ -80,7 +80,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
 
   private static final int COMMENT_LINE_LENGTH = 75;
 
-  private static final Pattern versionPattern = Pattern.compile("v\\d+(p\\d)?beta");
+  private static final Pattern versionPattern = Pattern.compile("v\\d.*beta");
 
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
   private final StaticLangApiMethodTransformer apiMethodTransformer =
