@@ -17,6 +17,8 @@ package com.google.api.codegen.metacode;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 /** InitValueConfig configures the initial value of an initialized variable. */
@@ -72,6 +74,19 @@ public abstract class InitValueConfig {
   /** Creates an updated InitValueConfig with the provided value. */
   public InitValueConfig withInitialCollectionValue(String entityName, InitValue value) {
     return toBuilder().setResourceNameBindingValues(ImmutableMap.of(entityName, value)).build();
+  }
+
+  /**
+   * Creates an updated InitValueConfig with the provided value. If entityName already exists in
+   * resourceNameBindingValues, update the value.
+   */
+  public InitValueConfig withUpdatedInitialCollectionValue(String entityName, InitValue value) {
+    Map<String, InitValue> map = new HashMap<>();
+    map.putAll(getResourceNameBindingValues());
+    map.put(entityName, value);
+    ImmutableMap<String, InitValue> resources =
+        ImmutableMap.<String, InitValue>builder().putAll(map).build();
+    return toBuilder().setResourceNameBindingValues(resources).build();
   }
 
   public boolean isEmpty() {

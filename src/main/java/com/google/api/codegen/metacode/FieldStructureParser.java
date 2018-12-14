@@ -143,7 +143,7 @@ public class FieldStructureParser {
    * Parses the path found in {@code scanner} and descend the tree rooted at {@code root}. If
    * children specified by the path do not exist, they are created.
    */
-  static InitCodeNode parsePath(InitCodeNode root, Scanner scanner) {
+  public static InitCodeNode parsePath(InitCodeNode root, Scanner scanner) {
     Preconditions.checkArgument(
         scanner.scan() == Scanner.IDENT, "expected root identifier: %s", scanner.input());
     InitCodeNode parent = root.mergeChild(InitCodeNode.create(scanner.tokenStr()));

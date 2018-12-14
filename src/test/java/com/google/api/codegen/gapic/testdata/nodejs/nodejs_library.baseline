@@ -420,7 +420,7 @@ client.findRelatedBooks(request, options)
 //         className: "GetBigBookLongRunningEventEmitterWap"
 //          valueSet: "wap" ("GetBigBook: 'War and Peace'")
 //       description: "Testing calling forms"
-//        [name="War and Peace"]
+//        [name%shelf_id=Novel, name%book_id="War and Peace"]
 //      apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
 
 // [START hopper_core]
@@ -428,7 +428,8 @@ client.findRelatedBooks(request, options)
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+// const shelf = 'Novel';
+const formattedName = client.bookPath(shelf, "War and Peace");
 
 // Handle the operation using the event emitter pattern.
 client.getBigBook({name: formattedName})
@@ -477,7 +478,7 @@ client.getBigBook({name: formattedName})
 //         className: "GetBigBookLongRunningPromiseWap"
 //          valueSet: "wap" ("GetBigBook: 'War and Peace'")
 //       description: "Testing calling forms"
-//        [name="War and Peace"]
+//        [name%shelf_id=Novel, name%book_id="War and Peace"]
 //      apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
 
 // [START hopper_core]
@@ -485,7 +486,8 @@ client.getBigBook({name: formattedName})
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+// const shelf = 'Novel';
+const formattedName = client.bookPath(shelf, "War and Peace");
 
 // Handle the operation using the promise pattern.
 client.getBigBook({name: formattedName})
@@ -7828,3 +7830,4 @@ function mockLongRunningGrpcMethod(expectedRequest, response, error) {
     return Promise.resolve([mockOperation]);
   };
 }
+
