@@ -16,6 +16,9 @@ package com.google.api.codegen.discogapic.transformer;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.pathtemplate.PathTemplate;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Test;
 
 public class DiscoGapicParserTest {
@@ -23,16 +26,29 @@ public class DiscoGapicParserTest {
   @Test
   public void testCanonicalPath() {
     // The test inputs to the getCanonicalPath() are examples from the Compute Discovery Doc API.
-
     assertThat(DiscoGapicParser.getCanonicalPath("{project}/backendBuckets/{backendBucket}"))
-        .isEqualTo("projects/{project}/backendBuckets/{backendBucket}");
+        .isEqualTo("{project}/backendBuckets/{backendBucket}");
     assertThat(DiscoGapicParser.getCanonicalPath("{project}/global/backendBuckets/{backendBucket}"))
-        .isEqualTo("projects/{project}/global/backendBuckets/{backendBucket}");
+        .isEqualTo("{project}/global/backendBuckets/{backendBucket}");
     assertThat(
             DiscoGapicParser.getCanonicalPath("{project}/zones/{zone}/disks/{resource}/setLabels"))
-        .isEqualTo("projects/{project}/zones/{zone}/disks/{resource}");
+        .isEqualTo("{project}/zones/{zone}/disks/{resource}");
     assertThat(DiscoGapicParser.getCanonicalPath("{project}/global/images/{resource}/setLabels"))
-        .isEqualTo("projects/{project}/global/images/{resource}");
+        .isEqualTo("{project}/global/images/{resource}");
+  }
+
+  @Test
+  public void testCanonicalPathToTemplate() {
+    // Test that the output of getCanonicalPath() can be instantiated as a working PathTemplate.
+    String rawPath = "{project}/zones/{zone}/disks/{resource}/setLabels";
+    String canonicalPath = DiscoGapicParser.getCanonicalPath(rawPath);
+    PathTemplate pathTemplate = PathTemplate.create(canonicalPath);
+    Map<String, String> keysAndValues = new HashMap<>();
+    keysAndValues.put("project", "ojectpray");
+    keysAndValues.put("zone", "onezay");
+    keysAndValues.put("resource", "esourceray");
+    assertThat(pathTemplate.instantiate(keysAndValues))
+        .isEqualTo("ojectpray/zones/onezay/disks/esourceray");
   }
 
   @Test
