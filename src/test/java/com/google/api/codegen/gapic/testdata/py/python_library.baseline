@@ -4501,15 +4501,20 @@ import sys
 # [START hopper]
 
 from google.cloud.example import library_v1
+import six
 
-def sample_get_big_book():
+def sample_get_big_book(shelf):
   """Testing calling forms"""
 
   # [START hopper_core]
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  # shelf = 'Novel'
+
+  if isinstance(shelf, six.binary_type):
+    shelf = shelf.decode('utf-8')
+  name = client.book_path(shelf, "War and Peace")
 
   operation = client.get_big_book(name)
 
@@ -4526,9 +4531,10 @@ def main():
   import argparse
 
   parser = argparse.ArgumentParser()
+  parser.add_argument('--shelf', type=str, default='Novel')
   args = parser.parse_args()
 
-  sample_get_big_book()
+  sample_get_big_book(args.shelf)
 
 if __name__ == '__main__':
   main()
