@@ -271,9 +271,10 @@ public class InitCodeTransformer {
   /**
    * Returns all the nodes to be rendered as sample function parameters.
    *
-   * <p>If path is: a normal node, returns that node. a ReadFile node, returns the child node of
-   * that node. a resource path, returns the child node whose key equals the entity name in the
-   * path.
+   * <p>If path is:
+   * <li>a normal node, returns that node.
+   * <li>a ReadFile node, returns the child node of that node.
+   * <li>a resource path, returns the child node whose key equals the entity name in the path.
    */
   private List<InitCodeNode> sampleFuncParams(InitCodeNode root, List<String> paths) {
     List<InitCodeNode> params = new ArrayList<>();
