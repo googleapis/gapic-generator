@@ -70,6 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
@@ -78,6 +79,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   private static final String DOC_TEMPLATE_FILENAME = "go/doc.snip";
 
   private static final int COMMENT_LINE_LENGTH = 75;
+
+  private static final Pattern versionPattern = Pattern.compile("v\\d.*beta");
 
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
   private final StaticLangApiMethodTransformer apiMethodTransformer =
@@ -242,7 +245,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
     packageInfo.releaseLevel(productConfig.getReleaseLevel());
-
+    packageInfo.isInferredBeta(isInferredBetaVersion(productConfig.getPackageName()));
     return packageInfo.build();
   }
 
@@ -367,6 +370,13 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
       }
     }
     return kinds;
+  }
+
+  @VisibleForTesting
+  public boolean isInferredBetaVersion(String packageName) {
+    int indexOfVersionString = packageName.lastIndexOf("/");
+    String versionString = packageName.substring(indexOfVersionString + 1);
+    return versionPattern.matcher(versionString).find();
   }
 
   private enum ImportContext {
