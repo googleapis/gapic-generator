@@ -7657,15 +7657,20 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
 // DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "wap")
 package com.google.example.examples.library.v1.snippets;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 // [START hopper]
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 
 public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
-  public static void sampleGetBigBook() {
+  public static void sampleGetBigBook(String shelf) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      // String shelf = "Novel";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
       Book response = libraryClient.getBigBookAsync(name.toString()).get();
       System.out.printf("name: %s\n", response.getName());
       System.out.printf("author: %s\n", response.getAuthor());
@@ -7676,7 +7681,18 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
   }
 
   public static void main(String[] args) {
-    sampleGetBigBook();
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+
+    sampleGetBigBook(shelf);
   }
 }
 // FIXME: Insert here clean-up code.
@@ -7686,16 +7702,21 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
 // DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
 package com.google.example.examples.library.v1.snippets;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 // [START hopper]
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 
 public class GetBigBookAsyncLongRunningRequestAsyncWap {
-  public static void sampleGetBigBook() {
+  public static void sampleGetBigBook(String shelf) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      // String shelf = "Novel";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -7709,7 +7730,18 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap {
   }
 
   public static void main(String[] args) {
-    sampleGetBigBook();
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+
+    sampleGetBigBook(shelf);
   }
 }
 // FIXME: Insert here clean-up code.
@@ -7719,16 +7751,21 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap {
 // DO NOT EDIT! This is a generated sample ("Callable",  "wap")
 package com.google.example.examples.library.v1.snippets;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 // [START hopper]
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 
 public class GetBigBookCallableCallableWap {
-  public static void sampleGetBigBook() {
+  public static void sampleGetBigBook(String shelf) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      // String shelf = "Novel";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -7746,7 +7783,18 @@ public class GetBigBookCallableCallableWap {
   }
 
   public static void main(String[] args) {
-    sampleGetBigBook();
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+
+    sampleGetBigBook(shelf);
   }
 }
 // FIXME: Insert here clean-up code.
@@ -7756,16 +7804,21 @@ public class GetBigBookCallableCallableWap {
 // DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "wap")
 package com.google.example.examples.library.v1.snippets;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 // [START hopper]
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 
 public class GetBigBookOperationCallableLongRunningCallableWap {
-  public static void sampleGetBigBook() {
+  public static void sampleGetBigBook(String shelf) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      // String shelf = "Novel";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -7783,7 +7836,18 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
   }
 
   public static void main(String[] args) {
-    sampleGetBigBook();
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+
+    sampleGetBigBook(shelf);
   }
 }
 // FIXME: Insert here clean-up code.

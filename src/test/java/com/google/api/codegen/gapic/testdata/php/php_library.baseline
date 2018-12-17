@@ -3178,13 +3178,14 @@ require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 
-function sampleGetBigBook()
+function sampleGetBigBook($shelf)
 {
     // [START hopper_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    // $shelf = 'Novel';
+    $formattedName = $libraryServiceClient->bookName($shelf, "War and Peace");
 
     try {
         // start the operation, keep the operation name, and resume later
@@ -3212,7 +3213,20 @@ function sampleGetBigBook()
 }
 // [END hopper]
 
-sampleGetBigBook();
+$opts = [
+    'shelf::',
+];
+
+$defaultOptions = [
+    'shelf' => 'Novel',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$shelf = $options['shelf'];
+
+sampleGetBigBook($shelf);
 ============== file: src/V1/samples/getBigBook/GetBigBookLongRunningRequestWap.php ==============
 <?php
 /*
@@ -3240,13 +3254,14 @@ require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 
-function sampleGetBigBook()
+function sampleGetBigBook($shelf)
 {
     // [START hopper_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    // $shelf = 'Novel';
+    $formattedName = $libraryServiceClient->bookName($shelf, "War and Peace");
 
     try {
         $operationResponse = $libraryServiceClient->getBigBook($formattedName);
@@ -3267,7 +3282,20 @@ function sampleGetBigBook()
 }
 // [END hopper]
 
-sampleGetBigBook();
+$opts = [
+    'shelf::',
+];
+
+$defaultOptions = [
+    'shelf' => 'Novel',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$shelf = $options['shelf'];
+
+sampleGetBigBook($shelf);
 ============== file: src/V1/samples/monologAboutBook/MonologAboutBookRequestStreamingClientAsyncProg.php ==============
 <?php
 /*
