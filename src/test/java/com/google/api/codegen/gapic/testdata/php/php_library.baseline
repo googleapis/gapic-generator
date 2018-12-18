@@ -5222,20 +5222,11 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         // Mock response
-        $shelvesElement = new Shelf();
-        $shelves = [$shelvesElement];
         $expectedResponse = new StreamShelvesResponse();
-        $expectedResponse->setShelves($shelves);
         $transport->addResponse($expectedResponse);
-        $shelvesElement2 = new Shelf();
-        $shelves2 = [$shelvesElement2];
         $expectedResponse2 = new StreamShelvesResponse();
-        $expectedResponse2->setShelves($shelves2);
         $transport->addResponse($expectedResponse2);
-        $shelvesElement3 = new Shelf();
-        $shelves3 = [$shelvesElement3];
         $expectedResponse3 = new StreamShelvesResponse();
-        $expectedResponse3->setShelves($shelves3);
         $transport->addResponse($expectedResponse3);
 
         // Mock request
@@ -5246,11 +5237,11 @@ class LibraryServiceClientTest extends GeneratedTest
 
         $responses = iterator_to_array($serverStream->readAll());
 
-        $expectedResources = [];
-        $expectedResources[] = $expectedResponse->getShelves()[0];
-        $expectedResources[] = $expectedResponse2->getShelves()[0];
-        $expectedResources[] = $expectedResponse3->getShelves()[0];
-        $this->assertEquals($expectedResources, $responses);
+        $expectedResponses = [];
+        $expectedResponses[] = $expectedResponse;
+        $expectedResponses[] = $expectedResponse2;
+        $expectedResponses[] = $expectedResponse3;
+        $this->assertEquals($expectedResponses, $responses);
 
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
