@@ -3503,14 +3503,7 @@ config = {
         "PublishSeries": {
           "timeout_millis": 7000,
           "retry_codes_name": "non_idempotent",
-          "retry_params_name": "default",
-          "bundling": {
-            "element_count_threshold": 6,
-            "element_count_limit": 7,
-            "request_byte_threshold": 100000,
-            "request_byte_limit": 150000,
-            "delay_threshold_millis": 500
-          }
+          "retry_params_name": "default"
         },
         "GetBook": {
           "timeout_millis": 8000,
@@ -5276,9 +5269,7 @@ class TestLibraryServiceClient(object):
 
     def test_publish_series(self):
         # Setup Expected Response
-        book_names_element = 'bookNamesElement1491670575'
-        book_names = [book_names_element]
-        expected_response = {'book_names': book_names}
+        expected_response = {}
         expected_response = library_pb2.PublishSeriesResponse(**expected_response)
 
         # Mock the API response

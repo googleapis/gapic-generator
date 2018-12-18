@@ -3268,15 +3268,6 @@ class LibraryServiceClient {
     // Some methods on this API support automatically batching
     // requests; denote this.
     this._descriptors.batching = {
-      publishSeries: new gax.BundleDescriptor(
-        'books',
-        [
-          'edition',
-          'shelf.name',
-        ],
-        'bookNames',
-        gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Book'))
-      ),
       addComments: new gax.BundleDescriptor(
         'comments',
         [
@@ -5765,14 +5756,7 @@ module.exports = LibraryServiceClient;
         "PublishSeries": {
           "timeout_millis": 7000,
           "retry_codes_name": "non_idempotent",
-          "retry_params_name": "default",
-          "bundling": {
-            "element_count_threshold": 6,
-            "element_count_limit": 7,
-            "request_byte_threshold": 100000,
-            "request_byte_limit": 150000,
-            "delay_threshold_millis": 500
-          }
+          "retry_params_name": "default"
         },
         "GetBook": {
           "timeout_millis": 8000,
@@ -6313,11 +6297,7 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock response
-      const bookNamesElement = 'bookNamesElement1491670575';
-      const bookNames = [bookNamesElement];
-      const expectedResponse = {
-        bookNames: bookNames,
-      };
+      const expectedResponse = {};
 
       // Mock Grpc layer
       client._innerApiCalls.publishSeries = mockSimpleGrpcMethod(

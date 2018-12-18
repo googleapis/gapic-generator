@@ -2415,14 +2415,7 @@ class LibraryServiceClient extends LibraryServiceGapicClient
         "PublishSeries": {
           "timeout_millis": 7000,
           "retry_codes_name": "non_idempotent",
-          "retry_params_name": "default",
-          "bundling": {
-            "element_count_threshold": 6,
-            "element_count_limit": 7,
-            "request_byte_threshold": 100000,
-            "request_byte_limit": 150000,
-            "delay_threshold_millis": 500
-          }
+          "retry_params_name": "default"
         },
         "GetBook": {
           "timeout_millis": 8000,
@@ -4282,10 +4275,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         // Mock response
-        $bookNamesElement = 'bookNamesElement1491670575';
-        $bookNames = [$bookNamesElement];
         $expectedResponse = new PublishSeriesResponse();
-        $expectedResponse->setBookNames($bookNames);
         $transport->addResponse($expectedResponse);
 
         // Mock request

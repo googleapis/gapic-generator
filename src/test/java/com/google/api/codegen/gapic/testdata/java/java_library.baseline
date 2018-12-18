@@ -4200,7 +4200,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   /**
    * Returns the object with the settings used for calls to publishSeries.
    */
-  public BatchingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
+  public UnaryCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).publishSeriesSettings();
   }
 
@@ -4526,7 +4526,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     /**
      * Returns the builder for the settings used for calls to publishSeries.
      */
-    public BatchingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
+    public UnaryCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
       return getStubSettingsBuilder().publishSeriesSettings();
     }
 
@@ -5468,7 +5468,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.deleteShelfCallable = callableFactory.createUnaryCallable(deleteShelfTransportSettings,settings.deleteShelfSettings(), clientContext);
     this.mergeShelvesCallable = callableFactory.createUnaryCallable(mergeShelvesTransportSettings,settings.mergeShelvesSettings(), clientContext);
     this.createBookCallable = callableFactory.createUnaryCallable(createBookTransportSettings,settings.createBookSettings(), clientContext);
-    this.publishSeriesCallable = callableFactory.createBatchingCallable(publishSeriesTransportSettings,settings.publishSeriesSettings(), clientContext);
+    this.publishSeriesCallable = callableFactory.createUnaryCallable(publishSeriesTransportSettings,settings.publishSeriesSettings(), clientContext);
     this.getBookCallable = callableFactory.createUnaryCallable(getBookTransportSettings,settings.getBookSettings(), clientContext);
     this.listBooksCallable = callableFactory.createUnaryCallable(listBooksTransportSettings,settings.listBooksSettings(), clientContext);
     this.listBooksPagedCallable = callableFactory.createPagedCallable(listBooksTransportSettings,settings.listBooksSettings(), clientContext);
@@ -6102,7 +6102,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final UnaryCallSettings<DeleteShelfRequest, Empty> deleteShelfSettings;
   private final UnaryCallSettings<MergeShelvesRequest, Shelf> mergeShelvesSettings;
   private final UnaryCallSettings<CreateBookRequest, Book> createBookSettings;
-  private final BatchingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
+  private final UnaryCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
   private final UnaryCallSettings<GetBookRequest, Book> getBookSettings;
   private final PagedCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
   private final UnaryCallSettings<DeleteBookRequest, Empty> deleteBookSettings;
@@ -6172,7 +6172,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   /**
    * Returns the object with the settings used for calls to publishSeries.
    */
-  public BatchingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
+  public UnaryCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
     return publishSeriesSettings;
   }
 
@@ -6649,70 +6649,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
         }
       };
 
-  private static final BatchingDescriptor<PublishSeriesRequest, PublishSeriesResponse> PUBLISH_SERIES_BATCHING_DESC =
-      new BatchingDescriptor<PublishSeriesRequest, PublishSeriesResponse>() {
-        @Override
-        public PartitionKey getBatchPartitionKey(PublishSeriesRequest request) {
-          return new PartitionKey(request.getEdition(), request.getName());
-        }
-
-        @Override
-        public RequestBuilder<PublishSeriesRequest> getRequestBuilder() {
-          return new RequestBuilder<PublishSeriesRequest>() {
-            private PublishSeriesRequest.Builder builder;
-            @Override
-            public void appendRequest(PublishSeriesRequest request) {
-              if (builder == null) {
-                builder = request.toBuilder();
-              } else {
-                builder.addAllBooks(request.getBooksList());
-              }
-            }
-            @Override
-            public PublishSeriesRequest build() {
-              return builder.build();
-            }
-          };
-        }
-
-        @Override
-        public void splitResponse(
-            PublishSeriesResponse batchResponse,
-            Collection<? extends BatchedRequestIssuer<PublishSeriesResponse>> batch) {
-          int batchMessageIndex = 0;
-          for (BatchedRequestIssuer<PublishSeriesResponse> responder : batch) {
-            List<String> subresponseElements = new ArrayList<>();
-            long subresponseCount = responder.getMessageCount();
-            for (int i = 0; i < subresponseCount; i++) {
-              subresponseElements.add(batchResponse.getBookNames(batchMessageIndex));
-              batchMessageIndex += 1;
-            }
-            PublishSeriesResponse response =
-                PublishSeriesResponse.newBuilder().addAllBookNames(subresponseElements).build();
-            responder.setResponse(response);
-          }
-        }
-
-        @Override
-        public void splitException(
-            Throwable throwable,
-            Collection<? extends BatchedRequestIssuer<PublishSeriesResponse>> batch) {
-          for (BatchedRequestIssuer<PublishSeriesResponse> responder : batch) {
-            responder.setException(throwable);
-          }
-        }
-
-        @Override
-        public long countElements(PublishSeriesRequest request) {
-          return request.getBooksCount();
-        }
-
-        @Override
-        public long countBytes(PublishSeriesRequest request) {
-          return request.getSerializedSize();
-        }
-      };
-
   private static final BatchingDescriptor<AddCommentsRequest, Empty> ADD_COMMENTS_BATCHING_DESC =
       new BatchingDescriptor<AddCommentsRequest, Empty>() {
         @Override
@@ -6783,7 +6719,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final UnaryCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings;
     private final UnaryCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings;
     private final UnaryCallSettings.Builder<CreateBookRequest, Book> createBookSettings;
-    private final BatchingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
+    private final UnaryCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
     private final UnaryCallSettings.Builder<GetBookRequest, Book> getBookSettings;
     private final PagedCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
     private final UnaryCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings;
@@ -6859,9 +6795,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       createBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
-      publishSeriesSettings = BatchingCallSettings.newBuilder(
-          PUBLISH_SERIES_BATCHING_DESC)
-              .setBatchingSettings(BatchingSettings.newBuilder().build());
+      publishSeriesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       getBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
@@ -6979,16 +6913,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.publishSeriesSettings().setBatchingSettings(
-          BatchingSettings.newBuilder()
-          .setElementCountThreshold(6L)
-          .setRequestByteThreshold(100000L)
-          .setDelayThreshold(Duration.ofMillis(500))
-          .setFlowControlSettings(
-            FlowControlSettings.newBuilder()
-              .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
-              .build())
-          .build());
       builder.publishSeriesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -7244,7 +7168,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     /**
      * Returns the builder for the settings used for calls to publishSeries.
      */
-    public BatchingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
+    public UnaryCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
       return publishSeriesSettings;
     }
 
@@ -8821,11 +8745,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void publishSeriesTest() {
-    String bookNamesElement = "bookNamesElement1491670575";
-    List<String> bookNames = Arrays.asList(bookNamesElement);
-    PublishSeriesResponse expectedResponse = PublishSeriesResponse.newBuilder()
-      .addAllBookNames(bookNames)
-      .build();
+    PublishSeriesResponse expectedResponse = PublishSeriesResponse.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
     Shelf shelf = Shelf.newBuilder().build();

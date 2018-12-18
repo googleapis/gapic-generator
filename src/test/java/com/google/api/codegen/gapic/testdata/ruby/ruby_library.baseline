@@ -2748,13 +2748,6 @@ module Library
       private_constant :PAGE_DESCRIPTORS
 
       BUNDLE_DESCRIPTORS = {
-        "publish_series" => Google::Gax::BundleDescriptor.new(
-          "books",
-          [
-            "edition",
-            "shelf.name"
-          ],
-          subresponse_field: "book_names"),
         "add_comments" => Google::Gax::BundleDescriptor.new(
           "comments",
           [
@@ -4762,14 +4755,7 @@ end
         "PublishSeries": {
           "timeout_millis": 7000,
           "retry_codes_name": "non_idempotent",
-          "retry_params_name": "default",
-          "bundling": {
-            "element_count_threshold": 6,
-            "element_count_limit": 7,
-            "request_byte_threshold": 100000,
-            "request_byte_limit": 150000,
-            "delay_threshold_millis": 500
-          }
+          "retry_params_name": "default"
         },
         "GetBook": {
           "timeout_millis": 8000,
@@ -5467,9 +5453,7 @@ describe Library::V1::LibraryServiceClient do
       series_uuid = { series_string: series_string }
 
       # Create expected grpc response
-      book_names_element = "bookNamesElement1491670575"
-      book_names = [book_names_element]
-      expected_response = { book_names: book_names }
+      expected_response = {}
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::PublishSeriesResponse)
 
       # Mock Grpc layer
