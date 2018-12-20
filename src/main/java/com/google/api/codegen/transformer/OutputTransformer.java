@@ -367,6 +367,7 @@ public class OutputTransformer {
             valueSet.getId(),
             config.input());
 
+        type = type.makeOptional();
         accessors.add(AccessorView.IndexView.newBuilder().index(config.tokenStr()).build());
 
         Preconditions.checkArgument(
