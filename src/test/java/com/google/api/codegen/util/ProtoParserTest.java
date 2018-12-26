@@ -16,6 +16,7 @@ package com.google.api.codegen.util;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.HttpRule;
 import com.google.api.MethodSignature;
 import com.google.api.OperationData;
 import com.google.api.Resource;
@@ -23,6 +24,7 @@ import com.google.api.ResourceSet;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.protoannotations.GapicCodeGeneratorAnnotationsTest;
+import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -32,6 +34,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -338,5 +341,11 @@ public class ProtoParserTest {
         .containsExactly(
             "https://www.googleapis.com/auth/library",
             "https://www.googleapis.com/auth/cloud-platform");
+  }
+
+  @Test
+  public void testHttpRuleUrl() {
+    PathTemplate urlTemplate = protoParser.getRoutingHeader(deleteShelfMethod);
+    assertThat(urlTemplate).isEqualTo(PathTemplate.create("/v1/{name=bookShelves/*}"));
   }
 }

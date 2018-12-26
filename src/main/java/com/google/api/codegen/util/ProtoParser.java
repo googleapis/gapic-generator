@@ -17,12 +17,15 @@ package com.google.api.codegen.util;
 import static com.google.api.FieldBehavior.REQUIRED;
 
 import com.google.api.AnnotationsProto;
+import com.google.api.Http;
+import com.google.api.HttpRule;
 import com.google.api.MethodSignature;
 import com.google.api.OAuth;
 import com.google.api.OperationData;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -33,6 +36,7 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -88,6 +92,32 @@ public class ProtoParser {
     } else {
       return null;
     }
+  }
+
+  @Nullable
+  @VisibleForTesting
+  public PathTemplate getRoutingHeader(Method method) {
+    HttpRule httpRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
+    if (httpRule == null) {
+      return null;
+    }
+
+    String urlVar;
+    if (!Strings.isNullOrEmpty(httpRule.getPost())) {
+      urlVar = httpRule.getPost();
+    } else if (!Strings.isNullOrEmpty(httpRule.getDelete())) {
+      urlVar = httpRule.getDelete();
+    } else if (!Strings.isNullOrEmpty(httpRule.getGet())) {
+      urlVar = httpRule.getGet();
+    } else if (!Strings.isNullOrEmpty(httpRule.getPatch())) {
+      urlVar = httpRule.getPatch();
+    } else if (!Strings.isNullOrEmpty(httpRule.getPut())) {
+      urlVar = httpRule.getPut();
+    } else {
+      return null;
+    }
+
+    return PathTemplate.create(urlVar);
   }
 
   @Nullable
