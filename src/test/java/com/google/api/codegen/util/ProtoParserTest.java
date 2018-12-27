@@ -16,7 +16,6 @@ package com.google.api.codegen.util;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.HttpRule;
 import com.google.api.MethodSignature;
 import com.google.api.OperationData;
 import com.google.api.Resource;
@@ -34,7 +33,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;

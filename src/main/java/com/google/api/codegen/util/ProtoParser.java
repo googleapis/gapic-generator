@@ -17,7 +17,6 @@ package com.google.api.codegen.util;
 import static com.google.api.FieldBehavior.REQUIRED;
 
 import com.google.api.AnnotationsProto;
-import com.google.api.Http;
 import com.google.api.HttpRule;
 import com.google.api.MethodSignature;
 import com.google.api.OAuth;
@@ -118,6 +117,14 @@ public class ProtoParser {
     }
 
     return PathTemplate.create(urlVar);
+  }
+
+  public String getHeaderParam(Method method) {
+    PathTemplate pathTemplate = getRoutingHeader(method);
+    if (pathTemplate == null) {
+      return null;
+    }
+    return pathTemplate.singleVar();
   }
 
   @Nullable

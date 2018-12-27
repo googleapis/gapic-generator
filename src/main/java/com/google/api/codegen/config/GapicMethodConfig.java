@@ -244,7 +244,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
 
     List<String> headerRequestParams =
-        ImmutableList.copyOf(methodConfigProto.getHeaderRequestParamsList());
+        findHeaderRequestParams(methodConfigProto, method, protoParser);
 
     if (error) {
       return null;
@@ -269,6 +269,23 @@ public abstract class GapicMethodConfig extends MethodConfig {
           releaseLevel,
           longRunningConfig,
           headerRequestParams);
+    }
+  }
+
+  private static List<String> findHeaderRequestParams(
+      MethodConfigProto methodConfigProto, Method method, ProtoParser protoParser) {
+    List<String> headerRequestParams =
+        ImmutableList.copyOf(methodConfigProto.getHeaderRequestParamsList());
+
+    if (!headerRequestParams.isEmpty()) {
+      return headerRequestParams;
+    } else {
+      // Let the GAPIC config settings for headers override the defaults in the protofile.
+      String headerParam = protoParser.getHeaderParam(method);
+      if (Strings.isNullOrEmpty(headerParam)) {
+        return headerRequestParams;
+      }
+      return ImmutableList.of(headerParam);
     }
   }
 

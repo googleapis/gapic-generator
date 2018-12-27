@@ -394,7 +394,8 @@ func (c *LibClient) CreateShelf(ctx context.Context, req *librarypb.CreateShelfR
 
 // GetShelf gets a shelf.
 func (c *LibClient) GetShelf(ctx context.Context, req *librarypb.GetShelfRequest, opts ...gax.CallOption) (*librarypb.Shelf, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetShelf[0:len(c.CallOptions.GetShelf):len(c.CallOptions.GetShelf)], opts...)
     var resp *librarypb.Shelf
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -447,7 +448,8 @@ func (c *LibClient) ListShelves(ctx context.Context, req *librarypb.ListShelvesR
 
 // DeleteShelf deletes a shelf.
 func (c *LibClient) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequest, opts ...gax.CallOption) error {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.DeleteShelf[0:len(c.CallOptions.DeleteShelf):len(c.CallOptions.DeleteShelf)], opts...)
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
@@ -461,7 +463,8 @@ func (c *LibClient) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfR
 // other_shelf_name to shelf name, and deletes
 // other_shelf_name. Returns the updated shelf.
 func (c *LibClient) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRequest, opts ...gax.CallOption) (*librarypb.Shelf, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.MergeShelves[0:len(c.CallOptions.MergeShelves):len(c.CallOptions.MergeShelves)], opts...)
     var resp *librarypb.Shelf
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -510,7 +513,8 @@ func (c *LibClient) PublishSeries(ctx context.Context, req *librarypb.PublishSer
 
 // GetBook gets a book.
 func (c *LibClient) GetBook(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetBook[0:len(c.CallOptions.GetBook):len(c.CallOptions.GetBook)], opts...)
     var resp *librarypb.Book
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -526,7 +530,8 @@ func (c *LibClient) GetBook(ctx context.Context, req *librarypb.GetBookRequest, 
 
 // ListBooks lists books in a shelf.
 func (c *LibClient) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest, opts ...gax.CallOption) *BookIterator {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.ListBooks[0:len(c.CallOptions.ListBooks):len(c.CallOptions.ListBooks)], opts...)
     it := &BookIterator{}
     req = proto.Clone(req).(*librarypb.ListBooksRequest)
@@ -563,7 +568,8 @@ func (c *LibClient) ListBooks(ctx context.Context, req *librarypb.ListBooksReque
 
 // DeleteBook deletes a book.
 func (c *LibClient) DeleteBook(ctx context.Context, req *librarypb.DeleteBookRequest, opts ...gax.CallOption) error {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.DeleteBook[0:len(c.CallOptions.DeleteBook):len(c.CallOptions.DeleteBook)], opts...)
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
@@ -575,7 +581,8 @@ func (c *LibClient) DeleteBook(ctx context.Context, req *librarypb.DeleteBookReq
 
 // UpdateBook updates a book.
 func (c *LibClient) UpdateBook(ctx context.Context, req *librarypb.UpdateBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.UpdateBook[0:len(c.CallOptions.UpdateBook):len(c.CallOptions.UpdateBook)], opts...)
     var resp *librarypb.Book
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -591,7 +598,8 @@ func (c *LibClient) UpdateBook(ctx context.Context, req *librarypb.UpdateBookReq
 
 // MoveBook moves a book to another shelf, and returns the new book.
 func (c *LibClient) MoveBook(ctx context.Context, req *librarypb.MoveBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.MoveBook[0:len(c.CallOptions.MoveBook):len(c.CallOptions.MoveBook)], opts...)
     var resp *librarypb.Book
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -644,7 +652,8 @@ func (c *LibClient) ListStrings(ctx context.Context, req *librarypb.ListStringsR
 
 // AddComments adds comments to a book
 func (c *LibClient) AddComments(ctx context.Context, req *librarypb.AddCommentsRequest, opts ...gax.CallOption) error {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.AddComments[0:len(c.CallOptions.AddComments):len(c.CallOptions.AddComments)], opts...)
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
@@ -656,7 +665,8 @@ func (c *LibClient) AddComments(ctx context.Context, req *librarypb.AddCommentsR
 
 // GetBookFromArchive gets a book from an archive.
 func (c *LibClient) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest, opts ...gax.CallOption) (*librarypb.BookFromArchive, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetBookFromArchive[0:len(c.CallOptions.GetBookFromArchive):len(c.CallOptions.GetBookFromArchive)], opts...)
     var resp *librarypb.BookFromArchive
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -672,7 +682,8 @@ func (c *LibClient) GetBookFromArchive(ctx context.Context, req *librarypb.GetBo
 
 // GetBookFromAnywhere gets a book from a shelf or archive.
 func (c *LibClient) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBookFromAnywhereRequest, opts ...gax.CallOption) (*librarypb.BookFromAnywhere, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetBookFromAnywhere[0:len(c.CallOptions.GetBookFromAnywhere):len(c.CallOptions.GetBookFromAnywhere)], opts...)
     var resp *librarypb.BookFromAnywhere
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -688,7 +699,8 @@ func (c *LibClient) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetB
 
 // GetBookFromAbsolutelyAnywhere test proper OneOf-Any resource name mapping
 func (c *LibClient) GetBookFromAbsolutelyAnywhere(ctx context.Context, req *librarypb.GetBookFromAbsolutelyAnywhereRequest, opts ...gax.CallOption) (*librarypb.BookFromAnywhere, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetBookFromAbsolutelyAnywhere[0:len(c.CallOptions.GetBookFromAbsolutelyAnywhere):len(c.CallOptions.GetBookFromAbsolutelyAnywhere)], opts...)
     var resp *librarypb.BookFromAnywhere
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -704,7 +716,8 @@ func (c *LibClient) GetBookFromAbsolutelyAnywhere(ctx context.Context, req *libr
 
 // UpdateBookIndex updates the index of a book.
 func (c *LibClient) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookIndexRequest, opts ...gax.CallOption) error {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.UpdateBookIndex[0:len(c.CallOptions.UpdateBookIndex):len(c.CallOptions.UpdateBookIndex)], opts...)
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
@@ -821,7 +834,8 @@ func (c *LibClient) FindRelatedBooks(ctx context.Context, req *librarypb.FindRel
 
 // addLabel adds a label to the entity.
 func (c *LibClient) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest, opts ...gax.CallOption) (*taggerpb.AddLabelResponse, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "resource", req.GetResource()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.AddLabel[0:len(c.CallOptions.AddLabel):len(c.CallOptions.AddLabel)], opts...)
     var resp *taggerpb.AddLabelResponse
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -837,7 +851,8 @@ func (c *LibClient) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest,
 
 // GetBigBook test long-running operations
 func (c *LibClient) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*GetBigBookOperation, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetBigBook[0:len(c.CallOptions.GetBigBook):len(c.CallOptions.GetBigBook)], opts...)
     var resp *longrunningpb.Operation
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -855,7 +870,8 @@ func (c *LibClient) GetBigBook(ctx context.Context, req *librarypb.GetBookReques
 
 // GetBigNothing test long-running operations with empty return type.
 func (c *LibClient) GetBigNothing(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*GetBigNothingOperation, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetBigNothing[0:len(c.CallOptions.GetBigNothing):len(c.CallOptions.GetBigNothing)], opts...)
     var resp *longrunningpb.Operation
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
