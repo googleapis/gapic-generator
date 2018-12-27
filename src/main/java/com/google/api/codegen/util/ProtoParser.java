@@ -35,7 +35,6 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -94,8 +93,7 @@ public class ProtoParser {
   }
 
   @Nullable
-  @VisibleForTesting
-  public PathTemplate getRoutingHeader(Method method) {
+  public String getHeaderParam(Method method) {
     HttpRule httpRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
     if (httpRule == null) {
       return null;
@@ -116,14 +114,7 @@ public class ProtoParser {
       return null;
     }
 
-    return PathTemplate.create(urlVar);
-  }
-
-  public String getHeaderParam(Method method) {
-    PathTemplate pathTemplate = getRoutingHeader(method);
-    if (pathTemplate == null) {
-      return null;
-    }
+    PathTemplate pathTemplate = PathTemplate.create(urlVar);
     return pathTemplate.singleVar();
   }
 

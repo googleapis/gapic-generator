@@ -23,7 +23,6 @@ import com.google.api.ResourceSet;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.protoannotations.GapicCodeGeneratorAnnotationsTest;
-import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -343,7 +342,7 @@ public class ProtoParserTest {
 
   @Test
   public void testHttpRuleUrl() {
-    PathTemplate urlTemplate = protoParser.getRoutingHeader(deleteShelfMethod);
-    assertThat(urlTemplate).isEqualTo(PathTemplate.create("/v1/{name=bookShelves/*}"));
+    String requestHeaderParam = protoParser.getHeaderParam(deleteShelfMethod);
+    assertThat(requestHeaderParam).isEqualTo("name");
   }
 }
