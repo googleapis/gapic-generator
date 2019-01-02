@@ -99,13 +99,12 @@ public class FieldStructureParser {
 
     InitValue initValue = null;
     if (token == '=') {
-      fieldNamePos = Math.min(fieldNamePos, scanner.pos() - 1);
-
+      // fieldNamePos = Math.min(fieldNamePos, scanner.pos() - 1);
       // TODO(pongad): Quote the RHS of existing configs, and once that's done use 'parseValue' here
       // (`String valueString = parseValue(scanner)`). For now we are preserving the previous
       // behavior, where everything on the right of the equal sign is a string.
-      String valueString = config.substring(scanner.pos());
-
+      // String valueString = config.substring(scanner.pos());
+      String valueString = parseValue(scanner);
       if (valueString.contains(InitFieldConfig.RANDOM_TOKEN)) {
         initValue = InitValue.createRandom(valueString);
       } else if (valueString.contains(PROJECT_ID_TOKEN)) {
