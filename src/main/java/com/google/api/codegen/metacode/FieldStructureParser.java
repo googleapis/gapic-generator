@@ -113,7 +113,6 @@ public class FieldStructureParser {
         initValue = InitValue.createLiteral(valueString);
       }
     }
-    Preconditions.checkArgument(scanner.scan() == Scanner.EOF, "expected EOF: %s", config);
 
     InitValueConfig valueConfig =
         createInitValueConfig(
