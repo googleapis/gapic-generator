@@ -169,7 +169,7 @@ public class FieldStructureParser {
 
         case '{':
           parent.setLineType(InitCodeLineType.MapInitLine);
-          parent = parent.mergeChild(InitCodeNode.create(parseValue(scanner)));
+          parent = parent.mergeChild(InitCodeNode.create(parseKey(scanner)));
 
           Preconditions.checkArgument(
               scanner.scan() == '}', "expected closing '}': %s", scanner.input());
@@ -182,12 +182,27 @@ public class FieldStructureParser {
     }
   }
 
-  private static String parseValue(Scanner scanner) {
+  private static String parseKey(Scanner scanner) {
     int token = scanner.scan();
     Preconditions.checkArgument(
         token == Scanner.INT || token == Scanner.IDENT || token == Scanner.STRING,
         "invalid value: %s",
         scanner.input());
     return scanner.tokenStr();
+  }
+
+  /**
+   * Parses the RHS of configs. If the RHS is a string literal we return the unquote string.
+   * Otherwise we strip leading spaces and return the rest of RHS as a string.
+   */
+  private static String parseValue(Scanner scanner) {
+    int token = scanner.scan();
+    if (token == Scanner.STRING) {
+      String tokenStr = scanner.tokenStr();
+      if (scanner.scan() == Scanner.EOF) {
+        return tokenStr;
+      }
+    }
+    return scanner.tokenStr() + scanner.input().substring(scanner.pos());
   }
 }
