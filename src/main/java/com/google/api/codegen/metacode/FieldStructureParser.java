@@ -192,8 +192,9 @@ public class FieldStructureParser {
   }
 
   /**
-   * Parses the RHS of configs. If the RHS is a string literal we return the unquote string.
-   * Otherwise we strip leading spaces and return the rest of RHS as a string.
+   * Parses the RHS of configs. If the RHS is a string literal we return the unquoted string.
+   * Otherwise we strip leading spaces and return the rest of RHS as a string for backward
+   * compatibility.
    */
   private static String parseValue(Scanner scanner) {
     int token = scanner.scan();
