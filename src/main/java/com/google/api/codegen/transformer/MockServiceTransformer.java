@@ -40,14 +40,19 @@ public class MockServiceTransformer {
       return ImmutableList.of();
     }
 
-    return model
-        .getInterfaces()
-        .stream()
-        .filter(productConfig::hasInterfaceConfig)
-        .filter(InterfaceModel::isReachable)
-        .flatMap(i -> getGrpcInterfacesForService(model, productConfig, i).values().stream())
-        .distinct()
-        .collect(ImmutableList.toImmutableList());
+    Map<String, InterfaceModel> interfaces = new LinkedHashMap<>();
+
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+      if (!apiInterface.isReachable()) {
+        continue;
+      }
+      interfaces.putAll(getGrpcInterfacesForService(model, productConfig, apiInterface));
+    }
+
+    return new ArrayList<>(interfaces.values());
   }
 
   public Map<String, InterfaceModel> getGrpcInterfacesForService(
