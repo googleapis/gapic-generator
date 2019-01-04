@@ -46,6 +46,7 @@ public class MockServiceTransformer {
         .filter(productConfig::hasInterfaceConfig)
         .filter(InterfaceModel::isReachable)
         .flatMap(i -> getGrpcInterfacesForService(model, productConfig, i).values().stream())
+        .distinct()
         .collect(ImmutableList.toImmutableList());
   }
 
