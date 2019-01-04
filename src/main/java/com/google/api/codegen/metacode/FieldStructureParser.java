@@ -191,12 +191,14 @@ public class FieldStructureParser {
   }
 
   /**
-   * Parses the RHS of configs. If the RHS is a string literal we return the unquoted string.
-   * Otherwise we strip leading spaces and return the rest of RHS as a string for backward
-   * compatibility.
+   * Parses the value of configs. If the value is a double-quoted string literal we return it
+   * unquoted. Otherwise we strip leading spaces and return the rest of value as a string for
+   * backward compatibility.
    */
   private static String parseValue(Scanner scanner) {
     int token = scanner.scan();
+
+    // Scanner.STRING means a double-quoted string literal
     if (token == Scanner.STRING) {
       String tokenStr = scanner.tokenStr();
       if (scanner.scan() == Scanner.EOF) {
