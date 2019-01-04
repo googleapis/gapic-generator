@@ -255,6 +255,9 @@ interfaces:
         - "The first book is: %s"
         - $resp.book_names[0]
       - print:
+        - "The author of the first book is: %s"
+        - $resp.books[0].author
+      - print:
         - "That's all!"
       - print:
         - "series_uuid: %s"
@@ -575,9 +578,13 @@ interfaces:
         defaults:
         - name=BASIC
         - comment.comment=comment_file
+        - image=image_file.jpg
         attributes:
         - parameter: comment.comment
           read_file: true
+        - parameter: image
+          read_file: true
+          sample_argument_name: image_file_name
     samples:
       in_code:
       - calling_forms: ".*"
@@ -742,7 +749,18 @@ interfaces:
       description: "Testing calling forms"
       parameters:
         defaults:
-        - name="War and Peace"
+        - name%shelf_id=Novel
+        - name%book_id="War and Peace"
+        attributes:
+        - parameter: name%shelf_id
+          sample_argument_name: shelf
+      on_success:
+      - print:
+        - "name: %s"
+        - $resp.name
+      - print:
+        - "author: %s"
+        - $resp.author
     samples:
       standalone:
       - calling_forms: ".*"
@@ -832,6 +850,38 @@ interfaces:
         - optional_repeated_fixed32
         - optional_repeated_fixed64
         - optional_map
+        - any_value
+        - struct_value
+        - value_value
+        - list_value_value
+        - time_value
+        - duration_value
+        - field_mask_value
+        - int32_value
+        - uint32_value
+        - int64_value
+        - uint64_value
+        - float_value
+        - double_value
+        - string_value
+        - bool_value
+        - bytes_value
+        - repeated_any_value
+        - repeated_struct_value
+        - repeated_value_value
+        - repeated_list_value_value
+        - repeated_time_value
+        - repeated_duration_value
+        - repeated_field_mask_value
+        - repeated_int32_value
+        - repeated_uint32_value
+        - repeated_int64_value
+        - repeated_uint64_value
+        - repeated_float_value
+        - repeated_double_value
+        - repeated_string_value
+        - repeated_bool_value
+        - repeated_bytes_value
     required_fields:
     - required_singular_int32
     - required_singular_int64

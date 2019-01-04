@@ -96,7 +96,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer
             productConfig,
             createTypeTable(productConfig.getPackageName(), surfaceNamer),
             surfaceNamer,
-            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
+            JavaFeatureConfig.create(productConfig.getResourceNameMessageConfigs()));
 
     // Keep track of which name patterns have been generated to avoid duplicate classes.
     Set<String> namePatterns = new HashSet<>();
@@ -167,6 +167,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer
     resourceNameView.name(resourceName);
     resourceNameView.typeName(nameFormatter.publicClassName(Name.anyCamel(resourceName)));
     resourceNameView.pathTemplate(nameConfig.getNamePattern());
+    resourceNameView.serviceAddress(context.getDocContext().getServiceAddress());
 
     List<StaticLangMemberView> properties = new LinkedList<>();
     for (Map.Entry<String, Schema> entry : method.parameters().entrySet()) {

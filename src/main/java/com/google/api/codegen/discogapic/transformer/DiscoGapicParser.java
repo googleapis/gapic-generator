@@ -83,16 +83,11 @@ public class DiscoGapicParser {
   }
 
   /**
-   * Get the canonical path for a path, in the form "(%s/\{%s\})+" e.g. for a method path
-   * "{project}/regions/{foo}/addresses", this returns "projects/{project}/regions/{region}".
+   * Get the canonical path for a path, in the form "((\{%s\}|%s)/)+{%s\}" e.g. for a method path
+   * "{project}/regions/{foo}/addresses", this returns "{project}/regions/{region}". The resulting
+   * path will end with a {BINDING}.
    */
   public static String getCanonicalPath(String namePattern) {
-    // Ensure the first path segment is a string literal representing a resource type.
-    if (namePattern.charAt(0) == '{') {
-      String firstResource =
-          Inflector.pluralize(namePattern.substring(1, namePattern.indexOf("}")));
-      namePattern = String.format("%s/%s", firstResource, namePattern);
-    }
     // Remove any trailing non-bracketed substring
     if (!namePattern.endsWith("}") && namePattern.contains("}")) {
       namePattern = namePattern.substring(0, namePattern.lastIndexOf('}') + 1);

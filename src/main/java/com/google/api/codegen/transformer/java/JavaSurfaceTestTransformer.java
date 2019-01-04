@@ -100,7 +100,6 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
   @Override
   public List<ViewModel> transform(ApiModelT model, GapicProductConfig productConfig) {
     SurfaceNamer namer = surfaceTransformer.createSurfaceNamer(productConfig);
-    boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
 
     List<ViewModel> views = new ArrayList<>();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
@@ -111,17 +110,12 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
       ImportTypeTable typeTable =
           surfaceTransformer.createTypeTable(productConfig.getPackageName());
       InterfaceContext context =
-          surfaceTransformer.createInterfaceContext(
-              apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
+          surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable);
       views.add(createUnitTestFileView(context));
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         context =
             surfaceTransformer.createInterfaceContext(
-                apiInterface,
-                productConfig,
-                namer,
-                typeTable.cloneEmpty(),
-                enableStringFormatFunctions);
+                apiInterface, productConfig, namer, typeTable.cloneEmpty());
         views.add(createSmokeTestClassView(context));
       }
     }
@@ -131,17 +125,12 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
       ImportTypeTable typeTable =
           surfaceTransformer.createTypeTable(productConfig.getPackageName());
       InterfaceContext context =
-          surfaceTransformer.createInterfaceContext(
-              apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
+          surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable);
       views.add(createMockServiceImplFileView(context));
 
       context =
           surfaceTransformer.createInterfaceContext(
-              apiInterface,
-              productConfig,
-              namer,
-              typeTable.cloneEmpty(),
-              enableStringFormatFunctions);
+              apiInterface, productConfig, namer, typeTable.cloneEmpty());
       views.add(createMockServiceView(context));
     }
     return views;

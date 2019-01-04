@@ -43,6 +43,8 @@ import java.util.Set;
 public class InitCodeNode {
   private static final TypeModel INT_TYPE = ProtoTypeRef.create(TypeRef.of(Type.TYPE_UINT64));
   private static final String ROOT_KEY = "root";
+  private static final String LOCAL_DEFAULT_FILENAME = "file_name";
+  public static final String FILE_NAME_KEY = "@file_name";
   private String key;
   private InitCodeLineType lineType;
   private InitValueConfig initValueConfig;
@@ -196,7 +198,8 @@ public class InitCodeNode {
     }
 
     root.resolveNamesAndTypes(context, context.initObjectType(), context.suggestedName(), null);
-    root.resolveSampleParamConfigs(context, "");
+    root.resolveSampleParamConfigs(context, context.sampleParamConfigMap());
+
     return root;
   }
 
@@ -367,54 +370,60 @@ public class InitCodeNode {
     }
   }
 
-  /**
-   * Apply {@code sampleParamConfig} to the nodes in this tree.
-   *
-   * @param parentFieldPath The full path of the parent object of {@code typeRef}. Set to an empty
-   *     string if {@code typeRef} is a top level proto object. We need to keep track of this
-   *     because the keys in {@code sampleParamConfigMap} are full paths while {@code key} is a
-   *     simple field name.
-   */
-  private void resolveSampleParamConfigs(InitCodeContext context, String parentFieldPath) {
-    ImmutableMap<String, SampleParameterConfig> sampleParamConfigMap =
-        context.sampleParamConfigMap();
-    String fieldPath;
-    if (ROOT_KEY.equals(key)) {
-      fieldPath = "";
-    } else if (parentFieldPath.isEmpty()) {
-      fieldPath = key;
-    } else {
-      fieldPath = parentFieldPath + "." + key;
-    }
-    this.sampleParamConfig = sampleParamConfigMap.get(fieldPath);
-
-    if (sampleParamConfig != null) {
-
-      // If read_file is set to true in config, change the line type to ReadFileInitLine.
-      if (sampleParamConfig.readFromFile()) {
-        setLineType(InitCodeLineType.ReadFileInitLine);
+  private void resolveSampleParamConfigs(
+      InitCodeContext context, Map<String, SampleParameterConfig> configs) {
+    for (Map.Entry<String, SampleParameterConfig> entry : configs.entrySet()) {
+      Scanner scanner = new Scanner(entry.getKey());
+      InitCodeNode parent = FieldStructureParser.parsePath(this, scanner);
+      int token = scanner.lastToken();
+      if (token == Scanner.EOF) {
+        parent.resolveSampleParamConfig(context, entry.getValue());
+      } else if (token == '%') {
+        Preconditions.checkArgument(
+            scanner.scan() == Scanner.IDENT, "expected IDENT after '%': %s", entry.getKey());
+        String entityName = scanner.tokenStr();
+        Preconditions.checkArgument(
+            scanner.scan() == Scanner.EOF, "expected EOF after entity name: %s", entityName);
+        parent.resolveSampleParamConfig(context, entityName, entry.getValue());
       }
-
-      // If sample_argument_name is specified in config, set identifier to this name if the name has
-      // not been used yet and error out otherwise.
-      if (sampleParamConfig.isSampleArgument()) {
-        Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
-        if (!argName.equals(identifier)) {
-          Preconditions.checkArgument(
-              !context.symbolTable().contains(argName),
-              "sample_argument_name \"%s\" is already in use.",
-              sampleParamConfig.sampleArgumentName());
-          identifier =
-              context
-                  .symbolTable()
-                  .getNewSymbol(Name.anyLower(sampleParamConfig.sampleArgumentName()));
-        }
-      }
-    } else {
-      // We only recursively call this method when the parent config is null since the parameter
-      // configs can never overlap.
-      children.values().forEach(child -> child.resolveSampleParamConfigs(context, fieldPath));
     }
+  }
+
+  /** Apply {@code sampleParamConfig} to this node. */
+  private void resolveSampleParamConfig(
+      InitCodeContext context, SampleParameterConfig sampleParamConfig) {
+    if (sampleParamConfig.readFromFile()) {
+      setupReadFileNode(context, sampleParamConfig);
+    } else if (sampleParamConfig.isSampleArgument()) {
+      Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
+      if (!argName.equals(identifier)) {
+        identifier =
+            identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
+      }
+    }
+  }
+
+  /** Apply {@code sampleParamConfig} to a resource path entity. */
+  private void resolveSampleParamConfig(
+      InitCodeContext context, String entityName, SampleParameterConfig sampleParamConfig) {
+    Preconditions.checkArgument(
+        !sampleParamConfig.readFromFile(),
+        "cannot configure a resource name entity to read from file");
+    if (!sampleParamConfig.isSampleArgument()) {
+      return;
+    }
+    Name entityIdentifier =
+        identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
+    addChildNodeForSampleParameter(
+        context,
+        entityName,
+        ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
+        entityIdentifier,
+        InitValueConfig.createWithValue(
+            initValueConfig.getResourceNameBindingValues().get(entityName)));
+    initValueConfig =
+        initValueConfig.withUpdatedInitialCollectionValue(
+            entityName, InitValue.createVariable(entityIdentifier.toLowerUnderscore()));
   }
 
   private static Name getChildSuggestedName(
@@ -429,6 +438,62 @@ public class InitCodeNode {
       default:
         throw new IllegalArgumentException("Cannot generate child name for " + parentType);
     }
+  }
+
+  /**
+   * Configures the node so that InitCodeTransformer renders it as reading from files.
+   *
+   * <p>For a read-from-file node, we set up a simple child node to assign the file name to a local
+   * variable (e.g., String fileName = "file_name.jpg"). If sample_argument_name is specified, the
+   * local variable would honor the configuration. If sample_argument_name is not specified, the
+   * name of the local variable defaults to "file_name", or whatever collision-avoiding variant
+   * symbolTable selects if "file_name" is already in use.
+   *
+   * <p>Adding the child node enables us to split initializing a local variable for the file name
+   * from the logic of reading from a file, so that we can pass in the file name as a sample
+   * function parameter and render how to read from a file within the sample.
+   */
+  private void setupReadFileNode(InitCodeContext context, SampleParameterConfig sampleParamConfig) {
+    Preconditions.checkArgument(
+        children.isEmpty(), "Can only configure leaf node to read from file.");
+    setLineType(InitCodeLineType.ReadFileInitLine);
+    Name childIdentifier;
+    if (sampleParamConfig.isSampleArgument()) {
+      childIdentifier =
+          identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
+    } else {
+      childIdentifier = context.symbolTable().getNewSymbol(Name.anyLower(LOCAL_DEFAULT_FILENAME));
+    }
+    addChildNodeForSampleParameter(
+        context,
+        FILE_NAME_KEY,
+        ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
+        childIdentifier,
+        initValueConfig);
+    initValueConfig =
+        InitValueConfig.createWithValue(
+            InitValue.createVariable(childIdentifier.toLowerUnderscore()));
+  }
+
+  private void addChildNodeForSampleParameter(
+      InitCodeContext context,
+      String key,
+      TypeModel type,
+      Name identifier,
+      InitValueConfig initValueConfig) {
+    InitCodeNode child = new InitCodeNode(key, InitCodeLineType.SimpleInitLine, initValueConfig);
+    child.typeRef = type;
+    child.identifier = identifier;
+    children.put(key, child);
+  }
+
+  private Name identifierFromSampleArgumentName(InitCodeContext context, String argName) {
+    Name name = Name.anyLower(argName);
+    Preconditions.checkArgument(
+        !context.symbolTable().contains(name),
+        "sample_argument_name \"%s\" is already in use.",
+        name);
+    return context.symbolTable().getNewSymbol(name);
   }
 
   private static void validateKeyValue(TypeModel parentType, String key) {

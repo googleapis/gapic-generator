@@ -1,6 +1,6 @@
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectDummyObjectName.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,9 @@ public final class ProjectDummyObjectName implements ResourceName {
   private final String dummyObject;
   private final String project;
   private static final PathTemplate PATH_TEMPLATE =
-        PathTemplate.createWithoutUrlEncoding("projects/{project}/dummyObjects/{dummyObject}");
+        PathTemplate.createWithoutUrlEncoding("{project}/dummyObjects/{dummyObject}");
+
+  public static final String SERVICE_ADDRESS = "https://www.googleapis.com/compute/v1/projects/";
 
   private volatile Map<String, String> fieldValuesMap;
 
@@ -111,8 +113,12 @@ public final class ProjectDummyObjectName implements ResourceName {
   }
 
   public static ProjectDummyObjectName parse(String formattedString) {
+    String resourcePath = formattedString;
+    if (formattedString.startsWith(SERVICE_ADDRESS)) {
+      resourcePath = formattedString.substring(SERVICE_ADDRESS.length());
+    }
     Map<String, String> matchMap =
-        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectDummyObjectName.parse: formattedString not in valid format");
+        PATH_TEMPLATE.validatedMatch(resourcePath, "ProjectDummyObjectName.parse: formattedString not in valid format");
     return of(
       matchMap.get("dummyObject"),
       matchMap.get("project")
@@ -120,7 +126,11 @@ public final class ProjectDummyObjectName implements ResourceName {
   }
 
   public static boolean isParsableFrom(String formattedString) {
-    return PATH_TEMPLATE.matches(formattedString);
+    String resourcePath = formattedString;
+    if (formattedString.startsWith(SERVICE_ADDRESS)) {
+      resourcePath = formattedString.substring(SERVICE_ADDRESS.length());
+    }
+    return PATH_TEMPLATE.matches(resourcePath);
   }
 
   public static class Builder {
@@ -189,7 +199,7 @@ public final class ProjectDummyObjectName implements ResourceName {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectDummyObjectResourceName.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -226,7 +236,9 @@ public final class ProjectDummyObjectResourceName implements ResourceName {
   private final String project;
   private final String resource;
   private static final PathTemplate PATH_TEMPLATE =
-        PathTemplate.createWithoutUrlEncoding("projects/{project}/dummyObjects/{resource}");
+        PathTemplate.createWithoutUrlEncoding("{project}/dummyObjects/{resource}");
+
+  public static final String SERVICE_ADDRESS = "https://www.googleapis.com/compute/v1/projects/";
 
   private volatile Map<String, String> fieldValuesMap;
 
@@ -300,8 +312,12 @@ public final class ProjectDummyObjectResourceName implements ResourceName {
   }
 
   public static ProjectDummyObjectResourceName parse(String formattedString) {
+    String resourcePath = formattedString;
+    if (formattedString.startsWith(SERVICE_ADDRESS)) {
+      resourcePath = formattedString.substring(SERVICE_ADDRESS.length());
+    }
     Map<String, String> matchMap =
-        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectDummyObjectResourceName.parse: formattedString not in valid format");
+        PATH_TEMPLATE.validatedMatch(resourcePath, "ProjectDummyObjectResourceName.parse: formattedString not in valid format");
     return of(
       matchMap.get("project"),
       matchMap.get("resource")
@@ -309,7 +325,11 @@ public final class ProjectDummyObjectResourceName implements ResourceName {
   }
 
   public static boolean isParsableFrom(String formattedString) {
-    return PATH_TEMPLATE.matches(formattedString);
+    String resourcePath = formattedString;
+    if (formattedString.startsWith(SERVICE_ADDRESS)) {
+      resourcePath = formattedString.substring(SERVICE_ADDRESS.length());
+    }
+    return PATH_TEMPLATE.matches(resourcePath);
   }
 
   public static class Builder {
@@ -378,7 +398,7 @@ public final class ProjectDummyObjectResourceName implements ResourceName {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectGlobalAddressName.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -415,7 +435,9 @@ public final class ProjectGlobalAddressName implements ResourceName {
   private final String address;
   private final String project;
   private static final PathTemplate PATH_TEMPLATE =
-        PathTemplate.createWithoutUrlEncoding("projects/{project}/global/addresses/{address}");
+        PathTemplate.createWithoutUrlEncoding("{project}/global/addresses/{address}");
+
+  public static final String SERVICE_ADDRESS = "https://www.googleapis.com/compute/v1/projects/";
 
   private volatile Map<String, String> fieldValuesMap;
 
@@ -489,8 +511,12 @@ public final class ProjectGlobalAddressName implements ResourceName {
   }
 
   public static ProjectGlobalAddressName parse(String formattedString) {
+    String resourcePath = formattedString;
+    if (formattedString.startsWith(SERVICE_ADDRESS)) {
+      resourcePath = formattedString.substring(SERVICE_ADDRESS.length());
+    }
     Map<String, String> matchMap =
-        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectGlobalAddressName.parse: formattedString not in valid format");
+        PATH_TEMPLATE.validatedMatch(resourcePath, "ProjectGlobalAddressName.parse: formattedString not in valid format");
     return of(
       matchMap.get("address"),
       matchMap.get("project")
@@ -498,7 +524,11 @@ public final class ProjectGlobalAddressName implements ResourceName {
   }
 
   public static boolean isParsableFrom(String formattedString) {
-    return PATH_TEMPLATE.matches(formattedString);
+    String resourcePath = formattedString;
+    if (formattedString.startsWith(SERVICE_ADDRESS)) {
+      resourcePath = formattedString.substring(SERVICE_ADDRESS.length());
+    }
+    return PATH_TEMPLATE.matches(resourcePath);
   }
 
   public static class Builder {
@@ -567,7 +597,7 @@ public final class ProjectGlobalAddressName implements ResourceName {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectName.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -603,7 +633,9 @@ import javax.annotation.Generated;
 public final class ProjectName implements ResourceName {
   private final String project;
   private static final PathTemplate PATH_TEMPLATE =
-        PathTemplate.createWithoutUrlEncoding("projects/{project}");
+        PathTemplate.createWithoutUrlEncoding("{project}");
+
+  public static final String SERVICE_ADDRESS = "https://www.googleapis.com/compute/v1/projects/";
 
   private volatile Map<String, String> fieldValuesMap;
 
@@ -667,15 +699,23 @@ public final class ProjectName implements ResourceName {
   }
 
   public static ProjectName parse(String formattedString) {
+    String resourcePath = formattedString;
+    if (formattedString.startsWith(SERVICE_ADDRESS)) {
+      resourcePath = formattedString.substring(SERVICE_ADDRESS.length());
+    }
     Map<String, String> matchMap =
-        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectName.parse: formattedString not in valid format");
+        PATH_TEMPLATE.validatedMatch(resourcePath, "ProjectName.parse: formattedString not in valid format");
     return of(
       matchMap.get("project")
     );
   }
 
   public static boolean isParsableFrom(String formattedString) {
-    return PATH_TEMPLATE.matches(formattedString);
+    String resourcePath = formattedString;
+    if (formattedString.startsWith(SERVICE_ADDRESS)) {
+      resourcePath = formattedString.substring(SERVICE_ADDRESS.length());
+    }
+    return PATH_TEMPLATE.matches(resourcePath);
   }
 
   public static class Builder {
@@ -732,7 +772,7 @@ public final class ProjectName implements ResourceName {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectRegionAddressName.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -770,7 +810,9 @@ public final class ProjectRegionAddressName implements ResourceName {
   private final String project;
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
-        PathTemplate.createWithoutUrlEncoding("projects/{project}/regions/{region}/addresses/{address}");
+        PathTemplate.createWithoutUrlEncoding("{project}/regions/{region}/addresses/{address}");
+
+  public static final String SERVICE_ADDRESS = "https://www.googleapis.com/compute/v1/projects/";
 
   private volatile Map<String, String> fieldValuesMap;
 
@@ -854,8 +896,12 @@ public final class ProjectRegionAddressName implements ResourceName {
   }
 
   public static ProjectRegionAddressName parse(String formattedString) {
+    String resourcePath = formattedString;
+    if (formattedString.startsWith(SERVICE_ADDRESS)) {
+      resourcePath = formattedString.substring(SERVICE_ADDRESS.length());
+    }
     Map<String, String> matchMap =
-        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectRegionAddressName.parse: formattedString not in valid format");
+        PATH_TEMPLATE.validatedMatch(resourcePath, "ProjectRegionAddressName.parse: formattedString not in valid format");
     return of(
       matchMap.get("address"),
       matchMap.get("project"),
@@ -864,7 +910,11 @@ public final class ProjectRegionAddressName implements ResourceName {
   }
 
   public static boolean isParsableFrom(String formattedString) {
-    return PATH_TEMPLATE.matches(formattedString);
+    String resourcePath = formattedString;
+    if (formattedString.startsWith(SERVICE_ADDRESS)) {
+      resourcePath = formattedString.substring(SERVICE_ADDRESS.length());
+    }
+    return PATH_TEMPLATE.matches(resourcePath);
   }
 
   public static class Builder {
@@ -945,7 +995,7 @@ public final class ProjectRegionAddressName implements ResourceName {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectRegionName.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -982,7 +1032,9 @@ public final class ProjectRegionName implements ResourceName {
   private final String project;
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
-        PathTemplate.createWithoutUrlEncoding("projects/{project}/regions/{region}");
+        PathTemplate.createWithoutUrlEncoding("{project}/regions/{region}");
+
+  public static final String SERVICE_ADDRESS = "https://www.googleapis.com/compute/v1/projects/";
 
   private volatile Map<String, String> fieldValuesMap;
 
@@ -1056,8 +1108,12 @@ public final class ProjectRegionName implements ResourceName {
   }
 
   public static ProjectRegionName parse(String formattedString) {
+    String resourcePath = formattedString;
+    if (formattedString.startsWith(SERVICE_ADDRESS)) {
+      resourcePath = formattedString.substring(SERVICE_ADDRESS.length());
+    }
     Map<String, String> matchMap =
-        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectRegionName.parse: formattedString not in valid format");
+        PATH_TEMPLATE.validatedMatch(resourcePath, "ProjectRegionName.parse: formattedString not in valid format");
     return of(
       matchMap.get("project"),
       matchMap.get("region")
@@ -1065,7 +1121,11 @@ public final class ProjectRegionName implements ResourceName {
   }
 
   public static boolean isParsableFrom(String formattedString) {
-    return PATH_TEMPLATE.matches(formattedString);
+    String resourcePath = formattedString;
+    if (formattedString.startsWith(SERVICE_ADDRESS)) {
+      resourcePath = formattedString.substring(SERVICE_ADDRESS.length());
+    }
+    return PATH_TEMPLATE.matches(resourcePath);
   }
 
   public static class Builder {
@@ -1134,7 +1194,7 @@ public final class ProjectRegionName implements ResourceName {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/Address.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1585,7 +1645,7 @@ public final class Address implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressAggregatedList.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1901,7 +1961,7 @@ public final class AddressAggregatedList implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressesScopedList.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2104,7 +2164,7 @@ public final class AddressesScopedList implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressList.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2400,7 +2460,7 @@ public final class AddressList implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/Data.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2592,7 +2652,7 @@ public final class Data implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/DUMMYObject.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2753,7 +2813,7 @@ public final class DUMMYObject implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/DummyObject2.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3038,7 +3098,7 @@ public final class DummyObject2 implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/Error.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3210,7 +3270,7 @@ public final class Error implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/Errors.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3433,7 +3493,7 @@ public final class Errors implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/Operation.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -4287,7 +4347,7 @@ public final class Operation implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/ProjectsGetDummyObjectResources.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -4521,7 +4581,7 @@ public final class ProjectsGetDummyObjectResources implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/Warning.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -4755,7 +4815,7 @@ public final class Warning implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/Warnings.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -4989,7 +5049,7 @@ public final class Warnings implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/AggregatedListAddressesHttpRequest.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -5498,7 +5558,7 @@ public final class AggregatedListAddressesHttpRequest implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/DeleteAddressHttpRequest.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -5883,7 +5943,7 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/DeleteDummyObjectHttpRequest.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -6268,7 +6328,7 @@ public final class DeleteDummyObjectHttpRequest implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/GetAddressHttpRequest.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -6653,7 +6713,7 @@ public final class GetAddressHttpRequest implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/GetResourceDummyObjectHttpRequest.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -7038,7 +7098,7 @@ public final class GetResourceDummyObjectHttpRequest implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/InsertAddressHttpRequest.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -7454,7 +7514,7 @@ public final class InsertAddressHttpRequest implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/ListAddressesHttpRequest.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -7963,7 +8023,7 @@ public final class ListAddressesHttpRequest implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/ListResourcesDummyObjectsHttpRequest.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -8441,7 +8501,7 @@ public final class ListResourcesDummyObjectsHttpRequest implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/PatchAddressHttpRequest.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -8958,7 +9018,7 @@ public final class PatchAddressHttpRequest implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/UpdateAddressHttpRequest.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -9444,7 +9504,7 @@ public final class UpdateAddressHttpRequest implements ApiMessage {
 
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressClient.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -10621,7 +10681,7 @@ public class AddressClient implements BackgroundResource {
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressSettings.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -10934,7 +10994,7 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/AddressStubSettings.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11518,7 +11578,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/AddressStub.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11619,7 +11679,7 @@ public abstract class AddressStub implements BackgroundResource {
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/HttpJsonAddressStub.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11978,7 +12038,7 @@ public class HttpJsonAddressStub extends AddressStub {
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/HttpJsonAddressCallableFactory.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12083,7 +12143,7 @@ public class HttpJsonAddressCallableFactory implements HttpJsonStubCallableFacto
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/DummyObjectClient.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12695,7 +12755,7 @@ public class DummyObjectClient implements BackgroundResource {
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/DummyObjectSettings.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12951,7 +13011,7 @@ public class DummyObjectSettings extends ClientSettings<DummyObjectSettings> {
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/DummyObjectStubSettings.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13373,7 +13433,7 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/DummyObjectStub.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13439,7 +13499,7 @@ public abstract class DummyObjectStub implements BackgroundResource {
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/HttpJsonDummyObjectStub.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13655,7 +13715,7 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/HttpJsonDummyObjectCallableFactory.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13751,7 +13811,7 @@ public class HttpJsonDummyObjectCallableFactory implements HttpJsonStubCallableF
 }
 ============== file: src/main/java/com/google/cloud/simplecompute/v1/package-info.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13868,7 +13928,7 @@ task allJars(type: Copy) {
 }
 ============== file: src/test/java/com/google/cloud/simplecompute/v1/AddressClientTest.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13963,17 +14023,17 @@ public class AddressClientTest {
   @Test
   @SuppressWarnings("all")
   public void aggregatedListAddressesTest() {
+    String id = "id3355";
     String kind = "kind3292052";
     String nextPageToken = "";
-    String id = "id3355";
     String selfLink = "selfLink-1691268851";
     AddressesScopedList itemsItem = AddressesScopedList.newBuilder().build();
     Map<String, AddressesScopedList> items = new HashMap<>();
     items.put("items", itemsItem);
     AddressAggregatedList expectedResponse = AddressAggregatedList.newBuilder()
+      .setId(id)
       .setKind(kind)
       .setNextPageToken(nextPageToken)
-      .setId(id)
       .setSelfLink(selfLink)
       .putAllItems(items)
       .build();
@@ -14016,49 +14076,49 @@ public class AddressClientTest {
   @Test
   @SuppressWarnings("all")
   public void deleteAddressTest() {
-    String httpErrorMessage = "httpErrorMessage1276263769";
-    String targetId = "targetId-815576439";
-    String kind = "kind3292052";
-    String description = "description-1724546052";
-    String statusMessage = "statusMessage-239442758";
-    String selfLink = "selfLink-1691268851";
-    String insertTime = "insertTime-103148397";
-    Integer httpErrorStatusCode = 1386087020;
-    String zone = "zone3744684";
-    String targetLink = "targetLink-2084812312";
-    String creationTimestamp = "creationTimestamp567396278";
-    String name = "name3373707";
-    Integer progress = 1001078227;
-    String operationType = "operationType-1432962286";
-    String startTime = "startTime-1573145462";
-    String endTime = "endTime1725551537";
-    String id = "id3355";
-    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     String clientOperationId = "clientOperationId-239630617";
-    String user = "user3599307";
+    String creationTimestamp = "creationTimestamp567396278";
+    String description = "description-1724546052";
+    String endTime = "endTime1725551537";
+    String httpErrorMessage = "httpErrorMessage1276263769";
+    Integer httpErrorStatusCode = 1386087020;
+    String id = "id3355";
+    String insertTime = "insertTime-103148397";
+    String kind = "kind3292052";
+    String name = "name3373707";
+    String operationType = "operationType-1432962286";
+    Integer progress = 1001078227;
+    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
+    String selfLink = "selfLink-1691268851";
+    String startTime = "startTime-1573145462";
     String status = "status-892481550";
+    String statusMessage = "statusMessage-239442758";
+    String targetId = "targetId-815576439";
+    String targetLink = "targetLink-2084812312";
+    String user = "user3599307";
+    String zone = "zone3744684";
     Operation expectedResponse = Operation.newBuilder()
-      .setHttpErrorMessage(httpErrorMessage)
-      .setTargetId(targetId)
-      .setKind(kind)
-      .setDescription(description)
-      .setStatusMessage(statusMessage)
-      .setSelfLink(selfLink)
-      .setInsertTime(insertTime)
-      .setHttpErrorStatusCode(httpErrorStatusCode)
-      .setZone(zone)
-      .setTargetLink(targetLink)
-      .setCreationTimestamp(creationTimestamp)
-      .setName(name)
-      .setProgress(progress)
-      .setOperationType(operationType)
-      .setStartTime(startTime)
-      .setEndTime(endTime)
-      .setId(id)
-      .setRegion(region.toString())
       .setClientOperationId(clientOperationId)
-      .setUser(user)
+      .setCreationTimestamp(creationTimestamp)
+      .setDescription(description)
+      .setEndTime(endTime)
+      .setHttpErrorMessage(httpErrorMessage)
+      .setHttpErrorStatusCode(httpErrorStatusCode)
+      .setId(id)
+      .setInsertTime(insertTime)
+      .setKind(kind)
+      .setName(name)
+      .setOperationType(operationType)
+      .setProgress(progress)
+      .setRegion(region.toString())
+      .setSelfLink(selfLink)
+      .setStartTime(startTime)
       .setStatus(status)
+      .setStatusMessage(statusMessage)
+      .setTargetId(targetId)
+      .setTargetLink(targetLink)
+      .setUser(user)
+      .setZone(zone)
       .build();
     mockService.addResponse(expectedResponse);
 
@@ -14097,21 +14157,21 @@ public class AddressClientTest {
   @SuppressWarnings("all")
   public void getAddressTest() {
     ProjectRegionAddressName address2 = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
-    String kind = "kind3292052";
     String creationTimestamp = "creationTimestamp567396278";
-    String name = "name3373707";
     String description = "description-1724546052";
     String id = "id3355";
+    String kind = "kind3292052";
+    String name = "name3373707";
     ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     String selfLink = "selfLink-1691268851";
     String status = "status-892481550";
     Address expectedResponse = Address.newBuilder()
       .setAddress(address2.toString())
-      .setKind(kind)
       .setCreationTimestamp(creationTimestamp)
-      .setName(name)
       .setDescription(description)
       .setId(id)
+      .setKind(kind)
+      .setName(name)
       .setRegion(region.toString())
       .setSelfLink(selfLink)
       .setStatus(status)
@@ -14152,49 +14212,49 @@ public class AddressClientTest {
   @Test
   @SuppressWarnings("all")
   public void insertAddressTest() {
-    String httpErrorMessage = "httpErrorMessage1276263769";
-    String targetId = "targetId-815576439";
-    String kind = "kind3292052";
-    String description = "description-1724546052";
-    String statusMessage = "statusMessage-239442758";
-    String selfLink = "selfLink-1691268851";
-    String insertTime = "insertTime-103148397";
-    Integer httpErrorStatusCode = 1386087020;
-    String zone = "zone3744684";
-    String targetLink = "targetLink-2084812312";
-    String creationTimestamp = "creationTimestamp567396278";
-    String name = "name3373707";
-    Integer progress = 1001078227;
-    String operationType = "operationType-1432962286";
-    String startTime = "startTime-1573145462";
-    String endTime = "endTime1725551537";
-    String id = "id3355";
-    ProjectRegionName region2 = ProjectRegionName.of("[PROJECT]", "[REGION]");
     String clientOperationId = "clientOperationId-239630617";
-    String user = "user3599307";
+    String creationTimestamp = "creationTimestamp567396278";
+    String description = "description-1724546052";
+    String endTime = "endTime1725551537";
+    String httpErrorMessage = "httpErrorMessage1276263769";
+    Integer httpErrorStatusCode = 1386087020;
+    String id = "id3355";
+    String insertTime = "insertTime-103148397";
+    String kind = "kind3292052";
+    String name = "name3373707";
+    String operationType = "operationType-1432962286";
+    Integer progress = 1001078227;
+    ProjectRegionName region2 = ProjectRegionName.of("[PROJECT]", "[REGION]");
+    String selfLink = "selfLink-1691268851";
+    String startTime = "startTime-1573145462";
     String status = "status-892481550";
+    String statusMessage = "statusMessage-239442758";
+    String targetId = "targetId-815576439";
+    String targetLink = "targetLink-2084812312";
+    String user = "user3599307";
+    String zone = "zone3744684";
     Operation expectedResponse = Operation.newBuilder()
-      .setHttpErrorMessage(httpErrorMessage)
-      .setTargetId(targetId)
-      .setKind(kind)
-      .setDescription(description)
-      .setStatusMessage(statusMessage)
-      .setSelfLink(selfLink)
-      .setInsertTime(insertTime)
-      .setHttpErrorStatusCode(httpErrorStatusCode)
-      .setZone(zone)
-      .setTargetLink(targetLink)
-      .setCreationTimestamp(creationTimestamp)
-      .setName(name)
-      .setProgress(progress)
-      .setOperationType(operationType)
-      .setStartTime(startTime)
-      .setEndTime(endTime)
-      .setId(id)
-      .setRegion(region2.toString())
       .setClientOperationId(clientOperationId)
-      .setUser(user)
+      .setCreationTimestamp(creationTimestamp)
+      .setDescription(description)
+      .setEndTime(endTime)
+      .setHttpErrorMessage(httpErrorMessage)
+      .setHttpErrorStatusCode(httpErrorStatusCode)
+      .setId(id)
+      .setInsertTime(insertTime)
+      .setKind(kind)
+      .setName(name)
+      .setOperationType(operationType)
+      .setProgress(progress)
+      .setRegion(region2.toString())
+      .setSelfLink(selfLink)
+      .setStartTime(startTime)
       .setStatus(status)
+      .setStatusMessage(statusMessage)
+      .setTargetId(targetId)
+      .setTargetLink(targetLink)
+      .setUser(user)
+      .setZone(zone)
       .build();
     mockService.addResponse(expectedResponse);
 
@@ -14234,16 +14294,16 @@ public class AddressClientTest {
   @Test
   @SuppressWarnings("all")
   public void listAddressesTest() {
+    String id = "id3355";
     String kind = "kind3292052";
     String nextPageToken = "";
-    String id = "id3355";
     String selfLink = "selfLink-1691268851";
     Address itemsElement = Address.newBuilder().build();
     List<Address> items = Arrays.asList(itemsElement);
     AddressList expectedResponse = AddressList.newBuilder()
+      .setId(id)
       .setKind(kind)
       .setNextPageToken(nextPageToken)
-      .setId(id)
       .setSelfLink(selfLink)
       .addAllItems(items)
       .build();
@@ -14286,49 +14346,49 @@ public class AddressClientTest {
   @Test
   @SuppressWarnings("all")
   public void patchAddressTest() {
-    String httpErrorMessage = "httpErrorMessage1276263769";
-    String targetId = "targetId-815576439";
-    String kind = "kind3292052";
-    String description = "description-1724546052";
-    String statusMessage = "statusMessage-239442758";
-    String selfLink = "selfLink-1691268851";
-    String insertTime = "insertTime-103148397";
-    Integer httpErrorStatusCode = 1386087020;
-    String zone = "zone3744684";
-    String targetLink = "targetLink-2084812312";
-    String creationTimestamp = "creationTimestamp567396278";
-    String name = "name3373707";
-    Integer progress = 1001078227;
-    String operationType = "operationType-1432962286";
-    String startTime = "startTime-1573145462";
-    String endTime = "endTime1725551537";
-    String id = "id3355";
-    ProjectRegionName region2 = ProjectRegionName.of("[PROJECT]", "[REGION]");
     String clientOperationId = "clientOperationId-239630617";
-    String user = "user3599307";
+    String creationTimestamp = "creationTimestamp567396278";
+    String description = "description-1724546052";
+    String endTime = "endTime1725551537";
+    String httpErrorMessage = "httpErrorMessage1276263769";
+    Integer httpErrorStatusCode = 1386087020;
+    String id = "id3355";
+    String insertTime = "insertTime-103148397";
+    String kind = "kind3292052";
+    String name = "name3373707";
+    String operationType = "operationType-1432962286";
+    Integer progress = 1001078227;
+    ProjectRegionName region2 = ProjectRegionName.of("[PROJECT]", "[REGION]");
+    String selfLink = "selfLink-1691268851";
+    String startTime = "startTime-1573145462";
     String status = "status-892481550";
+    String statusMessage = "statusMessage-239442758";
+    String targetId = "targetId-815576439";
+    String targetLink = "targetLink-2084812312";
+    String user = "user3599307";
+    String zone = "zone3744684";
     Operation expectedResponse = Operation.newBuilder()
-      .setHttpErrorMessage(httpErrorMessage)
-      .setTargetId(targetId)
-      .setKind(kind)
-      .setDescription(description)
-      .setStatusMessage(statusMessage)
-      .setSelfLink(selfLink)
-      .setInsertTime(insertTime)
-      .setHttpErrorStatusCode(httpErrorStatusCode)
-      .setZone(zone)
-      .setTargetLink(targetLink)
-      .setCreationTimestamp(creationTimestamp)
-      .setName(name)
-      .setProgress(progress)
-      .setOperationType(operationType)
-      .setStartTime(startTime)
-      .setEndTime(endTime)
-      .setId(id)
-      .setRegion(region2.toString())
       .setClientOperationId(clientOperationId)
-      .setUser(user)
+      .setCreationTimestamp(creationTimestamp)
+      .setDescription(description)
+      .setEndTime(endTime)
+      .setHttpErrorMessage(httpErrorMessage)
+      .setHttpErrorStatusCode(httpErrorStatusCode)
+      .setId(id)
+      .setInsertTime(insertTime)
+      .setKind(kind)
+      .setName(name)
+      .setOperationType(operationType)
+      .setProgress(progress)
+      .setRegion(region2.toString())
+      .setSelfLink(selfLink)
+      .setStartTime(startTime)
       .setStatus(status)
+      .setStatusMessage(statusMessage)
+      .setTargetId(targetId)
+      .setTargetLink(targetLink)
+      .setUser(user)
+      .setZone(zone)
       .build();
     mockService.addResponse(expectedResponse);
 
@@ -14372,49 +14432,49 @@ public class AddressClientTest {
   @Test
   @SuppressWarnings("all")
   public void updateAddressTest() {
-    String httpErrorMessage = "httpErrorMessage1276263769";
-    String targetId = "targetId-815576439";
-    String kind = "kind3292052";
-    String description = "description-1724546052";
-    String statusMessage = "statusMessage-239442758";
-    String selfLink = "selfLink-1691268851";
-    String insertTime = "insertTime-103148397";
-    Integer httpErrorStatusCode = 1386087020;
-    String zone = "zone3744684";
-    String targetLink = "targetLink-2084812312";
-    String creationTimestamp = "creationTimestamp567396278";
-    String name = "name3373707";
-    Integer progress = 1001078227;
-    String operationType = "operationType-1432962286";
-    String startTime = "startTime-1573145462";
-    String endTime = "endTime1725551537";
-    String id = "id3355";
-    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     String clientOperationId = "clientOperationId-239630617";
-    String user = "user3599307";
+    String creationTimestamp = "creationTimestamp567396278";
+    String description = "description-1724546052";
+    String endTime = "endTime1725551537";
+    String httpErrorMessage = "httpErrorMessage1276263769";
+    Integer httpErrorStatusCode = 1386087020;
+    String id = "id3355";
+    String insertTime = "insertTime-103148397";
+    String kind = "kind3292052";
+    String name = "name3373707";
+    String operationType = "operationType-1432962286";
+    Integer progress = 1001078227;
+    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
+    String selfLink = "selfLink-1691268851";
+    String startTime = "startTime-1573145462";
     String status = "status-892481550";
+    String statusMessage = "statusMessage-239442758";
+    String targetId = "targetId-815576439";
+    String targetLink = "targetLink-2084812312";
+    String user = "user3599307";
+    String zone = "zone3744684";
     Operation expectedResponse = Operation.newBuilder()
-      .setHttpErrorMessage(httpErrorMessage)
-      .setTargetId(targetId)
-      .setKind(kind)
-      .setDescription(description)
-      .setStatusMessage(statusMessage)
-      .setSelfLink(selfLink)
-      .setInsertTime(insertTime)
-      .setHttpErrorStatusCode(httpErrorStatusCode)
-      .setZone(zone)
-      .setTargetLink(targetLink)
-      .setCreationTimestamp(creationTimestamp)
-      .setName(name)
-      .setProgress(progress)
-      .setOperationType(operationType)
-      .setStartTime(startTime)
-      .setEndTime(endTime)
-      .setId(id)
-      .setRegion(region.toString())
       .setClientOperationId(clientOperationId)
-      .setUser(user)
+      .setCreationTimestamp(creationTimestamp)
+      .setDescription(description)
+      .setEndTime(endTime)
+      .setHttpErrorMessage(httpErrorMessage)
+      .setHttpErrorStatusCode(httpErrorStatusCode)
+      .setId(id)
+      .setInsertTime(insertTime)
+      .setKind(kind)
+      .setName(name)
+      .setOperationType(operationType)
+      .setProgress(progress)
+      .setRegion(region.toString())
+      .setSelfLink(selfLink)
+      .setStartTime(startTime)
       .setStatus(status)
+      .setStatusMessage(statusMessage)
+      .setTargetId(targetId)
+      .setTargetLink(targetLink)
+      .setUser(user)
+      .setZone(zone)
       .build();
     mockService.addResponse(expectedResponse);
 
@@ -14456,7 +14516,7 @@ public class AddressClientTest {
 }
 ============== file: src/test/java/com/google/cloud/simplecompute/v1/DummyObjectClientTest.java ==============
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

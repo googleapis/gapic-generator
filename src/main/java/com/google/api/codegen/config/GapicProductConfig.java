@@ -22,15 +22,24 @@ import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
+import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
-import com.google.api.codegen.configgen.transformer.LanguageTransformer;
+import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
+import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.csharp.CSharpFeatureConfig;
+import com.google.api.codegen.transformer.java.JavaFeatureConfig;
+import com.google.api.codegen.transformer.nodejs.NodeJSFeatureConfig;
+import com.google.api.codegen.transformer.php.PhpFeatureConfig;
+import com.google.api.codegen.transformer.ruby.RubyFeatureConfig;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -43,12 +52,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
+import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -87,6 +99,9 @@ public abstract class GapicProductConfig implements ProductConfig {
   /** Returns a map from entity names to resource name configs. */
   public abstract ImmutableMap<String, ResourceNameConfig> getResourceNameConfigs();
 
+  /** Returns a map from entity names to resource name configs. */
+  public abstract ProtoParser getProtoParser();
+
   /** Returns the type of transport for the generated client. Defaults to Grpc. */
   public abstract TransportProtocol getTransportProtocol();
 
@@ -111,6 +126,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         getCopyrightLines(),
         getLicenseLines(),
         getResourceNameConfigs(),
+        getProtoParser(),
         getTransportProtocol(),
         getDefaultResourceNameFieldConfigMap(),
         getConfigSchemaVersion());
@@ -119,7 +135,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public static GapicProductConfig create(
       Model model, ConfigProto configProto, TargetLanguage language) {
-    return create(model, configProto, null, language);
+    return create(model, configProto, null, null, language);
   }
 
   /**
@@ -131,6 +147,7 @@ public abstract class GapicProductConfig implements ProductConfig {
    * @param configProto The parsed set of config files from input
    * @param protoPackage The source proto package, as opposed to imported protos, that we will
    *     generate clients for.
+   * @param clientPackage The desired package name for the generated client.
    * @param language The language that this config will be used to generate a client in.
    */
   @Nullable
@@ -138,9 +155,11 @@ public abstract class GapicProductConfig implements ProductConfig {
       Model model,
       @Nullable ConfigProto configProto,
       @Nullable String protoPackage,
+      @Nullable String clientPackage,
       TargetLanguage language) {
 
     final String defaultPackage;
+    SymbolTable symbolTable = model.getSymbolTable();
 
     if (protoPackage != null) {
       // Default to using --package option for value of default package and first API protoFile.
@@ -150,7 +169,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       // the config proto, and use it as
       // the assigned file for generated resource names, and to get the default message namespace.
       ProtoFile file =
-          model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
+          symbolTable.lookupInterface(configProto.getInterfaces(0).getName()).getFile();
       defaultPackage = file.getProto().getPackage();
     } else {
       throw new NullPointerException("configProto and protoPackage cannot both be null.");
@@ -177,7 +196,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       sourceProtos.forEach(model::addRoot);
     }
 
-    ProtoParser protoParser = new ProtoParser();
+    // Toggle on/off proto annotations parsing.
+    ProtoParser protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, null));
     if (configProto == null) {
       configProto = ConfigProto.getDefaultInstance();
     }
@@ -193,6 +213,9 @@ public abstract class GapicProductConfig implements ProductConfig {
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtos, configProto, defaultPackage, resourceDefs, resourceSetDefs, protoParser);
+
+    // Update the protoParser with new info.
+    protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, messageConfigs));
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(
@@ -215,24 +238,43 @@ public abstract class GapicProductConfig implements ProductConfig {
         configProto.getLanguageSettingsMap().get(language.toString().toLowerCase());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
-      String basePackageName =
-          Optional.ofNullable(protoPackage).orElse(protoParser.getPackageName(model));
-      clientPackageName =
-          LanguageTransformer.getFormattedPackageName(language.name(), basePackageName);
+
+      if (!Strings.isNullOrEmpty(clientPackage)) {
+        clientPackageName = clientPackage;
+      } else {
+        String basePackageName = Optional.ofNullable(protoPackage).orElse(getPackageName(model));
+        clientPackageName =
+            LanguageSettingsMerger.getFormattedPackageName(language, basePackageName);
+      }
     } else {
       clientPackageName = settings.getPackageName();
     }
 
+    ImmutableMap<String, Interface> protoInterfaces =
+        getInterfacesFromProtoFile(diagCollector, sourceProtos, symbolTable);
+
+    // Collect the interfaces (clients) and methods that we will generate on the surface.
+    // Not all methods defined in the protofiles will be generated on the surface.
+    ImmutableList<GapicInterfaceInput> interfaceInputs;
+    if (!configProto.equals(ConfigProto.getDefaultInstance())) {
+      interfaceInputs =
+          createInterfaceInputsWithGapicConfig(
+              diagCollector, configProto.getInterfacesList(), protoInterfaces, symbolTable);
+    } else {
+      interfaceInputs = createInterfaceInputsWithoutGapicConfig(protoInterfaces.values());
+    }
+    if (interfaceInputs == null) {
+      return null;
+    }
+
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
-            model.getDiagReporter().getDiagCollector(),
-            configProto,
-            sourceProtos,
+            diagCollector,
+            interfaceInputs,
             defaultPackage,
             settings,
             messageConfigs,
             resourceNameConfigs,
-            model.getSymbolTable(),
             language,
             protoParser);
 
@@ -280,6 +322,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         copyrightLines,
         licenseLines,
         resourceNameConfigs,
+        protoParser,
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion);
@@ -346,6 +389,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         copyrightLines,
         licenseLines,
         resourceNameConfigs,
+        new ProtoParser(false),
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion);
@@ -369,8 +413,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   /** Creates an GapicProductConfig with fixed content. Exposed for testing. */
-  @VisibleForTesting
-  public static GapicProductConfig createDummyInstance(
+  private static GapicProductConfig createDummyInstance(
       ImmutableMap<String, InterfaceConfig> interfaceConfigMap,
       String packageName,
       String domainLayerLocation,
@@ -385,31 +428,28 @@ public abstract class GapicProductConfig implements ProductConfig {
         ImmutableList.of(),
         ImmutableList.of(),
         ImmutableMap.of(),
+        new ProtoParser(true),
         // Default to gRPC.
         TransportProtocol.GRPC,
         createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),
         configSchemaVersion);
   }
 
-  private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
+  /** Return the list of information about clients to be generated. */
+  private static ImmutableList<GapicInterfaceInput> createInterfaceInputsWithGapicConfig(
       DiagCollector diagCollector,
-      ConfigProto configProto,
-      List<ProtoFile> sourceProtos,
-      String defaultPackageName,
-      LanguageSettingsProto languageSettings,
-      ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      SymbolTable symbolTable,
-      TargetLanguage language,
-      ProtoParser protoParser) {
-    // Return value; maps interface names to their InterfaceConfig.
-    ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
+      List<InterfaceConfigProto> interfaceConfigProtosList,
+      ImmutableMap<String, Interface> protoInterfaces,
+      SymbolTable symbolTable) {
+
+    // Maps name of interfaces to found interfaces from proto.
+    Map<String, Interface> interfaceMap = new LinkedHashMap<>(protoInterfaces);
 
     // Maps name of interfaces to found InterfaceConfigs from config yamls.
     Map<String, InterfaceConfigProto> interfaceConfigProtos = new LinkedHashMap<>();
 
-    // Parse config for interfaceConfigProtos.
-    for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
+    // Parse GAPIC config for interfaceConfigProtos.
+    for (InterfaceConfigProto interfaceConfigProto : interfaceConfigProtosList) {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
       if (apiInterface == null || !apiInterface.isReachable()) {
         diagCollector.addDiag(
@@ -420,11 +460,42 @@ public abstract class GapicProductConfig implements ProductConfig {
         continue;
       }
       interfaceConfigProtos.put(interfaceConfigProto.getName(), interfaceConfigProto);
+      interfaceMap.put(interfaceConfigProto.getName(), apiInterface);
     }
+
+    // Store info about each Interface in a GapicInterfaceInput object.
+    ImmutableList.Builder<GapicInterfaceInput> interfaceInputs = ImmutableList.builder();
+    for (Entry<String, Interface> interfaceEntry : interfaceMap.entrySet()) {
+      String serviceFullName = interfaceEntry.getKey();
+      Interface apiInterface = interfaceEntry.getValue();
+      GapicInterfaceInput.Builder interfaceInput =
+          GapicInterfaceInput.newBuilder().setInterface(apiInterface);
+
+      InterfaceConfigProto interfaceConfigProto =
+          interfaceConfigProtos.getOrDefault(
+              serviceFullName, InterfaceConfigProto.getDefaultInstance());
+      interfaceInput.setInterfaceConfigProto(interfaceConfigProto);
+
+      Map<Method, MethodConfigProto> methodsToGenerate;
+      methodsToGenerate =
+          findMethodsToGenerateWithConfigYaml(apiInterface, interfaceConfigProto, diagCollector);
+      if (methodsToGenerate == null) {
+        return null;
+      }
+      interfaceInput.setMethodsToGenerate(methodsToGenerate);
+      interfaceInputs.add(interfaceInput.build());
+    }
+
+    return interfaceInputs.build();
+  }
+
+  private static ImmutableMap<String, Interface> getInterfacesFromProtoFile(
+      DiagCollector diagCollector, List<ProtoFile> sourceProtos, SymbolTable symbolTable) {
+    // Maps name of interfaces to found interfaces from proto.
+    ImmutableMap.Builder<String, Interface> protoInterfaces = ImmutableMap.builder();
 
     // Parse proto file for interfaces.
     for (ProtoFile file : sourceProtos) {
-      if (file.getProto().getServiceList().size() == 0) continue;
       for (DescriptorProtos.ServiceDescriptorProto service : file.getProto().getServiceList()) {
         String serviceFullName =
             String.format("%s.%s", file.getProto().getPackage(), service.getName());
@@ -434,28 +505,106 @@ public abstract class GapicProductConfig implements ProductConfig {
               Diag.error(SimpleLocation.TOPLEVEL, "interface not found: %s", service.getName()));
           continue;
         }
-        InterfaceConfigProto interfaceConfigProto = interfaceConfigProtos.get(serviceFullName);
-        if (interfaceConfigProto == null) {
-          interfaceConfigProto = InterfaceConfigProto.getDefaultInstance();
-        }
-        String interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
-
-        GapicInterfaceConfig interfaceConfig =
-            GapicInterfaceConfig.createInterfaceConfig(
-                diagCollector,
-                language,
-                defaultPackageName,
-                interfaceConfigProto,
-                apiInterface,
-                interfaceNameOverride,
-                messageConfigs,
-                resourceNameConfigs,
-                protoParser);
-        if (interfaceConfig == null) {
-          continue;
-        }
-        interfaceConfigMap.put(serviceFullName, interfaceConfig);
+        protoInterfaces.put(serviceFullName, apiInterface);
       }
+    }
+    return protoInterfaces.build();
+  }
+
+  /** Return the list of information about clients to be generated. */
+  private static ImmutableList<GapicInterfaceInput> createInterfaceInputsWithoutGapicConfig(
+      Collection<Interface> protoInterfaces) {
+    // Store info about each Interface in a GapicInterfaceInput object.
+    ImmutableList.Builder<GapicInterfaceInput> interfaceInputs = ImmutableList.builder();
+    for (Interface apiInterface : protoInterfaces) {
+      GapicInterfaceInput.Builder interfaceInput =
+          GapicInterfaceInput.newBuilder()
+              .setInterface(apiInterface)
+              .setInterfaceConfigProto(InterfaceConfigProto.getDefaultInstance())
+              .setMethodsToGenerate(findMethodsToGenerateWithoutConfigYaml(apiInterface));
+      interfaceInputs.add(interfaceInput.build());
+    }
+    return interfaceInputs.build();
+  }
+
+  /** Find the methods that should be generated on the surface when no GAPIC config was given. */
+  private static ImmutableMap<Method, MethodConfigProto> findMethodsToGenerateWithoutConfigYaml(
+      Interface apiInterface) {
+    ImmutableMap.Builder<Method, MethodConfigProto> methodsToSurface = ImmutableMap.builder();
+
+    // TODO(andrealin): After migration off GAPIC config is complete; generate all methods
+    // from protofile even if they aren't included in the GAPIC config.
+
+    // Just generate all methods defined in the protos.
+    apiInterface
+        .getMethods()
+        .forEach(m -> methodsToSurface.put(m, MethodConfigProto.getDefaultInstance()));
+
+    return methodsToSurface.build();
+  }
+
+  /** Find the methods that should be generated on the surface when a GAPIC config was given. */
+  @Nullable
+  private static ImmutableMap<Method, MethodConfigProto> findMethodsToGenerateWithConfigYaml(
+      Interface apiInterface,
+      InterfaceConfigProto interfaceConfigProto,
+      DiagCollector diagCollector) {
+    ImmutableMap.Builder<Method, MethodConfigProto> methodsToSurface = ImmutableMap.builder();
+
+    // Get the set of methods defined by the GAPIC config. Only these methods will be generated.
+    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
+      Interface targetInterface =
+          GapicInterfaceConfig.getTargetInterface(
+              apiInterface, methodConfigProto.getRerouteToGrpcInterface());
+      Method protoMethod = targetInterface.lookupMethod(methodConfigProto.getName());
+
+      if (protoMethod == null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
+        continue;
+      }
+      methodsToSurface.put(protoMethod, methodConfigProto);
+    }
+
+    if (diagCollector.getErrorCount() > 0) {
+      return null;
+    }
+
+    return methodsToSurface.build();
+  }
+
+  private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
+      DiagCollector diagCollector,
+      List<GapicInterfaceInput> interfaceInputs,
+      String defaultPackageName,
+      LanguageSettingsProto languageSettings,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      TargetLanguage language,
+      ProtoParser protoParser) {
+    // Return value; maps interface names to their InterfaceConfig.
+    ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
+
+    for (GapicInterfaceInput interfaceInput : interfaceInputs) {
+
+      String serviceFullName = interfaceInput.getServiceFullName();
+      String interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
+
+      GapicInterfaceConfig interfaceConfig =
+          GapicInterfaceConfig.createInterfaceConfig(
+              diagCollector,
+              language,
+              defaultPackageName,
+              interfaceInput,
+              interfaceNameOverride,
+              messageConfigs,
+              resourceNameConfigs,
+              protoParser);
+      if (interfaceConfig == null) {
+        continue;
+      }
+      interfaceConfigMap.put(serviceFullName, interfaceConfig);
     }
 
     if (diagCollector.getErrorCount() > 0) {
@@ -849,15 +998,49 @@ public abstract class GapicProductConfig implements ProductConfig {
    */
   public SingleResourceNameConfig getSingleResourceNameConfig(String entityName) {
     ResourceNameConfig resourceNameConfig = getResourceNameConfigs().get(entityName);
-    if (resourceNameConfig != null && resourceNameConfig instanceof SingleResourceNameConfig) {
+    if (resourceNameConfig instanceof SingleResourceNameConfig) {
       return (SingleResourceNameConfig) resourceNameConfig;
     }
-    if (resourceNameConfig != null && resourceNameConfig instanceof ResourceNameOneofConfig) {
+    if (resourceNameConfig instanceof ResourceNameOneofConfig) {
       ResourceNameOneofConfig oneofConfig = (ResourceNameOneofConfig) resourceNameConfig;
       if (Iterables.size(oneofConfig.getSingleResourceNameConfigs()) > 0) {
         return Iterables.get(oneofConfig.getSingleResourceNameConfigs(), 0);
       }
     }
     return null;
+  }
+
+  /** Returns a base package name for an API's client. */
+  @Nullable
+  public static String getPackageName(Model model) {
+    if (model.getServiceConfig().getApisCount() > 0) {
+      Api api = model.getServiceConfig().getApis(0);
+      Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
+      if (apiInterface != null) {
+        return apiInterface.getFile().getFullName();
+      }
+    }
+    return null;
+  }
+
+  private static FeatureConfig getDefaultLanguageFeatureConfig(
+      TargetLanguage targetLanguage, ResourceNameMessageConfigs resourceNameMessageConfigs) {
+    switch (targetLanguage) {
+      case JAVA:
+        return JavaFeatureConfig.newBuilder()
+            .enableStringFormatFunctions(
+                resourceNameMessageConfigs == null || resourceNameMessageConfigs.isEmpty())
+            .build();
+      case CSHARP:
+        return new CSharpFeatureConfig();
+      case NODEJS:
+        return new NodeJSFeatureConfig();
+      case PHP:
+        return new PhpFeatureConfig();
+      case RUBY:
+        return new RubyFeatureConfig();
+      default:
+        return new DefaultFeatureConfig();
+    }
   }
 }

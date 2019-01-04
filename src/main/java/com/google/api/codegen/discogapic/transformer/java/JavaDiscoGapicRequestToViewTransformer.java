@@ -118,14 +118,12 @@ public class JavaDiscoGapicRequestToViewTransformer
     SurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
 
     for (InterfaceModel apiInterface : model.getInterfaces()) {
-      boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
       DiscoGapicInterfaceContext context =
           JavaDiscoGapicSurfaceTransformer.newInterfaceContext(
               apiInterface,
               productConfig,
               surfaceNamer,
-              createTypeTable(productConfig.getPackageName()),
-              enableStringFormatFunctions);
+              createTypeTable(productConfig.getPackageName()));
 
       for (MethodModel method : context.getSupportedMethods()) {
         RequestObjectParamView params = getRequestObjectParams(context, method);

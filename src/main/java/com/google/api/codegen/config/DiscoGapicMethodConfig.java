@@ -94,7 +94,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     if (!PageStreamingConfigProto.getDefaultInstance()
         .equals(methodConfigProto.getPageStreaming())) {
       pageStreaming =
-          PageStreamingConfig.createPageStreaming(
+          PageStreamingConfig.createPageStreamingFromGapicConfig(
               diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
       if (pageStreaming == null) {
         error = true;

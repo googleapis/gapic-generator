@@ -742,7 +742,7 @@ Api Reference
 ============== file: google/__init__.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -766,7 +766,7 @@ except ImportError:
 ============== file: google/cloud/__init__.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -792,7 +792,7 @@ except ImportError:
 ============== file: google/cloud/example/library.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -823,7 +823,7 @@ __all__ = (
 ============== file: google/cloud/example/library_v1/__init__.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -861,7 +861,7 @@ __all__ = (
 ============== file: google/cloud/example/library_v1/gapic/enums.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -893,6 +893,32 @@ class NullValue(enum.IntEnum):
     NULL_VALUE = 0
 
 
+class Book(object):
+    class Rating(enum.IntEnum):
+        """
+        Attributes:
+          GOOD (int): GOOD enum description
+          BAD (int): Enum description with special characters: <>&"`'@.
+        """
+        GOOD = 0
+        BAD = 1
+
+
+class Comment(object):
+    class Stage(enum.IntEnum):
+        """
+        Attributes:
+          UNSET (int)
+          DRAFT (int)
+          PUBLISHED (int)
+          DELETED (int)
+        """
+        UNSET = 0
+        DRAFT = 1
+        PUBLISHED = 2
+        DELETED = 3
+
+
 class FieldMask(object):
     class Material(enum.IntEnum):
         """
@@ -908,17 +934,6 @@ class FieldMask(object):
         PORCELAIN = 2
         SEQUINS = 3
         CARDBOARD = 4
-
-
-class Book(object):
-    class Rating(enum.IntEnum):
-        """
-        Attributes:
-          GOOD (int): GOOD enum description
-          BAD (int): Enum description with special characters: <>&"`'@.
-        """
-        GOOD = 0
-        BAD = 1
 
 
 class SomeMessage(object):
@@ -968,21 +983,6 @@ class SomeMessage2(object):
             DOUBLE = 2
 
 
-class Comment(object):
-    class Stage(enum.IntEnum):
-        """
-        Attributes:
-          UNSET (int)
-          DRAFT (int)
-          PUBLISHED (int)
-          DELETED (int)
-        """
-        UNSET = 0
-        DRAFT = 1
-        PUBLISHED = 2
-        DELETED = 3
-
-
 class TestOptionalRequiredFlatteningParamsRequest(object):
     class InnerEnum(enum.IntEnum):
         """
@@ -998,7 +998,7 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
 ============== file: google/cloud/example/library_v1/gapic/library_service_client.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1041,8 +1041,13 @@ from google.cloud.example.library_v1.proto import library_pb2_grpc
 from google.cloud.example.library_v1.proto import tagger_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2_grpc
 from google.longrunning import operations_pb2
+from google.protobuf import any_pb2
+from google.protobuf import duration_pb2
 from google.protobuf import empty_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
+from google.protobuf import struct_pb2
+from google.protobuf import timestamp_pb2
+from google.protobuf import wrappers_pb2
 
 
 
@@ -3024,6 +3029,38 @@ class LibraryServiceClient(object):
             optional_repeated_fixed32=None,
             optional_repeated_fixed64=None,
             optional_map=None,
+            any_value=None,
+            struct_value=None,
+            value_value=None,
+            list_value_value=None,
+            time_value=None,
+            duration_value=None,
+            field_mask_value=None,
+            int32_value=None,
+            uint32_value=None,
+            int64_value=None,
+            uint64_value=None,
+            float_value=None,
+            double_value=None,
+            string_value=None,
+            bool_value=None,
+            bytes_value=None,
+            repeated_any_value=None,
+            repeated_struct_value=None,
+            repeated_value_value=None,
+            repeated_list_value_value=None,
+            repeated_time_value=None,
+            repeated_duration_value=None,
+            repeated_field_mask_value=None,
+            repeated_int32_value=None,
+            repeated_uint32_value=None,
+            repeated_int64_value=None,
+            repeated_uint64_value=None,
+            repeated_float_value=None,
+            repeated_double_value=None,
+            repeated_string_value=None,
+            repeated_bool_value=None,
+            repeated_bytes_value=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -3192,6 +3229,102 @@ class LibraryServiceClient(object):
             optional_repeated_fixed32 (list[int])
             optional_repeated_fixed64 (list[long])
             optional_map (dict[int -> str])
+            any_value (Union[dict, ~google.cloud.example.library_v1.types.Any]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Any`
+            struct_value (Union[dict, ~google.cloud.example.library_v1.types.Struct]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Struct`
+            value_value (Union[dict, ~google.cloud.example.library_v1.types.Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Value`
+            list_value_value (Union[dict, ~google.cloud.example.library_v1.types.ListValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.ListValue`
+            time_value (Union[dict, ~google.cloud.example.library_v1.types.Timestamp]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Timestamp`
+            duration_value (Union[dict, ~google.cloud.example.library_v1.types.Duration]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Duration`
+            field_mask_value (Union[dict, ~google.cloud.example.library_v1.types.FieldMask]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FieldMask`
+            int32_value (Union[dict, ~google.cloud.example.library_v1.types.Int32Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Int32Value`
+            uint32_value (Union[dict, ~google.cloud.example.library_v1.types.UInt32Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.UInt32Value`
+            int64_value (Union[dict, ~google.cloud.example.library_v1.types.Int64Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Int64Value`
+            uint64_value (Union[dict, ~google.cloud.example.library_v1.types.UInt64Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.UInt64Value`
+            float_value (Union[dict, ~google.cloud.example.library_v1.types.FloatValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FloatValue`
+            double_value (Union[dict, ~google.cloud.example.library_v1.types.DoubleValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.DoubleValue`
+            string_value (Union[dict, ~google.cloud.example.library_v1.types.StringValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.StringValue`
+            bool_value (Union[dict, ~google.cloud.example.library_v1.types.BoolValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.BoolValue`
+            bytes_value (Union[dict, ~google.cloud.example.library_v1.types.BytesValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.BytesValue`
+            repeated_any_value (list[Union[dict, ~google.cloud.example.library_v1.types.Any]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Any`
+            repeated_struct_value (list[Union[dict, ~google.cloud.example.library_v1.types.Struct]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Struct`
+            repeated_value_value (list[Union[dict, ~google.cloud.example.library_v1.types.Value]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Value`
+            repeated_list_value_value (list[Union[dict, ~google.cloud.example.library_v1.types.ListValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.ListValue`
+            repeated_time_value (list[Union[dict, ~google.cloud.example.library_v1.types.Timestamp]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Timestamp`
+            repeated_duration_value (list[Union[dict, ~google.cloud.example.library_v1.types.Duration]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Duration`
+            repeated_field_mask_value (list[Union[dict, ~google.cloud.example.library_v1.types.FieldMask]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FieldMask`
+            repeated_int32_value (list[Union[dict, ~google.cloud.example.library_v1.types.Int32Value]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Int32Value`
+            repeated_uint32_value (list[Union[dict, ~google.cloud.example.library_v1.types.UInt32Value]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.UInt32Value`
+            repeated_int64_value (list[Union[dict, ~google.cloud.example.library_v1.types.Int64Value]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Int64Value`
+            repeated_uint64_value (list[Union[dict, ~google.cloud.example.library_v1.types.UInt64Value]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.UInt64Value`
+            repeated_float_value (list[Union[dict, ~google.cloud.example.library_v1.types.FloatValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FloatValue`
+            repeated_double_value (list[Union[dict, ~google.cloud.example.library_v1.types.DoubleValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.DoubleValue`
+            repeated_string_value (list[Union[dict, ~google.cloud.example.library_v1.types.StringValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.StringValue`
+            repeated_bool_value (list[Union[dict, ~google.cloud.example.library_v1.types.BoolValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.BoolValue`
+            repeated_bytes_value (list[Union[dict, ~google.cloud.example.library_v1.types.BytesValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.BytesValue`
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will not
                 be retried.
@@ -3279,6 +3412,38 @@ class LibraryServiceClient(object):
             optional_repeated_fixed32=optional_repeated_fixed32,
             optional_repeated_fixed64=optional_repeated_fixed64,
             optional_map=optional_map,
+            any_value=any_value,
+            struct_value=struct_value,
+            value_value=value_value,
+            list_value_value=list_value_value,
+            time_value=time_value,
+            duration_value=duration_value,
+            field_mask_value=field_mask_value,
+            int32_value=int32_value,
+            uint32_value=uint32_value,
+            int64_value=int64_value,
+            uint64_value=uint64_value,
+            float_value=float_value,
+            double_value=double_value,
+            string_value=string_value,
+            bool_value=bool_value,
+            bytes_value=bytes_value,
+            repeated_any_value=repeated_any_value,
+            repeated_struct_value=repeated_struct_value,
+            repeated_value_value=repeated_value_value,
+            repeated_list_value_value=repeated_list_value_value,
+            repeated_time_value=repeated_time_value,
+            repeated_duration_value=repeated_duration_value,
+            repeated_field_mask_value=repeated_field_mask_value,
+            repeated_int32_value=repeated_int32_value,
+            repeated_uint32_value=repeated_uint32_value,
+            repeated_int64_value=repeated_int64_value,
+            repeated_uint64_value=repeated_uint64_value,
+            repeated_float_value=repeated_float_value,
+            repeated_double_value=repeated_double_value,
+            repeated_string_value=repeated_string_value,
+            repeated_bool_value=repeated_bool_value,
+            repeated_bytes_value=repeated_bytes_value,
         )
         return self._inner_api_calls['test_optional_required_flattening_params'](request, retry=retry, timeout=timeout, metadata=metadata)
 
@@ -3467,7 +3632,7 @@ config = {
 ============== file: google/cloud/example/library_v1/gapic/transports/library_service_grpc_transport.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -3583,7 +3748,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def create_shelf(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.create_shelf`.
 
         Creates a shelf, and returns the new Shelf.
         RPC method comment may include special characters: <>&"`'@.
@@ -3597,7 +3762,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_shelf(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_shelf`.
 
         Gets a shelf.
 
@@ -3610,7 +3775,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def list_shelves(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.list_shelves`.
 
         Lists shelves.
 
@@ -3623,7 +3788,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def delete_shelf(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.delete_shelf`.
 
         Deletes a shelf.
 
@@ -3636,7 +3801,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def merge_shelves(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.merge_shelves`.
 
         Merges two shelves by adding all books from the shelf named
         `other_shelf_name` to shelf `name`, and deletes
@@ -3651,7 +3816,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def create_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.create_book`.
 
         Creates a book.
 
@@ -3664,7 +3829,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def publish_series(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.publish_series`.
 
         Creates a series of books.
 
@@ -3677,7 +3842,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_book`.
 
         Gets a book.
 
@@ -3690,7 +3855,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def list_books(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.list_books`.
 
         Lists books in a shelf.
 
@@ -3703,7 +3868,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def delete_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.delete_book`.
 
         Deletes a book.
 
@@ -3716,7 +3881,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def update_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.update_book`.
 
         Updates a book.
 
@@ -3729,7 +3894,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def move_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.move_book`.
 
         Moves a book to another shelf, and returns the new book.
 
@@ -3742,7 +3907,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def list_strings(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.list_strings`.
 
         Lists a primitive resource. To test go page streaming.
 
@@ -3755,7 +3920,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def add_comments(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.add_comments`.
 
         Adds comments to a book
 
@@ -3768,7 +3933,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_book_from_archive(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_book_from_archive`.
 
         Gets a book from an archive.
 
@@ -3781,7 +3946,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_book_from_anywhere(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_book_from_anywhere`.
 
         Gets a book from a shelf or archive.
 
@@ -3794,7 +3959,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_book_from_absolutely_anywhere(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_book_from_absolutely_anywhere`.
 
         Test proper OneOf-Any resource name mapping
 
@@ -3807,7 +3972,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def update_book_index(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.update_book_index`.
 
         Updates the index of a book.
 
@@ -3820,7 +3985,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def stream_shelves(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.stream_shelves`.
 
         Test server streaming
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -3834,7 +3999,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def stream_books(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.stream_books`.
 
         Test server streaming, non-paged responses.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -3848,7 +4013,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def discuss_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.discuss_book`.
 
         Test bidi-streaming.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -3862,7 +4027,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def monolog_about_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.monolog_about_book`.
 
         Test client streaming.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
@@ -3876,7 +4041,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def find_related_books(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.find_related_books`.
 
 
         Returns:
@@ -3888,7 +4053,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def add_tag(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.add_tag`.
 
         Adds a tag to the book. This RPC is a mixin.
 
@@ -3901,7 +4066,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def add_label(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.add_label`.
 
         Adds a label to the entity.
 
@@ -3914,7 +4079,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_big_book(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_big_book`.
 
         Test long-running operations
 
@@ -3927,7 +4092,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def get_big_nothing(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.get_big_nothing`.
 
         Test long-running operations with empty return type.
 
@@ -3940,7 +4105,7 @@ class LibraryServiceGrpcTransport(object):
 
     @property
     def test_optional_required_flattening_params(self):
-        """Return the gRPC stub for {$apiMethod.name}.
+        """Return the gRPC stub for :meth:`LibraryServiceClient.test_optional_required_flattening_params`.
 
         Test optional flattening parameters of all types
 
@@ -3953,7 +4118,7 @@ class LibraryServiceGrpcTransport(object):
 ============== file: google/cloud/example/library_v1/types.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4027,7 +4192,7 @@ __all__ = tuple(sorted(names))
 ============== file: nox.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4111,7 +4276,7 @@ def lint_setup_py(session):
 ============== file: samples/google/cloud/example/library_v1/gapic/discuss_book/discuss_book_request_streaming_bidi_prog.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4135,20 +4300,28 @@ import sys
 # [START turing_prog_request_streaming_bidi]
 
 from google.cloud.example import library_v1
+import io
+import six
 
-def sample_discuss_book():
+def sample_discuss_book(image_file_name):
   """Testing calling forms"""
 
   # [START turing_prog_request_streaming_bidi_core]
 
   client = library_v1.LibraryServiceClient()
 
+  # image_file_name = 'image_file.jpg'
+
+  if isinstance(image_file_name, six.binary_type):
+    image_file_name = image_file_name.decode('utf-8')
   name = 'BASIC'
   file_name = 'comment_file'
   with io.open(file_name, 'rb') as f:
     comment = f.read()
   comment_2 = {'comment': comment}
-  request = {'name': name, 'comment': comment_2}
+  with io.open(image_file_name, 'rb') as f:
+    image = f.read()
+  request = {'name': name, 'comment': comment_2, 'image': image}
 
   requests = [request]
   for response_item in client.discuss_book(requests):
@@ -4161,16 +4334,17 @@ def main():
   import argparse
 
   parser = argparse.ArgumentParser()
+  parser.add_argument('--image_file_name', type=str, default='image_file.jpg')
   args = parser.parse_args()
 
-  sample_discuss_book()
+  sample_discuss_book(args.image_file_name)
 
 if __name__ == '__main__':
   main()
 ============== file: samples/google/cloud/example/library_v1/gapic/find_related_books/find_related_books_request_paged_all_odyssey.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4228,7 +4402,7 @@ if __name__ == '__main__':
 ============== file: samples/google/cloud/example/library_v1/gapic/find_related_books/find_related_books_request_paged_odyssey.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4287,7 +4461,7 @@ if __name__ == '__main__':
 ============== file: samples/google/cloud/example/library_v1/gapic/get_big_book/get_big_book_long_running_promise_wap.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4311,22 +4485,28 @@ import sys
 # [START hopper]
 
 from google.cloud.example import library_v1
+import six
 
-def sample_get_big_book():
+def sample_get_big_book(shelf):
   """Testing calling forms"""
 
   # [START hopper_core]
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  # shelf = 'Novel'
+
+  if isinstance(shelf, six.binary_type):
+    shelf = shelf.decode('utf-8')
+  name = client.book_path(shelf, "War and Peace")
 
   operation = client.get_big_book(name)
 
   print('Waiting for operation to complete...')
   response = operation.result()
 
-  print(response)
+  print('name: {}'.format(response.name))
+  print('author: {}'.format(response.author))
 
   # [END hopper_core]
 # [END hopper]
@@ -4335,16 +4515,17 @@ def main():
   import argparse
 
   parser = argparse.ArgumentParser()
+  parser.add_argument('--shelf', type=str, default='Novel')
   args = parser.parse_args()
 
-  sample_get_big_book()
+  sample_get_big_book(args.shelf)
 
 if __name__ == '__main__':
   main()
 ============== file: samples/google/cloud/example/library_v1/gapic/monolog_about_book/monolog_about_book_request_streaming_client_prog.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4400,7 +4581,7 @@ if __name__ == '__main__':
 ============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_request_pi_version.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4450,6 +4631,7 @@ def sample_publish_series(shelf_name, edition):
   for title in response.book_names:
     print('Title: {}'.format(title))
   print('The first book is: {}'.format(response.book_names[0]))
+  print('The author of the first book is: {}'.format(response.books[0].author))
   print('That\'s all!')
   print('series_uuid: {}'.format(response.series_uuid.series_bytes))
 
@@ -4471,7 +4653,7 @@ if __name__ == '__main__':
 ============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_request_second_edition.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4532,7 +4714,7 @@ if __name__ == '__main__':
 ============== file: samples/google/cloud/example/library_v1/gapic/stream_books/stream_books_request_streaming_server_prog.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4585,7 +4767,7 @@ if __name__ == '__main__':
 ============== file: samples/google/cloud/example/library_v1/gapic/stream_shelves/stream_shelves_request_streaming_server_empty.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4640,7 +4822,7 @@ universal = 1
 ============== file: setup.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4722,7 +4904,7 @@ setuptools.setup(
 ============== file: tests/system/gapic/v1/test_system_library_service_v1.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4762,7 +4944,7 @@ class TestSystemLibraryService(object):
 ============== file: tests/unit/gapic/v1/test_library_service_client_v1.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

@@ -113,7 +113,7 @@ $ npm install --save @google-cloud/library
 }
 
 ============== file: smoke-test/library_service_smoke_test.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -168,7 +168,7 @@ describe('LibraryServiceSmokeTest', () => {
 });
 
 ============== file: src/index.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -263,7 +263,7 @@ module.exports.default = Object.assign({}, module.exports);
 //         className: "DiscussBookRequestStreamingBidiProg"
 //          valueSet: "prog" ("Programming Books")
 //       description: "Testing calling forms"
-//        [name=BASIC, comment.comment=comment_file]
+//        [name=BASIC, comment.comment=comment_file, image=image_file.jpg]
 //      apiMethod "discussBook" of type "OptionalArrayMethod"
 
 // [START turing_prog_request_streaming_bidi_core]
@@ -274,15 +274,18 @@ module.exports.default = Object.assign({}, module.exports);
 const stream = client.discussBook().on('data', response => {
   // doThingsWith(response)
 });
+// const imageFileName = 'image_file.jpg';
 const name = 'BASIC';
 const fileName = 'comment_file';
 const comment = fs.readFileSync(fileName).toString('base64');
 const comment2 = {
   comment: comment,
 };
+const image = fs.readFileSync(imageFileName).toString('base64');
 const request = {
   name: name,
   comment: comment2,
+  image: image,
 };
 // Write request objects.
 stream.write(request);
@@ -417,7 +420,7 @@ client.findRelatedBooks(request, options)
 //         className: "GetBigBookLongRunningEventEmitterWap"
 //          valueSet: "wap" ("GetBigBook: 'War and Peace'")
 //       description: "Testing calling forms"
-//        [name="War and Peace"]
+//        [name%shelf_id=Novel, name%book_id="War and Peace"]
 //      apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
 
 // [START hopper_core]
@@ -425,7 +428,8 @@ client.findRelatedBooks(request, options)
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+// const shelf = 'Novel';
+const formattedName = client.bookPath(shelf, "War and Peace");
 
 // Handle the operation using the event emitter pattern.
 client.getBigBook({name: formattedName})
@@ -474,7 +478,7 @@ client.getBigBook({name: formattedName})
 //         className: "GetBigBookLongRunningPromiseWap"
 //          valueSet: "wap" ("GetBigBook: 'War and Peace'")
 //       description: "Testing calling forms"
-//        [name="War and Peace"]
+//        [name%shelf_id=Novel, name%book_id="War and Peace"]
 //      apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
 
 // [START hopper_core]
@@ -482,7 +486,8 @@ client.getBigBook({name: formattedName})
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+// const shelf = 'Novel';
+const formattedName = client.bookPath(shelf, "War and Peace");
 
 // Handle the operation using the promise pattern.
 client.getBigBook({name: formattedName})
@@ -721,7 +726,7 @@ const name = 'BASIC';
 // tslint:disable-next-line:no-any
 // [END sample]
 ============== file: src/v1/doc/google/example/library/v1/doc_book_from_anywhere.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -763,7 +768,7 @@ const BookFromAnywhere = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/example/library/v1/doc_field_mask.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -804,7 +809,7 @@ const FieldMask = {
   }
 };
 ============== file: src/v1/doc/google/example/library/v1/doc_library.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1297,6 +1302,9 @@ const SeriesUuid = {
  * @property {string[]} bookNames
  *   The names of the books in the series that were published
  *
+ * @property {Object[]} books
+ *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
+ *
  * @property {Object} seriesUuid
  *   Uniquely identifies the series published
  *
@@ -1611,6 +1619,8 @@ const UpdateBookIndexRequest = {
  *
  *   This object should have the same structure as [Comment]{@link google.example.library.v1.Comment}
  *
+ * @property {string} image
+ *
  * @typedef DiscussBookRequest
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.DiscussBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
@@ -1792,6 +1802,102 @@ const GetBigBookMetadata = {
  *
  * @property {Object.<number, string>} optionalMap
  *
+ * @property {Object} anyValue
+ *   This object should have the same structure as [Any]{@link google.protobuf.Any}
+ *
+ * @property {Object} structValue
+ *   This object should have the same structure as [Struct]{@link google.protobuf.Struct}
+ *
+ * @property {Object} valueValue
+ *   This object should have the same structure as [Value]{@link google.protobuf.Value}
+ *
+ * @property {Object} listValueValue
+ *   This object should have the same structure as [ListValue]{@link google.protobuf.ListValue}
+ *
+ * @property {Object} timeValue
+ *   This object should have the same structure as [Timestamp]{@link google.protobuf.Timestamp}
+ *
+ * @property {Object} durationValue
+ *   This object should have the same structure as [Duration]{@link google.protobuf.Duration}
+ *
+ * @property {Object} fieldMaskValue
+ *   This object should have the same structure as [FieldMask]{@link google.protobuf.FieldMask}
+ *
+ * @property {Object} int32Value
+ *   This object should have the same structure as [Int32Value]{@link google.protobuf.Int32Value}
+ *
+ * @property {Object} uint32Value
+ *   This object should have the same structure as [UInt32Value]{@link google.protobuf.UInt32Value}
+ *
+ * @property {Object} int64Value
+ *   This object should have the same structure as [Int64Value]{@link google.protobuf.Int64Value}
+ *
+ * @property {Object} uint64Value
+ *   This object should have the same structure as [UInt64Value]{@link google.protobuf.UInt64Value}
+ *
+ * @property {Object} floatValue
+ *   This object should have the same structure as [FloatValue]{@link google.protobuf.FloatValue}
+ *
+ * @property {Object} doubleValue
+ *   This object should have the same structure as [DoubleValue]{@link google.protobuf.DoubleValue}
+ *
+ * @property {Object} stringValue
+ *   This object should have the same structure as [StringValue]{@link google.protobuf.StringValue}
+ *
+ * @property {Object} boolValue
+ *   This object should have the same structure as [BoolValue]{@link google.protobuf.BoolValue}
+ *
+ * @property {Object} bytesValue
+ *   This object should have the same structure as [BytesValue]{@link google.protobuf.BytesValue}
+ *
+ * @property {Object[]} repeatedAnyValue
+ *   This object should have the same structure as [Any]{@link google.protobuf.Any}
+ *
+ * @property {Object[]} repeatedStructValue
+ *   This object should have the same structure as [Struct]{@link google.protobuf.Struct}
+ *
+ * @property {Object[]} repeatedValueValue
+ *   This object should have the same structure as [Value]{@link google.protobuf.Value}
+ *
+ * @property {Object[]} repeatedListValueValue
+ *   This object should have the same structure as [ListValue]{@link google.protobuf.ListValue}
+ *
+ * @property {Object[]} repeatedTimeValue
+ *   This object should have the same structure as [Timestamp]{@link google.protobuf.Timestamp}
+ *
+ * @property {Object[]} repeatedDurationValue
+ *   This object should have the same structure as [Duration]{@link google.protobuf.Duration}
+ *
+ * @property {Object[]} repeatedFieldMaskValue
+ *   This object should have the same structure as [FieldMask]{@link google.protobuf.FieldMask}
+ *
+ * @property {Object[]} repeatedInt32Value
+ *   This object should have the same structure as [Int32Value]{@link google.protobuf.Int32Value}
+ *
+ * @property {Object[]} repeatedUint32Value
+ *   This object should have the same structure as [UInt32Value]{@link google.protobuf.UInt32Value}
+ *
+ * @property {Object[]} repeatedInt64Value
+ *   This object should have the same structure as [Int64Value]{@link google.protobuf.Int64Value}
+ *
+ * @property {Object[]} repeatedUint64Value
+ *   This object should have the same structure as [UInt64Value]{@link google.protobuf.UInt64Value}
+ *
+ * @property {Object[]} repeatedFloatValue
+ *   This object should have the same structure as [FloatValue]{@link google.protobuf.FloatValue}
+ *
+ * @property {Object[]} repeatedDoubleValue
+ *   This object should have the same structure as [DoubleValue]{@link google.protobuf.DoubleValue}
+ *
+ * @property {Object[]} repeatedStringValue
+ *   This object should have the same structure as [StringValue]{@link google.protobuf.StringValue}
+ *
+ * @property {Object[]} repeatedBoolValue
+ *   This object should have the same structure as [BoolValue]{@link google.protobuf.BoolValue}
+ *
+ * @property {Object[]} repeatedBytesValue
+ *   This object should have the same structure as [BytesValue]{@link google.protobuf.BytesValue}
+ *
  * @typedef TestOptionalRequiredFlatteningParamsRequest
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
@@ -1829,7 +1935,7 @@ const TestOptionalRequiredFlatteningParamsResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/longrunning/doc_operations.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1892,92 +1998,8 @@ const TestOptionalRequiredFlatteningParamsResponse = {
 const Operation = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
-
-/**
- * The request message for Operations.GetOperation.
- *
- * @property {string} name
- *   The name of the operation resource.
- *
- * @typedef GetOperationRequest
- * @memberof google.longrunning
- * @see [google.longrunning.GetOperationRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
- */
-const GetOperationRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * The request message for Operations.ListOperations.
- *
- * @property {string} name
- *   The name of the operation collection.
- *
- * @property {string} filter
- *   The standard list filter.
- *
- * @property {number} pageSize
- *   The standard list page size.
- *
- * @property {string} pageToken
- *   The standard list page token.
- *
- * @typedef ListOperationsRequest
- * @memberof google.longrunning
- * @see [google.longrunning.ListOperationsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
- */
-const ListOperationsRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * The response message for Operations.ListOperations.
- *
- * @property {Object[]} operations
- *   A list of operations that matches the specified filter in the request.
- *
- *   This object should have the same structure as [Operation]{@link google.longrunning.Operation}
- *
- * @property {string} nextPageToken
- *   The standard List next-page token.
- *
- * @typedef ListOperationsResponse
- * @memberof google.longrunning
- * @see [google.longrunning.ListOperationsResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
- */
-const ListOperationsResponse = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * The request message for Operations.CancelOperation.
- *
- * @property {string} name
- *   The name of the operation resource to be cancelled.
- *
- * @typedef CancelOperationRequest
- * @memberof google.longrunning
- * @see [google.longrunning.CancelOperationRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
- */
-const CancelOperationRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * The request message for Operations.DeleteOperation.
- *
- * @property {string} name
- *   The name of the operation resource to be deleted.
- *
- * @typedef DeleteOperationRequest
- * @memberof google.longrunning
- * @see [google.longrunning.DeleteOperationRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/longrunning/operations.proto}
- */
-const DeleteOperationRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
 ============== file: src/v1/doc/google/protobuf/doc_any.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2114,7 +2136,7 @@ const Any = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_duration.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2212,7 +2234,7 @@ const Duration = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_empty.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2247,7 +2269,7 @@ const Empty = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_field_mask.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2484,7 +2506,7 @@ const FieldMask = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_struct.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2597,7 +2619,7 @@ const NullValue = {
   NULL_VALUE: 0
 };
 ============== file: src/v1/doc/google/protobuf/doc_timestamp.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2713,7 +2735,7 @@ const Timestamp = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_wrappers.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2874,7 +2896,7 @@ const BytesValue = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/rpc/doc_status.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2967,7 +2989,7 @@ const Status = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/tagger/v1/doc_tagger.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -3002,23 +3024,6 @@ const AddTagRequest = {
 };
 
 /**
- * @property {string} resource
- *   REQUIRED: The resource which the label is being added to.
- *   Resource is usually specified as a path, such as,
- *   projects/{project}/zones/{zone}/disks/{disk}.
- *
- * @property {string} label
- *   REQUIRED: The label to add.
- *
- * @typedef AddLabelRequest
- * @memberof google.tagger.v1
- * @see [google.tagger.v1.AddLabelRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/tagger.proto}
- */
-const AddLabelRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
  * Response message for the `AddTag` method.
  * empty for now
  * @typedef AddTagResponse
@@ -3028,19 +3033,8 @@ const AddLabelRequest = {
 const AddTagResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
-
-/**
- * Response message for the `AddLabel` method.
- * empty for now
- * @typedef AddLabelResponse
- * @memberof google.tagger.v1
- * @see [google.tagger.v1.AddLabelResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/tagger.proto}
- */
-const AddLabelResponse = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
 ============== file: src/v1/doc/google/test/shared/data/doc_shared_type.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -3070,23 +3064,8 @@ const AddLabelResponse = {
 const Used = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
-
-/**
- * This message is not used by the library service but does reference
- * other_shared_type.proto.
- *
- * @property {Object} other
- *   This object should have the same structure as [OtherType]{@link google.test.shared.data.OtherType}
- *
- * @typedef Unused
- * @memberof google.test.shared.data
- * @see [google.test.shared.data.Unused definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/shared_type.proto}
- */
-const Unused = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
 ============== file: src/v1/index.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -3107,7 +3086,7 @@ const LibraryServiceClient = require('./library_service_client');
 module.exports.LibraryServiceClient = LibraryServiceClient;
 
 ============== file: src/v1/library_service_client.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -5378,6 +5357,70 @@ class LibraryServiceClient {
    * @param {number[]} [request.optionalRepeatedFixed32]
    * @param {number[]} [request.optionalRepeatedFixed64]
    * @param {Object.<number, string>} [request.optionalMap]
+   * @param {Object} [request.anyValue]
+   *   This object should have the same structure as [Any]{@link google.protobuf.Any}
+   * @param {Object} [request.structValue]
+   *   This object should have the same structure as [Struct]{@link google.protobuf.Struct}
+   * @param {Object} [request.valueValue]
+   *   This object should have the same structure as [Value]{@link google.protobuf.Value}
+   * @param {Object} [request.listValueValue]
+   *   This object should have the same structure as [ListValue]{@link google.protobuf.ListValue}
+   * @param {Object} [request.timeValue]
+   *   This object should have the same structure as [Timestamp]{@link google.protobuf.Timestamp}
+   * @param {Object} [request.durationValue]
+   *   This object should have the same structure as [Duration]{@link google.protobuf.Duration}
+   * @param {Object} [request.fieldMaskValue]
+   *   This object should have the same structure as [FieldMask]{@link google.protobuf.FieldMask}
+   * @param {Object} [request.int32Value]
+   *   This object should have the same structure as [Int32Value]{@link google.protobuf.Int32Value}
+   * @param {Object} [request.uint32Value]
+   *   This object should have the same structure as [UInt32Value]{@link google.protobuf.UInt32Value}
+   * @param {Object} [request.int64Value]
+   *   This object should have the same structure as [Int64Value]{@link google.protobuf.Int64Value}
+   * @param {Object} [request.uint64Value]
+   *   This object should have the same structure as [UInt64Value]{@link google.protobuf.UInt64Value}
+   * @param {Object} [request.floatValue]
+   *   This object should have the same structure as [FloatValue]{@link google.protobuf.FloatValue}
+   * @param {Object} [request.doubleValue]
+   *   This object should have the same structure as [DoubleValue]{@link google.protobuf.DoubleValue}
+   * @param {Object} [request.stringValue]
+   *   This object should have the same structure as [StringValue]{@link google.protobuf.StringValue}
+   * @param {Object} [request.boolValue]
+   *   This object should have the same structure as [BoolValue]{@link google.protobuf.BoolValue}
+   * @param {Object} [request.bytesValue]
+   *   This object should have the same structure as [BytesValue]{@link google.protobuf.BytesValue}
+   * @param {Object[]} [request.repeatedAnyValue]
+   *   This object should have the same structure as [Any]{@link google.protobuf.Any}
+   * @param {Object[]} [request.repeatedStructValue]
+   *   This object should have the same structure as [Struct]{@link google.protobuf.Struct}
+   * @param {Object[]} [request.repeatedValueValue]
+   *   This object should have the same structure as [Value]{@link google.protobuf.Value}
+   * @param {Object[]} [request.repeatedListValueValue]
+   *   This object should have the same structure as [ListValue]{@link google.protobuf.ListValue}
+   * @param {Object[]} [request.repeatedTimeValue]
+   *   This object should have the same structure as [Timestamp]{@link google.protobuf.Timestamp}
+   * @param {Object[]} [request.repeatedDurationValue]
+   *   This object should have the same structure as [Duration]{@link google.protobuf.Duration}
+   * @param {Object[]} [request.repeatedFieldMaskValue]
+   *   This object should have the same structure as [FieldMask]{@link google.protobuf.FieldMask}
+   * @param {Object[]} [request.repeatedInt32Value]
+   *   This object should have the same structure as [Int32Value]{@link google.protobuf.Int32Value}
+   * @param {Object[]} [request.repeatedUint32Value]
+   *   This object should have the same structure as [UInt32Value]{@link google.protobuf.UInt32Value}
+   * @param {Object[]} [request.repeatedInt64Value]
+   *   This object should have the same structure as [Int64Value]{@link google.protobuf.Int64Value}
+   * @param {Object[]} [request.repeatedUint64Value]
+   *   This object should have the same structure as [UInt64Value]{@link google.protobuf.UInt64Value}
+   * @param {Object[]} [request.repeatedFloatValue]
+   *   This object should have the same structure as [FloatValue]{@link google.protobuf.FloatValue}
+   * @param {Object[]} [request.repeatedDoubleValue]
+   *   This object should have the same structure as [DoubleValue]{@link google.protobuf.DoubleValue}
+   * @param {Object[]} [request.repeatedStringValue]
+   *   This object should have the same structure as [StringValue]{@link google.protobuf.StringValue}
+   * @param {Object[]} [request.repeatedBoolValue]
+   *   This object should have the same structure as [BoolValue]{@link google.protobuf.BoolValue}
+   * @param {Object[]} [request.repeatedBytesValue]
+   *   This object should have the same structure as [BytesValue]{@link google.protobuf.BytesValue}
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -5850,7 +5893,7 @@ module.exports = LibraryServiceClient;
 }
 
 ============== file: test/gapic-v1.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.

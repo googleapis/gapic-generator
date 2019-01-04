@@ -23,7 +23,7 @@
 ============== file: src/V1/Gapic/LibraryServiceGapicClient.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,6 @@ namespace Google\Cloud\Example\Library\V1\Gapic;
 use Google\ApiCore\ApiException;
 use Google\ApiCore\Call;
 use Google\ApiCore\CredentialsWrapper;
-use Google\ApiCore\FetchAuthTokenInterface;
 use Google\ApiCore\GapicClientTrait;
 use Google\ApiCore\LongRunning\OperationsClient;
 use Google\ApiCore\OperationResponse;
@@ -61,6 +60,7 @@ use Google\ApiCore\RequestParamsHeaderDescriptor;
 use Google\ApiCore\RetrySettings;
 use Google\ApiCore\Transport\TransportInterface;
 use Google\ApiCore\ValidationException;
+use Google\Auth\FetchAuthTokenInterface;
 use Google\Example\Library\V1\AddCommentsRequest;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\BookFromAnywhere;
@@ -107,8 +107,23 @@ use Google\Example\Library\V1\UpdateBookIndexRequest;
 use Google\Example\Library\V1\UpdateBookIndexRequest_IndexMapEntry;
 use Google\Example\Library\V1\UpdateBookRequest;
 use Google\LongRunning\Operation;
+use Google\Protobuf\Any;
+use Google\Protobuf\BoolValue;
+use Google\Protobuf\BytesValue;
+use Google\Protobuf\DoubleValue;
+use Google\Protobuf\Duration;
 use Google\Protobuf\FieldMask;
+use Google\Protobuf\FloatValue;
 use Google\Protobuf\GPBEmpty;
+use Google\Protobuf\Int32Value;
+use Google\Protobuf\Int64Value;
+use Google\Protobuf\ListValue;
+use Google\Protobuf\StringValue;
+use Google\Protobuf\Struct;
+use Google\Protobuf\Timestamp;
+use Google\Protobuf\UInt32Value;
+use Google\Protobuf\UInt64Value;
+use Google\Protobuf\Value;
 use Google\Tagger\CustomNamespace\V1\AddLabelRequest;
 use Google\Tagger\CustomNamespace\V1\AddLabelResponse;
 use Google\Tagger\CustomNamespace\V1\AddTagRequest;
@@ -2036,6 +2051,38 @@ class LibraryServiceGapicClient
      *     @type int[] $optionalRepeatedFixed32
      *     @type int[] $optionalRepeatedFixed64
      *     @type array $optionalMap
+     *     @type Any $anyValue
+     *     @type Struct $structValue
+     *     @type Value $valueValue
+     *     @type ListValue $listValueValue
+     *     @type Timestamp $timeValue
+     *     @type Duration $durationValue
+     *     @type FieldMask $fieldMaskValue
+     *     @type Int32Value $int32Value
+     *     @type UInt32Value $uint32Value
+     *     @type Int64Value $int64Value
+     *     @type UInt64Value $uint64Value
+     *     @type FloatValue $floatValue
+     *     @type DoubleValue $doubleValue
+     *     @type StringValue $stringValue
+     *     @type BoolValue $boolValue
+     *     @type BytesValue $bytesValue
+     *     @type Any[] $repeatedAnyValue
+     *     @type Struct[] $repeatedStructValue
+     *     @type Value[] $repeatedValueValue
+     *     @type ListValue[] $repeatedListValueValue
+     *     @type Timestamp[] $repeatedTimeValue
+     *     @type Duration[] $repeatedDurationValue
+     *     @type FieldMask[] $repeatedFieldMaskValue
+     *     @type Int32Value[] $repeatedInt32Value
+     *     @type UInt32Value[] $repeatedUint32Value
+     *     @type Int64Value[] $repeatedInt64Value
+     *     @type UInt64Value[] $repeatedUint64Value
+     *     @type FloatValue[] $repeatedFloatValue
+     *     @type DoubleValue[] $repeatedDoubleValue
+     *     @type StringValue[] $repeatedStringValue
+     *     @type BoolValue[] $repeatedBoolValue
+     *     @type BytesValue[] $repeatedBytesValue
      *     @type RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
      *          {@see Google\ApiCore\RetrySettings} object, or an associative array
@@ -2167,6 +2214,102 @@ class LibraryServiceGapicClient
         if (isset($optionalArgs['optionalMap'])) {
             $request->setOptionalMap($optionalArgs['optionalMap']);
         }
+        if (isset($optionalArgs['anyValue'])) {
+            $request->setAnyValue($optionalArgs['anyValue']);
+        }
+        if (isset($optionalArgs['structValue'])) {
+            $request->setStructValue($optionalArgs['structValue']);
+        }
+        if (isset($optionalArgs['valueValue'])) {
+            $request->setValueValue($optionalArgs['valueValue']);
+        }
+        if (isset($optionalArgs['listValueValue'])) {
+            $request->setListValueValue($optionalArgs['listValueValue']);
+        }
+        if (isset($optionalArgs['timeValue'])) {
+            $request->setTimeValue($optionalArgs['timeValue']);
+        }
+        if (isset($optionalArgs['durationValue'])) {
+            $request->setDurationValue($optionalArgs['durationValue']);
+        }
+        if (isset($optionalArgs['fieldMaskValue'])) {
+            $request->setFieldMaskValue($optionalArgs['fieldMaskValue']);
+        }
+        if (isset($optionalArgs['int32Value'])) {
+            $request->setInt32Value($optionalArgs['int32Value']);
+        }
+        if (isset($optionalArgs['uint32Value'])) {
+            $request->setUint32Value($optionalArgs['uint32Value']);
+        }
+        if (isset($optionalArgs['int64Value'])) {
+            $request->setInt64Value($optionalArgs['int64Value']);
+        }
+        if (isset($optionalArgs['uint64Value'])) {
+            $request->setUint64Value($optionalArgs['uint64Value']);
+        }
+        if (isset($optionalArgs['floatValue'])) {
+            $request->setFloatValue($optionalArgs['floatValue']);
+        }
+        if (isset($optionalArgs['doubleValue'])) {
+            $request->setDoubleValue($optionalArgs['doubleValue']);
+        }
+        if (isset($optionalArgs['stringValue'])) {
+            $request->setStringValue($optionalArgs['stringValue']);
+        }
+        if (isset($optionalArgs['boolValue'])) {
+            $request->setBoolValue($optionalArgs['boolValue']);
+        }
+        if (isset($optionalArgs['bytesValue'])) {
+            $request->setBytesValue($optionalArgs['bytesValue']);
+        }
+        if (isset($optionalArgs['repeatedAnyValue'])) {
+            $request->setRepeatedAnyValue($optionalArgs['repeatedAnyValue']);
+        }
+        if (isset($optionalArgs['repeatedStructValue'])) {
+            $request->setRepeatedStructValue($optionalArgs['repeatedStructValue']);
+        }
+        if (isset($optionalArgs['repeatedValueValue'])) {
+            $request->setRepeatedValueValue($optionalArgs['repeatedValueValue']);
+        }
+        if (isset($optionalArgs['repeatedListValueValue'])) {
+            $request->setRepeatedListValueValue($optionalArgs['repeatedListValueValue']);
+        }
+        if (isset($optionalArgs['repeatedTimeValue'])) {
+            $request->setRepeatedTimeValue($optionalArgs['repeatedTimeValue']);
+        }
+        if (isset($optionalArgs['repeatedDurationValue'])) {
+            $request->setRepeatedDurationValue($optionalArgs['repeatedDurationValue']);
+        }
+        if (isset($optionalArgs['repeatedFieldMaskValue'])) {
+            $request->setRepeatedFieldMaskValue($optionalArgs['repeatedFieldMaskValue']);
+        }
+        if (isset($optionalArgs['repeatedInt32Value'])) {
+            $request->setRepeatedInt32Value($optionalArgs['repeatedInt32Value']);
+        }
+        if (isset($optionalArgs['repeatedUint32Value'])) {
+            $request->setRepeatedUint32Value($optionalArgs['repeatedUint32Value']);
+        }
+        if (isset($optionalArgs['repeatedInt64Value'])) {
+            $request->setRepeatedInt64Value($optionalArgs['repeatedInt64Value']);
+        }
+        if (isset($optionalArgs['repeatedUint64Value'])) {
+            $request->setRepeatedUint64Value($optionalArgs['repeatedUint64Value']);
+        }
+        if (isset($optionalArgs['repeatedFloatValue'])) {
+            $request->setRepeatedFloatValue($optionalArgs['repeatedFloatValue']);
+        }
+        if (isset($optionalArgs['repeatedDoubleValue'])) {
+            $request->setRepeatedDoubleValue($optionalArgs['repeatedDoubleValue']);
+        }
+        if (isset($optionalArgs['repeatedStringValue'])) {
+            $request->setRepeatedStringValue($optionalArgs['repeatedStringValue']);
+        }
+        if (isset($optionalArgs['repeatedBoolValue'])) {
+            $request->setRepeatedBoolValue($optionalArgs['repeatedBoolValue']);
+        }
+        if (isset($optionalArgs['repeatedBytesValue'])) {
+            $request->setRepeatedBytesValue($optionalArgs['repeatedBytesValue']);
+        }
 
         return $this->startCall(
             'TestOptionalRequiredFlatteningParams',
@@ -2180,7 +2323,7 @@ class LibraryServiceGapicClient
 ============== file: src/V1/LibraryServiceClient.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2736,7 +2879,7 @@ return [
 ============== file: src/V1/samples/discussBook/DiscussBookRequestStreamingBidiAsyncProg.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2762,19 +2905,23 @@ use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\Example\Library\V1\Comment;
 use Google\Example\Library\V1\DiscussBookRequest;
 
-function sampleDiscussBook()
+function sampleDiscussBook($imageFileName)
 {
     // [START turing_prog_request_streaming_bidi_async_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
+    // $imageFileName = 'image_file.jpg';
     $name = 'BASIC';
-    $comment = file_get_contents('comment_file');
+    $fileName = 'comment_file';
+    $comment = file_get_contents($fileName);
     $comment2 = new Comment();
     $comment2->setComment($comment);
+    $image = file_get_contents($imageFileName);
     $request = new DiscussBookRequest();
     $request->setName($name);
     $request->setComment($comment2);
+    $request->setImage($image);
 
     try {
         // Write requests individually, making read() calls if
@@ -2802,11 +2949,24 @@ function sampleDiscussBook()
 }
 // [END turing_prog_request_streaming_bidi_async]
 
-sampleDiscussBook();
+$opts = [
+    'imageFileName::',
+];
+
+$defaultOptions = [
+    'imageFileName' => 'image_file.jpg',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$imageFileName = $options['imageFileName'];
+
+sampleDiscussBook($imageFileName);
 ============== file: src/V1/samples/discussBook/DiscussBookRequestStreamingBidiProg.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2832,19 +2992,23 @@ use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\Example\Library\V1\Comment;
 use Google\Example\Library\V1\DiscussBookRequest;
 
-function sampleDiscussBook()
+function sampleDiscussBook($imageFileName)
 {
     // [START turing_prog_request_streaming_bidi_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
+    // $imageFileName = 'image_file.jpg';
     $name = 'BASIC';
-    $comment = file_get_contents('comment_file');
+    $fileName = 'comment_file';
+    $comment = file_get_contents($fileName);
     $comment2 = new Comment();
     $comment2->setComment($comment);
+    $image = file_get_contents($imageFileName);
     $request = new DiscussBookRequest();
     $request->setName($name);
     $request->setComment($comment2);
+    $request->setImage($image);
 
     try {
         // Write all requests to the server, then read all responses until the
@@ -2863,11 +3027,24 @@ function sampleDiscussBook()
 }
 // [END turing_prog_request_streaming_bidi]
 
-sampleDiscussBook();
+$opts = [
+    'imageFileName::',
+];
+
+$defaultOptions = [
+    'imageFileName' => 'image_file.jpg',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$imageFileName = $options['imageFileName'];
+
+sampleDiscussBook($imageFileName);
 ============== file: src/V1/samples/findRelatedBooks/FindRelatedBooksRequestPagedAllOdyssey.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2921,7 +3098,7 @@ sampleFindRelatedBooks();
 ============== file: src/V1/samples/findRelatedBooks/FindRelatedBooksRequestPagedOdyssey.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2977,7 +3154,7 @@ sampleFindRelatedBooks();
 ============== file: src/V1/samples/getBigBook/GetBigBookLongRunningRequestAsyncWap.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3001,13 +3178,14 @@ require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 
-function sampleGetBigBook()
+function sampleGetBigBook($shelf)
 {
     // [START hopper_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    // $shelf = 'Novel';
+    $formattedName = $libraryServiceClient->bookName($shelf, "War and Peace");
 
     try {
         // start the operation, keep the operation name, and resume later
@@ -3021,7 +3199,8 @@ function sampleGetBigBook()
         }
         if ($newOperationResponse->operationSucceeded()) {
           $response = $newOperationResponse->getResult();
-          printf("%s" . PHP_EOL, print_r($response, true));
+          printf("name: %s" . PHP_EOL, $response->getName());
+          printf("author: %s" . PHP_EOL, $response->getAuthor());
         } else {
           $error = $newOperationResponse->getError();
           // handleError($error)
@@ -3034,11 +3213,24 @@ function sampleGetBigBook()
 }
 // [END hopper]
 
-sampleGetBigBook();
+$opts = [
+    'shelf::',
+];
+
+$defaultOptions = [
+    'shelf' => 'Novel',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$shelf = $options['shelf'];
+
+sampleGetBigBook($shelf);
 ============== file: src/V1/samples/getBigBook/GetBigBookLongRunningRequestWap.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3062,20 +3254,22 @@ require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 
-function sampleGetBigBook()
+function sampleGetBigBook($shelf)
 {
     // [START hopper_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    // $shelf = 'Novel';
+    $formattedName = $libraryServiceClient->bookName($shelf, "War and Peace");
 
     try {
         $operationResponse = $libraryServiceClient->getBigBook($formattedName);
         $operationResponse->pollUntilComplete();
         if ($operationResponse->operationSucceeded()) {
             $response = $operationResponse->getResult();
-            printf("%s" . PHP_EOL, print_r($response, true));
+            printf("name: %s" . PHP_EOL, $response->getName());
+            printf("author: %s" . PHP_EOL, $response->getAuthor());
         } else {
             $error = $operationResponse->getError();
             // handleError($error)
@@ -3088,11 +3282,24 @@ function sampleGetBigBook()
 }
 // [END hopper]
 
-sampleGetBigBook();
+$opts = [
+    'shelf::',
+];
+
+$defaultOptions = [
+    'shelf' => 'Novel',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$shelf = $options['shelf'];
+
+sampleGetBigBook($shelf);
 ============== file: src/V1/samples/monologAboutBook/MonologAboutBookRequestStreamingClientAsyncProg.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3148,7 +3355,7 @@ sampleMonologAboutBook();
 ============== file: src/V1/samples/monologAboutBook/MonologAboutBookRequestStreamingClientProg.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3201,7 +3408,7 @@ sampleMonologAboutBook();
 ============== file: src/V1/samples/publishSeries/PublishSeriesRequestPiVersion.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3249,6 +3456,7 @@ function samplePublishSeries($shelfName, $edition)
             printf("Title: %s" . PHP_EOL, $title);
         }
         printf("The first book is: %s" . PHP_EOL, $response->getBookNames()[0]);
+        printf("The author of the first book is: %s" . PHP_EOL, $response->getBooks()[0]->getAuthor());
         printf("That's all!" . PHP_EOL);
         printf("series_uuid: %s" . PHP_EOL, $response->getSeriesUuid()->getSeriesBytes());
     } finally {
@@ -3279,7 +3487,7 @@ samplePublishSeries($shelfName, $edition);
 ============== file: src/V1/samples/publishSeries/PublishSeriesRequestSecondEdition.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3332,7 +3540,7 @@ samplePublishSeries();
 ============== file: src/V1/samples/streamBooks/StreamBooksRequestStreamingServerProg.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3382,7 +3590,7 @@ sampleStreamBooks();
 ============== file: src/V1/samples/streamShelves/StreamShelvesRequestStreamingServerEmpty.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3430,7 +3638,7 @@ sampleStreamShelves();
 ============== file: tests/System/V1/LibraryServiceSmokeTest.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3489,7 +3697,7 @@ class LibraryServiceSmokeTest extends GeneratedTest
 ============== file: tests/Unit/V1/LibraryServiceClientTest.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -88,18 +88,30 @@
     const versionClient = "UNKNOWN"
 @end
 
+@private alphaDocComments()
+    //
+    //   NOTE: This package is in alpha. It is not stable, and is likely to change.
+@end
+
+@private betaDocComments()
+    //
+    //   NOTE: This package is in beta. It is not stable, and may be subject to changes.
+@end
+
 @private releaseLevel(view)
     @switch view.releaseLevel
     @case "GA"
     @case "UNSET_RELEASE_LEVEL"
-        //
-        //   NOTE: This package is in alpha. It is not stable, and is likely to change.
+        # For documentation purposes, assume package names with "beta" are beta.
+        @if view.isInferredBeta
+            {@betaDocComments()}
+        @else
+            {@alphaDocComments()}
+        @end
     @case "ALPHA"
-        //
-        //   NOTE: This package is in alpha. It is not stable, and is likely to change.
+        {@alphaDocComments()}
     @case "BETA"
-        //
-        //   NOTE: This package is in beta. It is not stable, and may be subject to changes.
+        {@betaDocComments()}
     @case "DEPRECATED"
         //
         //   NOTE: This package is deprecated.

@@ -415,7 +415,7 @@ jobs:
           path: reports/gapic-generator
   generate-clients:
     docker:
-      - image: googleapis/artman:0.15.5
+      - image: googleapis/artman:0.16.4
     working_directory: /tmp/
     environment:
       <<: *anchor_artman_vars
@@ -499,7 +499,7 @@ jobs:
       # Directory to output the generated Compute client.
       COMPUTE_OUT: /tmp/discogapic_out
       # Commit hash to use the discover-artifact-manager repo from
-      DISCOVERY_REPO_VERSION: 661dacf3b5c7d2ca359d9788e5498025e6ce0437
+      DISCOVERY_REPO_VERSION: d6b87916dd4205e4e8bdc398b09d2935c36a0636
       DISCOVERY_REPO_PATH: https://raw.githubusercontent.com/googleapis/discovery-artifact-manager
     docker:
       - image: circleci/openjdk:8-jdk
@@ -739,6 +739,28 @@ jobs:
             go test .
   # TODO: test other language clients.
 
+  artman_smoke_tests:
+    working_directory: /tmp/
+    environment:
+      ARTMAN_USER_CONFIG: /tmp/workspace/gapic-generator/.circleci/artman_config.yaml
+    docker:
+      - image: googleapis/artman:0.16.0
+    steps:
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Checkout artman
+          command: |
+            git clone --single-branch https://github.com/googleapis/artman.git artman
+            cd artman
+            pip install -e .
+      - run:
+          name: Run all artman on all APIs
+          command: |
+            python3 artman/test/smoketest_artman.py --root-dir=/tmp/workspace/googleapis --log=/tmp/smoketest.log --user-config=$ARTMAN_USER_CONFIG
+      - store_artifacts:
+          path: /tmp/smoketest.log
+
 # ======================= WORKFLOWS =======================
 
 workflows:
@@ -747,6 +769,10 @@ workflows:
     jobs:
       - install-gapic-generator
       - test-baselines
+      - artman_smoke_tests:
+          requires:
+            - install-gapic-generator
+          # TODO(andrealin): Only run this on the master branch after the job is shown to work
       - compute-discovery-test:
           requires:
             - install-gapic-generator

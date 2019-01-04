@@ -357,7 +357,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     settingsClass.serviceHostname(
         productServiceConfig.getServiceHostname(context.getServiceAddress()));
     settingsClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
-    settingsClass.authScopes(model.getAuthScopes());
+    settingsClass.authScopes(model.getAuthScopes(context.getProductConfig()));
     settingsClass.callSettings(generateCallSettings(context));
     settingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
@@ -533,7 +533,6 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
   public SettingsDocView generateSettingsDoc(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
-    ApiModel model = context.getApiModel();
     settingsDoc.serviceHostname(
         productServiceConfig.getServiceHostname(context.getServiceAddress()));
     settingsDoc.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));

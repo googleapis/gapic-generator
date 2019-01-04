@@ -19,6 +19,7 @@ import java.util.List;
 
 @AutoValue
 public abstract class GrpcEnumDocView implements GrpcElementDocView {
+  @Override
   public abstract String name();
 
   public abstract List<String> lines();

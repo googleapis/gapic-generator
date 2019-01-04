@@ -120,12 +120,10 @@ public class JavaSurfaceTransformer {
         continue;
       }
 
-      boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
       ImportTypeTable typeTable =
           surfaceTransformer.createTypeTable(productConfig.getPackageName());
       InterfaceContext context =
-          surfaceTransformer.createInterfaceContext(
-              apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
+          surfaceTransformer.createInterfaceContext(apiInterface, productConfig, namer, typeTable);
       StaticLangFileView<StaticLangApiView> apiFile = generateApiFile(context, productConfig);
       surfaceDocs.add(apiFile);
 
@@ -443,7 +441,7 @@ public class JavaSurfaceTransformer {
     xsettingsClass.serviceHostname(
         productServiceConfig.getServiceHostname(context.getServiceAddress()));
     xsettingsClass.servicePort(productServiceConfig.getServicePort(context.getServiceAddress()));
-    xsettingsClass.authScopes(model.getAuthScopes());
+    xsettingsClass.authScopes(model.getAuthScopes(productConfig));
     if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
       xsettingsClass.useDefaultServicePortInEndpoint(false);
     }
@@ -700,7 +698,7 @@ public class JavaSurfaceTransformer {
     packageInfo.serviceTitle(model.getTitle());
     packageInfo.serviceDocs(serviceDocs);
     packageInfo.domainLayerLocation(productConfig.getDomainLayerLocation());
-    packageInfo.authScopes(model.getAuthScopes());
+    packageInfo.authScopes(model.getAuthScopes(productConfig));
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(

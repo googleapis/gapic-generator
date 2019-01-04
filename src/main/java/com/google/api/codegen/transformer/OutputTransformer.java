@@ -288,6 +288,8 @@ public class OutputTransformer {
                 .getField()
                 .getType()
                 .makeOptional();
+      } else if (context.getMethodConfig().isLongRunningOperation()) {
+        type = context.getMethodConfig().getLongRunningConfig().getReturnType();
       } else {
         type = context.getMethodModel().getOutputType();
       }
@@ -365,6 +367,7 @@ public class OutputTransformer {
             valueSet.getId(),
             config.input());
 
+        type = type.makeOptional();
         accessors.add(AccessorView.IndexView.newBuilder().index(config.tokenStr()).build());
 
         Preconditions.checkArgument(
