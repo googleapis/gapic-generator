@@ -138,25 +138,28 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
   // methods may be configured separately.
   private List<ApiMethodView> generateExampleMethods(
       ApiModel model, GapicProductConfig productConfig) {
-    return model
-        .getInterfaces()
-        .stream()
-        .filter(productConfig::hasInterfaceConfig)
-        .map(i -> createContext(i, productConfig))
-        .filter(c -> c.getInterfaceConfig().getSmokeTestConfig() != null)
-        .map(c -> createExampleApiMethodView(c, model.hasMultipleServices()))
-        .collect(ImmutableList.toImmutableList());
+    ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      if (interfaceConfig == null || interfaceConfig.getSmokeTestConfig() == null) {
+        continue;
+      }
+
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      MethodModel method = interfaceConfig.getSmokeTestConfig().getMethod();
+      FlatteningConfig flatteningGroup =
+          testCaseTransformer.getSmokeTestFlatteningGroup(
+              context.getMethodConfig(method), interfaceConfig.getSmokeTestConfig());
+      GapicMethodContext flattenedMethodContext =
+          context.asFlattenedMethodContext(method, flatteningGroup);
+      exampleMethods.add(
+          createExampleApiMethodView(flattenedMethodContext, model.hasMultipleServices()));
+    }
+    return exampleMethods.build();
   }
 
   private OptionalArrayMethodView createExampleApiMethodView(
-      GapicInterfaceContext context, boolean packageHasMultipleServices) {
-    MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
-    FlatteningConfig flatteningGroup =
-        testCaseTransformer.getSmokeTestFlatteningGroup(
-            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-    GapicMethodContext flattenedMethodContext =
-        context.asFlattenedMethodContext(method, flatteningGroup);
-
+      GapicMethodContext context, boolean packageHasMultipleServices) {
     OptionalArrayMethodView apiMethodView =
         new NodeJSMethodViewGenerator(
                 new DynamicLangApiMethodTransformer(
@@ -164,8 +167,8 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
                     new InitCodeTransformer(),
                     SampleType.IN_CODE))
             .generateOneApiMethod(
-                flattenedMethodContext,
-                testCaseTransformer.createSmokeTestInitContext(flattenedMethodContext),
+                context,
+                testCaseTransformer.createSmokeTestInitContext(context),
                 packageHasMultipleServices);
     return apiMethodView;
   }

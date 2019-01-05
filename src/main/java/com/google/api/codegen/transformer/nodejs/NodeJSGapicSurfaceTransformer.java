@@ -114,11 +114,12 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
       Collection<? extends InterfaceModel> apiInterfaces,
       GapicProductConfig productConfig,
       boolean hasMultipleServices) {
-    return apiInterfaces
-        .stream()
-        .map(i -> createContext(i, productConfig))
-        .map(c -> generateApiClass(c, hasMultipleServices))
-        .collect(ImmutableList.toImmutableList());
+    ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
+    for (InterfaceModel apiInterface : apiInterfaces) {
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      models.add(generateApiClass(context, hasMultipleServices));
+    }
+    return models.build();
   }
 
   private ViewModel generateApiClass(GapicInterfaceContext context, boolean hasMultipleServices) {

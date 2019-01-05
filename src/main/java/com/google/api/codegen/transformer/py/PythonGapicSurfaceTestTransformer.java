@@ -20,6 +20,7 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -101,56 +102,62 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
   }
 
   private List<ViewModel> createUnitTestViews(ApiModel model, GapicProductConfig productConfig) {
-    return model
-        .getInterfaces()
-        .stream()
-        .filter(productConfig::hasInterfaceConfig)
-        .map(i -> createUnitTestView(i, productConfig))
-        .collect(ImmutableList.toImmutableList());
-  }
+    ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
+    SurfaceNamer surfacePackageNamer = new PythonSurfaceNamer(productConfig.getPackageName());
+    SurfaceNamer testPackageNamer =
+        new PythonSurfaceNamer(surfacePackageNamer.getTestPackageName());
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
 
-  private ClientTestFileView createUnitTestView(
-      InterfaceModel apiInterface, GapicProductConfig productConfig) {
-    SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
-    GapicInterfaceContext context = createInterfaceContext(apiInterface, productConfig);
+      ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, typeTable, surfacePackageNamer, featureConfig);
+      String testClassName = surfacePackageNamer.getUnitTestClassName(context.getInterfaceConfig());
+      ClientTestClassView testClassView =
+          ClientTestClassView.newBuilder()
+              .apiSettingsClassName(
+                  surfacePackageNamer.getNotImplementedString(
+                      "PythonGapicSurfaceTestTransformer.createUnitTestViews - apiSettingsClassName"))
+              .apiClassName(
+                  surfacePackageNamer.getApiWrapperClassName(context.getInterfaceConfig()))
+              .apiVariableName(surfacePackageNamer.getApiWrapperModuleName())
+              .name(testClassName)
+              .apiName(
+                  surfacePackageNamer.publicClassName(
+                      Name.upperCamelKeepUpperAcronyms(
+                          context.getInterfaceModel().getSimpleName())))
+              .testCases(createTestCaseViews(context))
+              .apiHasUnaryUnaryMethod(hasUnaryUnary(context.getInterfaceConfig()))
+              .apiHasUnaryStreamingMethod(hasUnaryStreaming(context.getInterfaceConfig()))
+              .apiHasStreamingUnaryMethod(hasStreamingUnary(context.getInterfaceConfig()))
+              .apiHasStreamingStreamingMethod(hasStreamingStreaming(context.getInterfaceConfig()))
+              .missingDefaultServiceAddress(
+                  !context.getInterfaceConfig().hasDefaultServiceAddress())
+              .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())
+              .mockServices(ImmutableList.<MockServiceUsageView>of())
+              .build();
 
-    String testClassName = namer.getUnitTestClassName(context.getInterfaceConfig());
-    ClientTestClassView testClassView =
-        ClientTestClassView.newBuilder()
-            .apiSettingsClassName(
-                namer.getNotImplementedString(
-                    "PythonGapicSurfaceTestTransformer.createUnitTestViews - apiSettingsClassName"))
-            .apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()))
-            .apiVariableName(namer.getApiWrapperModuleName())
-            .name(testClassName)
-            .apiName(
-                namer.publicClassName(
-                    Name.upperCamelKeepUpperAcronyms(context.getInterfaceModel().getSimpleName())))
-            .testCases(createTestCaseViews(context))
-            .apiHasUnaryUnaryMethod(hasUnaryUnary(context.getInterfaceConfig()))
-            .apiHasUnaryStreamingMethod(hasUnaryStreaming(context.getInterfaceConfig()))
-            .apiHasStreamingUnaryMethod(hasStreamingUnary(context.getInterfaceConfig()))
-            .apiHasStreamingStreamingMethod(hasStreamingStreaming(context.getInterfaceConfig()))
-            .missingDefaultServiceAddress(!context.getInterfaceConfig().hasDefaultServiceAddress())
-            .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())
-            .mockServices(ImmutableList.<MockServiceUsageView>of())
-            .build();
-
-    String version = packageConfig.apiVersion();
-    String filename = namer.classFileNameBase(Name.upperCamel(testClassName).join(version)) + ".py";
-    String outputPath = Joiner.on(File.separator).join("tests", "unit", "gapic", version, filename);
-
-    ImportSectionView importSection = importSectionTransformer.generateTestImportSection(context);
-    SurfaceNamer testPackageNamer = new PythonSurfaceNamer(namer.getTestPackageName());
-
-    return ClientTestFileView.newBuilder()
-        .templateFileName(TEST_TEMPLATE_FILE)
-        .outputPath(outputPath)
-        .testClass(testClassView)
-        .fileHeader(
-            fileHeaderTransformer.generateFileHeader(
-                productConfig, importSection, testPackageNamer))
-        .build();
+      String version = packageConfig.apiVersion();
+      String filename =
+          surfacePackageNamer.classFileNameBase(Name.upperCamel(testClassName).join(version))
+              + ".py";
+      String outputPath =
+          Joiner.on(File.separator).join("tests", "unit", "gapic", version, filename);
+      ImportSectionView importSection = importSectionTransformer.generateTestImportSection(context);
+      models.add(
+          ClientTestFileView.newBuilder()
+              .templateFileName(TEST_TEMPLATE_FILE)
+              .outputPath(outputPath)
+              .testClass(testClassView)
+              .fileHeader(
+                  fileHeaderTransformer.generateFileHeader(
+                      productConfig, importSection, testPackageNamer))
+              .build());
+    }
+    return models.build();
   }
 
   private boolean hasUnaryUnary(GapicInterfaceConfig interfaceConfig) {
@@ -240,16 +247,23 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
   }
 
   private List<ViewModel> createSmokeTestViews(ApiModel model, GapicProductConfig productConfig) {
-    SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
-    SurfaceNamer testPackageNamer = new PythonSurfaceNamer(namer.getTestPackageName());
-    return model
-        .getInterfaces()
-        .stream()
-        .filter(productConfig::hasInterfaceConfig)
-        .map(i -> createInterfaceContext(i, productConfig))
-        .filter(c -> c.getInterfaceConfig().getSmokeTestConfig() != null)
-        .map(c -> createSmokeTestClassView(c, testPackageNamer))
-        .collect(ImmutableList.toImmutableList());
+    ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
+    SurfaceNamer surfacePackageNamer = new PythonSurfaceNamer(productConfig.getPackageName());
+    SurfaceNamer testPackageNamer =
+        new PythonSurfaceNamer(surfacePackageNamer.getTestPackageName());
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      if (interfaceConfig == null || interfaceConfig.getSmokeTestConfig() == null) {
+        continue;
+      }
+
+      ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, typeTable, surfacePackageNamer, featureConfig);
+      models.add(createSmokeTestClassView(context, testPackageNamer));
+    }
+    return models.build();
   }
 
   private SmokeTestClassView createSmokeTestClassView(
@@ -306,14 +320,6 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     apiMethodView.initCode(initCodeView);
 
     return apiMethodView.build();
-  }
-
-  private GapicInterfaceContext createInterfaceContext(
-      InterfaceModel apiInterface, GapicProductConfig productConfig) {
-    SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
-    ModelTypeTable typeTable = createTypeTable(namer.getTestPackageName());
-    return GapicInterfaceContext.create(
-        apiInterface, productConfig, typeTable, namer, featureConfig);
   }
 
   private static ModelTypeTable createTypeTable(String packageName) {

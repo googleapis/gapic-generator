@@ -74,13 +74,16 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
 
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    return model
-        .getInterfaces()
-        .stream()
-        .filter(productConfig::hasInterfaceConfig)
-        .map(i -> createContext(i, productConfig))
-        .flatMap(c -> generateSamples(c).stream())
-        .collect(ImmutableList.toImmutableList());
+    ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      models.addAll(generateSamples(context));
+    }
+    return models.build();
   }
 
   private List<ViewModel> generateSamples(GapicInterfaceContext context) {

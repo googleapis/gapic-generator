@@ -26,8 +26,8 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.SimpleInitFileView;
-import com.google.common.collect.ImmutableList;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -87,25 +87,27 @@ public class CSharpBasicPackageTransformer implements ModelToViewTransformer<Pro
 
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    return model
-        .getInterfaces()
-        .stream()
-        .filter(productConfig::hasInterfaceConfig)
-        .map(i -> createInterfaceContext(i, productConfig))
-        .filter(shouldGenerateFn)
-        .map(this::generateCsproj)
-        .collect(ImmutableList.toImmutableList());
-  }
-
-  private GapicInterfaceContext createInterfaceContext(
-      InterfaceModel apiInterface, GapicProductConfig productConfig) {
+    List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
-    return GapicInterfaceContext.create(
-        apiInterface,
-        productConfig,
-        csharpCommonTransformer.createTypeTable(namer.getPackageName(), ALIAS_MODE),
-        namer,
-        new CSharpFeatureConfig());
+
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface,
+              productConfig,
+              csharpCommonTransformer.createTypeTable(namer.getPackageName(), ALIAS_MODE),
+              namer,
+              new CSharpFeatureConfig());
+      if (shouldGenerateFn.test(context)) {
+        surfaceDocs.add(generateCsproj(context));
+      }
+    }
+
+    return surfaceDocs;
   }
 
   @Override

@@ -41,12 +41,10 @@ import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
-import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /* Transforms a ProtoApiModel into the smoke tests of an API for C#. */
 public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<ProtoApiModel> {
@@ -70,26 +68,29 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<P
 
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    return model
-        .getInterfaces()
-        .stream()
-        .filter(productConfig::hasInterfaceConfig)
-        .map(i -> createInterfaceContext(i, productConfig))
-        .peek(csharpCommonTransformer::addCommonImports)
-        .map(this::generateSmokeTest)
-        .filter(Objects::nonNull)
-        .collect(ImmutableList.toImmutableList());
-  }
-
-  private GapicInterfaceContext createInterfaceContext(
-      InterfaceModel apiInterface, GapicProductConfig productConfig) {
+    List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
-    return GapicInterfaceContext.create(
-        apiInterface,
-        productConfig,
-        csharpCommonTransformer.createTypeTable(namer.getPackageName(), ALIAS_MODE),
-        namer,
-        new CSharpFeatureConfig());
+
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface,
+              productConfig,
+              csharpCommonTransformer.createTypeTable(namer.getPackageName(), ALIAS_MODE),
+              namer,
+              new CSharpFeatureConfig());
+      csharpCommonTransformer.addCommonImports(context);
+      SmokeTestClassView smokeTests = generateSmokeTest(context);
+      if (smokeTests != null) {
+        surfaceDocs.add(smokeTests);
+      }
+    }
+
+    return surfaceDocs;
   }
 
   @Override

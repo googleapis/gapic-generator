@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -120,26 +121,30 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
   }
 
   private List<ViewModel> generateApiClasses(ApiModel model, GapicProductConfig productConfig) {
-    return model
-        .getInterfaces()
-        .stream()
-        .filter(productConfig::hasInterfaceConfig)
-        .map(i -> generateApiClass(i, productConfig))
-        .collect(ImmutableList.toImmutableList());
+    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
+    FeatureConfig featureConfig = new RubyFeatureConfig();
+    ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
+      String packageName = productConfig.getPackageName();
+      ModelTypeTable modelTypeTable =
+          new ModelTypeTable(
+              new RubyTypeTable(productConfig.getPackageName()),
+              new RubyModelTypeNameConverter(packageName));
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, modelTypeTable, namer, featureConfig);
+      serviceSurfaces.add(generateApiClass(context, packageName));
+    }
+    return serviceSurfaces.build();
   }
 
-  private ViewModel generateApiClass(
-      InterfaceModel apiInterface, GapicProductConfig productConfig) {
-    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
-    ModelTypeTable modelTypeTable =
-        new ModelTypeTable(
-            new RubyTypeTable(productConfig.getPackageName()),
-            new RubyModelTypeNameConverter(productConfig.getPackageName()));
-    FeatureConfig featureConfig = new RubyFeatureConfig();
-    GapicInterfaceContext context =
-        GapicInterfaceContext.create(
-            apiInterface, productConfig, modelTypeTable, namer, featureConfig);
-
+  private ViewModel generateApiClass(GapicInterfaceContext context, String packageName) {
+    SurfaceNamer namer = context.getNamer();
+    PackageMetadataNamer metadataNamer = new RubyPackageMetadataNamer(packageName);
     String subPath =
         pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
@@ -183,20 +188,19 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     xapiClass.interfaceKey(context.getInterface().getFullName());
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
     xapiClass.grpcClientTypeName(
-        namer.getAndSaveNicknameForGrpcClientTypeName(context.getImportTypeTable(), apiInterface));
+        namer.getAndSaveNicknameForGrpcClientTypeName(
+            context.getImportTypeTable(), context.getInterfaceModel()));
 
     xapiClass.apiMethods(methods);
 
-    PackageMetadataNamer metadataNamer =
-        new RubyPackageMetadataNamer(productConfig.getPackageName());
     xapiClass.gapicPackageName(
-        RubyUtil.isLongrunning(productConfig.getPackageName())
+        RubyUtil.isLongrunning(context.getProductConfig().getPackageName())
             ? "google-gax"
             : metadataNamer.getMetadataIdentifier());
 
     xapiClass.fullyQualifiedCredentialsClassName(namer.getFullyQualifiedCredentialsClassName());
     xapiClass.defaultCredentialsInitializerCall(
-        RubyUtil.isLongrunning(productConfig.getPackageName())
+        RubyUtil.isLongrunning(context.getProductConfig().getPackageName())
             ? "default(scopes: scopes)"
             : "default");
     return xapiClass.build();
@@ -215,14 +219,25 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
   private ViewModel generateVersionIndexView(ApiModel model, GapicProductConfig productConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
 
-    ImmutableList<VersionIndexRequireView> requireViews =
-        model
-            .getInterfaces()
-            .stream()
-            .filter(productConfig::hasInterfaceConfig)
-            .map(i -> createContext(i, productConfig))
-            .map(this::generateVersionIndexRequireView)
-            .collect(ImmutableList.toImmutableList());
+    ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
+    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces();
+    for (InterfaceModel apiInterface : interfaces) {
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      if (interfaceConfig == null) {
+        continue;
+      }
+
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      requireViews.add(
+          VersionIndexRequireView.newBuilder()
+              .clientName(namer.getFullyQualifiedApiWrapperClassName(interfaceConfig))
+              .fileName(namer.getServiceFileName(interfaceConfig))
+              .serviceName(namer.getPackageServiceName(context.getInterfaceConfig()))
+              .doc(
+                  serviceTransformer.generateServiceDoc(
+                      context, generateApiMethods(context).get(0), productConfig))
+              .build());
+    }
 
     // append any additional types
     Set<String> requireTypes = new HashSet<>();
@@ -238,7 +253,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
 
     return VersionIndexView.newBuilder()
         .apiVersion(packageConfig.apiVersion())
-        .requireViews(requireViews)
+        .requireViews(requireViews.build())
         .requireTypes(ImmutableList.copyOf(requireTypes))
         .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
         .fileHeader(
@@ -247,18 +262,6 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
         .outputPath("lib" + File.separator + versionPackagePath(namer) + ".rb")
         .modules(generateModuleViews(model, productConfig, true))
         .type(VersionIndexType.VersionIndex)
-        .build();
-  }
-
-  private VersionIndexRequireView generateVersionIndexRequireView(GapicInterfaceContext context) {
-    SurfaceNamer namer = context.getNamer();
-    return VersionIndexRequireView.newBuilder()
-        .clientName(namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()))
-        .fileName(namer.getServiceFileName(context.getInterfaceConfig()))
-        .serviceName(namer.getPackageServiceName(context.getInterfaceConfig()))
-        .doc(
-            serviceTransformer.generateServiceDoc(
-                context, generateApiMethods(context).get(0), context.getProductConfig()))
         .build();
   }
 
@@ -337,22 +340,40 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
   private ViewModel generateTopLevelIndexView(ApiModel model, GapicProductConfig productConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
 
-    ImmutableList<VersionIndexRequireView> requireViews =
-        model
-            .getInterfaces()
-            .stream()
-            .filter(productConfig::hasInterfaceConfig)
-            .map(i -> createContext(i, productConfig))
-            .map(c -> generateTopLevelIndexRequireView(c, model.hasMultipleServices()))
-            .collect(ImmutableList.toImmutableList());
-
+    ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
     List<String> modules = namer.getTopLevelApiModules();
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      String clientName = namer.getPackageName();
+      String serviceName = namer.getPackageServiceName(context.getInterfaceConfig());
+      if (model.hasMultipleServices()) {
+        clientName += "::" + serviceName;
+      }
+      String topLevelNamespace = namer.getTopLevelNamespace();
+      String postVersionNamespace = postVersionNamespace(namer);
+      requireViews.add(
+          VersionIndexRequireView.newBuilder()
+              .clientName(clientName)
+              .serviceName(serviceName)
+              .fileName(versionPackagePath(namer))
+              .topLevelNamespace(topLevelNamespace)
+              .postVersionNamespace(postVersionNamespace)
+              .doc(
+                  serviceTransformer.generateServiceDoc(
+                      context, generateApiMethods(context).get(0), productConfig))
+              .build());
+    }
+
     String versionDirBasePath =
         namer.packageFilePathPiece(Name.upperCamel(modules.get(modules.size() - 1)));
 
     return VersionIndexView.newBuilder()
         .apiVersion(packageConfig.apiVersion())
-        .requireViews(requireViews)
+        .requireViews(requireViews.build())
         .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
@@ -362,26 +383,6 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
         .type(VersionIndexType.TopLevelIndex)
         .versionDirBasePath(versionDirBasePath)
         .postVersionDirPath(postVersionDirPath(namer))
-        .build();
-  }
-
-  private VersionIndexRequireView generateTopLevelIndexRequireView(
-      GapicInterfaceContext context, boolean hasMultipleServices) {
-    SurfaceNamer namer = context.getNamer();
-    String clientName = namer.getPackageName();
-    String serviceName = namer.getPackageServiceName(context.getInterfaceConfig());
-    if (hasMultipleServices) {
-      clientName += "::" + serviceName;
-    }
-    return VersionIndexRequireView.newBuilder()
-        .clientName(clientName)
-        .serviceName(serviceName)
-        .fileName(versionPackagePath(namer))
-        .topLevelNamespace(namer.getTopLevelNamespace())
-        .postVersionNamespace(postVersionNamespace(namer))
-        .doc(
-            serviceTransformer.generateServiceDoc(
-                context, generateApiMethods(context).get(0), context.getProductConfig()))
         .build();
   }
 

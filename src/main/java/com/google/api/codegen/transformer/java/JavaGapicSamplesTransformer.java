@@ -35,7 +35,6 @@ import com.google.api.codegen.viewmodel.StaticLangFileView;
 import com.google.api.codegen.viewmodel.StaticLangSampleClassView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.base.CaseFormat;
-import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,19 +61,25 @@ public class JavaGapicSamplesTransformer implements ModelToViewTransformer<Proto
 
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
+    List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer = createSurfaceNamer(productConfig);
-    ImportTypeTable typeTable = createTypeTable(namer.getExamplePackageName());
-    return model
-        .getInterfaces()
-        .stream()
-        .filter(productConfig::hasInterfaceConfig)
-        .map(
-            i ->
-                createInterfaceContext(
-                    i, productConfig, namer, typeTable, enableStringFormatFunctions))
-        .flatMap(c -> generateSampleFiles(c).stream())
-        .collect(ImmutableList.toImmutableList());
+
+    for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
+      boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
+      ImportTypeTable typeTable = createTypeTable(namer.getExamplePackageName());
+      InterfaceContext context =
+          createInterfaceContext(
+              apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
+
+      List<ViewModel> sampleFiles = generateSampleFiles(context);
+      surfaceDocs.addAll(sampleFiles);
+    }
+
+    return surfaceDocs;
   }
 
   @Override
