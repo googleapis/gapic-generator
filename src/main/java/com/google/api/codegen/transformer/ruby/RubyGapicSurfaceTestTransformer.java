@@ -128,23 +128,6 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
     return views.build();
   }
 
-  private ClientTestFileView createUnitTestView(
-      InterfaceModel apiInterface, GapicProductConfig productConfig, boolean hasMultipleServices) {
-    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
-    GapicInterfaceContext context = createContext(apiInterface, productConfig);
-    String testClassName = namer.getUnitTestClassName(context.getInterfaceConfig());
-    String outputPath =
-        unitTestPathMapper.getOutputPath(context.getInterfaceModel().getFullName(), productConfig);
-    ImportSectionView importSection = importSectionTransformer.generateTestImportSection(context);
-    return ClientTestFileView.newBuilder()
-        .templateFileName(UNIT_TEST_TEMPLATE_FILE)
-        .outputPath(namer.getSourceFilePath(outputPath, testClassName))
-        .testClass(createUnitTestClassView(context, hasMultipleServices))
-        .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
-        .apiVersion(packageConfig.apiVersion())
-        .build();
-  }
-
   private ClientTestClassView createUnitTestClassView(
       GapicInterfaceContext context, boolean packageHasMultipleServices) {
     SurfaceNamer namer = context.getNamer();

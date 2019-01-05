@@ -82,6 +82,9 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
       if (interfaceConfig == null) {
         continue;
       }
+      if (!apiInterface.isReachable()) {
+        continue;
+      }
 
       for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
         String reroute = methodConfig.getRerouteToGrpcInterface();
