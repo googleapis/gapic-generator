@@ -58,7 +58,6 @@ public abstract class JavaGapicCodePathMapper implements GapicCodePathMapper {
       // removing it from the output path for now to make Java samples in a structure that compiles.
       // After we figure out how to append the method name to package name, we need to call
       // `dirs.add(methodSample)` here.
-      dirs.add(methodSample.toLowerCase());
     } else {
       dirs.add(prefix());
       for (String seg : config.getPackageName().split(PACKAGE_SPLITTER)) {
