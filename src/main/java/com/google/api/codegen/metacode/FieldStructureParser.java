@@ -99,13 +99,7 @@ public class FieldStructureParser {
 
     InitValue initValue = null;
     if (token == '=') {
-      fieldNamePos = Math.min(fieldNamePos, scanner.pos() - 1);
-
-      // TODO(pongad): Quote the RHS of existing configs, and once that's done use 'parseValue' here
-      // (`String valueString = parseValue(scanner)`). For now we are preserving the previous
-      // behavior, where everything on the right of the equal sign is a string.
-      String valueString = config.substring(scanner.pos());
-
+      String valueString = parseValue(scanner);
       if (valueString.contains(InitFieldConfig.RANDOM_TOKEN)) {
         initValue = InitValue.createRandom(valueString);
       } else if (valueString.contains(PROJECT_ID_TOKEN)) {
@@ -119,9 +113,6 @@ public class FieldStructureParser {
         initValue = InitValue.createLiteral(valueString);
       }
     }
-
-    // TODO(pongad): When we can actually parse the RHS, we should expect EOF.
-    // Preconditions.checkArgument(scanner.scan() == Scanner.EOF, "expected EOF: %s", config);
 
     InitValueConfig valueConfig =
         createInitValueConfig(
@@ -177,7 +168,7 @@ public class FieldStructureParser {
 
         case '{':
           parent.setLineType(InitCodeLineType.MapInitLine);
-          parent = parent.mergeChild(InitCodeNode.create(parseValue(scanner)));
+          parent = parent.mergeChild(InitCodeNode.create(parseKey(scanner)));
 
           Preconditions.checkArgument(
               scanner.scan() == '}', "expected closing '}': %s", scanner.input());
@@ -190,12 +181,30 @@ public class FieldStructureParser {
     }
   }
 
-  private static String parseValue(Scanner scanner) {
+  private static String parseKey(Scanner scanner) {
     int token = scanner.scan();
     Preconditions.checkArgument(
         token == Scanner.INT || token == Scanner.IDENT || token == Scanner.STRING,
         "invalid value: %s",
         scanner.input());
     return scanner.tokenStr();
+  }
+
+  /**
+   * Parses the value of configs (i.e. the RHS of the '='). If the value is a double-quoted string
+   * literal we return it unquoted. Otherwise we strip leading spaces and return the rest of value
+   * as a string for backward compatibility.
+   */
+  private static String parseValue(Scanner scanner) {
+    int token = scanner.scan();
+
+    // Scanner.STRING means a double-quoted string literal
+    if (token == Scanner.STRING) {
+      String tokenStr = scanner.tokenStr();
+      if (scanner.scan() == Scanner.EOF) {
+        return tokenStr;
+      }
+    }
+    return scanner.tokenStr() + scanner.input().substring(scanner.pos());
   }
 }
