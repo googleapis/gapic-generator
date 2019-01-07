@@ -429,7 +429,10 @@ public class JavaSurfaceNamer extends SurfaceNamer {
    */
   @Override
   public String getExamplePackageName() {
-    String packageName = getPackageName();
+    return getExamplePackageName(getPackageName());
+  }
+
+  public static String getExamplePackageName(String packageName) {
     checkArgument(
         packageName.startsWith("com.google."),
         "We currently only support packages beginning with 'com.google'");

@@ -76,6 +76,914 @@ task allJars(type: Copy) {
   // Replace with `from configurations.testRuntime, jar` to include test dependencies
   from configurations.runtime, jar
 }
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/discussbookcallable/DiscussBookCallableCallableStreamingBidiProg.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingBidi",  "prog")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START turing_prog_callable_streaming_bidi]
+import com.google.example.library.v1.Comment;
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.protobuf.ByteString;
+import java.nio.File;
+import java.nio.Files;
+import java.nio.Path;
+import java.nio.Paths;
+
+public class DiscussBookCallableCallableStreamingBidiProg {
+  public static void sampleDiscussBook(String imageFileName) {
+    // [START turing_prog_callable_streaming_bidi_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      BidiStream<DiscussBookRequest, Comment> bidiStream =
+          libraryClient.discussBookCallable().call();
+
+      // String imageFileName = "image_file.jpg";
+      String name = "BASIC";
+      String fileName = "comment_file";
+      Path path = Paths.get(fileName);
+      byte[] data = Files.readAllBytes(path);
+      ByteString comment = ByteString.copyFrom(data);
+      Comment comment2 = Comment.newBuilder()
+        .setComment(comment)
+        .build();
+      path = Paths.get(imageFileName);
+      data = Files.readAllBytes(path);
+      ByteString image = ByteString.copyFrom(data);
+      DiscussBookRequest request = DiscussBookRequest.newBuilder()
+        .setName(name)
+        .setComment(comment2)
+        .setImage(image)
+        .build();
+      bidiStream.send(request);
+      for (Comment responseItem : bidiStream) {
+        System.out.println(responseItem);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END turing_prog_callable_streaming_bidi_core]
+  }
+
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("imageFileName")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String imageFileName = cl.getOptionValue("imageFileName", "image_file.jpg");
+
+    sampleDiscussBook(imageFileName);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END turing_prog_callable_streaming_bidi]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/findrelatedbooks/FindRelatedBooksFlattenedPagedOdyssey.java ==============
+// DO NOT EDIT! This is a generated sample ("FlattenedPaged",  "odyssey")
+package com.google.example.examples.library.v1.snippets;
+
+// [START sample]
+import com.google.example.library.v1.LibraryClient;
+
+public class FindRelatedBooksFlattenedPagedOdyssey {
+  public static void sampleFindRelatedBooks() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      String namesElement = "Odyssey";
+      List<String> names = Arrays.asList(namesElement);
+      String shelvesElement = "Classics";
+      List<String> shelves = Arrays.asList(shelvesElement);
+      ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(names, shelves);
+
+      // Do something
+
+      for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
+        ShelfBookName book = responseItem;
+        System.out.printf("Here's a related book: %s\n", book);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/findrelatedbooks/FindRelatedBooksRequestPagedOdyssey.java ==============
+// DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
+package com.google.example.examples.library.v1.snippets;
+
+// [START sample]
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+
+public class FindRelatedBooksRequestPagedOdyssey {
+  public static void sampleFindRelatedBooks() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<ShelfBookName> names = Arrays.asList(namesElement);
+      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+      List<ShelfName> shelves = Arrays.asList(shelvesElement);
+      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+        .addAllNames(ShelfBookName.toStringList(names))
+        .addAllShelves(ShelfName.toStringList(shelves))
+        .build();
+      for (ShelfBookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
+        ShelfBookName book = responseItem;
+        System.out.printf("Here's a related book: %s\n", book);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/findrelatedbookscallable/FindRelatedBooksCallableCallableListOdyssey.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableList",  "odyssey")
+package com.google.example.examples.library.v1.snippets;
+
+// [START sample]
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+
+public class FindRelatedBooksCallableCallableListOdyssey {
+  public static void sampleFindRelatedBooks() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<ShelfBookName> names = Arrays.asList(namesElement);
+      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+      List<ShelfName> shelves = Arrays.asList(shelvesElement);
+      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+        .addAllNames(ShelfBookName.toStringList(names))
+        .addAllShelves(ShelfName.toStringList(shelves))
+        .build();
+      while (true) {
+        FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
+        for (ShelfBookName responseItem : ShelfBookName.parseList(response.getNamesList())) {
+          ShelfBookName book = responseItem;
+          System.out.printf("Here's a related book: %s\n", book);
+        }
+        String nextPageToken = response.getNextPageToken();
+        if (!Strings.isNullOrEmpty(nextPageToken)) {
+          request = request.toBuilder().setPageToken(nextPageToken).build();
+        } else {
+          break;
+        }
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/findrelatedbookspagedcallable/FindRelatedBooksPagedCallableCallablePagedOdyssey.java ==============
+// DO NOT EDIT! This is a generated sample ("CallablePaged",  "odyssey")
+package com.google.example.examples.library.v1.snippets;
+
+// [START sample]
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+
+public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
+  public static void sampleFindRelatedBooks() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<ShelfBookName> names = Arrays.asList(namesElement);
+      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+      List<ShelfName> shelves = Arrays.asList(shelvesElement);
+      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+        .addAllNames(ShelfBookName.toStringList(names))
+        .addAllShelves(ShelfName.toStringList(shelves))
+        .build();
+      ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
+
+      // Do something
+
+      for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
+        ShelfBookName book = responseItem;
+        System.out.printf("Here's a related book: %s\n", book);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/getbigbookasync/GetBigBookAsyncLongRunningFlattenedAsyncWap.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "wap")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START hopper]
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
+  public static void sampleGetBigBook(String shelf) {
+    // [START hopper_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelf = "Novel";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
+      Book response = libraryClient.getBigBookAsync(name.toString()).get();
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END hopper_core]
+  }
+
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+
+    sampleGetBigBook(shelf);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END hopper]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/getbigbookasync/GetBigBookAsyncLongRunningRequestAsyncWap.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START hopper]
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBigBookAsyncLongRunningRequestAsyncWap {
+  public static void sampleGetBigBook(String shelf) {
+    // [START hopper_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelf = "Novel";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      Book response = libraryClient.getBigBookAsync(request).get();
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END hopper_core]
+  }
+
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+
+    sampleGetBigBook(shelf);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END hopper]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/getbigbookcallable/GetBigBookCallableCallableWap.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "wap")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START hopper]
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBigBookCallableCallableWap {
+  public static void sampleGetBigBook(String shelf) {
+    // [START hopper_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelf = "Novel";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Operation> future = libraryClient.getBigBookCallable().futureCall(request);
+
+      // Do something
+
+      Operation response = future.get();
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END hopper_core]
+  }
+
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+
+    sampleGetBigBook(shelf);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END hopper]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/getbigbookoperationcallable/GetBigBookOperationCallableLongRunningCallableWap.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "wap")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START hopper]
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBigBookOperationCallableLongRunningCallableWap {
+  public static void sampleGetBigBook(String shelf) {
+    // [START hopper_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelf = "Novel";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+
+      // Do something
+
+      Book response = future.get();
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END hopper_core]
+  }
+
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+
+    sampleGetBigBook(shelf);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END hopper]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/monologaboutbookcallable/MonologAboutBookCallableCallableStreamingClientProg.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "prog")
+package com.google.example.examples.library.v1.snippets;
+
+// [START sample]
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
+
+public class MonologAboutBookCallableCallableStreamingClientProg {
+  public static void sampleMonologAboutBook() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ApiStreamObserver<Comment> responseObserver =
+          new ApiStreamObserver<Comment>() {
+            @Override
+            public void onNext(Comment response) {
+              System.out.printf("The stage of the comment is: %s\n", response.getStage());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+              // Add error-handling
+            }
+
+            @Override
+            public void onCompleted() {
+              // Do something when complete.
+            }
+          };
+      ApiStreamObserver<DiscussBookRequest> requestObserver =
+          libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
+
+      String name = "BASIC";
+      DiscussBookRequest request = DiscussBookRequest.newBuilder()
+        .setName(name)
+        .build();
+      requestObserver.onNext(request);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleMonologAboutBook();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/publishseries/PublishSeriesFlattenedPiVersion.java ==============
+// DO NOT EDIT! This is a generated sample ("Flattened",  "pi_version")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START canonical]
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PublishSeriesFlattenedPiVersion {
+  public static void samplePublishSeries(String shelfName, int edition) {
+    // [START canonical_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelfName = "Math";
+      // int edition = 123;
+      Shelf shelf = Shelf.newBuilder()
+        .setName(shelfName)
+        .build();
+      List<Book> books = new ArrayList<>();
+      String seriesString = "xyz3141592654";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+      for (String title : response.getBookNamesList()) {
+        System.out.printf("Title: %s\n", title);
+      }
+      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
+      System.out.printf("The author of the first book is: %s\n", response.getBooksList().get(0).getAuthor());
+      System.out.println("That's all!");
+      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END canonical_core]
+  }
+
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelfName")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("edition")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelfName = cl.getOptionValue("shelfName", "Math");
+    int edition =
+        cl.getOptionValue("edition") != null
+            ? Integer.parseInt(cl.getOptionValue("edition"))
+            : 123;
+
+    samplePublishSeries(shelfName, edition);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END canonical]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/publishseries/PublishSeriesFlattenedSecondEdition.java ==============
+// DO NOT EDIT! This is a generated sample ("Flattened",  "second_edition")
+package com.google.example.examples.library.v1.snippets;
+
+// [START canonical]
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PublishSeriesFlattenedSecondEdition {
+  public static void samplePublishSeries() {
+    // [START canonical_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      int edition = 2;
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END canonical_core]
+  }
+
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END canonical]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/publishseries/PublishSeriesRequestPiVersion.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START canonical]
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PublishSeriesRequestPiVersion {
+  public static void samplePublishSeries(String shelfName, int edition) {
+    // [START canonical_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelfName = "Math";
+      // int edition = 123;
+      Shelf shelf = Shelf.newBuilder()
+        .setName(shelfName)
+        .build();
+      List<Book> books = new ArrayList<>();
+      String seriesString = "xyz3141592654";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(request);
+      for (String title : response.getBookNamesList()) {
+        System.out.printf("Title: %s\n", title);
+      }
+      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
+      System.out.printf("The author of the first book is: %s\n", response.getBooksList().get(0).getAuthor());
+      System.out.println("That's all!");
+      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END canonical_core]
+  }
+
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelfName")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("edition")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelfName = cl.getOptionValue("shelfName", "Math");
+    int edition =
+        cl.getOptionValue("edition") != null
+            ? Integer.parseInt(cl.getOptionValue("edition"))
+            : 123;
+
+    samplePublishSeries(shelfName, edition);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END canonical]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/publishseries/PublishSeriesRequestSecondEdition.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
+package com.google.example.examples.library.v1.snippets;
+
+// [START canonical]
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PublishSeriesRequestSecondEdition {
+  public static void samplePublishSeries() {
+    // [START canonical_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+      int edition = 2;
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(request);
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END canonical_core]
+  }
+
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END canonical]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/publishseriescallable/PublishSeriesCallableCallablePiVersion.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "pi_version")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START canonical]
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PublishSeriesCallableCallablePiVersion {
+  public static void samplePublishSeries(String shelfName, int edition) {
+    // [START canonical_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelfName = "Math";
+      // int edition = 123;
+      Shelf shelf = Shelf.newBuilder()
+        .setName(shelfName)
+        .build();
+      List<Book> books = new ArrayList<>();
+      String seriesString = "xyz3141592654";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+
+      // Do something
+
+      PublishSeriesResponse response = future.get();
+      for (String title : response.getBookNamesList()) {
+        System.out.printf("Title: %s\n", title);
+      }
+      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
+      System.out.printf("The author of the first book is: %s\n", response.getBooksList().get(0).getAuthor());
+      System.out.println("That's all!");
+      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END canonical_core]
+  }
+
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelfName")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("edition")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelfName = cl.getOptionValue("shelfName", "Math");
+    int edition =
+        cl.getOptionValue("edition") != null
+            ? Integer.parseInt(cl.getOptionValue("edition"))
+            : 123;
+
+    samplePublishSeries(shelfName, edition);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END canonical]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/publishseriescallable/PublishSeriesCallableCallableSecondEdition.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "second_edition")
+package com.google.example.examples.library.v1.snippets;
+
+// [START canonical]
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PublishSeriesCallableCallableSecondEdition {
+  public static void samplePublishSeries() {
+    // [START canonical_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+      int edition = 2;
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+
+      // Do something
+
+      PublishSeriesResponse response = future.get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END canonical_core]
+  }
+
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END canonical]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/streambookscallable/StreamBooksCallableCallableStreamingServerProg.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "prog")
+package com.google.example.examples.library.v1.snippets;
+
+// [START babbage]
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.StreamBooksRequest;
+
+public class StreamBooksCallableCallableStreamingServerProg {
+  public static void sampleStreamBooks() {
+    // [START babbage_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      String name = "BASIC";
+      StreamBooksRequest request = StreamBooksRequest.newBuilder()
+        .setName(name)
+        .build();
+
+      ServerStream<Book> stream = libraryClient.streamBooksCallable().call(request);
+      for (Book responseItem : stream) {
+        System.out.println(responseItem);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END babbage_core]
+  }
+
+  public static void main(String[] args) {
+    sampleStreamBooks();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END babbage]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/snippets/streamshelvescallable/StreamShelvesCallableCallableStreamingServerEmpty.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "empty")
+package com.google.example.examples.library.v1.snippets;
+
+// [START sample]
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.StreamShelvesRequest;
+
+public class StreamShelvesCallableCallableStreamingServerEmpty {
+  public static void sampleStreamShelves() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+
+      ServerStream<StreamShelvesResponse> stream = libraryClient.streamShelvesCallable().call(request);
+      for (StreamShelvesResponse responseItem : stream) {
+        System.out.println(responseItem);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleStreamShelves();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
 ============== file: src/main/java/com/google/example/library/v1/LibraryClient.java ==============
 /*
  * Copyright 2019 Google LLC
@@ -7417,914 +8325,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     }
   }
 }
-============== file: src/main/java/samples/com/google/example/library/v1/discussbookcallable/DiscussBookCallableCallableStreamingBidiProg.java ==============
-// DO NOT EDIT! This is a generated sample ("CallableStreamingBidi",  "prog")
-package com.google.example.examples.library.v1.snippets;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-// [START turing_prog_callable_streaming_bidi]
-import com.google.example.library.v1.Comment;
-import com.google.example.library.v1.DiscussBookRequest;
-import com.google.example.library.v1.LibraryClient;
-import com.google.protobuf.ByteString;
-import java.nio.File;
-import java.nio.Files;
-import java.nio.Path;
-import java.nio.Paths;
-
-public class DiscussBookCallableCallableStreamingBidiProg {
-  public static void sampleDiscussBook(String imageFileName) {
-    // [START turing_prog_callable_streaming_bidi_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      BidiStream<DiscussBookRequest, Comment> bidiStream =
-          libraryClient.discussBookCallable().call();
-
-      // String imageFileName = "image_file.jpg";
-      String name = "BASIC";
-      String fileName = "comment_file";
-      Path path = Paths.get(fileName);
-      byte[] data = Files.readAllBytes(path);
-      ByteString comment = ByteString.copyFrom(data);
-      Comment comment2 = Comment.newBuilder()
-        .setComment(comment)
-        .build();
-      path = Paths.get(imageFileName);
-      data = Files.readAllBytes(path);
-      ByteString image = ByteString.copyFrom(data);
-      DiscussBookRequest request = DiscussBookRequest.newBuilder()
-        .setName(name)
-        .setComment(comment2)
-        .setImage(image)
-        .build();
-      bidiStream.send(request);
-      for (Comment responseItem : bidiStream) {
-        System.out.println(responseItem);
-      }
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END turing_prog_callable_streaming_bidi_core]
-  }
-
-  public static void main(String[] args) {
-    Options options = new Options();
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("imageFileName")
-          .build());
-
-    CommandLine cl = (new DefaultParser()).parse(options, args);
-    String imageFileName = cl.getOptionValue("imageFileName", "image_file.jpg");
-
-    sampleDiscussBook(imageFileName);
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END turing_prog_callable_streaming_bidi]
-============== file: src/main/java/samples/com/google/example/library/v1/findrelatedbooks/FindRelatedBooksFlattenedPagedOdyssey.java ==============
-// DO NOT EDIT! This is a generated sample ("FlattenedPaged",  "odyssey")
-package com.google.example.examples.library.v1.snippets;
-
-// [START sample]
-import com.google.example.library.v1.LibraryClient;
-
-public class FindRelatedBooksFlattenedPagedOdyssey {
-  public static void sampleFindRelatedBooks() {
-    // [START sample_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      String namesElement = "Odyssey";
-      List<String> names = Arrays.asList(namesElement);
-      String shelvesElement = "Classics";
-      List<String> shelves = Arrays.asList(shelvesElement);
-      ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(names, shelves);
-
-      // Do something
-
-      for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
-        ShelfBookName book = responseItem;
-        System.out.printf("Here's a related book: %s\n", book);
-      }
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END sample_core]
-  }
-
-  public static void main(String[] args) {
-    sampleFindRelatedBooks();
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END sample]
-============== file: src/main/java/samples/com/google/example/library/v1/findrelatedbooks/FindRelatedBooksRequestPagedOdyssey.java ==============
-// DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
-package com.google.example.examples.library.v1.snippets;
-
-// [START sample]
-import com.google.example.library.v1.FindRelatedBooksRequest;
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.ShelfBookName;
-import com.google.example.library.v1.ShelfName;
-
-public class FindRelatedBooksRequestPagedOdyssey {
-  public static void sampleFindRelatedBooks() {
-    // [START sample_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-      List<ShelfBookName> names = Arrays.asList(namesElement);
-      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-      List<ShelfName> shelves = Arrays.asList(shelvesElement);
-      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-        .addAllNames(ShelfBookName.toStringList(names))
-        .addAllShelves(ShelfName.toStringList(shelves))
-        .build();
-      for (ShelfBookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsShelfBookName()) {
-        ShelfBookName book = responseItem;
-        System.out.printf("Here's a related book: %s\n", book);
-      }
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END sample_core]
-  }
-
-  public static void main(String[] args) {
-    sampleFindRelatedBooks();
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END sample]
-============== file: src/main/java/samples/com/google/example/library/v1/findrelatedbookscallable/FindRelatedBooksCallableCallableListOdyssey.java ==============
-// DO NOT EDIT! This is a generated sample ("CallableList",  "odyssey")
-package com.google.example.examples.library.v1.snippets;
-
-// [START sample]
-import com.google.example.library.v1.FindRelatedBooksRequest;
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.ShelfBookName;
-import com.google.example.library.v1.ShelfName;
-
-public class FindRelatedBooksCallableCallableListOdyssey {
-  public static void sampleFindRelatedBooks() {
-    // [START sample_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-      List<ShelfBookName> names = Arrays.asList(namesElement);
-      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-      List<ShelfName> shelves = Arrays.asList(shelvesElement);
-      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-        .addAllNames(ShelfBookName.toStringList(names))
-        .addAllShelves(ShelfName.toStringList(shelves))
-        .build();
-      while (true) {
-        FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-        for (ShelfBookName responseItem : ShelfBookName.parseList(response.getNamesList())) {
-          ShelfBookName book = responseItem;
-          System.out.printf("Here's a related book: %s\n", book);
-        }
-        String nextPageToken = response.getNextPageToken();
-        if (!Strings.isNullOrEmpty(nextPageToken)) {
-          request = request.toBuilder().setPageToken(nextPageToken).build();
-        } else {
-          break;
-        }
-      }
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END sample_core]
-  }
-
-  public static void main(String[] args) {
-    sampleFindRelatedBooks();
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END sample]
-============== file: src/main/java/samples/com/google/example/library/v1/findrelatedbookspagedcallable/FindRelatedBooksPagedCallableCallablePagedOdyssey.java ==============
-// DO NOT EDIT! This is a generated sample ("CallablePaged",  "odyssey")
-package com.google.example.examples.library.v1.snippets;
-
-// [START sample]
-import com.google.example.library.v1.FindRelatedBooksRequest;
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.ShelfBookName;
-import com.google.example.library.v1.ShelfName;
-
-public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
-  public static void sampleFindRelatedBooks() {
-    // [START sample_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-      List<ShelfBookName> names = Arrays.asList(namesElement);
-      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
-      List<ShelfName> shelves = Arrays.asList(shelvesElement);
-      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-        .addAllNames(ShelfBookName.toStringList(names))
-        .addAllShelves(ShelfName.toStringList(shelves))
-        .build();
-      ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
-
-      // Do something
-
-      for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
-        ShelfBookName book = responseItem;
-        System.out.printf("Here's a related book: %s\n", book);
-      }
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END sample_core]
-  }
-
-  public static void main(String[] args) {
-    sampleFindRelatedBooks();
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END sample]
-============== file: src/main/java/samples/com/google/example/library/v1/getbigbookasync/GetBigBookAsyncLongRunningFlattenedAsyncWap.java ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "wap")
-package com.google.example.examples.library.v1.snippets;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-// [START hopper]
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.ShelfBookName;
-
-public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
-  public static void sampleGetBigBook(String shelf) {
-    // [START hopper_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelf = "Novel";
-      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
-      Book response = libraryClient.getBigBookAsync(name.toString()).get();
-      System.out.printf("name: %s\n", response.getName());
-      System.out.printf("author: %s\n", response.getAuthor());
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END hopper_core]
-  }
-
-  public static void main(String[] args) {
-    Options options = new Options();
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("shelf")
-          .build());
-
-    CommandLine cl = (new DefaultParser()).parse(options, args);
-    String shelf = cl.getOptionValue("shelf", "Novel");
-
-    sampleGetBigBook(shelf);
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END hopper]
-============== file: src/main/java/samples/com/google/example/library/v1/getbigbookasync/GetBigBookAsyncLongRunningRequestAsyncWap.java ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
-package com.google.example.examples.library.v1.snippets;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-// [START hopper]
-import com.google.example.library.v1.GetBookRequest;
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.ShelfBookName;
-
-public class GetBigBookAsyncLongRunningRequestAsyncWap {
-  public static void sampleGetBigBook(String shelf) {
-    // [START hopper_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelf = "Novel";
-      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
-      GetBookRequest request = GetBookRequest.newBuilder()
-        .setName(name.toString())
-        .build();
-      Book response = libraryClient.getBigBookAsync(request).get();
-      System.out.printf("name: %s\n", response.getName());
-      System.out.printf("author: %s\n", response.getAuthor());
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END hopper_core]
-  }
-
-  public static void main(String[] args) {
-    Options options = new Options();
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("shelf")
-          .build());
-
-    CommandLine cl = (new DefaultParser()).parse(options, args);
-    String shelf = cl.getOptionValue("shelf", "Novel");
-
-    sampleGetBigBook(shelf);
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END hopper]
-============== file: src/main/java/samples/com/google/example/library/v1/getbigbookcallable/GetBigBookCallableCallableWap.java ==============
-// DO NOT EDIT! This is a generated sample ("Callable",  "wap")
-package com.google.example.examples.library.v1.snippets;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-// [START hopper]
-import com.google.example.library.v1.GetBookRequest;
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.ShelfBookName;
-
-public class GetBigBookCallableCallableWap {
-  public static void sampleGetBigBook(String shelf) {
-    // [START hopper_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelf = "Novel";
-      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
-      GetBookRequest request = GetBookRequest.newBuilder()
-        .setName(name.toString())
-        .build();
-      ApiFuture<Operation> future = libraryClient.getBigBookCallable().futureCall(request);
-
-      // Do something
-
-      Operation response = future.get();
-      System.out.printf("name: %s\n", response.getName());
-      System.out.printf("author: %s\n", response.getAuthor());
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END hopper_core]
-  }
-
-  public static void main(String[] args) {
-    Options options = new Options();
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("shelf")
-          .build());
-
-    CommandLine cl = (new DefaultParser()).parse(options, args);
-    String shelf = cl.getOptionValue("shelf", "Novel");
-
-    sampleGetBigBook(shelf);
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END hopper]
-============== file: src/main/java/samples/com/google/example/library/v1/getbigbookoperationcallable/GetBigBookOperationCallableLongRunningCallableWap.java ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "wap")
-package com.google.example.examples.library.v1.snippets;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-// [START hopper]
-import com.google.example.library.v1.GetBookRequest;
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.ShelfBookName;
-
-public class GetBigBookOperationCallableLongRunningCallableWap {
-  public static void sampleGetBigBook(String shelf) {
-    // [START hopper_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelf = "Novel";
-      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
-      GetBookRequest request = GetBookRequest.newBuilder()
-        .setName(name.toString())
-        .build();
-      OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
-
-      // Do something
-
-      Book response = future.get();
-      System.out.printf("name: %s\n", response.getName());
-      System.out.printf("author: %s\n", response.getAuthor());
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END hopper_core]
-  }
-
-  public static void main(String[] args) {
-    Options options = new Options();
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("shelf")
-          .build());
-
-    CommandLine cl = (new DefaultParser()).parse(options, args);
-    String shelf = cl.getOptionValue("shelf", "Novel");
-
-    sampleGetBigBook(shelf);
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END hopper]
-============== file: src/main/java/samples/com/google/example/library/v1/monologaboutbookcallable/MonologAboutBookCallableCallableStreamingClientProg.java ==============
-// DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "prog")
-package com.google.example.examples.library.v1.snippets;
-
-// [START sample]
-import com.google.example.library.v1.DiscussBookRequest;
-import com.google.example.library.v1.LibraryClient;
-
-public class MonologAboutBookCallableCallableStreamingClientProg {
-  public static void sampleMonologAboutBook() {
-    // [START sample_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      ApiStreamObserver<Comment> responseObserver =
-          new ApiStreamObserver<Comment>() {
-            @Override
-            public void onNext(Comment response) {
-              System.out.printf("The stage of the comment is: %s\n", response.getStage());
-            }
-
-            @Override
-            public void onError(Throwable t) {
-              // Add error-handling
-            }
-
-            @Override
-            public void onCompleted() {
-              // Do something when complete.
-            }
-          };
-      ApiStreamObserver<DiscussBookRequest> requestObserver =
-          libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
-
-      String name = "BASIC";
-      DiscussBookRequest request = DiscussBookRequest.newBuilder()
-        .setName(name)
-        .build();
-      requestObserver.onNext(request);
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END sample_core]
-  }
-
-  public static void main(String[] args) {
-    sampleMonologAboutBook();
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END sample]
-============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesFlattenedPiVersion.java ==============
-// DO NOT EDIT! This is a generated sample ("Flattened",  "pi_version")
-package com.google.example.examples.library.v1.snippets;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-// [START canonical]
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.SeriesUuid;
-import com.google.example.library.v1.Shelf;
-import java.util.ArrayList;
-import java.util.List;
-
-public class PublishSeriesFlattenedPiVersion {
-  public static void samplePublishSeries(String shelfName, int edition) {
-    // [START canonical_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelfName = "Math";
-      // int edition = 123;
-      Shelf shelf = Shelf.newBuilder()
-        .setName(shelfName)
-        .build();
-      List<Book> books = new ArrayList<>();
-      String seriesString = "xyz3141592654";
-      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-        .setSeriesString(seriesString)
-        .build();
-      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
-      for (String title : response.getBookNamesList()) {
-        System.out.printf("Title: %s\n", title);
-      }
-      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
-      System.out.printf("The author of the first book is: %s\n", response.getBooksList().get(0).getAuthor());
-      System.out.println("That's all!");
-      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END canonical_core]
-  }
-
-  public static void main(String[] args) {
-    Options options = new Options();
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("shelfName")
-          .build());
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("edition")
-          .build());
-
-    CommandLine cl = (new DefaultParser()).parse(options, args);
-    String shelfName = cl.getOptionValue("shelfName", "Math");
-    int edition =
-        cl.getOptionValue("edition") != null
-            ? Integer.parseInt(cl.getOptionValue("edition"))
-            : 123;
-
-    samplePublishSeries(shelfName, edition);
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END canonical]
-============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesFlattenedSecondEdition.java ==============
-// DO NOT EDIT! This is a generated sample ("Flattened",  "second_edition")
-package com.google.example.examples.library.v1.snippets;
-
-// [START canonical]
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.SeriesUuid;
-import com.google.example.library.v1.Shelf;
-import java.util.ArrayList;
-import java.util.List;
-
-public class PublishSeriesFlattenedSecondEdition {
-  public static void samplePublishSeries() {
-    // [START canonical_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      Shelf shelf = Shelf.newBuilder().build();
-      List<Book> books = new ArrayList<>();
-      int edition = 2;
-      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
-      System.out.println(response);
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END canonical_core]
-  }
-
-  public static void main(String[] args) {
-    samplePublishSeries();
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END canonical]
-============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesRequestPiVersion.java ==============
-// DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
-package com.google.example.examples.library.v1.snippets;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-// [START canonical]
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.PublishSeriesRequest;
-import com.google.example.library.v1.SeriesUuid;
-import com.google.example.library.v1.Shelf;
-import java.util.ArrayList;
-import java.util.List;
-
-public class PublishSeriesRequestPiVersion {
-  public static void samplePublishSeries(String shelfName, int edition) {
-    // [START canonical_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelfName = "Math";
-      // int edition = 123;
-      Shelf shelf = Shelf.newBuilder()
-        .setName(shelfName)
-        .build();
-      List<Book> books = new ArrayList<>();
-      String seriesString = "xyz3141592654";
-      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-        .setSeriesString(seriesString)
-        .build();
-      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-        .setShelf(shelf)
-        .addAllBooks(books)
-        .setSeriesUuid(seriesUuid)
-        .setEdition(edition)
-        .build();
-      PublishSeriesResponse response = libraryClient.publishSeries(request);
-      for (String title : response.getBookNamesList()) {
-        System.out.printf("Title: %s\n", title);
-      }
-      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
-      System.out.printf("The author of the first book is: %s\n", response.getBooksList().get(0).getAuthor());
-      System.out.println("That's all!");
-      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END canonical_core]
-  }
-
-  public static void main(String[] args) {
-    Options options = new Options();
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("shelfName")
-          .build());
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("edition")
-          .build());
-
-    CommandLine cl = (new DefaultParser()).parse(options, args);
-    String shelfName = cl.getOptionValue("shelfName", "Math");
-    int edition =
-        cl.getOptionValue("edition") != null
-            ? Integer.parseInt(cl.getOptionValue("edition"))
-            : 123;
-
-    samplePublishSeries(shelfName, edition);
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END canonical]
-============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesRequestSecondEdition.java ==============
-// DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
-package com.google.example.examples.library.v1.snippets;
-
-// [START canonical]
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.PublishSeriesRequest;
-import com.google.example.library.v1.SeriesUuid;
-import com.google.example.library.v1.Shelf;
-import java.util.ArrayList;
-import java.util.List;
-
-public class PublishSeriesRequestSecondEdition {
-  public static void samplePublishSeries() {
-    // [START canonical_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      Shelf shelf = Shelf.newBuilder().build();
-      List<Book> books = new ArrayList<>();
-      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-      int edition = 2;
-      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-        .setShelf(shelf)
-        .addAllBooks(books)
-        .setSeriesUuid(seriesUuid)
-        .setEdition(edition)
-        .build();
-      PublishSeriesResponse response = libraryClient.publishSeries(request);
-      System.out.println(response);
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END canonical_core]
-  }
-
-  public static void main(String[] args) {
-    samplePublishSeries();
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END canonical]
-============== file: src/main/java/samples/com/google/example/library/v1/publishseriescallable/PublishSeriesCallableCallablePiVersion.java ==============
-// DO NOT EDIT! This is a generated sample ("Callable",  "pi_version")
-package com.google.example.examples.library.v1.snippets;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-// [START canonical]
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.PublishSeriesRequest;
-import com.google.example.library.v1.SeriesUuid;
-import com.google.example.library.v1.Shelf;
-import java.util.ArrayList;
-import java.util.List;
-
-public class PublishSeriesCallableCallablePiVersion {
-  public static void samplePublishSeries(String shelfName, int edition) {
-    // [START canonical_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelfName = "Math";
-      // int edition = 123;
-      Shelf shelf = Shelf.newBuilder()
-        .setName(shelfName)
-        .build();
-      List<Book> books = new ArrayList<>();
-      String seriesString = "xyz3141592654";
-      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-        .setSeriesString(seriesString)
-        .build();
-      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-        .setShelf(shelf)
-        .addAllBooks(books)
-        .setSeriesUuid(seriesUuid)
-        .setEdition(edition)
-        .build();
-      ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
-
-      // Do something
-
-      PublishSeriesResponse response = future.get();
-      for (String title : response.getBookNamesList()) {
-        System.out.printf("Title: %s\n", title);
-      }
-      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
-      System.out.printf("The author of the first book is: %s\n", response.getBooksList().get(0).getAuthor());
-      System.out.println("That's all!");
-      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END canonical_core]
-  }
-
-  public static void main(String[] args) {
-    Options options = new Options();
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("shelfName")
-          .build());
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("edition")
-          .build());
-
-    CommandLine cl = (new DefaultParser()).parse(options, args);
-    String shelfName = cl.getOptionValue("shelfName", "Math");
-    int edition =
-        cl.getOptionValue("edition") != null
-            ? Integer.parseInt(cl.getOptionValue("edition"))
-            : 123;
-
-    samplePublishSeries(shelfName, edition);
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END canonical]
-============== file: src/main/java/samples/com/google/example/library/v1/publishseriescallable/PublishSeriesCallableCallableSecondEdition.java ==============
-// DO NOT EDIT! This is a generated sample ("Callable",  "second_edition")
-package com.google.example.examples.library.v1.snippets;
-
-// [START canonical]
-import com.google.example.library.v1.Book;
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.PublishSeriesRequest;
-import com.google.example.library.v1.SeriesUuid;
-import com.google.example.library.v1.Shelf;
-import java.util.ArrayList;
-import java.util.List;
-
-public class PublishSeriesCallableCallableSecondEdition {
-  public static void samplePublishSeries() {
-    // [START canonical_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      Shelf shelf = Shelf.newBuilder().build();
-      List<Book> books = new ArrayList<>();
-      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-      int edition = 2;
-      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-        .setShelf(shelf)
-        .addAllBooks(books)
-        .setSeriesUuid(seriesUuid)
-        .setEdition(edition)
-        .build();
-      ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
-
-      // Do something
-
-      PublishSeriesResponse response = future.get();
-      System.out.println(response);
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END canonical_core]
-  }
-
-  public static void main(String[] args) {
-    samplePublishSeries();
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END canonical]
-============== file: src/main/java/samples/com/google/example/library/v1/streambookscallable/StreamBooksCallableCallableStreamingServerProg.java ==============
-// DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "prog")
-package com.google.example.examples.library.v1.snippets;
-
-// [START babbage]
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.StreamBooksRequest;
-
-public class StreamBooksCallableCallableStreamingServerProg {
-  public static void sampleStreamBooks() {
-    // [START babbage_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      String name = "BASIC";
-      StreamBooksRequest request = StreamBooksRequest.newBuilder()
-        .setName(name)
-        .build();
-
-      ServerStream<Book> stream = libraryClient.streamBooksCallable().call(request);
-      for (Book responseItem : stream) {
-        System.out.println(responseItem);
-      }
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END babbage_core]
-  }
-
-  public static void main(String[] args) {
-    sampleStreamBooks();
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END babbage]
-============== file: src/main/java/samples/com/google/example/library/v1/streamshelvescallable/StreamShelvesCallableCallableStreamingServerEmpty.java ==============
-// DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "empty")
-package com.google.example.examples.library.v1.snippets;
-
-// [START sample]
-import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.StreamShelvesRequest;
-
-public class StreamShelvesCallableCallableStreamingServerEmpty {
-  public static void sampleStreamShelves() {
-    // [START sample_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
-
-      ServerStream<StreamShelvesResponse> stream = libraryClient.streamShelvesCallable().call(request);
-      for (StreamShelvesResponse responseItem : stream) {
-        System.out.println(responseItem);
-      }
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END sample_core]
-  }
-
-  public static void main(String[] args) {
-    sampleStreamShelves();
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END sample]
 ============== file: src/test/java/com/google/example/library/v1/LibraryClientTest.java ==============
 /*
  * Copyright 2019 Google LLC
