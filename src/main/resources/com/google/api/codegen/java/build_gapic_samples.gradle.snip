@@ -1,0 +1,40 @@
+@snippet generate(metadata)
+  buildscript {
+    repositories {
+      mavenCentral()
+    }
+  }
+
+  apply plugin: 'java'
+
+  description = 'GAPIC samples for {library-identifier-placeholder}'
+  group = 'com.google.cloud'
+  version = '0.0.0-SNAPSHOT'
+  sourceCompatibility = 1.7
+  targetCompatibility = 1.7
+
+  repositories {
+    mavenCentral()
+    mavenLocal()
+  }
+
+  compileJava.options.encoding = 'UTF-8'
+  javadoc.options.encoding = 'UTF-8'
+
+  dependencies {
+    compile 'com.google.api:api-common:{api-common-version-placeholder}'
+    compile 'com.google.api:gax:{gax-version-placeholder}'
+    compile 'com.google.api:gax-grpc:{gax-version-placeholder}'
+    compile 'io.grpc:grpc-netty-shaded:{@metadata.grpcVersionBound.lower}'
+    compile project('{gapic-package-placeholder}')
+  }
+
+  task fatJar(type: Jar) {
+    {fatJar placeholder}
+  }
+
+  clean {
+    delete 'all-jars'
+  }
+
+@end
