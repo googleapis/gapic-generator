@@ -14,15 +14,18 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.packagegen.java.JavaPackageTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import java.util.Collections;
 import java.util.List;
 
 public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
@@ -50,6 +53,7 @@ public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
     }
     for (PackageMetadataView.Builder builder :
         this.generateMetadataViewBuilders(model, packageConfig, null)) {
+      builder.additionalDependencies(additionalSampleDependencies());
       viewModels.add(builder.build());
     }
     return viewModels;
@@ -58,5 +62,14 @@ public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
   @Override
   public List<String> getTemplateFileNames() {
     return Lists.newArrayList(getSnippetsOutput().keySet());
+  }
+
+  private List<PackageDependencyView> additionalSampleDependencies() {
+    return Collections.singletonList(
+        PackageDependencyView.newBuilder()
+            .group("com.google.api")
+            .name("api-common")
+            .versionBound(packageConfig.apiCommonVersionBound(TargetLanguage.JAVA))
+            .build());
   }
 }

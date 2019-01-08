@@ -7,7 +7,7 @@
 
   apply plugin: 'java'
 
-  description = 'GAPIC samples for {library-identifier-placeholder}'
+  description = 'GAPIC samples for {@metadata.identifier}'
   group = 'com.google.cloud'
   version = '0.0.0-SNAPSHOT'
   sourceCompatibility = 1.7
@@ -22,15 +22,21 @@
   javadoc.options.encoding = 'UTF-8'
 
   dependencies {
-    compile 'com.google.api:api-common:{api-common-version-placeholder}'
-    compile 'com.google.api:gax:{gax-version-placeholder}'
-    compile 'com.google.api:gax-grpc:{gax-version-placeholder}'
+    compile 'com.google.api:gax:{@metadata.gaxVersionBound.lower}'
+    compile 'com.google.api:gax-grpc:{@metadata.gaxVersionBound.lower}'
     compile 'io.grpc:grpc-netty-shaded:{@metadata.grpcVersionBound.lower}'
-    compile project('{gapic-package-placeholder}')
+    @join dep : metadata.additionalDependencies
+      compile '{@dep.group}:{@dep.name}:{@dep.versionBound.lower}'
+    @end
+    compile project('gapic-{@metadata.identifier}')
   }
 
   task fatJar(type: Jar) {
-    {fatJar placeholder}
+    baseName = 'sample-{@metadata.identifier}-all'
+    from { 
+      configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+    }
+    with jar
   }
 
   clean {
