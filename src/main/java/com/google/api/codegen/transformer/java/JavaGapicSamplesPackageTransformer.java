@@ -28,6 +28,7 @@ import com.google.common.collect.Lists;
 import java.util.Collections;
 import java.util.List;
 
+/** Generate packaging related views for Java Gapic samples */
 public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
     implements ModelToViewTransformer<ProtoApiModel> {
 
