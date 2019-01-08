@@ -43,8 +43,11 @@ public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
             .getInterfaceConfigMap()
             .values()
             .stream()
-            .flatMap(InterfaceConfig::getMethodConfigs)
-            .anyMatch(config -> config.getSampleSpec() != null);
+            .flatMap(config -> config.getMethodConfigs().stream())
+            .anyMatch(config -> config.getSampleSpec().isConfigured());
+    if (!shouldGenerateSamplePackages) {
+      return viewModels;
+    }
     for (PackageMetadataView.Builder builder :
         this.generateMetadataViewBuilders(model, packageConfig, null)) {
       viewModels.add(builder.build());
