@@ -28,14 +28,15 @@ import com.google.api.tools.framework.model.SymbolTable;
 import com.google.api.tools.framework.model.TypeRef;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 public class LongRunningConfigTest {
+  private static final String PROTO_PACKAGE_NAME = "google.example.library.v1";
   private static final String GAPIC_CONFIG_RETURN_TYPE_NAME = "MethodResponse";
   private static final String GAPIC_CONFIG_METADATA_TYPE = "HeaderType";
   private static final String ANNOTATIONS_RETURN_TYPE_NAME = "BookType";
   private static final String ANNOTATIONS_METADATA_TYPE = "FooterType";
-  private static final String CLIENT_PACKAGE_NAME = "com.google.library.v1";
   private static final boolean TEST_IMPLEMENTS_DELETE = false;
   private static final boolean TEST_IMPLEMENTS_CANCEL = false;
   private static final int TEST_INITIAL_POLL_DELAY = 5;
@@ -63,8 +64,8 @@ public class LongRunningConfigTest {
 
   private static final LongRunningConfigProto baseLroConfigProto =
       LongRunningConfigProto.newBuilder()
-          .setMetadataType(GAPIC_CONFIG_METADATA_TYPE)
-          .setReturnType(GAPIC_CONFIG_RETURN_TYPE_NAME)
+          .setMetadataType(PROTO_PACKAGE_NAME + "." + GAPIC_CONFIG_METADATA_TYPE)
+          .setReturnType(PROTO_PACKAGE_NAME + "." + GAPIC_CONFIG_RETURN_TYPE_NAME)
           .build();
   private static final LongRunningConfigProto lroConfigProtoWithPollSettings =
       baseLroConfigProto
@@ -83,6 +84,9 @@ public class LongRunningConfigTest {
     Mockito.when(lroAnnotatedMethod.getModel()).thenReturn(model);
     Mockito.when(model.getSymbolTable()).thenReturn(symbolTable);
 
+    Mockito.when(protoParser.getProtoPackage(ArgumentMatchers.any(Method.class)))
+        .thenReturn(PROTO_PACKAGE_NAME);
+
     Mockito.when(protoParser.getLongRunningOperation(lroAnnotatedMethod))
         .thenReturn(
             OperationData.newBuilder()
@@ -90,13 +94,13 @@ public class LongRunningConfigTest {
                 .setResponseType(ANNOTATIONS_RETURN_TYPE_NAME)
                 .build());
 
-    Mockito.when(symbolTable.lookupType(GAPIC_CONFIG_METADATA_TYPE))
+    Mockito.when(symbolTable.lookupType(PROTO_PACKAGE_NAME + "." + GAPIC_CONFIG_METADATA_TYPE))
         .thenReturn(gapicConfigMetadataType);
-    Mockito.when(symbolTable.lookupType(GAPIC_CONFIG_RETURN_TYPE_NAME))
+    Mockito.when(symbolTable.lookupType(PROTO_PACKAGE_NAME + "." + GAPIC_CONFIG_RETURN_TYPE_NAME))
         .thenReturn(gapicConfigReturnType);
-    Mockito.when(symbolTable.lookupType(ANNOTATIONS_METADATA_TYPE))
+    Mockito.when(symbolTable.lookupType(PROTO_PACKAGE_NAME + "." + ANNOTATIONS_METADATA_TYPE))
         .thenReturn(annotationsMetadataType);
-    Mockito.when(symbolTable.lookupType(ANNOTATIONS_RETURN_TYPE_NAME))
+    Mockito.when(symbolTable.lookupType(PROTO_PACKAGE_NAME + "." + ANNOTATIONS_RETURN_TYPE_NAME))
         .thenReturn(annotationsReturnType);
   }
 
@@ -105,7 +109,7 @@ public class LongRunningConfigTest {
     DiagCollector diagCollector = new BoundedDiagCollector();
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            CLIENT_PACKAGE_NAME,
+            PROTO_PACKAGE_NAME,
             lroAnnotatedMethod,
             diagCollector,
             LongRunningConfigProto.getDefaultInstance(),
@@ -141,7 +145,7 @@ public class LongRunningConfigTest {
     // lroConfigProtoWithPollSettings contains LRO settings.
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            CLIENT_PACKAGE_NAME,
+            PROTO_PACKAGE_NAME,
             simpleMethod,
             diagCollector,
             lroConfigProtoWithPollSettings,
@@ -173,7 +177,7 @@ public class LongRunningConfigTest {
     // lroAnnotatedMethod contains different settings than that in lroConfigProtoWithPollSettings.
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            CLIENT_PACKAGE_NAME,
+            PROTO_PACKAGE_NAME,
             lroAnnotatedMethod,
             diagCollector,
             lroConfigProtoWithPollSettings,
@@ -212,12 +216,12 @@ public class LongRunningConfigTest {
     LongRunningConfigProto longRunningConfigProto =
         lroConfigProtoWithPollSettings
             .toBuilder()
-            .setMetadataType(ANNOTATIONS_METADATA_TYPE)
-            .setReturnType(ANNOTATIONS_RETURN_TYPE_NAME)
+            .setMetadataType(PROTO_PACKAGE_NAME + "." + ANNOTATIONS_METADATA_TYPE)
+            .setReturnType(PROTO_PACKAGE_NAME + "." + ANNOTATIONS_RETURN_TYPE_NAME)
             .build();
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            CLIENT_PACKAGE_NAME,
+            PROTO_PACKAGE_NAME,
             lroAnnotatedMethod,
             diagCollector,
             longRunningConfigProto,
@@ -248,7 +252,7 @@ public class LongRunningConfigTest {
 
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            CLIENT_PACKAGE_NAME,
+            PROTO_PACKAGE_NAME,
             simpleMethod,
             diagCollector,
             LongRunningConfigProto.getDefaultInstance(),

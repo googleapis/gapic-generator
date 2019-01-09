@@ -87,6 +87,14 @@ public abstract class LongRunningConfig {
     return null;
   }
 
+  private static String qualifyLroTypeName(
+      String typeName, Method method, ProtoParser protoParser) {
+    if (!typeName.contains(".")) {
+      typeName = String.format("%s.%s", protoParser.getProtoPackage(method), typeName);
+    }
+    return typeName;
+  }
+
   /**
    * Creates an instance of LongRunningConfig based on protofile annotations. If there is matching
    * long running config from GAPIC config, use the GAPIC config's timeout values.
@@ -107,15 +115,10 @@ public abstract class LongRunningConfig {
       return null;
     }
 
-    String responseTypeName = operationTypes.getResponseType();
-    String metadataTypeName = operationTypes.getMetadataType();
-
-    if (!responseTypeName.contains(".")) {
-      responseTypeName = String.format("%s.%s", packageName, responseTypeName);
-    }
-    if (!metadataTypeName.contains(".")) {
-      metadataTypeName = String.format("%s.%s", packageName, metadataTypeName);
-    }
+    String responseTypeName =
+        qualifyLroTypeName(operationTypes.getResponseType(), method, protoParser);
+    String metadataTypeName =
+        qualifyLroTypeName(operationTypes.getMetadataType(), method, protoParser);
 
     if (responseTypeName.equals(longRunningConfigProto.getReturnType())
         && metadataTypeName.equals(longRunningConfigProto.getMetadataType())) {
