@@ -68,14 +68,13 @@ public abstract class LongRunningConfig {
 
   @Nullable
   static LongRunningConfig createLongRunningConfig(
-      String packageName,
       Method method,
       DiagCollector diagCollector,
       LongRunningConfigProto longRunningConfigProto,
       ProtoParser protoParser) {
     LongRunningConfig longRunningConfig =
         createLongRunningConfigFromProtoFile(
-            packageName, method, diagCollector, longRunningConfigProto, protoParser);
+            method, diagCollector, longRunningConfigProto, protoParser);
     if (longRunningConfig != null) {
       return longRunningConfig;
     }
@@ -93,7 +92,6 @@ public abstract class LongRunningConfig {
    */
   @Nullable
   private static LongRunningConfig createLongRunningConfigFromProtoFile(
-      String packageName,
       Method method,
       DiagCollector diagCollector,
       LongRunningConfigProto longRunningConfigProto,
@@ -109,13 +107,6 @@ public abstract class LongRunningConfig {
 
     String responseTypeName = operationTypes.getResponseType();
     String metadataTypeName = operationTypes.getMetadataType();
-
-    if (!responseTypeName.contains(".")) {
-      responseTypeName = String.format("%s.%s", packageName, responseTypeName);
-    }
-    if (!metadataTypeName.contains(".")) {
-      metadataTypeName = String.format("%s.%s", packageName, metadataTypeName);
-    }
 
     if (responseTypeName.equals(longRunningConfigProto.getReturnType())
         && metadataTypeName.equals(longRunningConfigProto.getMetadataType())) {

@@ -35,7 +35,6 @@ public class LongRunningConfigTest {
   private static final String GAPIC_CONFIG_METADATA_TYPE = "HeaderType";
   private static final String ANNOTATIONS_RETURN_TYPE_NAME = "BookType";
   private static final String ANNOTATIONS_METADATA_TYPE = "FooterType";
-  private static final String CLIENT_PACKAGE_NAME = "com.google.library.v1";
   private static final boolean TEST_IMPLEMENTS_DELETE = false;
   private static final boolean TEST_IMPLEMENTS_CANCEL = false;
   private static final int TEST_INITIAL_POLL_DELAY = 5;
@@ -105,7 +104,6 @@ public class LongRunningConfigTest {
     DiagCollector diagCollector = new BoundedDiagCollector();
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            CLIENT_PACKAGE_NAME,
             lroAnnotatedMethod,
             diagCollector,
             LongRunningConfigProto.getDefaultInstance(),
@@ -141,11 +139,7 @@ public class LongRunningConfigTest {
     // lroConfigProtoWithPollSettings contains LRO settings.
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            CLIENT_PACKAGE_NAME,
-            simpleMethod,
-            diagCollector,
-            lroConfigProtoWithPollSettings,
-            protoParser);
+            simpleMethod, diagCollector, lroConfigProtoWithPollSettings, protoParser);
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(longRunningConfig).isNotNull();
@@ -173,11 +167,7 @@ public class LongRunningConfigTest {
     // lroAnnotatedMethod contains different settings than that in lroConfigProtoWithPollSettings.
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            CLIENT_PACKAGE_NAME,
-            lroAnnotatedMethod,
-            diagCollector,
-            lroConfigProtoWithPollSettings,
-            protoParser);
+            lroAnnotatedMethod, diagCollector, lroConfigProtoWithPollSettings, protoParser);
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(longRunningConfig).isNotNull();
@@ -217,11 +207,7 @@ public class LongRunningConfigTest {
             .build();
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            CLIENT_PACKAGE_NAME,
-            lroAnnotatedMethod,
-            diagCollector,
-            longRunningConfigProto,
-            protoParser);
+            lroAnnotatedMethod, diagCollector, longRunningConfigProto, protoParser);
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(longRunningConfig).isNotNull();
@@ -248,11 +234,7 @@ public class LongRunningConfigTest {
 
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            CLIENT_PACKAGE_NAME,
-            simpleMethod,
-            diagCollector,
-            LongRunningConfigProto.getDefaultInstance(),
-            protoParser);
+            simpleMethod, diagCollector, LongRunningConfigProto.getDefaultInstance(), protoParser);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(longRunningConfig).isNull();
   }
