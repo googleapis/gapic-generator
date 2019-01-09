@@ -181,7 +181,7 @@ public class FieldStructureParser {
     }
   }
 
-  /** Parses the entity name specified by `path` or null if `path` does not contain `%`. */
+  /** Returns the entity name specified by `path` or null if `path` does not contain `%`. */
   public static String parseEntityName(String path) {
     Scanner scanner = new Scanner(path);
     Preconditions.checkArgument(
