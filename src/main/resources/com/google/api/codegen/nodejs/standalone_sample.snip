@@ -45,27 +45,27 @@
   @switch sample.callingForm
   @case "Request"
     @if apiMethod.hasReturnValue
-      {@methodCallSampleCodeWithReturnValue(apiMethod, sample.initCode, empty())}
+      {@methodCallSampleCodeWithReturnValue(apiMethod, sample.methodInitCode, empty())}
     @else
-      {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample.initCode, empty())}
+      {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample.methodInitCode, empty())}
     @end
   @case "RequestAsyncPaged"
-    {@methodCallSampleCodeForPagedResponse(apiMethod, sample.initCode, empty())}
+    {@methodCallSampleCodeForPagedResponse(apiMethod, sample.methodInitCode, empty())}
   @case "RequestAsyncPagedAll"
-    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample.initCode, empty())}
+    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample.methodInitCode, empty())}
   @case "RequestStreamingBidi"
-    {@bidiStreamingSampleCode(apiMethod, sample.initCode, empty())}
+    {@bidiStreamingSampleCode(apiMethod, sample.methodInitCode, empty())}
   @case "RequestStreamingClient"
-    {@clientStreamingSampleCode(apiMethod, sample.initCode, empty())}
+    {@clientStreamingSampleCode(apiMethod, sample.methodInitCode, empty())}
   @case "RequestStreamingServer"
-    {@initCode(apiMethod, sample.initCode)}
-      {@methodCallSampleCode(apiMethod, sample.initCode)}.on('data', response => {
+    {@initCode(apiMethod, sample.methodInitCode)}
+      {@methodCallSampleCode(apiMethod, sample.methodInitCode)}.on('data', response => {
           // doThingsWith(response)
       });
   @case "LongRunningEventEmitter"
-    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample.initCode, empty())}
+    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample.methodInitCode, empty())}
   @case "LongRunningPromise"
-    {@methodCallSampleCodeLongrunningPromise(apiMethod, sample.initCode, empty())}
+    {@methodCallSampleCodeLongrunningPromise(apiMethod, sample.methodInitCode, empty())}
   @default
     $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
   @end
