@@ -375,7 +375,7 @@
         $incompleteOperation->setDone(false);
         $transport->addResponse($incompleteOperation);
         @if test.hasReturnValue
-            {@initCode(test.mockResponse.initCode, "client")}
+            {@initCode(test.mockResponse.rpcResponseInitCode, "client")}
         @else
             $expectedResponse = new GPBEmpty();
         @end
@@ -493,7 +493,7 @@
 
     // Mock response
     @if test.hasReturnValue
-        {@initCode(test.mockResponse.initCode, "client")}
+        {@initCode(test.mockResponse.rpcResponseInitCode, "client")}
     @else
         $expectedResponse = new GPBEmpty();
     @end

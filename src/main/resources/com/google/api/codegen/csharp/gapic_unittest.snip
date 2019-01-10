@@ -46,14 +46,14 @@
     {
         {@createMock(testClass)}
         {@topLevelInitCode(testCase.requestObjectInitCode)}
-        {@topLevelInitCode(testCase.mockResponse.initCode)}
+        {@topLevelInitCode(testCase.mockResponse.rpcResponseInitCode)}
         mockGrpcClient.Setup(x => x.{@testCase.grpcMethodName}({@testCase.requestObjectInitCode.fieldSettings.get(0).identifier}, It.IsAny<CallOptions>()))
-            .Returns({@testCase.mockResponse.initCode.fieldSettings.get(0).identifier});
+            .Returns({@testCase.mockResponse.rpcResponseInitCode.fieldSettings.get(0).identifier});
         {@testClass.apiClassName} client = new {@testClass.apiClassName}Impl(mockGrpcClient.Object, null);
         {@topLevelInitCode(testCase.initCode)}
         @if testCase.hasReturnValue
             {@testCase.responseTypeName} response = client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
-            Assert.Same({@testCase.mockResponse.initCode.fieldSettings.get(0).identifier}, response);
+            Assert.Same({@testCase.mockResponse.rpcResponseInitCode.fieldSettings.get(0).identifier}, response);
         @else
             client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
         @end
@@ -68,14 +68,14 @@
     {
         {@createMock(testClass)}
         {@topLevelInitCode(testCase.requestObjectInitCode)}
-        {@topLevelInitCode(testCase.mockResponse.initCode)}
+        {@topLevelInitCode(testCase.mockResponse.rpcResponseInitCode)}
         mockGrpcClient.Setup(x => x.{@testCase.grpcMethodName}({@testCase.requestObjectInitCode.fieldSettings.get(0).identifier}, It.IsAny<CallOptions>()))
-            .Returns(new Grpc.Core.AsyncUnaryCall<{@testCase.responseTypeName}>(Task.FromResult({@testCase.mockResponse.initCode.fieldSettings.get(0).identifier}), null, null, null, null));
+            .Returns(new Grpc.Core.AsyncUnaryCall<{@testCase.responseTypeName}>(Task.FromResult({@testCase.mockResponse.rpcResponseInitCode.fieldSettings.get(0).identifier}), null, null, null, null));
         {@testClass.apiClassName} client = new {@testClass.apiClassName}Impl(mockGrpcClient.Object, null);
         {@topLevelInitCode(testCase.initCode)}
         @if testCase.hasReturnValue
             {@testCase.responseTypeName} response = await client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
-            Assert.Same({@testCase.mockResponse.initCode.fieldSettings.get(0).identifier}, response);
+            Assert.Same({@testCase.mockResponse.rpcResponseInitCode.fieldSettings.get(0).identifier}, response);
         @else
             await client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
         @end
@@ -90,13 +90,13 @@
     {
         {@createMock(testClass)}
         {@topLevelInitCode(testCase.initCode)}
-        {@topLevelInitCode(testCase.mockResponse.initCode)}
+        {@topLevelInitCode(testCase.mockResponse.rpcResponseInitCode)}
         mockGrpcClient.Setup(x => x.{@testCase.grpcMethodName}({@testCase.initCode.fieldSettings.get(0).identifier}, It.IsAny<CallOptions>()))
             .Returns(expectedResponse);
         {@testClass.apiClassName} client = new {@testClass.apiClassName}Impl(mockGrpcClient.Object, null);
         @if testCase.hasReturnValue
             {@testCase.responseTypeName} response = client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
-            Assert.Same({@testCase.mockResponse.initCode.fieldSettings.get(0).identifier}, response);
+            Assert.Same({@testCase.mockResponse.rpcResponseInitCode.fieldSettings.get(0).identifier}, response);
         @else
             client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
         @end
@@ -111,13 +111,13 @@
     {
         {@createMock(testClass)}
         {@topLevelInitCode(testCase.initCode)}
-        {@topLevelInitCode(testCase.mockResponse.initCode)}
+        {@topLevelInitCode(testCase.mockResponse.rpcResponseInitCode)}
         mockGrpcClient.Setup(x => x.{@testCase.grpcMethodName}({@testCase.initCode.fieldSettings.get(0).identifier}, It.IsAny<CallOptions>()))
             .Returns(new Grpc.Core.AsyncUnaryCall<{@testCase.responseTypeName}>(Task.FromResult(expectedResponse), null, null, null, null));
         {@testClass.apiClassName} client = new {@testClass.apiClassName}Impl(mockGrpcClient.Object, null);
         @if testCase.hasReturnValue
             {@testCase.responseTypeName} response = await client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
-            Assert.Same({@testCase.mockResponse.initCode.fieldSettings.get(0).identifier}, response);
+            Assert.Same({@testCase.mockResponse.rpcResponseInitCode.fieldSettings.get(0).identifier}, response);
         @else
             await client.{@testCase.clientMethodName}({@rpcMethodCallArgList(testCase.initCode.fieldSettings, FALSE)});
         @end

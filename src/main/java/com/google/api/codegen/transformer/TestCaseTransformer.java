@@ -184,7 +184,9 @@ public class TestCaseTransformer {
                   createGrpcStreamingInitCodeViews(methodContext, initCodeContext, initCode))
               .responseInitCodeList(
                   createGrpcStreamingInitCodeViews(
-                      methodContext, responseInitCodeContext, mockRpcResponseView.initCode()))
+                      methodContext,
+                      responseInitCodeContext,
+                      mockRpcResponseView.rpcResponseInitCode()))
               .build();
     }
 
@@ -331,7 +333,10 @@ public class TestCaseTransformer {
         methodContext
             .getMethodModel()
             .getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
-    return MockRpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
+    return MockRpcResponseView.newBuilder()
+        .typeName(typeName)
+        .rpcResponseInitCode(initCodeView)
+        .build();
   }
 
   private InitCodeContext createResponseInitCodeContext(
