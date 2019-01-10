@@ -64,7 +64,7 @@
   public void {@test.name}() {
     {@addResponse(test)}
 
-    {@initCode(test.initCode)}
+    {@initCode(test.testCaseInitCode)}
 
     {@methodCall(test)}
 
@@ -77,10 +77,10 @@
     {@addException(test)}
 
     try {
-      {@initCode(test.initCode)}
+      {@initCode(test.testCaseInitCode)}
 
       client.{@test.clientMethodName}(\
-          {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -107,7 +107,7 @@
   @switch test.clientMethodType
   @case "PagedFlattenedMethod"
     {@test.responseTypeName} pagedListResponse = client.{@test.clientMethodName}(\
-      {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+      {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
 
     @join pageStreamingResponseView : test.pageStreamingResponseViews
       List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
@@ -123,11 +123,11 @@
     @if test.hasReturnValue
       {@test.responseTypeName} actualResponse =
           client.{@test.clientMethodName}(\
-          {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
       Assert.assertEquals(expectedResponse, actualResponse);
     @else
       client.{@test.clientMethodName}(\
-            {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+            {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
     @end
   @default
     $unhandledCase: {@test.clientMethodType}$

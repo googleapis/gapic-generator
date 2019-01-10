@@ -196,7 +196,7 @@ public class TestCaseTransformer {
         .grpcStreamingType(methodConfig.getGrpcStreamingType())
         .hasRequestParameters(hasRequestParameters)
         .hasReturnValue(hasReturnValue)
-        .initCode(initCode)
+        .testCaseInitCode(initCode)
         .requestObjectInitCode(requestObjectInitCode)
         .mockResponse(mockRpcResponseView)
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))

@@ -82,7 +82,7 @@
   public void {@test.name}() {
     {@addResponse(test)}
 
-    {@initCode(test.initCode)}
+    {@initCode(test.testCaseInitCode)}
 
     {@methodCall(test)}
 
@@ -95,10 +95,10 @@
     {@addException(test)}
 
     try {
-      {@initCode(test.initCode)}
+      {@initCode(test.testCaseInitCode)}
 
       client.{@test.clientMethodName}(\
-          {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -111,7 +111,7 @@
   @@SuppressWarnings("all")
   public void {@test.name}() throws Exception {
     {@addResponse(test)}
-    {@initCode(test.initCode)}
+    {@initCode(test.testCaseInitCode)}
 
     {@streamingMethodCall(test)}
 
@@ -124,7 +124,7 @@
   @@SuppressWarnings("all")
   public void {@test.nameWithException}() throws Exception {
     {@addException(test)}
-    {@initCode(test.initCode)}
+    {@initCode(test.testCaseInitCode)}
 
     {@streamingMethodCallWithException(test)}
 
@@ -152,7 +152,7 @@
             .build();
     {@test.mockServiceVarName}.addResponse(resultOperation);
 
-    {@initCode(test.initCode)}
+    {@initCode(test.testCaseInitCode)}
 
     {@longRunningMethodCall(test)}
 
@@ -165,10 +165,10 @@
     {@addException(test)}
 
     try {
-      {@initCode(test.initCode)}
+      {@initCode(test.testCaseInitCode)}
 
       client.{@test.clientMethodName}(\
-          {@sampleMethodCallArgList(test.initCode.fieldSettings)}).get();
+          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)}).get();
       Assert.fail("No exception raised");
     } catch (ExecutionException e) {
       Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
@@ -235,7 +235,7 @@
   @switch test.clientMethodType
   @case "PagedFlattenedMethod"
     {@test.responseTypeName} pagedListResponse = client.{@test.clientMethodName}(\
-      {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+      {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
 
     @join pageStreamingResponseView : test.pageStreamingResponseViews
       List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
@@ -252,11 +252,11 @@
     @if test.hasReturnValue
       {@test.responseTypeName} actualResponse =
           client.{@test.clientMethodName}(\
-          {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
       Assert.assertEquals(expectedResponse, actualResponse);
     @else
       client.{@test.clientMethodName}(\
-            {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+            {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
     @end
   @default
     $unhandledCase: {@test.clientMethodType}$
@@ -266,7 +266,7 @@
 @private longRunningMethodCall(test)
   {@test.responseTypeName} actualResponse =
       client.{@test.clientMethodName}(\
-          {@sampleMethodCallArgList(test.initCode.fieldSettings)}).get();
+          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)}).get();
   Assert.assertEquals(expectedResponse, actualResponse);
 @end
 
