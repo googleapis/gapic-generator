@@ -18,7 +18,6 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -36,6 +35,7 @@ public abstract class GapicMethodContext implements MethodContext {
       GapicProductConfig productConfig,
       ModelTypeTable typeTable,
       SurfaceNamer namer,
+      ProtoMethodModel method,
       GapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
       FeatureConfig featureConfig) {
@@ -44,25 +44,24 @@ public abstract class GapicMethodContext implements MethodContext {
         namer,
         flatteningConfig,
         featureConfig,
+        method,
         methodConfig,
         surfaceTransformerContext,
         typeTable,
         new ProtoInterfaceModel(apiInterface));
   }
 
-  @Override
-  public MethodModel getMethodModel() {
-    return getMethodConfig().getMethodModel();
-  }
-
   /** The Method for which this object is a transformation context. */
   public Method getMethod() {
-    return ((ProtoMethodModel) getMethodModel()).getProtoMethod();
+    return getMethodModel().getProtoMethod();
   }
 
   public Interface getInterface() {
     return getInterfaceModel().getInterface();
   }
+
+  @Override
+  public abstract ProtoMethodModel getMethodModel();
 
   @Override
   public abstract GapicMethodConfig getMethodConfig();
@@ -106,6 +105,7 @@ public abstract class GapicMethodContext implements MethodContext {
         getProductConfig(),
         getTypeTable().cloneEmpty(),
         getNamer(),
+        getMethodModel(),
         getMethodConfig(),
         getFlatteningConfig(),
         getFeatureConfig());
@@ -124,6 +124,7 @@ public abstract class GapicMethodContext implements MethodContext {
         getProductConfig(),
         getTypeTable(),
         getNamer(),
+        getMethodModel(),
         getMethodConfig(),
         getFlatteningConfig() == null
             ? null
