@@ -219,7 +219,7 @@ service LibraryService {
     option (google.api.http) = {
       post: "/v1/{name=archives/*/books/*}"
       additional_bindings {
-        post: "/v1/{name=bookShelves/*/books/*}"
+        post: "/v1/{alt_book_name=bookShelves/*/books/*}"
       }
     };
     option (google.api.method_signature) = {
@@ -241,24 +241,24 @@ service LibraryService {
   }
 
   // Test server streaming, non-paged responses.
-  // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
   rpc StreamBooks(StreamBooksRequest) returns (stream Book) {
+    // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
     option (google.api.method_signature) = {
       fields: ["name"]
     };
   }
 
   // Test bidi-streaming.
-  // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
   rpc DiscussBook(stream DiscussBookRequest) returns (stream Comment) {
+    // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
     option (google.api.method_signature) = {
       fields: ["name"]
     };
   }
 
   // Test client streaming.
-  // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
   rpc MonologAboutBook(stream DiscussBookRequest) returns (Comment) {
+    // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
     option (google.api.method_signature) = {
       fields: ["name"]
     };
@@ -414,7 +414,7 @@ service LibraryService {
 // Message comment may include special characters: <>&"`'@.
 message Book {
   // The resource name of the book.
-  // Book names have the form `shelves/{shelf_id}/books/{book_id}`.
+  // Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
   // Message field comment may include special characters: <>&"`'@.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
@@ -548,7 +548,7 @@ message SomeMessage2 {
 // A Shelf contains a collection of books with a theme.
 message Shelf {
   // The resource name of the shelf.
-  // Shelf names have the form `shelves/{shelf_id}`.
+  // Shelf names have the form `bookShelves/{shelf_id}`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource).path = "shelves/{shelf_id}"];
@@ -692,7 +692,11 @@ message PublishSeriesResponse {
   // The names of the books in the series that were published
   repeated string book_names = 1 [
     (google.api.field_behavior) = REQUIRED];
-  SeriesUuid series_uuid = 2;
+
+  repeated Book books = 2;
+
+  // Uniquely identifies the series published
+  SeriesUuid series_uuid = 3;
 }
 
 // Request message for LibraryService.GetBook.
@@ -888,6 +892,8 @@ message DiscussBookRequest {
 
   // The new comment.
   Comment comment = 2;
+
+  bytes image = 3;
 }
 
 // Test repeated field with resource name format in request

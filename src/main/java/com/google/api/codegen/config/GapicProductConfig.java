@@ -197,7 +197,14 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     // Toggle on/off proto annotations parsing.
-    ProtoParser protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, null));
+    ProtoParser protoParser;
+    // TODO(andrealin): Expose command-line option for toggling proto annotations parsing.
+    if (configProto == null) {
+      // By default, enable proto annotations parsing when no GAPIC config is given.
+      protoParser = new ProtoParser(true);
+    } else {
+      protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, null));
+    }
     if (configProto == null) {
       configProto = ConfigProto.getDefaultInstance();
     }

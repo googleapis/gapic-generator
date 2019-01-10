@@ -65,7 +65,7 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
 
   @Override
   public boolean enableProtoAnnotations() {
-    return true;
+    return false;
   }
 
   public static Builder newBuilder() {
