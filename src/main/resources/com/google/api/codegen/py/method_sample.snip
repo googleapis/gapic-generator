@@ -33,12 +33,12 @@
 @end
 
 @private incodeSampleSetup(apiMethod, sample)
-  {@importList(sample.initCode.importSection.appImports)}
+  {@importList(sample.sampleInitCode.importSection.appImports)}
 
   client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
 
-  @if sample.initCode.lines
-    {@initCode(sample.initCode.lines)}
+  @if sample.sampleInitCode.lines
+    {@initCode(sample.sampleInitCode.lines)}
 
   @end
 @end
@@ -52,19 +52,19 @@
 @private incodeSampleCall(apiMethod, sample)
   @switch sample.callingForm
   @case "Request"
-    {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.initCode)}
+    {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample.sampleInitCode)}
   @case "RequestPaged"
-    {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample.initCode)}
+    {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample.sampleInitCode)}
   @case "RequestPagedAll"
-    {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample.initCode)}
+    {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample.sampleInitCode)}
   @case "RequestStreamingBidi"
-    {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.initCode)}
+    {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample.sampleInitCode)}
   @case "RequestStreamingClient"
-    {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample.initCode)}
+    {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample.sampleInitCode)}
   @case "RequestStreamingServer"
-    {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample.initCode)}
+    {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample.sampleInitCode)}
   @case "LongRunningPromise"
-    {@lroSampleCode(apiMethod, sample.initCode)}
+    {@lroSampleCode(apiMethod, sample.sampleInitCode)}
   @default
     $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
   @end
