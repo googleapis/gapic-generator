@@ -243,6 +243,7 @@ service LibraryService {
   // Test server streaming, non-paged responses.
   rpc StreamBooks(StreamBooksRequest) returns (stream Book) {
     // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+
     option (google.api.method_signature) = {
       fields: ["name"]
     };
@@ -251,6 +252,7 @@ service LibraryService {
   // Test bidi-streaming.
   rpc DiscussBook(stream DiscussBookRequest) returns (stream Comment) {
     // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+
     option (google.api.method_signature) = {
       fields: ["name"]
     };
@@ -259,6 +261,7 @@ service LibraryService {
   // Test client streaming.
   rpc MonologAboutBook(stream DiscussBookRequest) returns (Comment) {
     // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+
     option (google.api.method_signature) = {
       fields: ["name"]
     };
@@ -991,8 +994,8 @@ message TestOptionalRequiredFlatteningParamsRequest {
     (google.api.resource_reference) = "Book"
   ];
   string optional_singular_resource_name_oneof = 61 [
-    // Test that we can reference Resource Name One Of by its name.
     (google.api.resource_reference) = "google.example.library.v1.Book"
+    // Test that we can reference Resource Name One Of by its name.
   ];
   string optional_singular_resource_name_common = 64 [
     (google.api.resource_reference) = "Project"
