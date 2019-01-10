@@ -221,9 +221,6 @@ public abstract class GapicProductConfig implements ProductConfig {
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtos, configProto, defaultPackage, resourceDefs, resourceSetDefs, protoParser);
 
-    // Update the protoParser with new info.
-    protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, messageConfigs));
-
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(
             diagCollector,
