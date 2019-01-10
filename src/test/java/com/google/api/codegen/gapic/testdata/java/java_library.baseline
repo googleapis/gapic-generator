@@ -76,6 +76,49 @@ task allJars(type: Copy) {
   // Replace with `from configurations.testRuntime, jar` to include test dependencies
   from configurations.runtime, jar
 }
+============== file: samples/build.gradle ==============
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+apply plugin: 'java'
+
+description = 'GAPIC samples for google-cloud-library-v1'
+group = 'com.google.cloud'
+version = '0.0.0-SNAPSHOT'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+
+dependencies {
+  compile 'com.google.api:gax:1.0.0'
+  compile 'com.google.api:gax-grpc:1.0.0'
+  compile 'io.grpc:grpc-netty-shaded:1.9.0'
+  compile 'com.google.api:api-common:0.0.2'
+  compile project('gapic-google-cloud-library-v1')
+}
+
+task fatJar(type: Jar) {
+  baseName = 'sample-google-cloud-library-v1-all'
+  from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+  with jar
+}
+
+clean {
+  delete 'all-jars'
+}
+
 ============== file: src/main/java/com/google/example/library/v1/LibraryClient.java ==============
 /*
  * Copyright 2019 Google LLC
