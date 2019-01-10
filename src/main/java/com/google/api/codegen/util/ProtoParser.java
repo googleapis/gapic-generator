@@ -94,6 +94,10 @@ public class ProtoParser {
 
   @Nullable
   public String getHeaderParam(Method method) {
+    if (!enableProtoAnnotations) {
+      return null;
+    }
+
     HttpRule httpRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
     if (httpRule == null) {
       return null;
