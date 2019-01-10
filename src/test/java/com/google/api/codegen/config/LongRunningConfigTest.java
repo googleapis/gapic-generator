@@ -109,7 +109,6 @@ public class LongRunningConfigTest {
     DiagCollector diagCollector = new BoundedDiagCollector();
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            PROTO_PACKAGE_NAME,
             lroAnnotatedMethod,
             diagCollector,
             LongRunningConfigProto.getDefaultInstance(),
@@ -145,11 +144,7 @@ public class LongRunningConfigTest {
     // lroConfigProtoWithPollSettings contains LRO settings.
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            PROTO_PACKAGE_NAME,
-            simpleMethod,
-            diagCollector,
-            lroConfigProtoWithPollSettings,
-            protoParser);
+            simpleMethod, diagCollector, lroConfigProtoWithPollSettings, protoParser);
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(longRunningConfig).isNotNull();
@@ -177,11 +172,7 @@ public class LongRunningConfigTest {
     // lroAnnotatedMethod contains different settings than that in lroConfigProtoWithPollSettings.
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            PROTO_PACKAGE_NAME,
-            lroAnnotatedMethod,
-            diagCollector,
-            lroConfigProtoWithPollSettings,
-            protoParser);
+            lroAnnotatedMethod, diagCollector, lroConfigProtoWithPollSettings, protoParser);
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(longRunningConfig).isNotNull();
@@ -221,11 +212,7 @@ public class LongRunningConfigTest {
             .build();
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            PROTO_PACKAGE_NAME,
-            lroAnnotatedMethod,
-            diagCollector,
-            longRunningConfigProto,
-            protoParser);
+            lroAnnotatedMethod, diagCollector, longRunningConfigProto, protoParser);
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(longRunningConfig).isNotNull();
@@ -252,11 +239,7 @@ public class LongRunningConfigTest {
 
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
-            PROTO_PACKAGE_NAME,
-            simpleMethod,
-            diagCollector,
-            LongRunningConfigProto.getDefaultInstance(),
-            protoParser);
+            simpleMethod, diagCollector, LongRunningConfigProto.getDefaultInstance(), protoParser);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(longRunningConfig).isNull();
   }

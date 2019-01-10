@@ -68,14 +68,13 @@ public abstract class LongRunningConfig {
 
   @Nullable
   static LongRunningConfig createLongRunningConfig(
-      String packageName,
       Method method,
       DiagCollector diagCollector,
       LongRunningConfigProto longRunningConfigProto,
       ProtoParser protoParser) {
     LongRunningConfig longRunningConfig =
         createLongRunningConfigFromProtoFile(
-            packageName, method, diagCollector, longRunningConfigProto, protoParser);
+            method, diagCollector, longRunningConfigProto, protoParser);
     if (longRunningConfig != null) {
       return longRunningConfig;
     }
@@ -101,7 +100,6 @@ public abstract class LongRunningConfig {
    */
   @Nullable
   private static LongRunningConfig createLongRunningConfigFromProtoFile(
-      String packageName,
       Method method,
       DiagCollector diagCollector,
       LongRunningConfigProto longRunningConfigProto,
