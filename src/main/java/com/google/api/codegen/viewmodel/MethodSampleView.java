@@ -28,7 +28,7 @@ public abstract class MethodSampleView {
   public abstract CallingForm callingForm();
 
   /** The initialization code constructed from this samples value set and calling form. */
-  public abstract InitCodeView initCode();
+  public abstract InitCodeView sampleInitCode();
 
   /** The response printing code. */
   public abstract ImmutableList<OutputView> outputs();
@@ -52,7 +52,7 @@ public abstract class MethodSampleView {
 
     public abstract Builder callingForm(CallingForm val);
 
-    public abstract Builder initCode(InitCodeView val);
+    public abstract Builder sampleInitCode(InitCodeView val);
 
     public abstract Builder outputs(ImmutableList<OutputView> val);
 

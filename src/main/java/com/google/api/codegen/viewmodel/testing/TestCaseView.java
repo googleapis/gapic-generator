@@ -26,7 +26,7 @@ public abstract class TestCaseView {
 
   public abstract String clientMethodName();
 
-  public abstract InitCodeView initCode();
+  public abstract InitCodeView testCaseInitCode();
 
   @Nullable // Use in C#
   public abstract InitCodeView requestObjectInitCode();
@@ -106,7 +106,7 @@ public abstract class TestCaseView {
 
     public abstract Builder mockServiceVarName(String val);
 
-    public abstract Builder initCode(InitCodeView val);
+    public abstract Builder testCaseInitCode(InitCodeView val);
 
     public abstract Builder requestObjectInitCode(InitCodeView val);
 
