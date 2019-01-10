@@ -143,6 +143,10 @@ anchor_run_ruby: &anchor_run_ruby
           echo 'export TEST_API="pubsub"' >> $BASH_ENV
     # https://github.com/googleapis/gapic-generator/issues/2503 blocks Pubsub testing.
     - run:
+        name: Prepare for Speech testing.
+        command: |
+          echo 'export TEST_API="speech"' >> $BASH_ENV
+    - run:
         name: Test Speech.
         <<: *anchor_test_ruby_client
     - run:
