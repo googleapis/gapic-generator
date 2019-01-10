@@ -54,12 +54,12 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
     ArrayList<String> dirs = new ArrayList<>();
     boolean haveSample = !Strings.isNullOrEmpty(methodSample);
 
-    if (haveSample) {
-      dirs.add(SAMPLES_DIRECTORY);
-    }
-
     if (!Strings.isNullOrEmpty(prefix)) {
       dirs.add(prefix);
+    }
+
+    if (haveSample) {
+      dirs.add(SAMPLES_DIRECTORY);
     }
 
     if (shouldAppendPackage && !Strings.isNullOrEmpty(config.getPackageName())) {
