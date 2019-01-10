@@ -741,7 +741,12 @@ public class InitCodeTransformer {
             entityValue = context.getNamer().injectRandomStringGeneratorCode(initValue.getValue());
             break;
           case Literal:
-            entityValue = initValue.getValue();
+            entityValue =
+                context
+                    .getTypeTable()
+                    .renderPrimitiveValue(
+                        ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
+                        initValue.getValue());
             break;
           default:
             throw new IllegalArgumentException("Unhandled init value type");
