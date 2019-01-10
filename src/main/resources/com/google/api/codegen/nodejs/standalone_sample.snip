@@ -45,27 +45,27 @@
   @switch sample.callingForm
   @case "Request"
     @if apiMethod.hasReturnValue
-      {@methodCallSampleCodeWithReturnValue(apiMethod, sample.methodInitCode, empty())}
+      {@methodCallSampleCodeWithReturnValue(apiMethod, sample.sampleInitCode, empty())}
     @else
-      {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample.methodInitCode, empty())}
+      {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample.sampleInitCode, empty())}
     @end
   @case "RequestAsyncPaged"
-    {@methodCallSampleCodeForPagedResponse(apiMethod, sample.methodInitCode, empty())}
+    {@methodCallSampleCodeForPagedResponse(apiMethod, sample.sampleInitCode, empty())}
   @case "RequestAsyncPagedAll"
-    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample.methodInitCode, empty())}
+    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample.sampleInitCode, empty())}
   @case "RequestStreamingBidi"
-    {@bidiStreamingSampleCode(apiMethod, sample.methodInitCode, empty())}
+    {@bidiStreamingSampleCode(apiMethod, sample.sampleInitCode, empty())}
   @case "RequestStreamingClient"
-    {@clientStreamingSampleCode(apiMethod, sample.methodInitCode, empty())}
+    {@clientStreamingSampleCode(apiMethod, sample.sampleInitCode, empty())}
   @case "RequestStreamingServer"
-    {@initCode(apiMethod, sample.methodInitCode)}
-      {@methodCallSampleCode(apiMethod, sample.methodInitCode)}.on('data', response => {
+    {@initCode(apiMethod, sample.sampleInitCode)}
+      {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}.on('data', response => {
           // doThingsWith(response)
       });
   @case "LongRunningEventEmitter"
-    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample.methodInitCode, empty())}
+    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample.sampleInitCode, empty())}
   @case "LongRunningPromise"
-    {@methodCallSampleCodeLongrunningPromise(apiMethod, sample.methodInitCode, empty())}
+    {@methodCallSampleCodeLongrunningPromise(apiMethod, sample.sampleInitCode, empty())}
   @default
     $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
   @end

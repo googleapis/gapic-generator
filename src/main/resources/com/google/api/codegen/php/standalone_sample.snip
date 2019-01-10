@@ -16,11 +16,11 @@
     // [START {@sample.regionTag}]
     require {@sampleFile.extraInfo.autoloadPath};
 
-    @if sample.methodInitCode.importSection.appImports
-        {@importList(sample.methodInitCode.importSection.appImports)}
+    @if sample.sampleInitCode.importSection.appImports
+        {@importList(sample.sampleInitCode.importSection.appImports)}
 
     @end
-    function {@sample.sampleFunctionName}({@formalArgs(sample.methodInitCode.argDefaultParams)})
+    function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)})
     {
         // [START {@sample.regionTag}_core]
 
@@ -41,8 +41,8 @@
             ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
 
         @end
-        @if sample.methodInitCode.lines
-            {@methodInitCode(sample.methodInitCode, apiMethod.apiVariableName)}
+        @if sample.sampleInitCode.lines
+            {@sampleInitCode(sample.sampleInitCode, apiMethod.apiVariableName)}
 
         @end
         try {
@@ -84,19 +84,19 @@
     }
     // [END {@sample.regionTag}]
     {@processCliArguments(sample)}
-    {@sample.sampleFunctionName}({@formalArgs(sample.methodInitCode.argDefaultParams)});
+    {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)});
 @end
 
 @private processCliArguments(sample)
-    @if sample.methodInitCode.argDefaultParams.size
+    @if sample.sampleInitCode.argDefaultParams.size
 
-        {@optsArray(sample.methodInitCode.argDefaultParams)}
-        {@defaultOptionsArray(sample.methodInitCode.argDefaultParams)}
+        {@optsArray(sample.sampleInitCode.argDefaultParams)}
+        {@defaultOptionsArray(sample.sampleInitCode.argDefaultParams)}
         $options = getopt('', $opts);
         $options += $defaultOptions;
 
-        @if sample.methodInitCode.argDefaultParams
-            @join param : sample.methodInitCode.argDefaultParams
+        @if sample.sampleInitCode.argDefaultParams
+            @join param : sample.sampleInitCode.argDefaultParams
                 {@variable(param.identifier)} = $options['{@param.identifier}'];
             @end
 
@@ -263,15 +263,15 @@
     }
 @end
 
-@private methodInitCode(methodInitCode, apiVariableName)
-    @if methodInitCode.argDefaultLines
-        @join line : util.pretty(initCodeLines(methodInitCode.argDefaultLines, apiVariableName))
+@private sampleInitCode(sampleInitCode, apiVariableName)
+    @if sampleInitCode.argDefaultLines
+        @join line : util.pretty(initCodeLines(sampleInitCode.argDefaultLines, apiVariableName))
           // {@line}
         @end
 
 
     @end
-    {@initCodeLines(methodInitCode.lines, apiVariableName)}
+    {@initCodeLines(sampleInitCode.lines, apiVariableName)}
 @end
 
 @private initCodeLines(lines, apiVariableName)
@@ -293,15 +293,15 @@
     @end
 @end
 
-@private sampleMethodCallArgList(methodInitCode)
-    @join fieldSetting : methodInitCode.requiredFieldSettings on ", "
+@private sampleMethodCallArgList(sampleInitCode)
+    @join fieldSetting : sampleInitCode.requiredFieldSettings on ", "
         ${@fieldSetting.identifier}
     @end
-    @if methodInitCode.optionalFieldSettings
-        @if methodInitCode.requiredFieldSettings
+    @if sampleInitCode.optionalFieldSettings
+        @if sampleInitCode.requiredFieldSettings
             ,{@" "}
         @end
-        {@optionalField(methodInitCode.optionalFieldSettings)}
+        {@optionalField(sampleInitCode.optionalFieldSettings)}
     @end
 @end
 

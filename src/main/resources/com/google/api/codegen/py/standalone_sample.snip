@@ -24,7 +24,7 @@
 
   @# [START {@sample.regionTag}]
 
-  {@importList(sample.methodInitCode.importSection.appImports)}
+  {@importList(sample.sampleInitCode.importSection.appImports)}
   @if sample.outputImports.size
     {@importList(sample.outputImports)}
   @end
@@ -34,15 +34,15 @@
 
     @end
 
-    def {@sample.sampleFunctionName}({@formalArgs(sample.methodInitCode.argDefaultParams)}):
+    def {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}):
       """{@sample.valueSet.description}"""
 
       @# [START {@sample.regionTag}_core]
 
       client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
 
-      @if sample.methodInitCode.argDefaultLines
-        @join line : util.pretty(initCode(sample.methodInitCode.argDefaultLines))
+      @if sample.sampleInitCode.argDefaultLines
+        @join line : util.pretty(initCode(sample.sampleInitCode.argDefaultLines))
           @# {@line}
         @end
 
@@ -50,8 +50,8 @@
         # FIXME(hzyi): handle ListInitType, MapInitType and StructInitType correctly
         {@convertTextCode}
       @end
-      @if sample.methodInitCode.lines
-        {@initCode(sample.methodInitCode.lines)}
+      @if sample.sampleInitCode.lines
+        {@initCode(sample.sampleInitCode.lines)}
 
       @end
       @switch sample.callingForm
@@ -81,12 +81,12 @@
     import argparse
 
     parser = argparse.ArgumentParser()
-    @join param : sample.methodInitCode.argDefaultParams
+    @join param : sample.sampleInitCode.argDefaultParams
       parser.add_argument('--{@param.identifier}', type={@param.typeName}, default={@renderInitValue(param.initValue)})
     @end
     args = parser.parse_args()
 
-    {@sample.sampleFunctionName}({@actualArgs(sample.methodInitCode.argDefaultParams)})
+    {@sample.sampleFunctionName}({@actualArgs(sample.sampleInitCode.argDefaultParams)})
 
   if __name__ == '__main__':
     main()
@@ -105,7 +105,7 @@
 @end
 
 @private convertText(sample)
-  @join line : sample.methodInitCode.argDefaultParams
+  @join line : sample.sampleInitCode.argDefaultParams
     @if line.lineType == "SimpleInitLine"
       @if line.typeName == "str"
         if isinstance({@line.identifier}, six.binary_type):
@@ -116,20 +116,20 @@
 @end
 
 @private optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)
-  {@singularResponseSampleCode(apiMethod, sample.methodInitCode)}
+  {@singularResponseSampleCode(apiMethod, sample.sampleInitCode)}
   {@processResponse(sample)}
 @end
 
 @private pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)
   @# Iterate over results one page at a time
-  for page in {@pagedMethodCallSampleCode(apiMethod, sample.methodInitCode)}:
+  for page in {@pagedMethodCallSampleCode(apiMethod, sample.sampleInitCode)}:
       for response_item in page:
           {@processResponse(sample)}
 @end
 
 @private pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)
   @# Iterate over all results
-  for response_item in {@methodCallSampleCode(apiMethod, sample.methodInitCode)}:
+  for response_item in {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}:
       {@processResponse(sample)}
 @end
 
@@ -140,7 +140,7 @@
 
 @private optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)
   requests = [request]
-  {@singularResponseSampleCode(apiMethod, sample.methodInitCode)}
+  {@singularResponseSampleCode(apiMethod, sample.sampleInitCode)}
   {@processResponse(sample)}
 @end
 
@@ -149,7 +149,7 @@
 @end
 
 @private lroSampleCode(apiMethod, sample)
-  operation = {@methodCallSampleCode(apiMethod, sample.methodInitCode)}
+  operation = {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}
 
   print('Waiting for operation to complete...')
   response = operation.result()
@@ -157,52 +157,52 @@
   {@processResponse(sample)}
 @end
 
-@private singularResponseSampleCode(apiMethod, methodInitCode)
+@private singularResponseSampleCode(apiMethod, sampleInitCode)
   @if apiMethod.hasReturnValue
-    response = {@methodCallSampleCode(apiMethod, methodInitCode)}
+    response = {@methodCallSampleCode(apiMethod, sampleInitCode)}
   @else
-    {@methodCallSampleCode(apiMethod, methodInitCode)}
+    {@methodCallSampleCode(apiMethod, sampleInitCode)}
   @end
 @end
 
 # Render the API method call itself
-@private methodCallSampleCode(apiMethod, methodInitCode)
+@private methodCallSampleCode(apiMethod, sampleInitCode)
   @if apiMethod.hasRequestStreaming
     client.{@apiMethod.name}(requests)
   @else
     client.{@apiMethod.name}(\
-      {@sampleMethodCallArgList(methodInitCode)}\
+      {@sampleMethodCallArgList(sampleInitCode)}\
     )
   @end
 @end
 
 @private responseStreamingSampleCode(apiMethod, sample)
-  for response_item in {@methodCallSampleCode(apiMethod, sample.methodInitCode)}:
+  for response_item in {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}:
       {@processResponse(sample)}
 @end
 
 # Render the API method call for page streaming
-@private pagedMethodCallSampleCode(apiMethod, methodInitCode)
+@private pagedMethodCallSampleCode(apiMethod, sampleInitCode)
   client.{@apiMethod.name}(\
-    {@sampleMethodCallArgList(methodInitCode)}\
+    {@sampleMethodCallArgList(sampleInitCode)}\
     ).pages
 @end
 
-@private sampleMethodCallArgListAndComma(methodInitCode)
-  @if methodInitCode.fieldSettings
-    {@sampleMethodCallArgList(methodInitCode)}, {@""}
+@private sampleMethodCallArgListAndComma(sampleInitCode)
+  @if sampleInitCode.fieldSettings
+    {@sampleMethodCallArgList(sampleInitCode)}, {@""}
   @end
 @end
 
-@private sampleMethodCallArgList(methodInitCode)
-  @join fieldSetting : methodInitCode.requiredFieldSettings on ", "
+@private sampleMethodCallArgList(sampleInitCode)
+  @join fieldSetting : sampleInitCode.requiredFieldSettings on ", "
     {@fieldSetting.identifier}
   @end
-  @if methodInitCode.optionalFieldSettings
-    @if methodInitCode.requiredFieldSettings
+  @if sampleInitCode.optionalFieldSettings
+    @if sampleInitCode.requiredFieldSettings
       ,{@" "}
     @end
-    @join fieldSetting : methodInitCode.optionalFieldSettings on ", "
+    @join fieldSetting : sampleInitCode.optionalFieldSettings on ", "
       {@fieldSetting.fieldName}={@fieldSetting.identifier}
     @end
   @end

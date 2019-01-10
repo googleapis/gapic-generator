@@ -39,21 +39,21 @@
   @switch sample.callingForm
   @case "Request"
     @if apiMethod.hasReturnValue
-      {@methodCallSampleCodeWithReturnValue(apiMethod, sample.methodInitCode, additionalCallback)}
+      {@methodCallSampleCodeWithReturnValue(apiMethod, sample.sampleInitCode, additionalCallback)}
     @else
-      {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample.methodInitCode, additionalCallback)}
+      {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample.sampleInitCode, additionalCallback)}
     @end
   @case "RequestAsyncPaged"
-    {@methodCallSampleCodeForPagedResponse(apiMethod, sample.methodInitCode, additionalCallback)}
+    {@methodCallSampleCodeForPagedResponse(apiMethod, sample.sampleInitCode, additionalCallback)}
   @case "RequestAsyncPagedAll"
-    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample.methodInitCode, additionalCallback)}
+    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample.sampleInitCode, additionalCallback)}
   @case "RequestStreamingBidi"
-    {@bidiStreamingSampleCode(apiMethod, sample.methodInitCode, additionalCallback)}
+    {@bidiStreamingSampleCode(apiMethod, sample.sampleInitCode, additionalCallback)}
   @case "RequestStreamingClient"
-    {@clientStreamingSampleCode(apiMethod, sample.methodInitCode, additionalCallback)}
+    {@clientStreamingSampleCode(apiMethod, sample.sampleInitCode, additionalCallback)}
   @case "RequestStreamingServer"
-    {@initCode(apiMethod, sample.methodInitCode)}
-    {@methodCallSampleCode(apiMethod, sample.methodInitCode)}.on('data', response => {
+    {@initCode(apiMethod, sample.sampleInitCode)}
+    {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}.on('data', response => {
       @if additionalCallback
         console.log(response);
         {@additionalCallback}();
@@ -62,9 +62,9 @@
       @end
     });
   @case "LongRunningEventEmitter"
-    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample.methodInitCode, additionalCallback)}
+    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample.sampleInitCode, additionalCallback)}
   @case "LongRunningPromise"
-    {@methodCallSampleCodeLongrunningPromise(apiMethod, sample.methodInitCode, additionalCallback)}
+    {@methodCallSampleCodeLongrunningPromise(apiMethod, sample.sampleInitCode, additionalCallback)}
   @default
     $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
   @end

@@ -152,7 +152,7 @@ public class SampleTransformer {
     // to
     // use is the first one on the list, since we set it in the overload of generateSamples.
     if (methodSampleViews.size() > 0) {
-      methodViewBuilder.initCode(methodSampleViews.get(0).methodInitCode());
+      methodViewBuilder.initCode(methodSampleViews.get(0).sampleInitCode());
 
       // Don't emit samples that were specifically generated for backward-compatibility. We only
       // wanted them for initCode above.
@@ -261,7 +261,7 @@ public class SampleTransformer {
             MethodSampleView.newBuilder()
                 .callingForm(form)
                 .valueSet(SampleValueSetView.of(valueSet))
-                .methodInitCode(initCodeView)
+                .sampleInitCode(initCodeView)
                 .outputs(outputViews)
                 .outputImports(
                     outputTransformer

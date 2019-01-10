@@ -9,19 +9,19 @@
     // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
     package {@sampleFile.fileHeader.examplePackageName};
     
-    @if sample.methodInitCode.argDefaultParams.size
+    @if sample.sampleInitCode.argDefaultParams.size
       import org.apache.commons.cli.CommandLine;
       import org.apache.commons.cli.DefaultParser;
       import org.apache.commons.cli.Option;
       import org.apache.commons.cli.Options;
     @end
     // [START {@sample.regionTag}]
-    @if sample.methodInitCode.importSection.appImports.size
-      {@importList(sample.methodInitCode.importSection.appImports)}
+    @if sample.sampleInitCode.importSection.appImports.size
+      {@importList(sample.sampleInitCode.importSection.appImports)}
 
     @end
     public class {@sampleFile.classView.name} {
-      public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.methodInitCode.argDefaultParams)}) {
+      public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)}) {
         // [START {@sample.regionTag}_core]
         try ({@apiMethod.apiClassName} {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.create()) {
           @let coreSampleCode = generateSample(apiMethod, sample)
@@ -34,11 +34,11 @@
       }
 
       public static void main(String[] args) {
-        @if sample.methodInitCode.argDefaultParams.size
+        @if sample.sampleInitCode.argDefaultParams.size
           {@processCliArguments(sample)}
 
         @end
-        {@sample.sampleFunctionName}({@commaSeparatedArgs(sample.methodInitCode.argDefaultParams)});
+        {@sample.sampleFunctionName}({@commaSeparatedArgs(sample.sampleInitCode.argDefaultParams)});
       }
     }
     // FIXME: Insert here clean-up code.
@@ -90,14 +90,14 @@
 # The snippets are modified versions of those in method_sample.snip
 # since standalone samples can perform more sophisticated response handling
 @private pagedIterableMethodSampleCode(apiMethod, sample)
-  {@initCode(sample.methodInitCode)}
+  {@initCode(sample.sampleInitCode)}
   for ({@apiMethod.listMethod.resourceTypeName} responseItem : {@sampleSyncMethodCall(apiMethod)}.{@apiMethod.listMethod.iterateMethodName}()) {
     {@processResponse(sample)}
   }
 @end
 
 @private pagedCallableMethodSampleCode(apiMethod, sample)
-  {@initCode(sample.methodInitCode)}
+  {@initCode(sample.sampleInitCode)}
   ApiFuture<{@apiMethod.responseTypeName}> future = {@sampleFutureMethodCall(apiMethod)};
 
   // Do something
@@ -108,11 +108,11 @@
 @end
 
 @private unpagedListCallableMethodSampleCode(apiMethod, sample)
-  {@initCode(sample.methodInitCode)}
+  {@initCode(sample.sampleInitCode)}
   while (true) {
     {@apiMethod.responseTypeName} response = \
         {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
-        {@sampleMethodCallArgList(sample.methodInitCode.fieldSettings)});
+        {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)});
     for ({@apiMethod.listMethod.resourceTypeName} responseItem : \
         {@resourceListGetCall(apiMethod)}) {
       {@processResponse(sample)}
@@ -136,7 +136,7 @@
 @end
 
 @private syncMethodSampleCode(apiMethod, sample)
-  {@initCode(sample.methodInitCode)}
+  {@initCode(sample.sampleInitCode)}
   @if apiMethod.hasReturnValue
     {@apiMethod.responseTypeName} response = {@sampleSyncMethodCall(apiMethod)};
   @else
@@ -145,13 +145,13 @@
 @end
 
 @private asyncOperationMethodSampleCode(apiMethod, sample)
-  {@initCode(sample.methodInitCode)}
+  {@initCode(sample.sampleInitCode)}
   {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-      {@sampleMethodCallArgList(sample.methodInitCode.fieldSettings)}).get();
+      {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)}).get();
 @end
 
 @private callableMethodSampleCode(apiMethod, sample)
-  {@initCode(sample.methodInitCode)}
+  {@initCode(sample.sampleInitCode)}
   ApiFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
 
   // Do something
@@ -164,7 +164,7 @@
 @end
 
 @private asyncOperationCallableMethodSampleCode(apiMethod, sample)
-  {@initCode(sample.methodInitCode)}
+  {@initCode(sample.sampleInitCode)}
   OperationFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
 
   // Do something
@@ -189,7 +189,7 @@
   BidiStream<{@apiMethod.callableMethod.requestType}, {@apiMethod.callableMethod.genericAwareResponseType}> bidiStream =
       {@apiMethod.apiVariableName}.{@apiMethod.name}().call();
 
-  {@initCode(sample.methodInitCode)}
+  {@initCode(sample.sampleInitCode)}
   bidiStream.send(request);
   for ({@apiMethod.callableMethod.genericAwareResponseType} responseItem : bidiStream) {
     {@processResponse(sample)}
@@ -197,10 +197,10 @@
 @end
 
 @private serverStreamingCallableSampleCode(apiMethod, sample)
-  {@initCode(sample.methodInitCode)}
+  {@initCode(sample.sampleInitCode)}
 
   ServerStream<{@apiMethod.callableMethod.genericAwareResponseType}> stream = {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
-      {@sampleMethodCallArgList(sample.methodInitCode.fieldSettings)});
+      {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)});
   for ({@apiMethod.callableMethod.genericAwareResponseType} responseItem : stream) {
     {@processResponse(sample)}
   }
@@ -211,7 +211,7 @@
   ApiStreamObserver<{@apiMethod.callableMethod.requestType}> requestObserver =
       {@apiMethod.apiVariableName}.{@apiMethod.name}().clientStreamingCall(responseObserver);
 
-  {@initCode(sample.methodInitCode)}
+  {@initCode(sample.sampleInitCode)}
   requestObserver.onNext(request);
 @end
 
@@ -225,7 +225,7 @@
 
 @private processCliArguments(sample)
   Options options = new Options();
-  @join param : sample.methodInitCode.argDefaultParams
+  @join param : sample.sampleInitCode.argDefaultParams
     options.addOption(
         Option.builder("")
           .required(false)
@@ -235,7 +235,7 @@
   @end
 
   CommandLine cl = (new DefaultParser()).parse(options, args);
-  @join param : sample.methodInitCode.argDefaultParams
+  @join param : sample.sampleInitCode.argDefaultParams
     @switch param.typeName
     @case "String"
       String {@param.identifier} = cl.getOptionValue("{@param.identifier}", {@renderInitValue(param.initValue)});
