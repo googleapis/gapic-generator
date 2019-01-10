@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.config.*;
-import com.google.api.codegen.gapic.ProtoFiles;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.*;
@@ -407,8 +406,25 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
             .map(Interface::getFile)
             .collect(ImmutableSet.toImmutableSet());
 
+    Iterable<ProtoFile> allFiles = model.reachable(model.getFiles());
+
+    // Skip API interfaces excluded from interface configs.
+    Collection<ProtoFile> skippedFiles =
+        Streams.stream(allFiles)
+            .filter(ProtoFile::isSource)
+            .flatMap(f -> f.getInterfaces().stream())
+            .filter(Interface::isReachable)
+            .filter(i -> productConfig.getInterfaceConfig(i) == null)
+            .map(Interface::getFile)
+            .collect(ImmutableSet.toImmutableSet());
+
+    // Can't use Collection#removeAll since allFiles is an Iterable.
+    Iterable<ProtoFile> protoFileDependencies =
+        Streams.stream(allFiles)
+            .filter(f -> !skippedFiles.contains(f))
+            .collect(ImmutableSet.toImmutableSet());
+
     // Save proto file import names to the type table for disambiguation.
-    Iterable<ProtoFile> protoFileDependencies = ProtoFiles.getProtoFiles(productConfig);
     populateTypeTable(
         protoFileDependencies, allTypeTable, localImportNames, sharedImportNames, localImportFiles);
 
