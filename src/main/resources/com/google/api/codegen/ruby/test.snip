@@ -122,16 +122,16 @@
 
 @private requestObjectTestCase(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} without error' do
-    @if initCode(test.initCode)
+    @if initCode(test.testCaseInitCode)
       @# Create request parameters
-      {@initCode(test.initCode)}
+      {@initCode(test.testCaseInitCode)}
     @end
-    @if and(initCode(test.initCode), test.hasReturnValue)
+    @if and(initCode(test.testCaseInitCode), test.hasReturnValue)
       {@BREAK}
     @end
     @if test.hasReturnValue
       @# Create expected grpc response
-      {@initCode(test.mockResponse.initCode)}
+      {@initCode(test.mockResponse.rpcResponseInitCode)}
       expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
     @end
 
@@ -173,13 +173,13 @@
 
 @private pageIterationTestCase(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} without error' do
-    @if initCode(test.initCode)
+    @if initCode(test.testCaseInitCode)
       @# Create request parameters
-      {@initCode(test.initCode)}
+      {@initCode(test.testCaseInitCode)}
 
     @end
     @# Create expected grpc response
-    {@initCode(test.mockResponse.initCode)}
+    {@initCode(test.mockResponse.rpcResponseInitCode)}
     expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
 
     @# Mock Grpc layer
@@ -210,13 +210,13 @@
 
 @private longrunningTestCase(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} without error' do
-    @if initCode(test.initCode)
+    @if initCode(test.testCaseInitCode)
       @# Create request parameters
-      {@initCode(test.initCode)}
+      {@initCode(test.testCaseInitCode)}
 
     @end
     @# Create expected grpc response
-    {@initCode(test.mockResponse.initCode)}
+    {@initCode(test.mockResponse.rpcResponseInitCode)}
     expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
     result = Google::Protobuf::Any.new
     result.pack(expected_response)
@@ -247,9 +247,9 @@
   end
 
   it 'invokes {@test.clientMethodName} and returns an operation error.' do
-    @if initCode(test.initCode)
+    @if initCode(test.testCaseInitCode)
       @# Create request parameters
-      {@initCode(test.initCode)}
+      {@initCode(test.testCaseInitCode)}
 
     @end
     @# Create expected grpc response
@@ -288,11 +288,11 @@
   it 'invokes {@test.clientMethodName} without error' do
     @if test.hasRequestParameters
       @# Create request parameters
-      {@initCode(test.initCode)}
+      {@initCode(test.testCaseInitCode)}
 
     @end
     @# Create expected grpc response
-    {@initCode(test.mockResponse.initCode)}
+    {@initCode(test.mockResponse.rpcResponseInitCode)}
     expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
 
     @# Mock Grpc layer
@@ -320,11 +320,11 @@
 @private clientStreamingTest(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} without error' do
     @# Create request parameters
-    {@initCode(test.initCode)}
+    {@initCode(test.testCaseInitCode)}
     @if test.hasReturnValue
 
       @# Create expected grpc response
-      {@initCode(test.mockResponse.initCode)}
+      {@initCode(test.mockResponse.rpcResponseInitCode)}
       expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
     @end
 
@@ -356,10 +356,10 @@
 @private bidiStreamingTest(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} without error' do
     @# Create request parameters
-    {@initCode(test.initCode)}
+    {@initCode(test.testCaseInitCode)}
 
     @# Create expected grpc response
-    {@initCode(test.mockResponse.initCode)}
+    {@initCode(test.mockResponse.rpcResponseInitCode)}
     expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
 
     @# Mock Grpc layer
@@ -386,9 +386,9 @@
 
 @private simpleErrorTestCase(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} with error' do
-    @if initCode(test.initCode)
+    @if initCode(test.testCaseInitCode)
       @# Create request parameters
-      {@initCode(test.initCode)}
+      {@initCode(test.testCaseInitCode)}
 
     @end
     @# Mock Grpc layer
@@ -417,7 +417,7 @@
 @private clientStreamingErrorTestCase(apiVersion, testClass, test)
   it 'invokes {@test.clientMethodName} with error' do
     @# Create request parameters
-    {@initCode(test.initCode)}
+    {@initCode(test.testCaseInitCode)}
 
     @# Mock Grpc layer
     {@mockClientStreamingError(test)}
@@ -523,7 +523,7 @@
 @end
 
 @private mockRequestInitLine(test)
-  @if test.initCode.fieldSettings
+  @if test.testCaseInitCode.fieldSettings
     mock_method = proc do |request|
   @else
     mock_method = proc do
@@ -578,31 +578,31 @@
 @end
 
 @private methodCallWithResponse(test)
-  @switch test.initCode.fieldSettings.size.toString
+  @switch test.testCaseInitCode.fieldSettings.size.toString
   @case "0"
     response = client.{@test.clientMethodName}
   @case "1"
-    response = client.{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)})
+    response = client.{@test.clientMethodName}({@sampleMethodCallArgList(test.testCaseInitCode)})
   @case "2"
-    response = client.{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)})
+    response = client.{@test.clientMethodName}({@sampleMethodCallArgList(test.testCaseInitCode)})
   @default
     response = client.{@test.clientMethodName}(
-      {@multilineArgList(test.initCode)}
+      {@multilineArgList(test.testCaseInitCode)}
     )
   @end
 @end
 
 @private methodCall(test)
-  @switch test.initCode.fieldSettings.size.toString
+  @switch test.testCaseInitCode.fieldSettings.size.toString
   @case "0"
     client.{@test.clientMethodName}
   @case "1"
-    client.{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)})
+    client.{@test.clientMethodName}({@sampleMethodCallArgList(test.testCaseInitCode)})
   @case "2"
-    client.{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)})
+    client.{@test.clientMethodName}({@sampleMethodCallArgList(test.testCaseInitCode)})
   @default
     client.{@test.clientMethodName}(
-      {@multilineArgList(test.initCode)}
+      {@multilineArgList(test.testCaseInitCode)}
     )
   @end
 @end
