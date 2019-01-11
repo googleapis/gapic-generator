@@ -33,6 +33,7 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -342,6 +343,12 @@ public class ProtoParser {
 
   public String getProtoPackage(ProtoFile file) {
     return file.getProto().getPackage();
+  }
+
+  @VisibleForTesting
+  // Exposed for test mocking.
+  public String getProtoPackage(Method method) {
+    return getProtoPackage(method.getFile());
   }
 
   private String getResourceFullName(Resource resource, ProtoFile file) {
