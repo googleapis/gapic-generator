@@ -309,9 +309,8 @@ public class InitCodeTransformer {
     HashMap<InitCodeNode, String> refFrom = new HashMap<>();
 
     // Keep track of the resource name entities. Configuring an entity twice or configuring an
-    // entity
-    // and the parent node at the same time will cause collision. Configuring two different entities
-    // will not.
+    // entity and the parent node at the same time will cause collision. Configuring two different
+    // entities will not.
     Multimap<InitCodeNode, String> nodeEntities = HashMultimap.create();
 
     // Below we'll perform depth-first search, keep a list of nodes we've seen but have not
@@ -326,12 +325,17 @@ public class InitCodeTransformer {
         InitCodeNode node = subNodes.pollLast();
         String oldPath = refFrom.put(node, path);
         if (oldPath == null) {
+          // The node has not been specified before, thus check if entity has been specified
           checkArgument(
               entity == null || nodeEntities.put(node, entity),
-              "SampleInitAttribute %s overlaps with %s",
-              path,
+              "Entity %s in path %s specified multiple types",
+              entity,
               path);
         } else {
+          // The node has been specified before. The will be no overlap if and only if:
+          // All previous paths are configuring entities
+          // This path is configuraing an entity
+          // The same entity is never specified before
           checkArgument(
               entity != null && nodeEntities.containsKey(node),
               "SampleInitAttribute %s overlaps with %s",
@@ -339,8 +343,8 @@ public class InitCodeTransformer {
               path);
           checkArgument(
               nodeEntities.put(node, entity),
-              "SampleInitAttribute %s overlaps with %s",
-              path,
+              "Entity %s in path %s specified multiple types",
+              entity,
               path);
         }
         subNodes.addAll(node.getChildren().values());

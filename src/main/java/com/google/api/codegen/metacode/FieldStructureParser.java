@@ -136,7 +136,7 @@ public class FieldStructureParser {
    */
   public static InitCodeNode parsePath(InitCodeNode root, Scanner scanner) {
     Preconditions.checkArgument(
-        scanner.scan() == Scanner.IDENT, "expected root identifier: %s", scanner.input());
+        scanner.scan() == Scanner.IDENT, "expected identifier: %s", scanner.input());
     InitCodeNode parent = root.mergeChild(InitCodeNode.create(scanner.tokenStr()));
     int token;
 
