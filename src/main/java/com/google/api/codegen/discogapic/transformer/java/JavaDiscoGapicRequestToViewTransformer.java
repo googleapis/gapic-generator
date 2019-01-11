@@ -198,6 +198,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     String requestName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTable.getNewSymbol(requestClassId)));
 
+    requestView.rawName(requestName); // Serialized name doesn't matter here.
     requestView.name(requestName);
     requestView.description(method.getDescription());
 
