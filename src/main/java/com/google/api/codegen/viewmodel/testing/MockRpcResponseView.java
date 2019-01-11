@@ -21,7 +21,7 @@ import com.google.auto.value.AutoValue;
 public abstract class MockRpcResponseView {
   public abstract String typeName();
 
-  public abstract InitCodeView initCode();
+  public abstract InitCodeView rpcResponseInitCode();
 
   public static Builder newBuilder() {
     return new AutoValue_MockRpcResponseView.Builder();
@@ -30,7 +30,7 @@ public abstract class MockRpcResponseView {
   @AutoValue.Builder
   public abstract static class Builder {
 
-    public abstract Builder initCode(InitCodeView val);
+    public abstract Builder rpcResponseInitCode(InitCodeView val);
 
     public abstract Builder typeName(String val);
 
