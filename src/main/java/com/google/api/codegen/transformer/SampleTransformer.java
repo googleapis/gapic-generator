@@ -31,6 +31,7 @@ import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
+import com.google.auto.value.AutoValue;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -44,18 +45,31 @@ import java.util.List;
  * A class that performs the transformations needed to generate the MethodSampleView for the
  * applicable sample types.
  */
-public class SampleTransformer {
+@AutoValue
+public abstract class SampleTransformer {
 
-  private final SampleType sampleType;
-  private final OutputTransformer outputTransformer;
+  public abstract SampleType sampleType();
 
-  /**
-   * A functional interface provided by clients to generate an InitCodeView given an
-   * InitCodeContext.
-   */
-  @FunctionalInterface
-  public interface Generator {
-    InitCodeView generate(InitCodeContext initCodeContext);
+  public abstract InitCodeTransformer initCodeTransformer();
+
+  public abstract OutputTransformer outputTransformer();
+
+  public static Builder newBuilder() {
+    return new AutoValue_SampleTransformer.Builder()
+        .initCodeTransformer(new InitCodeTransformer())
+        .outputTransformer(new OutputTransformer());
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+
+    public abstract Builder sampleType(SampleType val);
+
+    public abstract Builder initCodeTransformer(InitCodeTransformer val);
+
+    public abstract Builder outputTransformer(OutputTransformer val);
+
+    public abstract SampleTransformer build();
   }
 
   /**
@@ -64,13 +78,13 @@ public class SampleTransformer {
    * @param sampleType The SampleType this transformer should concern itself with. Other SampleTypes
    *     configured on the methods are ignored.
    */
-  public SampleTransformer(SampleType sampleType) {
-    this(sampleType, new OutputTransformer());
+  public static SampleTransformer create(SampleType sampleType) {
+    return newBuilder().sampleType(sampleType).build();
   }
 
-  public SampleTransformer(SampleType sampleType, OutputTransformer outputTransformer) {
-    this.sampleType = sampleType;
-    this.outputTransformer = outputTransformer;
+  public static SampleTransformer create(
+      SampleType sampleType, OutputTransformer outputTransformer) {
+    return newBuilder().sampleType(sampleType).outputTransformer(outputTransformer).build();
   }
 
   /**
@@ -99,16 +113,9 @@ public class SampleTransformer {
       MethodContext context,
       Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
-      Generator generator,
       List<CallingForm> callingForms) {
     generateSamples(
-        methodViewBuilder,
-        context,
-        null,
-        fieldConfigs,
-        initCodeOutputType,
-        generator,
-        callingForms);
+        methodViewBuilder, context, null, fieldConfigs, initCodeOutputType, callingForms);
   }
 
   /**
@@ -140,12 +147,10 @@ public class SampleTransformer {
       InitCodeContext initContext,
       Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
-      Generator generator,
       List<CallingForm> callingForms) {
 
     List<MethodSampleView> methodSampleViews =
-        generateSamples(
-            context, initContext, fieldConfigs, initCodeOutputType, generator, callingForms);
+        generateSamples(context, initContext, fieldConfigs, initCodeOutputType, callingForms);
 
     // Until we get rid of the non-nullable StaticLangApiMethodView.initCode field, set it to a
     // non-null value. For an in-code sample not specified through the SampleSpec, the correct value
@@ -183,44 +188,39 @@ public class SampleTransformer {
       InitCodeContext initContext,
       Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
-      Generator sampleGenerator,
       List<CallingForm> callingForms) {
 
     List<MethodSampleView> methodSampleViews = new ArrayList<>();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
+
+    // For backwards compatibility in the configs, we need to use sample_code_init_fields instead
+    // to generate the samples in various scenarios. Once all the configs have been migrated to
+    // use the SampleSpec, we can delete the code below as well as sample_code_init_fields.
+    String defaultId =
+        (sampleType() == SampleType.IN_CODE) ? "sample_code_init_field" : INIT_CODE_SHIM;
+
+    ImmutableList<ValueSetAndTags> defaultValueSets =
+        ImmutableList.of(
+            ValueSetAndTags.newBuilder()
+                .values(
+                    SampleValueSet.newBuilder()
+                        .setParameters(
+                            SampleParameters.newBuilder()
+                                .addAllDefaults(methodConfig.getSampleCodeInitFields())
+                                .build())
+                        .setId(defaultId)
+                        .setDescription("value set imported from sample_code_init_fields")
+                        .setTitle("Sample Values")
+                        .build())
+                .regionTag("")
+                .build());
 
     for (CallingForm form : callingForms) {
-      MethodConfig methodConfig = methodContext.getMethodConfig();
-
       List<ValueSetAndTags> matchingValueSets =
-          methodConfig.getSampleSpec().getMatchingValueSets(form, sampleType);
+          methodConfig.getSampleSpec().getMatchingValueSets(form, sampleType());
 
-      // For backwards compatibility in the configs, we need to use sample_code_init_fields instead
-      // to generate the samples in various scenarios. Once all the configs have been migrated to
-      // use the SampleSpec, we can delete the code below as well as sample_code_init_fields.
-      String id = null;
-      if (sampleType == SampleType.IN_CODE) {
-        // for IN_CODE, have the source of truth be sample_code_init_fields for
-        // now even if otherwise configured
-        id = "sample_code_init_field";
-      } else if (!methodConfig.getSampleSpec().isConfigured()
-          // if not configured, make the sample_code_init_fields available to
-          // all sample types
-          || matchingValueSets.isEmpty()) { // ApiMethodView.initCode still needs to be set for now
-        id = INIT_CODE_SHIM;
-      }
-      if (id != null) {
-        SampleValueSet valueSet =
-            SampleValueSet.newBuilder()
-                .setParameters(
-                    SampleParameters.newBuilder()
-                        .addAllDefaults(methodConfig.getSampleCodeInitFields())
-                        .build())
-                .setId(id)
-                .setDescription("value set imported from sample_code_init_fields")
-                .setTitle("Sample Values")
-                .build();
-        matchingValueSets =
-            ImmutableList.of(ValueSetAndTags.newBuilder().values(valueSet).regionTag("").build());
+      if (!methodConfig.getSampleSpec().isConfigured() || matchingValueSets.isEmpty()) {
+        matchingValueSets = defaultValueSets;
       }
 
       for (ValueSetAndTags setAndTag : matchingValueSets) {
@@ -229,56 +229,47 @@ public class SampleTransformer {
         SampleValueSet valueSet = setAndTag.values();
         if (thisContext == null) {
           thisContext =
-              createInitCodeContext(
-                  methodContext,
-                  fieldConfigs,
-                  initCodeOutputType,
-                  valueSet.getParameters().getDefaultsList(),
-                  valueSet
-                      .getParameters()
-                      .getAttributesList()
-                      .stream()
-                      .collect(
-                          ImmutableMap.toImmutableMap(
-                              attr -> attr.getParameter(),
-                              attr ->
-                                  SampleParameterConfig.newBuilder()
-                                      .identifier(attr.getParameter())
-                                      .readFromFile(attr.getReadFile())
-                                      .sampleArgumentName(attr.getSampleArgumentName())
-                                      .build())));
+              createInitCodeContext(methodContext, fieldConfigs, initCodeOutputType, valueSet);
         }
-        InitCodeView initCodeView = sampleGenerator.generate(thisContext);
-        List<OutputSpec> outputs = valueSet.getOnSuccessList();
-        if (outputs.isEmpty()) {
-          outputs = OutputTransformer.defaultOutputSpecs(methodContext.getMethodModel());
-        }
-
-        ImmutableList<OutputView> outputViews =
-            outputTransformer.toViews(outputs, methodContext, valueSet);
-
-        methodSampleViews.add(
-            MethodSampleView.newBuilder()
-                .callingForm(form)
-                .valueSet(SampleValueSetView.of(valueSet))
-                .sampleInitCode(initCodeView)
-                .outputs(outputViews)
-                .outputImports(
-                    outputTransformer
-                        .getOutputImportTransformer()
-                        .generateOutputImports(methodContext, outputViews))
-                .regionTag(
-                    regionTagFromSpec(
-                        setAndTag.regionTag(),
-                        methodContext.getMethodModel().getSimpleName(),
-                        form,
-                        valueSet.getId()))
-                .sampleFunctionName(
-                    methodContext.getNamer().getSampleFunctionName(methodContext.getMethodModel()))
-                .build());
+        methodSampleViews.add(generateSample(setAndTag, form, methodContext, thisContext));
       }
     }
     return methodSampleViews;
+  }
+
+  private MethodSampleView generateSample(
+      ValueSetAndTags setAndTag,
+      CallingForm form,
+      MethodContext methodContext,
+      InitCodeContext initCodeContext) {
+    InitCodeView initCodeView =
+        initCodeTransformer().generateInitCode(methodContext, initCodeContext);
+    SampleValueSet valueSet = setAndTag.values();
+    List<OutputSpec> outputs = valueSet.getOnSuccessList();
+    if (outputs.isEmpty()) {
+      outputs = OutputTransformer.defaultOutputSpecs(methodContext.getMethodModel());
+    }
+    ImmutableList<OutputView> outputViews =
+        outputTransformer().toViews(outputs, methodContext, valueSet);
+
+    return MethodSampleView.newBuilder()
+        .callingForm(form)
+        .valueSet(SampleValueSetView.of(valueSet))
+        .sampleInitCode(initCodeView)
+        .outputs(outputViews)
+        .outputImports(
+            outputTransformer()
+                .getOutputImportTransformer()
+                .generateOutputImports(methodContext, outputViews))
+        .regionTag(
+            regionTagFromSpec(
+                setAndTag.regionTag(),
+                methodContext.getMethodModel().getSimpleName(),
+                form,
+                valueSet.getId()))
+        .sampleFunctionName(
+            methodContext.getNamer().getSampleFunctionName(methodContext.getMethodModel()))
+        .build();
   }
 
   /**
@@ -301,13 +292,25 @@ public class SampleTransformer {
       MethodContext context,
       Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
-      List<String> sampleCodeDefaultValues,
-      ImmutableMap<String, SampleParameterConfig> sampleParamConfigMap) {
+      SampleValueSet valueSet) {
     return InitCodeContext.newBuilder()
         .initObjectType(context.getMethodModel().getInputType())
         .suggestedName(Name.from("request"))
-        .initFieldConfigStrings(sampleCodeDefaultValues)
-        .sampleParamConfigMap(sampleParamConfigMap)
+        .initFieldConfigStrings(valueSet.getParameters().getDefaultsList())
+        .sampleParamConfigMap(
+            valueSet
+                .getParameters()
+                .getAttributesList()
+                .stream()
+                .collect(
+                    ImmutableMap.toImmutableMap(
+                        attr -> attr.getParameter(),
+                        attr ->
+                            SampleParameterConfig.newBuilder()
+                                .identifier(attr.getParameter())
+                                .readFromFile(attr.getReadFile())
+                                .sampleArgumentName(attr.getSampleArgumentName())
+                                .build())))
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
         .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
         .outputType(initCodeOutputType)

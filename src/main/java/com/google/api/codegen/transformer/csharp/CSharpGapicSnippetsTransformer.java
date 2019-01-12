@@ -64,7 +64,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
   private final StaticLangApiMethodTransformer apiMethodTransformer =
       new CSharpApiMethodTransformer();
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
-  private final SampleTransformer sampleTransformer = new SampleTransformer(SampleType.IN_CODE);
+  private final SampleTransformer sampleTransformer = SampleTransformer.create(SampleType.IN_CODE);
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
 
   public CSharpGapicSnippetsTransformer(GapicCodePathMapper pathMapper) {
@@ -525,13 +525,12 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     // This is a bit hacky, but fixes the problem that initcode is generated using a different
     // context. Without this, the per-snippet imports don't get included in the snippet file.
     StaticLangApiMethodView.Builder builder = method.toBuilder();
-    sampleTransformer.generateSamples(
-        builder,
-        context,
-        fieldConfigs,
-        initCodeOutputType,
-        initCodeContext -> initCodeTransformer.generateInitCode(context, initCodeContext),
-        Arrays.asList(callingForm));
+    SampleTransformer.newBuilder()
+        .initCodeTransformer(initCodeTransformer)
+        .sampleType(SampleType.IN_CODE)
+        .build()
+        .generateSamples(
+            builder, context, fieldConfigs, initCodeOutputType, Arrays.asList(callingForm));
     return builder.build();
   }
 }
