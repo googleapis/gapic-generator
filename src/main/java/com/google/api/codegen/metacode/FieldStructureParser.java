@@ -185,7 +185,7 @@ public class FieldStructureParser {
   public static String parseEntityName(String path) {
     Scanner scanner = new Scanner(path);
     Preconditions.checkArgument(
-        scanner.scan() == Scanner.IDENT, "expected root identifier: %s", scanner.input());
+        scanner.scan() == Scanner.IDENT, "expected identifier: %s", scanner.input());
     int token;
     String entityName = null;
     while (true) {
