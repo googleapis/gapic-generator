@@ -111,6 +111,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
     return new DiscoveryField(schema, rootApiModel);
   }
 
+  /** @return the JSON identifier for this field, unchanged from the Discovery doc. */
   public String getRawName() {
     return originalSchema.getIdentifier();
   }
