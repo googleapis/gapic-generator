@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  */
 @AutoValue
 public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
-  private ImmutableList<MethodModel> interfaceMethods;
+  private ImmutableList<DiscoveryMethodModel> interfaceMethods;
 
   public static DiscoGapicInterfaceContext createWithoutInterface(
       DiscoApiModel model,
@@ -121,14 +121,14 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   /** Returns a list of methods for this interface. Memoize the result. */
   @Override
-  public List<MethodModel> getInterfaceConfigMethods() {
+  public List<DiscoveryMethodModel> getInterfaceConfigMethods() {
     if (interfaceMethods != null) {
       return interfaceMethods;
     }
 
-    ImmutableList.Builder<MethodModel> methodBuilder = ImmutableList.builder();
-    for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
-      MethodModel method = methodConfig.getMethodModel();
+    ImmutableList.Builder<DiscoveryMethodModel> methodBuilder = ImmutableList.builder();
+    for (DiscoGapicMethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
+      DiscoveryMethodModel method = methodConfig.getMethodModel();
       if (isSupported(method)) {
         methodBuilder.add(method);
       }
@@ -139,7 +139,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   /** Returns a list of methods for this interface. Memoize the result. */
   @Override
-  public List<MethodModel> getInterfaceMethods() {
+  public List<DiscoveryMethodModel> getInterfaceMethods() {
     return getInterfaceConfigMethods();
   }
 
@@ -185,7 +185,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   /* Returns a list of public methods, configured by FeatureConfig. Memoize the result. */
-  public Iterable<MethodModel> getPublicMethods() {
+  public Iterable<DiscoveryMethodModel> getPublicMethods() {
     return getInterfaceConfigMethods()
         .stream()
         .filter(m -> isSupported(m))
@@ -194,7 +194,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   /* Returns a list of supported methods, configured by FeatureConfig. Memoize the result. */
-  public Iterable<MethodModel> getSupportedMethods() {
+  public Iterable<DiscoveryMethodModel> getSupportedMethods() {
     return getPublicMethods();
   }
 

@@ -1214,6 +1214,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -1665,6 +1666,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -1981,6 +1983,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -2184,6 +2187,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -2480,6 +2484,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -2672,6 +2677,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -2833,6 +2839,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -2847,6 +2854,8 @@ import javax.annotation.Nullable;
 @BetaApi
 public final class DummyObject2 implements ApiMessage {
   private final Float floatie;
+  @SerializedName("IPProtocol")
+  private final String iPProtocol;
   private final String name;
   private final Double precisionFloatie;
   private final Address primaryAddress;
@@ -2854,6 +2863,7 @@ public final class DummyObject2 implements ApiMessage {
 
   private DummyObject2() {
     this.floatie = null;
+    this.iPProtocol = null;
     this.name = null;
     this.precisionFloatie = null;
     this.primaryAddress = null;
@@ -2863,12 +2873,14 @@ public final class DummyObject2 implements ApiMessage {
 
   private DummyObject2(
       Float floatie,
+      String iPProtocol,
       String name,
       Double precisionFloatie,
       Address primaryAddress,
       Address secondaryAddress
       ) {
     this.floatie = floatie;
+    this.iPProtocol = iPProtocol;
     this.name = name;
     this.precisionFloatie = precisionFloatie;
     this.primaryAddress = primaryAddress;
@@ -2879,6 +2891,9 @@ public final class DummyObject2 implements ApiMessage {
   public Object getFieldValue(String fieldName) {
     if ("floatie".equals(fieldName)) {
       return floatie;
+    }
+    if ("iPProtocol".equals(fieldName)) {
+      return iPProtocol;
     }
     if ("name".equals(fieldName)) {
       return name;
@@ -2909,6 +2924,10 @@ public final class DummyObject2 implements ApiMessage {
 
   public Float getFloatie() {
     return floatie;
+  }
+
+  public String getIPProtocol() {
+    return iPProtocol;
   }
 
   public String getName() {
@@ -2949,6 +2968,7 @@ public final class DummyObject2 implements ApiMessage {
 
   public static class Builder {
     private Float floatie;
+    private String iPProtocol;
     private String name;
     private Double precisionFloatie;
     private Address primaryAddress;
@@ -2960,6 +2980,9 @@ public final class DummyObject2 implements ApiMessage {
       if (other == DummyObject2.getDefaultInstance()) return this;
       if (other.getFloatie() != null) {
         this.floatie = other.floatie;
+      }
+      if (other.getIPProtocol() != null) {
+        this.iPProtocol = other.iPProtocol;
       }
       if (other.getName() != null) {
         this.name = other.name;
@@ -2978,6 +3001,7 @@ public final class DummyObject2 implements ApiMessage {
 
     Builder(DummyObject2 source) {
       this.floatie = source.floatie;
+      this.iPProtocol = source.iPProtocol;
       this.name = source.name;
       this.precisionFloatie = source.precisionFloatie;
       this.primaryAddress = source.primaryAddress;
@@ -2990,6 +3014,15 @@ public final class DummyObject2 implements ApiMessage {
 
     public Builder setFloatie(Float floatie) {
       this.floatie = floatie;
+      return this;
+    }
+
+    public String getIPProtocol() {
+      return iPProtocol;
+    }
+
+    public Builder setIPProtocol(String iPProtocol) {
+      this.iPProtocol = iPProtocol;
       return this;
     }
 
@@ -3035,8 +3068,10 @@ public final class DummyObject2 implements ApiMessage {
 
 
 
+
       return new DummyObject2(
         floatie,
+        iPProtocol,
         name,
         precisionFloatie,
         primaryAddress,
@@ -3047,6 +3082,7 @@ public final class DummyObject2 implements ApiMessage {
     public Builder clone() {
       Builder newBuilder = new Builder();
       newBuilder.setFloatie(this.floatie);
+      newBuilder.setIPProtocol(this.iPProtocol);
       newBuilder.setName(this.name);
       newBuilder.setPrecisionFloatie(this.precisionFloatie);
       newBuilder.setPrimaryAddress(this.primaryAddress);
@@ -3059,6 +3095,7 @@ public final class DummyObject2 implements ApiMessage {
   public String toString() {
     return "DummyObject2{"
         + "floatie=" + floatie + ", "
+        + "iPProtocol=" + iPProtocol + ", "
         + "name=" + name + ", "
         + "precisionFloatie=" + precisionFloatie + ", "
         + "primaryAddress=" + primaryAddress + ", "
@@ -3075,6 +3112,7 @@ public final class DummyObject2 implements ApiMessage {
       DummyObject2 that = (DummyObject2) o;
       return
           Objects.equals(this.floatie, that.getFloatie()) &&
+          Objects.equals(this.iPProtocol, that.getIPProtocol()) &&
           Objects.equals(this.name, that.getName()) &&
           Objects.equals(this.precisionFloatie, that.getPrecisionFloatie()) &&
           Objects.equals(this.primaryAddress, that.getPrimaryAddress()) &&
@@ -3088,6 +3126,7 @@ public final class DummyObject2 implements ApiMessage {
   public int hashCode() {
     return Objects.hash(
       floatie,
+      iPProtocol,
       name,
       precisionFloatie,
       primaryAddress,
@@ -3118,6 +3157,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -3290,6 +3330,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -3513,6 +3554,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -4367,6 +4409,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -4601,6 +4644,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -4835,6 +4879,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -5069,6 +5114,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -5578,6 +5624,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -5963,6 +6010,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6348,6 +6396,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6733,6 +6782,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -7118,6 +7168,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -7534,6 +7585,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -8043,6 +8095,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -8521,6 +8574,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9038,6 +9092,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.httpjson.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
