@@ -7741,6 +7741,58 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
+============== file: src/main/java/samples/com/google/example/library/v1/getbigbookasync/GetBigBookAsyncLongRunningFlattenedAsyncWap2.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "wap2")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START hopper]
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBigBookAsyncLongRunningFlattenedAsyncWap2 {
+  public static void sampleGetBigBook(String shelf, String bigBookName) {
+    // [START hopper_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelf = "Novel";
+      // String bigBookName = "War and Peace";
+      ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
+      Book response = libraryClient.getBigBookAsync(name.toString()).get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END hopper_core]
+  }
+
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("bigBookName")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+    String bigBookName = cl.getOptionValue("bigBookName", "War and Peace");
+
+    sampleGetBigBook(shelf, bigBookName);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END hopper]
 ============== file: src/main/java/samples/com/google/example/library/v1/getbigbookasync/GetBigBookAsyncLongRunningRequestAsyncWap.java ==============
 // DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
 package com.google.example.examples.library.v1.snippets;
@@ -7785,6 +7837,62 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap {
     String shelf = cl.getOptionValue("shelf", "Novel");
 
     sampleGetBigBook(shelf);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END hopper]
+============== file: src/main/java/samples/com/google/example/library/v1/getbigbookasync/GetBigBookAsyncLongRunningRequestAsyncWap2.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap2")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START hopper]
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBigBookAsyncLongRunningRequestAsyncWap2 {
+  public static void sampleGetBigBook(String shelf, String bigBookName) {
+    // [START hopper_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelf = "Novel";
+      // String bigBookName = "War and Peace";
+      ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      Book response = libraryClient.getBigBookAsync(request).get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END hopper_core]
+  }
+
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("bigBookName")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+    String bigBookName = cl.getOptionValue("bigBookName", "War and Peace");
+
+    sampleGetBigBook(shelf, bigBookName);
   }
 }
 // FIXME: Insert here clean-up code.
@@ -7843,6 +7951,66 @@ public class GetBigBookCallableCallableWap {
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
+============== file: src/main/java/samples/com/google/example/library/v1/getbigbookcallable/GetBigBookCallableCallableWap2.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "wap2")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START hopper]
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBigBookCallableCallableWap2 {
+  public static void sampleGetBigBook(String shelf, String bigBookName) {
+    // [START hopper_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelf = "Novel";
+      // String bigBookName = "War and Peace";
+      ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Operation> future = libraryClient.getBigBookCallable().futureCall(request);
+
+      // Do something
+
+      Operation response = future.get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END hopper_core]
+  }
+
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("bigBookName")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+    String bigBookName = cl.getOptionValue("bigBookName", "War and Peace");
+
+    sampleGetBigBook(shelf, bigBookName);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END hopper]
 ============== file: src/main/java/samples/com/google/example/library/v1/getbigbookoperationcallable/GetBigBookOperationCallableLongRunningCallableWap.java ==============
 // DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "wap")
 package com.google.example.examples.library.v1.snippets;
@@ -7891,6 +8059,66 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
     String shelf = cl.getOptionValue("shelf", "Novel");
 
     sampleGetBigBook(shelf);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END hopper]
+============== file: src/main/java/samples/com/google/example/library/v1/getbigbookoperationcallable/GetBigBookOperationCallableLongRunningCallableWap2.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "wap2")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START hopper]
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBigBookOperationCallableLongRunningCallableWap2 {
+  public static void sampleGetBigBook(String shelf, String bigBookName) {
+    // [START hopper_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // String shelf = "Novel";
+      // String bigBookName = "War and Peace";
+      ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+
+      // Do something
+
+      Book response = future.get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END hopper_core]
+  }
+
+  public static void main(String[] args) {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("bigBookName")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+    String bigBookName = cl.getOptionValue("bigBookName", "War and Peace");
+
+    sampleGetBigBook(shelf, bigBookName);
   }
 }
 // FIXME: Insert here clean-up code.
