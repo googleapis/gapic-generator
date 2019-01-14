@@ -136,7 +136,7 @@ public class FieldStructureParser {
    */
   public static InitCodeNode parsePath(InitCodeNode root, Scanner scanner) {
     Preconditions.checkArgument(
-        scanner.scan() == Scanner.IDENT, "expected root identifier: %s", scanner.input());
+        scanner.scan() == Scanner.IDENT, "expected identifier: %s", scanner.input());
     InitCodeNode parent = root.mergeChild(InitCodeNode.create(scanner.tokenStr()));
     int token;
 
@@ -174,6 +174,52 @@ public class FieldStructureParser {
               scanner.scan() == '}', "expected closing '}': %s", scanner.input());
           break;
 
+        default:
+          throw new IllegalArgumentException(
+              String.format("unexpected character '%c': %s", token, scanner.input()));
+      }
+    }
+  }
+
+  /** Returns the entity name specified by `path` or null if `path` does not contain `%`. */
+  public static String parseEntityName(String path) {
+    Scanner scanner = new Scanner(path);
+    Preconditions.checkArgument(
+        scanner.scan() == Scanner.IDENT, "expected identifier: %s", scanner.input());
+    int token;
+    String entityName = null;
+    while (true) {
+      token = scanner.scan();
+      switch (token) {
+        case '%':
+          Preconditions.checkArgument(
+              entityName == null, "expected only one \"%%\" in path: %s", path);
+          Preconditions.checkArgument(
+              scanner.scan() == Scanner.IDENT,
+              "expected identifier after '%%': %s",
+              scanner.input());
+          entityName = scanner.tokenStr();
+          break;
+        case '=':
+        case Scanner.EOF:
+          return entityName;
+        case '.':
+          Preconditions.checkArgument(
+              scanner.scan() == Scanner.IDENT,
+              "expected identifier after '.': %s",
+              scanner.input());
+          break;
+        case '[':
+          Preconditions.checkArgument(
+              scanner.scan() == Scanner.INT, "expected number after '[': %s", scanner.input());
+          Preconditions.checkArgument(
+              scanner.scan() == ']', "expected closing ']': %s", scanner.input());
+          break;
+        case '{':
+          parseKey(scanner);
+          Preconditions.checkArgument(
+              scanner.scan() == '}', "expected closing '}': %s", scanner.input());
+          break;
         default:
           throw new IllegalArgumentException(
               String.format("unexpected character '%c': %s", token, scanner.input()));

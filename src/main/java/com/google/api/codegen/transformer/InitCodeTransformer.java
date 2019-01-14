@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.api.codegen.config.FieldConfig;
@@ -54,10 +55,12 @@ import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -305,6 +308,11 @@ public class InitCodeTransformer {
     // that reference the same nodes.
     HashMap<InitCodeNode, String> refFrom = new HashMap<>();
 
+    // Keep track of the resource name entities. Configuring an entity twice or configuring an
+    // entity and the parent node at the same time will cause collision. Configuring two different
+    // entities will not.
+    Multimap<InitCodeNode, String> nodeEntities = HashMultimap.create();
+
     // Below we'll perform depth-first search, keep a list of nodes we've seen but have not
     // descended into. It doesn't really matter if we search breath- or depth-first; DFS is a little
     // more efficient on average.
@@ -312,12 +320,32 @@ public class InitCodeTransformer {
 
     for (String path : paths) {
       subNodes.add(root.subTree(path));
+      String entity = FieldStructureParser.parseEntityName(path);
       while (!subNodes.isEmpty()) {
         InitCodeNode node = subNodes.pollLast();
         String oldPath = refFrom.put(node, path);
-        if (oldPath != null) {
-          throw new IllegalArgumentException(
-              String.format("SampleInitAttribute %s overlaps with %s", oldPath, path));
+        if (oldPath == null) {
+          // The node has not been specified before, thus check if entity has been specified
+          checkArgument(
+              entity == null || nodeEntities.put(node, entity),
+              "Entity %s in path %s specified multiple types",
+              entity,
+              path);
+        } else {
+          // The node has been specified before. The will be no overlap if and only if:
+          // All previous paths are configuring entities
+          // This path is configuraing an entity
+          // The same entity is never specified before
+          checkArgument(
+              entity != null && nodeEntities.containsKey(node),
+              "SampleInitAttribute %s overlaps with %s",
+              oldPath,
+              path);
+          checkArgument(
+              nodeEntities.put(node, entity),
+              "Entity %s in path %s specified multiple types",
+              entity,
+              path);
         }
         subNodes.addAll(node.getChildren().values());
       }
