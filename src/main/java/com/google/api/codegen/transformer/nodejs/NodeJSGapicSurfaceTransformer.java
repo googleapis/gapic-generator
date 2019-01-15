@@ -56,6 +56,7 @@ import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -97,19 +98,26 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
 
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    Iterable<? extends InterfaceModel> apiInterfaces = model.getInterfaces();
+    Collection<? extends InterfaceModel> apiInterfaces =
+        model
+            .getInterfaces()
+            .stream()
+            .filter(productConfig::hasInterfaceConfig)
+            .collect(ImmutableList.toImmutableList());
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     models.addAll(generateIndexViews(apiInterfaces, productConfig));
-    models.addAll(generateApiClasses(model, productConfig));
+    models.addAll(generateApiClasses(apiInterfaces, productConfig, model.hasMultipleServices()));
     return models.build();
   }
 
-  private List<ViewModel> generateApiClasses(ApiModel model, GapicProductConfig productConfig) {
+  private List<ViewModel> generateApiClasses(
+      Collection<? extends InterfaceModel> apiInterfaces,
+      GapicProductConfig productConfig,
+      boolean hasMultipleServices) {
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
-    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces();
-    for (InterfaceModel apiInterface : interfaces) {
+    for (InterfaceModel apiInterface : apiInterfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      models.add(generateApiClass(context, model.hasMultipleServices()));
+      models.add(generateApiClass(context, hasMultipleServices));
     }
     return models.build();
   }

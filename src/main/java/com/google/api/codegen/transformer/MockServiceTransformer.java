@@ -43,6 +43,9 @@ public class MockServiceTransformer {
     }
 
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
       if (!apiInterface.isReachable()) {
         continue;
       }
