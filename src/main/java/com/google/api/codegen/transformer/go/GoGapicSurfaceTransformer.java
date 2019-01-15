@@ -259,7 +259,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
 
   @VisibleForTesting
   List<StaticLangApiMethodView> generateApiMethods(
-      InterfaceContext context, Iterable<MethodModel> methods) {
+      InterfaceContext context, Iterable<? extends MethodModel> methods) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (MethodModel method : methods) {
       MethodConfig methodConfig = context.getMethodConfig(method);
@@ -335,7 +335,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   }
 
   @VisibleForTesting
-  void addXExampleImports(InterfaceContext context, Iterable<MethodModel> methods) {
+  void addXExampleImports(InterfaceContext context, Iterable<? extends MethodModel> methods) {
     ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("context;;;");
     typeTable.saveNicknameFor(context.getProductConfig().getPackageName() + ";;;");
@@ -347,7 +347,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   }
 
   private void addContextImports(
-      InterfaceContext context, ImportContext importContext, Iterable<MethodModel> methods) {
+      InterfaceContext context,
+      ImportContext importContext,
+      Iterable<? extends MethodModel> methods) {
     for (ImportKind kind : getImportKinds(context.getInterfaceConfig(), methods)) {
       ImmutableList<String> imps = CONTEXTUAL_IMPORTS.get(importContext, kind);
       if (imps != null) {
@@ -359,7 +361,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   }
 
   private Set<ImportKind> getImportKinds(
-      InterfaceConfig interfaceConfig, Iterable<MethodModel> methods) {
+      InterfaceConfig interfaceConfig, Iterable<? extends MethodModel> methods) {
     EnumSet<ImportKind> kinds = EnumSet.noneOf(ImportKind.class);
     for (MethodModel method : methods) {
       if (method.getResponseStreaming()) {

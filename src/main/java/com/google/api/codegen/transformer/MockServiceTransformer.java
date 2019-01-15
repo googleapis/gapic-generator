@@ -77,7 +77,7 @@ public class MockServiceTransformer {
     if (!context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
       return ImmutableList.of();
     }
-    List<MethodModel> methods = context.getInterfaceMethods();
+    List<? extends MethodModel> methods = context.getInterfaceMethods();
     ArrayList<MockGrpcMethodView> mocks = new ArrayList<>(methods.size());
     for (MethodModel method : methods) {
       if (context.getMethodConfig(method) == null) {

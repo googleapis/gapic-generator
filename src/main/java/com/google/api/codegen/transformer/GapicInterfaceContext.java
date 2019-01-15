@@ -183,7 +183,6 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         getProductConfig(),
         getImportTypeTable(),
         getNamer(),
-        (ProtoMethodModel) method,
         getMethodConfig(method),
         flatteningConfig,
         getFeatureConfig());
@@ -197,7 +196,6 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         getProductConfig(),
         getImportTypeTable(),
         getNamer(),
-        (ProtoMethodModel) method,
         getMethodConfig(method),
         null,
         getFeatureConfig());
@@ -211,7 +209,6 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         getProductConfig(),
         getImportTypeTable(),
         getNamer(),
-        (ProtoMethodModel) method,
         getMethodConfig(method),
         null,
         getFeatureConfig());

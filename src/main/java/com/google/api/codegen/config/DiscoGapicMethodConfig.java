@@ -49,6 +49,9 @@ import org.threeten.bp.Duration;
 public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
   @Override
+  public abstract DiscoveryMethodModel getMethodModel();
+
+  @Override
   public boolean isGrpcStreaming() {
     return false;
   }
@@ -194,7 +197,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       return null;
     } else {
       return new AutoValue_DiscoGapicMethodConfig(
-          methodModel,
           pageStreaming,
           flattening,
           retryCodesName,
@@ -209,7 +211,8 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
           sampleSpec,
           visibility,
           releaseLevel,
-          longRunningConfig);
+          longRunningConfig,
+          methodModel);
     }
   }
 

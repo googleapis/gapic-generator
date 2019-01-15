@@ -35,12 +35,17 @@ public class InitCodeTransformerTest {
 
     InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a", "b"));
     InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a.x", "a.y"));
+    InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a%x", "a%y"));
 
     assertThrows(() -> InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a", "a.x")));
     assertThrows(() -> InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a", "a.y")));
     assertThrows(() -> InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a", "a")));
     assertThrows(() -> InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a.x", "a.x")));
     assertThrows(() -> InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a.y", "a.y")));
+    assertThrows(() -> InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a", "a%x")));
+    assertThrows(() -> InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a%x", "a")));
+    assertThrows(() -> InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a.x%y", "a")));
+    assertThrows(() -> InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a%x", "a%x")));
   }
 
   private static void assertThrows(Runnable runnable) {
