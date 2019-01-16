@@ -81,7 +81,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
   private GrpcStubTransformer grpcStubTransformer;
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
-          new PhpApiMethodParamTransformer(), new InitCodeTransformer(), SampleType.IN_CODE);
+          new PhpApiMethodParamTransformer(),
+          new InitCodeTransformer(new PhpImportSectionTransformer()),
+          SampleType.IN_CODE);
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new PhpImportSectionTransformer());
   private final PhpMethodViewGenerator methodGenerator =

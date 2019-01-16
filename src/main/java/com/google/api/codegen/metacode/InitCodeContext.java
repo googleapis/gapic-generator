@@ -82,6 +82,22 @@ public abstract class InitCodeContext {
         .collect(ImmutableList.toImmutableList());
   }
 
+  public InitCodeContext cloneWithEmptySymbolTable() {
+    return newBuilder()
+        .initObjectType(initObjectType())
+        .suggestedName(suggestedName())
+        .symbolTable(new SymbolTable())
+        .initFields(initFields())
+        .initValueConfigMap(initValueConfigMap())
+        .fieldConfigMap(fieldConfigMap())
+        .outputType(outputType())
+        .additionalInitCodeNodes(additionalInitCodeNodes())
+        .initFieldConfigStrings(initFieldConfigStrings())
+        .sampleParamConfigMap(sampleParamConfigMap())
+        .valueGenerator(valueGenerator())
+        .build();
+  }
+
   /**
    * Allows additional InitCodeNode objects which will be placed into the generated subtrees. This
    * is currently used by smoke testing only.

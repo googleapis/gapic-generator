@@ -42,6 +42,8 @@ public abstract class MethodSampleView {
   /** The name of the sample function. */
   public abstract String sampleFunctionName();
 
+  public abstract ImportSectionView sampleImports();
+
   public static Builder newBuilder() {
     return new AutoValue_MethodSampleView.Builder();
   }
@@ -61,6 +63,8 @@ public abstract class MethodSampleView {
     public abstract Builder regionTag(String val);
 
     public abstract Builder sampleFunctionName(String val);
+
+    public abstract Builder sampleImports(ImportSectionView val);
 
     public abstract MethodSampleView build();
   }

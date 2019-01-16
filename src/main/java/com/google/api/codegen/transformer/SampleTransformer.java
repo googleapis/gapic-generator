@@ -27,6 +27,7 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.CallingForm;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OutputView;
@@ -102,9 +103,6 @@ public abstract class SampleTransformer {
    * @param methodViewBuilder
    * @param context
    * @param fieldConfigs
-   * @param initCodeOutputType
-   * @param generator The function (typically a lambda) to generate the InitCode for a sample given
-   *     an InitCodeContext
    * @param callingForms The list of calling forms applicable to this method, for which we will
    *     generate samples if so configured via {@code context.getMethodConfig()}
    */
@@ -126,7 +124,7 @@ public abstract class SampleTransformer {
    * <p>TODO: Once MethodView.initCode is removed, this function becomes a one-liner (calling the
    * overloaded form of generateSamples) that should then be inlined at the call sites:
    * methodViewBuilder.samples( generateSamples(context, initContext, fieldConfigs,
-   * initCodeOutputType, generator, callingForms));
+   * initCodeOutputType, callingForms));
    *
    * @param methodViewBuilder
    * @param context
@@ -136,8 +134,6 @@ public abstract class SampleTransformer {
    *     InitCodeContext}. Can be null otherwise.
    * @param initCodeOutputType Only used if {@code initContext} is null to create an {@code
    *     InitCodeContext}. Can be null otherwise.
-   * @param generator The function (typically a lambda) to generate the InitCode for a sample given
-   *     an InitCodeContext
    * @param callingForms The list of calling forms applicable to this method, for which we will
    *     generate samples if so configured via {@code context.getMethodConfig()}
    */
@@ -176,8 +172,6 @@ public abstract class SampleTransformer {
    * @param methodContext
    * @param fieldConfigs
    * @param initCodeOutputType
-   * @param sampleGenerator The function (typically a lambda) to generate the InitCode for a sample
-   *     given an InitCodeContext
    * @param callingForms The list of calling forms applicable to this method, for which we will
    *     generate samples if so configured via context.getMethodConfig()
    * @return A list of of the MethodSampleView, each of which corresponds to a specific sample
@@ -219,7 +213,9 @@ public abstract class SampleTransformer {
       List<ValueSetAndTags> matchingValueSets =
           methodConfig.getSampleSpec().getMatchingValueSets(form, sampleType());
 
-      if (!methodConfig.getSampleSpec().isConfigured() || matchingValueSets.isEmpty()) {
+      if (sampleType() == SampleType.IN_CODE
+          || !methodConfig.getSampleSpec().isConfigured()
+          || matchingValueSets.isEmpty()) {
         matchingValueSets = defaultValueSets;
       }
 
@@ -242,6 +238,10 @@ public abstract class SampleTransformer {
       CallingForm form,
       MethodContext methodContext,
       InitCodeContext initCodeContext) {
+    methodContext = methodContext.cloneWithEmptyTypeTable();
+    SampleImportTransformer importTransformer =
+        new SampleImportTransformer(
+            initCodeTransformer().getImportSectionTransformer(), methodContext);
     InitCodeView initCodeView =
         initCodeTransformer().generateInitCode(methodContext, initCodeContext);
     SampleValueSet valueSet = setAndTag.values();
@@ -251,7 +251,12 @@ public abstract class SampleTransformer {
     }
     ImmutableList<OutputView> outputViews =
         outputTransformer().toViews(outputs, methodContext, valueSet);
-
+    ImportSectionView sampleImportSectionView =
+        importTransformer.toImportSectionView(
+            form,
+            outputViews,
+            methodContext.getTypeTable(),
+            initCodeTransformer().getInitCodeNodes(methodContext, initCodeContext));
     return MethodSampleView.newBuilder()
         .callingForm(form)
         .valueSet(SampleValueSetView.of(valueSet))
@@ -261,6 +266,7 @@ public abstract class SampleTransformer {
             outputTransformer()
                 .getOutputImportTransformer()
                 .generateOutputImports(methodContext, outputViews))
+        .sampleImports(sampleImportSectionView)
         .regionTag(
             regionTagFromSpec(
                 setAndTag.regionTag(),
