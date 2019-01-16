@@ -99,6 +99,10 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
 
     for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, modelTypeTable, namer, featureConfig);

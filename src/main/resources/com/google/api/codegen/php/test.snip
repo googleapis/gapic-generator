@@ -197,9 +197,9 @@
         {@responseInitCodeStreaming(test.grpcStreamingView.responseInitCodeList)}
 
         // Mock request
-        {@initCode(test.initCode, "client")}
+        {@initCode(test.testCaseInitCode, "client")}
 
-        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
+        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.testCaseInitCode)});
         $this->assertInstanceOf(ServerStream::class, $serverStream);
 
         $responses = iterator_to_array($serverStream->readAll());
@@ -226,9 +226,9 @@
         $this->assertTrue($transport->isExhausted());
 
         // Mock request
-        {@initCode(test.initCode, "client")}
+        {@initCode(test.testCaseInitCode, "client")}
 
-        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
+        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.testCaseInitCode)});
         $results = $serverStream->readAll();
 
         try {
@@ -283,10 +283,10 @@
     {
         {@singleCallTestSetup(test)}
         @if test.hasReturnValue
-            $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
+            $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.testCaseInitCode)});
             $this->assertEquals($expectedResponse, $response);
         @else
-            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
+            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.testCaseInitCode)});
         @end
         {@singleCallSuccessAsserts(test)}
 
@@ -301,7 +301,7 @@
     public function {@test.name}()
     {
         {@singleCallTestSetup(test)}
-        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
+        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.testCaseInitCode)});
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         @join pageStreamingResponseView : test.pageStreamingResponseViews
             ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
@@ -331,11 +331,11 @@
 
         @if test.hasRequestParameters
           // Mock request
-          {@initCode(test.initCode, "client")}
+          {@initCode(test.testCaseInitCode, "client")}
 
         @end
         try {
-            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
+            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.testCaseInitCode)});
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
@@ -375,7 +375,7 @@
         $incompleteOperation->setDone(false);
         $transport->addResponse($incompleteOperation);
         @if test.hasReturnValue
-            {@initCode(test.mockResponse.initCode, "client")}
+            {@initCode(test.mockResponse.rpcResponseInitCode, "client")}
         @else
             $expectedResponse = new GPBEmpty();
         @end
@@ -389,10 +389,10 @@
 
         @if test.hasRequestParameters
           // Mock request
-          {@initCode(test.initCode, "client")}
+          {@initCode(test.testCaseInitCode, "client")}
 
         @end
-        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
+        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.testCaseInitCode)});
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
         {@lroCallSuccessAsserts(test)}
@@ -452,10 +452,10 @@
 
         @if test.hasRequestParameters
           // Mock request
-          {@initCode(test.initCode, "client")}
+          {@initCode(test.testCaseInitCode, "client")}
 
         @end
-        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
+        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.testCaseInitCode)});
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
 
@@ -493,7 +493,7 @@
 
     // Mock response
     @if test.hasReturnValue
-        {@initCode(test.mockResponse.initCode, "client")}
+        {@initCode(test.mockResponse.rpcResponseInitCode, "client")}
     @else
         $expectedResponse = new GPBEmpty();
     @end
@@ -501,7 +501,7 @@
 
     @if test.hasRequestParameters
       // Mock request
-      {@initCode(test.initCode, "client")}
+      {@initCode(test.testCaseInitCode, "client")}
 
     @end
 @end

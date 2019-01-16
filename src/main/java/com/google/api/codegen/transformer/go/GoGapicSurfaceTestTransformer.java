@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoApiModel;
@@ -89,6 +90,11 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer<Pro
     models.add(generateMockServiceView(model, productConfig, namer));
 
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      if (interfaceConfig == null || interfaceConfig.getSmokeTestConfig() == null) {
+        continue;
+      }
+
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
@@ -96,9 +102,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer<Pro
               GoGapicSurfaceTransformer.createTypeTable(),
               namer,
               featureConfig);
-      if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        models.add(createSmokeTestClassView(context));
-      }
+      models.add(createSmokeTestClassView(context));
     }
     return models;
   }
@@ -116,12 +120,16 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer<Pro
               apiInterface, productConfig, typeTable, namer, featureConfig);
       impls.add(
           MockServiceImplView.newBuilder()
-              .mockGrpcClassName(namer.getGrpcServerTypeName(context.getInterfaceModel()))
+              .mockGrpcClassName(namer.getGrpcServerTypeName(apiInterface))
               .name(namer.getMockGrpcServiceImplName(apiInterface))
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
       // We don't need any import here.
       GapicInterfaceContext context =
           GapicInterfaceContext.create(

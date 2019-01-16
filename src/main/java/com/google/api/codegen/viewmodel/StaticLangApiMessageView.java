@@ -37,8 +37,16 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   // TODO(andrealin) Populate and render this field.
   public abstract String defaultValue();
 
+  // The untransformed ID of the schema from the Discovery Doc, to be used in the JSON http body.
+  public abstract String rawName();
+
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String name();
+
+  // Returns if there is a non-null serialized name and if it is different from the rendered name.
+  public boolean serializedNameDifferent() {
+    return !name().equals(rawName());
+  }
 
   // The type name for this Schema when rendered as a field in its parent Schema, e.g.
   // "List<Operation>".
@@ -90,6 +98,8 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder typeName(String val);
+
+    public abstract Builder rawName(String val);
 
     public abstract Builder name(String val);
 

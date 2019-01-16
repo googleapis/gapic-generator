@@ -156,6 +156,7 @@ public class JavaDiscoGapicSchemaToViewTransformer
     String schemaName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTableCopy.getNewSymbol(schemaId)));
 
+    schemaView.rawName(schema.getIdentifier());
     schemaView.name(schemaName);
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
@@ -209,6 +210,7 @@ public class JavaDiscoGapicSchemaToViewTransformer
   private void addApiImports(ImportTypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
     typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
+    typeTable.getAndSaveNicknameFor("com.google.gson.annotations.SerializedName");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
     typeTable.getAndSaveNicknameFor("java.util.Collections");
