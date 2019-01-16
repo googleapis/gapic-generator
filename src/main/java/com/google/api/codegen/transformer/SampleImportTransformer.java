@@ -37,7 +37,7 @@ public class SampleImportTransformer {
     initCodeTypeTable
         .getImports()
         .values()
-        .forEach(t -> context.getImportTypeTable().getAndSaveNicknameFor(t));
+        .forEach(t -> context.getTypeTable().getAndSaveNicknameFor(t));
   }
 
   public ImportSectionView toImportSectionView(
@@ -46,9 +46,9 @@ public class SampleImportTransformer {
       List<OutputView> views,
       ImportTypeTable initCodeTypeTable,
       Iterable<InitCodeNode> nodes) {
-    addSampleBodyImports(methodContext, form);
-    addOutputImports(methodContext, views);
-    addInitCodeImports(methodContext, initCodeTypeTable, nodes);
-    return importSectionTransformer.generateImportSection(methodContext, nodes);
+    addSampleBodyImports(context, form);
+    addOutputImports(context, views);
+    addInitCodeImports(context, initCodeTypeTable, nodes);
+    return importSectionTransformer.generateImportSection(context, nodes);
   }
 }

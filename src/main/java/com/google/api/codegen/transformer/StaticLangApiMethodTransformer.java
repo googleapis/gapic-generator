@@ -78,6 +78,21 @@ public class StaticLangApiMethodTransformer {
             .build();
   }
 
+  public StaticLangApiMethodTransformer(
+      SampleType sampleType,
+      InitCodeTransformer initCodeTransformer,
+      OutputTransformer outputTransformer,
+      SampleImportTransformer sampleImportTransformer) {
+    this.initCodeTransformer = initCodeTransformer;
+    this.sampleTransformer =
+        SampleTransformer.newBuilder()
+            .sampleType(sampleType)
+            .initCodeTransformer(initCodeTransformer)
+            .outputTransformer(outputTransformer)
+            .sampleImportTransformer(sampleImportTransformer)
+            .build();
+  }
+
   public StaticLangApiMethodTransformer() {
     this(SampleType.IN_CODE);
   }

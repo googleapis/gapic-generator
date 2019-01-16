@@ -55,10 +55,14 @@ public abstract class SampleTransformer {
 
   public abstract OutputTransformer outputTransformer();
 
+  public abstract SampleImportTransformer sampleImportTransformer();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleTransformer.Builder()
         .initCodeTransformer(new InitCodeTransformer())
-        .outputTransformer(new OutputTransformer());
+        .outputTransformer(new OutputTransformer())
+        .sampleImportTransformer(
+            new SampleImportTransformer(new StandardImportSectionTransformer()));
   }
 
   @AutoValue.Builder
@@ -69,6 +73,8 @@ public abstract class SampleTransformer {
     public abstract Builder initCodeTransformer(InitCodeTransformer val);
 
     public abstract Builder outputTransformer(OutputTransformer val);
+
+    public abstract Builder sampleImportTransformer(SampleImportTransformer val);
 
     public abstract SampleTransformer build();
   }
@@ -239,9 +245,6 @@ public abstract class SampleTransformer {
       MethodContext methodContext,
       InitCodeContext initCodeContext) {
     methodContext = methodContext.cloneWithEmptyTypeTable();
-    SampleImportTransformer importTransformer =
-        new SampleImportTransformer(
-            initCodeTransformer().getImportSectionTransformer(), methodContext);
     InitCodeView initCodeView =
         initCodeTransformer().generateInitCode(methodContext, initCodeContext);
     SampleValueSet valueSet = setAndTag.values();
@@ -252,11 +255,13 @@ public abstract class SampleTransformer {
     ImmutableList<OutputView> outputViews =
         outputTransformer().toViews(outputs, methodContext, valueSet);
     ImportSectionView sampleImportSectionView =
-        importTransformer.toImportSectionView(
-            form,
-            outputViews,
-            methodContext.getTypeTable(),
-            initCodeTransformer().getInitCodeNodes(methodContext, initCodeContext));
+        sampleImportTransformer()
+            .toImportSectionView(
+                methodContext,
+                form,
+                outputViews,
+                methodContext.getTypeTable(),
+                initCodeTransformer().getInitCodeNodes(methodContext, initCodeContext));
     return MethodSampleView.newBuilder()
         .callingForm(form)
         .valueSet(SampleValueSetView.of(valueSet))
