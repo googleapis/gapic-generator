@@ -19,6 +19,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
@@ -119,6 +120,10 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .build());
     }
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
       // We don't need any imports here.
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -212,10 +217,13 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   private List<ViewModel> createSmokeTestViews(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        views.add(createSmokeTestClassView(context, model.hasMultipleServices()));
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      if (interfaceConfig == null || interfaceConfig.getSmokeTestConfig() == null) {
+        continue;
       }
+
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      views.add(createSmokeTestClassView(context, model.hasMultipleServices()));
     }
     return views.build();
   }

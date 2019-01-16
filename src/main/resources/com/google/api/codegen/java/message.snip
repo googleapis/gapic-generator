@@ -36,7 +36,7 @@
   @@Override
   public Object getFieldValue(String fieldName) {
     @join param : schema.properties
-      if (fieldName.equals("{@param.name}")) {
+      if ("{@param.name}".equals(fieldName)) {
         return {@param.name};
       }
     @end
@@ -68,6 +68,10 @@
 @private members(schema)
   @join property : schema.properties
     @if schema.isSerializable
+      @if property.serializedNameDifferent
+        @@SerializedName("{@property.rawName}")
+        {@""}
+      @end
       private final {@property.typeName} {@property.name};
     @else
       private final transient {@property.typeName} {@property.name};

@@ -88,6 +88,10 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> views = new ArrayList<>();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
       GapicInterfaceContext context =
           createContext(apiInterface, productConfig, PhpSurfaceNamer.TestKind.UNIT);
       views.add(createUnitTestFileView(context));

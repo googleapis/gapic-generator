@@ -64,6 +64,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Ruby. */
@@ -124,6 +125,10 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     FeatureConfig featureConfig = new RubyFeatureConfig();
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
       String packageName = productConfig.getPackageName();
       ModelTypeTable modelTypeTable =
           new ModelTypeTable(
@@ -217,8 +222,12 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
     Iterable<? extends InterfaceModel> interfaces = model.getInterfaces();
     for (InterfaceModel apiInterface : interfaces) {
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
       InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      if (interfaceConfig == null) {
+        continue;
+      }
+
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
       requireViews.add(
           VersionIndexRequireView.newBuilder()
               .clientName(namer.getFullyQualifiedApiWrapperClassName(interfaceConfig))
@@ -269,7 +278,14 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
                         .build()))
             .build();
     List<String> modules = namer.getApiModules();
-    GapicInterfaceContext context = createContext(model.getInterfaces().get(0), productConfig);
+    InterfaceModel apiInterface =
+        model
+            .getInterfaces()
+            .stream()
+            .filter(productConfig::hasInterfaceConfig)
+            .findFirst()
+            .orElseThrow(() -> new NoSuchElementException("reachable API interfaces"));
+    GapicInterfaceContext context = createContext(apiInterface, productConfig);
     String subPath =
         pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     return CredentialsClassFileView.newBuilder()
@@ -327,6 +343,10 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
     List<String> modules = namer.getTopLevelApiModules();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       String clientName = namer.getPackageName();
       String serviceName = namer.getPackageServiceName(context.getInterfaceConfig());

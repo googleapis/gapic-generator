@@ -18,6 +18,7 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -48,6 +49,7 @@ import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /** Responsible for producing package metadata related views for NodeJS */
 public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<ProtoApiModel> {
@@ -138,17 +140,20 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
       ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
-        FlatteningConfig flatteningGroup =
-            testCaseTransformer.getSmokeTestFlatteningGroup(
-                context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-        GapicMethodContext flattenedMethodContext =
-            context.asFlattenedMethodContext(method, flatteningGroup);
-        exampleMethods.add(
-            createExampleApiMethodView(flattenedMethodContext, model.hasMultipleServices()));
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      if (interfaceConfig == null || interfaceConfig.getSmokeTestConfig() == null) {
+        continue;
       }
+
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      MethodModel method = interfaceConfig.getSmokeTestConfig().getMethod();
+      FlatteningConfig flatteningGroup =
+          testCaseTransformer.getSmokeTestFlatteningGroup(
+              context.getMethodConfig(method), interfaceConfig.getSmokeTestConfig());
+      GapicMethodContext flattenedMethodContext =
+          context.asFlattenedMethodContext(method, flatteningGroup);
+      exampleMethods.add(
+          createExampleApiMethodView(flattenedMethodContext, model.hasMultipleServices()));
     }
     return exampleMethods.build();
   }
@@ -216,33 +221,30 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
   }
 
   private boolean hasLongrunning(ApiModel model, ProductConfig productConfig) {
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      if (productConfig.getInterfaceConfig(apiInterface).hasLongRunningOperations()) {
-        return true;
-      }
-    }
-    return false;
+    return model
+        .getInterfaces()
+        .stream()
+        .map(productConfig::getInterfaceConfig)
+        .filter(Objects::nonNull)
+        .anyMatch(InterfaceConfig::hasLongRunningOperations);
   }
 
   private boolean hasBatching(ApiModel model, ProductConfig productConfig) {
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      if (productConfig.getInterfaceConfig(apiInterface).hasBatchingMethods()) {
-        return true;
-      }
-    }
-    return false;
+    return model
+        .getInterfaces()
+        .stream()
+        .map(productConfig::getInterfaceConfig)
+        .filter(Objects::nonNull)
+        .anyMatch(InterfaceConfig::hasBatchingMethods);
   }
 
   private boolean hasMixinApis(ApiModel model, GapicProductConfig productConfig) {
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      if (new GrpcStubTransformer()
-              .generateGrpcStubs(createContext(apiInterface, productConfig))
-              .size()
-          > 1) {
-        return true;
-      }
-    }
-    return false;
+    return model
+        .getInterfaces()
+        .stream()
+        .filter(productConfig::hasInterfaceConfig)
+        .map(i -> createContext(i, productConfig))
+        .anyMatch(c -> new GrpcStubTransformer().generateGrpcStubs(c).size() > 1);
   }
 
   private GapicInterfaceContext createContext(

@@ -66,6 +66,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import java.io.File;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /* Transforms a ProtoApiModel into the standard GAPIC surface for Python. */
@@ -136,6 +137,10 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
 
     for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, modelTypeTable, namer, featureConfig);
@@ -365,6 +370,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
         .getInterfaces()
         .stream()
         .map(intf -> productConfig.getInterfaceConfig(intf))
+        .filter(Objects::nonNull)
         .map(
             conf ->
                 VersionIndexRequireView.newBuilder()
@@ -429,6 +435,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
         .getInterfaces()
         .stream()
         .map(intf -> productConfig.getInterfaceConfig(intf))
+        .filter(Objects::nonNull)
         .map(
             conf ->
                 VersionIndexRequireView.newBuilder()
