@@ -43,9 +43,10 @@ public abstract class JavaGapicCodePathMapper implements GapicCodePathMapper {
     return getOutputPath(config, method);
   }
 
-  private String getOutputPath(ProductConfig config, String methodSample) {
+  /* If the methodName is not null, returns the path for generated samples for this method. */
+  private String getOutputPath(ProductConfig config, String methodName) {
     ArrayList<String> dirs = new ArrayList<>();
-    boolean hasSample = !Strings.isNullOrEmpty(methodSample);
+    boolean hasSample = !Strings.isNullOrEmpty(methodName);
     if (hasSample) {
       dirs.add(SAMPLES_DIRECTORY);
       dirs.add(prefix());
@@ -54,10 +55,13 @@ public abstract class JavaGapicCodePathMapper implements GapicCodePathMapper {
         dirs.add(seg.toLowerCase());
       }
 
-      // TODO(hzyi): it requires non-trivial work to append the method name to package name. Thus
-      // removing it from the output path for now to make Java samples in a structure that compiles.
-      // After we figure out how to append the method name to package name, we need to call
-      // `dirs.add(methodSample)` here.
+      // The Java package name a the top of each sample file must match the output path for
+      // that file. This means that since we want the output path to eventually be of the form
+      // `samples/src/main/java/com/google/cloud/examples/API_NAME/VER/METHOD_NAME/SAMPLE_NAME.java`,
+      // we need to make `methodName` be the last element of the Java package name at the top of the
+      // sample file. This is non-trivial to do, so we'll do it separately. Once we do it, we can
+      // then make `methodName` be the final path element for this output path so that they continue
+      // to match by calling `dirs.add(methodName)` here.
     } else {
       dirs.add(prefix());
       for (String seg : config.getPackageName().split(PACKAGE_SPLITTER)) {

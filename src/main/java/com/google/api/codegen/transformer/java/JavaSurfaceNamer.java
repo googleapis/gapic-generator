@@ -443,6 +443,6 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     int index = packageName.indexOf('.');
     String firstComponent = index < 0 ? packageName : packageName.substring(0, index);
     String remainingComponents = packageName.replaceFirst(firstComponent, "");
-    return "com.google." + firstComponent + ".examples" + remainingComponents + ".snippets";
+    return "com.google." + firstComponent + ".examples" + remainingComponents;
   }
 }
