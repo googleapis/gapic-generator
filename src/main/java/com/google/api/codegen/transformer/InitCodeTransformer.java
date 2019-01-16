@@ -328,7 +328,7 @@ public class InitCodeTransformer {
           // The node has not been specified before, thus check if entity has been specified
           checkArgument(
               entity == null || nodeEntities.put(node, entity),
-              "Entity %s in path %s specified multiple types",
+              "Entity %s in path %s specified multiple times",
               entity,
               path);
         } else {
@@ -343,7 +343,7 @@ public class InitCodeTransformer {
               path);
           checkArgument(
               nodeEntities.put(node, entity),
-              "Entity %s in path %s specified multiple types",
+              "Entity %s in path %s specified multiple times",
               entity,
               path);
         }
