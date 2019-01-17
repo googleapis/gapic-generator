@@ -60,7 +60,8 @@ public abstract class FlatteningConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
-      MethodModel methodModel) {
+      MethodModel methodModel,
+      TargetLanguage language) {
 
     Map<String, FlatteningConfig> flatteningConfigs = new LinkedHashMap<>();
 
@@ -72,7 +73,8 @@ public abstract class FlatteningConfig {
               resourceNameConfigs,
               methodConfigProto,
               flatteningGroup,
-              methodModel);
+              methodModel,
+              language);
       if (groupConfig != null) {
         flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
       }
@@ -89,10 +91,16 @@ public abstract class FlatteningConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
-      DiscoveryMethodModel methodModel) {
+      DiscoveryMethodModel methodModel,
+      TargetLanguage language) {
     Map<String, FlatteningConfig> flatteningConfigMap =
         createFlatteningsFromGapicConfig(
-            diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+            diagCollector,
+            messageConfigs,
+            resourceNameConfigs,
+            methodConfigProto,
+            methodModel,
+            language);
     if (flatteningConfigMap == null) {
       return null;
     }
@@ -107,11 +115,17 @@ public abstract class FlatteningConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       ProtoMethodModel methodModel,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      TargetLanguage language) {
 
     Map<String, FlatteningConfig> flatteningConfigsFromGapicConfig =
         createFlatteningsFromGapicConfig(
-            diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+            diagCollector,
+            messageConfigs,
+            resourceNameConfigs,
+            methodConfigProto,
+            methodModel,
+            language);
     if (flatteningConfigsFromGapicConfig == null) {
       return null;
     }
@@ -119,7 +133,7 @@ public abstract class FlatteningConfig {
     // Get flattenings from protofile annotations
     Map<String, FlatteningConfig> flatteningConfigsFromProtoFile =
         createFlatteningConfigsFromProtoFile(
-            diagCollector, messageConfigs, resourceNameConfigs, methodModel, protoParser);
+            diagCollector, messageConfigs, resourceNameConfigs, methodModel, protoParser, language);
     if (flatteningConfigsFromProtoFile == null) {
       return null;
     }
@@ -145,7 +159,8 @@ public abstract class FlatteningConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ProtoMethodModel methodModel,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      TargetLanguage language) {
 
     Map<String, FlatteningConfig> flatteningConfigs = new LinkedHashMap<>();
 
@@ -163,7 +178,8 @@ public abstract class FlatteningConfig {
               resourceNameConfigs,
               signature,
               methodModel,
-              protoParser);
+              protoParser,
+              language);
       if (groupConfig != null) {
 
         flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
@@ -186,7 +202,8 @@ public abstract class FlatteningConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       FlatteningGroupProto flatteningGroup,
-      MethodModel method) {
+      MethodModel method,
+      TargetLanguage language) {
 
     boolean missing = false;
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
@@ -255,10 +272,13 @@ public abstract class FlatteningConfig {
       return null;
     }
 
-    return new AutoValue_FlatteningConfig(
-        flattenedFieldConfigBuilder.build(),
-        flatteningGroup.getFlatteningGroupName(),
-        method.getFullName());
+    FlatteningConfig newFlatteningConfig =
+        new AutoValue_FlatteningConfig(
+            flattenedFieldConfigBuilder.build(),
+            flatteningGroup.getFlatteningGroupName(),
+            method.getFullName());
+    newFlatteningConfig.validateFlattening(language);
+    return newFlatteningConfig;
   }
 
   /**
@@ -272,7 +292,8 @@ public abstract class FlatteningConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodSignature methodSignature,
       ProtoMethodModel method,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      TargetLanguage language) {
 
     // TODO(andrealin): combine this method with createFlatteningFromConfigProto.
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
@@ -320,8 +341,11 @@ public abstract class FlatteningConfig {
               messageConfigs, resourceNameConfigs, parameterField, resourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }
-    return new AutoValue_FlatteningConfig(
-        flattenedFieldConfigBuilder.build(), null, method.getFullName());
+    FlatteningConfig newFlatteningConfig =
+        new AutoValue_FlatteningConfig(
+            flattenedFieldConfigBuilder.build(), null, method.getFullName());
+    newFlatteningConfig.validateFlattening(language);
+    return newFlatteningConfig;
   }
 
   public static Iterable<FieldModel> getFlattenedFields(FlatteningConfig flatteningConfig) {
@@ -411,8 +435,9 @@ public abstract class FlatteningConfig {
     if (!repeatedFields.isEmpty()) {
       throw new IllegalArgumentException(
           String.format(
-              "Non-required arguments `%s` found"
-                  + "after required arguments were given, in method %s",
+              "Repeated arguments `%s` found"
+                  + " as parameters in method %s. Only the last parameter in a method flattening"
+                  + " may be a repeated field.",
               repeatedFields.toString(), getMethodName()));
     }
   }

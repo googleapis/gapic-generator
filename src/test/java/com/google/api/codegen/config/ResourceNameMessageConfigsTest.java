@@ -397,7 +397,8 @@ public class ResourceNameMessageConfigsTest {
                 resourceNameConfigs,
                 methodConfigProto,
                 methodModel,
-                protoParser));
+                protoParser,
+                TargetLanguage.JAVA));
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     List<Diag> warningDiags =
         diagCollector

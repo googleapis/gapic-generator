@@ -108,7 +108,12 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
           FlatteningConfig.createFlatteningConfigs(
-              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              methodModel,
+              language);
       if (flattening == null) {
         error = true;
       }

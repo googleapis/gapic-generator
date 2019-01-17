@@ -144,7 +144,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
               resourceNameConfigs,
               methodConfigProto,
               methodModel,
-              protoParser);
+              protoParser,
+              language);
       if (flattening == null) {
         error = true;
       }
