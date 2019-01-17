@@ -43,7 +43,10 @@ public abstract class JavaGapicCodePathMapper implements GapicCodePathMapper {
     return getOutputPath(config, method);
   }
 
-  /* If the methodName is not null, returns the path for generated samples for this method. */
+  /*
+   * If the methodName is not null, returns the path for generated samples for this method.
+   * Otherwise, returns the path for the client library classes.
+   */
   private String getOutputPath(ProductConfig config, String methodName) {
     ArrayList<String> dirs = new ArrayList<>();
     boolean hasSample = !Strings.isNullOrEmpty(methodName);
@@ -55,7 +58,7 @@ public abstract class JavaGapicCodePathMapper implements GapicCodePathMapper {
         dirs.add(seg.toLowerCase());
       }
 
-      // The Java package name a the top of each sample file must match the output path for
+      // The Java package name at the top of each sample file must match the output path for
       // that file. This means that since we want the output path to eventually be of the form
       // `samples/src/main/java/com/google/cloud/examples/API_NAME/VER/METHOD_NAME/SAMPLE_NAME.java`,
       // we need to make `methodName` be the last element of the Java package name at the top of the
