@@ -443,15 +443,14 @@ public abstract class FlatteningConfig {
   }
 
   private void validateFlattening(TargetLanguage language) {
+    validateNoNonTerminalRepeatedField();
+
     switch (language) {
-        // TODO(andrealin): What other languages have this feature?
       case PYTHON:
       case RUBY:
+      case CSHARP:
         validateRequiredArgumentsFirst();
-        validateNoNonTerminalRepeatedField();
-        break;
       default:
-        break;
     }
   }
 }
