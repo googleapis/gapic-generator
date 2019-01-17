@@ -446,6 +446,7 @@ public abstract class FlatteningConfig {
     switch (language) {
         // TODO(andrealin): What other languages have this feature?
       case PYTHON:
+      case RUBY:
         validateRequiredArgumentsFirst();
         validateNoNonTerminalRepeatedField();
         break;
