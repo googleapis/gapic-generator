@@ -482,7 +482,8 @@ public class TestCaseTransformer {
             .symbolTable(table)
             .fieldConfigMap(fieldConfigMap);
     if (context.isFlattenedMethodContext()) {
-      contextBuilder.initFields(context.getFlatteningConfig().getFlattenedFields());
+      FlatteningConfig flatteningConfig = context.getFlatteningConfig();
+      contextBuilder.initFields(FlatteningConfig.getFlattenedFields(flatteningConfig));
     }
     return contextBuilder.build();
   }

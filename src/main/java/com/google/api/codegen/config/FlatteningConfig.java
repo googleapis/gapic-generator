@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class FlatteningConfig {
 
-  // Maps the name of the parameter in this flattening to its FieldConfig.
+  // Insertion-ordered map of the name of the parameter in this flattening to its FieldConfig.
   public abstract ImmutableMap<String, FieldConfig> getFlattenedFieldConfigs();
 
   @Nullable
@@ -317,8 +318,9 @@ public abstract class FlatteningConfig {
     return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build(), null);
   }
 
-  public Iterable<FieldModel> getFlattenedFields() {
-    return FieldConfig.toFieldTypeIterable(getFlattenedFieldConfigs().values());
+  public static Iterable<FieldModel> getFlattenedFields(FlatteningConfig flatteningConfig) {
+    // Un-mockable static method.
+    return FieldConfig.toFieldTypeIterable(flatteningConfig.getFlattenedFieldConfigs().values());
   }
 
   public FlatteningConfig withResourceNamesInSamplesOnly() {
@@ -350,9 +352,39 @@ public abstract class FlatteningConfig {
 
   /** Returns a string representing the ordered fields in a flattening config. */
   private static String flatteningConfigToString(FlatteningConfig flatteningConfig) {
-    Iterable<FieldModel> paramList = flatteningConfig.getFlattenedFields();
+    Iterable<FieldModel> paramList = FlatteningConfig.getFlattenedFields(flatteningConfig);
     StringBuilder paramsAsString = new StringBuilder();
     paramList.forEach(p -> paramsAsString.append(p.getSimpleName()).append(", "));
     return paramsAsString.toString();
+  }
+
+  /** Return whether, for a given method signature, that the required arguments appear first,
+   *  before the optional arguments. This is a condition that must be true for valid client libraries
+   *  in some languages.
+   *
+   * @return whether the above condition is satisfied. */
+  public boolean validateRequiredArgumentsFirst() {
+    boolean foundOptionalArg = false;
+    for (FieldConfig fieldConfig : getFlattenedFieldConfigs().values()) {
+      foundOptionalArg |= !fieldConfig.getField().isRequired();
+      if (foundOptionalArg && fieldConfig.getField().isRequired()) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /** Return whether, for a given method signature, that none of the parameters are repeated fields,
+   *  except for the last field, which may be repeated.
+   *  This is a condition that must be true for valid client libraries in some languages.
+   *
+   *  @return whether the above condition is satisfied. */
+  public boolean validateNoNonTerminalRepeatedField() {
+    if (getFlattenedFieldConfigs().isEmpty()) return true;
+
+    List<FieldConfig> paramsExceptLast = getFlattenedFieldConfigs().values().asList()
+        .subList(0, getFlattenedFieldConfigs().size()-1);
+    return paramsExceptLast.stream().noneMatch(f -> f.getField().isRepeated());
   }
 }

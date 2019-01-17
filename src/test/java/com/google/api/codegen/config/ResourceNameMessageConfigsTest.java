@@ -435,10 +435,10 @@ public class ResourceNameMessageConfigsTest {
     flatteningConfigs.remove(flatteningConfigFromGapicConfig.get());
 
     // Check the flattenings from the protofile annotations.
-    flatteningConfigs.sort(Comparator.comparingInt(c -> Iterables.size(c.getFlattenedFields())));
+    flatteningConfigs.sort(Comparator.comparingInt(c -> Iterables.size(FlatteningConfig.getFlattenedFields(c))));
 
     FlatteningConfig shelfFlattening = flatteningConfigs.get(0);
-    assertThat(Iterables.size(shelfFlattening.getFlattenedFields())).isEqualTo(1);
+    assertThat(Iterables.size(FlatteningConfig.getFlattenedFields(shelfFlattening))).isEqualTo(1);
 
     FieldConfig nameConfig = shelfFlattening.getFlattenedFieldConfigs().get("name");
     assertThat(nameConfig.getResourceNameTreatment()).isEqualTo(ResourceNameTreatment.STATIC_TYPES);
@@ -446,7 +446,7 @@ public class ResourceNameMessageConfigsTest {
         .isEqualTo(GAPIC_SHELF_PATH);
 
     FlatteningConfig shelfAndBookFlattening = flatteningConfigs.get(1);
-    assertThat(Iterables.size(shelfAndBookFlattening.getFlattenedFields())).isEqualTo(2);
+    assertThat(Iterables.size(FlatteningConfig.getFlattenedFields(shelfAndBookFlattening))).isEqualTo(2);
 
     FieldConfig nameConfig2 = shelfAndBookFlattening.getFlattenedFieldConfigs().get("name");
     assertThat(nameConfig2.getResourceNameTreatment())
