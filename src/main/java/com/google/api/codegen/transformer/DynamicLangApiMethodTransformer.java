@@ -67,6 +67,8 @@ public class DynamicLangApiMethodTransformer {
         SampleTransformer.newBuilder()
             .sampleType(sampleType)
             .initCodeTransformer(initCodeTransformer)
+            .sampleImportTransformer(
+                new SampleImportTransformer(initCodeTransformer.getImportSectionTransformer()))
             .build();
   }
 
@@ -74,7 +76,8 @@ public class DynamicLangApiMethodTransformer {
       ApiMethodParamTransformer apiMethodParamTransformer,
       InitCodeTransformer initCodeTransformer,
       SampleType sampleType,
-      OutputTransformer outputTransformer) {
+      OutputTransformer outputTransformer,
+      SampleImportTransformer sampleImportTransformer) {
     this.apiMethodParamTransformer = apiMethodParamTransformer;
     this.initCodeTransformer = initCodeTransformer;
     this.sampleTransformer =
@@ -82,6 +85,7 @@ public class DynamicLangApiMethodTransformer {
             .sampleType(sampleType)
             .outputTransformer(outputTransformer)
             .initCodeTransformer(initCodeTransformer)
+            .sampleImportTransformer(sampleImportTransformer)
             .build();
   }
 

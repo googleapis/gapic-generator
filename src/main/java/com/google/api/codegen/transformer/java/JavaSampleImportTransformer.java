@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.SampleImportTransformer;
@@ -29,8 +30,7 @@ import java.util.List;
 public class JavaSampleImportTransformer extends SampleImportTransformer {
 
   private static final String API_FUTURE = "com.google.api.common.ApiFuture";
-  private static final String BIDI_STEAMING_CALLABLE =
-      "com.google.api.gax.rpc.BidiStreamingCallable";
+  private static final String BIDI_STEAMING_CALLABLE = "com.google.api.gax.rpc.BidiStream";
   private static final String OPERATION_FUTURE = "com.google.api.gax.longrunning.OperationFuture";
   private static final String SERVER_STREAM = "com.google.api.gax.rpc.ServerStream";
   private static final String API_STREAM_OBSERVER = "com.google.api.gax.rpc.ApiStreamObserver";
@@ -119,6 +119,35 @@ public class JavaSampleImportTransformer extends SampleImportTransformer {
           break; // fall through
         default:
           throw new IllegalArgumentException("unrecognized output view kind: " + view.kind());
+      }
+    }
+  }
+
+  protected void addInitCodeImports(
+      MethodContext context, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes) {
+    super.addInitCodeImports(context, initCodeTypeTable, nodes);
+    ImportTypeTable typeTable = context.getTypeTable();
+    for (InitCodeNode node : nodes) {
+      switch (node.getLineType()) {
+        case ListInitLine:
+          typeTable.saveNicknameFor("java.util.List");
+          typeTable.saveNicknameFor("java.util.Arrays");
+          break;
+        case MapInitLine:
+          typeTable.saveNicknameFor("java.util.Map");
+          typeTable.saveNicknameFor("java.util.HashMap");
+          break;
+        case ReadFileInitLine:
+          typeTable.saveNicknameFor("java.nio.Files");
+          typeTable.saveNicknameFor("java.nio.File");
+          typeTable.saveNicknameFor("java.nio.Paths");
+          typeTable.saveNicknameFor("java.nio.Path");
+          break;
+        case SimpleInitLine:
+        case StructureInitLine:
+          break; // fall through
+        default:
+          throw new IllegalArgumentException("Unrecognized line type: " + node.getLineType());
       }
     }
   }

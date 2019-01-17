@@ -7901,12 +7901,29 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
         }
       };
 
+
   private static final BatchingDescriptor<AddCommentsRequest, Empty> ADD_COMMENTS_BATCHING_DESC =
       new BatchingDescriptor<AddCommentsRequest, Empty>() {
         @Override
         public PartitionKey getBatchPartitionKey(AddCommentsRequest request) {
           return new PartitionKey(request.getName());
         }
+=======
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START turing_prog_callable_streaming_bidi]
+import com.google.api.gax.rpc.BidiStream;
+import com.google.example.library.v1.Comment;
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.protobuf.ByteString;
+import java.nio.File;
+import java.nio.Files;
+import java.nio.Path;
+import java.nio.Paths;
+
 
         @Override
         public RequestBuilder<AddCommentsRequest> getRequestBuilder() {
@@ -7965,6 +7982,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   public static class Builder extends StubSettings.Builder<LibraryServiceStubSettings, Builder> {
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
+
     private final UnaryCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings;
     private final UnaryCallSettings.Builder<GetShelfRequest, Shelf> getShelfSettings;
     private final PagedCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
@@ -7995,6 +8013,15 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final UnaryCallSettings.Builder<GetBookRequest, Operation> getBigNothingSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
     private final UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
+=======
+// [START sample]
+import com.google.api.common.ApiFuture;
+import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import java.util.Arrays;
+import java.util.List;
+
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -8034,7 +8061,17 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     protected Builder(ClientContext clientContext) {
       super(clientContext);
 
+
       createShelfSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+=======
+// [START sample]
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+import java.util.Arrays;
+import java.util.List;
+
 
       getShelfSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
@@ -8043,7 +8080,18 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       deleteShelfSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
+
       mergeShelvesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+=======
+// [START sample]
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+import java.util.Arrays;
+import java.util.List;
+
 
       createBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
@@ -8053,8 +8101,20 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       getBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
+
       listBooksSettings = PagedCallSettings.newBuilder(
           LIST_BOOKS_PAGE_STR_FACT);
+=======
+// [START sample]
+import com.google.api.common.ApiFuture;
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+import java.util.Arrays;
+import java.util.List;
+
 
       deleteBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
@@ -8075,7 +8135,18 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       getBookFromAbsolutelyAnywhereSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
+
       updateBookIndexSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+=======
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START hopper]
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
 
       streamShelvesSettings = ServerStreamingCallSettings.newBuilder();
 
@@ -8088,7 +8159,19 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       findRelatedBooksSettings = PagedCallSettings.newBuilder(
           FIND_RELATED_BOOKS_PAGE_STR_FACT);
 
+
       addTagSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+=======
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START hopper]
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
 
       addLabelSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
@@ -8100,7 +8183,20 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       getBigNothingOperationSettings = OperationCallSettings.newBuilder();
 
+
       testOptionalRequiredFlatteningParamsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+=======
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START hopper]
+import com.google.api.common.ApiFuture;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.longrunning.Operation;
+
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           createShelfSettings,
@@ -8155,9 +8251,23 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
+
       builder.deleteShelfSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+=======
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START hopper]
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.longrunning.Operation;
+
 
       builder.mergeShelvesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
@@ -8219,9 +8329,17 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
+
       builder.getBookFromArchiveSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+=======
+// [START sample]
+import com.google.api.gax.rpc.ApiStreamObserver;
+import com.google.example.library.v1.Comment;
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
+
 
       builder.getBookFromAnywhereSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
@@ -8247,9 +8365,24 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
+
       builder.addTagSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+=======
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START canonical]
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
 
       builder.addLabelSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
@@ -8310,6 +8443,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       return builder;
     }
 
+
     protected Builder(LibraryServiceStubSettings settings) {
       super(settings);
 
@@ -8343,6 +8477,16 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
       getBigNothingOperationSettings = settings.getBigNothingOperationSettings.toBuilder();
       testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
+=======
+// [START canonical]
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           createShelfSettings,
@@ -8371,6 +8515,36 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           testOptionalRequiredFlatteningParamsSettings
       );
     }
+
+=======
+    // [END canonical_core]
+  }
+
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END canonical]
+============== file: src/main/java/samples/com/google/example/library/v1/publishseries/PublishSeriesRequestPiVersion.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
+package com.google.example.examples.library.v1.snippets;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START canonical]
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
 
     // NEXT_MAJOR_VER: remove 'throws Exception'
     /**
@@ -8408,12 +8582,24 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       return listShelvesSettings;
     }
 
+
     /**
      * Returns the builder for the settings used for calls to deleteShelf.
      */
     public UnaryCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings() {
       return deleteShelfSettings;
     }
+=======
+// [START canonical]
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
 
     /**
      * Returns the builder for the settings used for calls to mergeShelves.
@@ -8436,12 +8622,29 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       return publishSeriesSettings;
     }
 
+
     /**
      * Returns the builder for the settings used for calls to getBook.
      */
     public UnaryCallSettings.Builder<GetBookRequest, Book> getBookSettings() {
       return getBookSettings;
     }
+=======
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+// [START canonical]
+import com.google.api.common.ApiFuture;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
 
     /**
      * Returns the builder for the settings used for calls to listBooks.
@@ -8492,12 +8695,25 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       return getBookFromArchiveSettings;
     }
 
+
     /**
      * Returns the builder for the settings used for calls to getBookFromAnywhere.
      */
     public UnaryCallSettings.Builder<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings() {
       return getBookFromAnywhereSettings;
     }
+=======
+// [START canonical]
+import com.google.api.common.ApiFuture;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
 
     /**
      * Returns the builder for the settings used for calls to getBookFromAbsolutelyAnywhere.
@@ -8534,12 +8750,20 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       return discussBookSettings;
     }
 
+
     /**
      * Returns the builder for the settings used for calls to monologAboutBook.
      */
     public StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings() {
       return monologAboutBookSettings;
     }
+=======
+// [START babbage]
+import com.google.api.gax.rpc.ServerStream;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.StreamBooksRequest;
+
 
     /**
      * Returns the builder for the settings used for calls to findRelatedBooks.
@@ -8569,6 +8793,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       return getBigBookSettings;
     }
 
+
     /**
      * Returns the builder for the settings used for calls to getBigBook.
      */
@@ -8576,6 +8801,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     public OperationCallSettings.Builder<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationSettings() {
       return getBigBookOperationSettings;
     }
+=======
+// [START sample]
+import com.google.api.gax.rpc.ServerStream;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.StreamShelvesRequest;
+import com.google.example.library.v1.StreamShelvesResponse;
+
 
     /**
      * Returns the builder for the settings used for calls to getBigNothing.
