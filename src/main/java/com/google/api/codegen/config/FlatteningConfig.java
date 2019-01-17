@@ -18,6 +18,7 @@ import com.google.api.MethodSignature;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.transformer.DiscoveryMethodTransformer;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -31,11 +32,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /** FlatteningConfig represents a specific flattening configuration for a method. */
@@ -47,6 +48,8 @@ public abstract class FlatteningConfig {
 
   @Nullable
   public abstract String getFlatteningName();
+
+  public abstract String getMethodName();
 
   /**
    * Returns a map of a string representing a list of the fields in a flattening, to the flattening
@@ -253,7 +256,9 @@ public abstract class FlatteningConfig {
     }
 
     return new AutoValue_FlatteningConfig(
-        flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
+        flattenedFieldConfigBuilder.build(),
+        flatteningGroup.getFlatteningGroupName(),
+        method.getFullName());
   }
 
   /**
@@ -315,7 +320,8 @@ public abstract class FlatteningConfig {
               messageConfigs, resourceNameConfigs, parameterField, resourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }
-    return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build(), null);
+    return new AutoValue_FlatteningConfig(
+        flattenedFieldConfigBuilder.build(), null, method.getFullName());
   }
 
   public static Iterable<FieldModel> getFlattenedFields(FlatteningConfig flatteningConfig) {
@@ -331,7 +337,8 @@ public abstract class FlatteningConfig {
             .collect(
                 ImmutableMap.toImmutableMap(
                     Map.Entry::getKey, e -> e.getValue().withResourceNameInSampleOnly()));
-    return new AutoValue_FlatteningConfig(newFlattenedFieldConfigs, getFlatteningName());
+    return new AutoValue_FlatteningConfig(
+        newFlattenedFieldConfigs, getFlatteningName(), getMethodName());
   }
 
   public static boolean hasAnyRepeatedResourceNameParameter(FlatteningConfig flatteningGroup) {
@@ -358,33 +365,67 @@ public abstract class FlatteningConfig {
     return paramsAsString.toString();
   }
 
-  /** Return whether, for a given method signature, that the required arguments appear first,
-   *  before the optional arguments. This is a condition that must be true for valid client libraries
-   *  in some languages.
+  /**
+   * Return whether, for a given method signature, that the required arguments appear first, before
+   * the optional arguments. This is a condition that must be true for valid client libraries in
+   * some languages.
    *
-   * @return whether the above condition is satisfied. */
-  public boolean validateRequiredArgumentsFirst() {
+   * @throws IllegalArgumentException if the above condition is not satisfied.
+   */
+  @VisibleForTesting
+  void validateRequiredArgumentsFirst() {
     boolean foundOptionalArg = false;
     for (FieldConfig fieldConfig : getFlattenedFieldConfigs().values()) {
       foundOptionalArg |= !fieldConfig.getField().isRequired();
       if (foundOptionalArg && fieldConfig.getField().isRequired()) {
-        return false;
+        throw new IllegalArgumentException(
+            String.format(
+                "Non-required argument `%s` found"
+                    + "after required arguments were given, in method %s",
+                fieldConfig.getField().getSimpleName(), getMethodName()));
       }
     }
-
-    return true;
   }
 
-  /** Return whether, for a given method signature, that none of the parameters are repeated fields,
-   *  except for the last field, which may be repeated.
-   *  This is a condition that must be true for valid client libraries in some languages.
+  /**
+   * Return whether, for a given method signature, that none of the parameters are repeated fields,
+   * except for the last field, which may be repeated. This is a condition that must be true for
+   * valid client libraries in some languages.
    *
-   *  @return whether the above condition is satisfied. */
-  public boolean validateNoNonTerminalRepeatedField() {
-    if (getFlattenedFieldConfigs().isEmpty()) return true;
+   * @throws IllegalArgumentException if the above condition is not satisfied.
+   */
+  @VisibleForTesting
+  void validateNoNonTerminalRepeatedField() {
+    if (getFlattenedFieldConfigs().isEmpty()) return;
 
-    List<FieldConfig> paramsExceptLast = getFlattenedFieldConfigs().values().asList()
-        .subList(0, getFlattenedFieldConfigs().size()-1);
-    return paramsExceptLast.stream().noneMatch(f -> f.getField().isRepeated());
+    List<FieldConfig> paramsExceptLast =
+        getFlattenedFieldConfigs()
+            .values()
+            .asList()
+            .subList(0, getFlattenedFieldConfigs().size() - 1);
+    List<FieldConfig> repeatedFields =
+        paramsExceptLast
+            .stream()
+            .filter(f -> f.getField().isRepeated())
+            .collect(Collectors.toList());
+    if (!repeatedFields.isEmpty()) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Non-required arguments `%s` found"
+                  + "after required arguments were given, in method %s",
+              repeatedFields.toString(), getMethodName()));
+    }
+  }
+
+  private void validateFlattening(TargetLanguage language) {
+    switch (language) {
+        // TODO(andrealin): What other languages have this feature?
+      case PYTHON:
+        validateRequiredArgumentsFirst();
+        validateNoNonTerminalRepeatedField();
+        break;
+      default:
+        break;
+    }
   }
 }
