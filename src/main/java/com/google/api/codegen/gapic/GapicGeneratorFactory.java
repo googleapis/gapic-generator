@@ -31,6 +31,7 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.java.JavaGapicCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -219,10 +220,7 @@ public class GapicGeneratorFactory {
 
       if (artifactFlags.surfaceGeneratorEnabled()) {
         GapicCodePathMapper javaPathMapper =
-            CommonGapicCodePathMapper.newBuilder()
-                .setPrefix("src/main/java")
-                .setShouldAppendPackage(true)
-                .build();
+            JavaGapicCodePathMapper.newBuilder().prefix("src/main/java").build();
 
         if (artifactFlags.codeFilesEnabled()) {
           generators.add(newJavaGenerator.apply(new JavaGapicSurfaceTransformer(javaPathMapper)));
@@ -258,10 +256,7 @@ public class GapicGeneratorFactory {
       if (artifactFlags.testGeneratorEnabled()) {
         if (artifactFlags.codeFilesEnabled()) {
           GapicCodePathMapper javaTestPathMapper =
-              CommonGapicCodePathMapper.newBuilder()
-                  .setPrefix("src/test/java")
-                  .setShouldAppendPackage(true)
-                  .build();
+              JavaGapicCodePathMapper.newBuilder().prefix("src/test/java").build();
           generators.add(
               newJavaGenerator.apply(
                   new JavaSurfaceTestTransformer<>(
