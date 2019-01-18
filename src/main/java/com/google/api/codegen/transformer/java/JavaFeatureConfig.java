@@ -63,11 +63,6 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
     return true;
   }
 
-  @Override
-  public boolean enableProtoAnnotations() {
-    return true;
-  }
-
   public static Builder newBuilder() {
     return new AutoValue_JavaFeatureConfig.Builder();
   }
