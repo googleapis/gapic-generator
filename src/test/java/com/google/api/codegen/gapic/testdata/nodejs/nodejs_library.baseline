@@ -331,7 +331,7 @@ const request = {
 client.findRelatedBooks(request)
   .then(responses => {
     const resources = responses[0];
-    for (let i = 0; i < resources.length; i += 1) {
+    for (const resource of resources) {
       // doThingsWith(resources[i])
     }
   })
@@ -386,7 +386,7 @@ const callback = responses => {
   const nextRequest = responses[1];
   // The actual response object, if necessary.
   // const rawResponse = responses[2];
-  for (let i = 0; i < resources.length; i += 1) {
+  for (const resource of resources) {
     // doThingsWith(resources[i]);
   }
   if (nextRequest) {
@@ -434,8 +434,65 @@ const formattedName = client.bookPath(shelf, 'War and Peace');
 // Handle the operation using the event emitter pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    const operation = responses[0];
-    const initialApiResponse = responses[1];
+    const [operation, initApiResponse] = responses;
+
+    // Adding a listener for the "complete" event starts polling for the
+    // completion of the operation.
+    operation.on('complete', (result, metadata, finalApiResponse) => {
+      // doSomethingWith(result);
+    });
+
+    // Adding a listener for the "progress" event causes the callback to be
+    // called on any change in metadata when the operation is polled.
+    operation.on('progress', (metadata, apiResponse) => {
+      // doSomethingWith(metadata)
+    });
+
+    // Adding a listener for the "error" event handles any errors found during polling.
+    operation.on('error', err => {
+      // throw(err);
+    });
+  })
+  .catch(err => {
+    console.error(err);
+  });
+*/
+// [END hopper_core]
+
+// FIXME: Insert here clean-up code.
+// tslint:disable-next-line:no-any
+// [END hopper]
+============== file: src/samples/v1/get_big_book_long_running_event_emitter_wap2.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookLongRunningEventEmitterWap2" ]
+//// STUB standalone sample "GetBigBookLongRunningEventEmitterWap2" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START hopper]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//      calling form: "LongRunningEventEmitter"
+//        region tag: "hopper"
+//         className: "GetBigBookLongRunningEventEmitterWap2"
+//          valueSet: "wap2" ("GetBigBook: 'War and Peace'")
+//       description: "Testing resource name overlap"
+//        [name%shelf_id=Novel, name%book_id="War and Peace"]
+//      apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
+
+// [START hopper_core]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+// const shelf = 'Novel';
+// const bigBookName = 'War and Peace';
+const formattedName = client.bookPath(shelf, bigBookName);
+
+// Handle the operation using the event emitter pattern.
+client.getBigBook({name: formattedName})
+  .then(responses => {
+    const [operation, initApiResponse] = responses;
 
     // Adding a listener for the "complete" event starts polling for the
     // completion of the operation.
@@ -492,20 +549,63 @@ const formattedName = client.bookPath(shelf, 'War and Peace');
 // Handle the operation using the promise pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    const operation = responses[0];
-    const initialApiResponse = responses[1];
+    const [operation, initialApiResponse] = responses;
 
     // Operation#promise starts polling for the completion of the LRO.
     return operation.promise();
   })
   .then(responses => {
-    // The final result of the operation.
     const result = responses[0];
-
-    // The metadata value of the completed operation.
     const metadata = responses[1];
+    const finalApiResponse = responses[2];
+  })
+  .catch(err => {
+    console.error(err);
+  });
+*/
+// [END hopper_core]
 
-    // The response of the api call returning the complete operation.
+// FIXME: Insert here clean-up code.
+// tslint:disable-next-line:no-any
+// [END hopper]
+============== file: src/samples/v1/get_big_book_long_running_promise_wap2.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookLongRunningPromiseWap2" ]
+//// STUB standalone sample "GetBigBookLongRunningPromiseWap2" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START hopper]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//      calling form: "LongRunningPromise"
+//        region tag: "hopper"
+//         className: "GetBigBookLongRunningPromiseWap2"
+//          valueSet: "wap2" ("GetBigBook: 'War and Peace'")
+//       description: "Testing resource name overlap"
+//        [name%shelf_id=Novel, name%book_id="War and Peace"]
+//      apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
+
+// [START hopper_core]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+// const shelf = 'Novel';
+// const bigBookName = 'War and Peace';
+const formattedName = client.bookPath(shelf, bigBookName);
+
+// Handle the operation using the promise pattern.
+client.getBigBook({name: formattedName})
+  .then(responses => {
+    const [operation, initialApiResponse] = responses;
+
+    // Operation#promise starts polling for the completion of the LRO.
+    return operation.promise();
+  })
+  .then(responses => {
+    const result = responses[0];
+    const metadata = responses[1];
     const finalApiResponse = responses[2];
   })
   .catch(err => {
@@ -3602,7 +3702,7 @@ class LibraryServiceClient {
    * client.listShelves({})
    *   .then(responses => {
    *     const resources = responses[0];
-   *     for (let i = 0; i < resources.length; i += 1) {
+   *     for (const resource of resources) {
    *       // doThingsWith(resources[i])
    *     }
    *   })
@@ -3620,7 +3720,7 @@ class LibraryServiceClient {
    *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
    *   // const rawResponse = responses[2];
-   *   for (let i = 0; i < resources.length; i += 1) {
+   *   for (const resource of resources) {
    *     // doThingsWith(resources[i]);
    *   }
    *   if (nextRequest) {
@@ -4022,7 +4122,7 @@ class LibraryServiceClient {
    * client.listBooks(request)
    *   .then(responses => {
    *     const resources = responses[0];
-   *     for (let i = 0; i < resources.length; i += 1) {
+   *     for (const resource of resources) {
    *       // doThingsWith(resources[i])
    *     }
    *   })
@@ -4047,7 +4147,7 @@ class LibraryServiceClient {
    *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
    *   // const rawResponse = responses[2];
-   *   for (let i = 0; i < resources.length; i += 1) {
+   *   for (const resource of resources) {
    *     // doThingsWith(resources[i]);
    *   }
    *   if (nextRequest) {
@@ -4336,7 +4436,7 @@ class LibraryServiceClient {
    * client.listStrings({})
    *   .then(responses => {
    *     const resources = responses[0];
-   *     for (let i = 0; i < resources.length; i += 1) {
+   *     for (const resource of resources) {
    *       // doThingsWith(resources[i])
    *     }
    *   })
@@ -4354,7 +4454,7 @@ class LibraryServiceClient {
    *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
    *   // const rawResponse = responses[2];
-   *   for (let i = 0; i < resources.length; i += 1) {
+   *   for (const resource of resources) {
    *     // doThingsWith(resources[i]);
    *   }
    *   if (nextRequest) {
@@ -4885,7 +4985,7 @@ class LibraryServiceClient {
    * client.findRelatedBooks(request)
    *   .then(responses => {
    *     const resources = responses[0];
-   *     for (let i = 0; i < resources.length; i += 1) {
+   *     for (const resource of resources) {
    *       // doThingsWith(resources[i])
    *     }
    *   })
@@ -4911,7 +5011,7 @@ class LibraryServiceClient {
    *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
    *   // const rawResponse = responses[2];
-   *   for (let i = 0; i < resources.length; i += 1) {
+   *   for (const resource of resources) {
    *     // doThingsWith(resources[i]);
    *   }
    *   if (nextRequest) {
@@ -5137,20 +5237,14 @@ class LibraryServiceClient {
    * // Handle the operation using the promise pattern.
    * client.getBigBook({name: formattedName})
    *   .then(responses => {
-   *     const operation = responses[0];
-   *     const initialApiResponse = responses[1];
+   *     const [operation, initialApiResponse] = responses;
    *
    *     // Operation#promise starts polling for the completion of the LRO.
    *     return operation.promise();
    *   })
    *   .then(responses => {
-   *     // The final result of the operation.
    *     const result = responses[0];
-   *
-   *     // The metadata value of the completed operation.
    *     const metadata = responses[1];
-   *
-   *     // The response of the api call returning the complete operation.
    *     const finalApiResponse = responses[2];
    *   })
    *   .catch(err => {
@@ -5162,8 +5256,7 @@ class LibraryServiceClient {
    * // Handle the operation using the event emitter pattern.
    * client.getBigBook({name: formattedName})
    *   .then(responses => {
-   *     const operation = responses[0];
-   *     const initialApiResponse = responses[1];
+   *     const [operation, initialApiResponse] = responses;
    *
    *     // Adding a listener for the "complete" event starts polling for the
    *     // completion of the operation.
@@ -5227,20 +5320,14 @@ class LibraryServiceClient {
    * // Handle the operation using the promise pattern.
    * client.getBigNothing({name: formattedName})
    *   .then(responses => {
-   *     const operation = responses[0];
-   *     const initialApiResponse = responses[1];
+   *     const [operation, initialApiResponse] = responses;
    *
    *     // Operation#promise starts polling for the completion of the LRO.
    *     return operation.promise();
    *   })
    *   .then(responses => {
-   *     // The final result of the operation.
    *     const result = responses[0];
-   *
-   *     // The metadata value of the completed operation.
    *     const metadata = responses[1];
-   *
-   *     // The response of the api call returning the complete operation.
    *     const finalApiResponse = responses[2];
    *   })
    *   .catch(err => {
@@ -5252,8 +5339,7 @@ class LibraryServiceClient {
    * // Handle the operation using the event emitter pattern.
    * client.getBigNothing({name: formattedName})
    *   .then(responses => {
-   *     const operation = responses[0];
-   *     const initialApiResponse = responses[1];
+   *     const [operation, initialApiResponse] = responses;
    *
    *     // Adding a listener for the "complete" event starts polling for the
    *     // completion of the operation.

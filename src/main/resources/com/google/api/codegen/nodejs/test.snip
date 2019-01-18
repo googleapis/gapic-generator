@@ -1,5 +1,6 @@
 @extends "nodejs/method_sample.snip"
 @extends "nodejs/common.snip"
+@extends "nodejs/init_code.snip"
 
 @snippet generate(apiTest)
   {@lineComments(apiTest.fileHeader.copyrightLines)}
@@ -135,7 +136,7 @@
 
       @if test.hasReturnValue
         // Mock response
-        {@initCodeLines(test.mockResponse.initCode.lines)}
+        {@initCodeLines(test.mockResponse.rpcResponseInitCode.lines)}
 
       @end
       // Mock Grpc layer
@@ -172,7 +173,7 @@
       {@commonInit(test, testClass, apiTest)}
 
       // Mock response
-      {@initCodeLines(test.mockResponse.initCode.lines)}
+      {@initCodeLines(test.mockResponse.rpcResponseInitCode.lines)}
 
       // Mock Grpc layer
       client._innerApiCalls.{@test.clientMethodName} = mockLongRunningGrpcMethod(request, expectedResponse);
@@ -219,7 +220,7 @@
       {@commonInit(test, testClass, apiTest)}
 
       // Mock response
-      {@initCodeLines(test.mockResponse.initCode.lines)}
+      {@initCodeLines(test.mockResponse.rpcResponseInitCode.lines)}
 
       // Mock Grpc layer
       client._innerApiCalls.{@test.clientMethodName} = (actualRequest, options, callback) => {
@@ -248,7 +249,7 @@
       {@commonInit(test, testClass, apiTest)}
 
       // Mock response
-      {@initCodeLines(test.mockResponse.initCode.lines)}
+      {@initCodeLines(test.mockResponse.rpcResponseInitCode.lines)}
 
       // Mock Grpc layer
       @switch test.grpcStreamingType
@@ -353,7 +354,7 @@
   {@clientInit(testClass, apiTest)}
 
   // Mock request
-  {@initCodeLines(test.initCode.lines)}
+  {@initCodeLines(test.testCaseInitCode.lines)}
 @end
 
 @private clientInit(testClass, apiTest)

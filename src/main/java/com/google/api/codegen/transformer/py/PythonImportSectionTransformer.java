@@ -23,19 +23,24 @@ import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.SymbolTable;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Streams;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -390,13 +395,38 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     Set<String> localImportNames = new HashSet<>();
     Set<String> sharedImportNames = new HashSet<>();
 
-    String serviceFullName = model.getRoots().iterator().next().getFullName();
-    String packageName = serviceFullName.substring(0, serviceFullName.lastIndexOf("."));
+    SymbolTable symbolTable = model.getSymbolTable();
+    Collection<ProtoFile> localImportFiles =
+        productConfig
+            .getInterfaceConfigMap()
+            .keySet()
+            .stream()
+            .map(symbolTable::lookupInterface)
+            .filter(Objects::nonNull)
+            .map(Interface::getFile)
+            .collect(ImmutableSet.toImmutableSet());
+
+    Iterable<ProtoFile> allFiles = model.reachable(model.getFiles());
+
+    // Skip API interfaces excluded from interface configs.
+    Collection<ProtoFile> skippedFiles =
+        Streams.stream(allFiles)
+            .filter(ProtoFile::isSource)
+            .flatMap(f -> f.getInterfaces().stream())
+            .filter(Interface::isReachable)
+            .filter(i -> productConfig.getInterfaceConfig(i) == null)
+            .map(Interface::getFile)
+            .collect(ImmutableSet.toImmutableSet());
+
+    // Can't use Collection#removeAll since allFiles is an Iterable.
+    Iterable<ProtoFile> protoFileDependencies =
+        Streams.stream(allFiles)
+            .filter(f -> !skippedFiles.contains(f))
+            .collect(ImmutableSet.toImmutableSet());
 
     // Save proto file import names to the type table for disambiguation.
-    List<ProtoFile> protoFileDependencies = model.getFiles();
     populateTypeTable(
-        protoFileDependencies, allTypeTable, localImportNames, sharedImportNames, packageName);
+        protoFileDependencies, allTypeTable, localImportNames, sharedImportNames, localImportFiles);
 
     // Get disambiguated imports.
     for (Map.Entry<String, TypeAlias> entry : allTypeTable.getImports().entrySet()) {
@@ -436,11 +466,11 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
    * given sharedImportNames.
    */
   private void populateTypeTable(
-      List<ProtoFile> protoFileDependencies,
+      Iterable<ProtoFile> protoFileDependencies,
       ModelTypeTable allTypeTable,
       Set<String> localImportNames,
       Set<String> sharedImportNames,
-      String packageName) {
+      Collection<ProtoFile> localImportFiles) {
     for (ProtoFile protoFile : protoFileDependencies) {
       // For python, adding a single message from the proto file to the type table will populate
       // the type table with the correct imports.
@@ -449,7 +479,9 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         TypeRef typeRef = TypeRef.of(messages.get(0));
         allTypeTable.getAndSaveNicknameFor(typeRef);
 
-        if (protoFile.getFullName().equals(packageName)) {
+        if (localImportFiles
+            .stream()
+            .anyMatch(f -> f.getFullName().equals(protoFile.getFullName()))) {
           localImportNames.add(allTypeTable.getFullNameFor(typeRef));
         } else {
           sharedImportNames.add(allTypeTable.getFullNameFor(typeRef));
@@ -475,17 +507,21 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       ApiModel apiModel, ProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
     for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      if (interfaceConfig == null) {
+        continue;
+      }
+
       imports.add(
           createImport(
-              productConfig.getPackageName(),
-              namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface))));
+              productConfig.getPackageName(), namer.getApiWrapperVariableName(interfaceConfig)));
     }
 
     if (packageHasEnums) {
       imports.add(createImport(productConfig.getPackageName(), "enums"));
     }
     imports.add(createImport(namer.getVersionedDirectoryNamespace(), "types"));
-    return ImmutableList.<ImportFileView>builder().addAll(imports).build();
+    return ImmutableList.copyOf(imports);
   }
 
   public ImportSectionView generateTopLeveEntryPointImportSection(
@@ -501,16 +537,21 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       ApiModel apiModel, ProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
     for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      if (interfaceConfig == null) {
+        continue;
+      }
+
       imports.add(
           createImport(
               namer.getVersionedDirectoryNamespace(),
-              namer.getApiWrapperClassName(productConfig.getInterfaceConfig(apiInterface))));
+              namer.getApiWrapperClassName(interfaceConfig)));
     }
     if (packageHasEnums) {
       imports.add(createImport(namer.getVersionedDirectoryNamespace(), "enums"));
     }
     imports.add(createImport(namer.getVersionedDirectoryNamespace(), "types"));
-    return ImmutableList.<ImportFileView>builder().addAll(imports).build();
+    return ImmutableList.copyOf(imports);
   }
 
   public ImportSectionView generateNoxImportSection() {

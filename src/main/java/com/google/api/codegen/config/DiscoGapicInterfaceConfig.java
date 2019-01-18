@@ -154,7 +154,6 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       return null;
     } else {
       return new AutoValue_DiscoGapicInterfaceConfig(
-          methodConfigs,
           retryCodesConfig,
           retrySettingsDefinition,
           requiredConstructorParams,
@@ -163,10 +162,14 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           new DiscoInterfaceModel(interfaceName, model),
           smokeTestConfig,
           methodToSingleResourceNameMap.build(),
+          methodConfigs,
           methodConfigMap,
           singleResourceNames);
     }
   }
+
+  @Override
+  public abstract List<DiscoGapicMethodConfig> getMethodConfigs();
 
   private static Method lookupMethod(Document source, String lookupMethod) {
     for (com.google.api.codegen.discovery.Method method : source.methods()) {

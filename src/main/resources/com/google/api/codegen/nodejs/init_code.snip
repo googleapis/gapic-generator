@@ -1,0 +1,92 @@
+@snippet initCode(apiMethod, init)
+  @if init.argDefaultLines
+    @join line : util.pretty(initCodeLines(init.argDefaultLines))
+      // {@line}
+    @end
+
+
+  @end
+  {@initCodeLines(init.lines)}
+  @if initializeRequestObject(apiMethod, init)
+    {@initializeRequestObject(apiMethod, init)}
+  @end
+@end
+
+@snippet initCodeLines(lines)
+  @join line : lines
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @case "ReadFileInitLine"
+      {@initLineReadFile(line)}
+    @default
+      $unhandledCase: {@line.lineType.toString}$
+    @end
+  @end
+@end
+
+@private initLineReadFile(line)
+  const {@line.identifier} = fs.readFileSync({@renderInitValue(line.fileName)}).toString('base64');
+@end
+
+@private initLineStructure(line)
+  const {@line.identifier} = {
+    @join fieldSetting : line.fieldSettings on BREAK
+      {@fieldSetting.fieldName}: {@fieldSetting.identifier},
+    @end
+  };
+@end
+
+@private initLineList(line)
+    const {@line.identifier} = [{@varList(line.elementIdentifiers)}];
+@end
+
+@snippet varList(args)
+  @join arg : args on ", "
+    {@arg}
+  @end
+@end
+
+@private initLineMap(line)
+  const {@line.identifier} = {{@keyVarList(line.initEntries)}};
+@end
+
+@private keyVarList(mapEntries)
+  @join mapEntry : mapEntries vertical
+    {@mapEntry.key} : {@mapEntry.valueString},
+  @end
+@end
+
+@private initLineSimple(line)
+  const {@line.identifier} = {@renderInitValue(line.initValue)};
+@end
+
+@private renderInitValue(initValue)
+  @switch initValue.type
+  @case "SimpleInitValueView"
+    {@initValue.initialValue}
+  @case "FormattedInitValueView"
+    client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+  @default
+    $unhandledCase: {@initValue.type}$
+  @end
+@end
+
+@private initializeRequestObject(apiMethod, init)
+    @switch init.fieldSettings.size.toString
+    @case "0"
+    @case "1"
+    @default
+      const request = {
+        @join fieldSetting : init.fieldSettings on BREAK
+          {@fieldSetting.fieldName}: {@fieldSetting.identifier},
+        @end
+      };
+    @end
+@end

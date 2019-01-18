@@ -18,6 +18,7 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -27,6 +28,7 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
@@ -46,9 +48,10 @@ import com.google.api.codegen.viewmodel.metadata.TocContentView;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -224,17 +227,20 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer<Pr
       ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
     for (InterfaceModel apiInterface : model.getInterfaces()) {
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
-        FlatteningConfig flatteningGroup =
-            testCaseTransformer.getSmokeTestFlatteningGroup(
-                context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-        GapicMethodContext flattenedMethodContext =
-            context.asFlattenedMethodContext(method, flatteningGroup);
-        exampleMethods.add(
-            createExampleApiMethodView(flattenedMethodContext, model.hasMultipleServices()));
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      if (interfaceConfig == null || interfaceConfig.getSmokeTestConfig() == null) {
+        continue;
       }
+
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      MethodModel method = interfaceConfig.getSmokeTestConfig().getMethod();
+      FlatteningConfig flatteningGroup =
+          testCaseTransformer.getSmokeTestFlatteningGroup(
+              context.getMethodConfig(method), interfaceConfig.getSmokeTestConfig());
+      GapicMethodContext flattenedMethodContext =
+          context.asFlattenedMethodContext(method, flatteningGroup);
+      exampleMethods.add(
+          createExampleApiMethodView(flattenedMethodContext, model.hasMultipleServices()));
     }
     return exampleMethods.build();
   }
@@ -291,17 +297,23 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer<Pr
     int extensionIndex = noLeadingRubyDir.lastIndexOf(".");
     String outputPath = noLeadingRubyDir.substring(0, extensionIndex);
 
-    boolean hasSmokeTests = false;
-    List<InterfaceModel> interfaceModels = new LinkedList<>();
-    List<GapicInterfaceContext> contexts = new LinkedList<>();
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      interfaceModels.add(context.getInterfaceModel());
-      contexts.add(context);
-      if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        hasSmokeTests = true;
-      }
-    }
+    Collection<InterfaceModel> interfaceModels =
+        model
+            .getInterfaces()
+            .stream()
+            .filter(productConfig::hasInterfaceConfig)
+            .collect(ImmutableList.toImmutableList());
+    List<GapicInterfaceContext> contexts =
+        interfaceModels
+            .stream()
+            .map(i -> createContext(i, productConfig))
+            .collect(ImmutableList.toImmutableList());
+    boolean hasSmokeTests =
+        contexts
+            .stream()
+            .map(InterfaceContext::getInterfaceConfig)
+            .map(InterfaceConfig::getSmokeTestConfig)
+            .anyMatch(Objects::nonNull);
 
     SurfaceNamer surfaceNamer = new RubySurfaceNamer(productConfig.getPackageName());
     ImportSectionView importSection =

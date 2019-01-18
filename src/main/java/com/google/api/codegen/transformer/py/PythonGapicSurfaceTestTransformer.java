@@ -20,6 +20,7 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -106,6 +107,10 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     SurfaceNamer testPackageNamer =
         new PythonSurfaceNamer(surfacePackageNamer.getTestPackageName());
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
       ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -247,13 +252,16 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     SurfaceNamer testPackageNamer =
         new PythonSurfaceNamer(surfacePackageNamer.getTestPackageName());
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      if (interfaceConfig == null || interfaceConfig.getSmokeTestConfig() == null) {
+        continue;
+      }
+
       ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, typeTable, surfacePackageNamer, featureConfig);
-      if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        models.add(createSmokeTestClassView(context, testPackageNamer));
-      }
+      models.add(createSmokeTestClassView(context, testPackageNamer));
     }
     return models.build();
   }
