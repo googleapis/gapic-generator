@@ -69,11 +69,10 @@ public class JavaGapicSamplesTransformer implements ModelToViewTransformer<Proto
         continue;
       }
 
-      boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
       ImportTypeTable typeTable = createTypeTable(namer.getExamplePackageName());
       InterfaceContext context =
           createInterfaceContext(
-              apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
+              apiInterface, productConfig, namer, typeTable);
 
       List<ViewModel> sampleFiles = generateSampleFiles(context);
       surfaceDocs.addAll(sampleFiles);
@@ -156,17 +155,14 @@ public class JavaGapicSamplesTransformer implements ModelToViewTransformer<Proto
       InterfaceModel apiInterface,
       GapicProductConfig productConfig,
       SurfaceNamer namer,
-      ImportTypeTable typeTable,
-      boolean enableStringFormatFunctions) {
+      ImportTypeTable typeTable) {
     // TODO(vchudnov-g): Consider factoring out this code duplicated from JavaSurafceTransformer.
     return GapicInterfaceContext.create(
         apiInterface,
         productConfig,
         (ModelTypeTable) typeTable,
         namer,
-        JavaFeatureConfig.newBuilder()
-            .enableStringFormatFunctions(enableStringFormatFunctions)
-            .build());
+        JavaFeatureConfig.create(productConfig));
   }
 
   private ModelTypeTable createTypeTable(String implicitPackageName) {

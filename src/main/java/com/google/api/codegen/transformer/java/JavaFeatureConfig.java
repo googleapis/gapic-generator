@@ -69,11 +69,11 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
   }
 
   @AutoValue.Builder
-  public abstract static class Builder {
+  abstract static class Builder {
 
-    public abstract Builder enableStringFormatFunctions(boolean value);
+    abstract Builder enableStringFormatFunctions(boolean value);
 
-    public abstract JavaFeatureConfig build();
+    abstract JavaFeatureConfig build();
   }
 
   public static JavaFeatureConfig create(GapicProductConfig productConfig) {
