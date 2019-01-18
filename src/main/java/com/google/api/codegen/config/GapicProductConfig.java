@@ -202,11 +202,9 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (configProto == null) {
       // By default, enable proto annotations parsing when no GAPIC config is given.
       protoParser = new ProtoParser(true);
+      configProto = ConfigProto.getDefaultInstance();
     } else {
       protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, null));
-    }
-    if (configProto == null) {
-      configProto = ConfigProto.getDefaultInstance();
     }
 
     DiagCollector diagCollector = model.getDiagReporter().getDiagCollector();
