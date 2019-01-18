@@ -27,13 +27,6 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
-import com.google.api.codegen.transformer.DefaultFeatureConfig;
-import com.google.api.codegen.transformer.FeatureConfig;
-import com.google.api.codegen.transformer.csharp.CSharpFeatureConfig;
-import com.google.api.codegen.transformer.java.JavaFeatureConfig;
-import com.google.api.codegen.transformer.nodejs.NodeJSFeatureConfig;
-import com.google.api.codegen.transformer.php.PhpFeatureConfig;
-import com.google.api.codegen.transformer.ruby.RubyFeatureConfig;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -204,7 +197,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       protoParser = new ProtoParser(true);
       configProto = ConfigProto.getDefaultInstance();
     } else {
-      protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, null));
+      protoParser = new ProtoParser(false);
     }
 
     DiagCollector diagCollector = model.getDiagReporter().getDiagCollector();
@@ -1023,26 +1016,5 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
     return null;
-  }
-
-  private static FeatureConfig getDefaultLanguageFeatureConfig(
-      TargetLanguage targetLanguage, ResourceNameMessageConfigs resourceNameMessageConfigs) {
-    switch (targetLanguage) {
-      case JAVA:
-        return JavaFeatureConfig.newBuilder()
-            .enableStringFormatFunctions(
-                resourceNameMessageConfigs == null || resourceNameMessageConfigs.isEmpty())
-            .build();
-      case CSHARP:
-        return new CSharpFeatureConfig();
-      case NODEJS:
-        return new NodeJSFeatureConfig();
-      case PHP:
-        return new PhpFeatureConfig();
-      case RUBY:
-        return new RubyFeatureConfig();
-      default:
-        return new DefaultFeatureConfig();
-    }
   }
 }

@@ -89,9 +89,4 @@ public class DefaultFeatureConfig implements FeatureConfig {
   public boolean enableRawOperationCallSettings() {
     return false;
   }
-
-  @Override
-  public boolean enableProtoAnnotations() {
-    return false;
-  };
 }
