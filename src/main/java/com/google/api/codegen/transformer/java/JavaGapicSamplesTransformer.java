@@ -71,8 +71,7 @@ public class JavaGapicSamplesTransformer implements ModelToViewTransformer<Proto
 
       ImportTypeTable typeTable = createTypeTable(namer.getExamplePackageName());
       InterfaceContext context =
-          createInterfaceContext(
-              apiInterface, productConfig, namer, typeTable);
+          createInterfaceContext(apiInterface, productConfig, namer, typeTable);
 
       List<ViewModel> sampleFiles = generateSampleFiles(context);
       surfaceDocs.addAll(sampleFiles);
