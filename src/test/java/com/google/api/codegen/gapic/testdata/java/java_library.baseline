@@ -692,7 +692,7 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
-      OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookOperationCallable().futureCall(request);
 
       // Do something
 
@@ -746,7 +746,7 @@ public class GetBigBookOperationCallableLongRunningCallableWap2 {
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
-      OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookOperationCallable().futureCall(request);
 
       // Do something
 
@@ -3869,7 +3869,7 @@ public class LibraryClient implements BackgroundResource {
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   OperationFuture&lt;Operation&gt; future = libraryClient.getBigBookOperationCallable().futureCall(request);
+   *   OperationFuture&lt;Book, GetBigBookMetadata&gt; future = libraryClient.getBigBookOperationCallable().futureCall(request);
    *   // Do something
    *   Book response = future.get();
    * }
@@ -3909,7 +3909,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   Empty response = libraryClient.getBigNothingAsync(name).get();
+   *   libraryClient.getBigNothingAsync(name).get();
    * }
    * </code></pre>
    *
@@ -3934,7 +3934,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   Empty response = libraryClient.getBigNothingAsync(name.toString()).get();
+   *   libraryClient.getBigNothingAsync(name.toString()).get();
    * }
    * </code></pre>
    *
@@ -3962,7 +3962,7 @@ public class LibraryClient implements BackgroundResource {
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   Empty response = libraryClient.getBigNothingAsync(request).get();
+   *   libraryClient.getBigNothingAsync(request).get();
    * }
    * </code></pre>
    *
@@ -3985,9 +3985,9 @@ public class LibraryClient implements BackgroundResource {
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   OperationFuture&lt;Operation&gt; future = libraryClient.getBigNothingOperationCallable().futureCall(request);
+   *   OperationFuture&lt;Empty, GetBigBookMetadata&gt; future = libraryClient.getBigNothingOperationCallable().futureCall(request);
    *   // Do something
-   *   Empty response = future.get();
+   *   future.get();
    * }
    * </code></pre>
    */
