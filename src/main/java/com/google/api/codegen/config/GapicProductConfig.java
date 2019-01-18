@@ -109,6 +109,8 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public abstract String getConfigSchemaVersion();
 
+  public abstract boolean enableStringFormattingFunctionsOverride();
+
   public GapicProductConfig withPackageName(String packageName) {
     return new AutoValue_GapicProductConfig(
         getInterfaceConfigMap(),
@@ -122,7 +124,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         getProtoParser(),
         getTransportProtocol(),
         getDefaultResourceNameFieldConfigMap(),
-        getConfigSchemaVersion());
+        getConfigSchemaVersion(),
+        enableStringFormattingFunctionsOverride());
   }
 
   @Nullable
@@ -320,7 +323,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         protoParser,
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
-        configSchemaVersion);
+        configSchemaVersion,
+        configProto.getEnableStringFormatFunctionsOverride());
   }
 
   public static GapicProductConfig create(
@@ -387,7 +391,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         new ProtoParser(false),
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
-        configSchemaVersion);
+        configSchemaVersion,
+        configProto.getEnableStringFormatFunctionsOverride());
   }
 
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
@@ -427,7 +432,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         // Default to gRPC.
         TransportProtocol.GRPC,
         createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),
-        configSchemaVersion);
+        configSchemaVersion,
+        false);
   }
 
   /** Return the list of information about clients to be generated. */

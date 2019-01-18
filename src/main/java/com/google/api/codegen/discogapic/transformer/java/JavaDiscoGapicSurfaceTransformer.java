@@ -99,7 +99,7 @@ public class JavaDiscoGapicSurfaceTransformer
         productConfig,
         importTypeTable,
         namer,
-        JavaFeatureConfig.create(productConfig.getResourceNameMessageConfigs()));
+        JavaFeatureConfig.create(productConfig));
   }
 
   @Override

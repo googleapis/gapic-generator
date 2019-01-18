@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.MethodContext;
@@ -75,10 +76,14 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
     public abstract JavaFeatureConfig build();
   }
 
-  public static JavaFeatureConfig create(ResourceNameMessageConfigs resourceNameMessageConfigs) {
+  public static JavaFeatureConfig create(GapicProductConfig productConfig) {
+    ResourceNameMessageConfigs resourceNameMessageConfigs =
+        productConfig.getResourceNameMessageConfigs();
     return JavaFeatureConfig.newBuilder()
         .enableStringFormatFunctions(
-            resourceNameMessageConfigs == null || resourceNameMessageConfigs.isEmpty())
+            resourceNameMessageConfigs == null
+                || resourceNameMessageConfigs.isEmpty()
+                || productConfig.enableStringFormattingFunctionsOverride())
         .build();
   }
 }
