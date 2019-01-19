@@ -310,10 +310,10 @@
     System.out.println("{@view.format}");
   @else
     @if view.format == ""
-      System.out.println({@printVariableField(view.args.get(0))});
+      System.out.println({@view.args.get(0)});
     @else
       @if view.format == "%s"
-        System.out.println({@printVariableField(view.args.get(0))});
+        System.out.println({@view.args.get(0)});
       @else
         System.out.printf("{@view.format}\n", {@commaSeparatedFields(view.args)});
       @end
@@ -329,7 +329,7 @@
 
 @private commaSeparatedFields(args)
   @join arg : args on ", "
-    {@printVariableField(arg)}
+    {@arg}
   @end
 @end
 

@@ -21,7 +21,6 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
-import com.google.api.codegen.viewmodel.AccessorView;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.codegen.viewmodel.PrintArgView;
@@ -100,7 +99,8 @@ public class OutputTransformer {
   ImmutableList<OutputView> toViews(
       List<OutputSpec> configs, MethodContext context, SampleValueSet valueSet) {
     ScopeTable localVars = new ScopeTable();
-    return configs.stream()
+    return configs
+        .stream()
         .map(s -> toView(s, context, valueSet, localVars))
         .collect(ImmutableList.toImmutableList());
   }
@@ -152,13 +152,20 @@ public class OutputTransformer {
         valueSet.getId());
     String format = config.get(0);
     List<String> args =
-        config.subList(1, config.size()).stream()
-            .map(a -> accessor(new Scanner(a)), context, valueSet, localVars)
+        config
+            .subList(1, config.size())
+            .stream()
+            .map(a -> accessor(new Scanner(a), context, valueSet, localVars))
+            .map(
+                a ->
+                    context
+                        .getNamer()
+                        .getFormattedPrintArgName(a.type(), a.variable(), a.accessors()))
             .collect(ImmutableList.toImmutableList());
     List<String> specs = context.getNamer().getPrintSpecs(format, args);
-    return OutputView.newBuilder()
+    return OutputView.PrintView.newBuilder()
         .format(specs.get(0))
-        .args(specs.subList(1, config.size()))
+        .args(ImmutableList.<String>builder().addAll(specs.subList(1, config.size())).build())
         .build();
   }
 
@@ -181,7 +188,8 @@ public class OutputTransformer {
             .variableName(context.getNamer().localVarName(Name.from(loopVariable)))
             .collection(accessor)
             .body(
-                loop.getBodyList().stream()
+                loop.getBodyList()
+                    .stream()
                     .map(body -> toView(body, context, valueSet, scope))
                     .collect(ImmutableList.toImmutableList()))
             .build();
@@ -305,7 +313,7 @@ public class OutputTransformer {
     }
 
     int token;
-    ImmutableList.Builder<AccessorView> accessors = ImmutableList.builder();
+    ImmutableList.Builder<String> accessors = ImmutableList.builder();
     while ((token = config.scan()) != Scanner.EOF) {
       if (token == '.') {
         // TODO(hzyi): add support for accessing fields of resource name types

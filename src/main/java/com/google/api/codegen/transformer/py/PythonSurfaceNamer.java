@@ -22,6 +22,7 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -44,10 +45,13 @@ import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -449,6 +453,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return packageFilePathPiece(Name.anyCamel(getGrpcTransportClassName(interfaceConfig)));
   }
 
+  @Override
   public List<String> getPrintSpecs(String spec, List<String> args) {
     // com.google.common.escape.Escaper doesn't work here. It only maps from characters to strings.
     StringBuilder sb = new StringBuilder();
@@ -456,7 +461,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     while (true) {
       int p = spec.indexOf('%', cursor);
       if (p < 0) {
-        return sb.append(spec, cursor, spec.length()).toString().replace("'", "\\'");
+        sb.append(spec, cursor, spec.length());
       }
       sb.append(spec, cursor, p);
 
@@ -469,7 +474,31 @@ public class PythonSurfaceNamer extends SurfaceNamer {
       }
       cursor = p + 2;
     }
-    return ImmutableList.<String>builder().add(spec).addAll(args).build();
+    return ImmutableList.<String>builder()
+        .add(sb.toString().replace("'", "\\'"))
+        .addAll(args)
+        .build();
+  }
+
+  @Override
+  public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
+    String arg = variable + "." + String.join(".", accessors);
+    if (!(type instanceof ProtoTypeRef) || ((ProtoTypeRef) type).isEnum()) {
+      return arg;
+    }
+    TypeRef protoType = ((ProtoTypeRef) type).getProtoType();
+    ProtoElement t = protoType.getEnumType();
+    List<String> names = new ArrayList<>();
+    while (!(t instanceof ProtoFile)) {
+      names.add(t.getSimpleName());
+      t = t.getParent();
+    }
+    names.add("enums");
+    StringBuilder builder = new StringBuilder();
+    for (String name : Lists.reverse(names)) {
+      builder.append(name).append(".");
+    }
+    return builder.append("(").append(arg).append(").name").toString();
   }
 
   @Override

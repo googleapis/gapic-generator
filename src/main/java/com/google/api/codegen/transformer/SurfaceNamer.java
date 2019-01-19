@@ -1545,11 +1545,20 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getExampleFileName");
   }
 
-  /** Translate C-printf-spec into one expected by the language's format utilities. */
+  /**
+   * Translate C-printf-spec and a list of args into those expected by the language's format
+   * utilities.
+   */
   public List<String> getPrintSpecs(String spec, List<String> args) {
-    return getNotImplementedString("SurfaceNamer.getPrintSpec");
+    return ImmutableList.<String>builder().add(spec).addAll(args).build();
   }
 
+  /** Returns the formatted expression to nicely print a field of a variable. */
+  public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
+    return variable + "." + String.join(".", accessors);
+  }
+
+  /** Returns the expression to access an element of a collection by index. */
   public String getIndexAccessorName(int index) {
     return getNotImplementedString("SurfaceNamer.getIndexAccessorName");
   }
