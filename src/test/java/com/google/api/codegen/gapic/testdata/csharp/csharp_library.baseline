@@ -11421,7 +11421,8 @@ namespace Google.Example.Library.V1
                 GrpcClient.CreateBookAsync, GrpcClient.CreateBook, effectiveSettings.CreateBookSettings)
                 .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}&book.read={request.Book.Read}"));
             _callPublishSeries = clientHelper.BuildApiCall<PublishSeriesRequest, PublishSeriesResponse>(
-                GrpcClient.PublishSeriesAsync, GrpcClient.PublishSeries, effectiveSettings.PublishSeriesSettings);
+                GrpcClient.PublishSeriesAsync, GrpcClient.PublishSeries, effectiveSettings.PublishSeriesSettings)
+                .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"shelf={request.Shelf}"));
             _callGetBook = clientHelper.BuildApiCall<GetBookRequest, Book>(
                 GrpcClient.GetBookAsync, GrpcClient.GetBook, effectiveSettings.GetBookSettings);
             _callListBooks = clientHelper.BuildApiCall<ListBooksRequest, ListBooksResponse>(

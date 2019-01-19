@@ -3471,6 +3471,15 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesTransportSettings =
         GrpcCallSettings.<PublishSeriesRequest, PublishSeriesResponse>newBuilder()
             .setMethodDescriptor(publishSeriesMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<PublishSeriesRequest>() {
+                  @Override
+                  public Map<String, String> extract(PublishSeriesRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("shelf.name", String.valueOf(request.getShelf().getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookRequest, Book> getBookTransportSettings =
         GrpcCallSettings.<GetBookRequest, Book>newBuilder()
@@ -3589,6 +3598,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
                   public Map<String, String> extract(GetBookFromAbsolutelyAnywhereRequest request) {
                     ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
                     params.put("name", String.valueOf(request.getName()));
+                    params.put("alt_book_name", String.valueOf(request.getAltBookName()));
                     return params.build();
                   }
                 })

@@ -97,27 +97,24 @@ public class ProtoParser {
 
     ImmutableSet.Builder<String> allParams = ImmutableSet.builder();
 
-    HttpRule httpRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
-    if (httpRule == null) {
+    HttpRule topRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
+    if (topRule == null) {
       return null;
     }
 
-    String headerParam = getHeaderParam(httpRule);
-    if (Strings.isNullOrEmpty(headerParam)) {
-      allParams.add(headerParam);
-    }
+    getHeaderParam(topRule, allParams);
 
-    for (HttpRule rule : httpRule.getAdditionalBindingsList()) {
-      String extraParam = getHeaderParam(rule);
-      if (Strings.isNullOrEmpty(extraParam)) {
-        allParams.add(extraParam);
-      }
+    // Additional bindings should only be one-deep, according to the API client config spec.
+    // No need to recurse on additional bindings' additional bindings.
+    for (HttpRule rule : topRule.getAdditionalBindingsList()) {
+      getHeaderParam(rule, allParams);
     }
 
     return allParams.build().asList();
   }
 
-  private String getHeaderParam(HttpRule httpRule) {
+  // Finds the header param from a HttpRule and add the non-null value to the running set.
+  private void getHeaderParam(HttpRule httpRule, ImmutableSet.Builder<String> runningList) {
 
     String urlVar;
     if (!Strings.isNullOrEmpty(httpRule.getPost())) {
@@ -131,11 +128,15 @@ public class ProtoParser {
     } else if (!Strings.isNullOrEmpty(httpRule.getPut())) {
       urlVar = httpRule.getPut();
     } else {
-      return null;
+      return;
     }
 
     PathTemplate pathTemplate = PathTemplate.create(urlVar);
-    return pathTemplate.singleVar();
+    String var = pathTemplate.singleVar();
+
+    if (!Strings.isNullOrEmpty(var)) {
+      runningList.add(var);
+    }
   }
 
   @Nullable

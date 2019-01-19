@@ -4015,6 +4015,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'shelf': request.shelf
+      });
 
     return this._innerApiCalls.publishSeries(request, options, callback);
   }
