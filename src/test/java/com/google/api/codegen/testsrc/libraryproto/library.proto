@@ -120,7 +120,9 @@ service LibraryService {
 
   // Creates a book.
   rpc CreateBook(CreateBookRequest) returns (Book) {
-    option (google.api.http) = { post: "/v1/{name=bookShelves/*}/books" body: "book" };
+    option (google.api.http) = { post: "/v1/{name=bookShelves/*}/books" body: "book"
+      additional_bindings: {post: "/v1/{name=bookShelves/*}/books" body: "book" }
+    };
     option (google.api.method_signature) = {
       fields: ["name", "book"]
     };
@@ -128,7 +130,11 @@ service LibraryService {
 
   // Creates a series of books.
   rpc PublishSeries(PublishSeriesRequest) returns (PublishSeriesResponse) {
-    option (google.api.http) = { post: "/v1:publish" body: "*" };
+    option (google.api.http) = { post: "/v1:publish" body: "*"
+    additional_bindings: {
+      post: "/v1/{shelf.name=shelves/*/}:publish"
+      body: "*"
+    }};
     option (google.api.method_signature) = {
       fields: ["shelf", "books", "edition", "series_uuid"]
     };

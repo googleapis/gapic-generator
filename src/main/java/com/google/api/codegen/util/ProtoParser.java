@@ -38,6 +38,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
@@ -75,7 +76,6 @@ public class ProtoParser {
 
   @SuppressWarnings("unchecked")
   @Nullable
-  // GeneratedMessage.GeneratedExtension<DescriptorProtos.FieldOptions, List<FieldBehavior>>
   private <T extends ProtocolMessageEnum, O extends Message, E extends ProtoElement>
       List<EnumValueDescriptor> getProtoExtensionForEnumValue(
           E element, GeneratedExtension<O, List<T>> extension) {
@@ -89,15 +89,35 @@ public class ProtoParser {
   }
 
   @Nullable
-  public String getHeaderParam(Method method) {
+  /* Return the name of the field representing the header parameter. */
+  public List<String> getHeaderParams(Method method) {
     if (!enableProtoAnnotations) {
       return null;
     }
+
+    ImmutableSet.Builder<String> allParams = ImmutableSet.builder();
 
     HttpRule httpRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
     if (httpRule == null) {
       return null;
     }
+
+    String headerParam = getHeaderParam(httpRule);
+    if (Strings.isNullOrEmpty(headerParam)) {
+      allParams.add(headerParam);
+    }
+
+    for (HttpRule rule : httpRule.getAdditionalBindingsList()) {
+      String extraParam = getHeaderParam(rule);
+      if (Strings.isNullOrEmpty(extraParam)) {
+        allParams.add(extraParam);
+      }
+    }
+
+    return allParams.build().asList();
+  }
+
+  private String getHeaderParam(HttpRule httpRule) {
 
     String urlVar;
     if (!Strings.isNullOrEmpty(httpRule.getPost())) {

@@ -280,12 +280,12 @@ public abstract class GapicMethodConfig extends MethodConfig {
     if (!headerRequestParams.isEmpty()) {
       return headerRequestParams;
     } else {
-      // Let the GAPIC config settings for headers override the defaults in the protofile.
-      String headerParam = protoParser.getHeaderParam(method);
-      if (Strings.isNullOrEmpty(headerParam)) {
+      // Fetch header params from the proto annotations.
+      List<String> headerParams = protoParser.getHeaderParams(method);
+      if (headerParams == null) {
         return headerRequestParams;
       }
-      return ImmutableList.of(headerParam);
+      return headerParams;
     }
   }
 

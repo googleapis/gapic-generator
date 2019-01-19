@@ -343,7 +343,11 @@ public class ProtoParserTest {
 
   @Test
   public void testHttpRuleUrl() {
-    String requestHeaderParam = protoParser.getHeaderParam(deleteShelfMethod);
-    assertThat(requestHeaderParam).isEqualTo("name");
+    List<String> deleteHeaderParams = protoParser.getHeaderParams(deleteShelfMethod);
+    assertThat(deleteHeaderParams).containsExactly("name");
+
+    Method publishMethod = libraryService.lookupMethod("PublishSeries");
+    List<String> publishHeaderParams = protoParser.getHeaderParams(publishMethod);
+    assertThat(publishHeaderParams).containsExactly("shelf.name");
   }
 }
