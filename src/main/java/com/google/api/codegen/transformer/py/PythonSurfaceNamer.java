@@ -449,7 +449,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return packageFilePathPiece(Name.anyCamel(getGrpcTransportClassName(interfaceConfig)));
   }
 
-  public String getPrintSpec(String spec) {
+  public List<String> getPrintSpecs(String spec, List<String> args) {
     // com.google.common.escape.Escaper doesn't work here. It only maps from characters to strings.
     StringBuilder sb = new StringBuilder();
     int cursor = 0;
@@ -469,6 +469,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
       }
       cursor = p + 2;
     }
+    return ImmutableList.<String>builder().add(spec).addAll(args).build();
+  }
+
+  @Override
+  public String getIndexAccessorName(int index) {
+    return String.format("[%d]", index);
   }
 
   @Override

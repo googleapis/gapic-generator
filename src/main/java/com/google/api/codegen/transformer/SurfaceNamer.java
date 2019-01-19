@@ -1546,8 +1546,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** Translate C-printf-spec into one expected by the language's format utilities. */
-  public String getPrintSpec(String spec) {
+  public List<String> getPrintSpecs(String spec, List<String> args) {
     return getNotImplementedString("SurfaceNamer.getPrintSpec");
+  }
+
+  public String getIndexAccessorName(int index) {
+    return getNotImplementedString("SurfaceNamer.getIndexAccessorName");
   }
 
   public String getSampleResponseVarName(MethodContext context) {

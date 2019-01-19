@@ -100,8 +100,7 @@ public class OutputTransformer {
   ImmutableList<OutputView> toViews(
       List<OutputSpec> configs, MethodContext context, SampleValueSet valueSet) {
     ScopeTable localVars = new ScopeTable();
-    return configs
-        .stream()
+    return configs.stream()
         .map(s -> toView(s, context, valueSet, localVars))
         .collect(ImmutableList.toImmutableList());
   }
@@ -151,17 +150,15 @@ public class OutputTransformer {
         "%s:%s: print spec cannot be empty",
         context.getMethodModel().getSimpleName(),
         valueSet.getId());
-    return OutputView.PrintView.newBuilder()
-        .format(context.getNamer().getPrintSpec(config.get(0)))
-        .args(
-            config
-                .subList(1, config.size())
-                .stream()
-                .map(
-                    a ->
-                        printArgTransformer.generatePrintArg(
-                            context, accessor(new Scanner(a), context, valueSet, localVars)))
-                .collect(ImmutableList.toImmutableList()))
+    String format = config.get(0);
+    List<String> args =
+        config.subList(1, config.size()).stream()
+            .map(a -> accessor(new Scanner(a)), context, valueSet, localVars)
+            .collect(ImmutableList.toImmutableList());
+    List<String> specs = context.getNamer().getPrintSpecs(format, args);
+    return OutputView.newBuilder()
+        .format(specs.get(0))
+        .args(specs.subList(1, config.size()))
         .build();
   }
 
@@ -184,8 +181,7 @@ public class OutputTransformer {
             .variableName(context.getNamer().localVarName(Name.from(loopVariable)))
             .collection(accessor)
             .body(
-                loop.getBodyList()
-                    .stream()
+                loop.getBodyList().stream()
                     .map(body -> toView(body, context, valueSet, scope))
                     .collect(ImmutableList.toImmutableList()))
             .build();
@@ -349,10 +345,7 @@ public class OutputTransformer {
                 fieldName);
 
         type = field.getType();
-        accessors.add(
-            AccessorView.FieldView.newBuilder()
-                .field(context.getNamer().getFieldGetFunctionName(field))
-                .build());
+        accessors.add(context.getNamer().getFieldGetFunctionName(field));
       } else if (token == '[') {
         Preconditions.checkArgument(
             type.isRepeated() && !type.isMap(),
@@ -368,7 +361,8 @@ public class OutputTransformer {
             config.input());
 
         type = type.makeOptional();
-        accessors.add(AccessorView.IndexView.newBuilder().index(config.tokenStr()).build());
+        int index = Integer.parseInt(config.tokenStr());
+        accessors.add(context.getNamer().getIndexAccessorName(index));
 
         Preconditions.checkArgument(
             config.scan() == ']',

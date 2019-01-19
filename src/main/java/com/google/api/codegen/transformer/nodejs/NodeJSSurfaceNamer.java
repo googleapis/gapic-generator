@@ -523,4 +523,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     }
     return Joiner.on(" + ").join(stringParts);
   }
+
+  @Override
+  public String getIndexAccessorName(int index) {
+    return String.format("[%d]", index);
+  }
 }

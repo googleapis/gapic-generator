@@ -115,7 +115,7 @@ public interface OutputView {
 
     public abstract String format();
 
-    public abstract ImmutableList<PrintArgView> args();
+    public abstract ImmutableList<VariableView> args();
 
     public Kind kind() {
       return Kind.PRINT;
@@ -129,7 +129,7 @@ public interface OutputView {
     public abstract static class Builder {
       public abstract Builder format(String val);
 
-      public abstract Builder args(ImmutableList<PrintArgView> val);
+      public abstract Builder args(ImmutableList<VariableView> val);
 
       public abstract PrintView build();
     }
@@ -140,7 +140,7 @@ public interface OutputView {
 
     public abstract String variable();
 
-    public abstract ImmutableList<AccessorView> accessors();
+    public abstract ImmutableList<String> accessors();
 
     @Nullable
     public abstract TypeModel type();
@@ -153,7 +153,7 @@ public interface OutputView {
     public abstract static class Builder {
       public abstract Builder variable(String val);
 
-      public abstract Builder accessors(ImmutableList<AccessorView> val);
+      public abstract Builder accessors(ImmutableList<String> val);
 
       public abstract Builder type(TypeModel val);
 

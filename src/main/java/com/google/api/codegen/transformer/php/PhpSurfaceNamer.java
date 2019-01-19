@@ -275,7 +275,12 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPrintSpec(String spec) {
-    return spec;
+  public List<String> getPrintSpec(String spec, List<String> args) {
+    return ImmutableList.<String>builder().add(spec).addAll(args).build();
+  }
+
+  @Override
+  public String getIndexAccessorName(int index) {
+    return String.format("[%d]", index);
   }
 }
