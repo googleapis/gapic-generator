@@ -6554,6 +6554,15 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesTransportSettings =
         GrpcCallSettings.<PublishSeriesRequest, PublishSeriesResponse>newBuilder()
             .setMethodDescriptor(publishSeriesMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<PublishSeriesRequest>() {
+                  @Override
+                  public Map<String, String> extract(PublishSeriesRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("shelf", String.valueOf(request.getShelf()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookRequest, Book> getBookTransportSettings =
         GrpcCallSettings.<GetBookRequest, Book>newBuilder()

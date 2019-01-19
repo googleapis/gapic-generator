@@ -1702,6 +1702,17 @@ class LibraryServiceClient(object):
             edition=edition,
             review_copy=review_copy,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('shelf', shelf)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         return self._inner_api_calls['publish_series'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book(
