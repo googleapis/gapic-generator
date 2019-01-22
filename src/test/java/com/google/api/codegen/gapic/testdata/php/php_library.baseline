@@ -849,6 +849,13 @@ class LibraryServiceGapicClient
             $request->setReviewCopy($optionalArgs['reviewCopy']);
         }
 
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'shelf.name' => $request->getShelf()->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
         return $this->startCall(
             'PublishSeries',
             PublishSeriesResponse::class,
@@ -2673,6 +2680,13 @@ return [
                 'method' => 'post',
                 'uriTemplate' => '/v1/{name=bookShelves/*}/books',
                 'body' => 'book',
+                'additionalBindings' => [
+                    [
+                        'method' => 'post',
+                        'uriTemplate' => '/v1/{name=bookShelves/*}/books',
+                        'body' => 'book',
+                    ],
+                ],
                 'placeholders' => [
                     'name' => [
                         'getters' => [
@@ -2685,6 +2699,21 @@ return [
                 'method' => 'post',
                 'uriTemplate' => '/v1:publish',
                 'body' => '*',
+                'additionalBindings' => [
+                    [
+                        'method' => 'post',
+                        'uriTemplate' => '/v1/{shelf.name=shelves/*}:publish',
+                        'body' => '*',
+                    ],
+                ],
+                'placeholders' => [
+                    'shelf.name' => [
+                        'getters' => [
+                            'getShelf',
+                            'getName',
+                        ],
+                    ],
+                ]
             ],
             'GetBook' => [
                 'method' => 'get',
