@@ -528,4 +528,14 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   public String getIndexAccessorName(int index) {
     return String.format("[%d]", index);
   }
+
+  @Override
+  public String getFieldAccessorName(FieldModel field) {
+    return "." + getFieldGetFunctionName(field) + "()";
+  }
+
+  @Override
+  public List<String> getPrintSpecs(String spec, List<String> args) {
+    spec.
+  }
 }

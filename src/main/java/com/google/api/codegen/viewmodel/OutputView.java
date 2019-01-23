@@ -115,7 +115,7 @@ public interface OutputView {
 
     public abstract String format();
 
-    public abstract ImmutableList<String> args();
+    public abstract ImmutableList<PrintArgView> args();
 
     public Kind kind() {
       return Kind.PRINT;
@@ -129,9 +129,31 @@ public interface OutputView {
     public abstract static class Builder {
       public abstract Builder format(String val);
 
-      public abstract Builder args(ImmutableList<String> val);
+      public abstract Builder args(ImmutableList<PrintArgView> val);
 
       public abstract PrintView build();
+    }
+  }
+
+  @AutoValue
+  abstract class PrintArgView {
+
+    public abstract String arg();
+
+    @Nullable
+    public abstract TypeModel type();
+
+    public static Builder newBuilder() {
+      return new AutoValue_OutputView_PrintArgView.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+      public abstract Builder arg(String val);
+
+      public abstract Builder type(TypeModel val);
+
+      public abstract PrintArgView build();
     }
   }
 

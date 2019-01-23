@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 public class OutputTransformer {
@@ -151,22 +152,25 @@ public class OutputTransformer {
         context.getMethodModel().getSimpleName(),
         valueSet.getId());
     String format = config.get(0);
-    List<String> args =
-        config
-            .subList(1, config.size())
-            .stream()
-            .map(a -> accessor(new Scanner(a), context, valueSet, localVars))
-            .map(
-                a ->
-                    context
-                        .getNamer()
-                        .getFormattedPrintArgName(a.type(), a.variable(), a.accessors()))
-            .collect(ImmutableList.toImmutableList());
-    List<String> specs = context.getNamer().getPrintSpecs(format, args);
-    return OutputView.PrintView.newBuilder()
-        .format(specs.get(0))
-        .args(ImmutableList.<String>builder().addAll(specs.subList(1, config.size())).build())
-        .build();
+    ImmutableList.Builder<OutputView.PrintArgView> argsBuilder = ImmutableList.builder();
+    for (String path : config.subList(1, config.size())) {
+      OutputView.VariableView variable = accessor(new Scanner(path), context, valueSet, localVars);
+      TypeModel type = variable.type();
+      String formattedArg =
+          context
+              .getNamer()
+              .getFormattedPrintArgName(type, variable.variable(), variable.accessors());
+      OutputView.PrintArgView arg =
+          OutputView.PrintArgView.newBuilder().type(type).arg(formattedArg).build();
+      argsBuilder.add(arg);
+    }
+    ImmutableList<OutputView.PrintArgView> args = argsBuilder.build();
+    List<String> specs =
+        context
+            .getNamer()
+            .getPrintSpecs(
+                format, args.stream().map(arg -> arg.arg()).collect(Collectors.toList()));
+    return OutputView.PrintView.newBuilder().format(specs.get(0)).args(args).build();
   }
 
   private OutputView.LoopView loopView(
@@ -353,7 +357,7 @@ public class OutputTransformer {
                 fieldName);
 
         type = field.getType();
-        accessors.add(context.getNamer().getFieldGetFunctionName(field));
+        accessors.add(context.getNamer().getFieldAccessorName(field));
       } else if (token == '[') {
         Preconditions.checkArgument(
             type.isRepeated() && !type.isMap(),

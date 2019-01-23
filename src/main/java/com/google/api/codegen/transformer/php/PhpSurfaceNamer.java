@@ -282,9 +282,14 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getFieldAccessorName(FieldModel field) {
+    return "->" + getFieldGetFunctionName(field) + "()";
+  }
+
+  @Override
   public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
-    String arg = variable + "." + String.join(".", accessors);
-    if (type instanceof ProtoTypeRef) {
+    String arg = "$" + variable + String.join("", accessors);
+    if (type != null && type instanceof ProtoTypeRef && type.isMessage()) {
       return "print_r(" + arg + ", true)";
     }
     return arg;

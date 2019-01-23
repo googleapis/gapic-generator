@@ -413,7 +413,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getIndexAccessorName(int index) {
-    return String.format("get(%d)", index);
+    return String.format(".get(%d)", index);
   }
 
   @Override

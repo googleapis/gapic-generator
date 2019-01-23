@@ -462,6 +462,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
       int p = spec.indexOf('%', cursor);
       if (p < 0) {
         sb.append(spec, cursor, spec.length());
+        break;
       }
       sb.append(spec, cursor, p);
 
@@ -482,8 +483,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
-    String arg = variable + "." + String.join(".", accessors);
-    if (!(type instanceof ProtoTypeRef) || ((ProtoTypeRef) type).isEnum()) {
+    String arg = variable + String.join("", accessors);
+    if (!(type instanceof ProtoTypeRef) || !((ProtoTypeRef) type).isEnum()) {
       return arg;
     }
     TypeRef protoType = ((ProtoTypeRef) type).getProtoType();
@@ -498,12 +499,18 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     for (String name : Lists.reverse(names)) {
       builder.append(name).append(".");
     }
+    builder.setLength(builder.length() - 1);
     return builder.append("(").append(arg).append(").name").toString();
   }
 
   @Override
   public String getIndexAccessorName(int index) {
     return String.format("[%d]", index);
+  }
+
+  @Override
+  public String getFieldAccessorName(FieldModel field) {
+    return "." + getFieldGetFunctionName(field);
   }
 
   @Override

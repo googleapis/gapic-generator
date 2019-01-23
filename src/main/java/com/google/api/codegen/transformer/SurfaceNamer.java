@@ -1555,12 +1555,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** Returns the formatted expression to nicely print a field of a variable. */
   public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
-    return variable + "." + String.join(".", accessors);
+    if (accessors.isEmpty()) {
+      return variable;
+    }
+    return variable + String.join("", accessors);
   }
 
   /** Returns the expression to access an element of a collection by index. */
   public String getIndexAccessorName(int index) {
     return getNotImplementedString("SurfaceNamer.getIndexAccessorName");
+  }
+
+  public String getFieldAccessorName(FieldModel field) {
+    return "." + getFieldGetFunctionName(field) + "()";
   }
 
   public String getSampleResponseVarName(MethodContext context) {
