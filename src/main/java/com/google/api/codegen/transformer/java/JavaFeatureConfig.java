@@ -77,13 +77,19 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
   }
 
   public static JavaFeatureConfig create(GapicProductConfig productConfig) {
-    ResourceNameMessageConfigs resourceNameMessageConfigs =
-        productConfig.getResourceNameMessageConfigs();
+    boolean enableStringFormatFunctions;
+
+    if (productConfig.enableStringFormattingFunctionsOverride() != null) {
+      enableStringFormatFunctions =
+          productConfig.enableStringFormattingFunctionsOverride().booleanValue();
+    } else {
+      ResourceNameMessageConfigs resourceNameMessageConfigs =
+          productConfig.getResourceNameMessageConfigs();
+      enableStringFormatFunctions =
+          resourceNameMessageConfigs == null || resourceNameMessageConfigs.isEmpty();
+    }
     return JavaFeatureConfig.newBuilder()
-        .enableStringFormatFunctions(
-            resourceNameMessageConfigs == null
-                || resourceNameMessageConfigs.isEmpty()
-                || productConfig.enableStringFormattingFunctionsOverride())
+        .enableStringFormatFunctions(enableStringFormatFunctions)
         .build();
   }
 }

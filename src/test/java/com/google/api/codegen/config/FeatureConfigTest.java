@@ -32,6 +32,8 @@ public class FeatureConfigTest {
         .when(productConfig)
         .getResourceNameMessageConfigs();
 
+    Mockito.doReturn(null).when(productConfig).enableStringFormattingFunctionsOverride();
+
     Mockito.doReturn(true).when(resourceNameMessageConfigs).isEmpty();
     assertThat(JavaFeatureConfig.create(productConfig).enableStringFormatFunctions()).isTrue();
 

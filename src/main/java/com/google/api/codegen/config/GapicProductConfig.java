@@ -109,7 +109,8 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public abstract String getConfigSchemaVersion();
 
-  public abstract boolean enableStringFormattingFunctionsOverride();
+  @Nullable
+  public abstract Boolean enableStringFormattingFunctionsOverride();
 
   public GapicProductConfig withPackageName(String packageName) {
     return new AutoValue_GapicProductConfig(
@@ -308,6 +309,12 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
 
+    Boolean enableStringFormatFunctionsOverride = null;
+    if (configProto.getEnableStringFormatFunctionsOverride().isInitialized()) {
+      enableStringFormatFunctionsOverride =
+          configProto.getEnableStringFormatFunctionsOverride().getValue();
+    }
+
     if (interfaceConfigMap == null || copyrightLines == null || licenseLines == null) {
       return null;
     }
@@ -324,7 +331,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion,
-        configProto.getEnableStringFormatFunctionsOverride());
+        enableStringFormatFunctionsOverride);
   }
 
   public static GapicProductConfig create(
@@ -379,6 +386,12 @@ public abstract class GapicProductConfig implements ProductConfig {
                   "config_schema_version field is required in GAPIC yaml."));
     }
 
+    Boolean enableStringFormatFunctionsOverride = null;
+    if (configProto.getEnableStringFormatFunctionsOverride().isInitialized()) {
+      enableStringFormatFunctionsOverride =
+          configProto.getEnableStringFormatFunctionsOverride().getValue();
+    }
+
     return new AutoValue_GapicProductConfig(
         interfaceConfigMap,
         settings.getPackageName(),
@@ -392,7 +405,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion,
-        configProto.getEnableStringFormatFunctionsOverride());
+        enableStringFormatFunctionsOverride);
   }
 
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
