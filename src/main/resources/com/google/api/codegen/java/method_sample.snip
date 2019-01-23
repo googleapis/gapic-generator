@@ -63,8 +63,13 @@
 
 @snippet asyncOperationMethodSampleCode(apiMethod, initCode)
   {@initCode(initCode)}
-  {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-      {@sampleMethodCallArgList(initCode.fieldSettings)}).get();
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        {@sampleMethodCallArgList(initCode.fieldSettings)}).get();
+  @else
+    {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        {@sampleMethodCallArgList(initCode.fieldSettings)}).get();
+  @end
 @end
 
 @snippet callableMethodSampleCode(apiMethod, initCode)
@@ -80,9 +85,15 @@
 
 @snippet asyncOperationCallableMethodSampleCode(apiMethod, initCode)
   {@initCode(initCode)}
-  OperationFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
+  OperationFuture<{@apiMethod.responseTypeName}, \
+  {@apiMethod.operationMethod.metadataTypeName}> future = \
+  {@sampleFutureMethodCall(apiMethod)};
   // Do something
-  {@apiMethod.responseTypeName} response = future.get();
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = future.get();
+  @else
+    future.get();
+  @end
 @end
 
 @snippet streamingCallableMethodSampleCode(apiMethod, initCode)

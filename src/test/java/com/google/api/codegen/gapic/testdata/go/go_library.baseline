@@ -494,7 +494,8 @@ func (c *LibClient) CreateBook(ctx context.Context, req *librarypb.CreateBookReq
 
 // PublishSeries creates a series of books.
 func (c *LibClient) PublishSeries(ctx context.Context, req *librarypb.PublishSeriesRequest, opts ...gax.CallOption) (*librarypb.PublishSeriesResponse, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "shelf.name", req.GetShelf().GetName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.PublishSeries[0:len(c.CallOptions.PublishSeries):len(c.CallOptions.PublishSeries)], opts...)
     var resp *librarypb.PublishSeriesResponse
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {

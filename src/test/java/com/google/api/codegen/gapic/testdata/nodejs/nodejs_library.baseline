@@ -331,7 +331,7 @@ const request = {
 client.findRelatedBooks(request)
   .then(responses => {
     const resources = responses[0];
-    for (let i = 0; i < resources.length; i += 1) {
+    for (const resource of resources) {
       // doThingsWith(resources[i])
     }
   })
@@ -386,7 +386,7 @@ const callback = responses => {
   const nextRequest = responses[1];
   // The actual response object, if necessary.
   // const rawResponse = responses[2];
-  for (let i = 0; i < resources.length; i += 1) {
+  for (const resource of resources) {
     // doThingsWith(resources[i]);
   }
   if (nextRequest) {
@@ -434,8 +434,7 @@ const formattedName = client.bookPath(shelf, 'War and Peace');
 // Handle the operation using the event emitter pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    const operation = responses[0];
-    const initialApiResponse = responses[1];
+    const [operation, initApiResponse] = responses;
 
     // Adding a listener for the "complete" event starts polling for the
     // completion of the operation.
@@ -493,8 +492,7 @@ const formattedName = client.bookPath(shelf, bigBookName);
 // Handle the operation using the event emitter pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    const operation = responses[0];
-    const initialApiResponse = responses[1];
+    const [operation, initApiResponse] = responses;
 
     // Adding a listener for the "complete" event starts polling for the
     // completion of the operation.
@@ -551,20 +549,14 @@ const formattedName = client.bookPath(shelf, 'War and Peace');
 // Handle the operation using the promise pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    const operation = responses[0];
-    const initialApiResponse = responses[1];
+    const [operation, initialApiResponse] = responses;
 
     // Operation#promise starts polling for the completion of the LRO.
     return operation.promise();
   })
   .then(responses => {
-    // The final result of the operation.
     const result = responses[0];
-
-    // The metadata value of the completed operation.
     const metadata = responses[1];
-
-    // The response of the api call returning the complete operation.
     const finalApiResponse = responses[2];
   })
   .catch(err => {
@@ -606,20 +598,14 @@ const formattedName = client.bookPath(shelf, bigBookName);
 // Handle the operation using the promise pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    const operation = responses[0];
-    const initialApiResponse = responses[1];
+    const [operation, initialApiResponse] = responses;
 
     // Operation#promise starts polling for the completion of the LRO.
     return operation.promise();
   })
   .then(responses => {
-    // The final result of the operation.
     const result = responses[0];
-
-    // The metadata value of the completed operation.
     const metadata = responses[1];
-
-    // The response of the api call returning the complete operation.
     const finalApiResponse = responses[2];
   })
   .catch(err => {
@@ -3716,7 +3702,7 @@ class LibraryServiceClient {
    * client.listShelves({})
    *   .then(responses => {
    *     const resources = responses[0];
-   *     for (let i = 0; i < resources.length; i += 1) {
+   *     for (const resource of resources) {
    *       // doThingsWith(resources[i])
    *     }
    *   })
@@ -3734,7 +3720,7 @@ class LibraryServiceClient {
    *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
    *   // const rawResponse = responses[2];
-   *   for (let i = 0; i < resources.length; i += 1) {
+   *   for (const resource of resources) {
    *     // doThingsWith(resources[i]);
    *   }
    *   if (nextRequest) {
@@ -4029,6 +4015,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'shelf.name': request.shelf.name
+      });
 
     return this._innerApiCalls.publishSeries(request, options, callback);
   }
@@ -4136,7 +4128,7 @@ class LibraryServiceClient {
    * client.listBooks(request)
    *   .then(responses => {
    *     const resources = responses[0];
-   *     for (let i = 0; i < resources.length; i += 1) {
+   *     for (const resource of resources) {
    *       // doThingsWith(resources[i])
    *     }
    *   })
@@ -4161,7 +4153,7 @@ class LibraryServiceClient {
    *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
    *   // const rawResponse = responses[2];
-   *   for (let i = 0; i < resources.length; i += 1) {
+   *   for (const resource of resources) {
    *     // doThingsWith(resources[i]);
    *   }
    *   if (nextRequest) {
@@ -4450,7 +4442,7 @@ class LibraryServiceClient {
    * client.listStrings({})
    *   .then(responses => {
    *     const resources = responses[0];
-   *     for (let i = 0; i < resources.length; i += 1) {
+   *     for (const resource of resources) {
    *       // doThingsWith(resources[i])
    *     }
    *   })
@@ -4468,7 +4460,7 @@ class LibraryServiceClient {
    *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
    *   // const rawResponse = responses[2];
-   *   for (let i = 0; i < resources.length; i += 1) {
+   *   for (const resource of resources) {
    *     // doThingsWith(resources[i]);
    *   }
    *   if (nextRequest) {
@@ -4999,7 +4991,7 @@ class LibraryServiceClient {
    * client.findRelatedBooks(request)
    *   .then(responses => {
    *     const resources = responses[0];
-   *     for (let i = 0; i < resources.length; i += 1) {
+   *     for (const resource of resources) {
    *       // doThingsWith(resources[i])
    *     }
    *   })
@@ -5025,7 +5017,7 @@ class LibraryServiceClient {
    *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
    *   // const rawResponse = responses[2];
-   *   for (let i = 0; i < resources.length; i += 1) {
+   *   for (const resource of resources) {
    *     // doThingsWith(resources[i]);
    *   }
    *   if (nextRequest) {
@@ -5251,20 +5243,14 @@ class LibraryServiceClient {
    * // Handle the operation using the promise pattern.
    * client.getBigBook({name: formattedName})
    *   .then(responses => {
-   *     const operation = responses[0];
-   *     const initialApiResponse = responses[1];
+   *     const [operation, initialApiResponse] = responses;
    *
    *     // Operation#promise starts polling for the completion of the LRO.
    *     return operation.promise();
    *   })
    *   .then(responses => {
-   *     // The final result of the operation.
    *     const result = responses[0];
-   *
-   *     // The metadata value of the completed operation.
    *     const metadata = responses[1];
-   *
-   *     // The response of the api call returning the complete operation.
    *     const finalApiResponse = responses[2];
    *   })
    *   .catch(err => {
@@ -5276,8 +5262,7 @@ class LibraryServiceClient {
    * // Handle the operation using the event emitter pattern.
    * client.getBigBook({name: formattedName})
    *   .then(responses => {
-   *     const operation = responses[0];
-   *     const initialApiResponse = responses[1];
+   *     const [operation, initialApiResponse] = responses;
    *
    *     // Adding a listener for the "complete" event starts polling for the
    *     // completion of the operation.
@@ -5341,20 +5326,14 @@ class LibraryServiceClient {
    * // Handle the operation using the promise pattern.
    * client.getBigNothing({name: formattedName})
    *   .then(responses => {
-   *     const operation = responses[0];
-   *     const initialApiResponse = responses[1];
+   *     const [operation, initialApiResponse] = responses;
    *
    *     // Operation#promise starts polling for the completion of the LRO.
    *     return operation.promise();
    *   })
    *   .then(responses => {
-   *     // The final result of the operation.
    *     const result = responses[0];
-   *
-   *     // The metadata value of the completed operation.
    *     const metadata = responses[1];
-   *
-   *     // The response of the api call returning the complete operation.
    *     const finalApiResponse = responses[2];
    *   })
    *   .catch(err => {
@@ -5366,8 +5345,7 @@ class LibraryServiceClient {
    * // Handle the operation using the event emitter pattern.
    * client.getBigNothing({name: formattedName})
    *   .then(responses => {
-   *     const operation = responses[0];
-   *     const initialApiResponse = responses[1];
+   *     const [operation, initialApiResponse] = responses;
    *
    *     // Adding a listener for the "complete" event starts polling for the
    *     // completion of the operation.
