@@ -45,12 +45,14 @@ import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /** The SurfaceNamer for NodeJS. */
@@ -536,6 +538,33 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getPrintSpecs(String spec, List<String> args) {
-    spec.
+    if (args.isEmpty()) {
+      return Collections.singletonList(spec);
+    }
+    if (args.size() == 1 && "%s".equals(args.get(0))) {
+      return args;
+    }
+    String format = spec;
+    int cursor = 0;
+    int argIndex = 0;
+    StringBuilder sb = new StringBuilder();
+    while (true) {
+      int p = format.indexOf("%", cursor);
+      if (p < 0) {
+        return Collections.singletonList(
+            sb.append(format, cursor, format.length()).toString().replace("'", "\\'"));
+      }
+      sb.append(format, cursor, p);
+      if (format.startsWith("%%", p)) {
+        sb.append('%');
+      } else if (format.startsWith("%s", p)) {
+        Preconditions.checkArgument(
+            argIndex < args.size(), "Insufficient arguments for print spec %s", format);
+        sb.append(String.format("{$%s}", args.get(argIndex++)));
+      } else {
+        throw new IllegalArgumentException(String.format("bad format verb: %s", format));
+      }
+      cursor = p + 2;
+    }
   }
 }
