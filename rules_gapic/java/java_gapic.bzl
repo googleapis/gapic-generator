@@ -89,7 +89,7 @@ def java_gapic_library_raw(
         artifact_type,
         visibility):
     srcjar_target_name = "%s_srcjar" % name
-    srcjar_raw_target_name = "%s_raw" % srcjar_target_name
+    srcjar_raw_target_name = "%s_srcjar_raw" % srcjar_target_name
     test_library_target_name = "%s_test" % name
 
     gapic_srcjar(
@@ -99,6 +99,7 @@ def java_gapic_library_raw(
         service_yaml = service_yaml,
         visibility = visibility,
         artifact_type = artifact_type,
+        language = "java",
     )
 
     java_gapic_srcjar(

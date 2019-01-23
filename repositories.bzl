@@ -1,3 +1,6 @@
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
+
 def com_google_api_codegen_repositories(
         omit_com_google_protobuf = False,
         omit_com_atlassian_commonmark_commonmark = False,
@@ -103,7 +106,7 @@ def com_google_api_codegen_tools_repositories(omit_google_java_format_all_deps =
 def com_google_protobuf():
     # TODO: try loading precompiled protoc (it comes with common protos) and use it for everything.
     # Using protobuf requires building it before usage, which takes time.
-    native.git_repository(
+    git_repository(
         name = "com_google_protobuf",
         remote = "https://github.com/google/protobuf.git",
         tag = "v3.6.1",
@@ -290,7 +293,7 @@ def org_objenesis_objenesis():
     )
 
 def google_java_format_all_deps():
-    native.http_jar(
+    http_jar(
         name = "google_java_format_all_deps",
         url = "https://github.com/google/google-java-format/releases/download/google-java-format-1.6/google-java-format-1.6-all-deps.jar",
     )

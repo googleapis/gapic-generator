@@ -44,7 +44,7 @@ gapic_srcjar = rule(
         ),
         "gapic_yaml": attr.label(mandatory = True, allow_single_file = True),
         "artifact_type": attr.string(mandatory = False, default = "GAPIC_CODE"),
-        "language": attr.string(mandatory = False, default = "java"),
+        "language": attr.string(mandatory = True),
         "service_yaml": attr.label(mandatory = False, allow_single_file = True),
         "package_yaml2": attr.label(mandatory = False),
         "gapic_generator": attr.label(
@@ -62,9 +62,21 @@ gapic_srcjar = rule(
 def _proto_custom_library_impl(ctx):
     imports = depset()
     srcs = depset()
+    transitive_descriptor_sets = depset()
+    check_dep_sources = depset()
+
+    cur_package = ctx.label.package
     for dep in ctx.attr.deps:
-        srcs = depset(direct = srcs.to_list(), transitive = [dep.proto.check_deps_sources])
+        src = dep.proto.check_deps_sources
+        srcs = depset(direct = srcs.to_list(), transitive = [src])
         imports = depset(direct = imports.to_list(), transitive = [dep.proto.transitive_imports])
+        transitive_descriptor_sets = depset(
+            direct = transitive_descriptor_sets.to_list(),
+            transitive = [dep.proto.transitive_descriptor_sets],
+        )
+        # This is needed to properly support `go_proto_library`
+        if cur_package == dep.label.package:
+            check_dep_sources = depset(direct = check_dep_sources.to_list(), transitive = [src])
 
     protoc = ctx.executable._protoc
     output = ctx.outputs.output
@@ -118,10 +130,18 @@ def _proto_custom_library_impl(ctx):
         )
 
     # This makes `proto_custom_library` pretend that it returns same provider as the native
-    # `proto_library rule`. This allows using proto_custom_library output as its own input (deps).
-    # Copy other properties of ProtoSourcesProvider if ever needed (currently only
-    # 'check_deps_sources' and 'transitive_imports' fields of ProtoSourcesProvider are supported)
-    return struct(proto = struct(check_deps_sources = srcs, transitive_imports = imports))
+    # `proto_library rule` (ProtoInfo provider). This allows using proto_custom_library output as
+    # its own input (deps). Copy other properties of ProtoSourcesProvider if ever needed
+    # (currently only 'check_deps_sources' and 'transitive_imports' fields of ProtoSourcesProvider
+    # are supported)
+    return struct(
+        proto = struct(
+            direct_sources = check_dep_sources,
+            check_deps_sources = check_dep_sources,
+            transitive_imports = imports,
+            transitive_descriptor_sets = depset([output]),
+        ),
+    )
 
 proto_custom_library = rule(
     attrs = {
@@ -159,6 +179,33 @@ def proto_library_with_info(name, deps):
         output_type = "descriptor_set",
         output_suffix = "-set.proto.bin",
     )
+
+def _unzipped_srcjar_impl(ctx):
+    srcjar = ctx.attr.srcjar.files.to_list()[0]
+    output_dir = ctx.actions.declare_directory("%s%s" % (ctx.label.name, ctx.attr.extension))
+
+    script = """
+    unzip -q {srcjar} -d {output_dir}
+    """.format(
+        srcjar = srcjar.path,
+        output_dir = output_dir.path,
+    )
+
+    ctx.actions.run_shell(
+        inputs = [srcjar],
+        command = script,
+        outputs = [output_dir],
+    )
+
+    return [DefaultInfo(files = depset([output_dir]))]
+
+unzipped_srcjar = rule(
+    _unzipped_srcjar_impl,
+    attrs = {
+        "srcjar": attr.label(allow_files = True),
+        "extension": attr.string(default = ""),
+    },
+)
 
 #
 # Private helper functions
