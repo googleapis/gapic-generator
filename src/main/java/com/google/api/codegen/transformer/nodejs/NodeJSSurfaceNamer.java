@@ -541,8 +541,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     if (args.isEmpty()) {
       return Collections.singletonList(spec);
     }
-    if (args.size() == 1 && "%s".equals(args.get(0))) {
-      return args;
+    if (args.size() == 1 && "%s".equals(spec)) {
+      return ImmutableList.of(spec, args.get(0));
     }
     String format = spec;
     int cursor = 0;

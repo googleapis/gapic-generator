@@ -44,55 +44,63 @@
   @switch sample.callingForm
   @case "Request"
     @if apiMethod.hasReturnValue
-      {@methodCallSampleCodeWithReturnValue(apiMethod, sample.sampleInitCode)}
+      {@methodCallSampleCodeWithReturnValue(apiMethod, sample)}
     @else
-      {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample.sampleInitCode)}
+      {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample)}
     @end
   @case "RequestAsyncPaged"
-    {@methodCallSampleCodeForPagedResponse(apiMethod, sample.sampleInitCode)}
+    {@methodCallSampleCodeForPagedResponse(apiMethod, sample)}
   @case "RequestAsyncPagedAll"
-    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample.sampleInitCode)}
+    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample)}
   @case "RequestStreamingBidi"
-    {@bidiStreamingSampleCode(apiMethod, sample.sampleInitCode)}
+    {@bidiStreamingSampleCode(apiMethod, sample)}
   @case "RequestStreamingClient"
-    {@clientStreamingSampleCode(apiMethod, sample.sampleInitCode)}
+    {@clientStreamingSampleCode(apiMethod, sample)}
   @case "RequestStreamingServer"
     {@initCode(apiMethod, sample.sampleInitCode)}
       {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}.on('data', response => {
-          // doThingsWith(response)
+          {@processResponse(sample)}
       });
   @case "LongRunningEventEmitter"
-    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample.sampleInitCode)}
+    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample)}
   @case "LongRunningPromise"
-    {@methodCallSampleCodeLongrunningPromise(apiMethod, sample.sampleInitCode)}
+    {@methodCallSampleCodeLongrunningPromise(apiMethod, sample)}
   @default
     $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
   @end
 @end
 
-@private methodCallSampleCodeWithReturnValue(apiMethod, init)
-  {@initCode(apiMethod, init)}
-  {@methodCallSampleCodePrefix(apiMethod, init)}
+@private processResponse(sample)
+  @if sample.outputs.size == 0
+    console.log(response);
+  @else
+    {@processOutputViews(sample.outputs)}
+  @end
+@end
+
+@private methodCallSampleCodeWithReturnValue(apiMethod, sample)
+  {@initCode(apiMethod, sample.sampleInitCode)}
+  {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}
     .then(responses => {
       const response = responses[0];
-      // doThingsWith(response)
+      {@processResponse(sample)}
     })
     .catch(err => {
       console.error(err);
     });
 @end
 
-@private methodCallSampleCodeWithoutReturnValue(apiMethod, init)
-  {@initCode(apiMethod, init)}
-  {@methodCallSampleCodePrefix(apiMethod, init)}.catch(err => {
+@private methodCallSampleCodeWithoutReturnValue(apiMethod, sample)
+  {@initCode(apiMethod, sample.sampleInitCode)}
+  {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}.catch(err => {
     console.error(err);
   });
 @end
 
-@private methodCallSampleCodeForPagedResponse(apiMethod, init)
+@private methodCallSampleCodeForPagedResponse(apiMethod, sample)
   // Or obtain the paged response.
-  @if initCode(apiMethod, init)
-    {@initCode(apiMethod, init)}
+  @if initCode(apiMethod, sample.sampleInitCode)
+    {@initCode(apiMethod, sample.sampleInitCode)}
 
   @end
 
@@ -104,32 +112,32 @@
     const nextRequest = responses[1];
     // The actual response object, if necessary.
     // const rawResponse = responses[2];
-    for (let i = 0; i < resources.length; i += 1) {
-      // doThingsWith(resources[i]);
+    for (const resource of resources) {
+      {@processResponse(sample)}
     }
     if (nextRequest) {
       // Fetch the next page.
       return client.{@apiMethod.name}(nextRequest, options).then(callback);
     }
   }
-  client.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod, init)}options)
+  client.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod, sample.sampleInitCode)}options)
     .then(callback)
     .catch(err => {
       console.error(err);
     });
 @end
 
-@private methodCallSampleCodeForPagedResponseIterative(apiMethod, init)
+@private methodCallSampleCodeForPagedResponseIterative(apiMethod, sample)
   // Iterate over all elements.
-  @if initCode(apiMethod, init)
-    {@initCode(apiMethod, init)}
+  @if initCode(apiMethod, sample.sampleInitCode)
+    {@initCode(apiMethod, sample.sampleInitCode)}
 
   @end
-  {@methodCallSampleCodePrefix(apiMethod, init)}
+  {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}
     .then(responses => {
       const resources = responses[0];
-      for (let i = 0; i < resources.length; i += 1) {
-        // doThingsWith(resources[i])
+      for (const resource of resources) {
+        {@processResponse(sample)}
       }
     })
     .catch(err => {
@@ -137,39 +145,38 @@
     });
 @end
 
-@snippet bidiStreamingSampleCode(apiMethod, init)
+@snippet bidiStreamingSampleCode(apiMethod, sample)
     const stream = client.{@apiMethod.name}().on('data', response => {
-      // doThingsWith(response)
+      {@processResponse(sample)}
     });
-    {@initCode(apiMethod, init)}
+    {@initCode(apiMethod, sample.sampleInitCode)}
     {@sampleWriteStreamingRequest(apiMethod)}
 @end
 
-@snippet clientStreamingSampleCode(apiMethod, init)
+@snippet clientStreamingSampleCode(apiMethod, sample)
     const stream = client.{@apiMethod.name}((err, response) => {
       if (err) {
         console.error(err);
         return;
       }
-      // doThingsWith(response)
+      {@processResponse(sample)}
     });
-    {@initCode(apiMethod, init)}
+    {@initCode(apiMethod, sample.sampleInitCode)}
     {@sampleWriteStreamingRequest(apiMethod)}
 @end
 
-@private methodCallSampleCodeLongrunningEventEmitter(apiMethod, init)
-  {@initCode(apiMethod, init)}
+@private methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample)
+  {@initCode(apiMethod, sample.sampleInitCode)}
 
   // Handle the operation using the event emitter pattern.
-  {@methodCallSampleCodePrefix(apiMethod, init)}
+  {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}
     .then(responses => {
-      const operation = responses[0];
-      const initialApiResponse = responses[1];
+      const [operation, initApiResponse] = responses;
 
       // Adding a listener for the "complete" event starts polling for the
       // completion of the operation.
-      operation.on('complete', (result, metadata, finalApiResponse) => {
-        // doSomethingWith(result);
+      operation.on('complete', (response, metadata, finalApiResponse) => {
+        {@processResponse(sample)}
       });
 
       // Adding a listener for the "progress" event causes the callback to be
@@ -188,27 +195,23 @@
     });
 @end
 
-@private methodCallSampleCodeLongrunningPromise(apiMethod, init)
-  {@initCode(apiMethod, init)}
+@private methodCallSampleCodeLongrunningPromise(apiMethod, sample)
+  {@initCode(apiMethod, sample.sampleInitCode)}
 
   // Handle the operation using the promise pattern.
-  {@methodCallSampleCodePrefix(apiMethod, init)}
+  {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}
     .then(responses => {
-      const operation = responses[0];
-      const initialApiResponse = responses[1];
+      const [operation, initialApiResponse] = responses;
 
       // Operation@#promise starts polling for the completion of the LRO.
       return operation.promise();
     })
     .then(responses => {
-      // The final result of the operation.
       const result = responses[0];
-
-      // The metadata value of the completed operation.
       const metadata = responses[1];
-
-      // The response of the api call returning the complete operation.
       const finalApiResponse = responses[2];
+
+      {@processResponse(sample)}
     })
     .catch(err => {
       console.error(err);
@@ -252,4 +255,58 @@
 @private sampleWriteStreamingRequest(apiMethod)
     // Write request objects.
     stream.write(request);
+@end
+
+@private processOutputViews(outputViews)
+  @join view : outputViews on BREAK
+    @switch view.kind
+      @case "COMMENT"
+        {@processCommentView(view)}
+      @case "DEFINE"
+        {@processDefineView(view)}
+      @case "LOOP"
+        {@processLoopView(view)}
+      @case "PRINT"
+        {@processPrintView(view)}
+      @default
+        $unhandledResponseForm: {@view}
+    @end
+  @end
+@end
+
+@private processCommentView(view)
+  {@comments(view)}
+@end
+
+@private processDefineView(view)
+  const {@view.variableName} = {@variableField(view.reference)};
+@end
+
+@private processPrintView(view)
+  @if view.args.size == 0
+    console.log({@view.format})
+  @else
+    @if view.format == "%s"
+      console.log({@view.args.get(0).arg})
+    @else
+      console.log(`{@view.format}`);
+    @end
+  @end
+@end
+
+@private processLoopView(view)
+  for (const {@view.variableName} of {@variableField(view.collection)}) {
+    {@processOutputViews(view.body)}
+  }
+@end
+
+
+@private variableField(arg)
+  {@arg.variable}{@accessor(arg.accessors)}
+@end
+
+@private accessor(accessors)
+  @join field : accessors on ""
+    {@field}
+  @end
 @end
