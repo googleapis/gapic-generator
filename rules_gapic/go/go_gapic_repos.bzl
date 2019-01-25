@@ -39,8 +39,8 @@ def com_github_googleapis_gax_go():
         name = "com_github_googleapis_gax_go",
         importpath = "github.com/googleapis/gax-go",
         type = "zip",
-        strip_prefix = "gax-go-1.0.1",
-        urls = ["https://github.com/googleapis/gax-go/archive/v1.0.1.zip"]
+        strip_prefix = "gax-go-2.0.3",
+        urls = ["https://github.com/googleapis/gax-go/archive/v2.0.3.zip"]
     )
 
 def org_golang_google_api():
