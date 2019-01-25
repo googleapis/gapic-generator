@@ -429,7 +429,10 @@ public class JavaSurfaceNamer extends SurfaceNamer {
    */
   @Override
   public String getExamplePackageName() {
-    String packageName = getPackageName();
+    return getExamplePackageName(getPackageName());
+  }
+
+  public static String getExamplePackageName(String packageName) {
     checkArgument(
         packageName.startsWith("com.google."),
         "We currently only support packages beginning with 'com.google'");
@@ -440,6 +443,9 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     int index = packageName.indexOf('.');
     String firstComponent = index < 0 ? packageName : packageName.substring(0, index);
     String remainingComponents = packageName.replaceFirst(firstComponent, "");
-    return "com.google." + firstComponent + ".examples" + remainingComponents + ".snippets";
+    // Ideally we want to change `.examples` to `.samples`. We call it `examples` for
+    // now to be consistent with manual samples. Consider change it to `samples` to
+    // be consistent across languages once the sample publish infrastructure in set.
+    return "com.google." + firstComponent + ".examples" + remainingComponents;
   }
 }

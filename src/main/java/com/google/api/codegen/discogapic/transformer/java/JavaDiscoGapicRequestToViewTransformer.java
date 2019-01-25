@@ -125,7 +125,7 @@ public class JavaDiscoGapicRequestToViewTransformer
               surfaceNamer,
               createTypeTable(productConfig.getPackageName()));
 
-      for (MethodModel method : context.getSupportedMethods()) {
+      for (DiscoveryMethodModel method : context.getSupportedMethods()) {
         RequestObjectParamView params = getRequestObjectParams(context, method);
 
         SchemaTransformationContext requestContext =
@@ -185,7 +185,7 @@ public class JavaDiscoGapicRequestToViewTransformer
 
   private StaticLangApiMessageView generateRequestClass(
       SchemaTransformationContext context,
-      MethodModel method,
+      DiscoveryMethodModel method,
       RequestObjectParamView resourceNameView) {
     StaticLangApiMessageView.Builder requestView = StaticLangApiMessageView.newBuilder();
 
@@ -194,11 +194,11 @@ public class JavaDiscoGapicRequestToViewTransformer
     String requestClassId =
         context
             .getNamer()
-            .privateFieldName(
-                DiscoGapicParser.getRequestName(((DiscoveryMethodModel) method).getDiscoMethod()));
+            .privateFieldName(DiscoGapicParser.getRequestName(method.getDiscoMethod()));
     String requestName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTable.getNewSymbol(requestClassId)));
 
+    requestView.rawName(requestName); // Serialized name doesn't matter here.
     requestView.name(requestName);
     requestView.description(method.getDescription());
 
@@ -215,6 +215,7 @@ public class JavaDiscoGapicRequestToViewTransformer
       }
       StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
       paramView.description(STANDARD_QUERY_PARAMS.get(param));
+      paramView.rawName(param);
       paramView.name(symbolTable.getNewSymbol(param));
       paramView.typeName("String");
       paramView.innerTypeName("String");
@@ -236,7 +237,7 @@ public class JavaDiscoGapicRequestToViewTransformer
       properties.add(paramView.build());
     }
 
-    for (FieldModel entry : method.getInputFields()) {
+    for (DiscoveryField entry : method.getInputFields()) {
       if (entry.mayBeInResourceName()) {
         requestView.hasRequiredProperties(true);
         continue;
@@ -250,7 +251,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     }
 
     StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
-    Method discoMethod = ((DiscoveryMethodModel) method).getDiscoMethod();
+    Method discoMethod = method.getDiscoMethod();
     String resourceName = DiscoGapicParser.getResourceIdentifier(discoMethod.path()).toLowerCamel();
     StringBuilder description =
         new StringBuilder(discoMethod.parameters().get(resourceName).description());
@@ -262,6 +263,7 @@ public class JavaDiscoGapicRequestToViewTransformer
             + "     * signs (\\`%\\`). It must be between 3 and 255 characters in length, and it\n"
             + "     * must not start with \\`\"goog\"\\`.");
     paramView.description(description.toString());
+    paramView.rawName(resourceNameView.name());
     paramView.name(symbolTable.getNewSymbol(resourceNameView.name()));
     paramView.typeName("String");
     paramView.innerTypeName("String");
@@ -282,7 +284,7 @@ public class JavaDiscoGapicRequestToViewTransformer
 
     Schema requestBodyDef = discoMethod.request();
     if (requestBodyDef != null && !Strings.isNullOrEmpty(requestBodyDef.reference())) {
-      FieldModel requestBody =
+      DiscoveryField requestBody =
           DiscoveryField.create(requestBodyDef, context.getDocContext().getApiModel());
       requestView.requestBodyType(
           schemaToParamView(
@@ -300,19 +302,21 @@ public class JavaDiscoGapicRequestToViewTransformer
   // Transforms a request/response Schema object into a StaticLangApiMessageView.
   private StaticLangApiMessageView schemaToParamView(
       SchemaTransformationContext context,
-      FieldModel schema,
+      DiscoveryField schema,
       String preferredName,
       SymbolTable symbolTable,
       EscapeName escapeName) {
     StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
     String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
-    String innerTypeName = context.getSchemaTypeTable().getAndSaveNicknameForElementType(schema);
+    String innerTypeName =
+        context.getSchemaTypeTable().getAndSaveNicknameForElementType((FieldModel) schema);
     paramView.description(schema.getScopedDocumentation());
     String name = context.getNamer().privateFieldName(Name.anyCamel(preferredName));
     String fieldName = name;
     if (escapeName.equals(EscapeName.ESCAPE_NAME)) {
       fieldName = symbolTable.getNewSymbol(name);
     }
+    paramView.rawName(fieldName); // rawName doesn't matter for request objects.
     paramView.name(fieldName);
     paramView.typeName(typeName);
     paramView.innerTypeName(innerTypeName);
@@ -337,6 +341,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
     typeTable.getAndSaveNicknameFor("com.google.api.gax.httpjson.ApiMessage");
+    typeTable.getAndSaveNicknameFor("com.google.gson.annotations.SerializedName");
     typeTable.getAndSaveNicknameFor("java.util.Collections");
     typeTable.getAndSaveNicknameFor("java.util.LinkedList");
     typeTable.getAndSaveNicknameFor("java.util.List");

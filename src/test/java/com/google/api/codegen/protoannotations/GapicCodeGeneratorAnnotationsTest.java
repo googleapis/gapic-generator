@@ -38,10 +38,10 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       String[] gapicConfigFileNames,
       String packageConfigFileName,
       List<String> snippetName,
-      String apiName,
       String baseline,
       String protoPackage,
-      String clientPackage) {
+      String clientPackage,
+      String[] baseNames) {
     super(
         language,
         gapicConfigFileNames,
@@ -51,7 +51,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
         protoPackage,
         clientPackage);
 
-    this.apiName = apiName;
+    this.apiName = baseNames[0];
 
     String gapicConfigStatus = "_gapic_config";
     if (gapicConfigFileNames == null || gapicConfigFileNames.length == 0) {
@@ -59,16 +59,17 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
     }
 
     this.testName = this.apiName + gapicConfigStatus;
-    // Use the library.proto contained in this test package's testdata.
+
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
 
     // Use the common yaml files from the codegen test package's testsrc/common.
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
     // TODO(andrealin): Remove dependency on yaml files when proto annotations fully supported.
   }
 
-  @Parameters(name = "{3}")
+  @Parameters(name = "{4}")
   public static List<Object[]> testedConfigs() {
     return Arrays.<Object[]>asList(
         // Only Proto Annotations, no GAPIC config

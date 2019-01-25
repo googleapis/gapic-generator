@@ -113,7 +113,7 @@ $ npm install --save @google-cloud/library
 }
 
 ============== file: smoke-test/library_service_smoke_test.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -168,7 +168,7 @@ describe('LibraryServiceSmokeTest', () => {
 });
 
 ============== file: src/index.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -263,7 +263,7 @@ module.exports.default = Object.assign({}, module.exports);
 //         className: "DiscussBookRequestStreamingBidiProg"
 //          valueSet: "prog" ("Programming Books")
 //       description: "Testing calling forms"
-//        [name=BASIC, comment.comment=comment_file, image=image_file.jpg]
+//        [name=BASIC, comment.comment = comment_file, image= "image_file.jpg"]
 //      apiMethod "discussBook" of type "OptionalArrayMethod"
 
 // [START turing_prog_request_streaming_bidi_core]
@@ -331,7 +331,7 @@ const request = {
 client.findRelatedBooks(request)
   .then(responses => {
     const resources = responses[0];
-    for (let i = 0; i < resources.length; i += 1) {
+    for (const resource of resources) {
       // doThingsWith(resources[i])
     }
   })
@@ -386,7 +386,7 @@ const callback = responses => {
   const nextRequest = responses[1];
   // The actual response object, if necessary.
   // const rawResponse = responses[2];
-  for (let i = 0; i < resources.length; i += 1) {
+  for (const resource of resources) {
     // doThingsWith(resources[i]);
   }
   if (nextRequest) {
@@ -420,7 +420,7 @@ client.findRelatedBooks(request, options)
 //         className: "GetBigBookLongRunningEventEmitterWap"
 //          valueSet: "wap" ("GetBigBook: 'War and Peace'")
 //       description: "Testing calling forms"
-//        [name="War and Peace"]
+//        [name%shelf_id=Novel, name%book_id="War and Peace"]
 //      apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
 
 // [START hopper_core]
@@ -428,13 +428,71 @@ client.findRelatedBooks(request, options)
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+// const shelf = 'Novel';
+const formattedName = client.bookPath(shelf, 'War and Peace');
 
 // Handle the operation using the event emitter pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    const operation = responses[0];
-    const initialApiResponse = responses[1];
+    const [operation, initApiResponse] = responses;
+
+    // Adding a listener for the "complete" event starts polling for the
+    // completion of the operation.
+    operation.on('complete', (result, metadata, finalApiResponse) => {
+      // doSomethingWith(result);
+    });
+
+    // Adding a listener for the "progress" event causes the callback to be
+    // called on any change in metadata when the operation is polled.
+    operation.on('progress', (metadata, apiResponse) => {
+      // doSomethingWith(metadata)
+    });
+
+    // Adding a listener for the "error" event handles any errors found during polling.
+    operation.on('error', err => {
+      // throw(err);
+    });
+  })
+  .catch(err => {
+    console.error(err);
+  });
+*/
+// [END hopper_core]
+
+// FIXME: Insert here clean-up code.
+// tslint:disable-next-line:no-any
+// [END hopper]
+============== file: src/samples/v1/get_big_book_long_running_event_emitter_wap2.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookLongRunningEventEmitterWap2" ]
+//// STUB standalone sample "GetBigBookLongRunningEventEmitterWap2" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START hopper]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//      calling form: "LongRunningEventEmitter"
+//        region tag: "hopper"
+//         className: "GetBigBookLongRunningEventEmitterWap2"
+//          valueSet: "wap2" ("GetBigBook: 'War and Peace'")
+//       description: "Testing resource name overlap"
+//        [name%shelf_id=Novel, name%book_id="War and Peace"]
+//      apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
+
+// [START hopper_core]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+// const shelf = 'Novel';
+// const bigBookName = 'War and Peace';
+const formattedName = client.bookPath(shelf, bigBookName);
+
+// Handle the operation using the event emitter pattern.
+client.getBigBook({name: formattedName})
+  .then(responses => {
+    const [operation, initApiResponse] = responses;
 
     // Adding a listener for the "complete" event starts polling for the
     // completion of the operation.
@@ -477,7 +535,7 @@ client.getBigBook({name: formattedName})
 //         className: "GetBigBookLongRunningPromiseWap"
 //          valueSet: "wap" ("GetBigBook: 'War and Peace'")
 //       description: "Testing calling forms"
-//        [name="War and Peace"]
+//        [name%shelf_id=Novel, name%book_id="War and Peace"]
 //      apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
 
 // [START hopper_core]
@@ -485,25 +543,69 @@ client.getBigBook({name: formattedName})
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+// const shelf = 'Novel';
+const formattedName = client.bookPath(shelf, 'War and Peace');
 
 // Handle the operation using the promise pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    const operation = responses[0];
-    const initialApiResponse = responses[1];
+    const [operation, initialApiResponse] = responses;
 
     // Operation#promise starts polling for the completion of the LRO.
     return operation.promise();
   })
   .then(responses => {
-    // The final result of the operation.
     const result = responses[0];
-
-    // The metadata value of the completed operation.
     const metadata = responses[1];
+    const finalApiResponse = responses[2];
+  })
+  .catch(err => {
+    console.error(err);
+  });
+*/
+// [END hopper_core]
 
-    // The response of the api call returning the complete operation.
+// FIXME: Insert here clean-up code.
+// tslint:disable-next-line:no-any
+// [END hopper]
+============== file: src/samples/v1/get_big_book_long_running_promise_wap2.js ==============
+//// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "GetBigBookLongRunningPromiseWap2" ]
+//// STUB standalone sample "GetBigBookLongRunningPromiseWap2" /////
+
+// FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
+
+// [START hopper]
+
+// FIXME: Insert here boilerplate code not directly related to the method call itself.
+
+//      calling form: "LongRunningPromise"
+//        region tag: "hopper"
+//         className: "GetBigBookLongRunningPromiseWap2"
+//          valueSet: "wap2" ("GetBigBook: 'War and Peace'")
+//       description: "Testing resource name overlap"
+//        [name%shelf_id=Novel, name%book_id="War and Peace"]
+//      apiMethod "getBigBook" of type "LongRunningOptionalArrayMethod"
+
+// [START hopper_core]
+
+// FIXME: Insert here code to prepare the request fields, make the call, process the response.
+
+/*
+// const shelf = 'Novel';
+// const bigBookName = 'War and Peace';
+const formattedName = client.bookPath(shelf, bigBookName);
+
+// Handle the operation using the promise pattern.
+client.getBigBook({name: formattedName})
+  .then(responses => {
+    const [operation, initialApiResponse] = responses;
+
+    // Operation#promise starts polling for the completion of the LRO.
+    return operation.promise();
+  })
+  .then(responses => {
+    const result = responses[0];
+    const metadata = responses[1];
     const finalApiResponse = responses[2];
   })
   .catch(err => {
@@ -724,7 +826,7 @@ const name = 'BASIC';
 // tslint:disable-next-line:no-any
 // [END sample]
 ============== file: src/v1/doc/google/example/library/v1/doc_book_from_anywhere.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -766,7 +868,7 @@ const BookFromAnywhere = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/example/library/v1/doc_field_mask.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -807,7 +909,7 @@ const FieldMask = {
   }
 };
 ============== file: src/v1/doc/google/example/library/v1/doc_library.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1299,6 +1401,9 @@ const SeriesUuid = {
  *
  * @property {string[]} bookNames
  *   The names of the books in the series that were published
+ *
+ * @property {Object[]} books
+ *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
  *
  * @property {Object} seriesUuid
  *   Uniquely identifies the series published
@@ -1930,7 +2035,7 @@ const TestOptionalRequiredFlatteningParamsResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/longrunning/doc_operations.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1994,7 +2099,7 @@ const Operation = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_any.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2131,7 +2236,7 @@ const Any = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_duration.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2229,7 +2334,7 @@ const Duration = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_empty.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2264,7 +2369,7 @@ const Empty = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_field_mask.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2501,7 +2606,7 @@ const FieldMask = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_struct.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2614,7 +2719,7 @@ const NullValue = {
   NULL_VALUE: 0
 };
 ============== file: src/v1/doc/google/protobuf/doc_timestamp.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2730,7 +2835,7 @@ const Timestamp = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/protobuf/doc_wrappers.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2891,7 +2996,7 @@ const BytesValue = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/rpc/doc_status.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2984,7 +3089,7 @@ const Status = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/tagger/v1/doc_tagger.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -3029,7 +3134,7 @@ const AddTagResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/doc/google/test/shared/data/doc_shared_type.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -3060,7 +3165,7 @@ const Used = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 ============== file: src/v1/index.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -3081,7 +3186,7 @@ const LibraryServiceClient = require('./library_service_client');
 module.exports.LibraryServiceClient = LibraryServiceClient;
 
 ============== file: src/v1/library_service_client.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -3597,7 +3702,7 @@ class LibraryServiceClient {
    * client.listShelves({})
    *   .then(responses => {
    *     const resources = responses[0];
-   *     for (let i = 0; i < resources.length; i += 1) {
+   *     for (const resource of resources) {
    *       // doThingsWith(resources[i])
    *     }
    *   })
@@ -3615,7 +3720,7 @@ class LibraryServiceClient {
    *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
    *   // const rawResponse = responses[2];
-   *   for (let i = 0; i < resources.length; i += 1) {
+   *   for (const resource of resources) {
    *     // doThingsWith(resources[i]);
    *   }
    *   if (nextRequest) {
@@ -3910,6 +4015,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'shelf.name': request.shelf.name
+      });
 
     return this._innerApiCalls.publishSeries(request, options, callback);
   }
@@ -4017,7 +4128,7 @@ class LibraryServiceClient {
    * client.listBooks(request)
    *   .then(responses => {
    *     const resources = responses[0];
-   *     for (let i = 0; i < resources.length; i += 1) {
+   *     for (const resource of resources) {
    *       // doThingsWith(resources[i])
    *     }
    *   })
@@ -4042,7 +4153,7 @@ class LibraryServiceClient {
    *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
    *   // const rawResponse = responses[2];
-   *   for (let i = 0; i < resources.length; i += 1) {
+   *   for (const resource of resources) {
    *     // doThingsWith(resources[i]);
    *   }
    *   if (nextRequest) {
@@ -4331,7 +4442,7 @@ class LibraryServiceClient {
    * client.listStrings({})
    *   .then(responses => {
    *     const resources = responses[0];
-   *     for (let i = 0; i < resources.length; i += 1) {
+   *     for (const resource of resources) {
    *       // doThingsWith(resources[i])
    *     }
    *   })
@@ -4349,7 +4460,7 @@ class LibraryServiceClient {
    *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
    *   // const rawResponse = responses[2];
-   *   for (let i = 0; i < resources.length; i += 1) {
+   *   for (const resource of resources) {
    *     // doThingsWith(resources[i]);
    *   }
    *   if (nextRequest) {
@@ -4880,7 +4991,7 @@ class LibraryServiceClient {
    * client.findRelatedBooks(request)
    *   .then(responses => {
    *     const resources = responses[0];
-   *     for (let i = 0; i < resources.length; i += 1) {
+   *     for (const resource of resources) {
    *       // doThingsWith(resources[i])
    *     }
    *   })
@@ -4906,7 +5017,7 @@ class LibraryServiceClient {
    *   const nextRequest = responses[1];
    *   // The actual response object, if necessary.
    *   // const rawResponse = responses[2];
-   *   for (let i = 0; i < resources.length; i += 1) {
+   *   for (const resource of resources) {
    *     // doThingsWith(resources[i]);
    *   }
    *   if (nextRequest) {
@@ -5132,20 +5243,14 @@ class LibraryServiceClient {
    * // Handle the operation using the promise pattern.
    * client.getBigBook({name: formattedName})
    *   .then(responses => {
-   *     const operation = responses[0];
-   *     const initialApiResponse = responses[1];
+   *     const [operation, initialApiResponse] = responses;
    *
    *     // Operation#promise starts polling for the completion of the LRO.
    *     return operation.promise();
    *   })
    *   .then(responses => {
-   *     // The final result of the operation.
    *     const result = responses[0];
-   *
-   *     // The metadata value of the completed operation.
    *     const metadata = responses[1];
-   *
-   *     // The response of the api call returning the complete operation.
    *     const finalApiResponse = responses[2];
    *   })
    *   .catch(err => {
@@ -5157,8 +5262,7 @@ class LibraryServiceClient {
    * // Handle the operation using the event emitter pattern.
    * client.getBigBook({name: formattedName})
    *   .then(responses => {
-   *     const operation = responses[0];
-   *     const initialApiResponse = responses[1];
+   *     const [operation, initialApiResponse] = responses;
    *
    *     // Adding a listener for the "complete" event starts polling for the
    *     // completion of the operation.
@@ -5222,20 +5326,14 @@ class LibraryServiceClient {
    * // Handle the operation using the promise pattern.
    * client.getBigNothing({name: formattedName})
    *   .then(responses => {
-   *     const operation = responses[0];
-   *     const initialApiResponse = responses[1];
+   *     const [operation, initialApiResponse] = responses;
    *
    *     // Operation#promise starts polling for the completion of the LRO.
    *     return operation.promise();
    *   })
    *   .then(responses => {
-   *     // The final result of the operation.
    *     const result = responses[0];
-   *
-   *     // The metadata value of the completed operation.
    *     const metadata = responses[1];
-   *
-   *     // The response of the api call returning the complete operation.
    *     const finalApiResponse = responses[2];
    *   })
    *   .catch(err => {
@@ -5247,8 +5345,7 @@ class LibraryServiceClient {
    * // Handle the operation using the event emitter pattern.
    * client.getBigNothing({name: formattedName})
    *   .then(responses => {
-   *     const operation = responses[0];
-   *     const initialApiResponse = responses[1];
+   *     const [operation, initialApiResponse] = responses;
    *
    *     // Adding a listener for the "complete" event starts polling for the
    *     // completion of the operation.
@@ -5888,7 +5985,7 @@ module.exports = LibraryServiceClient;
 }
 
 ============== file: test/gapic-v1.js ==============
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -7828,3 +7925,4 @@ function mockLongRunningGrpcMethod(expectedRequest, response, error) {
     return Promise.resolve([mockOperation]);
   };
 }
+

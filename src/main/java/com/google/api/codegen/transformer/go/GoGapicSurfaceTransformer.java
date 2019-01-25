@@ -70,6 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
@@ -78,6 +79,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   private static final String DOC_TEMPLATE_FILENAME = "go/doc.snip";
 
   private static final int COMMENT_LINE_LENGTH = 75;
+
+  private static final Pattern versionPattern = Pattern.compile("v\\d.*beta");
 
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
   private final StaticLangApiMethodTransformer apiMethodTransformer =
@@ -107,6 +110,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     List<ViewModel> models = new ArrayList<>();
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
     for (InterfaceModel apiInterface : model.getInterfaces()) {
+      if (!productConfig.hasInterfaceConfig(apiInterface)) {
+        continue;
+      }
+
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, createTypeTable(), namer, featureConfig);
@@ -242,7 +249,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
     packageInfo.releaseLevel(productConfig.getReleaseLevel());
-
+    packageInfo.isInferredBeta(isInferredBetaVersion(productConfig.getPackageName()));
     return packageInfo.build();
   }
 
@@ -252,7 +259,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
 
   @VisibleForTesting
   List<StaticLangApiMethodView> generateApiMethods(
-      InterfaceContext context, Iterable<MethodModel> methods) {
+      InterfaceContext context, Iterable<? extends MethodModel> methods) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (MethodModel method : methods) {
       MethodConfig methodConfig = context.getMethodConfig(method);
@@ -319,7 +326,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("context;;;");
     typeTable.saveNicknameFor("google.golang.org/grpc;;;");
-    typeTable.saveNicknameFor("github.com/googleapis/gax-go;gax;;");
+    typeTable.saveNicknameFor("github.com/googleapis/gax-go/v2;gax;;");
     typeTable.saveNicknameFor("google.golang.org/api/option;;;");
     typeTable.saveNicknameFor("google.golang.org/api/transport;;;");
     typeTable.saveNicknameFor("google.golang.org/grpc/metadata;;;");
@@ -328,7 +335,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   }
 
   @VisibleForTesting
-  void addXExampleImports(InterfaceContext context, Iterable<MethodModel> methods) {
+  void addXExampleImports(InterfaceContext context, Iterable<? extends MethodModel> methods) {
     ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("context;;;");
     typeTable.saveNicknameFor(context.getProductConfig().getPackageName() + ";;;");
@@ -340,7 +347,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   }
 
   private void addContextImports(
-      InterfaceContext context, ImportContext importContext, Iterable<MethodModel> methods) {
+      InterfaceContext context,
+      ImportContext importContext,
+      Iterable<? extends MethodModel> methods) {
     for (ImportKind kind : getImportKinds(context.getInterfaceConfig(), methods)) {
       ImmutableList<String> imps = CONTEXTUAL_IMPORTS.get(importContext, kind);
       if (imps != null) {
@@ -352,7 +361,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   }
 
   private Set<ImportKind> getImportKinds(
-      InterfaceConfig interfaceConfig, Iterable<MethodModel> methods) {
+      InterfaceConfig interfaceConfig, Iterable<? extends MethodModel> methods) {
     EnumSet<ImportKind> kinds = EnumSet.noneOf(ImportKind.class);
     for (MethodModel method : methods) {
       if (method.getResponseStreaming()) {
@@ -367,6 +376,13 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
       }
     }
     return kinds;
+  }
+
+  @VisibleForTesting
+  public boolean isInferredBetaVersion(String packageName) {
+    int indexOfVersionString = packageName.lastIndexOf("/");
+    String versionString = packageName.substring(indexOfVersionString + 1);
+    return versionPattern.matcher(versionString).find();
   }
 
   private enum ImportContext {

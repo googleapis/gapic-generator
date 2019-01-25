@@ -22,7 +22,6 @@ import com.google.api.OAuth;
 import com.google.api.OperationData;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -33,6 +32,7 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -56,10 +56,6 @@ public class ProtoParser {
 
   public ProtoParser(boolean enableProtoAnnotations) {
     this.enableProtoAnnotations = enableProtoAnnotations;
-  }
-
-  public ProtoParser(FeatureConfig featureConfig) {
-    this.enableProtoAnnotations = featureConfig.enableProtoAnnotations();
   }
 
   @SuppressWarnings("unchecked")
@@ -342,6 +338,12 @@ public class ProtoParser {
 
   public String getProtoPackage(ProtoFile file) {
     return file.getProto().getPackage();
+  }
+
+  @VisibleForTesting
+  // Exposed for test mocking.
+  public String getProtoPackage(Method method) {
+    return getProtoPackage(method.getFile());
   }
 
   private String getResourceFullName(Resource resource, ProtoFile file) {

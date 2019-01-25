@@ -23,7 +23,7 @@
 ============== file: src/V1/Gapic/LibraryServiceGapicClient.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -848,6 +848,13 @@ class LibraryServiceGapicClient
         if (isset($optionalArgs['reviewCopy'])) {
             $request->setReviewCopy($optionalArgs['reviewCopy']);
         }
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'shelf.name' => $request->getShelf()->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
 
         return $this->startCall(
             'PublishSeries',
@@ -2323,7 +2330,7 @@ class LibraryServiceGapicClient
 ============== file: src/V1/LibraryServiceClient.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2673,6 +2680,13 @@ return [
                 'method' => 'post',
                 'uriTemplate' => '/v1/{name=bookShelves/*}/books',
                 'body' => 'book',
+                'additionalBindings' => [
+                    [
+                        'method' => 'post',
+                        'uriTemplate' => '/v1/{name=bookShelves/*}/books',
+                        'body' => 'book',
+                    ],
+                ],
                 'placeholders' => [
                     'name' => [
                         'getters' => [
@@ -2685,6 +2699,21 @@ return [
                 'method' => 'post',
                 'uriTemplate' => '/v1:publish',
                 'body' => '*',
+                'additionalBindings' => [
+                    [
+                        'method' => 'post',
+                        'uriTemplate' => '/v1/{shelf.name=shelves/*}:publish',
+                        'body' => '*',
+                    ],
+                ],
+                'placeholders' => [
+                    'shelf.name' => [
+                        'getters' => [
+                            'getShelf',
+                            'getName',
+                        ],
+                    ],
+                ]
             ],
             'GetBook' => [
                 'method' => 'get',
@@ -2879,7 +2908,7 @@ return [
 ============== file: src/V1/samples/discussBook/DiscussBookRequestStreamingBidiAsyncProg.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2966,7 +2995,7 @@ sampleDiscussBook($imageFileName);
 ============== file: src/V1/samples/discussBook/DiscussBookRequestStreamingBidiProg.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3044,7 +3073,7 @@ sampleDiscussBook($imageFileName);
 ============== file: src/V1/samples/findRelatedBooks/FindRelatedBooksRequestPagedAllOdyssey.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3098,7 +3127,7 @@ sampleFindRelatedBooks();
 ============== file: src/V1/samples/findRelatedBooks/FindRelatedBooksRequestPagedOdyssey.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3154,7 +3183,7 @@ sampleFindRelatedBooks();
 ============== file: src/V1/samples/getBigBook/GetBigBookLongRunningRequestAsyncWap.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3178,13 +3207,14 @@ require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 
-function sampleGetBigBook()
+function sampleGetBigBook($shelf)
 {
     // [START hopper_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    // $shelf = 'Novel';
+    $formattedName = $libraryServiceClient->bookName($shelf, 'War and Peace');
 
     try {
         // start the operation, keep the operation name, and resume later
@@ -3212,11 +3242,103 @@ function sampleGetBigBook()
 }
 // [END hopper]
 
-sampleGetBigBook();
+$opts = [
+    'shelf::',
+];
+
+$defaultOptions = [
+    'shelf' => 'Novel',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$shelf = $options['shelf'];
+
+sampleGetBigBook($shelf);
+============== file: src/V1/samples/getBigBook/GetBigBookLongRunningRequestAsyncWap2.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap2")
+ */
+
+// [START hopper]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+function sampleGetBigBook($shelf, $bigBookName)
+{
+    // [START hopper_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    // $shelf = 'Novel';
+    // $bigBookName = 'War and Peace';
+    $formattedName = $libraryServiceClient->bookName($shelf, $bigBookName);
+
+    try {
+        // start the operation, keep the operation name, and resume later
+        $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+        $operationName = $operationResponse->getName();
+        // ... do other work
+        $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigBook');
+        while (!$newOperationResponse->isDone()) {
+            // ... do other work
+            $newOperationResponse->reload();
+        }
+        if ($newOperationResponse->operationSucceeded()) {
+          $response = $newOperationResponse->getResult();
+          printf("%s" . PHP_EOL, print_r($response, true));
+        } else {
+          $error = $newOperationResponse->getError();
+          // handleError($error)
+        }
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END hopper_core]
+}
+// [END hopper]
+
+$opts = [
+    'shelf::',
+    'bigBookName::',
+];
+
+$defaultOptions = [
+    'shelf' => 'Novel',
+    'bigBookName' => 'War and Peace',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$shelf = $options['shelf'];
+$bigBookName = $options['bigBookName'];
+
+sampleGetBigBook($shelf, $bigBookName);
 ============== file: src/V1/samples/getBigBook/GetBigBookLongRunningRequestWap.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3240,13 +3362,14 @@ require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 
-function sampleGetBigBook()
+function sampleGetBigBook($shelf)
 {
     // [START hopper_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    // $shelf = 'Novel';
+    $formattedName = $libraryServiceClient->bookName($shelf, 'War and Peace');
 
     try {
         $operationResponse = $libraryServiceClient->getBigBook($formattedName);
@@ -3267,11 +3390,96 @@ function sampleGetBigBook()
 }
 // [END hopper]
 
-sampleGetBigBook();
+$opts = [
+    'shelf::',
+];
+
+$defaultOptions = [
+    'shelf' => 'Novel',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$shelf = $options['shelf'];
+
+sampleGetBigBook($shelf);
+============== file: src/V1/samples/getBigBook/GetBigBookLongRunningRequestWap2.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("LongRunningRequest",  "wap2")
+ */
+
+// [START hopper]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+function sampleGetBigBook($shelf, $bigBookName)
+{
+    // [START hopper_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    // $shelf = 'Novel';
+    // $bigBookName = 'War and Peace';
+    $formattedName = $libraryServiceClient->bookName($shelf, $bigBookName);
+
+    try {
+        $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+        $operationResponse->pollUntilComplete();
+        if ($operationResponse->operationSucceeded()) {
+            $response = $operationResponse->getResult();
+            printf("%s" . PHP_EOL, print_r($response, true));
+        } else {
+            $error = $operationResponse->getError();
+            // handleError($error)
+        }
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END hopper_core]
+}
+// [END hopper]
+
+$opts = [
+    'shelf::',
+    'bigBookName::',
+];
+
+$defaultOptions = [
+    'shelf' => 'Novel',
+    'bigBookName' => 'War and Peace',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$shelf = $options['shelf'];
+$bigBookName = $options['bigBookName'];
+
+sampleGetBigBook($shelf, $bigBookName);
 ============== file: src/V1/samples/monologAboutBook/MonologAboutBookRequestStreamingClientAsyncProg.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3327,7 +3535,7 @@ sampleMonologAboutBook();
 ============== file: src/V1/samples/monologAboutBook/MonologAboutBookRequestStreamingClientProg.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3380,7 +3588,7 @@ sampleMonologAboutBook();
 ============== file: src/V1/samples/publishSeries/PublishSeriesRequestPiVersion.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3428,6 +3636,7 @@ function samplePublishSeries($shelfName, $edition)
             printf("Title: %s" . PHP_EOL, $title);
         }
         printf("The first book is: %s" . PHP_EOL, $response->getBookNames()[0]);
+        printf("The author of the first book is: %s" . PHP_EOL, $response->getBooks()[0]->getAuthor());
         printf("That's all!" . PHP_EOL);
         printf("series_uuid: %s" . PHP_EOL, $response->getSeriesUuid()->getSeriesBytes());
     } finally {
@@ -3458,7 +3667,7 @@ samplePublishSeries($shelfName, $edition);
 ============== file: src/V1/samples/publishSeries/PublishSeriesRequestSecondEdition.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3511,7 +3720,7 @@ samplePublishSeries();
 ============== file: src/V1/samples/streamBooks/StreamBooksRequestStreamingServerProg.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3561,7 +3770,7 @@ sampleStreamBooks();
 ============== file: src/V1/samples/streamShelves/StreamShelvesRequestStreamingServerEmpty.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3609,7 +3818,7 @@ sampleStreamShelves();
 ============== file: tests/System/V1/LibraryServiceSmokeTest.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3668,7 +3877,7 @@ class LibraryServiceSmokeTest extends GeneratedTest
 ============== file: tests/Unit/V1/LibraryServiceClientTest.php ==============
 <?php
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

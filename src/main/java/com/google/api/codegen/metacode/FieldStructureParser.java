@@ -99,13 +99,7 @@ public class FieldStructureParser {
 
     InitValue initValue = null;
     if (token == '=') {
-      fieldNamePos = Math.min(fieldNamePos, scanner.pos() - 1);
-
-      // TODO(pongad): Quote the RHS of existing configs, and once that's done use 'parseValue' here
-      // (`String valueString = parseValue(scanner)`). For now we are preserving the previous
-      // behavior, where everything on the right of the equal sign is a string.
-      String valueString = config.substring(scanner.pos());
-
+      String valueString = parseValue(scanner);
       if (valueString.contains(InitFieldConfig.RANDOM_TOKEN)) {
         initValue = InitValue.createRandom(valueString);
       } else if (valueString.contains(PROJECT_ID_TOKEN)) {
@@ -119,9 +113,6 @@ public class FieldStructureParser {
         initValue = InitValue.createLiteral(valueString);
       }
     }
-
-    // TODO(pongad): When we can actually parse the RHS, we should expect EOF.
-    // Preconditions.checkArgument(scanner.scan() == Scanner.EOF, "expected EOF: %s", config);
 
     InitValueConfig valueConfig =
         createInitValueConfig(
@@ -143,9 +134,9 @@ public class FieldStructureParser {
    * Parses the path found in {@code scanner} and descend the tree rooted at {@code root}. If
    * children specified by the path do not exist, they are created.
    */
-  static InitCodeNode parsePath(InitCodeNode root, Scanner scanner) {
+  public static InitCodeNode parsePath(InitCodeNode root, Scanner scanner) {
     Preconditions.checkArgument(
-        scanner.scan() == Scanner.IDENT, "expected root identifier: %s", scanner.input());
+        scanner.scan() == Scanner.IDENT, "expected identifier: %s", scanner.input());
     InitCodeNode parent = root.mergeChild(InitCodeNode.create(scanner.tokenStr()));
     int token;
 
@@ -177,7 +168,7 @@ public class FieldStructureParser {
 
         case '{':
           parent.setLineType(InitCodeLineType.MapInitLine);
-          parent = parent.mergeChild(InitCodeNode.create(parseValue(scanner)));
+          parent = parent.mergeChild(InitCodeNode.create(parseKey(scanner)));
 
           Preconditions.checkArgument(
               scanner.scan() == '}', "expected closing '}': %s", scanner.input());
@@ -190,12 +181,76 @@ public class FieldStructureParser {
     }
   }
 
-  private static String parseValue(Scanner scanner) {
+  /** Returns the entity name specified by `path` or null if `path` does not contain `%`. */
+  public static String parseEntityName(String path) {
+    Scanner scanner = new Scanner(path);
+    Preconditions.checkArgument(
+        scanner.scan() == Scanner.IDENT, "expected identifier: %s", scanner.input());
+    int token;
+    String entityName = null;
+    while (true) {
+      token = scanner.scan();
+      switch (token) {
+        case '%':
+          Preconditions.checkArgument(
+              entityName == null, "expected only one \"%%\" in path: %s", path);
+          Preconditions.checkArgument(
+              scanner.scan() == Scanner.IDENT,
+              "expected identifier after '%%': %s",
+              scanner.input());
+          entityName = scanner.tokenStr();
+          break;
+        case '=':
+        case Scanner.EOF:
+          return entityName;
+        case '.':
+          Preconditions.checkArgument(
+              scanner.scan() == Scanner.IDENT,
+              "expected identifier after '.': %s",
+              scanner.input());
+          break;
+        case '[':
+          Preconditions.checkArgument(
+              scanner.scan() == Scanner.INT, "expected number after '[': %s", scanner.input());
+          Preconditions.checkArgument(
+              scanner.scan() == ']', "expected closing ']': %s", scanner.input());
+          break;
+        case '{':
+          parseKey(scanner);
+          Preconditions.checkArgument(
+              scanner.scan() == '}', "expected closing '}': %s", scanner.input());
+          break;
+        default:
+          throw new IllegalArgumentException(
+              String.format("unexpected character '%c': %s", token, scanner.input()));
+      }
+    }
+  }
+
+  private static String parseKey(Scanner scanner) {
     int token = scanner.scan();
     Preconditions.checkArgument(
         token == Scanner.INT || token == Scanner.IDENT || token == Scanner.STRING,
         "invalid value: %s",
         scanner.input());
     return scanner.tokenStr();
+  }
+
+  /**
+   * Parses the value of configs (i.e. the RHS of the '='). If the value is a double-quoted string
+   * literal we return it unquoted. Otherwise we strip leading spaces and return the rest of value
+   * as a string for backward compatibility.
+   */
+  private static String parseValue(Scanner scanner) {
+    int token = scanner.scan();
+
+    // Scanner.STRING means a double-quoted string literal
+    if (token == Scanner.STRING) {
+      String tokenStr = scanner.tokenStr();
+      if (scanner.scan() == Scanner.EOF) {
+        return tokenStr;
+      }
+    }
+    return scanner.tokenStr() + scanner.input().substring(scanner.pos());
   }
 }

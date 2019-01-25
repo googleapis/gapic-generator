@@ -46,7 +46,7 @@ anchor_check_generation: &anchor_check_generation
 # Test a Ruby client if generation succeeded.
 anchor_test_python_client: &anchor_test_python_client
   command: |
-    if [ -z $NOX_COMMANDS]
+    if [ -z "$NOX_COMMANDS" ]
     then
       echo "NOX_COMMANDS was not configured. Check CircleCI config."
       exit 1
@@ -141,9 +141,7 @@ anchor_run_ruby: &anchor_run_ruby
         name: Prepare for Pubsub testing.
         command: |
           echo 'export TEST_API="pubsub"' >> $BASH_ENV
-    - run:
-        name: Test Pubsub.
-        <<: *anchor_test_ruby_client
+    # https://github.com/googleapis/gapic-generator/issues/2503 blocks Pubsub testing.
     - run:
         name: Prepare for Speech testing.
         command: |
@@ -415,7 +413,7 @@ jobs:
           path: reports/gapic-generator
   generate-clients:
     docker:
-      - image: googleapis/artman:0.16.2
+      - image: googleapis/artman:0.16.5
     working_directory: /tmp/
     environment:
       <<: *anchor_artman_vars

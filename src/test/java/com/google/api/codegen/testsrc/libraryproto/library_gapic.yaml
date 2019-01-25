@@ -210,6 +210,8 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 7000
+    header_request_params:
+      - shelf.name
     batching:
       thresholds:
         element_count_threshold: 6
@@ -254,6 +256,9 @@ interfaces:
       - print:
         - "The first book is: %s"
         - $resp.book_names[0]
+      - print:
+        - "The author of the first book is: %s"
+        - $resp.books[0].author
       - print:
         - "That's all!"
       - print:
@@ -574,8 +579,8 @@ interfaces:
       parameters:
         defaults:
         - name=BASIC
-        - comment.comment=comment_file
-        - image=image_file.jpg
+        - comment.comment = comment_file
+        - image= "image_file.jpg"
         attributes:
         - parameter: comment.comment
           read_file: true
@@ -746,7 +751,11 @@ interfaces:
       description: "Testing calling forms"
       parameters:
         defaults:
-        - name="War and Peace"
+        - name%shelf_id=Novel
+        - name%book_id="War and Peace"
+        attributes:
+        - parameter: name%shelf_id
+          sample_argument_name: shelf
       on_success:
       - print:
         - "name: %s"
@@ -754,6 +763,18 @@ interfaces:
       - print:
         - "author: %s"
         - $resp.author
+    - id: wap2
+      title: "GetBigBook: 'War and Peace'"
+      description: "Testing resource name overlap"
+      parameters:
+        defaults:
+        - name%shelf_id=Novel
+        - name%book_id="War and Peace"
+        attributes:
+        - parameter: name%shelf_id
+          sample_argument_name: shelf
+        - parameter: name%book_id
+          sample_argument_name: big_book_name
     samples:
       standalone:
       - calling_forms: ".*"

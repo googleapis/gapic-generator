@@ -72,7 +72,4 @@ public interface FeatureConfig {
 
   /** Returns true if a raw operation call settings method should be generated. */
   boolean enableRawOperationCallSettings();
-
-  /** Returns true if the protobuf annotations defined in annotations.proto should be parsed. */
-  boolean enableProtoAnnotations();
 }

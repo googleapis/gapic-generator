@@ -244,7 +244,11 @@ public class OutputTransformerTest {
     TypeModel propertyTypeModel = mock(TypeModel.class);
     when(namer.getFieldGetFunctionName(propertyFieldModel)).thenReturn("getProperty");
     when(propertyTypeModel.isRepeated()).thenReturn(true);
-    when(namer.getAndSaveTypeName(typeTable, propertyTypeModel)).thenReturn("PropertyTypeName");
+    TypeModel optionalPropertyTypeModel = mock(TypeModel.class);
+    when(propertyTypeModel.makeOptional()).thenReturn(optionalPropertyTypeModel);
+
+    when(namer.getAndSaveTypeName(typeTable, optionalPropertyTypeModel))
+        .thenReturn("OptionalPropertyTypeName");
     when(propertyFieldModel.getType()).thenReturn(propertyTypeModel);
 
     OutputView.VariableView variableView =
@@ -256,8 +260,8 @@ public class OutputTransformerTest {
             AccessorView.FieldView.newBuilder().field("getProperty").build(),
             AccessorView.IndexView.newBuilder().index("0").build())
         .inOrder();
-    assertThat(parent.getTypeName("newVar")).isEqualTo("PropertyTypeName");
-    assertThat(parent.getTypeModel("newVar")).isEqualTo(propertyTypeModel);
+    assertThat(parent.getTypeName("newVar")).isEqualTo("OptionalPropertyTypeName");
+    assertThat(parent.getTypeModel("newVar")).isEqualTo(optionalPropertyTypeModel);
   }
 
   @Test

@@ -66,6 +66,7 @@ public class ProtoParserTest {
 
     testDataLocator = TestDataLocator.create(GapicCodeGeneratorAnnotationsTest.class);
     testDataLocator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    testDataLocator.addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
 
     model =
         CodegenTestUtil.readModel(

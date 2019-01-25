@@ -59,7 +59,6 @@ option java_package = "com.google.api.codegen";
 //             subresponse_field: pic_id
 //         retry_codes_name: idempotent
 //         retry_params_name: default
-//         request_object_method: true
 //         field_name_patterns:
 //           name: book
 //         header_request_params:
@@ -248,14 +247,12 @@ message MethodConfigProto {
 
   // Specifies the default timeout for a non-retrying call. If the call is
   // retrying, refer to `retry_params_name` instead.
-  uint64 timeout_millis = 11;
+  uint64 timeout_millis = 11; // UNSUPPORTED.
 
   // Specifies the configuration for batching.
   BatchingConfigProto batching = 6;
 
-  // Turns on or off the generation of a method whose sole parameter is
-  // a request object. Not all languages will generate this method.
-  bool request_object_method = 7; // UNSUPPORTED.
+  reserved 7;
 
   // Fields that are always required for a request to be valid.
   repeated string required_fields = 8;
