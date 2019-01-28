@@ -89,18 +89,17 @@ public class ProtoParser {
     }
   }
 
-  @Nullable
   /* Return the name of the field representing the header parameter. */
-  public List<String> getHeaderParams(Method method) {
-    if (!enableProtoAnnotations) {
-      return null;
-    }
-
+  public ImmutableSet<String> getHeaderParams(Method method) {
     ImmutableSet.Builder<String> allParams = ImmutableSet.builder();
+
+    if (!enableProtoAnnotations) {
+      return allParams.build();
+    }
 
     HttpRule topRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
     if (topRule == null) {
-      return null;
+      return allParams.build();
     }
     getHeaderParam(topRule).ifPresent(allParams::add);
 
@@ -110,7 +109,7 @@ public class ProtoParser {
       getHeaderParam(rule).ifPresent(allParams::add);
     }
 
-    return allParams.build().asList();
+    return allParams.build();
   }
 
   // Finds the header param from a HttpRule and add the non-null value to the running set.

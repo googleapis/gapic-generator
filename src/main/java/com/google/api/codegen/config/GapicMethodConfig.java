@@ -43,7 +43,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -282,8 +281,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       return headerRequestParams;
     }
     // Fetch header params from the proto annotations.
-    List<String> headerParams = protoParser.getHeaderParams(method);
-    return headerParams != null ? headerParams : Collections.emptyList();
+    return protoParser.getHeaderParams(method).asList();
   }
 
   @VisibleForTesting

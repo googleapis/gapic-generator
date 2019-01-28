@@ -32,6 +32,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
+import com.google.common.collect.ImmutableSet;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -343,11 +344,11 @@ public class ProtoParserTest {
 
   @Test
   public void testHttpRuleUrl() {
-    List<String> deleteHeaderParams = protoParser.getHeaderParams(deleteShelfMethod);
+    ImmutableSet<String> deleteHeaderParams = protoParser.getHeaderParams(deleteShelfMethod);
     assertThat(deleteHeaderParams).containsExactly("name");
 
     Method publishMethod = libraryService.lookupMethod("PublishSeries");
-    List<String> publishHeaderParams = protoParser.getHeaderParams(publishMethod);
+    ImmutableSet<String> publishHeaderParams = protoParser.getHeaderParams(publishMethod);
     assertThat(publishHeaderParams).containsExactly("shelf.name");
   }
 }
