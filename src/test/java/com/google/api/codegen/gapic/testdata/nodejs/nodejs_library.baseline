@@ -272,7 +272,7 @@ module.exports.default = Object.assign({}, module.exports);
 
 /*
 const stream = client.discussBook().on('data', response => {
-  // doThingsWith(response)
+  console.log(responseItem)
 });
 // const imageFileName = 'image_file.jpg';
 const name = 'BASIC';
@@ -331,8 +331,9 @@ const request = {
 client.findRelatedBooks(request)
   .then(responses => {
     const resources = responses[0];
-    for (let i = 0; i < resources.length; i += 1) {
-      // doThingsWith(resources[i])
+    for (const resource of resources) {
+      const book = responseItem;
+      console.log(`Here\'s a related book: {$book}`);
     }
   })
   .catch(err => {
@@ -386,8 +387,9 @@ const callback = responses => {
   const nextRequest = responses[1];
   // The actual response object, if necessary.
   // const rawResponse = responses[2];
-  for (let i = 0; i < resources.length; i += 1) {
-    // doThingsWith(resources[i]);
+  for (const resource of resources) {
+    const book = responseItem;
+    console.log(`Here\'s a related book: {$book}`);
   }
   if (nextRequest) {
     // Fetch the next page.
@@ -434,13 +436,13 @@ const formattedName = client.bookPath(shelf, 'War and Peace');
 // Handle the operation using the event emitter pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    const operation = responses[0];
-    const initialApiResponse = responses[1];
+    const [operation, initApiResponse] = responses;
 
     // Adding a listener for the "complete" event starts polling for the
     // completion of the operation.
-    operation.on('complete', (result, metadata, finalApiResponse) => {
-      // doSomethingWith(result);
+    operation.on('complete', (response, metadata, finalApiResponse) => {
+      console.log(`name: {$response.name()}`);
+      console.log(`author: {$response.author()}`);
     });
 
     // Adding a listener for the "progress" event causes the callback to be
@@ -493,13 +495,12 @@ const formattedName = client.bookPath(shelf, bigBookName);
 // Handle the operation using the event emitter pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    const operation = responses[0];
-    const initialApiResponse = responses[1];
+    const [operation, initApiResponse] = responses;
 
     // Adding a listener for the "complete" event starts polling for the
     // completion of the operation.
-    operation.on('complete', (result, metadata, finalApiResponse) => {
-      // doSomethingWith(result);
+    operation.on('complete', (response, metadata, finalApiResponse) => {
+      console.log(response)
     });
 
     // Adding a listener for the "progress" event causes the callback to be
@@ -551,21 +552,18 @@ const formattedName = client.bookPath(shelf, 'War and Peace');
 // Handle the operation using the promise pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    const operation = responses[0];
-    const initialApiResponse = responses[1];
+    const [operation, initialApiResponse] = responses;
 
     // Operation#promise starts polling for the completion of the LRO.
     return operation.promise();
   })
   .then(responses => {
-    // The final result of the operation.
     const result = responses[0];
-
-    // The metadata value of the completed operation.
     const metadata = responses[1];
-
-    // The response of the api call returning the complete operation.
     const finalApiResponse = responses[2];
+
+    console.log(`name: {$response.name()}`);
+    console.log(`author: {$response.author()}`);
   })
   .catch(err => {
     console.error(err);
@@ -606,21 +604,17 @@ const formattedName = client.bookPath(shelf, bigBookName);
 // Handle the operation using the promise pattern.
 client.getBigBook({name: formattedName})
   .then(responses => {
-    const operation = responses[0];
-    const initialApiResponse = responses[1];
+    const [operation, initialApiResponse] = responses;
 
     // Operation#promise starts polling for the completion of the LRO.
     return operation.promise();
   })
   .then(responses => {
-    // The final result of the operation.
     const result = responses[0];
-
-    // The metadata value of the completed operation.
     const metadata = responses[1];
-
-    // The response of the api call returning the complete operation.
     const finalApiResponse = responses[2];
+
+    console.log(response)
   })
   .catch(err => {
     console.error(err);
@@ -659,7 +653,7 @@ const stream = client.monologAboutBook((err, response) => {
     console.error(err);
     return;
   }
-  // doThingsWith(response)
+  console.log(`The stage of the comment is: {$response.stage()}`);
 });
 const name = 'BASIC';
 const request = {
@@ -715,7 +709,13 @@ const request = {
 client.publishSeries(request)
   .then(responses => {
     const response = responses[0];
-    // doThingsWith(response)
+    for (const title of response.bookNames()) {
+      console.log(`Title: {$title}`);
+    }
+    console.log(`The first book is: {$response.bookNames()[0]}`);
+    console.log(`The author of the first book is: {$response.books()[0].author()}`);
+    console.log(`That's all!`);
+    console.log(`series_uuid: {$response.seriesUuid().seriesBytes()}`);
   })
   .catch(err => {
     console.error(err);
@@ -762,7 +762,7 @@ const request = {
 client.publishSeries(request)
   .then(responses => {
     const response = responses[0];
-    // doThingsWith(response)
+    console.log(response)
   })
   .catch(err => {
     console.error(err);
@@ -798,7 +798,7 @@ client.publishSeries(request)
 /*
 const name = 'BASIC';
   client.streamBooks({name: name}).on('data', response => {
-      // doThingsWith(response)
+      console.log(responseItem)
   });
 */
 // [END lovelace_core]
@@ -831,7 +831,7 @@ const name = 'BASIC';
 /*
 
   client.streamShelves({}).on('data', response => {
-      // doThingsWith(response)
+      console.log(responseItem)
   });
 */
 // [END sample_core]
