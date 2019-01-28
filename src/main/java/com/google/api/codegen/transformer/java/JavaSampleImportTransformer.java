@@ -61,7 +61,6 @@ public class JavaSampleImportTransformer extends SampleImportTransformer {
       case Callable:
         typeTable.saveNicknameFor(API_FUTURE);
         typeTable.getAndSaveNicknameFor(namer.getGenericAwareResponseTypeName(context));
-        saveResponseTypeName(context);
         break;
       case CallableList:
         saveResponseTypeName(context);
@@ -81,7 +80,6 @@ public class JavaSampleImportTransformer extends SampleImportTransformer {
         break;
       case LongRunningCallable:
         typeTable.saveNicknameFor(OPERATION_FUTURE);
-        typeTable.getAndSaveNicknameFor(namer.getGenericAwareResponseTypeName(context));
         saveResponseTypeNameForLongRunningMethod(context);
         break;
       case LongRunningFlattenedAsync:

@@ -261,13 +261,19 @@ public abstract class SampleTransformer {
                 form,
                 outputViews,
                 methodContext.getTypeTable(),
-                initCodeTransformer().getInitCodeNodes(methodContext, initCodeContext));
+                initCodeTransformer()
+                    .getInitCodeNodes(
+                        methodContext,
+                        initCodeContext
+                            .cloneWithEmptySymbolTable())); // to avoid symbol collision, since we
+    // are only interested in types
     return MethodSampleView.newBuilder()
         .callingForm(form)
         .valueSet(SampleValueSetView.of(valueSet))
         .sampleInitCode(initCodeView)
         .outputs(outputViews)
-        .outputImports(
+        .outputImports( // TODO(hzyi): remove outputImports once we implement
+                        // PythonSampleImportTransformer
             outputTransformer()
                 .getOutputImportTransformer()
                 .generateOutputImports(methodContext, outputViews))

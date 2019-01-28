@@ -28,12 +28,17 @@ public class SampleImportTransformer {
     this.importSectionTransformer = importSectionTransformer;
   }
 
-  protected void addSampleBodyImports(MethodContext context, CallingForm form) {}
+  protected void addSampleBodyImports(MethodContext context, CallingForm form) {
+    // default behavior: no types used in the sample body needs to be imported
+  }
 
-  protected void addOutputImports(MethodContext context, List<OutputView> views) {}
+  protected void addOutputImports(MethodContext context, List<OutputView> views) {
+    // default behavior: no types used in the output part of a sample needs to be imported
+  }
 
   protected void addInitCodeImports(
       MethodContext context, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes) {
+    // by default, copy over all types from initCodeTypeTable
     initCodeTypeTable
         .getImports()
         .values()

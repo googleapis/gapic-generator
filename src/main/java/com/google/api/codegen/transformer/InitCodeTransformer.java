@@ -120,16 +120,13 @@ public class InitCodeTransformer {
     }
   }
 
-  public Iterable<InitCodeNode> getInitCodeNodes(
+  public List<InitCodeNode> getInitCodeNodes(
       MethodContext methodContext, InitCodeContext initCodeContext) {
-    initCodeContext = initCodeContext.cloneWithEmptySymbolTable();
     InitCodeNode root = InitCodeNode.createTree(initCodeContext);
-    List<InitCodeNode> orderedItems;
+    List<InitCodeNode> orderedItems = root.listInInitializationOrder();
     if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
-      orderedItems = root.listInInitializationOrder();
+      // Remove the request object for flattened method
       orderedItems.remove(orderedItems.size() - 1);
-    } else {
-      orderedItems = root.listInInitializationOrder();
     }
     for (InitCodeNode param : sampleFuncParams(root, initCodeContext.sampleArgStrings())) {
       List<InitCodeNode> paramInits = param.listInInitializationOrder();

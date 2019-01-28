@@ -82,6 +82,7 @@ public abstract class InitCodeContext {
         .collect(ImmutableList.toImmutableList());
   }
 
+  /** Returns a copy of this initCodeContext, but with an empty symbolTable. */
   public InitCodeContext cloneWithEmptySymbolTable() {
     return newBuilder()
         .initObjectType(initObjectType())
