@@ -273,7 +273,7 @@ public abstract class SampleTransformer {
         .sampleInitCode(initCodeView)
         .outputs(outputViews)
         .outputImports( // TODO(hzyi): remove outputImports once we implement
-                        // PythonSampleImportTransformer
+            // PythonSampleImportTransformer
             outputTransformer()
                 .getOutputImportTransformer()
                 .generateOutputImports(methodContext, outputViews))
