@@ -34,6 +34,7 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
+import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.py.PythonTypeTable;
@@ -321,7 +322,10 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
         new PythonMethodViewGenerator(
             new DynamicLangApiMethodTransformer(
                 new PythonApiMethodParamTransformer(),
-                new InitCodeTransformer(new PythonImportSectionTransformer())));
+                SampleTransformer.newBuilder()
+                    .initCodeTransformer(
+                        new InitCodeTransformer(new PythonImportSectionTransformer()))
+                    .build()));
 
     return methodViewGenerator.generateOneApiMethod(context);
   }

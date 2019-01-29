@@ -52,7 +52,6 @@ import java.util.List;
  * languages.
  */
 public class StaticLangApiMethodTransformer {
-  private final InitCodeTransformer initCodeTransformer;
   private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
   private final StaticLangResourceObjectTransformer resourceObjectTransformer =
       new StaticLangResourceObjectTransformer();
@@ -60,41 +59,12 @@ public class StaticLangApiMethodTransformer {
       new HeaderRequestParamTransformer();
   private final SampleTransformer sampleTransformer;
 
-  public StaticLangApiMethodTransformer(SampleType sampleType) {
-    this.initCodeTransformer = new InitCodeTransformer();
-    this.sampleTransformer = SampleTransformer.create(sampleType);
-  }
-
-  public StaticLangApiMethodTransformer(
-      SampleType sampleType,
-      InitCodeTransformer initCodeTransformer,
-      OutputTransformer outputTransformer) {
-    this.initCodeTransformer = initCodeTransformer;
-    this.sampleTransformer =
-        SampleTransformer.newBuilder()
-            .sampleType(sampleType)
-            .initCodeTransformer(initCodeTransformer)
-            .outputTransformer(outputTransformer)
-            .build();
-  }
-
-  public StaticLangApiMethodTransformer(
-      SampleType sampleType,
-      InitCodeTransformer initCodeTransformer,
-      OutputTransformer outputTransformer,
-      SampleImportTransformer sampleImportTransformer) {
-    this.initCodeTransformer = initCodeTransformer;
-    this.sampleTransformer =
-        SampleTransformer.newBuilder()
-            .sampleType(sampleType)
-            .initCodeTransformer(initCodeTransformer)
-            .outputTransformer(outputTransformer)
-            .sampleImportTransformer(sampleImportTransformer)
-            .build();
+  public StaticLangApiMethodTransformer(SampleTransformer sampleTransformer) {
+    this.sampleTransformer = sampleTransformer;
   }
 
   public StaticLangApiMethodTransformer() {
-    this(SampleType.IN_CODE);
+    this(SampleTransformer.create(SampleType.IN_CODE));
   }
 
   public StaticLangApiMethodView generatePagedFlattenedMethod(MethodContext context) {

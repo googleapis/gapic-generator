@@ -39,6 +39,7 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
+import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
@@ -82,8 +83,10 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
           new PhpApiMethodParamTransformer(),
-          new InitCodeTransformer(new PhpImportSectionTransformer()),
-          SampleType.IN_CODE);
+          SampleTransformer.newBuilder()
+              .initCodeTransformer(new InitCodeTransformer(new PhpImportSectionTransformer()))
+              .sampleType(SampleType.IN_CODE)
+              .build());
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new PhpImportSectionTransformer());
   private final PhpMethodViewGenerator methodGenerator =

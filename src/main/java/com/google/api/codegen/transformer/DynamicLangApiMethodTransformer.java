@@ -40,7 +40,6 @@ import java.util.List;
  */
 public class DynamicLangApiMethodTransformer {
   private final ApiMethodParamTransformer apiMethodParamTransformer;
-  private final InitCodeTransformer initCodeTransformer;
   private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
   private final HeaderRequestParamTransformer headerRequestParamTransformer =
       new HeaderRequestParamTransformer();
@@ -48,45 +47,13 @@ public class DynamicLangApiMethodTransformer {
   private final SampleTransformer sampleTransformer;
 
   public DynamicLangApiMethodTransformer(ApiMethodParamTransformer apiMethodParamTransformer) {
-    this(apiMethodParamTransformer, new InitCodeTransformer());
+    this(apiMethodParamTransformer, SampleTransformer.create(SampleType.IN_CODE));
   }
 
   public DynamicLangApiMethodTransformer(
-      ApiMethodParamTransformer apiMethodParamTransformer,
-      InitCodeTransformer initCodeTransformer) {
-    this(apiMethodParamTransformer, initCodeTransformer, SampleType.IN_CODE);
-  }
-
-  public DynamicLangApiMethodTransformer(
-      ApiMethodParamTransformer apiMethodParamTransformer,
-      InitCodeTransformer initCodeTransformer,
-      SampleType sampleType) {
+      ApiMethodParamTransformer apiMethodParamTransformer, SampleTransformer sampleTransformer) {
     this.apiMethodParamTransformer = apiMethodParamTransformer;
-    this.initCodeTransformer = initCodeTransformer;
-    this.sampleTransformer =
-        SampleTransformer.newBuilder()
-            .sampleType(sampleType)
-            .initCodeTransformer(initCodeTransformer)
-            .sampleImportTransformer(
-                new SampleImportTransformer(initCodeTransformer.getImportSectionTransformer()))
-            .build();
-  }
-
-  public DynamicLangApiMethodTransformer(
-      ApiMethodParamTransformer apiMethodParamTransformer,
-      InitCodeTransformer initCodeTransformer,
-      SampleType sampleType,
-      OutputTransformer outputTransformer,
-      SampleImportTransformer sampleImportTransformer) {
-    this.apiMethodParamTransformer = apiMethodParamTransformer;
-    this.initCodeTransformer = initCodeTransformer;
-    this.sampleTransformer =
-        SampleTransformer.newBuilder()
-            .sampleType(sampleType)
-            .outputTransformer(outputTransformer)
-            .initCodeTransformer(initCodeTransformer)
-            .sampleImportTransformer(sampleImportTransformer)
-            .build();
+    this.sampleTransformer = sampleTransformer;
   }
 
   public OptionalArrayMethodView generateMethod(GapicMethodContext context) {

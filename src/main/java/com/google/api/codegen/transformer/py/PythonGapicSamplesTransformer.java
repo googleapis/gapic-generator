@@ -35,6 +35,7 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.OutputTransformer;
 import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SampleImportTransformer;
+import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
@@ -62,11 +63,16 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
           new PythonApiMethodParamTransformer(),
-          new InitCodeTransformer(importSectionTransformer),
-          sampleType,
-          new OutputTransformer(
-              new PythonSampleOutputImportTransformer(), new PythonSamplePrintArgTransformer()),
-          new SampleImportTransformer(new PythonImportSectionTransformer()));
+          SampleTransformer.newBuilder()
+              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
+              .sampleType(sampleType)
+              .outputTransformer(
+                  new OutputTransformer(
+                      new PythonSampleOutputImportTransformer(),
+                      new PythonSamplePrintArgTransformer()))
+              .sampleImportTransformer(
+                  new SampleImportTransformer(new PythonImportSectionTransformer()))
+              .build());
   private final PythonMethodViewGenerator methodGenerator =
       new PythonMethodViewGenerator(apiMethodTransformer);
   private final GapicCodePathMapper pathMapper;

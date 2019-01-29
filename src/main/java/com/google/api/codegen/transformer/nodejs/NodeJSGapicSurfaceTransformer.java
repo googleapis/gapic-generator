@@ -23,7 +23,6 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -34,7 +33,6 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
-import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -72,8 +70,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new NodeJSImportSectionTransformer());
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
-      new DynamicLangApiMethodTransformer(
-          new NodeJSApiMethodParamTransformer(), new InitCodeTransformer(), SampleType.IN_CODE);
+      new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer());
   private final NodeJSMethodViewGenerator methodGenerator =
       new NodeJSMethodViewGenerator(apiMethodTransformer);
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();

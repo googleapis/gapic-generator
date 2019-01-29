@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.OutputSpec;
+import com.google.api.codegen.SampleInitAttribute;
 import com.google.api.codegen.SampleParameters;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
@@ -59,6 +60,7 @@ public abstract class SampleTransformer {
 
   public static Builder newBuilder() {
     return new AutoValue_SampleTransformer.Builder()
+        .sampleType(SampleType.IN_CODE)
         .initCodeTransformer(new InitCodeTransformer())
         .outputTransformer(new OutputTransformer())
         .sampleImportTransformer(
@@ -312,24 +314,27 @@ public abstract class SampleTransformer {
         .initObjectType(context.getMethodModel().getInputType())
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(valueSet.getParameters().getDefaultsList())
-        .sampleParamConfigMap(
-            valueSet
-                .getParameters()
-                .getAttributesList()
-                .stream()
-                .collect(
-                    ImmutableMap.toImmutableMap(
-                        attr -> attr.getParameter(),
-                        attr ->
-                            SampleParameterConfig.newBuilder()
-                                .identifier(attr.getParameter())
-                                .readFromFile(attr.getReadFile())
-                                .sampleArgumentName(attr.getSampleArgumentName())
-                                .build())))
+        .sampleParamConfigMap(sampleParamConfigMapFromValueSet(valueSet))
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
         .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
         .outputType(initCodeOutputType)
         .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
         .build();
+  }
+
+  private ImmutableMap<String, SampleParameterConfig> sampleParamConfigMapFromValueSet(
+      SampleValueSet valueSet) {
+    ImmutableMap.Builder<String, SampleParameterConfig> builder = ImmutableMap.builder();
+    for (SampleInitAttribute attr : valueSet.getParameters().getAttributesList()) {
+      String identifier = attr.getParameter();
+      SampleParameterConfig config =
+          SampleParameterConfig.newBuilder()
+              .identifier(identifier)
+              .readFromFile(attr.getReadFile())
+              .sampleArgumentName(attr.getSampleArgumentName())
+              .build();
+      builder.put(identifier, config);
+    }
+    return builder.build();
   }
 }

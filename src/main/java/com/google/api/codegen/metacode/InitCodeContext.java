@@ -84,19 +84,7 @@ public abstract class InitCodeContext {
 
   /** Returns a copy of this initCodeContext, but with an empty symbolTable. */
   public InitCodeContext cloneWithEmptySymbolTable() {
-    return newBuilder()
-        .initObjectType(initObjectType())
-        .suggestedName(suggestedName())
-        .symbolTable(new SymbolTable())
-        .initFields(initFields())
-        .initValueConfigMap(initValueConfigMap())
-        .fieldConfigMap(fieldConfigMap())
-        .outputType(outputType())
-        .additionalInitCodeNodes(additionalInitCodeNodes())
-        .initFieldConfigStrings(initFieldConfigStrings())
-        .sampleParamConfigMap(sampleParamConfigMap())
-        .valueGenerator(valueGenerator())
-        .build();
+    return toBuilder().symbolTable(new SymbolTable()).build();
   }
 
   /**
@@ -121,6 +109,8 @@ public abstract class InitCodeContext {
         .initFieldConfigStrings(ImmutableList.of())
         .sampleParamConfigMap(ImmutableMap.of());
   }
+
+  abstract Builder toBuilder();
 
   @AutoValue.Builder
   public abstract static class Builder {
