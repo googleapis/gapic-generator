@@ -272,7 +272,7 @@ module.exports.default = Object.assign({}, module.exports);
 
 /*
 const stream = client.discussBook().on('data', response => {
-  console.log(responseItem)
+  console.log(response);
 });
 // const imageFileName = 'image_file.jpg';
 const name = 'BASIC';
@@ -332,7 +332,7 @@ client.findRelatedBooks(request)
   .then(responses => {
     const resources = responses[0];
     for (const resource of resources) {
-      const book = responseItem;
+      const book = resource;
       console.log(`Here\'s a related book: {$book}`);
     }
   })
@@ -388,7 +388,7 @@ const callback = responses => {
   // The actual response object, if necessary.
   // const rawResponse = responses[2];
   for (const resource of resources) {
-    const book = responseItem;
+    const book = resource;
     console.log(`Here\'s a related book: {$book}`);
   }
   if (nextRequest) {
@@ -441,8 +441,8 @@ client.getBigBook({name: formattedName})
     // Adding a listener for the "complete" event starts polling for the
     // completion of the operation.
     operation.on('complete', (response, metadata, finalApiResponse) => {
-      console.log(`name: {$response.name()}`);
-      console.log(`author: {$response.author()}`);
+      console.log(`name: {$finalApiResponse.name}`);
+      console.log(`author: {$finalApiResponse.author}`);
     });
 
     // Adding a listener for the "progress" event causes the callback to be
@@ -500,7 +500,7 @@ client.getBigBook({name: formattedName})
     // Adding a listener for the "complete" event starts polling for the
     // completion of the operation.
     operation.on('complete', (response, metadata, finalApiResponse) => {
-      console.log(response)
+      console.log(finalApiResponse);
     });
 
     // Adding a listener for the "progress" event causes the callback to be
@@ -562,8 +562,8 @@ client.getBigBook({name: formattedName})
     const metadata = responses[1];
     const finalApiResponse = responses[2];
 
-    console.log(`name: {$response.name()}`);
-    console.log(`author: {$response.author()}`);
+    console.log(`name: {$finalApiResponse.name}`);
+    console.log(`author: {$finalApiResponse.author}`);
   })
   .catch(err => {
     console.error(err);
@@ -614,7 +614,7 @@ client.getBigBook({name: formattedName})
     const metadata = responses[1];
     const finalApiResponse = responses[2];
 
-    console.log(response)
+    console.log(finalApiResponse);
   })
   .catch(err => {
     console.error(err);
@@ -653,7 +653,7 @@ const stream = client.monologAboutBook((err, response) => {
     console.error(err);
     return;
   }
-  console.log(`The stage of the comment is: {$response.stage()}`);
+  console.log(`The stage of the comment is: {$response.stage}`);
 });
 const name = 'BASIC';
 const request = {
@@ -709,13 +709,13 @@ const request = {
 client.publishSeries(request)
   .then(responses => {
     const response = responses[0];
-    for (const title of response.bookNames()) {
+    for (const title of response.bookNames) {
       console.log(`Title: {$title}`);
     }
-    console.log(`The first book is: {$response.bookNames()[0]}`);
-    console.log(`The author of the first book is: {$response.books()[0].author()}`);
+    console.log(`The first book is: {$response.bookNames[0]}`);
+    console.log(`The author of the first book is: {$response.books[0].author}`);
     console.log(`That's all!`);
-    console.log(`series_uuid: {$response.seriesUuid().seriesBytes()}`);
+    console.log(`series_uuid: {$response.seriesUuid.seriesBytes}`);
   })
   .catch(err => {
     console.error(err);
@@ -762,7 +762,7 @@ const request = {
 client.publishSeries(request)
   .then(responses => {
     const response = responses[0];
-    console.log(response)
+    console.log(response);
   })
   .catch(err => {
     console.error(err);
@@ -798,7 +798,7 @@ client.publishSeries(request)
 /*
 const name = 'BASIC';
   client.streamBooks({name: name}).on('data', response => {
-      console.log(responseItem)
+      console.log(response);
   });
 */
 // [END lovelace_core]
@@ -831,7 +831,7 @@ const name = 'BASIC';
 /*
 
   client.streamShelves({}).on('data', response => {
-      console.log(responseItem)
+      console.log(response);
   });
 */
 // [END sample_core]

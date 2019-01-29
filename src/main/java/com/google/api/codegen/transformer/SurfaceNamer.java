@@ -41,6 +41,7 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.StringUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Interface;
@@ -1570,7 +1571,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return "." + getFieldGetFunctionName(field) + "()";
   }
 
-  public String getSampleResponseVarName(MethodContext context) {
+  public String getSampleResponseVarName(MethodContext context, CallingForm form) {
     MethodConfig config = context.getMethodConfig();
     if (config.getPageStreaming() != null) {
       return "responseItem";

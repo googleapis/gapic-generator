@@ -21,9 +21,9 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.OutputView;
-import com.google.api.codegen.viewmodel.PrintArgView;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -43,17 +43,13 @@ public class OutputTransformer {
       ImmutableSet.<String>of("response", "response_item");
 
   private final OutputImportTransformer importTransformer;
-  private final PrintArgTransformer printArgTransformer;
 
   public OutputTransformer() {
     this.importTransformer = new OutputImportTransformer() {};
-    this.printArgTransformer = new PrintArgTransformer() {};
   }
 
-  public OutputTransformer(
-      OutputImportTransformer importTransformer, PrintArgTransformer printArgTransformer) {
+  public OutputTransformer(OutputImportTransformer importTransformer) {
     this.importTransformer = importTransformer;
-    this.printArgTransformer = printArgTransformer;
   }
 
   /**
@@ -66,22 +62,6 @@ public class OutputTransformer {
     public default ImmutableList<ImportFileView> generateOutputImports(
         MethodContext context, List<OutputView> outputViews) {
       return ImmutableList.<ImportFileView>of();
-    }
-  }
-
-  /**
-   * Transformer that converts a {@code VariableView} to a {@code PrintArgView} in order to print
-   * the variable nicely.
-   */
-  public static interface PrintArgTransformer {
-
-    public default PrintArgView generatePrintArg(
-        MethodContext context, OutputView.VariableView variableView) {
-      return PrintArgView.newBuilder()
-          .segments(
-              ImmutableList.<PrintArgView.ArgSegmentView>of(
-                  PrintArgView.VariableSegmentView.of(variableView)))
-          .build();
     }
   }
 
@@ -98,16 +78,23 @@ public class OutputTransformer {
   }
 
   ImmutableList<OutputView> toViews(
-      List<OutputSpec> configs, MethodContext context, SampleValueSet valueSet) {
+      List<OutputSpec> configs,
+      MethodContext context,
+      SampleValueSet valueSet,
+      CallingForm callingForm) {
     ScopeTable localVars = new ScopeTable();
     return configs
         .stream()
-        .map(s -> toView(s, context, valueSet, localVars))
+        .map(s -> toView(s, context, valueSet, localVars, callingForm))
         .collect(ImmutableList.toImmutableList());
   }
 
   private OutputView toView(
-      OutputSpec config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
+      OutputSpec config,
+      MethodContext context,
+      SampleValueSet valueSet,
+      ScopeTable localVars,
+      CallingForm callingForm) {
     Runnable once =
         new Runnable() {
           boolean ran;
@@ -126,15 +113,15 @@ public class OutputTransformer {
     OutputView view = null;
     if (config.hasLoop()) {
       once.run();
-      view = loopView(config.getLoop(), context, valueSet, localVars);
+      view = loopView(config.getLoop(), context, valueSet, localVars, callingForm);
     }
     if (config.getPrintCount() > 0) {
       once.run();
-      view = printView(config.getPrintList(), context, valueSet, localVars);
+      view = printView(config.getPrintList(), context, valueSet, localVars, callingForm);
     }
     if (!config.getDefine().isEmpty()) {
       once.run();
-      view = defineView(new Scanner(config.getDefine()), context, valueSet, localVars);
+      view = defineView(new Scanner(config.getDefine()), context, valueSet, localVars, callingForm);
     }
 
     return Preconditions.checkNotNull(
@@ -145,7 +132,11 @@ public class OutputTransformer {
   }
 
   private OutputView.PrintView printView(
-      List<String> config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
+      List<String> config,
+      MethodContext context,
+      SampleValueSet valueSet,
+      ScopeTable localVars,
+      CallingForm callingForm) {
     Preconditions.checkArgument(
         !config.isEmpty(),
         "%s:%s: print spec cannot be empty",
@@ -154,7 +145,8 @@ public class OutputTransformer {
     String format = config.get(0);
     ImmutableList.Builder<OutputView.PrintArgView> argsBuilder = ImmutableList.builder();
     for (String path : config.subList(1, config.size())) {
-      OutputView.VariableView variable = accessor(new Scanner(path), context, valueSet, localVars);
+      OutputView.VariableView variable =
+          accessor(new Scanner(path), context, valueSet, localVars, callingForm);
       TypeModel type = variable.type();
       String formattedArg =
           context
@@ -177,7 +169,8 @@ public class OutputTransformer {
       OutputSpec.LoopStatement loop,
       MethodContext context,
       SampleValueSet valueSet,
-      ScopeTable localVars) {
+      ScopeTable localVars,
+      CallingForm callingForm) {
 
     ScopeTable scope = localVars.newChild();
     String loopVariable = loop.getVariable();
@@ -185,7 +178,13 @@ public class OutputTransformer {
         loopVariable, context.getMethodModel().getSimpleName(), valueSet.getId());
     OutputView.VariableView accessor =
         accessorNewVariable(
-            new Scanner(loop.getCollection()), context, valueSet, scope, loopVariable, true);
+            new Scanner(loop.getCollection()),
+            context,
+            valueSet,
+            scope,
+            loopVariable,
+            callingForm,
+            true);
     OutputView.LoopView ret =
         OutputView.LoopView.newBuilder()
             .variableType(scope.getTypeName(loopVariable))
@@ -194,14 +193,18 @@ public class OutputTransformer {
             .body(
                 loop.getBodyList()
                     .stream()
-                    .map(body -> toView(body, context, valueSet, scope))
+                    .map(body -> toView(body, context, valueSet, scope, callingForm))
                     .collect(ImmutableList.toImmutableList()))
             .build();
     return ret;
   }
 
   private OutputView.DefineView defineView(
-      Scanner definition, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
+      Scanner definition,
+      MethodContext context,
+      SampleValueSet valueSet,
+      ScopeTable localVars,
+      CallingForm callingForm) {
     Preconditions.checkArgument(
         definition.scan() == Scanner.IDENT,
         "%s:%s: expected identifier: %s",
@@ -218,7 +221,8 @@ public class OutputTransformer {
         valueSet.getId(),
         definition.input());
     OutputView.VariableView reference =
-        accessorNewVariable(definition, context, valueSet, localVars, identifier, false);
+        accessorNewVariable(
+            definition, context, valueSet, localVars, identifier, callingForm, false);
     return OutputView.DefineView.newBuilder()
         .variableType(localVars.getTypeName(identifier))
         .variableName(context.getNamer().localVarName(Name.from(identifier)))
@@ -227,8 +231,12 @@ public class OutputTransformer {
   }
 
   private static OutputView.VariableView accessor(
-      Scanner config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
-    return accessorNewVariable(config, context, valueSet, localVars, null, false);
+      Scanner config,
+      MethodContext context,
+      SampleValueSet valueSet,
+      ScopeTable localVars,
+      CallingForm callingForm) {
+    return accessorNewVariable(config, context, valueSet, localVars, null, callingForm, false);
   }
 
   /**
@@ -255,6 +263,7 @@ public class OutputTransformer {
       SampleValueSet valueSet,
       ScopeTable localVars,
       @Nullable String newVar,
+      CallingForm callingForm,
       boolean scalarTypeForCollection) {
 
     OutputView.VariableView.Builder view = OutputView.VariableView.newBuilder();
@@ -270,7 +279,7 @@ public class OutputTransformer {
     TypeModel type = null;
     String typeName = null;
     if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
-      view.variable(context.getNamer().getSampleResponseVarName(context));
+      view.variable(context.getNamer().getSampleResponseVarName(context, callingForm));
       boolean pageStreaming = context.getMethodConfig().getPageStreaming() != null;
       boolean pageStreamingAndUseResourceName =
           pageStreaming

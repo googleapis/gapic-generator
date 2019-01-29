@@ -43,6 +43,7 @@ import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonDocstringUtil;
 import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
@@ -514,7 +515,9 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getSampleResponseVarName(MethodContext context) {
-    return Name.anyCamel(super.getSampleResponseVarName(context)).toLowerUnderscore().toString();
+  public String getSampleResponseVarName(MethodContext context, CallingForm form) {
+    return Name.anyCamel(super.getSampleResponseVarName(context, form))
+        .toLowerUnderscore()
+        .toString();
   }
 }

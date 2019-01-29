@@ -40,6 +40,7 @@ import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
@@ -533,7 +534,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFieldAccessorName(FieldModel field) {
-    return "." + getFieldGetFunctionName(field) + "()";
+    return "." + getFieldGetFunctionName(field);
   }
 
   @Override
@@ -565,6 +566,25 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         throw new IllegalArgumentException(String.format("bad format verb: %s", format));
       }
       cursor = p + 2;
+    }
+  }
+
+  @Override
+  public String getSampleResponseVarName(MethodContext context, CallingForm form) {
+    switch (form) {
+      case Request:
+      case RequestStreamingBidi:
+      case RequestStreamingClient:
+      case RequestStreamingServer:
+        return "response";
+      case RequestAsyncPaged:
+      case RequestAsyncPagedAll:
+        return "resource";
+      case LongRunningEventEmitter:
+      case LongRunningPromise:
+        return "finalApiResponse";
+      default:
+        throw new IllegalArgumentException("illegal calling form for Node.js: " + form);
     }
   }
 }
