@@ -48,7 +48,6 @@ import com.google.protobuf.ProtocolMessageEnum;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -101,19 +100,22 @@ public class ProtoParser {
     if (topRule == null) {
       return allParams.build();
     }
-    getHeaderParam(topRule).ifPresent(allParams::add);
+    String firstParam = getHeaderParam(topRule);
+    if (firstParam != null) allParams.add(firstParam);
 
     // Additional bindings should only be one-deep, according to the API client config spec.
     // No need to recurse on additional bindings' additional bindings.
     for (HttpRule rule : topRule.getAdditionalBindingsList()) {
-      getHeaderParam(rule).ifPresent(allParams::add);
+      String headerParam = getHeaderParam(rule);
+      if (headerParam != null) allParams.add(headerParam);
     }
 
     return allParams.build();
   }
 
   // Finds the header param from a HttpRule and add the non-null value to the running set.
-  private Optional<String> getHeaderParam(HttpRule httpRule) {
+  @Nullable
+  private String getHeaderParam(HttpRule httpRule) {
 
     String urlVar;
     if (!Strings.isNullOrEmpty(httpRule.getPost())) {
@@ -127,11 +129,11 @@ public class ProtoParser {
     } else if (!Strings.isNullOrEmpty(httpRule.getPut())) {
       urlVar = httpRule.getPut();
     } else {
-      return Optional.empty();
+      return null;
     }
 
     PathTemplate pathTemplate = PathTemplate.create(urlVar);
-    return Optional.ofNullable(pathTemplate.singleVar());
+    return pathTemplate.singleVar();
   }
 
   @Nullable
