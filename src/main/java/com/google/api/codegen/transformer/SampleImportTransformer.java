@@ -20,6 +20,7 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.OutputView;
 import java.util.List;
 
+/** Generates an ImportSection for standalone samples. */
 public class SampleImportTransformer {
 
   private final ImportSectionTransformer importSectionTransformer;
