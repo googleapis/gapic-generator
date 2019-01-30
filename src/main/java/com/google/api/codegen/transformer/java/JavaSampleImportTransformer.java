@@ -20,14 +20,14 @@ import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
-import com.google.api.codegen.transformer.SampleImportTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.StandardSampleImportTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.OutputView;
 import java.util.List;
 
-public class JavaSampleImportTransformer extends SampleImportTransformer {
+public class JavaSampleImportTransformer extends StandardSampleImportTransformer {
 
   private static final String API_FUTURE = "com.google.api.common.ApiFuture";
   private static final String BIDI_STEAMING_CALLABLE = "com.google.api.gax.rpc.BidiStream";
@@ -40,7 +40,7 @@ public class JavaSampleImportTransformer extends SampleImportTransformer {
   }
 
   @Override
-  protected void addSampleBodyImports(MethodContext context, CallingForm form) {
+  public void addSampleBodyImports(MethodContext context, CallingForm form) {
     ImportTypeTable typeTable = context.getTypeTable();
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
@@ -90,7 +90,7 @@ public class JavaSampleImportTransformer extends SampleImportTransformer {
   }
 
   @Override
-  protected void addOutputImports(MethodContext context, List<OutputView> views) {
+  public void addOutputImports(MethodContext context, List<OutputView> views) {
     ImportTypeTable typeTable = context.getTypeTable();
     for (OutputView view : views) {
       switch (view.kind()) {
@@ -121,7 +121,7 @@ public class JavaSampleImportTransformer extends SampleImportTransformer {
     }
   }
 
-  protected void addInitCodeImports(
+  public void addInitCodeImports(
       MethodContext context, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes) {
     super.addInitCodeImports(context, initCodeTypeTable, nodes);
     ImportTypeTable typeTable = context.getTypeTable();

@@ -31,8 +31,8 @@ import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SampleFileRegistry;
-import com.google.api.codegen.transformer.SampleImportTransformer;
 import com.google.api.codegen.transformer.SampleTransformer;
+import com.google.api.codegen.transformer.StandardSampleImportTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
@@ -58,7 +58,7 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
               .initCodeTransformer(new InitCodeTransformer(new PhpImportSectionTransformer()))
               .sampleType(SampleType.STANDALONE)
               .sampleImportTransformer(
-                  new SampleImportTransformer(new PhpImportSectionTransformer()))
+                  new StandardSampleImportTransformer(new PhpImportSectionTransformer()))
               .build());
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new PhpImportSectionTransformer());

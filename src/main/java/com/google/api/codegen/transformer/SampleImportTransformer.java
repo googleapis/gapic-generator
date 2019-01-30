@@ -21,40 +21,14 @@ import com.google.api.codegen.viewmodel.OutputView;
 import java.util.List;
 
 /** Generates an ImportSection for standalone samples. */
-public class SampleImportTransformer {
+public interface SampleImportTransformer {
 
-  private final ImportSectionTransformer importSectionTransformer;
+  void addSampleBodyImports(MethodContext context, CallingForm form);
 
-  public SampleImportTransformer(ImportSectionTransformer importSectionTransformer) {
-    this.importSectionTransformer = importSectionTransformer;
-  }
+  void addOutputImports(MethodContext context, List<OutputView> views);
 
-  protected void addSampleBodyImports(MethodContext context, CallingForm form) {
-    // default behavior: no types used in the sample body needs to be imported
-  }
+  void addInitCodeImports(
+      MethodContext context, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes);
 
-  protected void addOutputImports(MethodContext context, List<OutputView> views) {
-    // default behavior: no types used in the output part of a sample needs to be imported
-  }
-
-  protected void addInitCodeImports(
-      MethodContext context, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes) {
-    // by default, copy over all types from initCodeTypeTable
-    initCodeTypeTable
-        .getImports()
-        .values()
-        .forEach(t -> context.getTypeTable().getAndSaveNicknameFor(t));
-  }
-
-  public ImportSectionView toImportSectionView(
-      MethodContext context,
-      CallingForm form,
-      List<OutputView> views,
-      ImportTypeTable initCodeTypeTable,
-      Iterable<InitCodeNode> nodes) {
-    addSampleBodyImports(context, form);
-    addOutputImports(context, views);
-    addInitCodeImports(context, initCodeTypeTable, nodes);
-    return importSectionTransformer.generateImportSection(context, nodes);
-  }
+  ImportSectionView generateImportSection(MethodContext context);
 }

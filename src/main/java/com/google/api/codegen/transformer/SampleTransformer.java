@@ -64,7 +64,7 @@ public abstract class SampleTransformer {
         .initCodeTransformer(new InitCodeTransformer())
         .outputTransformer(new OutputTransformer())
         .sampleImportTransformer(
-            new SampleImportTransformer(new StandardImportSectionTransformer()));
+            new StandardSampleImportTransformer(new StandardImportSectionTransformer()));
   }
 
   @AutoValue.Builder
@@ -234,17 +234,18 @@ public abstract class SampleTransformer {
     }
     ImmutableList<OutputView> outputViews =
         outputTransformer().toViews(outputs, methodContext, valueSet);
+    sampleImportTransformer().addSampleBodyImports(methodContext, form);
+    sampleImportTransformer().addOutputImports(methodContext, outputViews);
+    sampleImportTransformer()
+        .addInitCodeImports(
+            methodContext,
+            methodContext.getTypeTable(),
+            initCodeTransformer()
+                .getInitCodeNodes(
+                    methodContext,
+                    initCodeContext.cloneWithEmptySymbolTable())); // to avoid symbol collision
     ImportSectionView sampleImportSectionView =
-        sampleImportTransformer()
-            .toImportSectionView(
-                methodContext,
-                form,
-                outputViews,
-                methodContext.getTypeTable(),
-                initCodeTransformer()
-                    .getInitCodeNodes(
-                        methodContext,
-                        initCodeContext.cloneWithEmptySymbolTable())); // to avoid symbol collision
+        sampleImportTransformer().generateImportSection(methodContext);
     return MethodSampleView.newBuilder()
         .callingForm(form)
         .valueSet(SampleValueSetView.of(valueSet))
