@@ -60,11 +60,7 @@ public class ProtocGapicPluginGeneratorTest {
             .setParameter("language=java")
             .build();
 
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    codeGeneratorRequest.writeTo(outputStream);
-    InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-
-    CodeGeneratorResponse response = ProtocGeneratorMain.generate(inputStream);
+    CodeGeneratorResponse response = ProtocGeneratorMain.generate(codeGeneratorRequest);
 
     // TODO(andrealin): Look into setting these up as baseline files.
     Truth.assertThat(response).isNotNull();
@@ -77,10 +73,9 @@ public class ProtocGapicPluginGeneratorTest {
   public void testFailingGenerator() throws IOException {
     CodeGeneratorRequest codeGeneratorRequest =
         CodeGeneratorRequest.newBuilder()
-            // All proto files, including dependencies
             .addAllProtoFile(
                 model.getFiles().stream().map(ProtoFile::getProto).collect(Collectors.toList()))
-            // Only the file to generate a client for (don't generate dependencies)
+            // File does not exist.
             .addFileToGenerate("fuuuuudge.proto")
             .build();
 
@@ -88,7 +83,7 @@ public class ProtocGapicPluginGeneratorTest {
     codeGeneratorRequest.writeTo(outputStream);
     InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
-    CodeGeneratorResponse response = ProtocGeneratorMain.generate(inputStream);
+    CodeGeneratorResponse response = ProtocGeneratorMain.generate(codeGeneratorRequest);
 
     Truth.assertThat(response).isNotNull();
     Truth.assertThat(response.getError()).isNotEmpty();

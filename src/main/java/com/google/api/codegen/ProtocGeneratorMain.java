@@ -31,12 +31,10 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
-import javax.annotation.Nonnull;
 
 /**
  * Entrypoint for protoc-plugin invoked generation. Protoc passes input via std.in as a serialized
