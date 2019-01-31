@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package com.google.api.codegen;
 
+import "google/protobuf/wrappers.proto";
+
 option java_multiple_files = true;
 option java_outer_classname = "ConfigProtoDesc";
 option java_package = "com.google.api.codegen";
@@ -87,6 +89,13 @@ message ConfigProto {
   repeated CollectionOneofProto collection_oneofs = 16;
 
   repeated FixedResourceNameValueProto fixed_resource_name_values = 17;
+
+  // Set this value to toggle String format functions for resource name
+  // entities. If this is not set, it will fallback to default behavior.
+  // This option is exposed for backward compatibility of Java clients.
+  // TODO(andrealin): Migrate this to a command-line option after migrating
+  // off artman.
+  .google.protobuf.BoolValue enableStringFormatFunctionsOverride = 22;
 
   // A list of message resource name configurations.
   repeated ResourceNameMessageConfigProto resource_name_generation = 20;
