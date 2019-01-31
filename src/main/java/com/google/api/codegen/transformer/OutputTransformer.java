@@ -224,8 +224,6 @@ public class OutputTransformer {
 
   private OutputView.CommentView commentView(List<String> configs, MethodContext context) {
     String comment = configs.get(0);
-    System.out.println("comment:");
-    System.out.println(comment);
     Object[] args =
         configs
             .subList(1, configs.size())
@@ -234,8 +232,6 @@ public class OutputTransformer {
             .toArray(Object[]::new);
     String formattedComment = String.format(comment, args);
     ImmutableList<String> lines = ImmutableList.copyOf(formattedComment.split("\\n", -1));
-    System.out.println(lines.size());
-    lines.stream().forEach(t -> System.out.println(t));
     return OutputView.CommentView.newBuilder().lines(lines).build();
   }
 
