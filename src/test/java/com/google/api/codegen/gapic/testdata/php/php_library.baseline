@@ -3632,6 +3632,8 @@ function samplePublishSeries($shelfName, $edition)
 
     try {
         $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        // % % % output handling % % % %
+        // Do something with bookNames one by one
         foreach ($response->getBookNames() as $title) {
             printf("Title: %s" . PHP_EOL, $title);
         }
