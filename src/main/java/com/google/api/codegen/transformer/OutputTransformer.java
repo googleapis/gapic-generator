@@ -230,9 +230,9 @@ public class OutputTransformer {
             .stream()
             .map(c -> context.getNamer().localVarName(Name.anyLower(c)))
             .toArray(Object[]::new);
-    return OutputView.CommentView.newBuilder()
-        .lines(ImmutableList.<String>of(String.format(comment, args)))
-        .build();
+    String formattedComment = String.format(comment, args);
+    ImmutableList<String> lines = ImmutableList.copyOf(formattedComment.split("\n"));
+    return OutputView.CommentView.newBuilder().lines(lines).build();
   }
 
   private static OutputView.VariableView accessor(
