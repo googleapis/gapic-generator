@@ -718,4 +718,13 @@ message OutputSpec {
   // bracketed list subscripts or map keys to dereference a descendant
   // of `var`.
   string define = 3;
+
+  // The first element of `comment` is a printf-like format string, and
+  // subsequent elements are variable names (not values) to be interpolated in
+  // the string. The variable names will be converted to a language-idiomatic
+  // style (snake case or camel case). The interpolated format string will then
+  // be rendered as a comment in a language-idiomatic style.
+  //
+  // Like `print`, a newline will be automatically appended to the comment.
+  repeated string comment = 4;
 }
