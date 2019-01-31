@@ -29,6 +29,7 @@ import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.stages.Merged;
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
@@ -42,6 +43,7 @@ import com.google.inject.TypeLiteral;
 import com.google.longrunning.OperationsProto;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -99,10 +101,33 @@ public class GapicGeneratorApp extends ToolDriverBase {
 
   private ArtifactType artifactType;
 
+  private final boolean writeAsProtoResponse;
+
+  private CodeGeneratorResponse codeGeneratorProtoResponse = null;
+
+  public CodeGeneratorResponse getCodeGeneratorProtoResponse() {
+    return codeGeneratorProtoResponse;
+  }
+
   /** Constructs a code generator api based on given options. */
   public GapicGeneratorApp(ToolOptions options, ArtifactType artifactType) {
     super(options);
     this.artifactType = artifactType;
+    this.writeAsProtoResponse = false;
+  }
+
+  /**
+   * Constructs a code generator api based on given options.
+   *
+   * @param writeAsProtoResponse : If the output should be returned as a CodeGeneratorResponse,
+   *     instead of being written to file. The response object will be populated in
+   *     getCodeGeneratorProtoResponse().
+   */
+  public GapicGeneratorApp(
+      ToolOptions options, ArtifactType artifactType, boolean writeAsProtoResponse) {
+    super(options);
+    this.artifactType = artifactType;
+    this.writeAsProtoResponse = writeAsProtoResponse;
   }
 
   @Override
@@ -171,7 +196,6 @@ public class GapicGeneratorApp extends ToolDriverBase {
       return;
     }
 
-    String outputPath = options.get(OUTPUT_FILE);
     ArtifactFlags artifactFlags = new ArtifactFlags(options.get(ENABLED_ARTIFACTS), artifactType);
     List<CodeGenerator<?>> generators =
         GapicGeneratorFactory.create(
@@ -187,8 +211,48 @@ public class GapicGeneratorApp extends ToolDriverBase {
         }
       }
     }
-    writeCodeGenOutput(outputFiles.build(), outputPath);
-    setOutputFilesPermissions(executables.build(), outputPath);
+
+    if (writeAsProtoResponse) {
+      this.codeGeneratorProtoResponse = writeCodeGenOutputToProtoc(outputFiles.build());
+    } else {
+      String outputPath = options.get(OUTPUT_FILE);
+      writeCodeGenOutputToFiles(outputFiles.build(), executables.build(), outputPath);
+    }
+  }
+
+  private CodeGeneratorResponse writeCodeGenOutputToProtoc(Map<String, ?> outputFiles) {
+    CodeGeneratorResponse.Builder protocResponse = CodeGeneratorResponse.newBuilder();
+
+    for (Map.Entry<String, ?> entry : outputFiles.entrySet()) {
+      com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File.Builder protoOutFile =
+          com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File.newBuilder();
+
+      StringBuilder outputStream = new StringBuilder();
+
+      // TODO(andrealin): Move this logic to ToolUtil with the other file writing utils.
+      Object value = entry.getValue();
+      if (value instanceof Doc) {
+        outputStream.append(((Doc) value).prettyPrint());
+      } else if (value instanceof String) {
+        outputStream.append((String) value);
+      } else if (value instanceof byte[]) {
+        outputStream.append((byte[]) value);
+      } else {
+        throw new IllegalArgumentException("Expected one of Doc, String, or byte[]");
+      }
+
+      protoOutFile.setContent(outputStream.toString());
+      protoOutFile.setName(entry.getKey());
+      protocResponse.addFile(protoOutFile.build());
+    }
+
+    return protocResponse.build();
+  }
+
+  private void writeCodeGenOutputToFiles(
+      Map<String, ?> outputFiles, Set<String> executables, String outputPath) throws IOException {
+    writeCodeGenOutput(outputFiles, outputPath);
+    setOutputFilesPermissions(executables, outputPath);
   }
 
   @VisibleForTesting

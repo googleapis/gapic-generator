@@ -29,6 +29,10 @@ public class ProtoModels {
 
   /** Gets the interfaces for the apis in the service config. */
   public static List<Interface> getInterfaces(Model model) {
+    if (model.getServiceConfig().getApisCount() == 0) {
+      // A valid service config was not given.
+      return model.getSymbolTable().getInterfaces().asList();
+    }
     return model
         .getServiceConfig()
         .getApisList()
