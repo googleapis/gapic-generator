@@ -247,7 +247,7 @@ message MethodConfigProto {
 
   // Specifies the default timeout for a non-retrying call. If the call is
   // retrying, refer to `retry_params_name` instead.
-  uint64 timeout_millis = 11;  // UNSUPPORTED.
+  uint64 timeout_millis = 11; // UNSUPPORTED.
 
   // Specifies the configuration for batching.
   BatchingConfigProto batching = 6;
@@ -257,13 +257,12 @@ message MethodConfigProto {
   // Fields that are always required for a request to be valid.
   repeated string required_fields = 8;
 
-  // Maps the field name of the request type to entity_name of
-  // CollectionConfigProto. It is used to specify the string pattern that the
-  // field must follow.
+  // Maps the field name of the request type to entity_name of CollectionConfigProto.
+  // It is used to specify the string pattern that the field must follow.
   map<string, string> field_name_patterns = 9;
 
-  // Specifies complex structure fields that need to be initialized by the
-  // sample code for the sample to be usable.
+  // Specifies complex structure fields that need to be initialized by the sample code for
+  // the sample to be usable.
   repeated string sample_code_init_fields = 10;
 
   // Specifies sets of parameter values to be used together in a
@@ -300,6 +299,7 @@ message MethodConfigProto {
 
   // Long-running settings.
   LongRunningConfigProto long_running = 30;
+
 }
 
 // `SampleValueSet` defines a set of parameter values used in
@@ -348,17 +348,17 @@ message SampleInitAttribute {
   string parameter = 1;
 
   // In a sample, the call to client lib method is itself in a function.
-  // If `sample_argument_name` is not empty, the part of the request object
-  // specified by `path` should be accepted as a parameter, with the given name,
-  // to the sample function.
+  // If `sample_argument_name` is not empty, the part of the request object specified by `path`
+  // should be accepted as a parameter, with the given name, to the sample function.
   string sample_argument_name = 2;
 
-  // If `read_file` is true, then during sample initialization, the value of
-  // this attribute gets replaced by the contents of the local file with the
-  // given name. This is only allowed when this parameter is a bytes field. If
-  // this parameter is required or optional, the original value of this
-  // parameter is the file name. If this parameter is repeated, the original
-  // value of this parameter is a list of comma-separated list of file names.
+  // If `read_file` is true, then during sample initialization, the value of this 
+  // attribute gets replaced by the contents of the local file with the given name.
+  // This is only allowed when this parameter is a bytes field.
+  // If this parameter is required or optional, the original value of this parameter
+  // is the file name.
+  // If this parameter is repeated, the original value of this parameter is a list of
+  // comma-separated list of file names.
   bool read_file = 3;
 }
 
@@ -366,6 +366,7 @@ message SampleInitAttribute {
 // (sample code structures as output by the client library generator)
 // and sample value sets that should be combined to generate samples.
 message SampleConfiguration {
+
   // `SampleTypeConfiguration` defines the samples that will show up
   // as a particular sample type. If order matters for this sample
   // type, the order of the samples is taken to be primarily the order
@@ -480,8 +481,7 @@ message FlatteningGroupProto {
 // VALIDATE: string fields will be validated by the client against the
 // specified resource name formats.
 // STATIC_TYPES: the client will use generated types for resource names.
-// SAMPLE_ONLY: the generated types for resource names will only be used in
-// samples.
+// SAMPLE_ONLY: the generated types for resource names will only be used in samples.
 enum ResourceNameTreatment {
   UNSET_TREATMENT = 0;
   NONE = 1;
@@ -490,8 +490,8 @@ enum ResourceNameTreatment {
   SAMPLE_ONLY = 4;
 }
 
-// `PageStreamingConfigProto` describes information for generating a method
-// which transforms a paging list rpc into a stream of resources.
+// `PageStreamingConfigProto` describes information for generating a method which
+// transforms a paging list rpc into a stream of resources.
 message PageStreamingConfigProto {
   // Specifies request information of the list method.
   PageStreamingRequestProto request = 1;
@@ -572,8 +572,7 @@ message BatchingSettingsProto {
   // starting from the addition of the first message to that batch.
   uint64 delay_threshold_millis = 3;
 
-  // The maximum number of elements collected in a batch that could be accepted
-  // by server.
+  // The maximum number of elements collected in a batch that could be accepted by server.
   uint32 element_count_limit = 4;
 
   // The maximum size of the request that could be accepted by server.
@@ -583,8 +582,7 @@ message BatchingSettingsProto {
 
   uint32 flow_control_byte_limit = 7;
 
-  FlowControlLimitExceededBehaviorProto flow_control_limit_exceeded_behavior =
-      8;
+  FlowControlLimitExceededBehaviorProto flow_control_limit_exceeded_behavior = 8;
 }
 
 enum FlowControlLimitExceededBehaviorProto {
