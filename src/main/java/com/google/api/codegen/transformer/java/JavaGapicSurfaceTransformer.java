@@ -90,7 +90,7 @@ public class JavaGapicSurfaceTransformer
         productConfig,
         (ModelTypeTable) typeTable,
         namer,
-        JavaFeatureConfig.create(productConfig.getResourceNameMessageConfigs()));
+        JavaFeatureConfig.create(productConfig));
   }
 
   @Override
