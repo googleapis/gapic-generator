@@ -71,12 +71,11 @@ def com_github_google_go_cmp():
         urls = ["https://github.com/google/go-cmp/archive/v0.2.0.zip"]
     )
 
-#TODO: https://github.com/googleapis/gapic-generator/issues/2534
-#      This must be removed (otherwise googleapis becomes dependency on google-cloud-go)
-#      we have to add it as a temporary workaround, because the generated go clients transitively
-#      depend on `cloud.google.com/go/compute/metadata` which is a part of google-cloud-go.
-#      There are other dependencies as well (longrunning for example).
-#
+# TODO: https://github.com/googleapis/gapic-generator/issues/2534
+# This must be removed (otherwise googleapis becomes dependency on google-cloud-go)
+# we have to add it as a temporary workaround, because the generated go clients transitively
+# depend on `cloud.google.com/go/compute/metadata` which is a part of google-cloud-go.
+# There are other dependencies as well (longrunning for example).
 def com_google_cloud_go():
     go_repository(
         name = "com_google_cloud_go",
