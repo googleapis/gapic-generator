@@ -32,6 +32,17 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
     4. **`java_gapic_gradle_pkg`** - java **macro**, which accepts previously built `java_library` (gapic classes) uses other rules to generate java `gapic-google-cloud-<service>` packages (identical to the output provided by artman, archived in `.tar.gz` format).
     5. **`java_gapic_assembly_gradle_pkg`** - java **macro**, which accept other `*_pkg` targets as input and generates complete self-contained assembly of java clients (identical to the output of batch generation in artman, archived in `.tar.gz` format). The assembly then can be built (this time by a third_party tool `gradle` (not `bazel` itself)) by simply calling `./gradlew clean test`.
 
+#### Go
+1. **`java_gapic_srcjar`** - golang **macro**, which first calls `gapic_srcjar` to generate the source code, then calls an internal rule which does all the golang-specific postprocessing of the code (formatting using `gofmt` tool, splitting the code into main, test and smoke test `.srcjar` (zip format) archives).
+
+2. **`go_gapic_library`** - golang **macro**, which calls `java_gapic_srcjar` to generate and postprocess gapic library code, then calls `go_library` rule from [rules_go](https://github.com/bazelbuild/rules_go) bazel extensions to compile the generated code. Also this macros declares directories and then unpacks the sources for main, tests and smoke tests into those directories (so them can be consumed by `go_library` and `go_test` which do not accept `.srcjar` as an input).
+
+3. **`go_gapic_assembly_pkg`** - golang **macro** which accepts the previously built `go_gapic_library` (including the `-test.srcjar` and `-smoke-test.srcjar`) and `go_proto_library` artifacts and packages them into an idiomatic (for Go) package which is ready for opensourcing and is independent from Bazel.
+
+
 ### Generated Artifacts Dependencies Resolution
 #### Java
 1. **`java/java_gapic_pkg_repos.bzl`** - this file essentially replaces `artman_<service>.yaml`, `dependencies.yaml` and `api_defaults.yaml` by using `bazel` itself for dependencies resolution. Previously the dependencies were handled in a form of yaml config values, when they are not validated to: 1) be correct/exist; 2) match generated code; 3) be sufficient/redundant. To deal with dependencies versions mismatch, the `repo_mapping` feature of Bazel is supposed to be used (enabled by `--experimental_enable_repo_mapping` command line argument).
+
+#### Go
+1. **`go/go_gapic_pkg.bzl`** - this file declares the Go-specific dependencies of the generated output and is supposed to be included in the WORKSPACE of the consuming workspace (for examples in `googleapis`).
