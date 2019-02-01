@@ -29,8 +29,17 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class StaticLangApiMessageView implements Comparable<StaticLangApiMessageView> {
+
   @Nullable
-  // TODO(andrealin) Populate and render this field.
+  // Comment lines.
+  public abstract List<String> docLines();
+
+  public boolean hasDocLines() {
+    return docLines() != null && !docLines().isEmpty();
+  }
+
+  @Nullable
+  // TODO(andrealin) Deprecate this field.
   public abstract String description();
 
   @Nullable
@@ -106,6 +115,8 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
     public abstract Builder description(String val);
 
     public abstract Builder defaultValue(String val);
+
+    public abstract Builder docLines(List<String> val);
 
     public abstract Builder innerTypeName(String val);
 

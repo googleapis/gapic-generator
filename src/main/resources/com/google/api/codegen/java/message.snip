@@ -6,6 +6,9 @@
 
   @@Generated("by GAPIC")
   @@BetaApi
+  @if apiFile.schema.hasDocLines
+    {@fieldMethodDoc(apiFile.schema)}
+  @end
   {@schemaClassDef(apiFile.schema)}
 @end
 
@@ -257,3 +260,14 @@
     }
   }
 @end
+
+@private fieldMethodDoc(schema)
+  @if schema.hasDocLines
+    /**
+    @join commentLine : schema.docLines
+      {@""} * {@commentLine}
+    @end
+    */
+  @end
+@end
+
