@@ -255,7 +255,7 @@ public class SampleTransformer {
         }
 
         ImmutableList<OutputView> outputViews =
-            outputTransformer.toViews(outputs, methodContext, valueSet);
+            outputTransformer.toViews(outputs, methodContext, valueSet, form);
 
         methodSampleViews.add(
             MethodSampleView.newBuilder()

@@ -22,13 +22,13 @@ import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.viewmodel.AccessorView;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.codegen.viewmodel.PrintArgView;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,8 +39,6 @@ import javax.annotation.Nullable;
 
 public class OutputTransformer {
   private static final String RESPONSE_PLACEHOLDER = "$resp";
-  private static final Set<String> RESERVED_KEYWORDS =
-      ImmutableSet.<String>of("response", "response_item");
 
   private final OutputImportTransformer importTransformer;
   private final PrintArgTransformer printArgTransformer;
@@ -98,16 +96,20 @@ public class OutputTransformer {
   }
 
   ImmutableList<OutputView> toViews(
-      List<OutputSpec> configs, MethodContext context, SampleValueSet valueSet) {
+      List<OutputSpec> configs, MethodContext context, SampleValueSet valueSet, CallingForm form) {
     ScopeTable localVars = new ScopeTable();
     return configs
         .stream()
-        .map(s -> toView(s, context, valueSet, localVars))
+        .map(s -> toView(s, context, valueSet, localVars, form))
         .collect(ImmutableList.toImmutableList());
   }
 
   private OutputView toView(
-      OutputSpec config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
+      OutputSpec config,
+      MethodContext context,
+      SampleValueSet valueSet,
+      ScopeTable localVars,
+      CallingForm form) {
     Runnable once =
         new Runnable() {
           boolean ran;
@@ -126,15 +128,15 @@ public class OutputTransformer {
     OutputView view = null;
     if (config.hasLoop()) {
       once.run();
-      view = loopView(config.getLoop(), context, valueSet, localVars);
+      view = loopView(config.getLoop(), context, valueSet, localVars, form);
     }
     if (config.getPrintCount() > 0) {
       once.run();
-      view = printView(config.getPrintList(), context, valueSet, localVars);
+      view = printView(config.getPrintList(), context, valueSet, localVars, form);
     }
     if (!config.getDefine().isEmpty()) {
       once.run();
-      view = defineView(new Scanner(config.getDefine()), context, valueSet, localVars);
+      view = defineView(new Scanner(config.getDefine()), context, valueSet, localVars, form);
     }
     if (config.getCommentCount() > 0) {
       once.run();
@@ -149,7 +151,11 @@ public class OutputTransformer {
   }
 
   private OutputView.PrintView printView(
-      List<String> config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
+      List<String> config,
+      MethodContext context,
+      SampleValueSet valueSet,
+      ScopeTable localVars,
+      CallingForm form) {
     Preconditions.checkArgument(
         !config.isEmpty(),
         "%s:%s: print spec cannot be empty",
@@ -164,7 +170,7 @@ public class OutputTransformer {
                 .map(
                     a ->
                         printArgTransformer.generatePrintArg(
-                            context, accessor(new Scanner(a), context, valueSet, localVars)))
+                            context, accessor(new Scanner(a), context, valueSet, localVars, form)))
                 .collect(ImmutableList.toImmutableList()))
         .build();
   }
@@ -173,15 +179,16 @@ public class OutputTransformer {
       OutputSpec.LoopStatement loop,
       MethodContext context,
       SampleValueSet valueSet,
-      ScopeTable localVars) {
+      ScopeTable localVars,
+      CallingForm form) {
 
     ScopeTable scope = localVars.newChild();
     String loopVariable = loop.getVariable();
-    assertIdentifierNotReserved(
-        loopVariable, context.getMethodModel().getSimpleName(), valueSet.getId());
+    assertIdentifierNotUsed(
+        loopVariable, context.getMethodModel().getSimpleName(), valueSet.getId(), context, form);
     OutputView.VariableView accessor =
         accessorNewVariable(
-            new Scanner(loop.getCollection()), context, valueSet, scope, loopVariable, true);
+            new Scanner(loop.getCollection()), context, valueSet, scope, loopVariable, true, form);
     OutputView.LoopView ret =
         OutputView.LoopView.newBuilder()
             .variableType(scope.getTypeName(loopVariable))
@@ -190,14 +197,18 @@ public class OutputTransformer {
             .body(
                 loop.getBodyList()
                     .stream()
-                    .map(body -> toView(body, context, valueSet, scope))
+                    .map(body -> toView(body, context, valueSet, scope, form))
                     .collect(ImmutableList.toImmutableList()))
             .build();
     return ret;
   }
 
   private OutputView.DefineView defineView(
-      Scanner definition, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
+      Scanner definition,
+      MethodContext context,
+      SampleValueSet valueSet,
+      ScopeTable localVars,
+      CallingForm form) {
     Preconditions.checkArgument(
         definition.scan() == Scanner.IDENT,
         "%s:%s: expected identifier: %s",
@@ -205,8 +216,8 @@ public class OutputTransformer {
         valueSet.getId(),
         definition.input());
     String identifier = definition.tokenStr();
-    assertIdentifierNotReserved(
-        identifier, context.getMethodModel().getSimpleName(), valueSet.getId());
+    assertIdentifierNotUsed(
+        identifier, context.getMethodModel().getSimpleName(), valueSet.getId(), context, form);
     Preconditions.checkArgument(
         definition.scan() == '=',
         "%s:%s invalid definition, expecting '=': %s",
@@ -214,7 +225,7 @@ public class OutputTransformer {
         valueSet.getId(),
         definition.input());
     OutputView.VariableView reference =
-        accessorNewVariable(definition, context, valueSet, localVars, identifier, false);
+        accessorNewVariable(definition, context, valueSet, localVars, identifier, false, form);
     return OutputView.DefineView.newBuilder()
         .variableType(localVars.getTypeName(identifier))
         .variableName(context.getNamer().localVarName(Name.from(identifier)))
@@ -236,8 +247,12 @@ public class OutputTransformer {
   }
 
   private static OutputView.VariableView accessor(
-      Scanner config, MethodContext context, SampleValueSet valueSet, ScopeTable localVars) {
-    return accessorNewVariable(config, context, valueSet, localVars, null, false);
+      Scanner config,
+      MethodContext context,
+      SampleValueSet valueSet,
+      ScopeTable localVars,
+      CallingForm form) {
+    return accessorNewVariable(config, context, valueSet, localVars, null, false, form);
   }
 
   /**
@@ -264,7 +279,8 @@ public class OutputTransformer {
       SampleValueSet valueSet,
       ScopeTable localVars,
       @Nullable String newVar,
-      boolean scalarTypeForCollection) {
+      boolean scalarTypeForCollection,
+      CallingForm form) {
 
     OutputView.VariableView.Builder view = OutputView.VariableView.newBuilder();
 
@@ -404,8 +420,8 @@ public class OutputTransformer {
     }
 
     if (newVar != null) {
-      assertIdentifierNotReserved(
-          newVar, context.getMethodModel().getSimpleName(), valueSet.getId());
+      assertIdentifierNotUsed(
+          newVar, context.getMethodModel().getSimpleName(), valueSet.getId(), context, form);
       if (scalarTypeForCollection) {
         Preconditions.checkArgument(
             type != null,
@@ -442,14 +458,19 @@ public class OutputTransformer {
     return view.accessors(accessors.build()).type(type).build();
   }
 
-  private static void assertIdentifierNotReserved(
-      String identifier, String methodName, String valueSetId) {
+  private static void assertIdentifierNotUsed(
+      String identifier,
+      String methodName,
+      String valueSetId,
+      MethodContext context,
+      CallingForm form) {
     Preconditions.checkArgument(
-        !RESERVED_KEYWORDS.contains(identifier),
-        "%s:%s cannot define variable %s: it is a reserved keyword",
+        !context.getNamer().getSampleUsedVarNames(context, form).contains(identifier),
+        "%s: %s cannot define variable %s: it is used by the sample template for calling form %s.",
         methodName,
         valueSetId,
-        identifier);
+        identifier,
+        form);
   }
 
   /**
