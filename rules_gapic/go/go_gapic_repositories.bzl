@@ -71,7 +71,7 @@ def com_github_google_go_cmp():
     )
 
 # TODO: https://github.com/googleapis/gapic-generator/issues/2534
-# This must be removed (otherwise googleapis becomes dependency on google-cloud-go)
+# This must be removed (otherwise googleapis keeps having dependency on google-cloud-go)
 # we have to add it as a temporary workaround, because the generated go clients transitively
 # depend on `cloud.google.com/go/compute/metadata` which is a part of google-cloud-go.
 # There are other dependencies as well (longrunning for example).
