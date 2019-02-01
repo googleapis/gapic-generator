@@ -25,7 +25,6 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -80,15 +79,16 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
   private PathTemplateTransformer pathTemplateTransformer;
   private PageStreamingTransformer pageStreamingTransformer;
   private GrpcStubTransformer grpcStubTransformer;
+  private final PhpImportSectionTransformer importSectionTransformer =
+      new PhpImportSectionTransformer();
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
           new PhpApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
-              .initCodeTransformer(new InitCodeTransformer(new PhpImportSectionTransformer()))
-              .sampleType(SampleType.IN_CODE)
+              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
               .build());
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new PhpImportSectionTransformer());
+      new FileHeaderTransformer(importSectionTransformer);
   private final PhpMethodViewGenerator methodGenerator =
       new PhpMethodViewGenerator(apiMethodTransformer);
   private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();

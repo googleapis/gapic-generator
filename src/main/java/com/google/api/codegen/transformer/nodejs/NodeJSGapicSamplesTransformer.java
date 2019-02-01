@@ -51,13 +51,15 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<Pro
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "nodejs/standalone_sample.snip";
 
   private final GapicCodePathMapper pathMapper;
+  private final NodeJSImportSectionTransformer importSectionTransformer =
+      new NodeJSImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new NodeJSImportSectionTransformer());
+      new FileHeaderTransformer(importSectionTransformer);
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
           new NodeJSApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
-              .initCodeTransformer(new InitCodeTransformer(new NodeJSImportSectionTransformer()))
+              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
               .sampleType(SampleType.STANDALONE)
               .build());
   private final NodeJSMethodViewGenerator methodGenerator =

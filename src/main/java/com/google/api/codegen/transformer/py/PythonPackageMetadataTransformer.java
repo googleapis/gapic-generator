@@ -323,8 +323,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
             new DynamicLangApiMethodTransformer(
                 new PythonApiMethodParamTransformer(),
                 SampleTransformer.newBuilder()
-                    .initCodeTransformer(
-                        new InitCodeTransformer(new PythonImportSectionTransformer()))
+                    .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
                     .build()));
 
     return methodViewGenerator.generateOneApiMethod(context);

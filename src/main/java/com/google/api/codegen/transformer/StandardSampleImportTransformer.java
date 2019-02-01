@@ -30,11 +30,11 @@ public class StandardSampleImportTransformer implements SampleImportTransformer 
   }
 
   public void addSampleBodyImports(MethodContext context, CallingForm form) {
-    // default behavior: no types used in the sample body needs to be imported
+    // default behavior: no types used in the sample body need to be imported
   }
 
   public void addOutputImports(MethodContext context, List<OutputView> views) {
-    // default behavior: no types used in the output part of a sample needs to be imported
+    // default behavior: no types used in the output part of a sample need to be imported
   }
 
   public void addInitCodeImports(
