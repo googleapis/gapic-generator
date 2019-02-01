@@ -41,7 +41,7 @@ import org.apache.commons.cli.ParseException;
 //        --gapic_yaml=$BASE/src/main/configs/bigtable_table_gapic.yaml \
 //        --output=$BASE
 public class GeneratorMain {
-  public static final Option DESCRIPTOR_SET_OPTION =
+  private static final Option DESCRIPTOR_SET_OPTION =
       Option.builder()
           .longOpt("descriptor_set")
           .desc("The descriptor set representing the compiled input protos.")
@@ -49,7 +49,7 @@ public class GeneratorMain {
           .argName("DESCRIPTOR-SET")
           .required(true)
           .build();
-  public static final Option TARGET_API_PROTO_PACKAGE =
+  private static final Option TARGET_API_PROTO_PACKAGE =
       Option.builder()
           .longOpt("package")
           .desc(
@@ -59,7 +59,7 @@ public class GeneratorMain {
           .argName("PACKAGE")
           .required(false)
           .build();
-  public static final Option SERVICE_YAML_OPTION =
+  private static final Option SERVICE_YAML_OPTION =
       Option.builder()
           .longOpt("service_yaml")
           .desc("The service YAML configuration file or files.")
@@ -67,7 +67,7 @@ public class GeneratorMain {
           .argName("SERVICE-YAML")
           .required(true)
           .build();
-  public static final Option SERVICE_YAML_NONREQUIRED_OPTION =
+  private static final Option SERVICE_YAML_NONREQUIRED_OPTION =
       Option.builder()
           .longOpt("service_yaml")
           .desc("The service YAML configuration file or files.")
@@ -75,7 +75,7 @@ public class GeneratorMain {
           .argName("SERVICE-YAML")
           .required(false)
           .build();
-  public static final Option LANGUAGE_OPTION =
+  private static final Option LANGUAGE_OPTION =
       Option.builder("l")
           .longOpt("language")
           .desc("The target programming language for generated output.")
@@ -91,7 +91,7 @@ public class GeneratorMain {
           .argName("LANGUAGE")
           .required(false)
           .build();
-  public static final Option OUTPUT_OPTION =
+  private static final Option OUTPUT_OPTION =
       Option.builder("o")
           .longOpt("output")
           .desc("The destination file or directory for the generated files.")
@@ -107,7 +107,7 @@ public class GeneratorMain {
           .argName("GAPIC-YAML")
           .required(true)
           .build();
-  public static final Option GAPIC_YAML_NONREQUIRED_OPTION =
+  private static final Option GAPIC_YAML_NONREQUIRED_OPTION =
       Option.builder()
           .longOpt("gapic_yaml")
           .desc(
@@ -117,7 +117,7 @@ public class GeneratorMain {
           .argName("GAPIC-YAML")
           .required(false)
           .build();
-  public static final Option PACKAGE_YAML2_OPTION =
+  private static final Option PACKAGE_YAML2_OPTION =
       Option.builder("c2")
           .longOpt("package_yaml2")
           .desc("The packaging YAML configuration file.")
@@ -132,23 +132,6 @@ public class GeneratorMain {
           .hasArg()
           .argName("DISCOVERY-DOC")
           .required(true)
-          .build();
-  public static final Option ENABLED_ARTIFACTS_OPTION =
-      Option.builder()
-          .longOpt("enabled_artifacts")
-          .desc(
-              "Optional. Artifacts enabled for the generator. "
-                  + "Currently supports 'surface' and 'test'.")
-          .hasArg()
-          .argName("ENABLED_ARTIFACTS")
-          .required(false)
-          .build();
-  public static final Option DEV_SAMPLES_OPTION =
-      Option.builder()
-          .longOpt("dev_samples")
-          .desc("Whether to generate samples in non-production-ready languages.")
-          .argName("DEV_SAMPLES")
-          .required(false)
           .build();
 
   public static void printAvailableCommands() {
@@ -248,8 +231,26 @@ public class GeneratorMain {
     options.addOption(PACKAGE_YAML2_OPTION);
     options.addOption(TARGET_API_PROTO_PACKAGE);
     options.addOption(OUTPUT_OPTION);
-    options.addOption(ENABLED_ARTIFACTS_OPTION);
-    options.addOption(DEV_SAMPLES_OPTION);
+    Option enabledArtifactsOption =
+        Option.builder()
+            .longOpt("enabled_artifacts")
+            .desc(
+                "Optional. Artifacts enabled for the generator. "
+                    + "Currently supports 'surface' and 'test'.")
+            .hasArg()
+            .argName("ENABLED_ARTIFACTS")
+            .required(false)
+            .build();
+    options.addOption(enabledArtifactsOption);
+
+    Option devSamplesOption =
+        Option.builder()
+            .longOpt("dev_samples")
+            .desc("Whether to generate samples in non-production-ready languages.")
+            .argName("DEV_SAMPLES")
+            .required(false)
+            .build();
+    options.addOption(devSamplesOption);
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
@@ -293,14 +294,13 @@ public class GeneratorMain {
       checkFile(toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE));
     }
 
-    if (cl.getOptionValues(ENABLED_ARTIFACTS_OPTION.getLongOpt()) != null) {
+    if (cl.getOptionValues(enabledArtifactsOption.getLongOpt()) != null) {
       toolOptions.set(
           GapicGeneratorApp.ENABLED_ARTIFACTS,
-          Lists.newArrayList(cl.getOptionValues(ENABLED_ARTIFACTS_OPTION.getLongOpt())));
+          Lists.newArrayList(cl.getOptionValues(enabledArtifactsOption.getLongOpt())));
     }
 
-    toolOptions.set(
-        GapicGeneratorApp.DEV_SAMPLES, cl.hasOption(DESCRIPTOR_SET_OPTION.getLongOpt()));
+    toolOptions.set(GapicGeneratorApp.DEV_SAMPLES, cl.hasOption(devSamplesOption.getLongOpt()));
 
     GapicGeneratorApp codeGen = new GapicGeneratorApp(toolOptions, artifactType);
     int exitCode = codeGen.run();
@@ -310,13 +310,10 @@ public class GeneratorMain {
   public static ToolOptions createCodeGeneratorOptionsFromProtoc(String[] args)
       throws ParseException {
     Options options = new Options();
+    // We can add more options as they become needed.
     options.addOption(DESCRIPTOR_SET_OPTION);
-    options.addOption(SERVICE_YAML_NONREQUIRED_OPTION);
     options.addOption(LANGUAGE_OPTION);
-    options.addOption(GAPIC_YAML_NONREQUIRED_OPTION);
     options.addOption(TARGET_API_PROTO_PACKAGE);
-    options.addOption(ENABLED_ARTIFACTS_OPTION);
-    options.addOption(DEV_SAMPLES_OPTION);
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
 
@@ -324,35 +321,11 @@ public class GeneratorMain {
     toolOptions.set(
         ToolOptions.DESCRIPTOR_SET, cl.getOptionValue(DESCRIPTOR_SET_OPTION.getLongOpt()));
 
-    checkAtLeastOneOption(cl, SERVICE_YAML_NONREQUIRED_OPTION, TARGET_API_PROTO_PACKAGE);
-    checkAtLeastOneOption(cl, GAPIC_YAML_NONREQUIRED_OPTION, TARGET_API_PROTO_PACKAGE);
-
     toolOptions.set(
         GapicGeneratorApp.PROTO_PACKAGE, cl.getOptionValue(TARGET_API_PROTO_PACKAGE.getLongOpt()));
     toolOptions.set(GapicGeneratorApp.LANGUAGE, cl.getOptionValue(LANGUAGE_OPTION.getLongOpt()));
 
     checkFile(toolOptions.get(ToolOptions.DESCRIPTOR_SET));
-
-    if (cl.getOptionValues(SERVICE_YAML_NONREQUIRED_OPTION.getLongOpt()) != null) {
-      toolOptions.set(
-          ToolOptions.CONFIG_FILES,
-          Lists.newArrayList(cl.getOptionValues(SERVICE_YAML_NONREQUIRED_OPTION.getLongOpt())));
-      checkFiles(toolOptions.get(ToolOptions.CONFIG_FILES));
-    }
-    if (cl.getOptionValues(GAPIC_YAML_NONREQUIRED_OPTION.getLongOpt()) != null) {
-      toolOptions.set(
-          GapicGeneratorApp.GENERATOR_CONFIG_FILES,
-          Lists.newArrayList(cl.getOptionValues(GAPIC_YAML_NONREQUIRED_OPTION.getLongOpt())));
-      checkFiles(toolOptions.get(GapicGeneratorApp.GENERATOR_CONFIG_FILES));
-    }
-
-    if (cl.getOptionValues(ENABLED_ARTIFACTS_OPTION.getLongOpt()) != null) {
-      toolOptions.set(
-          GapicGeneratorApp.ENABLED_ARTIFACTS,
-          Lists.newArrayList(cl.getOptionValues(ENABLED_ARTIFACTS_OPTION.getLongOpt())));
-    }
-
-    toolOptions.set(GapicGeneratorApp.DEV_SAMPLES, cl.hasOption(DEV_SAMPLES_OPTION.getLongOpt()));
 
     return toolOptions;
   }
@@ -457,7 +430,17 @@ public class GeneratorMain {
     options.addOption(GAPIC_YAML_OPTION);
     options.addOption(PACKAGE_YAML2_OPTION);
     options.addOption(OUTPUT_OPTION);
-    options.addOption(ENABLED_ARTIFACTS_OPTION);
+    Option enabledArtifactsOption =
+        Option.builder()
+            .longOpt("enabled_artifacts")
+            .desc(
+                "Optional. Artifacts enabled for the generator. "
+                    + "Currently supports 'surface' and 'test'.")
+            .hasArg()
+            .argName("ENABLED_ARTIFACTS")
+            .required(false)
+            .build();
+    options.addOption(enabledArtifactsOption);
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
@@ -480,10 +463,10 @@ public class GeneratorMain {
         GapicGeneratorApp.PACKAGE_CONFIG2_FILE,
         cl.getOptionValue(PACKAGE_YAML2_OPTION.getLongOpt()));
 
-    if (cl.getOptionValues(ENABLED_ARTIFACTS_OPTION.getLongOpt()) != null) {
+    if (cl.getOptionValues(enabledArtifactsOption.getLongOpt()) != null) {
       toolOptions.set(
           GapicGeneratorApp.ENABLED_ARTIFACTS,
-          Lists.newArrayList(cl.getOptionValues(ENABLED_ARTIFACTS_OPTION.getLongOpt())));
+          Lists.newArrayList(cl.getOptionValues(enabledArtifactsOption.getLongOpt())));
     }
     DiscoGapicGeneratorApp codeGen = new DiscoGapicGeneratorApp(toolOptions, artifactType);
     int exitCode = codeGen.run();
