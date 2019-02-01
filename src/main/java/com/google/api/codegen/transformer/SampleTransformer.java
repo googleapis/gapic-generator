@@ -50,6 +50,11 @@ import java.util.List;
 @AutoValue
 public abstract class SampleTransformer {
 
+  private static final InitCodeTransformer defaultInitCodeTransformer = new InitCodeTransformer();
+  private static final OutputTransformer defaultOutputTransformer = new OutputTransformer();
+  private static final SampleImportTransformer defaultSampleImportTransformer =
+      new StandardSampleImportTransformer(new StandardImportSectionTransformer());
+
   public abstract SampleType sampleType();
 
   public abstract InitCodeTransformer initCodeTransformer();
@@ -61,10 +66,9 @@ public abstract class SampleTransformer {
   public static Builder newBuilder() {
     return new AutoValue_SampleTransformer.Builder()
         .sampleType(SampleType.IN_CODE)
-        .initCodeTransformer(new InitCodeTransformer())
-        .outputTransformer(new OutputTransformer())
-        .sampleImportTransformer(
-            new StandardSampleImportTransformer(new StandardImportSectionTransformer()));
+        .initCodeTransformer(defaultInitCodeTransformer)
+        .outputTransformer(defaultOutputTransformer)
+        .sampleImportTransformer(defaultSampleImportTransformer);
   }
 
   @AutoValue.Builder
