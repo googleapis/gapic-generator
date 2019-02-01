@@ -1569,7 +1569,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public Set<String> getSampleUsedVarNames(MethodContext context, CallingForm form) {
-    return ImmutableSet.of();
+    // To not break PHP, Java and Python. We need to change this to an empty set
+    // after will implement this method in the respective surfaceNamers for those
+    // languages.
+    return ImmutableSet.of("response", "responseItem");
   }
 
   public String getSampleFunctionName(MethodModel method) {
