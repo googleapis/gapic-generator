@@ -15,7 +15,6 @@
 package com.google.api.codegen;
 
 import static com.google.api.codegen.ArtifactType.GAPIC_CODE;
-import static com.google.api.codegen.GeneratorMain.createCodeGeneratorOptions;
 
 import com.google.api.codegen.gapic.GapicGeneratorApp;
 import com.google.api.tools.framework.model.Diag;
@@ -111,7 +110,7 @@ public class ProtocGeneratorMain {
 
     String[] argsArray = parsedArgs.toArray(new String[] {});
 
-    return createCodeGeneratorOptions(argsArray);
+    return GeneratorMain.createCodeGeneratorOptionsFromProtoc(argsArray);
   }
 
   private static String collectDiags(GapicGeneratorApp app) {

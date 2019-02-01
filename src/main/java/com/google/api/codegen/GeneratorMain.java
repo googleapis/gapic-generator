@@ -238,25 +238,18 @@ public class GeneratorMain {
   }
 
   public static void gapicGeneratorMain(ArtifactType artifactType, String[] args) throws Exception {
-    ToolOptions toolOptions = createCodeGeneratorOptions(args);
-    GapicGeneratorApp codeGen = new GapicGeneratorApp(toolOptions, artifactType);
-    int exitCode = codeGen.run();
-    System.exit(exitCode);
-  }
-
-  public static ToolOptions createCodeGeneratorOptions(String[] args) throws ParseException {
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
     options.addOption(DESCRIPTOR_SET_OPTION);
     options.addOption(SERVICE_YAML_NONREQUIRED_OPTION);
-    options.addOption(LANGUAGE_OPTION);
+    // TODO make required after artman passes this in
+    options.addOption(LANGUAGE_NONREQUIRED_OPTION);
     options.addOption(GAPIC_YAML_NONREQUIRED_OPTION);
     options.addOption(PACKAGE_YAML2_OPTION);
     options.addOption(TARGET_API_PROTO_PACKAGE);
+    options.addOption(OUTPUT_OPTION);
     options.addOption(ENABLED_ARTIFACTS_OPTION);
     options.addOption(DEV_SAMPLES_OPTION);
-
-    // No output option needs to be specified for output file; output is a CodeGenerateResponse.
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
@@ -274,7 +267,8 @@ public class GeneratorMain {
 
     toolOptions.set(
         GapicGeneratorApp.PROTO_PACKAGE, cl.getOptionValue(TARGET_API_PROTO_PACKAGE.getLongOpt()));
-    toolOptions.set(GapicGeneratorApp.LANGUAGE, cl.getOptionValue(LANGUAGE_OPTION.getLongOpt()));
+    toolOptions.set(
+        GapicGeneratorApp.LANGUAGE, cl.getOptionValue(LANGUAGE_NONREQUIRED_OPTION.getLongOpt()));
     toolOptions.set(
         GapicGeneratorApp.OUTPUT_FILE, cl.getOptionValue(OUTPUT_OPTION.getLongOpt(), ""));
     toolOptions.set(
@@ -297,6 +291,59 @@ public class GeneratorMain {
     }
     if (!Strings.isNullOrEmpty(toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE))) {
       checkFile(toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE));
+    }
+
+    if (cl.getOptionValues(ENABLED_ARTIFACTS_OPTION.getLongOpt()) != null) {
+      toolOptions.set(
+          GapicGeneratorApp.ENABLED_ARTIFACTS,
+          Lists.newArrayList(cl.getOptionValues(ENABLED_ARTIFACTS_OPTION.getLongOpt())));
+    }
+
+    toolOptions.set(
+        GapicGeneratorApp.DEV_SAMPLES, cl.hasOption(DESCRIPTOR_SET_OPTION.getLongOpt()));
+
+    GapicGeneratorApp codeGen = new GapicGeneratorApp(toolOptions, artifactType);
+    int exitCode = codeGen.run();
+    System.exit(exitCode);
+  }
+
+  public static ToolOptions createCodeGeneratorOptionsFromProtoc(String[] args)
+      throws ParseException {
+    Options options = new Options();
+    options.addOption(DESCRIPTOR_SET_OPTION);
+    options.addOption(SERVICE_YAML_NONREQUIRED_OPTION);
+    options.addOption(LANGUAGE_OPTION);
+    options.addOption(GAPIC_YAML_NONREQUIRED_OPTION);
+    options.addOption(TARGET_API_PROTO_PACKAGE);
+    options.addOption(ENABLED_ARTIFACTS_OPTION);
+    options.addOption(DEV_SAMPLES_OPTION);
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+
+    ToolOptions toolOptions = ToolOptions.create();
+    toolOptions.set(
+        ToolOptions.DESCRIPTOR_SET, cl.getOptionValue(DESCRIPTOR_SET_OPTION.getLongOpt()));
+
+    checkAtLeastOneOption(cl, SERVICE_YAML_NONREQUIRED_OPTION, TARGET_API_PROTO_PACKAGE);
+    checkAtLeastOneOption(cl, GAPIC_YAML_NONREQUIRED_OPTION, TARGET_API_PROTO_PACKAGE);
+
+    toolOptions.set(
+        GapicGeneratorApp.PROTO_PACKAGE, cl.getOptionValue(TARGET_API_PROTO_PACKAGE.getLongOpt()));
+    toolOptions.set(GapicGeneratorApp.LANGUAGE, cl.getOptionValue(LANGUAGE_OPTION.getLongOpt()));
+
+    checkFile(toolOptions.get(ToolOptions.DESCRIPTOR_SET));
+
+    if (cl.getOptionValues(SERVICE_YAML_NONREQUIRED_OPTION.getLongOpt()) != null) {
+      toolOptions.set(
+          ToolOptions.CONFIG_FILES,
+          Lists.newArrayList(cl.getOptionValues(SERVICE_YAML_NONREQUIRED_OPTION.getLongOpt())));
+      checkFiles(toolOptions.get(ToolOptions.CONFIG_FILES));
+    }
+    if (cl.getOptionValues(GAPIC_YAML_NONREQUIRED_OPTION.getLongOpt()) != null) {
+      toolOptions.set(
+          GapicGeneratorApp.GENERATOR_CONFIG_FILES,
+          Lists.newArrayList(cl.getOptionValues(GAPIC_YAML_NONREQUIRED_OPTION.getLongOpt())));
+      checkFiles(toolOptions.get(GapicGeneratorApp.GENERATOR_CONFIG_FILES));
     }
 
     if (cl.getOptionValues(ENABLED_ARTIFACTS_OPTION.getLongOpt()) != null) {
