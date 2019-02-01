@@ -200,7 +200,13 @@ public class JavaDiscoGapicRequestToViewTransformer
 
     requestView.rawName(requestName); // Serialized name doesn't matter here.
     requestView.name(requestName);
-    requestView.description(method.getDescription());
+    requestView.docLines(
+        context
+            .getNamer()
+            .getDocLines(
+                String.format(
+                    "Request object for method %s. %s",
+                    method.getDiscoMethod().id(), method.getDescription())));
 
     String requestTypeName = nameFormatter.publicClassName(Name.anyCamel(requestClassId));
     requestView.typeName(requestTypeName);
