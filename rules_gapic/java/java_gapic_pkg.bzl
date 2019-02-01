@@ -19,8 +19,8 @@ load(
     "construct_gradle_assembly_includes_subs",
     "construct_gradle_build_deps_subs",
     "get_dynamic_subsitution_func",
-    "is_source_dependency",
     "is_proto_dependency",
+    "is_source_dependency",
 )
 
 def _java_gapic_build_configs_pkg_impl(ctx):
@@ -250,16 +250,15 @@ def java_gapic_assembly_gradle_raw_pkg(name, deps, visibility = None):
     )
 
 def java_gapic_assembly_gradle_pkg(
-    name,
-    client_group,
-    version,
-    client_deps,
-    client_test_deps,
-    grpc_group = None,
-    proto_deps = None,
-    grpc_deps = None,
-    visibility = None):
-
+        name,
+        client_group,
+        version,
+        client_deps,
+        client_test_deps,
+        grpc_group = None,
+        proto_deps = None,
+        grpc_deps = None,
+        visibility = None):
     proto_target = "proto-%s" % name
     proto_target_dep = []
     grpc_target = "grpc-%s" % name
@@ -294,7 +293,7 @@ def java_gapic_assembly_gradle_pkg(
 
     java_gapic_assembly_gradle_raw_pkg(
         name = name,
-        deps = proto_target_dep + grpc_target_dep + [":%s" % client_target]
+        deps = proto_target_dep + grpc_target_dep + [":%s" % client_target],
     )
 
 #

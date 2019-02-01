@@ -17,7 +17,6 @@ load("@io_bazel_rules_go//go/private:rules/rule.bzl", "go_rule")
 load("@io_bazel_rules_go//go:def.bzl", "GoSource", "go_context")
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
-
 def _go_gapic_postprocessed_srcjar_impl(ctx):
     go_ctx = go_context(ctx)
 

@@ -262,13 +262,13 @@ def org_threeten_threetenbp():
 def com_google_api_grpc_grpc_google_iam_v1():
     native.maven_jar(
         name = "com_google_api_grpc_grpc_google_iam_v1",
-        artifact = "com.google.api.grpc:grpc-google-iam-v1:0.12.0"
+        artifact = "com.google.api.grpc:grpc-google-iam-v1:0.12.0",
     )
 
 def com_google_api_grpc_proto_google_iam_v1():
     native.maven_jar(
         name = "com_google_api_grpc_proto_google_iam_v1",
-        artifact = "com.google.api.grpc:proto-google-iam-v1:0.12.0"
+        artifact = "com.google.api.grpc:proto-google-iam-v1:0.12.0",
     )
 
 def com_google_http_client_google_http_client():

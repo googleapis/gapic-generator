@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@io_bazel_rules_go//go:def.bzl", "GoSource", "GoLibrary")
+load("@io_bazel_rules_go//go:def.bzl", "GoLibrary", "GoSource")
 
 def _go_gapic_src_pkg_impl(ctx):
     srcjars = []
@@ -98,4 +98,3 @@ def _construct_package_dir_paths(attr_package_dir, out_pkg, label_name):
         package_dir_expr = package_dir_expr,
         package_dir_path = "%s/%s/%s" % (out_pkg.dirname, label_name, package_dir),
     )
-

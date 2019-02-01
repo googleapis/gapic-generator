@@ -83,6 +83,7 @@ def _proto_custom_library_impl(ctx):
     for dep in ctx.attr.deps:
         src = dep.proto.check_deps_sources
         srcs_list.append(src)
+
         # This is needed to properly support `go_proto_library`
         if cur_package == dep.label.package:
             check_dep_sources_list.append(src)

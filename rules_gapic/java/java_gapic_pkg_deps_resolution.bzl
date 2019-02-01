@@ -60,12 +60,11 @@ def is_proto_dependency(dep):
     return hasattr(dep, "proto")
 
 def is_gapic_pkg_dependency(dep):
-    files_list = dep.files.to_list();
+    files_list = dep.files.to_list()
     if not files_list or len(files_list) != 1 or \
-        (files_list[0].extension != "gz" and files_list[0].extension != "tgz"):
+       (files_list[0].extension != "gz" and files_list[0].extension != "tgz"):
         return False
     return True
-
 
 # This is a bit ugly, but there is no way to pass a function object as a rule parameter. As a
 # workaround passing a function name as string instead and then resolving the actual function object
@@ -88,7 +87,7 @@ def _construct_package_dep_strings(deps):
             for ext in (".tar.gz", ".gz", ".tgz"):
                 if dep_name.endswith(ext):
                     dep_name = dep_name[:-len(ext)]
-                    break;
+                    break
             dep_list.append(dep_name)
     return dep_list
 
@@ -146,6 +145,7 @@ def _reconstruct_artifact_id(file, group_overrides = {}):
 
     # Representing [group, name, version, classifier]
     artifact_id = ["", "", "", ""]
+
     # Meven splits artifact name version and classifier with '-'
     chunks = basename.split("-")
     for i in range(0, len(chunks)):
@@ -161,7 +161,7 @@ def _reconstruct_artifact_id(file, group_overrides = {}):
             # recognized as a continuation of the version and appended to the artifact version
             # portion accordingly.
             if _possibly_artifact_id_classifier_chunk(chunks[i]):
-                artifact_id[3] = "-".join(chunks[i: len(chunks)])
+                artifact_id[3] = "-".join(chunks[i:len(chunks)])
                 break
             else:
                 artifact_id[2] = "-".join([artifact_id[2], chunks[i]])
@@ -182,6 +182,7 @@ def _reconstruct_artifact_id(file, group_overrides = {}):
                 left_index = dirname.rfind("/", end = art_name_index) + 1
                 right_index = dirname.find("/", start = art_name_index)
                 artifact_dir = dirname[left_index:right_index]
+
                 # Everything, which stands to the left of the artifact-name in maven_jar's target
                 # name is recognized as a group name, where each '.' is replaced with '_'
                 art_name_index = artifact_dir.rfind(underscore_artifact_name)
@@ -189,13 +190,11 @@ def _reconstruct_artifact_id(file, group_overrides = {}):
 
     return tuple(artifact_id)
 
-
 def _possibly_artifact_id_version_chunk(chunk):
     for j in range(0, len(chunk)):
-        if not chunk[j].isdigit() and chunk[j] != '.':
+        if not chunk[j].isdigit() and chunk[j] != ".":
             return False
     return True
-
 
 def _possibly_artifact_id_classifier_chunk(chunk):
     for j in range(0, len(chunk)):
