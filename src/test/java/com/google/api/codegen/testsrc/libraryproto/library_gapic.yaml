@@ -246,11 +246,30 @@ interfaces:
         - parameter: edition
           sample_argument_name: edition
       on_success:
+      - comment:
+        - "%% %% %% output handling %% %% %% %%"
+      - comment:
+        - "%s ago\n\nour fathers brought forth upon this continent\n"
+        - four_score_and_seven_years
+      - comment:
+        - |+
+          a new nation
+          conceived in liberty
+
+          and dedicated to the proposition that %s.
+        # TODO: trailing newlines are not working right now   
+        - all_men_are_created_equal
+      - comment:
+        - "Do something with %s one by one"
+        - book_names
       - loop:
           variable: title
           collection: $resp.book_names
           body:
-            print:
+          - comment:
+              - "Now we deal with %s!"
+              - this_single_book
+          - print:
               - "Title: %s"
               - title
       - print:

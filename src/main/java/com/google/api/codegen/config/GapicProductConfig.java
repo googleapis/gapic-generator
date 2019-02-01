@@ -109,6 +109,9 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public abstract String getConfigSchemaVersion();
 
+  @Nullable
+  public abstract Boolean enableStringFormattingFunctionsOverride();
+
   public GapicProductConfig withPackageName(String packageName) {
     return new AutoValue_GapicProductConfig(
         getInterfaceConfigMap(),
@@ -122,7 +125,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         getProtoParser(),
         getTransportProtocol(),
         getDefaultResourceNameFieldConfigMap(),
-        getConfigSchemaVersion());
+        getConfigSchemaVersion(),
+        enableStringFormattingFunctionsOverride());
   }
 
   @Nullable
@@ -305,6 +309,12 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
 
+    Boolean enableStringFormatFunctionsOverride = null;
+    if (configProto.getEnableStringFormatFunctionsOverride().isInitialized()) {
+      enableStringFormatFunctionsOverride =
+          configProto.getEnableStringFormatFunctionsOverride().getValue();
+    }
+
     if (interfaceConfigMap == null || copyrightLines == null || licenseLines == null) {
       return null;
     }
@@ -320,7 +330,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         protoParser,
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
-        configSchemaVersion);
+        configSchemaVersion,
+        enableStringFormatFunctionsOverride);
   }
 
   public static GapicProductConfig create(
@@ -375,6 +386,12 @@ public abstract class GapicProductConfig implements ProductConfig {
                   "config_schema_version field is required in GAPIC yaml."));
     }
 
+    Boolean enableStringFormatFunctionsOverride = null;
+    if (configProto.getEnableStringFormatFunctionsOverride().isInitialized()) {
+      enableStringFormatFunctionsOverride =
+          configProto.getEnableStringFormatFunctionsOverride().getValue();
+    }
+
     return new AutoValue_GapicProductConfig(
         interfaceConfigMap,
         settings.getPackageName(),
@@ -387,7 +404,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         new ProtoParser(false),
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
-        configSchemaVersion);
+        configSchemaVersion,
+        enableStringFormatFunctionsOverride);
   }
 
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
@@ -427,7 +445,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         // Default to gRPC.
         TransportProtocol.GRPC,
         createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),
-        configSchemaVersion);
+        configSchemaVersion,
+        false);
   }
 
   /** Return the list of information about clients to be generated. */

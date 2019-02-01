@@ -136,6 +136,10 @@ public class OutputTransformer {
       once.run();
       view = defineView(new Scanner(config.getDefine()), context, valueSet, localVars);
     }
+    if (config.getCommentCount() > 0) {
+      once.run();
+      view = commentView(config.getCommentList(), context);
+    }
 
     return Preconditions.checkNotNull(
         view,
@@ -216,6 +220,19 @@ public class OutputTransformer {
         .variableName(context.getNamer().localVarName(Name.from(identifier)))
         .reference(reference)
         .build();
+  }
+
+  private OutputView.CommentView commentView(List<String> configs, MethodContext context) {
+    String comment = configs.get(0);
+    Object[] args =
+        configs
+            .subList(1, configs.size())
+            .stream()
+            .map(c -> context.getNamer().localVarName(Name.anyLower(c)))
+            .toArray(Object[]::new);
+    String formattedComment = String.format(comment, args);
+    ImmutableList<String> lines = ImmutableList.copyOf(formattedComment.split("\\n", -1));
+    return OutputView.CommentView.newBuilder().lines(lines).build();
   }
 
   private static OutputView.VariableView accessor(
