@@ -1,4 +1,4 @@
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ def _construct_package_dir_paths(attr_package_dir, out_pkg, label_name):
 
     return struct(
         package_dir = package_dir,
-        package_dir_expr = "../{}/*".format(package_dir),
+        package_dir_expr = package_dir_expr,
         package_dir_path = "%s/%s/%s" % (out_pkg.dirname, label_name, package_dir),
     )
 

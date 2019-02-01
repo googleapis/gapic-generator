@@ -1,4 +1,4 @@
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ def _go_gapic_postprocessed_srcjar_impl(ctx):
     output_dir_name = ctx.label.name
     output_dir_path = "%s/%s" % (output_main.dirname, output_dir_name)
 
-    formatter = get_gofmt(go_ctx)
+    formatter = _get_gofmt(go_ctx)
 
     # Note the script is more complicated than it intuitively should be because of limitations
     # inherent to bazel execution environment: no absolute paths allowed, the generated artifacts
@@ -158,16 +158,17 @@ def go_gapic_library(
         extension = ".go",
     )
 
-#    smoke_test_file = ":%s-smoke-test.srcjar" % srcjar_name
-#    smoke_test_dir = "%s_smoke_test" % srcjar_name
+    #Turn on if we choose to compile/run smoke tests
+    # smoke_test_file = ":%s-smoke-test.srcjar" % srcjar_name
+    # smoke_test_dir = "%s_smoke_test" % srcjar_name
 
-#    unzipped_srcjar(
-#        name = smoke_test_dir,
-#        srcjar = smoke_test_file,
-#        extension = ".go",
-#    )
+    # unzipped_srcjar(
+    #     name = smoke_test_dir,
+    #     srcjar = smoke_test_file,
+    #     extension = ".go",
+    # )
 
-def get_gofmt(go_ctx):
+def _get_gofmt(go_ctx):
     for tool in go_ctx.sdk.tools:
         if tool.basename == "gofmt":
             return tool

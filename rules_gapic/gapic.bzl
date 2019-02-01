@@ -74,23 +74,23 @@ gapic_srcjar = rule(
 )
 
 def _proto_custom_library_impl(ctx):
-    imports = depset()
-    srcs = depset()
-    transitive_descriptor_sets = depset()
-    check_dep_sources = depset()
-
     cur_package = ctx.label.package
+
+    srcs_list = []
+    imports_list = []
+    check_dep_sources_list = []
+
     for dep in ctx.attr.deps:
         src = dep.proto.check_deps_sources
-        srcs = depset(direct = srcs.to_list(), transitive = [src])
-        imports = depset(direct = imports.to_list(), transitive = [dep.proto.transitive_imports])
-        transitive_descriptor_sets = depset(
-            direct = transitive_descriptor_sets.to_list(),
-            transitive = [dep.proto.transitive_descriptor_sets],
-        )
+        srcs_list.append(src)
         # This is needed to properly support `go_proto_library`
         if cur_package == dep.label.package:
-            check_dep_sources = depset(direct = check_dep_sources.to_list(), transitive = [src])
+            check_dep_sources_list.append(src)
+        imports_list.append(dep.proto.transitive_imports)
+
+    srcs = depset(direct = [], transitive = srcs_list)
+    imports = depset(direct = [], transitive = imports_list)
+    check_dep_sources = depset(direct = [], transitive = check_dep_sources_list)
 
     protoc = ctx.executable._protoc
     output = ctx.outputs.output
@@ -121,8 +121,8 @@ def _proto_custom_library_impl(ctx):
     arguments = \
         ctx.attr.extra_args + \
         calculated_args + \
-        ["-I{0}={1}".format(_path_ignoring_repository(imp), imp.path) for imp in imports] + \
-        [_path_ignoring_repository(src) for src in srcs]
+        ["-I{0}={1}".format(_path_ignoring_repository(imp), imp.path) for imp in imports.to_list()] + \
+        [_path_ignoring_repository(src) for src in srcs.to_list()]
 
     # print("%s: `%s %s`" % (ctx.label, protoc.path, " ".join(arguments)))
     inputs = depset(transitive = [srcs, imports, depset(direct = extra_inputs)])
@@ -153,7 +153,7 @@ def _proto_custom_library_impl(ctx):
             direct_sources = check_dep_sources,
             check_deps_sources = check_dep_sources,
             transitive_imports = imports,
-            transitive_descriptor_sets = depset([output]),
+            transitive_descriptor_sets = depset(direct = [output]),
         ),
     )
 
@@ -211,7 +211,7 @@ def _unzipped_srcjar_impl(ctx):
         outputs = [output_dir],
     )
 
-    return [DefaultInfo(files = depset([output_dir]))]
+    return [DefaultInfo(files = depset(direct = [output_dir]))]
 
 unzipped_srcjar = rule(
     _unzipped_srcjar_impl,

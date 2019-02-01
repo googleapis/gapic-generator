@@ -1,4 +1,4 @@
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -72,8 +72,9 @@ def com_github_google_go_cmp():
     )
 
 #TODO: this must be removed (otherwise googleapis becomes dependenty on google-cloud-go)
-#      we have to add it as a temporary workaroudn, because the generated go clients transitively
-#      depend on `cloud.google.com/go/compute/metadata` which is a part of google-cloud-go
+#      we have to add it as a temporary workaround, because the generated go clients transitively
+#      depend on `cloud.google.com/go/compute/metadata` which is a part of google-cloud-go.
+#      There are other dependencies as well (longrunning for example).
 def com_google_cloud_go():
     go_repository(
         name = "com_google_cloud_go",
