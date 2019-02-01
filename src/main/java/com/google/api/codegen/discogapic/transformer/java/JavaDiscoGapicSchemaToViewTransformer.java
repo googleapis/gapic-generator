@@ -159,7 +159,7 @@ public class JavaDiscoGapicSchemaToViewTransformer
     schemaView.rawName(schema.getIdentifier());
     schemaView.name(schemaName);
     schemaView.defaultValue(schema.defaultValue());
-    schemaView.description(schema.description());
+    schemaView.docLines(context.getNamer().getDocLines(schema.description()));
 
     schemaView.fieldGetFunction(context.getNamer().getFieldGetFunctionName(schemaModel));
     schemaView.fieldSetFunction(context.getNamer().getFieldSetFunctionName(schemaModel));
