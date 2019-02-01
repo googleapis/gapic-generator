@@ -124,7 +124,6 @@ def _proto_custom_library_impl(ctx):
         ["-I{0}={1}".format(_path_ignoring_repository(imp), imp.path) for imp in imports.to_list()] + \
         [_path_ignoring_repository(src) for src in srcs.to_list()]
 
-    # print("%s: `%s %s`" % (ctx.label, protoc.path, " ".join(arguments)))
     inputs = depset(transitive = [srcs, imports, depset(direct = extra_inputs)])
     ctx.actions.run(
         inputs = inputs,
@@ -145,9 +144,12 @@ def _proto_custom_library_impl(ctx):
 
     # This makes `proto_custom_library` pretend that it returns same provider as the native
     # `proto_library rule` (ProtoInfo provider). This allows using proto_custom_library output as
-    # its own input (deps). Copy other properties of ProtoSourcesProvider if ever needed
-    # (currently only 'check_deps_sources' and 'transitive_imports' fields of ProtoSourcesProvider
-    # are supported)
+    # its own input (deps). Copy other properties of ProtoSourcesProvider if ever needed.
+    # Currently only the following fields are provided:
+    #   - direct_sources
+    #   - check_deps_sources
+    #   - transitive_imports
+    #   - transitive_descriptor_sets
     return struct(
         proto = struct(
             direct_sources = check_dep_sources,
