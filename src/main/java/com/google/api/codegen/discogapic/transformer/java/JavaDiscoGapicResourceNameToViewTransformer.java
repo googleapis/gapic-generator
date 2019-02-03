@@ -96,7 +96,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer
             productConfig,
             createTypeTable(productConfig.getPackageName(), surfaceNamer),
             surfaceNamer,
-            JavaFeatureConfig.create(productConfig.getResourceNameMessageConfigs()));
+            JavaFeatureConfig.create(productConfig));
 
     // Keep track of which name patterns have been generated to avoid duplicate classes.
     Set<String> namePatterns = new HashSet<>();
