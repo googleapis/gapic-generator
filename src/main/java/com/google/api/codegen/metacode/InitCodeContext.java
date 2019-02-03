@@ -82,6 +82,11 @@ public abstract class InitCodeContext {
         .collect(ImmutableList.toImmutableList());
   }
 
+  /** Returns a copy of this initCodeContext, but with an empty symbolTable. */
+  public InitCodeContext cloneWithEmptySymbolTable() {
+    return toBuilder().symbolTable(new SymbolTable()).build();
+  }
+
   /**
    * Allows additional InitCodeNode objects which will be placed into the generated subtrees. This
    * is currently used by smoke testing only.
@@ -104,6 +109,8 @@ public abstract class InitCodeContext {
         .initFieldConfigStrings(ImmutableList.of())
         .sampleParamConfigMap(ImmutableMap.of());
   }
+
+  abstract Builder toBuilder();
 
   @AutoValue.Builder
   public abstract static class Builder {

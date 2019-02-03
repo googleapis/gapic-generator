@@ -40,7 +40,6 @@ import java.util.List;
  */
 public class DynamicLangApiMethodTransformer {
   private final ApiMethodParamTransformer apiMethodParamTransformer;
-  private final InitCodeTransformer initCodeTransformer;
   private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
   private final HeaderRequestParamTransformer headerRequestParamTransformer =
       new HeaderRequestParamTransformer();
@@ -48,32 +47,13 @@ public class DynamicLangApiMethodTransformer {
   private final SampleTransformer sampleTransformer;
 
   public DynamicLangApiMethodTransformer(ApiMethodParamTransformer apiMethodParamTransformer) {
-    this(apiMethodParamTransformer, new InitCodeTransformer());
+    this(apiMethodParamTransformer, SampleTransformer.create(SampleType.IN_CODE));
   }
 
   public DynamicLangApiMethodTransformer(
-      ApiMethodParamTransformer apiMethodParamTransformer,
-      InitCodeTransformer initCodeTransformer) {
-    this(apiMethodParamTransformer, initCodeTransformer, SampleType.IN_CODE);
-  }
-
-  public DynamicLangApiMethodTransformer(
-      ApiMethodParamTransformer apiMethodParamTransformer,
-      InitCodeTransformer initCodeTransformer,
-      SampleType sampleType) {
+      ApiMethodParamTransformer apiMethodParamTransformer, SampleTransformer sampleTransformer) {
     this.apiMethodParamTransformer = apiMethodParamTransformer;
-    this.initCodeTransformer = initCodeTransformer;
-    this.sampleTransformer = new SampleTransformer(sampleType);
-  }
-
-  public DynamicLangApiMethodTransformer(
-      ApiMethodParamTransformer apiMethodParamTransformer,
-      InitCodeTransformer initCodeTransformer,
-      SampleType sampleType,
-      OutputTransformer outputTransformer) {
-    this.apiMethodParamTransformer = apiMethodParamTransformer;
-    this.initCodeTransformer = initCodeTransformer;
-    this.sampleTransformer = new SampleTransformer(sampleType, outputTransformer);
+    this.sampleTransformer = sampleTransformer;
   }
 
   public OptionalArrayMethodView generateMethod(GapicMethodContext context) {
@@ -236,9 +216,6 @@ public class DynamicLangApiMethodTransformer {
         initContext,
         context.getMethodConfig().getRequiredFieldConfigs(),
         initCodeOutputType,
-        initCodeContext ->
-            initCodeTransformer.generateInitCode(
-                context.cloneWithEmptyTypeTable(), initCodeContext),
         callingForms);
   }
 
