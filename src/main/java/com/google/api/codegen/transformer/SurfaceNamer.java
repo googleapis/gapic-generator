@@ -41,15 +41,18 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.StringUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -1563,6 +1566,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
       }
     }
     return "response";
+  }
+
+  public Set<String> getSampleUsedVarNames(MethodContext context, CallingForm form) {
+    // TODO: Change this to an empty set once the PHP, Java, and Python implementations of this
+    // method are in place to define these identifiers. These values are here for now so we don't
+    // break those languages in the interim.
+    return ImmutableSet.of("response", "responseItem");
   }
 
   public String getSampleFunctionName(MethodModel method) {
