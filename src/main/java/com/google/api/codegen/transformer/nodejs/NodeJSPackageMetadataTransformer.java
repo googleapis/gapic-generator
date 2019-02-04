@@ -24,7 +24,6 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -32,7 +31,6 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
-import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
@@ -162,10 +160,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
       GapicMethodContext context, boolean packageHasMultipleServices) {
     OptionalArrayMethodView apiMethodView =
         new NodeJSMethodViewGenerator(
-                new DynamicLangApiMethodTransformer(
-                    new NodeJSApiMethodParamTransformer(),
-                    new InitCodeTransformer(),
-                    SampleType.IN_CODE))
+                new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer()))
             .generateOneApiMethod(
                 context,
                 testCaseTransformer.createSmokeTestInitContext(context),

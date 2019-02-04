@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.MethodContext;
@@ -63,27 +64,32 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
     return true;
   }
 
-  @Override
-  public boolean enableProtoAnnotations() {
-    return true;
-  }
-
   public static Builder newBuilder() {
     return new AutoValue_JavaFeatureConfig.Builder();
   }
 
   @AutoValue.Builder
-  public abstract static class Builder {
+  abstract static class Builder {
 
-    public abstract Builder enableStringFormatFunctions(boolean value);
+    abstract Builder enableStringFormatFunctions(boolean value);
 
-    public abstract JavaFeatureConfig build();
+    abstract JavaFeatureConfig build();
   }
 
-  public static JavaFeatureConfig create(ResourceNameMessageConfigs resourceNameMessageConfigs) {
+  public static JavaFeatureConfig create(GapicProductConfig productConfig) {
+    boolean enableStringFormatFunctions;
+
+    if (productConfig.enableStringFormattingFunctionsOverride() != null) {
+      enableStringFormatFunctions =
+          productConfig.enableStringFormattingFunctionsOverride().booleanValue();
+    } else {
+      ResourceNameMessageConfigs resourceNameMessageConfigs =
+          productConfig.getResourceNameMessageConfigs();
+      enableStringFormatFunctions =
+          resourceNameMessageConfigs == null || resourceNameMessageConfigs.isEmpty();
+    }
     return JavaFeatureConfig.newBuilder()
-        .enableStringFormatFunctions(
-            resourceNameMessageConfigs == null || resourceNameMessageConfigs.isEmpty())
+        .enableStringFormatFunctions(enableStringFormatFunctions)
         .build();
   }
 }

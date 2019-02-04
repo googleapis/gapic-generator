@@ -17,12 +17,13 @@ package com.google.api.codegen.util;
 import static com.google.api.FieldBehavior.REQUIRED;
 
 import com.google.api.AnnotationsProto;
+import com.google.api.HttpRule;
 import com.google.api.MethodSignature;
 import com.google.api.OAuth;
 import com.google.api.OperationData;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
-import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -37,6 +38,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
@@ -59,10 +61,6 @@ public class ProtoParser {
     this.enableProtoAnnotations = enableProtoAnnotations;
   }
 
-  public ProtoParser(FeatureConfig featureConfig) {
-    this.enableProtoAnnotations = featureConfig.enableProtoAnnotations();
-  }
-
   @SuppressWarnings("unchecked")
   @Nullable
   private <T, O extends Message, E extends ProtoElement> T getProtoExtension(
@@ -78,7 +76,6 @@ public class ProtoParser {
 
   @SuppressWarnings("unchecked")
   @Nullable
-  // GeneratedMessage.GeneratedExtension<DescriptorProtos.FieldOptions, List<FieldBehavior>>
   private <T extends ProtocolMessageEnum, O extends Message, E extends ProtoElement>
       List<EnumValueDescriptor> getProtoExtensionForEnumValue(
           E element, GeneratedExtension<O, List<T>> extension) {
@@ -89,6 +86,54 @@ public class ProtoParser {
     } else {
       return null;
     }
+  }
+
+  /* Return the name of the field representing the header parameter. */
+  public ImmutableSet<String> getHeaderParams(Method method) {
+    ImmutableSet.Builder<String> allParams = ImmutableSet.builder();
+
+    if (!enableProtoAnnotations) {
+      return allParams.build();
+    }
+
+    HttpRule topRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
+    if (topRule == null) {
+      return allParams.build();
+    }
+    String firstParam = getHeaderParam(topRule);
+    if (firstParam != null) allParams.add(firstParam);
+
+    // Additional bindings should only be one-deep, according to the API client config spec.
+    // No need to recurse on additional bindings' additional bindings.
+    for (HttpRule rule : topRule.getAdditionalBindingsList()) {
+      String headerParam = getHeaderParam(rule);
+      if (headerParam != null) allParams.add(headerParam);
+    }
+
+    return allParams.build();
+  }
+
+  // Finds the header param from a HttpRule and add the non-null value to the running set.
+  @Nullable
+  private String getHeaderParam(HttpRule httpRule) {
+
+    String urlVar;
+    if (!Strings.isNullOrEmpty(httpRule.getPost())) {
+      urlVar = httpRule.getPost();
+    } else if (!Strings.isNullOrEmpty(httpRule.getDelete())) {
+      urlVar = httpRule.getDelete();
+    } else if (!Strings.isNullOrEmpty(httpRule.getGet())) {
+      urlVar = httpRule.getGet();
+    } else if (!Strings.isNullOrEmpty(httpRule.getPatch())) {
+      urlVar = httpRule.getPatch();
+    } else if (!Strings.isNullOrEmpty(httpRule.getPut())) {
+      urlVar = httpRule.getPut();
+    } else {
+      return null;
+    }
+
+    PathTemplate pathTemplate = PathTemplate.create(urlVar);
+    return pathTemplate.singleVar();
   }
 
   @Nullable

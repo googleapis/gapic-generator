@@ -40,7 +40,9 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
+import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
+import com.google.api.codegen.transformer.StandardSampleImportTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
@@ -87,8 +89,12 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
           new PythonApiMethodParamTransformer(),
-          new InitCodeTransformer(importSectionTransformer),
-          sampleType);
+          SampleTransformer.newBuilder()
+              .sampleType(sampleType)
+              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
+              .sampleImportTransformer(
+                  new StandardSampleImportTransformer(importSectionTransformer))
+              .build());
   private final PythonMethodViewGenerator methodGenerator =
       new PythonMethodViewGenerator(apiMethodTransformer);
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();

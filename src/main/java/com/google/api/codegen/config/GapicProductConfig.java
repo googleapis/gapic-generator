@@ -27,13 +27,6 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
-import com.google.api.codegen.transformer.DefaultFeatureConfig;
-import com.google.api.codegen.transformer.FeatureConfig;
-import com.google.api.codegen.transformer.csharp.CSharpFeatureConfig;
-import com.google.api.codegen.transformer.java.JavaFeatureConfig;
-import com.google.api.codegen.transformer.nodejs.NodeJSFeatureConfig;
-import com.google.api.codegen.transformer.php.PhpFeatureConfig;
-import com.google.api.codegen.transformer.ruby.RubyFeatureConfig;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -116,6 +109,9 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public abstract String getConfigSchemaVersion();
 
+  @Nullable
+  public abstract Boolean enableStringFormattingFunctionsOverride();
+
   public GapicProductConfig withPackageName(String packageName) {
     return new AutoValue_GapicProductConfig(
         getInterfaceConfigMap(),
@@ -129,7 +125,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         getProtoParser(),
         getTransportProtocol(),
         getDefaultResourceNameFieldConfigMap(),
-        getConfigSchemaVersion());
+        getConfigSchemaVersion(),
+        enableStringFormattingFunctionsOverride());
   }
 
   @Nullable
@@ -197,9 +194,14 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     // Toggle on/off proto annotations parsing.
-    ProtoParser protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, null));
+    ProtoParser protoParser;
+    // TODO(andrealin): Expose command-line option for toggling proto annotations parsing.
     if (configProto == null) {
+      // By default, enable proto annotations parsing when no GAPIC config is given.
+      protoParser = new ProtoParser(true);
       configProto = ConfigProto.getDefaultInstance();
+    } else {
+      protoParser = new ProtoParser(false);
     }
 
     DiagCollector diagCollector = model.getDiagReporter().getDiagCollector();
@@ -213,9 +215,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtos, configProto, defaultPackage, resourceDefs, resourceSetDefs, protoParser);
-
-    // Update the protoParser with new info.
-    protoParser = new ProtoParser(getDefaultLanguageFeatureConfig(language, messageConfigs));
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(
@@ -310,6 +309,12 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
 
+    Boolean enableStringFormatFunctionsOverride = null;
+    if (configProto.getEnableStringFormatFunctionsOverride().isInitialized()) {
+      enableStringFormatFunctionsOverride =
+          configProto.getEnableStringFormatFunctionsOverride().getValue();
+    }
+
     if (interfaceConfigMap == null || copyrightLines == null || licenseLines == null) {
       return null;
     }
@@ -325,7 +330,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         protoParser,
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
-        configSchemaVersion);
+        configSchemaVersion,
+        enableStringFormatFunctionsOverride);
   }
 
   public static GapicProductConfig create(
@@ -380,6 +386,12 @@ public abstract class GapicProductConfig implements ProductConfig {
                   "config_schema_version field is required in GAPIC yaml."));
     }
 
+    Boolean enableStringFormatFunctionsOverride = null;
+    if (configProto.getEnableStringFormatFunctionsOverride().isInitialized()) {
+      enableStringFormatFunctionsOverride =
+          configProto.getEnableStringFormatFunctionsOverride().getValue();
+    }
+
     return new AutoValue_GapicProductConfig(
         interfaceConfigMap,
         settings.getPackageName(),
@@ -392,7 +404,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         new ProtoParser(false),
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
-        configSchemaVersion);
+        configSchemaVersion,
+        enableStringFormatFunctionsOverride);
   }
 
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
@@ -432,7 +445,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         // Default to gRPC.
         TransportProtocol.GRPC,
         createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),
-        configSchemaVersion);
+        configSchemaVersion,
+        false);
   }
 
   /** Return the list of information about clients to be generated. */
@@ -1021,26 +1035,5 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
     return null;
-  }
-
-  private static FeatureConfig getDefaultLanguageFeatureConfig(
-      TargetLanguage targetLanguage, ResourceNameMessageConfigs resourceNameMessageConfigs) {
-    switch (targetLanguage) {
-      case JAVA:
-        return JavaFeatureConfig.newBuilder()
-            .enableStringFormatFunctions(
-                resourceNameMessageConfigs == null || resourceNameMessageConfigs.isEmpty())
-            .build();
-      case CSHARP:
-        return new CSharpFeatureConfig();
-      case NODEJS:
-        return new NodeJSFeatureConfig();
-      case PHP:
-        return new PhpFeatureConfig();
-      case RUBY:
-        return new RubyFeatureConfig();
-      default:
-        return new DefaultFeatureConfig();
-    }
   }
 }

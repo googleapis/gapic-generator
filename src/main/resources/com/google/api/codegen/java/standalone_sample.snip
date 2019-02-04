@@ -16,8 +16,8 @@
       import org.apache.commons.cli.Options;
     @end
     // [START {@sample.regionTag}]
-    @if sample.sampleInitCode.importSection.appImports.size
-      {@importList(sample.sampleInitCode.importSection.appImports)}
+    @if sample.sampleImports.appImports.size
+      {@importList(sample.sampleImports.appImports)}
 
     @end
     public class {@sampleFile.classView.name} {
@@ -146,8 +146,13 @@
 
 @private asyncOperationMethodSampleCode(apiMethod, sample)
   {@initCode(sample.sampleInitCode)}
-  {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-      {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)}).get();
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)}).get();
+  @else
+    {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        {@sampleMethodCallArgList(initCode.fieldSettings)}).get();
+  @end
 @end
 
 @private callableMethodSampleCode(apiMethod, sample)
@@ -157,7 +162,7 @@
   // Do something
 
   @if apiMethod.hasReturnValue
-    {@apiMethod.responseTypeName} response = future.get();
+    {@apiMethod.callableMethod.genericAwareResponseType} response = future.get();
   @else
     future.get();
   @end
@@ -165,11 +170,17 @@
 
 @private asyncOperationCallableMethodSampleCode(apiMethod, sample)
   {@initCode(sample.sampleInitCode)}
-  OperationFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
+  OperationFuture<{@apiMethod.responseTypeName}, \
+  {@apiMethod.operationMethod.metadataTypeName}> future = \
+  {@sampleFutureMethodCall(apiMethod)};
 
   // Do something
 
-  {@apiMethod.responseTypeName} response = future.get();
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = future.get();
+  @else
+    future.get();
+  @end
 @end
 
 @private streamingCallableMethodSampleCode(apiMethod, sample)

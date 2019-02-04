@@ -50,11 +50,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /** The SurfaceNamer for NodeJS. */
 public class NodeJSSurfaceNamer extends SurfaceNamer {
@@ -118,6 +120,42 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getApiSampleFileName(String className) {
     return Name.anyCamel(className).toLowerUnderscore() + ".js";
+  }
+
+  @Override
+  public Set<String> getSampleUsedVarNames(MethodContext context, CallingForm form) {
+    switch (form) {
+      case Request:
+        if (context.getMethodModel().isOutputTypeEmpty()) {
+          return ImmutableSet.of();
+        } else {
+          return ImmutableSet.of("response");
+        }
+      case RequestAsyncPaged:
+        return ImmutableSet.of(
+            "response",
+            "resources",
+            "options",
+            "callback",
+            "responses",
+            "nextRequest",
+            "rawResponse");
+      case RequestAsyncPagedAll:
+        return ImmutableSet.of("responses", "resources", "resource");
+      case RequestStreamingBidi:
+        return ImmutableSet.of("stream", "response");
+      case RequestStreamingClient:
+        return ImmutableSet.of("err", "response", "stream");
+      case RequestStreamingServer:
+        return ImmutableSet.of("response");
+      case LongRunningEventEmitter:
+        return ImmutableSet.of(
+            "responses", "operation", "initApiResponse", "result", "metadata", "finalApiResponse");
+      case LongRunningPromise:
+        return ImmutableSet.of("responses", "result", "metadata", "finalApiResponse");
+      default:
+        throw new IllegalArgumentException("unrecognized calling form: " + form);
+    }
   }
 
   @Override

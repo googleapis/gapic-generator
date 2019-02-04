@@ -128,6 +128,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 // [START turing_prog_callable_streaming_bidi]
+import com.google.api.gax.rpc.BidiStream;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.LibraryClient;
@@ -195,9 +196,12 @@ package com.google.example.examples.library.v1;
 
 // [START sample]
 import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.FindRelatedBooksResponse;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 import com.google.example.library.v1.ShelfName;
+import java.util.Arrays;
+import java.util.List;
 
 public class FindRelatedBooksCallableCallableListOdyssey {
   public static void sampleFindRelatedBooks() {
@@ -242,7 +246,12 @@ public class FindRelatedBooksCallableCallableListOdyssey {
 package com.google.example.examples.library.v1;
 
 // [START sample]
+import com.google.api.common.ApiFuture;
+import com.google.example.library.v1.FindRelatedBooksResponse;
 import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import java.util.Arrays;
+import java.util.List;
 
 public class FindRelatedBooksFlattenedPagedOdyssey {
   public static void sampleFindRelatedBooks() {
@@ -278,10 +287,14 @@ public class FindRelatedBooksFlattenedPagedOdyssey {
 package com.google.example.examples.library.v1;
 
 // [START sample]
+import com.google.api.common.ApiFuture;
 import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.FindRelatedBooksResponse;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 import com.google.example.library.v1.ShelfName;
+import java.util.Arrays;
+import java.util.List;
 
 public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
   public static void sampleFindRelatedBooks() {
@@ -325,6 +338,8 @@ import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 import com.google.example.library.v1.ShelfName;
+import java.util.Arrays;
+import java.util.List;
 
 public class FindRelatedBooksRequestPagedOdyssey {
   public static void sampleFindRelatedBooks() {
@@ -364,6 +379,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 // [START hopper]
+import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 
@@ -409,6 +425,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 // [START hopper]
+import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 
@@ -461,6 +478,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 // [START hopper]
+import com.google.example.library.v1.Book;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
@@ -510,6 +528,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 // [START hopper]
+import com.google.example.library.v1.Book;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
@@ -566,9 +585,11 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 // [START hopper]
+import com.google.api.common.ApiFuture;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
+import com.google.longrunning.Operation;
 
 public class GetBigBookCallableCallableWap {
   public static void sampleGetBigBook(String shelf) {
@@ -619,9 +640,11 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 // [START hopper]
+import com.google.api.common.ApiFuture;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
+import com.google.longrunning.Operation;
 
 public class GetBigBookCallableCallableWap2 {
   public static void sampleGetBigBook(String shelf, String bigBookName) {
@@ -679,6 +702,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 // [START hopper]
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.Book;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
@@ -692,7 +717,7 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
-      OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookOperationCallable().futureCall(request);
 
       // Do something
 
@@ -732,6 +757,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 // [START hopper]
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.Book;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
@@ -746,7 +773,7 @@ public class GetBigBookOperationCallableLongRunningCallableWap2 {
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
-      OperationFuture<Operation> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookOperationCallable().futureCall(request);
 
       // Do something
 
@@ -788,6 +815,8 @@ public class GetBigBookOperationCallableLongRunningCallableWap2 {
 package com.google.example.examples.library.v1;
 
 // [START sample]
+import com.google.api.gax.rpc.ApiStreamObserver;
+import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.LibraryClient;
 
@@ -842,9 +871,11 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 // [START canonical]
+import com.google.api.common.ApiFuture;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
@@ -875,7 +906,17 @@ public class PublishSeriesCallableCallablePiVersion {
       // Do something
 
       PublishSeriesResponse response = future.get();
+      // % % % output handling % % % %
+      // fourScoreAndSevenYears ago
+      //
+      // our fathers brought forth upon this continent
+      // a new nation
+      // conceived in liberty
+      //
+      // and dedicated to the proposition that allMenAreCreatedEqual.
+      // Do something with bookNames one by one
       for (String title : response.getBookNamesList()) {
+        // Now we deal with thisSingleBook!
         System.out.printf("Title: %s\n", title);
       }
       System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
@@ -921,9 +962,11 @@ public class PublishSeriesCallableCallablePiVersion {
 package com.google.example.examples.library.v1;
 
 // [START canonical]
+import com.google.api.common.ApiFuture;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
@@ -973,6 +1016,7 @@ import org.apache.commons.cli.Options;
 // [START canonical]
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
@@ -993,7 +1037,17 @@ public class PublishSeriesFlattenedPiVersion {
         .setSeriesString(seriesString)
         .build();
       PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+      // % % % output handling % % % %
+      // fourScoreAndSevenYears ago
+      //
+      // our fathers brought forth upon this continent
+      // a new nation
+      // conceived in liberty
+      //
+      // and dedicated to the proposition that allMenAreCreatedEqual.
+      // Do something with bookNames one by one
       for (String title : response.getBookNamesList()) {
+        // Now we deal with thisSingleBook!
         System.out.printf("Title: %s\n", title);
       }
       System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
@@ -1041,6 +1095,7 @@ package com.google.example.examples.library.v1;
 // [START canonical]
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
@@ -1081,6 +1136,7 @@ import org.apache.commons.cli.Options;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
@@ -1107,7 +1163,17 @@ public class PublishSeriesRequestPiVersion {
         .setEdition(edition)
         .build();
       PublishSeriesResponse response = libraryClient.publishSeries(request);
+      // % % % output handling % % % %
+      // fourScoreAndSevenYears ago
+      //
+      // our fathers brought forth upon this continent
+      // a new nation
+      // conceived in liberty
+      //
+      // and dedicated to the proposition that allMenAreCreatedEqual.
+      // Do something with bookNames one by one
       for (String title : response.getBookNamesList()) {
+        // Now we deal with thisSingleBook!
         System.out.printf("Title: %s\n", title);
       }
       System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
@@ -1156,6 +1222,7 @@ package com.google.example.examples.library.v1;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
@@ -1195,6 +1262,8 @@ public class PublishSeriesRequestSecondEdition {
 package com.google.example.examples.library.v1;
 
 // [START babbage]
+import com.google.api.gax.rpc.ServerStream;
+import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.StreamBooksRequest;
 
@@ -1229,8 +1298,10 @@ public class StreamBooksCallableCallableStreamingServerProg {
 package com.google.example.examples.library.v1;
 
 // [START sample]
+import com.google.api.gax.rpc.ServerStream;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.StreamShelvesRequest;
+import com.google.example.library.v1.StreamShelvesResponse;
 
 public class StreamShelvesCallableCallableStreamingServerEmpty {
   public static void sampleStreamShelves() {
@@ -3869,7 +3940,7 @@ public class LibraryClient implements BackgroundResource {
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   OperationFuture&lt;Operation&gt; future = libraryClient.getBigBookOperationCallable().futureCall(request);
+   *   OperationFuture&lt;Book, GetBigBookMetadata&gt; future = libraryClient.getBigBookOperationCallable().futureCall(request);
    *   // Do something
    *   Book response = future.get();
    * }
@@ -3909,7 +3980,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   Empty response = libraryClient.getBigNothingAsync(name).get();
+   *   libraryClient.getBigNothingAsync(name).get();
    * }
    * </code></pre>
    *
@@ -3934,7 +4005,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   Empty response = libraryClient.getBigNothingAsync(name.toString()).get();
+   *   libraryClient.getBigNothingAsync(name.toString()).get();
    * }
    * </code></pre>
    *
@@ -3962,7 +4033,7 @@ public class LibraryClient implements BackgroundResource {
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   Empty response = libraryClient.getBigNothingAsync(request).get();
+   *   libraryClient.getBigNothingAsync(request).get();
    * }
    * </code></pre>
    *
@@ -3985,9 +4056,9 @@ public class LibraryClient implements BackgroundResource {
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
-   *   OperationFuture&lt;Operation&gt; future = libraryClient.getBigNothingOperationCallable().futureCall(request);
+   *   OperationFuture&lt;Empty, GetBigBookMetadata&gt; future = libraryClient.getBigNothingOperationCallable().futureCall(request);
    *   // Do something
-   *   Empty response = future.get();
+   *   future.get();
    * }
    * </code></pre>
    */
@@ -6554,6 +6625,15 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesTransportSettings =
         GrpcCallSettings.<PublishSeriesRequest, PublishSeriesResponse>newBuilder()
             .setMethodDescriptor(publishSeriesMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<PublishSeriesRequest>() {
+                  @Override
+                  public Map<String, String> extract(PublishSeriesRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("shelf.name", String.valueOf(request.getShelf().getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookRequest, Book> getBookTransportSettings =
         GrpcCallSettings.<GetBookRequest, Book>newBuilder()

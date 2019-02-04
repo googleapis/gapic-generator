@@ -32,6 +32,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
+import com.google.common.collect.ImmutableSet;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,7 @@ public class ProtoParserTest {
 
     testDataLocator = TestDataLocator.create(GapicCodeGeneratorAnnotationsTest.class);
     testDataLocator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    testDataLocator.addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
 
     model =
         CodegenTestUtil.readModel(
@@ -338,5 +340,15 @@ public class ProtoParserTest {
         .containsExactly(
             "https://www.googleapis.com/auth/library",
             "https://www.googleapis.com/auth/cloud-platform");
+  }
+
+  @Test
+  public void testHttpRuleUrl() {
+    ImmutableSet<String> deleteHeaderParams = protoParser.getHeaderParams(deleteShelfMethod);
+    assertThat(deleteHeaderParams).containsExactly("name");
+
+    Method publishMethod = libraryService.lookupMethod("PublishSeries");
+    ImmutableSet<String> publishHeaderParams = protoParser.getHeaderParams(publishMethod);
+    assertThat(publishHeaderParams).containsExactly("shelf.name");
   }
 }

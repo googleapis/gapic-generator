@@ -849,6 +849,13 @@ class LibraryServiceGapicClient
             $request->setReviewCopy($optionalArgs['reviewCopy']);
         }
 
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'shelf.name' => $request->getShelf()->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
         return $this->startCall(
             'PublishSeries',
             PublishSeriesResponse::class,
@@ -2673,6 +2680,13 @@ return [
                 'method' => 'post',
                 'uriTemplate' => '/v1/{name=bookShelves/*}/books',
                 'body' => 'book',
+                'additionalBindings' => [
+                    [
+                        'method' => 'post',
+                        'uriTemplate' => '/v1/{name=bookShelves/*}/books',
+                        'body' => 'book',
+                    ],
+                ],
                 'placeholders' => [
                     'name' => [
                         'getters' => [
@@ -2685,6 +2699,21 @@ return [
                 'method' => 'post',
                 'uriTemplate' => '/v1:publish',
                 'body' => '*',
+                'additionalBindings' => [
+                    [
+                        'method' => 'post',
+                        'uriTemplate' => '/v1/{shelf.name=shelves/*}:publish',
+                        'body' => '*',
+                    ],
+                ],
+                'placeholders' => [
+                    'shelf.name' => [
+                        'getters' => [
+                            'getShelf',
+                            'getName',
+                        ],
+                    ],
+                ]
             ],
             'GetBook' => [
                 'method' => 'get',
@@ -3603,7 +3632,17 @@ function samplePublishSeries($shelfName, $edition)
 
     try {
         $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        // % % % output handling % % % %
+        // fourScoreAndSevenYears ago
+        //
+        // our fathers brought forth upon this continent
+        // a new nation
+        // conceived in liberty
+        //
+        // and dedicated to the proposition that allMenAreCreatedEqual.
+        // Do something with bookNames one by one
         foreach ($response->getBookNames() as $title) {
+            // Now we deal with thisSingleBook!
             printf("Title: %s" . PHP_EOL, $title);
         }
         printf("The first book is: %s" . PHP_EOL, $response->getBookNames()[0]);

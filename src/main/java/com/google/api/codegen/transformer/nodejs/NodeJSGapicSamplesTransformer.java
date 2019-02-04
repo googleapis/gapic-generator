@@ -29,6 +29,7 @@ import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SampleFileRegistry;
+import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
@@ -50,13 +51,17 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<Pro
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "nodejs/standalone_sample.snip";
 
   private final GapicCodePathMapper pathMapper;
+  private final NodeJSImportSectionTransformer importSectionTransformer =
+      new NodeJSImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new NodeJSImportSectionTransformer());
+      new FileHeaderTransformer(importSectionTransformer);
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
           new NodeJSApiMethodParamTransformer(),
-          new InitCodeTransformer(new NodeJSImportSectionTransformer()),
-          SampleType.STANDALONE);
+          SampleTransformer.newBuilder()
+              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
+              .sampleType(SampleType.STANDALONE)
+              .build());
   private final NodeJSMethodViewGenerator methodGenerator =
       new NodeJSMethodViewGenerator(apiMethodTransformer);
   private final PackageMetadataConfig packageConfig;

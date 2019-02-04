@@ -30,9 +30,11 @@ import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
+import com.google.api.codegen.viewmodel.AccessorView;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -43,7 +45,7 @@ public class OutputTransformerTest {
   private OutputTransformer.ScopeTable parent;
   private OutputTransformer.ScopeTable child;
   private SampleValueSet valueSet;
-  private CallingForm form;
+  private final CallingForm form = CallingForm.Request; // enums can't be mocked
 
   @Mock private FeatureConfig featureConfig;
   @Mock private FieldConfig resourceFieldConfig;
@@ -78,22 +80,15 @@ public class OutputTransformerTest {
     when(namer.getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig))
         .thenReturn("ShelfBookName");
     when(featureConfig.useResourceNameFormatOption(resourceFieldConfig)).thenReturn(true);
+    when(namer.getSampleUsedVarNames(context, form)).thenReturn(ImmutableSet.of("fooResponse"));
     try {
       OutputView.VariableView variableView =
-          accessorNewVariable(scanner, context, valueSet, parent, "response", form, false);
+          accessorNewVariable(scanner, context, valueSet, parent, "fooResponse", false, form);
       fail();
     } catch (IllegalArgumentException e) {
       assertThat(e.getMessage())
-          .contains("cannot define variable response: it is a reserved keyword");
-    }
-    scanner = new Scanner("$resp");
-    try {
-      OutputView.VariableView variableView =
-          accessorNewVariable(scanner, context, valueSet, parent, "response_item", form, false);
-      fail();
-    } catch (IllegalArgumentException e) {
-      assertThat(e.getMessage())
-          .contains("cannot define variable response_item: it is a reserved keyword");
+          .contains(
+              "cannot define variable \"fooResponse\": it is used by the sample template for calling form");
     }
   }
 
@@ -108,7 +103,7 @@ public class OutputTransformerTest {
     when(featureConfig.useResourceNameFormatOption(resourceFieldConfig)).thenReturn(true);
 
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", form, false);
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
 
     assertThat(variableView.variable()).isEqualTo("sampleResponseVarName");
     assertThat(variableView.accessors()).isEmpty();
@@ -131,7 +126,7 @@ public class OutputTransformerTest {
     when(namer.getAndSaveTypeName(typeTable, typeModel)).thenReturn("TypeName");
 
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", form, false);
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
 
     assertThat(variableView.variable()).isEqualTo("sampleResponseVarName");
     assertThat(variableView.accessors()).isEmpty();
@@ -149,7 +144,7 @@ public class OutputTransformerTest {
     when(model.getOutputType()).thenReturn(typeModel);
 
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", form, false);
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
 
     assertThat(variableView.variable()).isEqualTo("sampleResponseVarName");
     assertThat(variableView.accessors()).isEmpty();
@@ -163,7 +158,7 @@ public class OutputTransformerTest {
     Scanner scanner = new Scanner("old_var");
     when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", form, false);
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
 
     assertThat(variableView.variable()).isEqualTo("oldVar");
     assertThat(variableView.accessors()).isEmpty();
@@ -179,7 +174,7 @@ public class OutputTransformerTest {
     when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
     when(namer.getAndSaveTypeName(typeTable, oldVarTypeModel)).thenReturn("OldVarTypeName");
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", form, false);
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
 
     assertThat(variableView.variable()).isEqualTo("oldVar");
     assertThat(variableView.accessors()).isEmpty();
@@ -205,7 +200,7 @@ public class OutputTransformerTest {
     when(propertyFieldModel.getType()).thenReturn(propertyTypeModel);
 
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", form, false);
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
 
     assertThat(variableView.variable()).isEqualTo("oldVar");
     assertThat(variableView.accessors()).containsExactly(".getProperty()").inOrder();
@@ -223,7 +218,7 @@ public class OutputTransformerTest {
     when(namer.getAndSaveTypeName(typeTable, oldVarTypeModel)).thenReturn("OldVarTypeName");
     try {
       OutputView.VariableView variableView =
-          accessorNewVariable(scanner, context, valueSet, parent, "newVar", form, true);
+          accessorNewVariable(scanner, context, valueSet, parent, "newVar", true, form);
       fail();
     } catch (IllegalArgumentException e) {
       assertThat(e.getMessage()).contains("is not a repeated field");
@@ -254,7 +249,7 @@ public class OutputTransformerTest {
     when(propertyFieldModel.getType()).thenReturn(propertyTypeModel);
 
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", form, false);
+        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
 
     assertThat(variableView.variable()).isEqualTo("oldVar");
     assertThat(variableView.accessors()).containsExactly(".getProperty()", "[0]").inOrder();
