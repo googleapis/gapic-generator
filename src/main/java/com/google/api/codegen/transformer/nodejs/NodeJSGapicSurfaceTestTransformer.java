@@ -24,7 +24,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.nodejs.NodeJSUtils;
@@ -264,10 +263,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
       GapicMethodContext context, boolean packageHasMultipleServices) {
     OptionalArrayMethodView apiMethodView =
         new NodeJSMethodViewGenerator(
-                new DynamicLangApiMethodTransformer(
-                    new NodeJSApiMethodParamTransformer(),
-                    new InitCodeTransformer(),
-                    SampleType.IN_CODE))
+                new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer()))
             .generateOneApiMethod(
                 context,
                 testCaseTransformer.createSmokeTestInitContext(context),

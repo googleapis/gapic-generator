@@ -22,7 +22,6 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -64,8 +63,9 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
   private final StaticLangApiMethodTransformer apiMethodTransformer =
       new CSharpApiMethodTransformer();
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
-  private final SampleTransformer sampleTransformer = new SampleTransformer(SampleType.IN_CODE);
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+  private final SampleTransformer sampleTransformer =
+      SampleTransformer.newBuilder().initCodeTransformer(initCodeTransformer).build();
 
   public CSharpGapicSnippetsTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
@@ -526,12 +526,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     // context. Without this, the per-snippet imports don't get included in the snippet file.
     StaticLangApiMethodView.Builder builder = method.toBuilder();
     sampleTransformer.generateSamples(
-        builder,
-        context,
-        fieldConfigs,
-        initCodeOutputType,
-        initCodeContext -> initCodeTransformer.generateInitCode(context, initCodeContext),
-        Arrays.asList(callingForm));
+        builder, context, fieldConfigs, initCodeOutputType, Arrays.asList(callingForm));
     return builder.build();
   }
 }
