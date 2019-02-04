@@ -80,15 +80,15 @@ public class OutputTransformerTest {
     when(namer.getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig))
         .thenReturn("ShelfBookName");
     when(featureConfig.useResourceNameFormatOption(resourceFieldConfig)).thenReturn(true);
-    when(namer.getSampleUsedVarNames(context, form)).thenReturn(ImmutableSet.of("response"));
+    when(namer.getSampleUsedVarNames(context, form)).thenReturn(ImmutableSet.of("fooResponse"));
     try {
       OutputView.VariableView variableView =
-          accessorNewVariable(scanner, context, valueSet, parent, "response", false, form);
+          accessorNewVariable(scanner, context, valueSet, parent, "fooResponse", false, form);
       fail();
     } catch (IllegalArgumentException e) {
       assertThat(e.getMessage())
           .contains(
-              "cannot define variable response: it is used by the sample template for calling form");
+              "cannot define variable \"fooResponse\": it is used by the sample template for calling form");
     }
   }
 

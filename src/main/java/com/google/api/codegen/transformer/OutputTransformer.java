@@ -466,7 +466,7 @@ public class OutputTransformer {
       CallingForm form) {
     Preconditions.checkArgument(
         !context.getNamer().getSampleUsedVarNames(context, form).contains(identifier),
-        "%s: %s cannot define variable %s: it is used by the sample template for calling form %s.",
+        "%s: %s cannot define variable \"%s\": it is used by the sample template for calling form \"%s\".",
         methodName,
         valueSetId,
         identifier,
