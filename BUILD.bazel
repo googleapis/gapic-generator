@@ -59,12 +59,6 @@ java_plugin(
     deps = ["@com_google_auto_value_auto_value//jar"],
 )
 
-java_library(
-    name = "auto_value",
-    exported_plugins = [":auto_value_plugin"],
-    exports = ["@com_google_auto_value_auto_value//jar"],
-)
-
 proto_library(
     name = "config_proto",
     srcs = ["src/main/proto/com/google/api/codegen/config.proto"],
@@ -85,8 +79,8 @@ java_binary(
     main_class = "com.google.api.codegen.GeneratorMain",
     resources = glob(["src/main/resources/**/*"]),
     visibility = ["//visibility:public"],
+    plugins = [":auto_value_plugin"],
     deps = [
-        ":auto_value",
         ":config_java_proto",
     ] + _COMPILE_DEPS,
 )
@@ -119,8 +113,8 @@ java_library(
     ]) + ["@com_google_protobuf//:well_known_protos"],
     visibility = ["//visibility:public"],
     runtime_deps = ["@com_google_protobuf//:protoc"],
+    plugins = [":auto_value_plugin"],
     deps = [
-        ":auto_value",
         ":config_java_proto",
         ":gapic_generator",
     ] + _COMPILE_DEPS + _TEST_COMPILE_DEPS,
