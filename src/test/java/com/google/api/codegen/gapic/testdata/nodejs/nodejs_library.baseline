@@ -440,9 +440,9 @@ client.getBigBook({name: formattedName})
 
     // Adding a listener for the "complete" event starts polling for the
     // completion of the operation.
-    operation.on('complete', (response, metadata, finalApiResponse) => {
-      console.log(`name: {$finalApiResponse.name}`);
-      console.log(`author: {$finalApiResponse.author}`);
+    operation.on('complete', (result, metadata, finalApiResponse) => {
+      console.log(`name: {$result.name}`);
+      console.log(`author: {$result.author}`);
     });
 
     // Adding a listener for the "progress" event causes the callback to be
@@ -499,8 +499,8 @@ client.getBigBook({name: formattedName})
 
     // Adding a listener for the "complete" event starts polling for the
     // completion of the operation.
-    operation.on('complete', (response, metadata, finalApiResponse) => {
-      console.log(finalApiResponse);
+    operation.on('complete', (result, metadata, finalApiResponse) => {
+      console.log(result);
     });
 
     // Adding a listener for the "progress" event causes the callback to be
@@ -562,8 +562,8 @@ client.getBigBook({name: formattedName})
     const metadata = responses[1];
     const finalApiResponse = responses[2];
 
-    console.log(`name: {$finalApiResponse.name}`);
-    console.log(`author: {$finalApiResponse.author}`);
+    console.log(`name: {$result.name}`);
+    console.log(`author: {$result.author}`);
   })
   .catch(err => {
     console.error(err);
@@ -614,7 +614,7 @@ client.getBigBook({name: formattedName})
     const metadata = responses[1];
     const finalApiResponse = responses[2];
 
-    console.log(finalApiResponse);
+    console.log(result);
   })
   .catch(err => {
     console.error(err);

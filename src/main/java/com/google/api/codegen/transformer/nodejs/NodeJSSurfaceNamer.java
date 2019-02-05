@@ -620,7 +620,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         return "resource";
       case LongRunningEventEmitter:
       case LongRunningPromise:
-        return "finalApiResponse";
+        return "result";
       default:
         throw new IllegalArgumentException("illegal calling form for Node.js: " + form);
     }
