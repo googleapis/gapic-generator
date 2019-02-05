@@ -21,7 +21,6 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
-import com.google.api.codegen.viewmodel.AccessorView;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.OutputView;
@@ -177,17 +176,7 @@ public class OutputTransformer {
         loopVariable, context.getMethodModel().getSimpleName(), valueSet.getId(), context, form);
     OutputView.VariableView accessor =
         accessorNewVariable(
-<<<<<<< HEAD
-            new Scanner(loop.getCollection()),
-            context,
-            valueSet,
-            scope,
-            loopVariable,
-            callingForm,
-            true);
-=======
             new Scanner(loop.getCollection()), context, valueSet, scope, loopVariable, true, form);
->>>>>>> master
     OutputView.LoopView ret =
         OutputView.LoopView.newBuilder()
             .variableType(scope.getTypeName(loopVariable))
@@ -196,11 +185,7 @@ public class OutputTransformer {
             .body(
                 loop.getBodyList()
                     .stream()
-<<<<<<< HEAD
-                    .map(body -> toView(body, context, valueSet, scope, callingForm))
-=======
                     .map(body -> toView(body, context, valueSet, scope, form))
->>>>>>> master
                     .collect(ImmutableList.toImmutableList()))
             .build();
     return ret;
@@ -211,11 +196,7 @@ public class OutputTransformer {
       MethodContext context,
       SampleValueSet valueSet,
       ScopeTable localVars,
-<<<<<<< HEAD
-      CallingForm callingForm) {
-=======
       CallingForm form) {
->>>>>>> master
     Preconditions.checkArgument(
         definition.scan() == Scanner.IDENT,
         "%s:%s: expected identifier: %s",
@@ -232,12 +213,7 @@ public class OutputTransformer {
         valueSet.getId(),
         definition.input());
     OutputView.VariableView reference =
-<<<<<<< HEAD
-        accessorNewVariable(
-            definition, context, valueSet, localVars, identifier, callingForm, false);
-=======
         accessorNewVariable(definition, context, valueSet, localVars, identifier, false, form);
->>>>>>> master
     return OutputView.DefineView.newBuilder()
         .variableType(localVars.getTypeName(identifier))
         .variableName(context.getNamer().localVarName(Name.from(identifier)))
@@ -263,13 +239,8 @@ public class OutputTransformer {
       MethodContext context,
       SampleValueSet valueSet,
       ScopeTable localVars,
-<<<<<<< HEAD
-      CallingForm callingForm) {
-    return accessorNewVariable(config, context, valueSet, localVars, null, callingForm, false);
-=======
       CallingForm form) {
     return accessorNewVariable(config, context, valueSet, localVars, null, false, form);
->>>>>>> master
   }
 
   /**
@@ -296,13 +267,8 @@ public class OutputTransformer {
       SampleValueSet valueSet,
       ScopeTable localVars,
       @Nullable String newVar,
-<<<<<<< HEAD
-      CallingForm callingForm,
-      boolean scalarTypeForCollection) {
-=======
       boolean scalarTypeForCollection,
       CallingForm form) {
->>>>>>> master
 
     OutputView.VariableView.Builder view = OutputView.VariableView.newBuilder();
 
@@ -317,7 +283,7 @@ public class OutputTransformer {
     TypeModel type = null;
     String typeName = null;
     if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
-      view.variable(context.getNamer().getSampleResponseVarName(context, callingForm));
+      view.variable(context.getNamer().getSampleResponseVarName(context, form));
       boolean pageStreaming = context.getMethodConfig().getPageStreaming() != null;
       boolean pageStreamingAndUseResourceName =
           pageStreaming

@@ -30,7 +30,6 @@ import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
-import com.google.api.codegen.viewmodel.AccessorView;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.tools.framework.model.TypeRef;
@@ -61,7 +60,6 @@ public class OutputTransformerTest {
     valueSet = SampleValueSet.newBuilder().setId("test-sample-value-set-id").build();
     parent = new OutputTransformer.ScopeTable();
     child = new OutputTransformer.ScopeTable(parent);
-    form = CallingForm.Request; // unable to mock an enum, set a random value
     MockitoAnnotations.initMocks(this);
     when(context.getFeatureConfig()).thenReturn(featureConfig);
     when(context.getMethodConfig()).thenReturn(config);
