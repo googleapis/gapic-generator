@@ -35,10 +35,12 @@ public class StandardSchemaGenerator {
         .build();
   }
 
-  public static Schema createListSchema(Schema items, String id, boolean isRequired) {
+  public static Schema createListSchema(
+      Schema items, String id, boolean isRequired, String description) {
     return Schema.newBuilder()
         .setFormat(EMPTY)
         .setId(id)
+        .setDescription(description)
         .setKey(id)
         .setRepeated(false)
         .setRequired(isRequired)
