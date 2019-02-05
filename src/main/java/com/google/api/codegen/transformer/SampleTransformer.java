@@ -237,7 +237,7 @@ public abstract class SampleTransformer {
       outputs = OutputTransformer.defaultOutputSpecs(methodContext.getMethodModel());
     }
     ImmutableList<OutputView> outputViews =
-        outputTransformer().toViews(outputs, methodContext, valueSet);
+        outputTransformer().toViews(outputs, methodContext, valueSet, form);
     sampleImportTransformer().addSampleBodyImports(methodContext, form);
     sampleImportTransformer().addOutputImports(methodContext, outputViews);
     sampleImportTransformer()
