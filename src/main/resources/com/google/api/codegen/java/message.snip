@@ -147,6 +147,7 @@
 @private getters(schema)
   @join param : schema.properties
     @if param.isSerializable
+      {@fieldMethodDoc(param)}
       public {@param.typeName} {@param.fieldGetFunction}() {
         return {@param.name};
       }
@@ -199,11 +200,13 @@
     }
 
     @join property : schema.properties
+      {@fieldMethodDoc(property)}
       public {@property.typeName} {@property.fieldGetFunction}() {
         return {@property.name};
       }
 
       @if property.canRepeat
+        {@fieldMethodDoc(property)}
         public Builder {@property.fieldSetFunction}({@property.typeName} {@property.name}) {
           if (this.{@property.name} == null) {
             this.{@property.name} = new LinkedList<>();
@@ -212,6 +215,7 @@
           return this;
         }
 
+        {@fieldMethodDoc(property)}
         public Builder {@property.fieldAddFunction}({@property.innerTypeName} {@property.name}) {
           if (this.{@property.name} == null) {
             this.{@property.name} = new LinkedList<>();
@@ -220,6 +224,7 @@
           return this;
         }
       @else
+        {@fieldMethodDoc(property)}
         public Builder {@property.fieldSetFunction}({@property.innerTypeName} {@property.name}) {
           this.{@property.name} = {@property.name};
           return this;

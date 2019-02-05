@@ -220,7 +220,7 @@ public class JavaDiscoGapicRequestToViewTransformer
         continue;
       }
       StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
-      paramView.description(STANDARD_QUERY_PARAMS.get(param));
+      paramView.docLines(context.getNamer().getDocLines(STANDARD_QUERY_PARAMS.get(param)));
       paramView.rawName(param);
       paramView.name(symbolTable.getNewSymbol(param));
       paramView.typeName("String");
@@ -268,7 +268,7 @@ public class JavaDiscoGapicRequestToViewTransformer
             + "     * underscores (\\`_\\`), periods (\\`.\\`), tildes (\\`~\\`), plus (\\`+\\`) or percent\n"
             + "     * signs (\\`%\\`). It must be between 3 and 255 characters in length, and it\n"
             + "     * must not start with \\`\"goog\"\\`.");
-    paramView.description(description.toString());
+    paramView.docLines(context.getNamer().getDocLines(description.toString()));
     paramView.rawName(resourceNameView.name());
     paramView.name(symbolTable.getNewSymbol(resourceNameView.name()));
     paramView.typeName("String");
@@ -316,7 +316,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
     String innerTypeName =
         context.getSchemaTypeTable().getAndSaveNicknameForElementType((FieldModel) schema);
-    paramView.description(schema.getScopedDocumentation());
+    paramView.docLines(context.getNamer().getDocLines(schema.getDiscoveryField().description()));
     String name = context.getNamer().privateFieldName(Name.anyCamel(preferredName));
     String fieldName = name;
     if (escapeName.equals(EscapeName.ESCAPE_NAME)) {
