@@ -1387,10 +1387,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
         && !Strings.isNullOrEmpty(schema.additionalProperties().description())) {
       description
           .append("\nThe key for the map is: ")
-          .append(
-              schema
-                  .additionalProperties()
-                  .description());
+          .append(schema.additionalProperties().description());
     }
     return CommonRenderingUtil.getDocLines(commentReformatter.reformat(description.toString()));
   }
