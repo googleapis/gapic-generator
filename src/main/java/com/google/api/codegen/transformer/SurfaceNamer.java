@@ -1551,6 +1551,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /**
    * Translate C-printf-spec and a list of args into those expected by the language's format
    * utilities.
+   *
+   * <p>For languages that prefer interpolating the arguments in the format string, the returned
+   * list will only have one element, the interpolated format string.
+   *
+   * <p>For languages that prefer using placeholders in the format string, the returned list will be
+   * a format string followed by all the arguments to replace the placeholders.
    */
   public List<String> getPrintSpecs(String spec, List<String> args) {
     return ImmutableList.<String>builder().add(spec).addAll(args).build();
@@ -1569,8 +1575,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getIndexAccessorName");
   }
 
+  /** Returns the expression to access a field of a protobuf object. */
   public String getFieldAccessorName(FieldModel field) {
-    return "." + getFieldGetFunctionName(field) + "()";
+    return getNotImplementedString("SurfaceNamer.getFieldAccessorName");
   }
 
   public String getSampleResponseVarName(MethodContext context, CallingForm form) {
