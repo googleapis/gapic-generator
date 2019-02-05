@@ -483,11 +483,18 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  /**
+   * If the argument is a protobuf enum, returns an expression that translates an enum to a
+   * descriptive string, for example, `enums.message_type.enum_type(var.foo.bar).name()`. Otherwise,
+   * returns the argument as it is.
+   */
   public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
     String arg = variable + String.join("", accessors);
+    // We print the arguemnt as it is if it's not an enum type
     if (!(type instanceof ProtoTypeRef) || !((ProtoTypeRef) type).isEnum()) {
       return arg;
     }
+    // Find all the parent elements of this enum type, stopping at the top-level message or enum
     TypeRef protoType = ((ProtoTypeRef) type).getProtoType();
     ProtoElement t = protoType.getEnumType();
     List<String> names = new ArrayList<>();
@@ -495,6 +502,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
       names.add(t.getSimpleName());
       t = t.getParent();
     }
+    // Wrap the enum value with the helper function that translates it to a descriptive string
     names.add("enums");
     StringBuilder builder = new StringBuilder();
     for (String name : Lists.reverse(names)) {

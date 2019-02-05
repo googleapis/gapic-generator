@@ -151,7 +151,7 @@ public class OutputTransformer {
               .getNamer()
               .getFormattedPrintArgName(type, variable.variable(), variable.accessors());
       OutputView.PrintArgView arg =
-          OutputView.PrintArgView.newBuilder().type(type).arg(formattedArg).build();
+          OutputView.PrintArgView.newBuilder().type(type).formattedName(formattedArg).build();
       argsBuilder.add(arg);
     }
     ImmutableList<OutputView.PrintArgView> args = argsBuilder.build();
@@ -159,7 +159,7 @@ public class OutputTransformer {
         context
             .getNamer()
             .getPrintSpecs(
-                format, args.stream().map(arg -> arg.arg()).collect(Collectors.toList()));
+                format, args.stream().map(arg -> arg.formattedName()).collect(Collectors.toList()));
     return OutputView.PrintView.newBuilder().format(specs.get(0)).args(args).build();
   }
 
@@ -330,6 +330,8 @@ public class OutputTransformer {
     }
 
     int token;
+    // The accessors includes not only the field names but also language-specific
+    // syntax. e.g., `->field()` in PHP and `.field()` in Java.
     ImmutableList.Builder<String> accessors = ImmutableList.builder();
     while ((token = config.scan()) != Scanner.EOF) {
       if (token == '.') {

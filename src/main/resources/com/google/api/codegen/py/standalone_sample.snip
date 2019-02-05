@@ -239,7 +239,7 @@
     print('{@view.format}')
   @else
     @if view.format == "{}"
-      print({@view.args.get(0).arg})
+      print({@view.args.get(0).formattedName})
     @else
       print('{@view.format}'.format({@commaSeparatedFields(view.args)}))
     @end
@@ -262,7 +262,7 @@
 
 @private commaSeparatedFields(args)
   @join arg : args on ", "
-    {@arg.arg}
+    {@arg.formattedName}
   @end
 @end
 

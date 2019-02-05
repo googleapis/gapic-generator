@@ -138,7 +138,7 @@ public interface OutputView {
   @AutoValue
   abstract class PrintArgView {
 
-    public abstract String arg();
+    public abstract String formattedName();
 
     @Nullable
     public abstract TypeModel type();
@@ -149,7 +149,7 @@ public interface OutputView {
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder arg(String val);
+      public abstract Builder formattedName(String val);
 
       public abstract Builder type(TypeModel val);
 

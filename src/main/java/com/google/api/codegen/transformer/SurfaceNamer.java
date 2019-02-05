@@ -1570,12 +1570,23 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return variable + String.join("", accessors);
   }
 
-  /** Returns the expression to access an element of a collection by index. */
+  /**
+   * Returns the expression to access an element of a collection by index.
+   *
+   * <p>Note the returned value includes the language-specific syntax for accessing an element of a
+   * collection. For example, the returned value should be `.get(i)` in Java, and `[i]` in PHP.
+   */
   public String getIndexAccessorName(int index) {
     return getNotImplementedString("SurfaceNamer.getIndexAccessorName");
   }
 
-  /** Returns the expression to access a field of a protobuf object. */
+  /**
+   * Returns the expression to access a field of a protobuf object.
+   *
+   * <p>Note the returned value includes not only the field name, but also the language-specific
+   * syntax for accessing a protobuf object field. For example, the returned value should be
+   * `.getField()` in Java, and `->getField()` in PHP.
+   */
   public String getFieldAccessorName(FieldModel field) {
     return getNotImplementedString("SurfaceNamer.getFieldAccessorName");
   }
