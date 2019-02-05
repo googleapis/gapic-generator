@@ -490,7 +490,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
    */
   public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
     String arg = variable + String.join("", accessors);
-    // We print the arguemnt as it is if it's not an enum type
+    // We print the argument as it is if it's not an enum type
     if (!(type instanceof ProtoTypeRef) || !((ProtoTypeRef) type).isEnum()) {
       return arg;
     }

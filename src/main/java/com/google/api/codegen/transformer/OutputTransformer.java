@@ -330,7 +330,7 @@ public class OutputTransformer {
     }
 
     int token;
-    // The accessors includes not only the field names but also language-specific
+    // The accessors include not only the field names but also language-specific
     // syntax. e.g., `->field()` in PHP and `.field()` in Java.
     ImmutableList.Builder<String> accessors = ImmutableList.builder();
     while ((token = config.scan()) != Scanner.EOF) {
