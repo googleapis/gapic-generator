@@ -484,7 +484,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   /**
-   * If the argument is a protobuf enum, returns an expression that translates an enum to a
+   * If the argument is a protobuf enum, returns an expression that translates the enum to a
    * descriptive string, for example, `enums.message_type.enum_type(var.foo.bar).name()`. Otherwise,
    * returns the argument as it is.
    */
