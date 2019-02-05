@@ -584,7 +584,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     }
     Object[] formattedArgs =
         args.stream().map(a -> String.format("{$%s}", a)).toArray(Object[]::new);
-    return Collections.singletonList(String.format(spec, args));
+    return Collections.singletonList(String.format(spec, formattedArgs));
   }
 
   @Override

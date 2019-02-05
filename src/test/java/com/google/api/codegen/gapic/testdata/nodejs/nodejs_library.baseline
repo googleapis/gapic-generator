@@ -333,7 +333,7 @@ client.findRelatedBooks(request)
     const resources = responses[0];
     for (const resource of resources) {
       const book = resource;
-      console.log(`Here's a related book: [book]`);
+      console.log(`Here's a related book: {$book}`);
     }
   })
   .catch(err => {
@@ -389,7 +389,7 @@ const callback = responses => {
   // const rawResponse = responses[2];
   for (const resource of resources) {
     const book = resource;
-    console.log(`Here's a related book: [book]`);
+    console.log(`Here's a related book: {$book}`);
   }
   if (nextRequest) {
     // Fetch the next page.
@@ -441,8 +441,8 @@ client.getBigBook({name: formattedName})
     // Adding a listener for the "complete" event starts polling for the
     // completion of the operation.
     operation.on('complete', (result, metadata, finalApiResponse) => {
-      console.log(`name: [result.name]`);
-      console.log(`author: [result.author]`);
+      console.log(`name: {$result.name}`);
+      console.log(`author: {$result.author}`);
     });
 
     // Adding a listener for the "progress" event causes the callback to be
@@ -562,8 +562,8 @@ client.getBigBook({name: formattedName})
     const metadata = responses[1];
     const finalApiResponse = responses[2];
 
-    console.log(`name: [result.name]`);
-    console.log(`author: [result.author]`);
+    console.log(`name: {$result.name}`);
+    console.log(`author: {$result.author}`);
   })
   .catch(err => {
     console.error(err);
@@ -653,7 +653,7 @@ const stream = client.monologAboutBook((err, response) => {
     console.error(err);
     return;
   }
-  console.log(`The stage of the comment is: [response.stage]`);
+  console.log(`The stage of the comment is: {$response.stage}`);
 });
 const name = 'BASIC';
 const request = {
@@ -720,12 +720,12 @@ client.publishSeries(request)
     * Do something with bookNames one by one
     for (const title of response.bookNames) {
       * Now we deal with thisSingleBook!
-      console.log(`Title: [title]`);
+      console.log(`Title: {$title}`);
     }
-    console.log(`The first book is: [response.bookNames[0]]`);
-    console.log(`The author of the first book is: [response.books[0].author]`);
+    console.log(`The first book is: {$response.bookNames[0]}`);
+    console.log(`The author of the first book is: {$response.books[0].author}`);
     console.log(`That's all!`);
-    console.log(`series_uuid: [response.seriesUuid.seriesBytes]`);
+    console.log(`series_uuid: {$response.seriesUuid.seriesBytes}`);
   })
   .catch(err => {
     console.error(err);
