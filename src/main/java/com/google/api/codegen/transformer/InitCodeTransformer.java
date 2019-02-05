@@ -105,6 +105,10 @@ public class InitCodeTransformer {
     this.generateUserFacingComments = generateUserFacingComments;
   }
 
+  public ImportSectionTransformer getImportSectionTransformer() {
+    return this.importSectionTransformer;
+  }
+
   /** Generates initialization code from the given MethodContext and InitCodeContext objects. */
   public InitCodeView generateInitCode(
       MethodContext methodContext, InitCodeContext initCodeContext) {
@@ -114,6 +118,21 @@ public class InitCodeTransformer {
     } else {
       return buildInitCodeViewRequestObject(methodContext, initCodeContext, rootNode);
     }
+  }
+
+  public List<InitCodeNode> getInitCodeNodes(
+      MethodContext methodContext, InitCodeContext initCodeContext) {
+    InitCodeNode root = InitCodeNode.createTree(initCodeContext);
+    List<InitCodeNode> orderedItems = root.listInInitializationOrder();
+    if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
+      // Remove the request object for flattened method
+      orderedItems.remove(orderedItems.size() - 1);
+    }
+    for (InitCodeNode param : sampleFuncParams(root, initCodeContext.sampleArgStrings())) {
+      List<InitCodeNode> paramInits = param.listInInitializationOrder();
+      orderedItems.removeAll(paramInits);
+    }
+    return orderedItems;
   }
 
   public InitCodeContext createRequestInitCodeContext(

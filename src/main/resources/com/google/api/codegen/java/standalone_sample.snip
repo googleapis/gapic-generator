@@ -16,8 +16,8 @@
       import org.apache.commons.cli.Options;
     @end
     // [START {@sample.regionTag}]
-    @if sample.sampleInitCode.importSection.appImports.size
-      {@importList(sample.sampleInitCode.importSection.appImports)}
+    @if sample.sampleImports.appImports.size
+      {@importList(sample.sampleImports.appImports)}
 
     @end
     public class {@sampleFile.classView.name} {
@@ -162,7 +162,7 @@
   // Do something
 
   @if apiMethod.hasReturnValue
-    {@apiMethod.responseTypeName} response = future.get();
+    {@apiMethod.callableMethod.genericAwareResponseType} response = future.get();
   @else
     future.get();
   @end

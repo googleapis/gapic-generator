@@ -23,6 +23,7 @@ import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
+import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
@@ -41,7 +42,12 @@ public class JavaMethodViewGenerator {
   final StaticLangApiMethodTransformer clientMethodTransformer;
 
   public JavaMethodViewGenerator(SampleType sampleType) {
-    clientMethodTransformer = new StaticLangApiMethodTransformer(sampleType);
+    clientMethodTransformer =
+        new StaticLangApiMethodTransformer(
+            SampleTransformer.newBuilder()
+                .sampleType(sampleType)
+                .sampleImportTransformer(new JavaSampleImportTransformer())
+                .build());
   }
 
   /**

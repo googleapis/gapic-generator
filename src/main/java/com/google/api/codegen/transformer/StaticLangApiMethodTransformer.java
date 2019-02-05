@@ -52,7 +52,6 @@ import java.util.List;
  * languages.
  */
 public class StaticLangApiMethodTransformer {
-  private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
   private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
   private final StaticLangResourceObjectTransformer resourceObjectTransformer =
       new StaticLangResourceObjectTransformer();
@@ -60,12 +59,12 @@ public class StaticLangApiMethodTransformer {
       new HeaderRequestParamTransformer();
   private final SampleTransformer sampleTransformer;
 
-  public StaticLangApiMethodTransformer(SampleType sampleType) {
-    this.sampleTransformer = new SampleTransformer(sampleType);
+  public StaticLangApiMethodTransformer(SampleTransformer sampleTransformer) {
+    this.sampleTransformer = sampleTransformer;
   }
 
   public StaticLangApiMethodTransformer() {
-    this(SampleType.IN_CODE);
+    this(SampleTransformer.create(SampleType.IN_CODE));
   }
 
   public StaticLangApiMethodView generatePagedFlattenedMethod(MethodContext context) {
@@ -682,14 +681,7 @@ public class StaticLangApiMethodTransformer {
     Collection<FieldConfig> fieldConfigs =
         context.getFlatteningConfig().getFlattenedFieldConfigs().values();
     sampleTransformer.generateSamples(
-        methodViewBuilder,
-        context,
-        fieldConfigs,
-        InitCodeOutputType.FieldList,
-        initCodeContext ->
-            initCodeTransformer.generateInitCode(
-                context.cloneWithEmptyTypeTable(), initCodeContext),
-        callingForms);
+        methodViewBuilder, context, fieldConfigs, InitCodeOutputType.FieldList, callingForms);
 
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
@@ -755,9 +747,6 @@ public class StaticLangApiMethodTransformer {
         context,
         context.getMethodConfig().getRequiredFieldConfigs(),
         InitCodeOutputType.SingleObject,
-        initCodeContext ->
-            initCodeTransformer.generateInitCode(
-                context.cloneWithEmptyTypeTable(), initCodeContext),
         callingForms);
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
@@ -790,9 +779,6 @@ public class StaticLangApiMethodTransformer {
         context,
         context.getMethodConfig().getRequiredFieldConfigs(),
         InitCodeOutputType.SingleObject,
-        initCodeContext ->
-            initCodeTransformer.generateInitCode(
-                context.cloneWithEmptyTypeTable(), initCodeContext),
         callingForms);
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
