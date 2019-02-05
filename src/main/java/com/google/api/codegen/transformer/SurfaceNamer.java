@@ -32,6 +32,7 @@ import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -47,6 +48,7 @@ import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
@@ -1375,6 +1377,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** Converts the given text to doc lines in the format of the current language. */
   public List<String> getDocLines(String text) {
     return CommonRenderingUtil.getDocLines(commentReformatter.reformat(text));
+  }
+
+  /** Converts the given text to doc lines in the format of the current language. */
+  public List<String> getDocLines(Schema schema) {
+    StringBuffer description = new StringBuffer(schema.description());
+    if (schema.additionalProperties() != null
+        && !Strings.isNullOrEmpty(schema.additionalProperties().reference())
+        && !Strings.isNullOrEmpty(schema.additionalProperties().description())) {
+      description
+          .append("\nThe key for the map is: ")
+          .append(
+              schema
+                  .additionalProperties()
+                  .description());
+    }
+    return CommonRenderingUtil.getDocLines(commentReformatter.reformat(description.toString()));
   }
 
   /** Provides the doc lines for the given field in the current language. */

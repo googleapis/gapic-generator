@@ -39,10 +39,6 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   }
 
   @Nullable
-  // TODO(andrealin) Deprecate this field.
-  public abstract String description();
-
-  @Nullable
   // TODO(andrealin) Populate and render this field.
   public abstract String defaultValue();
 
@@ -111,8 +107,6 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
     public abstract Builder rawName(String val);
 
     public abstract Builder name(String val);
-
-    public abstract Builder description(String val);
 
     public abstract Builder defaultValue(String val);
 
