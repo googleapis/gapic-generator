@@ -316,7 +316,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
     String innerTypeName =
         context.getSchemaTypeTable().getAndSaveNicknameForElementType((FieldModel) schema);
-    paramView.docLines(context.getNamer().getDocLines(schema.getDiscoveryField().description()));
+    paramView.docLines(context.getNamer().getDocLines(schema.getDiscoveryField()));
     String name = context.getNamer().privateFieldName(Name.anyCamel(preferredName));
     String fieldName = name;
     if (escapeName.equals(EscapeName.ESCAPE_NAME)) {

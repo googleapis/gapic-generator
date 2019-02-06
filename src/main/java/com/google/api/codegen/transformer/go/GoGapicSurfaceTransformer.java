@@ -338,7 +338,11 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   void addXExampleImports(InterfaceContext context, Iterable<? extends MethodModel> methods) {
     ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("context;;;");
-    typeTable.saveNicknameFor(context.getProductConfig().getPackageName() + ";;;");
+    typeTable.saveNicknameFor(
+        context.getProductConfig().getPackageName()
+            + ";"
+            + context.getNamer().getLocalPackageName()
+            + ";;");
 
     for (MethodModel method : methods) {
       method.getAndSaveRequestTypeName(context.getImportTypeTable(), context.getNamer());
