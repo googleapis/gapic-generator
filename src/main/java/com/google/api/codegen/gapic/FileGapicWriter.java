@@ -35,10 +35,8 @@ import javax.annotation.Nonnull;
 public class FileGapicWriter implements GapicWriter {
 
   private final ToolOptions options;
-
   private boolean isDone = false;
 
-  // TODO(andrealin): autovalue this
   public FileGapicWriter(ToolOptions toolOptions) {
     this.options = toolOptions;
   }
