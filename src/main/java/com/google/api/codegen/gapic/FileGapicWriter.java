@@ -16,7 +16,6 @@ package com.google.api.codegen.gapic;
 
 import static com.google.api.codegen.gapic.GapicGeneratorApp.OUTPUT_FILE;
 
-import autovalue.shaded.com.google.common.common.collect.ImmutableMap;
 import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
@@ -29,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
@@ -53,8 +51,7 @@ public class FileGapicWriter implements GapicWriter {
   @Override
   public void writeCodeGenOutput(
       @Nonnull Map<String, GeneratedResult<?>> generatedResults, Model model) throws IOException {
-    Map<String, Object> outputFiles =
-        GeneratedResult.extractBodiesGeneric(generatedResults);
+    Map<String, Object> outputFiles = GeneratedResult.extractBodiesGeneric(generatedResults);
 
     String outputPath = options.get(OUTPUT_FILE);
     writeCodeGenOutput(outputFiles, outputPath);

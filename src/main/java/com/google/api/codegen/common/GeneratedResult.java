@@ -58,7 +58,7 @@ public abstract class GeneratedResult<T> {
     ImmutableMap.Builder<String, Object> extractedResults = ImmutableMap.builder();
     for (Map.Entry<String, GeneratedResult<?>> entry : results.entrySet()) {
       if (entry.getValue().getBody() != null)
-      extractedResults.put(entry.getKey(), entry.getValue().getBody());
+        extractedResults.put(entry.getKey(), entry.getValue().getBody());
     }
     return extractedResults.build();
   }
