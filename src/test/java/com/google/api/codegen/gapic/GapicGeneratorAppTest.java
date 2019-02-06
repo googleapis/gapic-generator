@@ -18,6 +18,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.google.api.codegen.ArtifactType;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.Maps;
@@ -47,8 +48,8 @@ public class GapicGeneratorAppTest {
         new GapicGeneratorApp(
             ToolOptions.create(), ArtifactType.LEGACY_GAPIC_AND_PACKAGE, gapicWriter);
     generator.writeCodeGenOutput(outputFiles, outputDir);
-    gapicWriter.setOutputFilesPermissions(
-        Collections.singleton("tmp3"), outputDir, generator.getModel());
+    DiagCollector diagCollector = generator.getDiagCollector();
+    gapicWriter.setOutputFilesPermissions(Collections.singleton("tmp3"), outputDir, diagCollector);
     assertTrue((new File(outputDir, "tmp.txt")).exists());
     assertTrue((new File(outputDir, "tmp2.txt")).exists());
     assertTrue((new File(outputDir, "tmp3")).exists());
@@ -59,7 +60,7 @@ public class GapicGeneratorAppTest {
     File outputJar = new File(outputDir, "output.jar");
     generator.writeCodeGenOutput(outputFiles, outputJar.getPath());
     gapicWriter.setOutputFilesPermissions(
-        Collections.singleton("tmp3"), outputJar.getPath(), generator.getModel());
+        Collections.singleton("tmp3"), outputJar.getPath(), diagCollector);
     assertTrue(outputJar.exists());
     assertFalse((new File(outputJar.getPath(), "tmp3")).exists());
   }

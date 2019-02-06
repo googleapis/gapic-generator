@@ -15,7 +15,7 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.DiagCollector;
 import java.io.IOException;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -27,6 +27,7 @@ public interface GapicWriter {
   boolean isDone();
 
   /** Write out the generator output. */
-  void writeCodeGenOutput(@Nonnull Map<String, GeneratedResult<?>> outputFiles, Model model)
+  void writeCodeGenOutput(
+      @Nonnull Map<String, GeneratedResult<?>> outputFiles, DiagCollector diagCollector)
       throws IOException;
 }

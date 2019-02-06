@@ -189,7 +189,8 @@ public class GapicGeneratorApp extends ToolDriverBase {
       }
     }
 
-    gapicWriter.writeCodeGenOutput(generatedResults.build(), model);
+    gapicWriter.writeCodeGenOutput(
+        generatedResults.build(), model.getDiagReporter().getDiagCollector());
   }
 
   @VisibleForTesting

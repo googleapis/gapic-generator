@@ -18,7 +18,7 @@ import static com.google.api.codegen.gapic.GapicGeneratorApp.OUTPUT_FILE;
 
 import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolUtil;
@@ -48,7 +48,8 @@ public class FileGapicWriter implements GapicWriter {
 
   @Override
   public void writeCodeGenOutput(
-      @Nonnull Map<String, GeneratedResult<?>> generatedResults, Model model) throws IOException {
+      @Nonnull Map<String, GeneratedResult<?>> generatedResults, DiagCollector diagCollector)
+      throws IOException {
     Map<String, Object> outputFiles = GeneratedResult.extractBodiesGeneric(generatedResults);
 
     String outputPath = options.get(OUTPUT_FILE);
@@ -61,7 +62,7 @@ public class FileGapicWriter implements GapicWriter {
             .filter(e -> e.getValue().isExecutable())
             .map(Map.Entry::getKey)
             .collect(Collectors.toSet());
-    setOutputFilesPermissions(executables, outputPath, model);
+    setOutputFilesPermissions(executables, outputPath, diagCollector);
 
     isDone = true;
   }
@@ -77,7 +78,8 @@ public class FileGapicWriter implements GapicWriter {
   }
 
   @VisibleForTesting
-  void setOutputFilesPermissions(Set<String> executables, String outputPath, Model model) {
+  void setOutputFilesPermissions(
+      Set<String> executables, String outputPath, DiagCollector diagCollector) {
     if (outputPath.endsWith(".jar")) {
       return;
     }
@@ -89,16 +91,13 @@ public class FileGapicWriter implements GapicWriter {
               : new File(outputPath, executable);
       if (!file.setExecutable(true, false)) {
         warning(
-            model,
+            diagCollector,
             "Failed to set output file as executable. Probably running on a non-POSIX system.");
       }
     }
   }
 
-  private void warning(Model model, String message, Object... args) {
-    model
-        .getDiagReporter()
-        .getDiagCollector()
-        .addDiag(Diag.warning(SimpleLocation.TOPLEVEL, message, args));
+  private void warning(DiagCollector diagCollector, String message, Object... args) {
+    diagCollector.addDiag(Diag.warning(SimpleLocation.TOPLEVEL, message, args));
   }
 }
