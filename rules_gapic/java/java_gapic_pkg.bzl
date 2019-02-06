@@ -1,3 +1,17 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
 load(
     ":java_gapic_pkg_deps_resolution.bzl",
@@ -5,8 +19,8 @@ load(
     "construct_gradle_assembly_includes_subs",
     "construct_gradle_build_deps_subs",
     "get_dynamic_subsitution_func",
-    "is_source_dependency",
     "is_proto_dependency",
+    "is_source_dependency",
 )
 
 def _java_gapic_build_configs_pkg_impl(ctx):
@@ -236,16 +250,15 @@ def java_gapic_assembly_gradle_raw_pkg(name, deps, visibility = None):
     )
 
 def java_gapic_assembly_gradle_pkg(
-    name,
-    client_group,
-    version,
-    client_deps,
-    client_test_deps,
-    grpc_group = None,
-    proto_deps = None,
-    grpc_deps = None,
-    visibility = None):
-
+        name,
+        client_group,
+        version,
+        client_deps,
+        client_test_deps,
+        grpc_group = None,
+        proto_deps = None,
+        grpc_deps = None,
+        visibility = None):
     proto_target = "proto-%s" % name
     proto_target_dep = []
     grpc_target = "grpc-%s" % name
@@ -280,7 +293,7 @@ def java_gapic_assembly_gradle_pkg(
 
     java_gapic_assembly_gradle_raw_pkg(
         name = name,
-        deps = proto_target_dep + grpc_target_dep + [":%s" % client_target]
+        deps = proto_target_dep + grpc_target_dep + [":%s" % client_target],
     )
 
 #
