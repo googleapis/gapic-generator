@@ -262,7 +262,7 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   private DiscoveryField createFieldMaskField() {
-    // TODO(andrealin): Change this to a Set instead of a List.
+    // TODO(andreamlin): Change this to a Set instead of a List.
     return DiscoveryField.create(
         StandardSchemaGenerator.createListSchema(
             StandardSchemaGenerator.createStringSchema(
