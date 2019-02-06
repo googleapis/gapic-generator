@@ -172,7 +172,7 @@ public class GoGapicSurfaceTransformerTest {
     assertThat(context.getImportTypeTable().getImports())
         .containsEntry(
             "cloud.google.com/go/gopher/apiv1",
-            TypeAlias.create("cloud.google.com/go/gopher/apiv1", ""));
+            TypeAlias.create("cloud.google.com/go/gopher/apiv1", "gopher"));
     assertThat(context.getImportTypeTable().getImports())
         .containsEntry(
             "google.golang.org/genproto/googleapis/example/myproto/v1",
