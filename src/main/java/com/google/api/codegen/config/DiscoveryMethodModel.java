@@ -269,7 +269,7 @@ public final class DiscoveryMethodModel implements MethodModel {
                 "", SurfaceNamer.Cardinality.NOT_REPEATED, true),
             DiscoveryMethodTransformer.FIELDMASK_STRING,
             true,
-            "The fields that should be serialized (empty values will be serialized). "
+            "The fields that should be serialized (even if they have empty values). "
                 + "If the containing message object has a non-null fieldmask, "
                 + "then all the fields in the field mask (and only those fields in the field mask) "
                 + "will be serialized. If the containing object does not have a fieldmask, then "
