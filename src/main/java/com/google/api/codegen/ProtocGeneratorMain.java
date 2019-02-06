@@ -17,6 +17,7 @@ package com.google.api.codegen;
 import static com.google.api.codegen.ArtifactType.GAPIC_CODE;
 
 import com.google.api.codegen.gapic.GapicGeneratorApp;
+import com.google.api.codegen.gapic.ProtocGapicWriter;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolUtil;
@@ -54,10 +55,12 @@ public class ProtocGeneratorMain {
     try {
       ToolOptions toolOptions = parseOptions(request);
 
-      GapicGeneratorApp codeGen = new GapicGeneratorApp(toolOptions, DEFAULT_ARTIFACT_TYPE, true);
+      ProtocGapicWriter gapicWriter = new ProtocGapicWriter();
+      GapicGeneratorApp codeGen =
+          new GapicGeneratorApp(toolOptions, DEFAULT_ARTIFACT_TYPE, gapicWriter);
 
       codeGen.run();
-      CodeGeneratorResponse response = codeGen.getCodeGeneratorProtoResponse();
+      CodeGeneratorResponse response = gapicWriter.getCodegenResponse();
       if (response == null) {
         throw new RuntimeException(collectDiags(codeGen));
       }
