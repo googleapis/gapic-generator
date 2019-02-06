@@ -30,7 +30,6 @@ import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
-import com.google.api.codegen.viewmodel.AccessorView;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.tools.framework.model.TypeRef;
@@ -61,7 +60,6 @@ public class OutputTransformerTest {
     valueSet = SampleValueSet.newBuilder().setId("test-sample-value-set-id").build();
     parent = new OutputTransformer.ScopeTable();
     child = new OutputTransformer.ScopeTable(parent);
-
     MockitoAnnotations.initMocks(this);
     when(context.getFeatureConfig()).thenReturn(featureConfig);
     when(context.getMethodConfig()).thenReturn(config);
@@ -69,7 +67,7 @@ public class OutputTransformerTest {
     when(context.getNamer()).thenReturn(namer);
     when(context.getTypeTable()).thenReturn(typeTable);
     when(model.getSimpleName()).thenReturn("methodSimpleName");
-    when(namer.getSampleResponseVarName(context)).thenReturn("sampleResponseVarName");
+    when(namer.getSampleResponseVarName(context, form)).thenReturn("sampleResponseVarName");
   }
 
   @Test
@@ -196,15 +194,14 @@ public class OutputTransformerTest {
     TypeModel propertyTypeModel = mock(TypeModel.class);
     when(namer.getFieldGetFunctionName(propertyFieldModel)).thenReturn("getProperty");
     when(namer.getAndSaveTypeName(typeTable, propertyTypeModel)).thenReturn("PropertyTypeName");
+    when(namer.getFieldAccessorName(propertyFieldModel)).thenReturn(".getProperty()");
     when(propertyFieldModel.getType()).thenReturn(propertyTypeModel);
 
     OutputView.VariableView variableView =
         accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
 
     assertThat(variableView.variable()).isEqualTo("oldVar");
-    assertThat(variableView.accessors())
-        .containsExactly(AccessorView.FieldView.newBuilder().field("getProperty").build())
-        .inOrder();
+    assertThat(variableView.accessors()).containsExactly(".getProperty()").inOrder();
     assertThat(parent.getTypeName("newVar")).isEqualTo("PropertyTypeName");
     assertThat(parent.getTypeModel("newVar")).isEqualTo(propertyTypeModel);
   }
@@ -245,17 +242,15 @@ public class OutputTransformerTest {
 
     when(namer.getAndSaveTypeName(typeTable, optionalPropertyTypeModel))
         .thenReturn("OptionalPropertyTypeName");
+    when(namer.getFieldAccessorName(propertyFieldModel)).thenReturn(".getProperty()");
+    when(namer.getIndexAccessorName(0)).thenReturn("[0]");
     when(propertyFieldModel.getType()).thenReturn(propertyTypeModel);
 
     OutputView.VariableView variableView =
         accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
 
     assertThat(variableView.variable()).isEqualTo("oldVar");
-    assertThat(variableView.accessors())
-        .containsExactly(
-            AccessorView.FieldView.newBuilder().field("getProperty").build(),
-            AccessorView.IndexView.newBuilder().index("0").build())
-        .inOrder();
+    assertThat(variableView.accessors()).containsExactly(".getProperty()", "[0]").inOrder();
     assertThat(parent.getTypeName("newVar")).isEqualTo("OptionalPropertyTypeName");
     assertThat(parent.getTypeModel("newVar")).isEqualTo(optionalPropertyTypeModel);
   }
