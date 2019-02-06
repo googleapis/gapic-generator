@@ -49,6 +49,20 @@ public abstract class GeneratedResult<T> {
     return extractedResults.build();
   }
 
+  /**
+   * Converts a map of results (body plus properties) to a map of bodies (stripping properties).
+   *
+   * @param results results map to convert
+   */
+  public static Map<String, Object> extractBodiesGeneric(Map<String, GeneratedResult<?>> results) {
+    ImmutableMap.Builder<String, Object> extractedResults = ImmutableMap.builder();
+    for (Map.Entry<String, GeneratedResult<?>> entry : results.entrySet()) {
+      if (entry.getValue().getBody() != null)
+      extractedResults.put(entry.getKey(), entry.getValue().getBody());
+    }
+    return extractedResults.build();
+  }
+
   /** Returns the body (content) of the result. */
   public abstract T getBody();
 

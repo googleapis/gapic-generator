@@ -20,9 +20,13 @@ import java.io.IOException;
 import java.util.Map;
 import javax.annotation.Nonnull;
 
+/** Interface for classes that write out generator output. */
 public interface GapicWriter {
+
+  /** Returns whether the writer has finished writing. */
   boolean isDone();
 
-  void writeCodeGenOutput(@Nonnull Map<String, GeneratedResult> outputFiles, Model model)
+  /** Write out the generator output. */
+  void writeCodeGenOutput(@Nonnull Map<String, GeneratedResult<?>> outputFiles, Model model)
       throws IOException;
 }

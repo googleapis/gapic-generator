@@ -181,7 +181,7 @@ public class GapicGeneratorApp extends ToolDriverBase {
     List<CodeGenerator<?>> generators =
         GapicGeneratorFactory.create(
             language, model, productConfig, packageConfig, artifactFlags, options.get(DEV_SAMPLES));
-    ImmutableMap.Builder<String, GeneratedResult> generatedResults = ImmutableMap.builder();
+    ImmutableMap.Builder<String, GeneratedResult<?>> generatedResults = ImmutableMap.builder();
     for (CodeGenerator<?> generator : generators) {
       Map<String, ? extends GeneratedResult<?>> generatorResult = generator.generate();
       for (Map.Entry<String, ? extends GeneratedResult<?>> entry : generatorResult.entrySet()) {

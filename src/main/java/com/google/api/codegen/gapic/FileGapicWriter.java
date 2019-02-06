@@ -52,17 +52,9 @@ public class FileGapicWriter implements GapicWriter {
 
   @Override
   public void writeCodeGenOutput(
-      @Nonnull Map<String, GeneratedResult> generatedResults, Model model) throws IOException {
+      @Nonnull Map<String, GeneratedResult<?>> generatedResults, Model model) throws IOException {
     Map<String, Object> outputFiles =
-        generatedResults
-            .entrySet()
-            .stream()
-            .collect(
-                Collector.of(
-                    ImmutableMap.Builder<String, Object>::new,
-                    (b, e) -> b.put(e.getKey(), e.getValue().getBody()),
-                    (b1, b2) -> b1.putAll(b2.build()),
-                    ImmutableMap.Builder::build));
+        GeneratedResult.extractBodiesGeneric(generatedResults);
 
     String outputPath = options.get(OUTPUT_FILE);
     writeCodeGenOutput(outputFiles, outputPath);
