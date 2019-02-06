@@ -43,11 +43,12 @@ public class GapicGeneratorAppTest {
 
     // Verify that files are outputed to a directory.
     String outputDir = tempDir.getRoot().getPath();
-    FileGapicWriter gapicWriter = new FileGapicWriter(ToolOptions.create());
+    FileGapicWriter gapicWriter =
+        new FileGapicWriter(ToolOptions.create().get(GapicGeneratorApp.OUTPUT_FILE));
     GapicGeneratorApp generator =
         new GapicGeneratorApp(
             ToolOptions.create(), ArtifactType.LEGACY_GAPIC_AND_PACKAGE, gapicWriter);
-    generator.writeCodeGenOutput(outputFiles, outputDir);
+    gapicWriter.writeCodeGenOutput(outputFiles, outputDir);
     DiagCollector diagCollector = generator.getDiagCollector();
     gapicWriter.setOutputFilesPermissions(Collections.singleton("tmp3"), outputDir, diagCollector);
     assertTrue((new File(outputDir, "tmp.txt")).exists());
@@ -58,7 +59,7 @@ public class GapicGeneratorAppTest {
     }
     // Verify that files are outputed into a jar file.
     File outputJar = new File(outputDir, "output.jar");
-    generator.writeCodeGenOutput(outputFiles, outputJar.getPath());
+    gapicWriter.writeCodeGenOutput(outputFiles, outputJar.getPath());
     gapicWriter.setOutputFilesPermissions(
         Collections.singleton("tmp3"), outputJar.getPath(), diagCollector);
     assertTrue(outputJar.exists());

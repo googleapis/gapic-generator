@@ -32,8 +32,6 @@ import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
-import com.google.api.tools.framework.tools.ToolUtil;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -42,7 +40,6 @@ import com.google.longrunning.OperationsProto;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -191,16 +188,6 @@ public class GapicGeneratorApp extends ToolDriverBase {
 
     gapicWriter.writeCodeGenOutput(
         generatedResults.build(), model.getDiagReporter().getDiagCollector());
-  }
-
-  @VisibleForTesting
-  void writeCodeGenOutput(Map<String, ?> outputFiles, String outputPath) throws IOException {
-    // TODO: Support zip output.
-    if (outputPath.endsWith(".jar") || outputPath.endsWith(".srcjar")) {
-      ToolUtil.writeJar(outputFiles, outputPath);
-    } else {
-      ToolUtil.writeFiles(outputFiles, outputPath);
-    }
   }
 
   private ConfigSource loadConfigFromFiles(List<String> configFileNames) {

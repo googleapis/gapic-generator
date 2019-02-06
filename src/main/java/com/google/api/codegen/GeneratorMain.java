@@ -302,8 +302,9 @@ public class GeneratorMain {
 
     toolOptions.set(GapicGeneratorApp.DEV_SAMPLES, cl.hasOption(devSamplesOption.getLongOpt()));
 
+    String outputPath = toolOptions.get(GapicGeneratorApp.OUTPUT_FILE);
     GapicGeneratorApp codeGen =
-        new GapicGeneratorApp(toolOptions, artifactType, new FileGapicWriter(toolOptions));
+        new GapicGeneratorApp(toolOptions, artifactType, new FileGapicWriter(outputPath));
     int exitCode = codeGen.run();
     System.exit(exitCode);
   }

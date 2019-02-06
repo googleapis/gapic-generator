@@ -14,13 +14,10 @@
  */
 package com.google.api.codegen.gapic;
 
-import static com.google.api.codegen.gapic.GapicGeneratorApp.OUTPUT_FILE;
-
 import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
-import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
