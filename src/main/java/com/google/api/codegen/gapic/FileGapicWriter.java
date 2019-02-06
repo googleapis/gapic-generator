@@ -34,11 +34,11 @@ import javax.annotation.Nonnull;
 /** A class that writes Gapic output to disk. */
 public class FileGapicWriter implements GapicWriter {
 
-  private final ToolOptions options;
+  private final String outputPath;
   private boolean isDone = false;
 
-  public FileGapicWriter(ToolOptions toolOptions) {
-    this.options = toolOptions;
+  public FileGapicWriter(String outputPath) {
+    this.outputPath = outputPath;
   }
 
   @Override
@@ -52,7 +52,6 @@ public class FileGapicWriter implements GapicWriter {
       throws IOException {
     Map<String, Object> outputFiles = GeneratedResult.extractBodiesGeneric(generatedResults);
 
-    String outputPath = options.get(OUTPUT_FILE);
     writeCodeGenOutput(outputFiles, outputPath);
 
     Set<String> executables =
