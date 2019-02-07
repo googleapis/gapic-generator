@@ -22,6 +22,7 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -42,12 +43,16 @@ import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonDocstringUtil;
 import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -449,14 +454,16 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return packageFilePathPiece(Name.anyCamel(getGrpcTransportClassName(interfaceConfig)));
   }
 
-  public String getPrintSpec(String spec) {
+  @Override
+  public List<String> getPrintSpecs(String spec, List<String> args) {
     // com.google.common.escape.Escaper doesn't work here. It only maps from characters to strings.
     StringBuilder sb = new StringBuilder();
     int cursor = 0;
     while (true) {
       int p = spec.indexOf('%', cursor);
       if (p < 0) {
-        return sb.append(spec, cursor, spec.length()).toString().replace("'", "\\'");
+        sb.append(spec, cursor, spec.length());
+        break;
       }
       sb.append(spec, cursor, p);
 
@@ -469,10 +476,56 @@ public class PythonSurfaceNamer extends SurfaceNamer {
       }
       cursor = p + 2;
     }
+    return ImmutableList.<String>builder()
+        .add(sb.toString().replace("'", "\\'"))
+        .addAll(args)
+        .build();
   }
 
   @Override
-  public String getSampleResponseVarName(MethodContext context) {
-    return Name.anyCamel(super.getSampleResponseVarName(context)).toLowerUnderscore().toString();
+  /**
+   * If the argument is a protobuf enum, returns an expression that translates the enum to a
+   * descriptive string, such as `enums.message_type.enum_type(var.foo.bar).name()`. Otherwise,
+   * returns the argument as it is.
+   */
+  public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
+    String arg = variable + String.join("", accessors);
+    // We print the argument as it is if it's not an enum type
+    if (!(type instanceof ProtoTypeRef) || !((ProtoTypeRef) type).isEnum()) {
+      return arg;
+    }
+    // Find all the parent elements of this enum type, stopping at the top-level message or enum
+    TypeRef protoType = ((ProtoTypeRef) type).getProtoType();
+    ProtoElement t = protoType.getEnumType();
+    List<String> names = new ArrayList<>();
+    while (!(t instanceof ProtoFile)) {
+      names.add(t.getSimpleName());
+      t = t.getParent();
+    }
+    // Wrap the enum value with the helper function that translates it to a descriptive string
+    names.add("enums");
+    StringBuilder builder = new StringBuilder();
+    for (String name : Lists.reverse(names)) {
+      builder.append(name).append(".");
+    }
+    builder.setLength(builder.length() - 1);
+    return builder.append("(").append(arg).append(").name").toString();
+  }
+
+  @Override
+  public String getIndexAccessorName(int index) {
+    return String.format("[%d]", index);
+  }
+
+  @Override
+  public String getFieldAccessorName(FieldModel field) {
+    return "." + getFieldGetFunctionName(field);
+  }
+
+  @Override
+  public String getSampleResponseVarName(MethodContext context, CallingForm form) {
+    return Name.anyCamel(super.getSampleResponseVarName(context, form))
+        .toLowerUnderscore()
+        .toString();
   }
 }

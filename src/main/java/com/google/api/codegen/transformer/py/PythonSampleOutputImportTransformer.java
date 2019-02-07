@@ -20,7 +20,6 @@ import com.google.api.codegen.util.ImportType;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.OutputView;
-import com.google.api.codegen.viewmodel.PrintArgView;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
@@ -61,12 +60,7 @@ public class PythonSampleOutputImportTransformer
       MethodContext context,
       OutputView.PrintView view) {
     boolean addEnumImports =
-        view.args()
-            .stream()
-            .flatMap(arg -> arg.segments().stream())
-            .filter(seg -> seg.kind() == PrintArgView.ArgSegmentView.Kind.VARIABLE)
-            .map(seg -> ((PrintArgView.VariableSegmentView) seg).variable().type())
-            .anyMatch(type -> type != null && type.isEnum());
+        view.args().stream().anyMatch(arg -> arg.type() != null && arg.type().isEnum());
     if (addEnumImports) {
       ImportTypeView importTypeView =
           ImportTypeView.newBuilder()

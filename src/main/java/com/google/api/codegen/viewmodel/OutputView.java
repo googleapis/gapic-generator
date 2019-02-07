@@ -136,11 +136,33 @@ public interface OutputView {
   }
 
   @AutoValue
+  abstract class PrintArgView {
+
+    public abstract String formattedName();
+
+    @Nullable
+    public abstract TypeModel type();
+
+    public static Builder newBuilder() {
+      return new AutoValue_OutputView_PrintArgView.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+      public abstract Builder formattedName(String val);
+
+      public abstract Builder type(TypeModel val);
+
+      public abstract PrintArgView build();
+    }
+  }
+
+  @AutoValue
   abstract class VariableView {
 
     public abstract String variable();
 
-    public abstract ImmutableList<AccessorView> accessors();
+    public abstract ImmutableList<String> accessors();
 
     @Nullable
     public abstract TypeModel type();
@@ -153,7 +175,7 @@ public interface OutputView {
     public abstract static class Builder {
       public abstract Builder variable(String val);
 
-      public abstract Builder accessors(ImmutableList<AccessorView> val);
+      public abstract Builder accessors(ImmutableList<String> val);
 
       public abstract Builder type(TypeModel val);
 

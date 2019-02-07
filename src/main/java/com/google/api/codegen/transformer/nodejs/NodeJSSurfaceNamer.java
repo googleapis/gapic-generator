@@ -53,6 +53,7 @@ import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -561,5 +562,47 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       }
     }
     return Joiner.on(" + ").join(stringParts);
+  }
+
+  @Override
+  public String getIndexAccessorName(int index) {
+    return String.format("[%d]", index);
+  }
+
+  @Override
+  public String getFieldAccessorName(FieldModel field) {
+    return String.format(".%s", getFieldGetFunctionName(field));
+  }
+
+  @Override
+  public List<String> getPrintSpecs(String spec, List<String> args) {
+    if (args.isEmpty()) {
+      return Collections.singletonList(spec);
+    }
+    if (args.size() == 1 && "%s".equals(spec)) {
+      return ImmutableList.of(spec, args.get(0));
+    }
+    Object[] formattedArgs =
+        args.stream().map(a -> String.format("{$%s}", a)).toArray(Object[]::new);
+    return Collections.singletonList(String.format(spec, formattedArgs));
+  }
+
+  @Override
+  public String getSampleResponseVarName(MethodContext context, CallingForm form) {
+    switch (form) {
+      case Request:
+      case RequestStreamingBidi:
+      case RequestStreamingClient:
+      case RequestStreamingServer:
+        return "response";
+      case RequestAsyncPaged:
+      case RequestAsyncPagedAll:
+        return "resource";
+      case LongRunningEventEmitter:
+      case LongRunningPromise:
+        return "result";
+      default:
+        throw new IllegalArgumentException("illegal calling form for Node.js: " + form);
+    }
   }
 }
