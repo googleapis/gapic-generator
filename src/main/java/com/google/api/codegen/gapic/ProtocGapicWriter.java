@@ -14,13 +14,11 @@
  */
 package com.google.api.codegen.gapic;
 
-import autovalue.shaded.com.google.common.common.collect.ImmutableMap;
 import com.google.api.codegen.common.GeneratedResult;
-import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import java.util.Map;
-import java.util.stream.Collector;
 import javax.annotation.Nonnull;
 
 public class ProtocGapicWriter implements GapicWriter {
@@ -40,18 +38,10 @@ public class ProtocGapicWriter implements GapicWriter {
 
   @Override
   public void writeCodeGenOutput(
-      @Nonnull Map<String, GeneratedResult> generatedResults, Model model) {
-    Map<String, Object> outputFiles =
-        generatedResults
-            .entrySet()
-            .stream()
-            .collect(
-                Collector.of(
-                    ImmutableMap.Builder<String, Object>::new,
-                    (b, e) -> b.put(e.getKey(), e.getValue().getBody()),
-                    (b1, b2) -> b1.putAll(b2.build()),
-                    ImmutableMap.Builder::build));
+      @Nonnull Map<String, GeneratedResult<?>> generatedResults, DiagCollector diagCollector) {
+    Map<String, Object> outputFiles = GeneratedResult.extractBodiesGeneric(generatedResults);
     this.response = writeCodeGenOutputToProtoc(outputFiles);
+    this.isDone = true;
   }
 
   private CodeGeneratorResponse writeCodeGenOutputToProtoc(Map<String, ?> outputFiles) {
@@ -78,8 +68,6 @@ public class ProtocGapicWriter implements GapicWriter {
       protoOutFile.setName(entry.getKey());
       protocResponse.addFile(protoOutFile.build());
     }
-
-    isDone = true;
 
     return protocResponse.build();
   }
