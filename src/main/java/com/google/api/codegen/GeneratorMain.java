@@ -17,6 +17,7 @@ package com.google.api.codegen;
 import com.google.api.codegen.configgen.DiscoConfigGeneratorApp;
 import com.google.api.codegen.configgen.GapicConfigGeneratorApp;
 import com.google.api.codegen.discogapic.DiscoGapicGeneratorApp;
+import com.google.api.codegen.gapic.FileGapicWriter;
 import com.google.api.codegen.gapic.GapicGeneratorApp;
 import com.google.api.codegen.packagegen.PackageGeneratorApp;
 import com.google.api.codegen.packagegen.PackagingArtifactType;
@@ -302,7 +303,9 @@ public class GeneratorMain {
 
     toolOptions.set(GapicGeneratorApp.DEV_SAMPLES, cl.hasOption(devSamplesOption.getLongOpt()));
 
-    GapicGeneratorApp codeGen = new GapicGeneratorApp(toolOptions, artifactType);
+    String outputPath = toolOptions.get(GapicGeneratorApp.OUTPUT_FILE);
+    GapicGeneratorApp codeGen =
+        new GapicGeneratorApp(toolOptions, artifactType, new FileGapicWriter(outputPath));
     int exitCode = codeGen.run();
     System.exit(exitCode);
   }

@@ -33,23 +33,18 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
-import com.google.api.tools.framework.tools.ToolUtil;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.inject.TypeLiteral;
 import com.google.longrunning.OperationsProto;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /** Main class for the code generator. */
 public class GapicGeneratorApp extends ToolDriverBase {
@@ -101,33 +96,18 @@ public class GapicGeneratorApp extends ToolDriverBase {
 
   private ArtifactType artifactType;
 
-  private final boolean writeAsProtoResponse;
-
-  private CodeGeneratorResponse codeGeneratorProtoResponse = null;
-
-  public CodeGeneratorResponse getCodeGeneratorProtoResponse() {
-    return codeGeneratorProtoResponse;
-  }
-
-  /** Constructs a code generator api based on given options. */
-  public GapicGeneratorApp(ToolOptions options, ArtifactType artifactType) {
-    super(options);
-    this.artifactType = artifactType;
-    this.writeAsProtoResponse = false;
-  }
+  private final GapicWriter gapicWriter;
 
   /**
    * Constructs a code generator api based on given options.
    *
-   * @param writeAsProtoResponse : If the output should be returned as a CodeGeneratorResponse,
-   *     instead of being written to file. The response object will be populated in
-   *     getCodeGeneratorProtoResponse().
+   * @param gapicWriter : The object that will write out the generator output.
    */
   public GapicGeneratorApp(
-      ToolOptions options, ArtifactType artifactType, boolean writeAsProtoResponse) {
+      ToolOptions options, ArtifactType artifactType, GapicWriter gapicWriter) {
     super(options);
     this.artifactType = artifactType;
-    this.writeAsProtoResponse = writeAsProtoResponse;
+    this.gapicWriter = gapicWriter;
   }
 
   @Override
@@ -200,85 +180,16 @@ public class GapicGeneratorApp extends ToolDriverBase {
     List<CodeGenerator<?>> generators =
         GapicGeneratorFactory.create(
             language, model, productConfig, packageConfig, artifactFlags, options.get(DEV_SAMPLES));
-    ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
-    ImmutableSet.Builder<String> executables = ImmutableSet.builder();
+    ImmutableMap.Builder<String, GeneratedResult<?>> generatedResults = ImmutableMap.builder();
     for (CodeGenerator<?> generator : generators) {
       Map<String, ? extends GeneratedResult<?>> generatorResult = generator.generate();
       for (Map.Entry<String, ? extends GeneratedResult<?>> entry : generatorResult.entrySet()) {
-        outputFiles.put(entry.getKey(), entry.getValue().getBody());
-        if (entry.getValue().isExecutable()) {
-          executables.add(entry.getKey());
-        }
+        generatedResults.put(entry.getKey(), entry.getValue());
       }
     }
 
-    if (writeAsProtoResponse) {
-      this.codeGeneratorProtoResponse = writeCodeGenOutputToProtoc(outputFiles.build());
-    } else {
-      String outputPath = options.get(OUTPUT_FILE);
-      writeCodeGenOutputToFiles(outputFiles.build(), executables.build(), outputPath);
-    }
-  }
-
-  private CodeGeneratorResponse writeCodeGenOutputToProtoc(Map<String, ?> outputFiles) {
-    CodeGeneratorResponse.Builder protocResponse = CodeGeneratorResponse.newBuilder();
-
-    for (Map.Entry<String, ?> entry : outputFiles.entrySet()) {
-      com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File.Builder protoOutFile =
-          com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File.newBuilder();
-
-      StringBuilder outputStream = new StringBuilder();
-
-      // TODO(andrealin): Move this logic to ToolUtil with the other file writing utils.
-      Object value = entry.getValue();
-      if (value instanceof Doc) {
-        outputStream.append(((Doc) value).prettyPrint());
-      } else if (value instanceof String) {
-        outputStream.append((String) value);
-      } else if (value instanceof byte[]) {
-        outputStream.append((byte[]) value);
-      } else {
-        throw new IllegalArgumentException("Expected one of Doc, String, or byte[]");
-      }
-
-      protoOutFile.setContent(outputStream.toString());
-      protoOutFile.setName(entry.getKey());
-      protocResponse.addFile(protoOutFile.build());
-    }
-
-    return protocResponse.build();
-  }
-
-  private void writeCodeGenOutputToFiles(
-      Map<String, ?> outputFiles, Set<String> executables, String outputPath) throws IOException {
-    writeCodeGenOutput(outputFiles, outputPath);
-    setOutputFilesPermissions(executables, outputPath);
-  }
-
-  @VisibleForTesting
-  void writeCodeGenOutput(Map<String, ?> outputFiles, String outputPath) throws IOException {
-    // TODO: Support zip output.
-    if (outputPath.endsWith(".jar") || outputPath.endsWith(".srcjar")) {
-      ToolUtil.writeJar(outputFiles, outputPath);
-    } else {
-      ToolUtil.writeFiles(outputFiles, outputPath);
-    }
-  }
-
-  @VisibleForTesting
-  void setOutputFilesPermissions(Set<String> executables, String outputPath) {
-    if (outputPath.endsWith(".jar")) {
-      return;
-    }
-    for (String executable : executables) {
-      File file =
-          Strings.isNullOrEmpty(outputPath)
-              ? new File(executable)
-              : new File(outputPath, executable);
-      if (!file.setExecutable(true, false)) {
-        warning("Failed to set output file as executable. Probably running on a non-POSIX system.");
-      }
-    }
+    gapicWriter.writeCodeGenOutput(
+        generatedResults.build(), model.getDiagReporter().getDiagCollector());
   }
 
   private ConfigSource loadConfigFromFiles(List<String> configFileNames) {
@@ -313,12 +224,5 @@ public class GapicGeneratorApp extends ToolDriverBase {
         .getDiagReporter()
         .getDiagCollector()
         .addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
-  }
-
-  private void warning(String message, Object... args) {
-    model
-        .getDiagReporter()
-        .getDiagCollector()
-        .addDiag(Diag.warning(SimpleLocation.TOPLEVEL, message, args));
   }
 }
