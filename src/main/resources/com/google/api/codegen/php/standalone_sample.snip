@@ -414,26 +414,8 @@
         # FIXME(hzyi): print enums directly will just get us an int
         # Fix this by creating a mapping between enums and meaningful display names
         # until https://github.com/protocolbuffers/protobuf/pull/4534 is merged
-        @if arg.segments.get(0).variable.type.isMessage
-        # FIXME(hzyi): change to use OutputTranformer.PrintArgTransformer
-            print_r({@printVariableField(arg)}, true)
-        @else
-            {@printVariableField(arg)}
-        @end
+        {@arg.formattedName}
     @end
-@end
-
-@private printVariableField(arg)
-  @join segment : arg.segments
-    @switch segment.kind
-      @case "TEXT"
-        {@segment.text}
-      @case "VARIABLE"
-        {@variableField(segment.variable)}
-      @default
-        $unhandledPrintArgView: arg
-    @end
-  @end
 @end
 
 @private variableField(arg)
@@ -446,12 +428,6 @@
 
 @private accessor(accessors)
     @join field : accessors on ""
-        @switch field.kind
-        @case "FIELD"
-            ->{@field.field}()
-        @case "INDEX"
-            # Assume that sample config is right; no need to check bounds.
-            [{@field.index}]
-        @end
+        {@field}
     @end
 @end

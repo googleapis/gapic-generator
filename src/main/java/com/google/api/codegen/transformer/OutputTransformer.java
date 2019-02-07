@@ -21,11 +21,9 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
-import com.google.api.codegen.viewmodel.AccessorView;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.OutputView;
-import com.google.api.codegen.viewmodel.PrintArgView;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -35,23 +33,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 public class OutputTransformer {
   private static final String RESPONSE_PLACEHOLDER = "$resp";
 
   private final OutputImportTransformer importTransformer;
-  private final PrintArgTransformer printArgTransformer;
 
   public OutputTransformer() {
     this.importTransformer = new OutputImportTransformer() {};
-    this.printArgTransformer = new PrintArgTransformer() {};
   }
 
-  public OutputTransformer(
-      OutputImportTransformer importTransformer, PrintArgTransformer printArgTransformer) {
+  public OutputTransformer(OutputImportTransformer importTransformer) {
     this.importTransformer = importTransformer;
-    this.printArgTransformer = printArgTransformer;
   }
 
   /**
@@ -64,22 +59,6 @@ public class OutputTransformer {
     public default ImmutableList<ImportFileView> generateOutputImports(
         MethodContext context, List<OutputView> outputViews) {
       return ImmutableList.<ImportFileView>of();
-    }
-  }
-
-  /**
-   * Transformer that converts a {@code VariableView} to a {@code PrintArgView} in order to print
-   * the variable nicely.
-   */
-  public static interface PrintArgTransformer {
-
-    public default PrintArgView generatePrintArg(
-        MethodContext context, OutputView.VariableView variableView) {
-      return PrintArgView.newBuilder()
-          .segments(
-              ImmutableList.<PrintArgView.ArgSegmentView>of(
-                  PrintArgView.VariableSegmentView.of(variableView)))
-          .build();
     }
   }
 
@@ -161,18 +140,27 @@ public class OutputTransformer {
         "%s:%s: print spec cannot be empty",
         context.getMethodModel().getSimpleName(),
         valueSet.getId());
-    return OutputView.PrintView.newBuilder()
-        .format(context.getNamer().getPrintSpec(config.get(0)))
-        .args(
-            config
-                .subList(1, config.size())
-                .stream()
-                .map(
-                    a ->
-                        printArgTransformer.generatePrintArg(
-                            context, accessor(new Scanner(a), context, valueSet, localVars, form)))
-                .collect(ImmutableList.toImmutableList()))
-        .build();
+    String format = config.get(0);
+    ImmutableList.Builder<OutputView.PrintArgView> argsBuilder = ImmutableList.builder();
+    for (String path : config.subList(1, config.size())) {
+      OutputView.VariableView variable =
+          accessor(new Scanner(path), context, valueSet, localVars, form);
+      TypeModel type = variable.type();
+      String formattedArg =
+          context
+              .getNamer()
+              .getFormattedPrintArgName(type, variable.variable(), variable.accessors());
+      OutputView.PrintArgView arg =
+          OutputView.PrintArgView.newBuilder().type(type).formattedName(formattedArg).build();
+      argsBuilder.add(arg);
+    }
+    ImmutableList<OutputView.PrintArgView> args = argsBuilder.build();
+    List<String> specs =
+        context
+            .getNamer()
+            .getPrintSpecs(
+                format, args.stream().map(arg -> arg.formattedName()).collect(Collectors.toList()));
+    return OutputView.PrintView.newBuilder().format(specs.get(0)).args(args).build();
   }
 
   private OutputView.LoopView loopView(
@@ -295,7 +283,7 @@ public class OutputTransformer {
     TypeModel type = null;
     String typeName = null;
     if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
-      view.variable(context.getNamer().getSampleResponseVarName(context));
+      view.variable(context.getNamer().getSampleResponseVarName(context, form));
       boolean pageStreaming = context.getMethodConfig().getPageStreaming() != null;
       boolean pageStreamingAndUseResourceName =
           pageStreaming
@@ -342,7 +330,9 @@ public class OutputTransformer {
     }
 
     int token;
-    ImmutableList.Builder<AccessorView> accessors = ImmutableList.builder();
+    // The accessors include not only the field names but also language-specific
+    // syntax. e.g., `->field()` in PHP and `.field()` in Java.
+    ImmutableList.Builder<String> accessors = ImmutableList.builder();
     while ((token = config.scan()) != Scanner.EOF) {
       if (token == '.') {
         // TODO(hzyi): add support for accessing fields of resource name types
@@ -382,10 +372,7 @@ public class OutputTransformer {
                 fieldName);
 
         type = field.getType();
-        accessors.add(
-            AccessorView.FieldView.newBuilder()
-                .field(context.getNamer().getFieldGetFunctionName(field))
-                .build());
+        accessors.add(context.getNamer().getFieldAccessorName(field));
       } else if (token == '[') {
         Preconditions.checkArgument(
             type.isRepeated() && !type.isMap(),
@@ -401,7 +388,8 @@ public class OutputTransformer {
             config.input());
 
         type = type.makeOptional();
-        accessors.add(AccessorView.IndexView.newBuilder().index(config.tokenStr()).build());
+        int index = Integer.parseInt(config.tokenStr());
+        accessors.add(context.getNamer().getIndexAccessorName(index));
 
         Preconditions.checkArgument(
             config.scan() == ']',

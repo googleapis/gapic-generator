@@ -262,12 +262,18 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   private DiscoveryField createFieldMaskField() {
+    // TODO(andreamlin): Change this to a Set instead of a List.
     return DiscoveryField.create(
         StandardSchemaGenerator.createListSchema(
             StandardSchemaGenerator.createStringSchema(
                 "", SurfaceNamer.Cardinality.NOT_REPEATED, true),
             DiscoveryMethodTransformer.FIELDMASK_STRING,
-            true),
+            true,
+            "The fields that should be serialized (even if they have empty values). "
+                + "If the containing message object has a non-null fieldmask, "
+                + "then all the fields in the field mask (and only those fields in the field mask) "
+                + "will be serialized. If the containing object does not have a fieldmask, then "
+                + "only non-empty fields will be serialized. "),
         null);
   }
 

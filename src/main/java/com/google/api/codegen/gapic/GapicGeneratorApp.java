@@ -32,22 +32,17 @@ import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
-import com.google.api.tools.framework.tools.ToolUtil;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.inject.TypeLiteral;
 import com.google.longrunning.OperationsProto;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /** Main class for the code generator. */
 public class GapicGeneratorApp extends ToolDriverBase {
@@ -99,10 +94,18 @@ public class GapicGeneratorApp extends ToolDriverBase {
 
   private ArtifactType artifactType;
 
-  /** Constructs a code generator api based on given options. */
-  public GapicGeneratorApp(ToolOptions options, ArtifactType artifactType) {
+  private final GapicWriter gapicWriter;
+
+  /**
+   * Constructs a code generator api based on given options.
+   *
+   * @param gapicWriter : The object that will write out the generator output.
+   */
+  public GapicGeneratorApp(
+      ToolOptions options, ArtifactType artifactType, GapicWriter gapicWriter) {
     super(options);
     this.artifactType = artifactType;
+    this.gapicWriter = gapicWriter;
   }
 
   @Override
@@ -171,50 +174,20 @@ public class GapicGeneratorApp extends ToolDriverBase {
       return;
     }
 
-    String outputPath = options.get(OUTPUT_FILE);
     ArtifactFlags artifactFlags = new ArtifactFlags(options.get(ENABLED_ARTIFACTS), artifactType);
     List<CodeGenerator<?>> generators =
         GapicGeneratorFactory.create(
             language, model, productConfig, packageConfig, artifactFlags, options.get(DEV_SAMPLES));
-    ImmutableMap.Builder<String, Object> outputFiles = ImmutableMap.builder();
-    ImmutableSet.Builder<String> executables = ImmutableSet.builder();
+    ImmutableMap.Builder<String, GeneratedResult<?>> generatedResults = ImmutableMap.builder();
     for (CodeGenerator<?> generator : generators) {
       Map<String, ? extends GeneratedResult<?>> generatorResult = generator.generate();
       for (Map.Entry<String, ? extends GeneratedResult<?>> entry : generatorResult.entrySet()) {
-        outputFiles.put(entry.getKey(), entry.getValue().getBody());
-        if (entry.getValue().isExecutable()) {
-          executables.add(entry.getKey());
-        }
+        generatedResults.put(entry.getKey(), entry.getValue());
       }
     }
-    writeCodeGenOutput(outputFiles.build(), outputPath);
-    setOutputFilesPermissions(executables.build(), outputPath);
-  }
 
-  @VisibleForTesting
-  void writeCodeGenOutput(Map<String, ?> outputFiles, String outputPath) throws IOException {
-    // TODO: Support zip output.
-    if (outputPath.endsWith(".jar") || outputPath.endsWith(".srcjar")) {
-      ToolUtil.writeJar(outputFiles, outputPath);
-    } else {
-      ToolUtil.writeFiles(outputFiles, outputPath);
-    }
-  }
-
-  @VisibleForTesting
-  void setOutputFilesPermissions(Set<String> executables, String outputPath) {
-    if (outputPath.endsWith(".jar")) {
-      return;
-    }
-    for (String executable : executables) {
-      File file =
-          Strings.isNullOrEmpty(outputPath)
-              ? new File(executable)
-              : new File(outputPath, executable);
-      if (!file.setExecutable(true, false)) {
-        warning("Failed to set output file as executable. Probably running on a non-POSIX system.");
-      }
-    }
+    gapicWriter.writeCodeGenOutput(
+        generatedResults.build(), model.getDiagReporter().getDiagCollector());
   }
 
   private ConfigSource loadConfigFromFiles(List<String> configFileNames) {
@@ -249,12 +222,5 @@ public class GapicGeneratorApp extends ToolDriverBase {
         .getDiagReporter()
         .getDiagCollector()
         .addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
-  }
-
-  private void warning(String message, Object... args) {
-    model
-        .getDiagReporter()
-        .getDiagCollector()
-        .addDiag(Diag.warning(SimpleLocation.TOPLEVEL, message, args));
   }
 }
