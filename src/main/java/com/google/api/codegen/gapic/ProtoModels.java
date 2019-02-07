@@ -41,7 +41,7 @@ public class ProtoModels {
   }
 
   /** Gets the interfaces for the apis in the service config. */
-  public static List<Interface> getInterfacesFromServiceConfig(Model model) {
+  private static List<Interface> getInterfacesFromServiceConfig(Model model) {
     return model
         .getServiceConfig()
         .getApisList()
