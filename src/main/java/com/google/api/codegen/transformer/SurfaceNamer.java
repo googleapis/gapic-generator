@@ -32,6 +32,7 @@ import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -47,6 +48,7 @@ import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
@@ -1377,6 +1379,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return CommonRenderingUtil.getDocLines(commentReformatter.reformat(text));
   }
 
+  /** Converts the given text to doc lines in the format of the current language. */
+  public List<String> getDocLines(Schema schema) {
+    StringBuffer description = new StringBuffer(schema.description());
+    if (schema.additionalProperties() != null
+        && !Strings.isNullOrEmpty(schema.additionalProperties().reference())
+        && !Strings.isNullOrEmpty(schema.additionalProperties().description())) {
+      description
+          .append("\nThe key for the map is: ")
+          .append(schema.additionalProperties().description());
+    }
+    return CommonRenderingUtil.getDocLines(commentReformatter.reformat(description.toString()));
+  }
+
   /** Provides the doc lines for the given field in the current language. */
   public List<String> getDocLines(FieldModel field) {
     return getDocLines(field.getScopedDocumentation());
@@ -1548,12 +1563,50 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getExampleFileName");
   }
 
-  /** Translate C-printf-spec into one expected by the language's format utilities. */
-  public String getPrintSpec(String spec) {
-    return getNotImplementedString("SurfaceNamer.getPrintSpec");
+  /**
+   * Translate C-printf-spec and a list of args into those expected by the language's format
+   * utilities.
+   *
+   * <p>For languages that prefer interpolating the arguments in the format string, the returned
+   * list will only have one element, the interpolated format string.
+   *
+   * <p>For languages that prefer using placeholders in the format string, the returned list will be
+   * a format string followed by all the arguments to replace the placeholders.
+   */
+  public List<String> getPrintSpecs(String spec, List<String> args) {
+    return ImmutableList.<String>builder().add(spec).addAll(args).build();
   }
 
-  public String getSampleResponseVarName(MethodContext context) {
+  /** Returns the formatted expression to nicely print a field of a variable. */
+  public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
+    if (accessors.isEmpty()) {
+      return variable;
+    }
+    return variable + String.join("", accessors);
+  }
+
+  /**
+   * Returns the expression to access an element of a collection by index.
+   *
+   * <p>Note that the returned value includes the language-specific syntax for accessing an element
+   * of a collection. For example, the returned value will be `.get(i)` in Java, and `[i]` in PHP.
+   */
+  public String getIndexAccessorName(int index) {
+    return getNotImplementedString("SurfaceNamer.getIndexAccessorName");
+  }
+
+  /**
+   * Returns the expression to access a field of a protobuf object.
+   *
+   * <p>Note that the returned value includes not only the field name, but also the
+   * language-specific syntax for accessing a protobuf object field. For example, the returned value
+   * will be `.getField()` in Java, and `->getField()` in PHP.
+   */
+  public String getFieldAccessorName(FieldModel field) {
+    return getNotImplementedString("SurfaceNamer.getFieldAccessorName");
+  }
+
+  public String getSampleResponseVarName(MethodContext context, CallingForm form) {
     MethodConfig config = context.getMethodConfig();
     if (config.getPageStreaming() != null) {
       return "responseItem";

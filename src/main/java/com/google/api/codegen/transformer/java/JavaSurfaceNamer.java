@@ -406,8 +406,13 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPrintSpec(String spec) {
-    return spec;
+  public String getFieldAccessorName(FieldModel field) {
+    return String.format(".%s()", getFieldGetFunctionName(field));
+  }
+
+  @Override
+  public String getIndexAccessorName(int index) {
+    return String.format(".get(%d)", index);
   }
 
   @Override

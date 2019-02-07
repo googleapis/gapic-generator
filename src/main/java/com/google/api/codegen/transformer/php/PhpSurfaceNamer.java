@@ -19,6 +19,7 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -37,6 +38,7 @@ import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.common.base.Joiner;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /** The SurfaceNamer for PHP. */
 public class PhpSurfaceNamer extends SurfaceNamer {
@@ -275,7 +277,21 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPrintSpec(String spec) {
-    return spec;
+  public String getIndexAccessorName(int index) {
+    return String.format("[%d]", index);
+  }
+
+  @Override
+  public String getFieldAccessorName(FieldModel field) {
+    return String.format("->%s()", getFieldGetFunctionName(field));
+  }
+
+  @Override
+  public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
+    String arg = "$" + variable + String.join("", accessors);
+    if (type != null && type instanceof ProtoTypeRef && type.isMessage()) {
+      return String.format("print_r(%s, true)", arg);
+    }
+    return arg;
   }
 }
