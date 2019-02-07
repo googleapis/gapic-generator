@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.tools.framework.model.DiagCollector;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * Wrapper class around the API models (e.g. protobuf Model, or Discovery Document).
@@ -34,7 +35,7 @@ public interface ApiModel {
   /** Return a list of scopes for authentication. */
   List<String> getAuthScopes(GapicProductConfig gapicProductConfig);
 
-  List<? extends InterfaceModel> getInterfaces();
+  List<? extends InterfaceModel> getInterfaces(@Nullable GapicProductConfig gapicProductConfig);
 
   List<? extends TypeModel> getAdditionalTypes();
 

@@ -48,7 +48,7 @@ public class DiscoApiModel implements ApiModel {
   }
 
   @Override
-  public List<DiscoInterfaceModel> getInterfaces() {
+  public List<DiscoInterfaceModel> getInterfaces(GapicProductConfig gapicProductConfig) {
     if (interfaceModels != null) {
       return interfaceModels;
     }

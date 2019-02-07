@@ -14,10 +14,12 @@
  */
 package com.google.api.codegen.gapic;
 
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * An interface-based view of model, consisting of a strategy for getting the interfaces of the
@@ -27,8 +29,19 @@ public class ProtoModels {
 
   private ProtoModels() {}
 
+  /** Gets the interfaces for the apis in the model. */
+  public static List<Interface> getInterfaces(
+      Model model, @Nullable GapicProductConfig productConfig) {
+    if (productConfig == null || !productConfig.getProtoParser().isProtoAnnotationsEnabled()) {
+      return getInterfacesFromServiceConfig(model);
+    }
+
+    // Assume valid service config if proto annotations parsing is not enabled.
+    return model.getSymbolTable().getInterfaces().asList();
+  }
+
   /** Gets the interfaces for the apis in the service config. */
-  public static List<Interface> getInterfaces(Model model) {
+  public static List<Interface> getInterfacesFromServiceConfig(Model model) {
     return model
         .getServiceConfig()
         .getApisList()
