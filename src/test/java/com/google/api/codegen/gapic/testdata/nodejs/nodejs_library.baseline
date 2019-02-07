@@ -271,24 +271,32 @@ module.exports.default = Object.assign({}, module.exports);
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-const stream = client.discussBook().on('data', response => {
-  console.log(response);
-});
-// const imageFileName = 'image_file.jpg';
-const name = 'BASIC';
-const fileName = 'comment_file';
-const comment = fs.readFileSync(fileName).toString('base64');
-const comment2 = {
-  comment: comment,
-};
-const image = fs.readFileSync(imageFileName).toString('base64');
-const request = {
-  name: name,
-  comment: comment2,
-  image: image,
-};
-// Write request objects.
-stream.write(request);
+function sampleDiscussBook(imageFileName) {
+  const stream = client.discussBook().on('data', response => {
+    console.log(response);
+  });
+  // const imageFileName = 'image_file.jpg';
+  const name = 'BASIC';
+  const fileName = 'comment_file';
+  const comment = fs.readFileSync(fileName).toString('base64');
+  const comment2 = {
+    comment: comment,
+  };
+  const image = fs.readFileSync(imageFileName).toString('base64');
+  const request = {
+    name: name,
+    comment: comment2,
+    image: image,
+  };
+  // Write request objects.
+  stream.write(request);
+}
+
+require(`yargs`)
+  .default('imageFileName', 'image_file.jpg')
+  .argv;
+
+sampleDiscussBook(argv.imageFileName);
 */
 // [END turing_prog_request_streaming_bidi_core]
 
@@ -318,27 +326,31 @@ stream.write(request);
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-// Iterate over all elements.
-const namesElement = 'Odyssey';
-const names = [namesElement];
-const shelvesElement = 'Classics';
-const shelves = [shelvesElement];
-const request = {
-  names: names,
-  shelves: shelves,
-};
+function sampleFindRelatedBooks() {
+  // Iterate over all elements.
+  const namesElement = 'Odyssey';
+  const names = [namesElement];
+  const shelvesElement = 'Classics';
+  const shelves = [shelvesElement];
+  const request = {
+    names: names,
+    shelves: shelves,
+  };
 
-client.findRelatedBooks(request)
-  .then(responses => {
-    const resources = responses[0];
-    for (const resource of resources) {
-      const book = resource;
-      console.log(`Here's a related book: {$book}`);
-    }
-  })
-  .catch(err => {
-    console.error(err);
-  });
+  client.findRelatedBooks(request)
+    .then(responses => {
+      const resources = responses[0];
+      for (const resource of resources) {
+        const book = resource;
+        console.log(`Here's a related book: {$book}`);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+sampleFindRelatedBooks();
 */
 // [END sample_core]
 
@@ -368,39 +380,43 @@ client.findRelatedBooks(request)
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-// Or obtain the paged response.
-const namesElement = 'Odyssey';
-const names = [namesElement];
-const shelvesElement = 'Classics';
-const shelves = [shelvesElement];
-const request = {
-  names: names,
-  shelves: shelves,
-};
+function sampleFindRelatedBooks() {
+  // Or obtain the paged response.
+  const namesElement = 'Odyssey';
+  const names = [namesElement];
+  const shelvesElement = 'Classics';
+  const shelves = [shelvesElement];
+  const request = {
+    names: names,
+    shelves: shelves,
+  };
 
 
-const options = {autoPaginate: false};
-const callback = responses => {
-  // The actual resources in a response.
-  const resources = responses[0];
-  // The next request if the response shows that there are more responses.
-  const nextRequest = responses[1];
-  // The actual response object, if necessary.
-  // const rawResponse = responses[2];
-  for (const resource of resources) {
-    const book = resource;
-    console.log(`Here's a related book: {$book}`);
+  const options = {autoPaginate: false};
+  const callback = responses => {
+    // The actual resources in a response.
+    const resources = responses[0];
+    // The next request if the response shows that there are more responses.
+    const nextRequest = responses[1];
+    // The actual response object, if necessary.
+    // const rawResponse = responses[2];
+    for (const resource of resources) {
+      const book = resource;
+      console.log(`Here's a related book: {$book}`);
+    }
+    if (nextRequest) {
+      // Fetch the next page.
+      return client.findRelatedBooks(nextRequest, options).then(callback);
+    }
   }
-  if (nextRequest) {
-    // Fetch the next page.
-    return client.findRelatedBooks(nextRequest, options).then(callback);
-  }
+  client.findRelatedBooks(request, options)
+    .then(callback)
+    .catch(err => {
+      console.error(err);
+    });
 }
-client.findRelatedBooks(request, options)
-  .then(callback)
-  .catch(err => {
-    console.error(err);
-  });
+
+sampleFindRelatedBooks();
 */
 // [END sample_core]
 
@@ -430,35 +446,43 @@ client.findRelatedBooks(request, options)
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-// const shelf = 'Novel';
-const formattedName = client.bookPath(shelf, 'War and Peace');
+function sampleGetBigBook(shelf) {
+  // const shelf = 'Novel';
+  const formattedName = client.bookPath(shelf, 'War and Peace');
 
-// Handle the operation using the event emitter pattern.
-client.getBigBook({name: formattedName})
-  .then(responses => {
-    const [operation, initApiResponse] = responses;
+  // Handle the operation using the event emitter pattern.
+  client.getBigBook({name: formattedName})
+    .then(responses => {
+      const [operation, initApiResponse] = responses;
 
-    // Adding a listener for the "complete" event starts polling for the
-    // completion of the operation.
-    operation.on('complete', (result, metadata, finalApiResponse) => {
-      console.log(`name: {$result.name}`);
-      console.log(`author: {$result.author}`);
+      // Adding a listener for the "complete" event starts polling for the
+      // completion of the operation.
+      operation.on('complete', (result, metadata, finalApiResponse) => {
+        console.log(`name: {$result.name}`);
+        console.log(`author: {$result.author}`);
+      });
+
+      // Adding a listener for the "progress" event causes the callback to be
+      // called on any change in metadata when the operation is polled.
+      operation.on('progress', (metadata, apiResponse) => {
+        // doSomethingWith(metadata)
+      });
+
+      // Adding a listener for the "error" event handles any errors found during polling.
+      operation.on('error', err => {
+        // throw(err);
+      });
+    })
+    .catch(err => {
+      console.error(err);
     });
+}
 
-    // Adding a listener for the "progress" event causes the callback to be
-    // called on any change in metadata when the operation is polled.
-    operation.on('progress', (metadata, apiResponse) => {
-      // doSomethingWith(metadata)
-    });
+require(`yargs`)
+  .default('shelf', 'Novel')
+  .argv;
 
-    // Adding a listener for the "error" event handles any errors found during polling.
-    operation.on('error', err => {
-      // throw(err);
-    });
-  })
-  .catch(err => {
-    console.error(err);
-  });
+sampleGetBigBook(argv.shelf);
 */
 // [END hopper_core]
 
@@ -488,35 +512,44 @@ client.getBigBook({name: formattedName})
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-// const shelf = 'Novel';
-// const bigBookName = 'War and Peace';
-const formattedName = client.bookPath(shelf, bigBookName);
+function sampleGetBigBook(shelf, bigBookName) {
+  // const shelf = 'Novel';
+  // const bigBookName = 'War and Peace';
+  const formattedName = client.bookPath(shelf, bigBookName);
 
-// Handle the operation using the event emitter pattern.
-client.getBigBook({name: formattedName})
-  .then(responses => {
-    const [operation, initApiResponse] = responses;
+  // Handle the operation using the event emitter pattern.
+  client.getBigBook({name: formattedName})
+    .then(responses => {
+      const [operation, initApiResponse] = responses;
 
-    // Adding a listener for the "complete" event starts polling for the
-    // completion of the operation.
-    operation.on('complete', (result, metadata, finalApiResponse) => {
-      console.log(result);
+      // Adding a listener for the "complete" event starts polling for the
+      // completion of the operation.
+      operation.on('complete', (result, metadata, finalApiResponse) => {
+        console.log(result);
+      });
+
+      // Adding a listener for the "progress" event causes the callback to be
+      // called on any change in metadata when the operation is polled.
+      operation.on('progress', (metadata, apiResponse) => {
+        // doSomethingWith(metadata)
+      });
+
+      // Adding a listener for the "error" event handles any errors found during polling.
+      operation.on('error', err => {
+        // throw(err);
+      });
+    })
+    .catch(err => {
+      console.error(err);
     });
+}
 
-    // Adding a listener for the "progress" event causes the callback to be
-    // called on any change in metadata when the operation is polled.
-    operation.on('progress', (metadata, apiResponse) => {
-      // doSomethingWith(metadata)
-    });
+require(`yargs`)
+  .default('shelf', 'Novel')
+  .default('bigBookName', 'War and Peace')
+  .argv;
 
-    // Adding a listener for the "error" event handles any errors found during polling.
-    operation.on('error', err => {
-      // throw(err);
-    });
-  })
-  .catch(err => {
-    console.error(err);
-  });
+sampleGetBigBook(argv.shelf, argv.bigBookName);
 */
 // [END hopper_core]
 
@@ -546,28 +579,36 @@ client.getBigBook({name: formattedName})
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-// const shelf = 'Novel';
-const formattedName = client.bookPath(shelf, 'War and Peace');
+function sampleGetBigBook(shelf) {
+  // const shelf = 'Novel';
+  const formattedName = client.bookPath(shelf, 'War and Peace');
 
-// Handle the operation using the promise pattern.
-client.getBigBook({name: formattedName})
-  .then(responses => {
-    const [operation, initialApiResponse] = responses;
+  // Handle the operation using the promise pattern.
+  client.getBigBook({name: formattedName})
+    .then(responses => {
+      const [operation, initialApiResponse] = responses;
 
-    // Operation#promise starts polling for the completion of the LRO.
-    return operation.promise();
-  })
-  .then(responses => {
-    const result = responses[0];
-    const metadata = responses[1];
-    const finalApiResponse = responses[2];
+      // Operation#promise starts polling for the completion of the LRO.
+      return operation.promise();
+    })
+    .then(responses => {
+      const result = responses[0];
+      const metadata = responses[1];
+      const finalApiResponse = responses[2];
 
-    console.log(`name: {$result.name}`);
-    console.log(`author: {$result.author}`);
-  })
-  .catch(err => {
-    console.error(err);
-  });
+      console.log(`name: {$result.name}`);
+      console.log(`author: {$result.author}`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+require(`yargs`)
+  .default('shelf', 'Novel')
+  .argv;
+
+sampleGetBigBook(argv.shelf);
 */
 // [END hopper_core]
 
@@ -597,28 +638,37 @@ client.getBigBook({name: formattedName})
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-// const shelf = 'Novel';
-// const bigBookName = 'War and Peace';
-const formattedName = client.bookPath(shelf, bigBookName);
+function sampleGetBigBook(shelf, bigBookName) {
+  // const shelf = 'Novel';
+  // const bigBookName = 'War and Peace';
+  const formattedName = client.bookPath(shelf, bigBookName);
 
-// Handle the operation using the promise pattern.
-client.getBigBook({name: formattedName})
-  .then(responses => {
-    const [operation, initialApiResponse] = responses;
+  // Handle the operation using the promise pattern.
+  client.getBigBook({name: formattedName})
+    .then(responses => {
+      const [operation, initialApiResponse] = responses;
 
-    // Operation#promise starts polling for the completion of the LRO.
-    return operation.promise();
-  })
-  .then(responses => {
-    const result = responses[0];
-    const metadata = responses[1];
-    const finalApiResponse = responses[2];
+      // Operation#promise starts polling for the completion of the LRO.
+      return operation.promise();
+    })
+    .then(responses => {
+      const result = responses[0];
+      const metadata = responses[1];
+      const finalApiResponse = responses[2];
 
-    console.log(result);
-  })
-  .catch(err => {
-    console.error(err);
-  });
+      console.log(result);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+require(`yargs`)
+  .default('shelf', 'Novel')
+  .default('bigBookName', 'War and Peace')
+  .argv;
+
+sampleGetBigBook(argv.shelf, argv.bigBookName);
 */
 // [END hopper_core]
 
@@ -648,19 +698,23 @@ client.getBigBook({name: formattedName})
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-const stream = client.monologAboutBook((err, response) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-  console.log(`The stage of the comment is: {$response.stage}`);
-});
-const name = 'BASIC';
-const request = {
-  name: name,
-};
-// Write request objects.
-stream.write(request);
+function sampleMonologAboutBook() {
+  const stream = client.monologAboutBook((err, response) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log(`The stage of the comment is: {$response.stage}`);
+  });
+  const name = 'BASIC';
+  const request = {
+    name: name,
+  };
+  // Write request objects.
+  stream.write(request);
+}
+
+sampleMonologAboutBook();
 */
 // [END sample_core]
 
@@ -690,46 +744,55 @@ stream.write(request);
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-// const shelfName = 'Math';
-// const edition = 123;
-const shelf = {
-  name: shelfName,
-};
-const books = [];
-const seriesString = 'xyz3141592654';
-const seriesUuid = {
-  seriesString: seriesString,
-};
-const request = {
-  shelf: shelf,
-  books: books,
-  seriesUuid: seriesUuid,
-  edition: edition,
-};
-client.publishSeries(request)
-  .then(responses => {
-    const response = responses[0];
-    // % % % output handling % % % %
-    // fourScoreAndSevenYears ago
-    //
-    // our fathers brought forth upon this continent
-    // a new nation
-    // conceived in liberty
-    //
-    // and dedicated to the proposition that allMenAreCreatedEqual.
-    // Do something with bookNames one by one
-    for (const title of response.bookNames) {
-      // Now we deal with thisSingleBook!
-      console.log(`Title: {$title}`);
-    }
-    console.log(`The first book is: {$response.bookNames[0]}`);
-    console.log(`The author of the first book is: {$response.books[0].author}`);
-    console.log(`That's all!`);
-    console.log(`series_uuid: {$response.seriesUuid.seriesBytes}`);
-  })
-  .catch(err => {
-    console.error(err);
-  });
+function samplePublishSeries(shelfName, edition) {
+  // const shelfName = 'Math';
+  // const edition = 123;
+  const shelf = {
+    name: shelfName,
+  };
+  const books = [];
+  const seriesString = 'xyz3141592654';
+  const seriesUuid = {
+    seriesString: seriesString,
+  };
+  const request = {
+    shelf: shelf,
+    books: books,
+    seriesUuid: seriesUuid,
+    edition: edition,
+  };
+  client.publishSeries(request)
+    .then(responses => {
+      const response = responses[0];
+      // % % % output handling % % % %
+      // fourScoreAndSevenYears ago
+      //
+      // our fathers brought forth upon this continent
+      // a new nation
+      // conceived in liberty
+      //
+      // and dedicated to the proposition that allMenAreCreatedEqual.
+      // Do something with bookNames one by one
+      for (const title of response.bookNames) {
+        // Now we deal with thisSingleBook!
+        console.log(`Title: {$title}`);
+      }
+      console.log(`The first book is: {$response.bookNames[0]}`);
+      console.log(`The author of the first book is: {$response.books[0].author}`);
+      console.log(`That's all!`);
+      console.log(`series_uuid: {$response.seriesUuid.seriesBytes}`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+require(`yargs`)
+  .default('shelfName', 'Math')
+  .default('edition', 123)
+  .argv;
+
+samplePublishSeries(argv.shelfName, argv.edition);
 */
 // [END canonical_core]
 
@@ -759,24 +822,28 @@ client.publishSeries(request)
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-const shelf = {};
-const books = [];
-const seriesUuid = {};
-const edition = 2;
-const request = {
-  shelf: shelf,
-  books: books,
-  seriesUuid: seriesUuid,
-  edition: edition,
-};
-client.publishSeries(request)
-  .then(responses => {
-    const response = responses[0];
-    console.log(response);
-  })
-  .catch(err => {
-    console.error(err);
-  });
+function samplePublishSeries() {
+  const shelf = {};
+  const books = [];
+  const seriesUuid = {};
+  const edition = 2;
+  const request = {
+    shelf: shelf,
+    books: books,
+    seriesUuid: seriesUuid,
+    edition: edition,
+  };
+  client.publishSeries(request)
+    .then(responses => {
+      const response = responses[0];
+      console.log(response);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+samplePublishSeries();
 */
 // [END canonical_core]
 
@@ -806,10 +873,14 @@ client.publishSeries(request)
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
-const name = 'BASIC';
-  client.streamBooks({name: name}).on('data', response => {
-      console.log(response);
-  });
+function sampleStreamBooks() {
+  const name = 'BASIC';
+    client.streamBooks({name: name}).on('data', response => {
+        console.log(response);
+    });
+}
+
+sampleStreamBooks();
 */
 // [END lovelace_core]
 
@@ -839,10 +910,14 @@ const name = 'BASIC';
 // FIXME: Insert here code to prepare the request fields, make the call, process the response.
 
 /*
+function sampleStreamShelves() {
 
-  client.streamShelves({}).on('data', response => {
-      console.log(response);
-  });
+    client.streamShelves({}).on('data', response => {
+        console.log(response);
+    });
+}
+
+sampleStreamShelves();
 */
 // [END sample_core]
 
