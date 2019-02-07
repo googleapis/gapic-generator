@@ -41,33 +41,40 @@
 #
 # FIXME: Replace the following function calls with calls to functions that emit full standalone samples. These stubs have been adapted from method_sample.snip
 @snippet standaloneSample(apiMethod, sample)
-  @switch sample.callingForm
-  @case "Request"
-    @if apiMethod.hasReturnValue
-      {@methodCallSampleCodeWithReturnValue(apiMethod, sample)}
-    @else
-      {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample)}
+  async function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
+    @switch sample.callingForm
+    @case "Request"
+      @if apiMethod.hasReturnValue
+        {@methodCallSampleCodeWithReturnValue(apiMethod, sample)}
+      @else
+        {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample)}
+      @end
+    @case "RequestAsyncPaged"
+      {@methodCallSampleCodeForPagedResponse(apiMethod, sample)}
+    @case "RequestAsyncPagedAll"
+      {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample)}
+    @case "RequestStreamingBidi"
+      {@bidiStreamingSampleCode(apiMethod, sample)}
+    @case "RequestStreamingClient"
+      {@clientStreamingSampleCode(apiMethod, sample)}
+    @case "RequestStreamingServer"
+      {@initCode(apiMethod, sample.sampleInitCode)}
+        {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}.on('data', response => {
+            {@processResponse(sample)}
+        });
+    @case "LongRunningEventEmitter"
+      {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample)}
+    @case "LongRunningPromise"
+      {@methodCallSampleCodeLongrunningPromise(apiMethod, sample)}
+    @default
+      $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
-  @case "RequestAsyncPaged"
-    {@methodCallSampleCodeForPagedResponse(apiMethod, sample)}
-  @case "RequestAsyncPagedAll"
-    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, sample)}
-  @case "RequestStreamingBidi"
-    {@bidiStreamingSampleCode(apiMethod, sample)}
-  @case "RequestStreamingClient"
-    {@clientStreamingSampleCode(apiMethod, sample)}
-  @case "RequestStreamingServer"
-    {@initCode(apiMethod, sample.sampleInitCode)}
-      {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}.on('data', response => {
-          {@processResponse(sample)}
-      });
-  @case "LongRunningEventEmitter"
-    {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample)}
-  @case "LongRunningPromise"
-    {@methodCallSampleCodeLongrunningPromise(apiMethod, sample)}
-  @default
-    $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+  }
+
+  @if sample.sampleInitCode.argDefaultParams
+    {@processCliArguments(sample)}
   @end
+  {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)});
 @end
 
 @private processResponse(sample)
@@ -75,6 +82,26 @@
     console.log(response);
   @else
     {@processOutputViews(sample.outputs)}
+  @end
+@end
+
+@private processCliArguments(sample)
+  require(`yargs`)
+    @join param : sample.sampleInitCode.argDefaultParams
+      .default('{@param.identifier}', {@renderInitValue(param.initValue)})
+    @end
+    .argv;
+@end
+
+@private formalArgs(sampleArgs)
+  @join param : sampleArgs on ", "
+    {@param.identifier}
+  @end
+@end
+
+@private argvArgs(args)
+  @join arg : args on ", "
+    argv.{@arg.identifier}
   @end
 @end
 
