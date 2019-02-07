@@ -48,7 +48,6 @@ public class FileGapicWriter implements GapicWriter {
       @Nonnull Map<String, GeneratedResult<?>> generatedResults, DiagCollector diagCollector)
       throws IOException {
     Map<String, Object> outputFiles = GeneratedResult.extractBodiesGeneric(generatedResults);
-
     writeCodeGenOutput(outputFiles, outputPath);
 
     Set<String> executables =
