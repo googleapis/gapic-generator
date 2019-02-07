@@ -36,7 +36,7 @@ public class ProtoModels {
       return getInterfacesFromServiceConfig(model);
     }
 
-    // Assume valid service config if proto annotations parsing is not enabled.
+    // No service config was given, or we shouldn't parse it.
     return model.getSymbolTable().getInterfaces().asList();
   }
 
