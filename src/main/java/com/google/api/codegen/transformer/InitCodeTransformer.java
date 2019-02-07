@@ -48,6 +48,7 @@ import com.google.api.codegen.viewmodel.ReadFileInitCodeLineView;
 import com.google.api.codegen.viewmodel.RepeatedResourceNameInitValueView;
 import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
 import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
+import com.google.api.codegen.viewmodel.SampleFunctionParameterView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
@@ -404,14 +405,25 @@ public class InitCodeTransformer {
     List<FieldSettingView> requiredFieldSettings =
         fieldSettings.stream().filter(FieldSettingView::required).collect(Collectors.toList());
 
-    List<InitCodeLineView> argDefaultParams = new ArrayList<>();
+    List<SampleFunctionParameterView> argDefaultParams = new ArrayList<>();
     List<InitCodeLineView> argDefaultLines = new ArrayList<>();
     for (InitCodeNode param : sampleFuncParams) {
       List<InitCodeNode> paramInits = param.listInInitializationOrder();
       argDefaultLines.addAll(generateSurfaceInitCodeLines(context, paramInits));
 
       // The param itself is always at the end.
-      argDefaultParams.add(argDefaultLines.get(argDefaultLines.size() - 1));
+      InitCodeLineView initLine = argDefaultLines.get(argDefaultLines.size() - 1);
+      checkArgument(
+          initLine.lineType() == InitCodeLineType.SimpleInitLine,
+          "Standalone samples only support primitive types for CLI arguments for now.");
+      SimpleInitCodeLineView simpleInitLine = (SimpleInitCodeLineView) initLine;
+      argDefaultParams.add(
+          SampleFunctionParameterView.newBuilder()
+              .initValue(simpleInitLine.initValue())
+              .identifier(simpleInitLine.identifier())
+              .typeName(simpleInitLine.typeName())
+              .cliFlagName(param.getIdentifier().toLowerUnderscore())
+              .build());
 
       // Since we're going to write the inits for the params here,
       // remove so we don't init twice.
