@@ -42,7 +42,7 @@ public class MockServiceTransformer {
       return ImmutableList.of();
     }
 
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       if (!productConfig.hasInterfaceConfig(apiInterface)) {
         continue;
       }

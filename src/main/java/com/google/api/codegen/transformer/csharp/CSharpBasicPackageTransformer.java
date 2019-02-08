@@ -90,7 +90,7 @@ public class CSharpBasicPackageTransformer implements ModelToViewTransformer<Pro
     List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName(), ALIAS_MODE);
 
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       if (!productConfig.hasInterfaceConfig(apiInterface)) {
         continue;
       }

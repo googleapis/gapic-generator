@@ -124,7 +124,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
     FeatureConfig featureConfig = new RubyFeatureConfig();
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       if (!productConfig.hasInterfaceConfig(apiInterface)) {
         continue;
       }
@@ -220,7 +220,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
 
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
-    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces();
+    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces(productConfig);
     for (InterfaceModel apiInterface : interfaces) {
       InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       if (interfaceConfig == null) {
@@ -280,7 +280,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     List<String> modules = namer.getApiModules();
     InterfaceModel apiInterface =
         model
-            .getInterfaces()
+            .getInterfaces(productConfig)
             .stream()
             .filter(productConfig::hasInterfaceConfig)
             .findFirst()
@@ -342,7 +342,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
 
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
     List<String> modules = namer.getTopLevelApiModules();
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       if (!productConfig.hasInterfaceConfig(apiInterface)) {
         continue;
       }

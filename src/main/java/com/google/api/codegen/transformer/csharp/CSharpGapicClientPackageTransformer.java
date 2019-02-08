@@ -61,7 +61,7 @@ public class CSharpGapicClientPackageTransformer implements ModelToViewTransform
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     return Streams.findLast(
-            model.getInterfaces().stream().filter(productConfig::hasInterfaceConfig))
+            model.getInterfaces(productConfig).stream().filter(productConfig::hasInterfaceConfig))
         .map(i -> createInterfaceContext(i, productConfig))
         .map(this::generateCsProjView)
         .<List<ViewModel>>map(ImmutableList::of)
