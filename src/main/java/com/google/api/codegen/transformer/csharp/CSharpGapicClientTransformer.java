@@ -115,7 +115,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     CSharpFeatureConfig featureConfig = new CSharpFeatureConfig();
 
     InterfaceModel lastApiInterface = null;
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       if (!productConfig.hasInterfaceConfig(apiInterface)) {
         continue;
       }

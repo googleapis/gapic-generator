@@ -57,6 +57,10 @@ import javax.annotation.Nullable;
 public class ProtoParser {
   private final boolean enableProtoAnnotations;
 
+  public boolean isProtoAnnotationsEnabled() {
+    return enableProtoAnnotations;
+  }
+
   public ProtoParser(boolean enableProtoAnnotations) {
     this.enableProtoAnnotations = enableProtoAnnotations;
   }

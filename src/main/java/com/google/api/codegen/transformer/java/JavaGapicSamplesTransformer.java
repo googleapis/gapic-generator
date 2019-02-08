@@ -64,7 +64,7 @@ public class JavaGapicSamplesTransformer implements ModelToViewTransformer<Proto
     List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer = createSurfaceNamer(productConfig);
 
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       if (!productConfig.hasInterfaceConfig(apiInterface)) {
         continue;
       }
