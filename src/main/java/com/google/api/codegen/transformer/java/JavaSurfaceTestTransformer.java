@@ -102,7 +102,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     SurfaceNamer namer = surfaceTransformer.createSurfaceNamer(productConfig);
 
     List<ViewModel> views = new ArrayList<>();
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       if (!productConfig.hasInterfaceConfig(apiInterface)) {
         continue;
       }

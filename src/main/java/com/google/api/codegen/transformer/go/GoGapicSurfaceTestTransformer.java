@@ -89,7 +89,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer<Pro
     List<ViewModel> models = new ArrayList<ViewModel>();
     models.add(generateMockServiceView(model, productConfig, namer));
 
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       if (interfaceConfig == null || interfaceConfig.getSmokeTestConfig() == null) {
         continue;
@@ -125,7 +125,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer<Pro
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       if (!productConfig.hasInterfaceConfig(apiInterface)) {
         continue;
       }

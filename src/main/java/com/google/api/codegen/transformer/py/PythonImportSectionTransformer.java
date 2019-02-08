@@ -491,7 +491,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   public ImportSectionView generateVersionedInitImportSection(
-      ApiModel apiModel, ProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
+      ApiModel apiModel,
+      GapicProductConfig productConfig,
+      SurfaceNamer namer,
+      boolean packageHasEnums) {
     return ImportSectionView.newBuilder()
         .appImports(
             generateVersionedInitAppImports(apiModel, productConfig, namer, packageHasEnums))
@@ -504,9 +507,12 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private List<ImportFileView> generateVersionedInitAppImports(
-      ApiModel apiModel, ProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
+      ApiModel apiModel,
+      GapicProductConfig productConfig,
+      SurfaceNamer namer,
+      boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
-    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
       InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       if (interfaceConfig == null) {
         continue;
@@ -525,7 +531,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   public ImportSectionView generateTopLeveEntryPointImportSection(
-      ApiModel apiModel, ProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
+      ApiModel apiModel,
+      GapicProductConfig productConfig,
+      SurfaceNamer namer,
+      boolean packageHasEnums) {
     return ImportSectionView.newBuilder()
         .appImports(
             generateTopLevelEntryPointAppImports(apiModel, productConfig, namer, packageHasEnums))
@@ -534,9 +543,12 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private List<ImportFileView> generateTopLevelEntryPointAppImports(
-      ApiModel apiModel, ProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
+      ApiModel apiModel,
+      GapicProductConfig productConfig,
+      SurfaceNamer namer,
+      boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
-    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
       InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       if (interfaceConfig == null) {
         continue;

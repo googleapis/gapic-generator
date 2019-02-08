@@ -54,7 +54,7 @@ public class ProtoApiModel implements ApiModel {
 
   @Override
   public List<String> getAuthScopes(GapicProductConfig gapicProductConfig) {
-    return getAuthScopes(gapicProductConfig.getProtoParser(), getInterfaces());
+    return getAuthScopes(gapicProductConfig.getProtoParser(), getInterfaces(gapicProductConfig));
   }
 
   @VisibleForTesting
@@ -100,10 +100,10 @@ public class ProtoApiModel implements ApiModel {
   }
 
   @Override
-  public List<ProtoInterfaceModel> getInterfaces() {
+  public List<ProtoInterfaceModel> getInterfaces(GapicProductConfig productConfig) {
     if (interfaceModels == null) {
       interfaceModels =
-          ProtoModels.getInterfaces(protoModel)
+          ProtoModels.getInterfaces(protoModel, productConfig)
               .stream()
               .map(ProtoInterfaceModel::new)
               .collect(ImmutableList.toImmutableList());
