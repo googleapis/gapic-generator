@@ -53,7 +53,7 @@ public class InterfaceMerger {
 
     ConfigNode interfacesValueNode =
         ListTransformer.generateList(
-            model.getInterfaces(), interfacesNode, this::generateInterfaceNode);
+            model.getInterfaces(null), interfacesNode, this::generateInterfaceNode);
     interfacesNode
         .setChild(interfacesValueNode)
         .setComment(new DefaultComment("A list of API interface configurations."));

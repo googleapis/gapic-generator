@@ -118,7 +118,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       if (!productConfig.hasInterfaceConfig(apiInterface)) {
         continue;
       }
@@ -215,7 +215,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
 
   private List<ViewModel> createSmokeTestViews(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       if (interfaceConfig == null || interfaceConfig.getSmokeTestConfig() == null) {
         continue;

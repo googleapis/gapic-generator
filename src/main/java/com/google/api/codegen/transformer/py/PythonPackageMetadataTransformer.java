@@ -236,7 +236,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
 
   private boolean hasSmokeTests(ApiModel apiModel, GapicProductConfig productConfig) {
     return apiModel
-        .getInterfaces()
+        .getInterfaces(productConfig)
         .stream()
         .map(productConfig::getInterfaceConfig)
         .filter(Objects::nonNull)
@@ -299,7 +299,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
   private List<ApiMethodView> generateExampleMethods(
       ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       if (interfaceConfig == null || interfaceConfig.getSmokeTestConfig() == null) {
         continue;

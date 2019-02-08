@@ -77,7 +77,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   private static Map<Interface, Interface> createGrpcRerouteMap(
       Model model, GapicProductConfig productConfig) {
     HashMap<Interface, Interface> grpcRerouteMap = new HashMap<>();
-    for (Interface apiInterface : ProtoModels.getInterfaces(model)) {
+    for (Interface apiInterface : ProtoModels.getInterfaces(model, productConfig)) {
       InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       if (interfaceConfig == null) {
         continue;

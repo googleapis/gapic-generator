@@ -106,7 +106,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     SurfaceNamer surfacePackageNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     SurfaceNamer testPackageNamer =
         new PythonSurfaceNamer(surfacePackageNamer.getTestPackageName());
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       if (!productConfig.hasInterfaceConfig(apiInterface)) {
         continue;
       }
@@ -251,7 +251,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     SurfaceNamer surfacePackageNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     SurfaceNamer testPackageNamer =
         new PythonSurfaceNamer(surfacePackageNamer.getTestPackageName());
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       if (interfaceConfig == null || interfaceConfig.getSmokeTestConfig() == null) {
         continue;

@@ -21,7 +21,6 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
@@ -142,7 +141,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     FeatureConfig featureConfig = new DefaultFeatureConfig();
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
 
-    for (InterfaceModel apiInterface : apiModel.getInterfaces()) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
       if (!productConfig.hasInterfaceConfig(apiInterface)) {
         continue;
       }
@@ -344,7 +343,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
         .build();
   }
 
-  private ViewModel generateVersionedInitView(ProtoApiModel apiModel, ProductConfig productConfig) {
+  private ViewModel generateVersionedInitView(
+      ProtoApiModel apiModel, GapicProductConfig productConfig) {
     SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
     boolean packageHasEnums = packageHasEnums(apiModel.getProtoModel());
     ImportSectionView imports =
@@ -371,9 +371,9 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   }
 
   private List<VersionIndexRequireView> versionedInitRequireViews(
-      ApiModel apiModel, ProductConfig productConfig, SurfaceNamer namer) {
+      ApiModel apiModel, GapicProductConfig productConfig, SurfaceNamer namer) {
     return apiModel
-        .getInterfaces()
+        .getInterfaces(productConfig)
         .stream()
         .map(intf -> productConfig.getInterfaceConfig(intf))
         .filter(Objects::nonNull)
@@ -401,12 +401,12 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   }
 
   private Iterable<ViewModel> generateTopLevelViews(
-      ProtoApiModel apiModel, ProductConfig productConfig) {
+      ProtoApiModel apiModel, GapicProductConfig productConfig) {
     return ImmutableList.of(generateTopLevelEntryPoint(apiModel, productConfig));
   }
 
   private ViewModel generateTopLevelEntryPoint(
-      ProtoApiModel apiModel, ProductConfig productConfig) {
+      ProtoApiModel apiModel, GapicProductConfig productConfig) {
     SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
     boolean packageHasEnums = packageHasEnums(apiModel.getProtoModel());
     ImportSectionView imports =
@@ -436,9 +436,9 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   }
 
   private List<VersionIndexRequireView> topLevelRequireViews(
-      ApiModel apiModel, ProductConfig productConfig, SurfaceNamer namer) {
+      ApiModel apiModel, GapicProductConfig productConfig, SurfaceNamer namer) {
     return apiModel
-        .getInterfaces()
+        .getInterfaces(productConfig)
         .stream()
         .map(intf -> productConfig.getInterfaceConfig(intf))
         .filter(Objects::nonNull)

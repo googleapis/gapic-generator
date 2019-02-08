@@ -109,7 +109,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<>();
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       if (!productConfig.hasInterfaceConfig(apiInterface)) {
         continue;
       }
