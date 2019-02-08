@@ -241,7 +241,7 @@
         Option.builder("")
           .required(false)
           .hasArg(true)
-          .longOpt("{@param.identifier}")
+          .longOpt("{@param.cliFlagName}")
           .build());
   @end
 
@@ -249,21 +249,21 @@
   @join param : sample.sampleInitCode.argDefaultParams
     @switch param.typeName
     @case "String"
-      String {@param.identifier} = cl.getOptionValue("{@param.identifier}", {@renderInitValue(param.initValue)});
+      String {@param.identifier} = cl.getOptionValue("{@param.cliFlagName}", {@renderInitValue(param.initValue)});
     @case "int"
       int {@param.identifier} =
-          cl.getOptionValue("{@param.identifier}") != null
-              ? Integer.parseInt(cl.getOptionValue("{@param.identifier}"))
+          cl.getOptionValue("{@param.cliFlagName}") != null
+              ? Integer.parseInt(cl.getOptionValue("{@param.cliFlagName}"))
               : {@renderInitValue(param.initValue)};
     @case "double"
       double {@param.identifier} =
-          cl.getOptionValue("{@param.identifier}") != null
-              ? Double.parseDouble(cl.getOptionValue("{@param.identifier}"))
+          cl.getOptionValue("{@param.cliFlagName}") != null
+              ? Double.parseDouble(cl.getOptionValue("{@param.cliFlagName}"))
               : {@renderInitValue(param.initValue)};
     @case "boolean"
       boolean {@param.identifier} =
-          cl.getOptionValue("{@param.identifier}") != null
-              ? Boolean.parseBoolean(cl.getOptionValue("{@param.identifier}"))
+          cl.getOptionValue("{@param.cliFlagName}") != null
+              ? Boolean.parseBoolean(cl.getOptionValue("{@param.cliFlagName}"))
               : {@renderInitValue(param.initValue)};
     @default
       $unhandledCase: {@param.typeName}$

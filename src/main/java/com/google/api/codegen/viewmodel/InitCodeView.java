@@ -31,7 +31,7 @@ public abstract class InitCodeView {
    * A subset of {@code argDefaultLines}, containing only the sample's function's parameters
    * themselves, not the value they depend on. Used to render these params.
    */
-  public abstract List<InitCodeLineView> argDefaultParams();
+  public abstract List<SampleFunctionParameterView> argDefaultParams();
 
   /** The "normal" init lines. */
   public abstract List<InitCodeLineView> lines();
@@ -65,7 +65,7 @@ public abstract class InitCodeView {
   public abstract static class Builder {
     public abstract Builder argDefaultLines(List<InitCodeLineView> val);
 
-    public abstract Builder argDefaultParams(List<InitCodeLineView> val);
+    public abstract Builder argDefaultParams(List<SampleFunctionParameterView> val);
 
     public abstract Builder lines(List<InitCodeLineView> val);
 
