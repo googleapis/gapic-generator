@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
+/* A view model for the standalone sample function pararmeters. */
 @AutoValue
 public abstract class SampleFunctionParameterView {
 
