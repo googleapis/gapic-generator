@@ -97,7 +97,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
     Collection<? extends InterfaceModel> apiInterfaces =
         model
-            .getInterfaces()
+            .getInterfaces(productConfig)
             .stream()
             .filter(productConfig::hasInterfaceConfig)
             .collect(ImmutableList.toImmutableList());

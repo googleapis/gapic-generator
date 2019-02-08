@@ -117,7 +117,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     String packageName = productConfig.getPackageName();
     SurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
 
-    for (InterfaceModel apiInterface : model.getInterfaces()) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       DiscoGapicInterfaceContext context =
           JavaDiscoGapicSurfaceTransformer.newInterfaceContext(
               apiInterface,
