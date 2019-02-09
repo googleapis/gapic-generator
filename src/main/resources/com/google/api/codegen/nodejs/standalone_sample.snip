@@ -89,7 +89,7 @@
 @private processCliArguments(sample)
   require(`yargs`)
     @join param : sample.sampleInitCode.argDefaultParams
-      .default('{@param.identifier}', {@renderInitValue(param.initValue)})
+      .default('{@param.cliFlagName}', {@renderInitValue(param.initValue)})
     @end
     .argv;
 @end
@@ -102,7 +102,7 @@
 
 @private argvArgs(args)
   @join arg : args on ", "
-    argv.{@arg.identifier}
+    argv.{@arg.cliFlagName}
   @end
 @end
 
