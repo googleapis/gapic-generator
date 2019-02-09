@@ -772,7 +772,9 @@ workflows:
       - artman_smoke_tests:
           requires:
             - install-gapic-generator
-          # TODO(andrealin): Only run this on the master branch after the job is shown to work
+          filters:
+            branches:
+              only: master
       - compute-discovery-test:
           requires:
             - install-gapic-generator
