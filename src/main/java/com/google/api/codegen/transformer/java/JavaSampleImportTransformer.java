@@ -29,7 +29,7 @@ import java.util.List;
 
 public class JavaSampleImportTransformer extends StandardSampleImportTransformer {
 
-  private static final String API_FUTURE = "com.google.api.common.ApiFuture";
+  private static final String API_FUTURE = "com.google.api.core.ApiFuture";
   private static final String BIDI_STEAMING_CALLABLE = "com.google.api.gax.rpc.BidiStream";
   private static final String OPERATION_FUTURE = "com.google.api.gax.longrunning.OperationFuture";
   private static final String SERVER_STREAM = "com.google.api.gax.rpc.ServerStream";
