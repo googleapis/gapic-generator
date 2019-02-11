@@ -310,7 +310,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     Boolean enableStringFormatFunctionsOverride = null;
-    if (configProto.getEnableStringFormatFunctionsOverride().isInitialized()) {
+    if (configProto.hasEnableStringFormatFunctionsOverride()) {
       enableStringFormatFunctionsOverride =
           configProto.getEnableStringFormatFunctionsOverride().getValue();
     }
