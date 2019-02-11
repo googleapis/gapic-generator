@@ -31,6 +31,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 // Example usage: (assuming environment variable BASE is the base directory of the project
 // containing the YAMLs, descriptor set, and output)
@@ -307,6 +308,29 @@ public class GeneratorMain {
         new GapicGeneratorApp(toolOptions, artifactType, new FileGapicWriter(outputPath));
     int exitCode = codeGen.run();
     System.exit(exitCode);
+  }
+
+  public static ToolOptions createCodeGeneratorOptionsFromProtoc(String[] args)
+      throws ParseException {
+    Options options = new Options();
+    // We can add more options as they become needed.
+    options.addOption(DESCRIPTOR_SET_OPTION);
+    options.addOption(LANGUAGE_OPTION);
+    options.addOption(TARGET_API_PROTO_PACKAGE);
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+
+    ToolOptions toolOptions = ToolOptions.create();
+    toolOptions.set(
+        ToolOptions.DESCRIPTOR_SET, cl.getOptionValue(DESCRIPTOR_SET_OPTION.getLongOpt()));
+
+    toolOptions.set(
+        GapicGeneratorApp.PROTO_PACKAGE, cl.getOptionValue(TARGET_API_PROTO_PACKAGE.getLongOpt()));
+    toolOptions.set(GapicGeneratorApp.LANGUAGE, cl.getOptionValue(LANGUAGE_OPTION.getLongOpt()));
+
+    checkFile(toolOptions.get(ToolOptions.DESCRIPTOR_SET));
+
+    return toolOptions;
   }
 
   public static void packageGeneratorMain(String[] args) throws Exception {
