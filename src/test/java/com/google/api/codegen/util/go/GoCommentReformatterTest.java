@@ -26,9 +26,18 @@ public class GoCommentReformatterTest {
         new StringBuilder()
             .append("A list of items:")
             .append(System.lineSeparator())
+            .append(System.lineSeparator())
             .append("* List item 1")
             .append(System.lineSeparator())
+            .append(System.lineSeparator())
             .append("* List item 2")
+            .append(System.lineSeparator())
+            .append("  * which has a nested item")
+            .append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append("* List item 3")
+            .append(System.lineSeparator())
+            .append("  which continues on a second line")
             .append(System.lineSeparator())
             .append(System.lineSeparator())
             .append("End list.")
@@ -44,7 +53,15 @@ public class GoCommentReformatterTest {
             .append("  List item 1")
             .append(System.lineSeparator())
             .append(System.lineSeparator())
-            .append("  List item 2")
+            .append("  List item 2    ")
+            .append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append("    which has a nested item")
+            .append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append("  List item 3")
+            .append(System.lineSeparator())
+            .append("  which continues on a second line")
             .append(System.lineSeparator())
             .append(System.lineSeparator())
             .append("End list.")
@@ -108,6 +125,28 @@ public class GoCommentReformatterTest {
             .append("</p>")
             .append(System.lineSeparator())
             .append("End html block.")
+            .toString();
+    assertThat(formatted).isEqualTo(expectedComment);
+  }
+
+  @Test
+  public void testParagraph() throws Exception {
+    String comment =
+        new StringBuilder()
+            .append("A paragraph.")
+            .append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append("A second paragraph.")
+            .toString();
+
+    String formatted = new GoCommentReformatter().reformat(comment);
+
+    String expectedComment =
+        new StringBuilder()
+            .append("A paragraph.")
+            .append(System.lineSeparator())
+            .append(System.lineSeparator())
+            .append("A second paragraph.")
             .toString();
     assertThat(formatted).isEqualTo(expectedComment);
   }
