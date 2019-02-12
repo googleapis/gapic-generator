@@ -78,18 +78,16 @@ public class ConfigYamlNodeReader {
       return new NullConfigNode();
     }
 
-    if (node instanceof MappingNode) {
-      return readMessageNode(prevLine, (MappingNode) node, field.getMessageType());
-    } else if (node instanceof ScalarNode) {
-      return readScalarNode(node, field);
+    if (!(node instanceof MappingNode)) {
+      helper.error(
+          node,
+          "Expected a map to merge with '%s', found '%s'.",
+          field.getFullName(),
+          node.getNodeId());
+      return null;
     }
 
-    helper.error(
-        node,
-        "Expected a map to merge with '%s', found '%s'.",
-        field.getFullName(),
-        node.getNodeId());
-    return null;
+    return readMessageNode(prevLine, (MappingNode) node, field.getMessageType());
   }
 
   private ConfigNode readMessageNodeEntry(NodeTuple entry, Descriptor messageType) {
