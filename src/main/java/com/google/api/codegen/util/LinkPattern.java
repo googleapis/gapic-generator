@@ -37,9 +37,17 @@ import java.util.regex.Pattern;
  * </pre>
  */
 public class LinkPattern {
-  public static LinkPattern ABSOLUTE = new LinkPattern(CommentPatterns.ABSOLUTE_LINK_PATTERN, "");
-  public static LinkPattern RELATIVE = new LinkPattern(CommentPatterns.RELATIVE_LINK_PATTERN, "");
-  public static LinkPattern PROTO = new LinkPattern(CommentPatterns.PROTO_LINK_PATTERN, "");
+
+  private static final Pattern ABSOLUTE_LINK_PATTERN =
+      Pattern.compile("\\[([^\\]]+)\\]\\((\\p{Alpha}+:[^\\)]+)\\)");
+  private static final Pattern RELATIVE_LINK_PATTERN =
+      Pattern.compile("\\[([^\\]]+)\\]\\(((?!\\p{Alpha}+:)[^\\)]+)\\)");
+  private static final Pattern PROTO_LINK_PATTERN =
+      Pattern.compile("\\[([^\\]]+)\\]\\[([A-Za-z_][A-Za-z_.0-9]*)?\\]");
+
+  public static LinkPattern ABSOLUTE = new LinkPattern(ABSOLUTE_LINK_PATTERN, "");
+  public static LinkPattern RELATIVE = new LinkPattern(RELATIVE_LINK_PATTERN, "");
+  public static LinkPattern PROTO = new LinkPattern(PROTO_LINK_PATTERN, "");
 
   private Pattern pattern;
   private String urlPrefix;
