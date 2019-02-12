@@ -1714,7 +1714,141 @@ public class LibraryClient implements BackgroundResource {
   private final LibraryServiceStub stub;
   private final OperationsClient operationsClient;
 
+  private static final PathTemplate SHELF_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
 
+  private static final PathTemplate SHELF_BOOK_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}/books/{book_id}");
+
+  private static final PathTemplate RETURN_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}/books/{book}/returns/{return}");
+
+  private static final PathTemplate PROJECT_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("projects/{project}");
+
+  private static final PathTemplate ARCHIVED_BOOK_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("archives/{archive_path}/books/{book_id=**}");
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a shelf resource.
+   */
+  public static final String formatShelfName(String shelfId) {
+    return SHELF_PATH_TEMPLATE.instantiate(
+        "shelf_id", shelfId);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a shelf_book resource.
+   */
+  public static final String formatShelfBookName(String shelfId, String bookId) {
+    return SHELF_BOOK_PATH_TEMPLATE.instantiate(
+        "shelf_id", shelfId,
+        "book_id", bookId);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a return resource.
+   */
+  public static final String formatReturnName(String shelf, String book, String return_) {
+    return RETURN_PATH_TEMPLATE.instantiate(
+        "shelf", shelf,
+        "book", book,
+        "return", return_);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a project resource.
+   */
+  public static final String formatProjectName(String project) {
+    return PROJECT_PATH_TEMPLATE.instantiate(
+        "project", project);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a archived_book resource.
+   */
+  public static final String formatArchivedBookName(String archivePath, String bookId) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
+        "archive_path", archivePath,
+        "book_id", bookId);
+  }
+
+  /**
+   * Parses the shelf_id from the given fully-qualified path which
+   * represents a shelf resource.
+   */
+  public static final String parseShelfIdFromShelfName(String shelfName) {
+    return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf_id");
+  }
+
+  /**
+   * Parses the shelf_id from the given fully-qualified path which
+   * represents a shelf_book resource.
+   */
+  public static final String parseShelfIdFromShelfBookName(String shelfBookName) {
+    return SHELF_BOOK_PATH_TEMPLATE.parse(shelfBookName).get("shelf_id");
+  }
+
+  /**
+   * Parses the book_id from the given fully-qualified path which
+   * represents a shelf_book resource.
+   */
+  public static final String parseBookIdFromShelfBookName(String shelfBookName) {
+    return SHELF_BOOK_PATH_TEMPLATE.parse(shelfBookName).get("book_id");
+  }
+
+  /**
+   * Parses the shelf from the given fully-qualified path which
+   * represents a return resource.
+   */
+  public static final String parseShelfFromReturnName(String returnName) {
+    return RETURN_PATH_TEMPLATE.parse(returnName).get("shelf");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a return resource.
+   */
+  public static final String parseBookFromReturnName(String returnName) {
+    return RETURN_PATH_TEMPLATE.parse(returnName).get("book");
+  }
+
+  /**
+   * Parses the return from the given fully-qualified path which
+   * represents a return resource.
+   */
+  public static final String parseReturnFromReturnName(String returnName) {
+    return RETURN_PATH_TEMPLATE.parse(returnName).get("return");
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which
+   * represents a project resource.
+   */
+  public static final String parseProjectFromProjectName(String projectName) {
+    return PROJECT_PATH_TEMPLATE.parse(projectName).get("project");
+  }
+
+  /**
+   * Parses the archive_path from the given fully-qualified path which
+   * represents a archived_book resource.
+   */
+  public static final String parseArchivePathFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive_path");
+  }
+
+  /**
+   * Parses the book_id from the given fully-qualified path which
+   * represents a archived_book resource.
+   */
+  public static final String parseBookIdFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book_id");
+  }
 
   /**
    * Constructs an instance of LibraryClient with default settings.
@@ -1902,7 +2036,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   Shelf response = libraryClient.getShelf(formattedName, message);
    * }
@@ -1913,7 +2047,7 @@ public class LibraryClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message) {
-
+    SHELF_PATH_TEMPLATE.validate(name, "getShelf");
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setName(name)
@@ -1929,7 +2063,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
    *   Shelf response = libraryClient.getShelf(formattedName, message, stringBuilder);
@@ -1959,7 +2093,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
    *     .setName(formattedName)
@@ -1983,7 +2117,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
    *     .setName(formattedName)
@@ -2298,7 +2432,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
    *   Book book = Book.newBuilder().build();
    *   Book response = libraryClient.createBook(formattedName, book);
    * }
@@ -2325,7 +2459,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
    *     .setName(formattedName)
@@ -2349,7 +2483,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfName.format("[SHELF_ID]");
+   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
    *     .setName(formattedName)
@@ -3203,7 +3337,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -3222,7 +3356,7 @@ public class LibraryClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void addComments(String name, List<Comment> comments) {
-
+    SHELF_BOOK_PATH_TEMPLATE.validate(name, "addComments");
     AddCommentsRequest request =
         AddCommentsRequest.newBuilder()
         .setName(name)
@@ -3238,7 +3372,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -3270,7 +3404,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -3932,7 +4066,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagResponse response = libraryClient.addTag(formattedResource, tag);
    * }
@@ -3945,7 +4079,7 @@ public class LibraryClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final AddTagResponse addTag(String resource, String tag) {
-
+    SHELF_BOOK_PATH_TEMPLATE.validate(resource, "addTag");
     AddTagRequest request =
         AddTagRequest.newBuilder()
         .setResource(resource)
@@ -3961,7 +4095,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
    *     .setResource(formattedResource)
@@ -3985,7 +4119,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
    *     .setResource(formattedResource)
@@ -4008,7 +4142,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
    *   String label = "";
    *   AddLabelResponse response = libraryClient.addLabel(formattedResource, label);
    * }
@@ -4022,7 +4156,7 @@ public class LibraryClient implements BackgroundResource {
    */
   @Deprecated
   /* package-private */ final AddLabelResponse addLabel(String resource, String label) {
-
+    SHELF_BOOK_PATH_TEMPLATE.validate(resource, "addLabel");
     AddLabelRequest request =
         AddLabelRequest.newBuilder()
         .setResource(resource)
@@ -4038,7 +4172,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
    *     .setResource(formattedResource)
@@ -4063,7 +4197,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
    *     .setResource(formattedResource)
@@ -9125,7 +9259,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedName = ShelfName.format("[SHELF_ID]");
+    String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
     SomeMessage message = SomeMessage.newBuilder().build();
 
     Shelf actualResponse =
@@ -9151,7 +9285,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedName = ShelfName.format("[SHELF_ID]");
+      String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
       SomeMessage message = SomeMessage.newBuilder().build();
 
       client.getShelf(formattedName, message);
@@ -9174,7 +9308,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedName = ShelfName.format("[SHELF_ID]");
+    String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
     SomeMessage message = SomeMessage.newBuilder().build();
     com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
@@ -9202,7 +9336,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedName = ShelfName.format("[SHELF_ID]");
+      String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
       SomeMessage message = SomeMessage.newBuilder().build();
       com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
@@ -9360,7 +9494,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedName = ShelfName.format("[SHELF_ID]");
+    String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
     Book book = Book.newBuilder().build();
 
     Book actualResponse =
@@ -9386,7 +9520,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedName = ShelfName.format("[SHELF_ID]");
+      String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
       Book book = Book.newBuilder().build();
 
       client.createBook(formattedName, book);
@@ -9858,7 +9992,7 @@ public class LibraryClientTest {
     Empty expectedResponse = Empty.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+    String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
     ByteString comment = ByteString.copyFromUtf8("95");
     Comment.Stage stage = Comment.Stage.UNSET;
     SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -9890,7 +10024,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedName = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+      String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
       ByteString comment = ByteString.copyFromUtf8("95");
       Comment.Stage stage = Comment.Stage.UNSET;
       SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -10324,7 +10458,7 @@ public class LibraryClientTest {
     AddTagResponse expectedResponse = AddTagResponse.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+    String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
     String tag = "tag114586";
 
     AddTagResponse actualResponse =
@@ -10350,7 +10484,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+      String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
       String tag = "tag114586";
 
       client.addTag(formattedResource, tag);
@@ -10366,7 +10500,7 @@ public class LibraryClientTest {
     AddLabelResponse expectedResponse = AddLabelResponse.newBuilder().build();
     mockLabeler.addResponse(expectedResponse);
 
-    String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+    String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
     String label = "label102727412";
 
     AddLabelResponse actualResponse =
@@ -10392,7 +10526,7 @@ public class LibraryClientTest {
     mockLabeler.addException(exception);
 
     try {
-      String formattedResource = ShelfBookName.format("[SHELF_ID]", "[BOOK_ID]");
+      String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
       String label = "label102727412";
 
       client.addLabel(formattedResource, label);

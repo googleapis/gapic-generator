@@ -14,22 +14,19 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.configgen.ConfigHelper;
+import com.google.api.codegen.configgen.ConfigYamlReader;
+import com.google.api.codegen.configgen.MessageGenerator;
+import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.gapic.GapicTestConfig;
-import com.google.api.codegen.util.MultiYamlReader;
-import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.TestConfig;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.setup.StandardSetup;
-import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.Message;
-import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import org.junit.rules.TemporaryFolder;
 
@@ -48,28 +45,28 @@ public class CodegenTestUtil {
 
   public static ConfigProto readConfig(
       DiagCollector diagCollector, TestDataLocator testDataLocator, String[] gapicConfigFileNames) {
-    ImmutableMap<String, Message> supportedConfigTypes =
-        ImmutableMap.of(
-            ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
-
-    List<File> configFiles = new ArrayList<>();
+    ConfigYamlReader yamlReader = new ConfigYamlReader();
+    MessageGenerator messageGenerator = new MessageGenerator(ConfigProto.newBuilder());
     for (String gapicConfigFileName : gapicConfigFileNames) {
       URL gapicConfigUrl = testDataLocator.findTestData(gapicConfigFileName);
 
       String gapicConfigPath = Objects.requireNonNull(gapicConfigUrl).getPath();
+      String actualFileName = gapicConfigPath.substring(gapicConfigPath.lastIndexOf('/') + 1);
 
-      File configFile = new File(gapicConfigPath);
-      configFiles.add(configFile);
+      ConfigHelper helper = new ConfigHelper(diagCollector, actualFileName);
+      ConfigNode configNode = yamlReader.generateConfigNode(gapicConfigUrl, helper);
+      if (configNode == null) {
+        continue;
+      }
+
+      messageGenerator.visit(configNode.getChild());
     }
-
-    ConfigSource configSource =
-        MultiYamlReader.read(diagCollector, configFiles, supportedConfigTypes);
 
     if (diagCollector.getErrorCount() > 0) {
       System.err.println(diagCollector.toString());
       return null;
     }
 
-    return (ConfigProto) configSource.getConfig();
+    return (ConfigProto) messageGenerator.getValue();
   }
 }
