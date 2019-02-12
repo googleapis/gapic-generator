@@ -1600,7 +1600,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    *
    * <p>Note that the returned value includes not only the field name, but also the
    * language-specific syntax for accessing a protobuf object field. For example, the returned value
-   * will be `.getField()` in Java, and `-&gt;getField()` in PHP.
+   * will be `.getField()` in Java, and `->getField()` in PHP.
    */
   public String getFieldAccessorName(FieldModel field) {
     return getNotImplementedString("SurfaceNamer.getFieldAccessorName");
