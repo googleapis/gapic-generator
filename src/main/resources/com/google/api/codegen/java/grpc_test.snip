@@ -1,5 +1,6 @@
 @extends "java/common.snip"
 @extends "java/initcode.snip"
+@extends "java/test.snip"
 
 @snippet generate(xapiTest)
   {@renderFileHeader(xapiTest.fileHeader)}
@@ -263,13 +264,6 @@
   @end
 @end
 
-@private longRunningMethodCall(test)
-  {@test.responseTypeName} actualResponse =
-      client.{@test.clientMethodName}(\
-          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)}).get();
-  Assert.assertEquals(expectedResponse, actualResponse);
-@end
-
 @private unarySuccessAsserts(test)
   List<GeneratedMessageV3> actualRequests = {@test.mockServiceVarName}.getRequests();
   Assert.assertEquals(1, actualRequests.size());
@@ -299,11 +293,5 @@
     {@assert.actualValueTransformFunction}(actualRequest.{@assert.actualValueGetter}())
   @else
     actualRequest.{@assert.actualValueGetter}()
-  @end
-@end
-
-@private sampleMethodCallArgList(fieldSettings)
-  @join fieldSetting : fieldSettings on ", "
-    {@fieldSetting.identifier}
   @end
 @end

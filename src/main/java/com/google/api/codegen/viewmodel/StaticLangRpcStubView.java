@@ -45,6 +45,9 @@ public abstract class StaticLangRpcStubView {
 
   public abstract String parentName();
 
+  @Nullable // Used in Java.
+  public abstract String lroStubImpl();
+
   public static StaticLangRpcStubView.Builder newBuilder() {
     return new AutoValue_StaticLangRpcStubView.Builder();
   }
@@ -73,6 +76,8 @@ public abstract class StaticLangRpcStubView {
     public abstract Builder hasDefaultInstance(boolean val);
 
     public abstract Builder hasLongRunningOperations(boolean val);
+
+    public abstract Builder lroStubImpl(String val);
 
     public abstract Builder parentName(String apiStubInterfaceName);
 

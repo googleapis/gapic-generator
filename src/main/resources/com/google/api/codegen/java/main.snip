@@ -280,7 +280,7 @@
   private final {@xapiClass.settingsClassName} settings;
   private final {@xapiClass.stubInterfaceName} stub;
   @if xapiClass.hasLongRunningOperations
-    private final OperationsClient operationsClient;
+    private final {@xapiClass.operationsClientName} operationsClient;
   @end
   {@""}
 @end
@@ -323,7 +323,7 @@
     this.settings = settings;
     this.stub = (({@xapiClass.stubSettingsClassName}) settings.getStubSettings()).createStub();
     @if xapiClass.hasLongRunningOperations
-      this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
+      this.operationsClient = {@xapiClass.operationsClientName}.create(this.stub.getOperationsStub());
     @end
   }
 
@@ -332,7 +332,7 @@
     this.settings = null;
     this.stub = stub;
     @if xapiClass.hasLongRunningOperations
-      this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
+      this.operationsClient = {@xapiClass.operationsClientName}.create(this.stub.getOperationsStub());
     @end
   }
   {@""}
@@ -350,11 +350,11 @@
 
   @if xapiClass.hasLongRunningOperations
     /**
-     * Returns the OperationsClient that can be used to query the status of a long-running
+     * Returns the {@xapiClass.operationsClientName} that can be used to query the status of a long-running
      * operation returned by another API method call.
      */
     @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
-    public final OperationsClient getOperationsClient() {
+    public final {@xapiClass.operationsClientName} getOperationsClient() {
       return operationsClient;
     }
   @end
@@ -551,10 +551,6 @@
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
   @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
   {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}, \
       {@apiMethod.operationMethod.metadataTypeName}> {@apiMethod.name}(\
@@ -568,10 +564,6 @@
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
   @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
   {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<\
       {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
@@ -583,10 +575,6 @@
 @private operationCallableMethod(apiMethod)
   @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
-  @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
   @end
   @@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
   {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \

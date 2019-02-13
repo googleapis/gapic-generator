@@ -1,0 +1,51 @@
+@extends "java/common.snip"
+
+@snippet renderStubFileHeader(fileHeader)
+  {@license(fileHeader)}
+  package {@fileHeader.packageName};
+
+  {@importList(fileHeader.importSection.appImports)}
+@end
+
+@snippet generate(classFile)
+  {@renderStubFileHeader(classFile.fileHeader)}
+
+  {@classDoc(classFile.classView)}
+  @@Generated("by gapic-generator")
+  @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  {@renderClass(classFile.classView)}
+@end
+
+@private classDoc(classView)
+  // AUTO-GENERATED DOCUMENTATION AND CLASS
+  /**
+   * Factory for creating {@classView.serviceName} LongRunningClient instances from
+   * a given stub class for the operation resource.
+   */
+@end
+
+@private renderClass(classView)
+  public class {@classView.lroClientFactoryName} {
+    @join constructor : classView.clientInstances
+      /* Create a {@classView.lroClientFactoryName} from a GlobalOperationsStub. */
+        public static {@classView.lroClientFactoryName} create(GlobalOperationStub operationStub) {
+          return new {@classView.lroClientFactoryName}<>(
+              operationStub,
+              operationStub.{@constructor.deleteGlobalOperationCallable}(),
+              operationStub.{@constructor.getGlobalOperationCallable}(),
+              new ApiFunction<String, deleteOperationRequestName>() {
+                public deleteOperationRequestName apply(String operationSelfLink) {
+                  return deleteOperationRequestName.newBuilder()
+                      .{@constructor.operationDeleteRequestSetter}(operationSelfLink)
+                      .build();
+                }
+              },
+              new ApiFunction<String, {@constructor.getOperationRequestName}>() {
+                public {@constructor.getOperationRequestName} apply(String operationSelfLink) {
+                  return {@constructor.getOperationRequestName}.newBuilder().{@constructor.operationGetRequestSetter}(operationSelfLink).build();
+                }
+              });
+        }
+    @end
+  }
+@end

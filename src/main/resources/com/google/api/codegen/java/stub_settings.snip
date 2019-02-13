@@ -545,8 +545,8 @@
                   .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
                   .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"))
                   .build())
-          .setResponseTransformer(ProtoOperationTransformers.ResponseTransformer.create({@settings.operationMethod.operationPayloadTypeName}.class))
-          .setMetadataTransformer(ProtoOperationTransformers.MetadataTransformer.create({@settings.operationMethod.metadataTypeName}.class))
+          .setResponseTransformer({@xsettingsClass.lroMessageTransformer}.ResponseTransformer.create({@settings.operationMethod.operationPayloadTypeName}.class))
+          .setMetadataTransformer({@xsettingsClass.lroMessageTransformer}.MetadataTransformer.create({@settings.operationMethod.metadataTypeName}.class))
           .setPollingAlgorithm(
               OperationTimedPollAlgorithm.create(
                   RetrySettings.newBuilder()

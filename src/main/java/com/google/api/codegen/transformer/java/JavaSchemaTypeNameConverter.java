@@ -51,9 +51,6 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   }
 
   private static String getPrimitiveTypeName(Schema schema) {
-    if (schema == null) {
-      return "java.lang.Void";
-    }
     switch (schema.type()) {
       case INTEGER:
         return "int";
@@ -94,9 +91,6 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     if (primitiveType.equals("java.lang.String")) {
       return "\"\"";
     }
-    if (primitiveType.equals("java.lang.Void")) {
-      return "null";
-    }
     throw new IllegalArgumentException("Schema is of unknown type.");
   }
 
@@ -130,7 +124,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     if (type.isStringType()) {
       return typeNameConverter.getTypeName("java.lang.String");
     } else if (type.isEmptyType()) {
-      return typeNameConverter.getTypeName("java.lang.Void");
+      return typeNameConverter.getTypeName("com.google.api.gax.httpjson.EmptyMessage");
     }
 
     return getTypeNameForElementType((DiscoveryField) type);
@@ -146,7 +140,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   private TypeName getTypeNameForElementType(
       DiscoveryField fieldModel, BoxingBehavior boxingBehavior) {
     if (fieldModel == null) {
-      return new TypeName("java.lang.Void", "Void");
+      return new TypeName("com.google.api.gax.httpjson.EmptyMessage", "EmptyMessage");
     }
     Schema schema = fieldModel.getOriginalDiscoveryField();
     String primitiveTypeName = getPrimitiveTypeName(schema);
@@ -302,7 +296,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   @Override
   public TypedValue getSnippetZeroValue(TypeModel typeModel) {
     if (typeModel.isEmptyType()) {
-      return TypedValue.create(getTypeName((DiscoveryField) null), "null");
+      return TypedValue.create(getTypeNameForElementType(typeModel), "%s.newBuilder().build()");
     }
     return getSnippetZeroValue((DiscoveryField) typeModel);
   }

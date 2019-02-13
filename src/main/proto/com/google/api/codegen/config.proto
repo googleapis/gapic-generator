@@ -307,8 +307,11 @@ message MethodConfigProto {
   // Set the resource name treatment for fields
   ResourceNameTreatment resource_name_treatment = 15;
 
-  // Long-running settings.
+  // Long-running settings for gRPC clients.
   LongRunningConfigProto long_running = 30;
+
+  // Long-running settings for Discovery clients.
+  LongRunningConfigProto long_running_discovery = 31;
 
 }
 
@@ -681,6 +684,13 @@ message LongRunningConfigProto {
 
   // Total polling timeout.
   uint64 total_poll_timeout_millis = 8;
+}
+
+// LongRunningProto describes settings to use when generating API methods
+// that use some long-running operation pattern. For Discovery clients only.
+message DiscoveryLongRunningConfigProto {
+  // The name of the API resource that represents the Operation type.
+  string operations_resource = 1;
 }
 
 message OutputSpec {

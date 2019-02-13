@@ -249,8 +249,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
             apiMethodTransformer.generateAsyncOperationFlattenedMethod(
                 methodContext,
                 Collections.<ParamWithSimpleDoc>emptyList(),
-                ClientMethodType.AsyncOperationFlattenedMethod,
-                true),
+                ClientMethodType.AsyncOperationFlattenedMethod),
             methodContext,
             methodContext.getFlatteningConfig().getFlattenedFieldConfigs().values(),
             InitCodeOutputType.FieldList,

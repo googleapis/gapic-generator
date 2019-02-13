@@ -181,6 +181,35 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return rootPackageName + ".stub";
   }
 
+  public String getApiLroPackageName() {
+    return rootPackageName + ".longrunning";
+  }
+
+  public String getApiLroOperationCallableName() {
+    return getApiLroPackageName()
+        + "."
+        + nameFormatter.publicClassName(Name.upperCamel("OperationSnapshotCallable"));
+  }
+
+  public String getApiLroClientName(String serviceName) {
+    return getApiLroPackageName()
+        + "."
+        + nameFormatter.publicClassName(Name.anyCamel(serviceName, "LongRunningClient"));
+  }
+
+  public String getApiLroClientFactoryName(String serviceName) {
+    return getApiLroPackageName()
+        + "."
+        + nameFormatter.publicClassName(Name.anyCamel(serviceName, "LongRunningClientFactory"));
+  }
+
+
+  public String getOperationSnapshotName(String serviceName) {
+    return getApiLroPackageName()
+        + "."
+        + nameFormatter.publicClassName(Name.anyCamel(serviceName, "OperationSnapshot"));
+  }
+
   public String getNotImplementedString(String feature) {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }
@@ -598,6 +627,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(method.asName().join(Name.from("operation", "callable")));
   }
 
+  public String getOperationClientName(InterfaceContext context) {
+    return publicClassName(Name.anyCamel(context.getOperationServiceName(), "client"));
+  }
+
+  public String getOperationStubName(InterfaceContext context) {
+    return publicClassName(Name.anyCamel(context.getOperationServiceName(), "stub"));
+  }
+
   /** The name of the plain callable for the given method. */
   public String getCallableName(MethodModel method) {
     return privateFieldName(method.asName().join("callable"));
@@ -769,6 +806,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the class that operates on a particular Discovery Document resource type. */
   public String getApiWrapperClassName(Document document) {
     return publicClassName(Name.anyCamel(document.name(), "Client"));
+  }
+
+  /** The name of the class that wraps Callables for the API LRO client. */
+  public String getApiLroOperationCallableName(Document document) {
+    return publicClassName(Name.anyCamel(document.name(), "OperationSnapshotCallable"));
   }
 
   public String getGrpcTransportClassName(InterfaceConfig interfaceConfig) {
@@ -1148,6 +1190,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * metadata,
    */
   public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
+    return getNotImplementedString("SurfaceNamer.getLongRunningOperationTypeName");
+  }
+
+  /** The formatted name of the stub type used in long running operations. */
+  public String getLongRunningOperationsStubName(InterfaceContext interfaceContext) {
+    return getNotImplementedString("SurfaceNamer.getLongRunningOperationTypeName");
+  }
+
+  /** The formatted name of the stub type used in long running operations. */
+  public String getLongRunningOperationsStubImplName(InterfaceContext interfaceContext) {
     return getNotImplementedString("SurfaceNamer.getLongRunningOperationTypeName");
   }
 
@@ -1669,6 +1721,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
       default:
         return Name.from("grpc");
     }
+  }
+
+  public String getLroMessageTransformer(TransportProtocol protocol) {
+    return getNotImplementedString("SurfaceNamer.getLroMessageTransformer");
   }
 
   public String getInstantiatingChannelProvider(TransportProtocol protocol) {

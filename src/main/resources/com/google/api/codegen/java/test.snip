@@ -1,0 +1,12 @@
+@snippet longRunningMethodCall(test)
+  {@test.responseTypeName} actualResponse =
+      client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)}).get();
+  Assert.assertEquals(expectedResponse, actualResponse);
+@end
+
+@snippet sampleMethodCallArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end

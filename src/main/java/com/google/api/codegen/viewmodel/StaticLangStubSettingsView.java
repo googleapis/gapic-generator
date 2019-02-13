@@ -112,6 +112,9 @@ public abstract class StaticLangStubSettingsView {
   public abstract String instantiatingChannelProvider();
 
   @Nullable // Used in Java
+  public abstract String lroMessageTransformer();
+
+  @Nullable // Used in Java
   public abstract TransportProtocol transportProtocol();
 
   public static Builder newBuilder() {
@@ -169,6 +172,8 @@ public abstract class StaticLangStubSettingsView {
     public abstract Builder transportProvider(String val);
 
     public abstract Builder instantiatingChannelProvider(String val);
+
+    public abstract Builder lroMessageTransformer(String val);
 
     public abstract Builder transportProtocol(TransportProtocol transportProtocol);
 

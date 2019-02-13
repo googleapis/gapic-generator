@@ -30,6 +30,7 @@ import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SchemaTypeFormatterImpl;
@@ -143,6 +144,53 @@ public class JavaSurfaceNamer extends SurfaceNamer {
         typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
     return typeTable.getAndSaveNicknameForContainer(
         "com.google.api.gax.longrunning.OperationFuture", responseTypeName, metadataTypeName);
+  }
+
+  @Override
+  public String getLroMessageTransformer(TransportProtocol protocol) {
+    switch (protocol) {
+      case HTTP:
+        return "ApiMessageOperationTransformers";
+      case GRPC:
+      default:
+        return "ProtoOperationTransformers";
+    }
+  }
+
+  @Override
+  public String getLongRunningOperationsStubName(InterfaceContext context) {
+    TransportProtocol transportProtocol = context.getProductConfig().getTransportProtocol();
+
+    switch (transportProtocol) {
+      case HTTP:
+        // Hard-code the Compute API's stub class for now.
+        return context.getNamer().getOperationStubName(context);
+      case GRPC:
+      default:
+        return context
+            .getImportTypeTable()
+            .getAndSaveNicknameFor("com.google.longrunning.stub.OperationsStub");
+    }
+  }
+
+  @Override
+  public String getLongRunningOperationsStubImplName(InterfaceContext context) {
+    TransportProtocol transportProtocol = context.getProductConfig().getTransportProtocol();
+
+    switch (transportProtocol) {
+      case HTTP:
+        // Hard-code the Compute API's stub class for now.
+        return context
+            .getNamer()
+            .getNameFormatter()
+            .publicClassName(
+                Name.anyCamel("HttpJson" + context.getNamer().getOperationStubName(context)));
+      case GRPC:
+      default:
+        return context
+            .getImportTypeTable()
+            .getAndSaveNicknameFor("com.google.longrunning.stub.OperationsStub");
+    }
   }
 
   @Override
@@ -382,7 +430,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   /* The name of the settings member name for the given method. */
   public String getOperationSettingsMemberName(MethodModel method) {
-    return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationSettings"));
+    return publicMethodName(Name.anyCamel(method.getSimpleName(), "OperationSettings"));
   }
 
   @Override

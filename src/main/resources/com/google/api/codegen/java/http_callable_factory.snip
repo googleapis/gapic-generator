@@ -17,7 +17,8 @@
 @end
 
 @private renderClass(classView)
-  public class {@classView.name} implements HttpJsonStubCallableFactory {
+  public class {@classView.name} implements HttpJsonStubCallableFactory<
+      {@classView.operationMessage}, {@classView.operationStubType}> {
     {@memberMethods(classView)}
   }
 @end
@@ -38,6 +39,26 @@
       UnaryCallSettings<RequestT, ResponseT> callSettings,
       ClientContext clientContext) {
     return HttpJsonCallableFactory.createUnaryCallable(httpJsonCallSettings, callSettings, clientContext);
+  }
+
+
+  @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  @@Override
+  public <RequestT, ResponseT, MetadataT> OperationCallable<RequestT, ResponseT, MetadataT> createOperationCallable(
+      HttpJsonCallSettings<RequestT, com.google.cloud.compute.v1.Operation> httpJsonCallSettings,
+      OperationCallSettings<RequestT, ResponseT, MetadataT> operationCallSettings,
+      ClientContext clientContext, {@xapiClass.operationStubType} operationsStub) {
+    @if xapiClass.hasLongRunningOperations
+      UnaryCallable<RequestT, Operation> initialHttpCallable = HttpJsonCallableFactory.createBaseUnaryCallable(httpJsonCallSettings, operationCallSettings.getInitialCallSettings(), clientContext);
+      UnaryCallable<RequestT, OperationSnapshot> initialCallable = new OperationSnapshotCallable<>(initialHttpCallable);
+      LongRunningClient longRunningClient = {@xapiClass.longRunningClientName}.create(operationsStub);
+      OperationCallable<RequestT, ResponseT, MetadataT> operationCallable = Callables
+          .longRunningOperation(initialCallable, operationCallSettings, clientContext, longRunningClient);
+      return HttpJsonCallableFactory.createOperationCallable(
+          operationCallSettings, clientContext, longRunningClient, initialCallable);
+    @else
+      return null;
+    @end
   }
 
   @@Override

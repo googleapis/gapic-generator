@@ -1,0 +1,93 @@
+@extends "java/common.snip"
+
+@snippet renderStubFileHeader(fileHeader)
+  {@license(fileHeader)}
+  package {@fileHeader.packageName};
+
+  {@importList(fileHeader.importSection.appImports)}
+@end
+
+@snippet generate(classFile)
+  {@renderStubFileHeader(classFile.fileHeader)}
+
+  {@classDoc(classFile.classView)}
+  @@Generated("by gapic-generator")
+  @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  {@renderClass(classFile.classView)}
+@end
+
+@private classDoc(classView)
+  // AUTO-GENERATED DOCUMENTATION AND CLASS
+  /**
+   * Implementation of a long-running operation for the {@classView.serviceName} client.
+   * Wraps a {@@code {@classView.operationResourceName}} resource object.
+   */
+@end
+
+@private renderClass(classView)
+  public class {@classView.operationSnapshotName} implements OperationSnapshot {
+
+    private static final EmptyMessage response = EmptyMessage.getDefaultInstance();
+
+    private final {@classView.operationResourceName} operation;
+
+    private {@classView.operationSnapshotName}({@classView.operationResourceName} operation) {
+      this.operation = operation;
+    }
+
+    public static {@classView.operationSnapshotName} create({@classView.operationResourceName} operation) {
+      return new {@classView.operationSnapshotName}(operation);
+    }
+
+    @@Override
+    // Returns full resource name of the operation.
+    public String getName() {
+      return operation.getSelfLink();
+    }
+
+    @@Override
+    // Returns the underlying {@classView.operationResourceName} object that is natively returned by
+    // longrunning methods.
+    public {@classView.operationResourceName} getMetadata() {
+      return operation;
+    }
+
+    @@Override
+    public boolean isDone() {
+      return "DONE".equals(operation.getStatus());
+    }
+
+    @@Override
+    public EmptyMessage getResponse() {
+      return response;
+    }
+
+    @@Override
+    public StatusCode getErrorCode() {
+      int code;
+      String message;
+      try {
+        code = Integer.valueOf(
+
+        operation.getError().getErrorsList().get(0).getCode());
+        message = operation.getError().getErrorsList().get(0).getMessage();
+      } catch (NullPointerException | IndexOutOfBoundsException e) {
+        code = 200;
+        message = "OK";
+      }
+
+      return HttpJsonStatusCode.of(code, message);
+    }
+
+    @@Override
+    public String getErrorMessage() {
+
+      try {
+        return operation.getError().getErrorsList().toString();
+      } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
+        // No error found.
+        return null;
+      }
+    }
+  }
+@end

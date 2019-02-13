@@ -1,0 +1,114 @@
+@extends "java/common.snip"
+
+@snippet renderStubFileHeader(fileHeader)
+  {@license(fileHeader)}
+  package {@fileHeader.packageName};
+
+  {@importList(fileHeader.importSection.appImports)}
+@end
+
+@snippet generate(classFile)
+  {@renderStubFileHeader(classFile.fileHeader)}
+
+  {@classDoc(classFile.classView)}
+  @@Generated("by gapic-generator")
+  @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  {@renderClass(classFile.classView)}
+@end
+
+@private classDoc(classView)
+  // AUTO-GENERATED DOCUMENTATION AND CLASS
+  /**
+   * Unites all of the {@classView.clientName} API's long-running operation clients under a
+   * single shared implementation of the LongRunningClient.
+   * Package-private for internal use. Used by gax-java to get callables.
+   */
+@end
+
+@private renderClass(classView)
+  class {@classView.clientName}<GetRequestT, DeleteRequestT>
+      implements LongRunningClient, BackgroundResource {
+
+    private final  UnaryCallable<GetRequestT, {@classView.operationResourceName}> getOperationCallable;
+    private final  UnaryCallable<DeleteRequestT, EmptyMessage> deleteOperationCallable;
+    private final ApiFunction<String, GetRequestT> createGetRequestFunc;
+    private final ApiFunction<String, DeleteRequestT> createDeleteRequestFunc;
+    private final BackgroundResource stub;
+
+    public {@classView.clientName}(
+        BackgroundResource stub,
+        UnaryCallable<DeleteRequestT, EmptyMessage> deleteOperationCallable,
+        UnaryCallable<GetRequestT, {@classView.operationResourceName}> getOperationCallable,
+        ApiFunction<String, DeleteRequestT> createDeleteRequestFunc,
+        ApiFunction<String, GetRequestT> createGetRequestFunc) {
+      this.stub = stub;
+      this.getOperationCallable = getOperationCallable;
+      this.deleteOperationCallable = deleteOperationCallable;
+      this.createGetRequestFunc = createGetRequestFunc;
+      this.createDeleteRequestFunc = createDeleteRequestFunc;
+    }
+
+    private BackgroundResource getStub() { return stub; }
+
+   @@Override
+    public UnaryCallable<String, OperationSnapshot> getOperationCallable() {
+      return TranslatingUnaryCallable.create(
+          getOperationCallable,
+          createGetRequestFunc,
+          new ApiFunction<{@classView.operationResourceName}, OperationSnapshot>() {
+           @@Override
+            public OperationSnapshot apply({@classView.operationResourceName} operation) {
+              return {@classView.operationSnapshotName}.create(operation);
+            }
+          });
+    }
+
+   @@Override
+    public UnaryCallable<String, Void> cancelOperationCallable() {
+      throw new UnsupportedOperationException("Cancelling operations is not supported by this API.");
+    }
+
+   @@Override
+    public UnaryCallable<String, Void> deleteOperationCallable() {
+      return TranslatingUnaryCallable.create(
+          deleteOperationCallable,
+          createDeleteRequestFunc,
+          new ApiFunction<EmptyMessage, Void>() {
+           @@Override
+            public Void apply(EmptyMessage empty) {
+              return null;
+            }
+          });
+    }
+
+   @@Override
+    public void shutdown() {
+      getStub().shutdown();
+    }
+
+   @@Override
+    public boolean isShutdown() {
+      return getStub().isShutdown();
+    }
+
+   @@Override
+    public boolean isTerminated() {
+      return getStub().isTerminated();
+    }
+
+   @@Override
+    public void shutdownNow() {
+      getStub().shutdown();
+    }
+
+   @@Override
+    public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
+      return getStub().awaitTermination(l, timeUnit);
+    }
+
+   @@Override
+    public void close() throws Exception {
+      getStub().close();
+    }
+  }
+@end

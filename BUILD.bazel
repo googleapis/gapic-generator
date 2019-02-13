@@ -62,7 +62,21 @@ java_plugin(
 proto_library(
     name = "config_proto",
     srcs = ["src/main/proto/com/google/api/codegen/config.proto"],
-    deps = ["@com_google_protobuf//:wrappers_proto"],
+    deps = ["@com_google_protobuf//:well_known_protos"],
+)
+
+proto_library(
+    name = "library_deps_proto",
+    srcs = ["src/test/java/com/google/api/codegen/testsrc/common/tagger.proto"],
+     deps = ["@com_google_protobuf",
+        ],
+)
+
+proto_library(
+    name = "library_proto",
+    srcs = ["src/test/java/com/google/api/codegen/testsrc/libraryproto/library.proto"],
+    deps = ["@com_google_protobuf//:all",
+    ],
 )
 
 java_proto_library(

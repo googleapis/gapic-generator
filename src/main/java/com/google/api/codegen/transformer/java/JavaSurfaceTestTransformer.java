@@ -425,6 +425,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiExceptionFactory");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode.Code");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.testing.FakeStatusCode");
+        typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
         typeTable.saveNicknameFor("com.google.common.collect.ImmutableList");
         typeTable.saveNicknameFor("java.util.Map");
         typeTable.saveNicknameFor("java.util.HashMap");

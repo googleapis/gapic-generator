@@ -12,21 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.gapic;
+package com.google.api.codegen.viewmodel;
 
-import com.google.api.tools.framework.model.TypeRef;
-import com.google.protobuf.Empty;
+import com.google.auto.value.AutoValue;
 
-/** Utility class with methods to work with service methods. */
-public class ServiceMessages {
+@AutoValue
+public abstract class OperationSnapshotCallableView {
+  public abstract String operationResourceName();
 
-  /** Returns true if the message is the empty message. */
-  public boolean isEmptyType(TypeRef type) {
-    return s_isEmptyType(type);
+  public abstract String operationSnapshotName();
+
+  public static Builder newBuilder() {
+    return new AutoValue_OperationSnapshotCallableView.Builder();
   }
 
-  public static boolean s_isEmptyType(TypeRef type) {
-    return type.isMessage()
-        && type.getMessageType().getFullName().equals(Empty.getDescriptor().getFullName());
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder operationResourceName(String val);
+
+    public abstract Builder operationSnapshotName(String val);
+
+    public abstract OperationSnapshotCallableView build();
   }
 }

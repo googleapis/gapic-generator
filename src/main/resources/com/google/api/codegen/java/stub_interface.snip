@@ -34,7 +34,7 @@
 
     @if classView.hasLongRunningOperations
       @@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
-      public OperationsStub getOperationsStub() {
+      public {@classView.operationsStubName} getOperationsStub() {
         throw new UnsupportedOperationException("Not implemented: getOperationsStub()");
       }
     @end
@@ -91,11 +91,6 @@
 @end
 
 @private operationCallableMethod(apiMethod)
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
-
   @@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
   public OperationCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \

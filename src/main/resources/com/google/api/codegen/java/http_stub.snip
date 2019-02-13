@@ -25,6 +25,7 @@
     {@constants(classView)}
     {@members(classView)}
     {@constructors(classView)}
+    {@memberMethods(classView)}
     {@callableMethods(classView)}
     {@cleanupSection()}
   }
@@ -80,7 +81,7 @@
 @private members(stubClass)
   private final BackgroundResource backgroundResources;
   @if stubClass.hasLongRunningOperations
-    # TODO(andrealin): LRO
+    private final {@stubClass.lroStubImpl} operationsStub;
   @end
 
   @join apiCallable : stubClass.apiCallables
@@ -90,17 +91,24 @@
   private final HttpJsonStubCallableFactory callableFactory;
 @end
 
+@private memberMethods(xapiClass)
+  @if xapiClass.hasLongRunningOperations
+    @@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+    # Hard-code Compute's stub class for now.
+    public {@xapiClass.lroStubImpl} getOperationsStub() {
+      return operationsStub;
+    }
+  @end
+@end
+
 @private apiCallableMember(callable)
   @switch callable.type.serviceMethodType
   @case "UnaryMethod"
     private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
       {@callable.responseTypeName}> {@callable.name};
-  @case "GrpcStreamingMethod"
-    private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
-      {@callable.responseTypeName}> {@callable.name};
   @case "LongRunningMethod"
     private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
-      {@callable.responseTypeName}, {@callable.metadataTypeName}, Operation> {@callable.name};
+      {@callable.responseTypeName}, {@callable.metadataTypeName}> {@callable.name};
   @default
     $unhandledCase: {@callable.type.serviceMethodType}$
   @end
@@ -116,6 +124,8 @@
     createUnpagedCallable
   @case "BatchingApiCallable"
     createBatchingCallable
+  @case "OperationApiCallable"
+    createOperationCallable
   @default
     $unhandledCase: {@callable.type}$
   @end
@@ -151,8 +161,9 @@
   protected {@stubClass.name}({@stubClass.stubSettingsClassName} settings, ClientContext clientContext, HttpJsonStubCallableFactory callableFactory) throws IOException {
     this.callableFactory = callableFactory;
     @if stubClass.hasLongRunningOperations
-      # TODO reference a real class for httpjson when it is created
-      this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);
+      # For now, hard-code the Compute client's stub class.
+      # TODO parameterize the stub class
+      this.operationsStub = {@stubClass.lroStubImpl}.create(clientContext, callableFactory);
     @end
 
     @join methodDescriptor : stubClass.methodDescriptors
@@ -163,8 +174,14 @@
     @end
 
     @join callable : stubClass.apiCallables
-      this.{@callable.name} = callableFactory.{@createCallableMethodName(callable)}({@callable.transportSettingsVar},\
-          settings.{@callable.settingsFunctionName}(), clientContext);
+      @if callable.isLongRunning
+        this.{@callable.name} = callableFactory.createOperationCallable(
+            {@callable.transportSettingsVar},\
+            settings.{@callable.settingsFunctionName}(), clientContext, this.operationsStub);
+      @else
+        this.{@callable.name} = callableFactory.{@createCallableMethodName(callable)}({@callable.transportSettingsVar},\
+            settings.{@callable.settingsFunctionName}(), clientContext);
+      @end
     @end
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
@@ -219,13 +236,9 @@
 @end
 
 @private operationCallableMethod(apiMethod)
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
   @@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
   public OperationCallable<{@apiMethod.serviceRequestTypeName}, \
-      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}, Operation> \
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
       {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }

@@ -29,6 +29,9 @@ public abstract class StaticLangStubInterfaceView {
 
   public abstract List<StaticLangApiMethodView> callableMethods();
 
+  @Nullable // Used in Java.
+  public abstract String operationsStubName();
+
   public abstract boolean hasLongRunningOperations();
 
   public static StaticLangStubInterfaceView.Builder newBuilder() {
@@ -43,6 +46,8 @@ public abstract class StaticLangStubInterfaceView {
     public abstract Builder releaseLevelAnnotation(String val);
 
     public abstract Builder name(String val);
+
+    public abstract Builder operationsStubName(String val);
 
     public abstract Builder callableMethods(List<StaticLangApiMethodView> val);
 

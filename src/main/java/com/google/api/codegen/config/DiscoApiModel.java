@@ -37,6 +37,10 @@ public class DiscoApiModel implements ApiModel {
     return document.canonicalName();
   }
 
+  public String getSimpleName() {
+    return document.name();
+  }
+
   @Override
   public String getDocumentationSummary() {
     return document.description();

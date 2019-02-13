@@ -1,0 +1,49 @@
+@extends "java/common.snip"
+
+@snippet renderStubFileHeader(fileHeader)
+  {@license(fileHeader)}
+  package {@fileHeader.packageName};
+
+  {@importList(fileHeader.importSection.appImports)}
+@end
+
+@snippet generate(classFile)
+  {@renderStubFileHeader(classFile.fileHeader)}
+
+  {@classDoc()}
+  @@Generated("by gapic-generator")
+  @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  {@renderClass(classFile.classView)}
+@end
+
+@private classDoc()
+  // AUTO-GENERATED DOCUMENTATION AND CLASS
+  /**
+   * A {@@code UnaryCallable} that wraps a UnaryCallable returning a
+   * long-running operation API resource and returns an OperationSnapshot instead.
+   */
+@end
+
+@private renderClass(classView)
+  public class OperationSnapshotCallable<RequestT>
+      extends UnaryCallable<RequestT, OperationSnapshot> {
+    private final UnaryCallable<RequestT, {@classView.operationResourceName}> innerCallable;
+
+    public OperationSnapshotCallable(UnaryCallable<RequestT, {@classView.operationResourceName}> innerCallable) {
+      this.innerCallable = innerCallable;
+    }
+
+    @@Override
+    public ApiFuture<OperationSnapshot> futureCall(RequestT request, ApiCallContext context) {
+      return ApiFutures.transform(
+          innerCallable.futureCall(request, context),
+          new ApiFunction<{@classView.operationResourceName}, OperationSnapshot>() {
+            @@Override
+            public OperationSnapshot apply({@classView.operationResourceName} operation) {
+              return {@classView.operationSnapshotName}.create(operation);
+            }
+          },
+          directExecutor());
+    }
+  }
+@end

@@ -36,7 +36,7 @@ public abstract class SchemaTransformationContext implements TransformationConte
    * Create a context for transforming a schema.
    *
    * @param id Any sort of unique identifier for this context. Used in sorting contexts.
-   * @param typeTable Manages the imports for the schema view.
+   * @param typeTable Manages the imports for the schema view
    * @param docContext The context for the parent Document.
    */
   public static SchemaTransformationContext create(

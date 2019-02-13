@@ -212,6 +212,9 @@ public class JavaSurfaceTransformer {
     xapiClass.apiMethods(methods);
     xapiClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
     xapiClass.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
+    if (interfaceConfig.hasLongRunningOperations()) {
+      xapiClass.operationsClientName(context.getNamer().getOperationClientName(context));
+    }
     xapiClass.pagedResponseViews(generatePagedResponseWrappers(context));
     return xapiClass.build();
   }
@@ -457,6 +460,8 @@ public class JavaSurfaceTransformer {
         namer.getTransportProvider(productConfig.getTransportProtocol()));
     xsettingsClass.instantiatingChannelProvider(
         namer.getInstantiatingChannelProvider(productConfig.getTransportProtocol()));
+    xsettingsClass.lroMessageTransformer(
+        namer.getLroMessageTransformer(productConfig.getTransportProtocol()));
 
     List<ApiCallSettingsView> apiCallSettings =
         apiCallableTransformer.generateCallSettings(context);
@@ -531,6 +536,10 @@ public class JavaSurfaceTransformer {
     stubInterface.name(name);
     stubInterface.callableMethods(filterIncludeCallableMethods(methods));
     stubInterface.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
+    if (interfaceConfig.hasLongRunningOperations()) {
+      stubInterface.operationsStubName(
+          context.getNamer().getLongRunningOperationsStubName(context));
+    }
 
     return stubInterface.build();
   }
@@ -599,6 +608,9 @@ public class JavaSurfaceTransformer {
     stubClass.callableMethods(filterIncludeCallableMethods(methods));
     stubClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
     stubClass.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
+    if (interfaceConfig.hasLongRunningOperations()) {
+      stubClass.lroStubImpl(context.getNamer().getLongRunningOperationsStubImplName(context));
+    }
 
     for (TypeAlias alias :
         apiMethodsContext.getImportTypeTable().getTypeTable().getAllImports().values()) {
@@ -647,7 +659,28 @@ public class JavaSurfaceTransformer {
     callableFactory.releaseLevelAnnotation(namer.getReleaseAnnotation(ReleaseLevel.BETA));
     callableFactory.name(
         namer.getCallableFactoryClassName(interfaceConfig, productConfig.getTransportProtocol()));
+    callableFactory.hasLongRunningOperations(
+        context.getInterfaceConfig().hasLongRunningOperations());
 
+    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      callableFactory.operationStubType(namer.getLongRunningOperationsStubName(context));
+    } else {
+      callableFactory.operationStubType(
+          context
+              .getImportTypeTable()
+              .getAndSaveNicknameFor("com.google.api.gax.core.BackgroundResource"));
+    }
+    if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      callableFactory.operationMessage(
+          context
+              .getImportTypeTable()
+              .getAndSaveNicknameFor("com.google.cloud.compute.v1.Operation"));
+      callableFactory.longRunningClientName(
+          context
+              .getImportTypeTable()
+              .getAndSaveNicknameFor(
+                  "com.google.cloud.compute.longrunning.ComputeLongRunningClientFactory"));
+    }
     return callableFactory.build();
   }
 
@@ -730,8 +763,11 @@ public class JavaSurfaceTransformer {
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationFuture");
-      typeTable.saveNicknameFor("com.google.longrunning.Operation");
-      typeTable.saveNicknameFor("com.google.longrunning.OperationsClient");
+
+      if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
+        typeTable.saveNicknameFor("com.google.longrunning.Operation");
+        typeTable.saveNicknameFor("com.google.longrunning.OperationsClient");
+      }
     }
 
     switch (context.getProductConfig().getTransportProtocol()) {
@@ -804,9 +840,11 @@ public class JavaSurfaceTransformer {
       typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallSettings");
     }
     if (interfaceConfig.hasLongRunningOperations()) {
+      if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
+        typeTable.saveNicknameFor("com.google.longrunning.Operation");
+      }
       typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationSnapshot");
       typeTable.saveNicknameFor("com.google.api.gax.rpc.OperationCallSettings");
-      typeTable.saveNicknameFor("com.google.longrunning.Operation");
       typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationTimedPollAlgorithm");
     }
     switch (context.getProductConfig().getTransportProtocol()) {
@@ -822,8 +860,11 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransportChannel");
         typeTable.saveNicknameFor(
             "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
+        if (interfaceConfig.hasLongRunningOperations()) {
+          typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageOperationTransformers");
+        }
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.GaxHttpJsonProperties");
-        typeTable.saveNicknameFor("java.lang.Void");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.EmptyMessage");
         break;
     }
   }
@@ -883,7 +924,7 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");
         typeTable.saveNicknameFor("com.google.common.collect.Sets");
-        typeTable.saveNicknameFor("java.lang.Void");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.EmptyMessage");
         break;
     }
   }
@@ -913,6 +954,10 @@ public class JavaSurfaceTransformer {
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");
+        typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationSnapshot");
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.Callables");
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.LongRunningClient");
+        typeTable.saveNicknameFor("com.google.cloud.compute.longrunning.OperationSnapshotCallable");
         break;
     }
   }
@@ -928,8 +973,10 @@ public class JavaSurfaceTransformer {
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasLongRunningOperations()) {
-      typeTable.saveNicknameFor("com.google.longrunning.Operation");
-      typeTable.saveNicknameFor("com.google.longrunning.stub.OperationsStub");
+      if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
+        typeTable.saveNicknameFor("com.google.longrunning.Operation");
+        typeTable.saveNicknameFor("com.google.longrunning.stub.OperationsStub");
+      }
     }
   }
 

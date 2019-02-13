@@ -11584,12 +11584,15 @@ import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.httpjson.EmptyMessage;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.paging.AbstractFixedSizeCollection;
 import com.google.api.gax.paging.AbstractPage;
 import com.google.api.gax.paging.AbstractPagedListResponse;
 import com.google.api.gax.paging.FixedSizeCollection;
 import com.google.api.gax.paging.Page;
 import com.google.api.gax.rpc.ApiExceptions;
+import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.PageContext;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
@@ -11618,7 +11621,7 @@ import javax.annotation.Generated;
  * <code>
  * try (AddressClient addressClient = AddressClient.create()) {
  *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
- *   Operation response = addressClient.deleteAddress(address);
+ *   Address response = addressClient.getAddress(address);
  * }
  * </code>
  * </pre>
@@ -11679,6 +11682,7 @@ import javax.annotation.Generated;
 public class AddressClient implements BackgroundResource {
   private final AddressSettings settings;
   private final AddressStub stub;
+  private final RegionOperationClient operationsClient;
 
 
 
@@ -11715,12 +11719,14 @@ public class AddressClient implements BackgroundResource {
   protected AddressClient(AddressSettings settings) throws IOException {
     this.settings = settings;
     this.stub = ((AddressStubSettings) settings.getStubSettings()).createStub();
+    this.operationsClient = RegionOperationClient.create(this.stub.getOperationsStub());
   }
 
   @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   protected AddressClient(AddressStub stub) {
     this.settings = null;
     this.stub = stub;
+    this.operationsClient = RegionOperationClient.create(this.stub.getOperationsStub());
   }
 
   public final AddressSettings getSettings() {
@@ -11732,6 +11738,14 @@ public class AddressClient implements BackgroundResource {
     return stub;
   }
 
+  /**
+   * Returns the RegionOperationClient that can be used to query the status of a long-running
+   * operation returned by another API method call.
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final RegionOperationClient getOperationsClient() {
+    return operationsClient;
+  }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
@@ -11874,21 +11888,21 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
-   *   Operation response = addressClient.deleteAddress(address);
+   *   addressClient.deleteAddressAsync(address).get();
    * }
    * </code></pre>
    *
    * @param address Name of the address resource to delete.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  @BetaApi
-  public final Operation deleteAddress(ProjectRegionAddressName address) {
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<EmptyMessage, Operation> deleteAddressAsync(ProjectRegionAddressName address) {
 
     DeleteAddressHttpRequest request =
         DeleteAddressHttpRequest.newBuilder()
         .setAddress(address == null ? null : address.toString())
         .build();
-    return deleteAddress(request);
+    return deleteAddressAsync(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -11899,21 +11913,21 @@ public class AddressClient implements BackgroundResource {
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
-   *   Operation response = addressClient.deleteAddress(address.toString());
+   *   addressClient.deleteAddressAsync(address.toString()).get();
    * }
    * </code></pre>
    *
    * @param address Name of the address resource to delete.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  @BetaApi
-  public final Operation deleteAddress(String address) {
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<EmptyMessage, Operation> deleteAddressAsync(String address) {
 
     DeleteAddressHttpRequest request =
         DeleteAddressHttpRequest.newBuilder()
         .setAddress(address)
         .build();
-    return deleteAddress(request);
+    return deleteAddressAsync(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -11927,16 +11941,38 @@ public class AddressClient implements BackgroundResource {
    *   DeleteAddressHttpRequest request = DeleteAddressHttpRequest.newBuilder()
    *     .setAddress(address.toString())
    *     .build();
-   *   Operation response = addressClient.deleteAddress(request);
+   *   addressClient.deleteAddressAsync(request).get();
    * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  @BetaApi
-  public final Operation deleteAddress(DeleteAddressHttpRequest request) {
-    return deleteAddressCallable().call(request);
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<EmptyMessage, Operation> deleteAddressAsync(DeleteAddressHttpRequest request) {
+    return deleteAddressOperationCallable().futureCall(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   DeleteAddressHttpRequest request = DeleteAddressHttpRequest.newBuilder()
+   *     .setAddress(address.toString())
+   *     .build();
+   *   OperationFuture&lt;EmptyMessage, Operation&gt; future = addressClient.deleteAddressOperationCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public final OperationCallable<DeleteAddressHttpRequest, EmptyMessage, Operation> deleteAddressOperationCallable() {
+    return stub.deleteAddressOperationCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -11952,7 +11988,7 @@ public class AddressClient implements BackgroundResource {
    *     .build();
    *   ApiFuture&lt;Operation&gt; future = addressClient.deleteAddressCallable().futureCall(request);
    *   // Do something
-   *   Operation response = future.get();
+   *   future.get();
    * }
    * </code></pre>
    */
@@ -12065,7 +12101,7 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
-   *   Operation response = addressClient.insertAddress(region, addressResource);
+   *   addressClient.insertAddressAsync(region, addressResource).get();
    * }
    * </code></pre>
    *
@@ -12073,15 +12109,15 @@ public class AddressClient implements BackgroundResource {
    * @param addressResource A reserved address resource.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  @BetaApi
-  public final Operation insertAddress(ProjectRegionName region, Address addressResource) {
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<EmptyMessage, Operation> insertAddressAsync(ProjectRegionName region, Address addressResource) {
 
     InsertAddressHttpRequest request =
         InsertAddressHttpRequest.newBuilder()
         .setRegion(region == null ? null : region.toString())
         .setAddressResource(addressResource)
         .build();
-    return insertAddress(request);
+    return insertAddressAsync(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -12093,7 +12129,7 @@ public class AddressClient implements BackgroundResource {
    * try (AddressClient addressClient = AddressClient.create()) {
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
-   *   Operation response = addressClient.insertAddress(region.toString(), addressResource);
+   *   addressClient.insertAddressAsync(region.toString(), addressResource).get();
    * }
    * </code></pre>
    *
@@ -12101,15 +12137,15 @@ public class AddressClient implements BackgroundResource {
    * @param addressResource A reserved address resource.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  @BetaApi
-  public final Operation insertAddress(String region, Address addressResource) {
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<EmptyMessage, Operation> insertAddressAsync(String region, Address addressResource) {
 
     InsertAddressHttpRequest request =
         InsertAddressHttpRequest.newBuilder()
         .setRegion(region)
         .setAddressResource(addressResource)
         .build();
-    return insertAddress(request);
+    return insertAddressAsync(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -12125,16 +12161,40 @@ public class AddressClient implements BackgroundResource {
    *     .setRegion(region.toString())
    *     .setAddressResource(addressResource)
    *     .build();
-   *   Operation response = addressClient.insertAddress(request);
+   *   addressClient.insertAddressAsync(request).get();
    * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  @BetaApi
-  public final Operation insertAddress(InsertAddressHttpRequest request) {
-    return insertAddressCallable().call(request);
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<EmptyMessage, Operation> insertAddressAsync(InsertAddressHttpRequest request) {
+    return insertAddressOperationCallable().futureCall(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates an address resource in the specified project using the data included in the request.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
+   *   Address addressResource = Address.newBuilder().build();
+   *   InsertAddressHttpRequest request = InsertAddressHttpRequest.newBuilder()
+   *     .setRegion(region.toString())
+   *     .setAddressResource(addressResource)
+   *     .build();
+   *   OperationFuture&lt;EmptyMessage, Operation&gt; future = addressClient.insertAddressOperationCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public final OperationCallable<InsertAddressHttpRequest, EmptyMessage, Operation> insertAddressOperationCallable() {
+    return stub.insertAddressOperationCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -12152,7 +12212,7 @@ public class AddressClient implements BackgroundResource {
    *     .build();
    *   ApiFuture&lt;Operation&gt; future = addressClient.insertAddressCallable().futureCall(request);
    *   // Do something
-   *   Operation response = future.get();
+   *   future.get();
    * }
    * </code></pre>
    */
@@ -12305,7 +12365,7 @@ public class AddressClient implements BackgroundResource {
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   List&lt;String&gt; fieldMask = new ArrayList&lt;&gt;();
-   *   Operation response = addressClient.patchAddress(address, region, addressResource, fieldMask);
+   *   addressClient.patchAddressAsync(address, region, addressResource, fieldMask).get();
    * }
    * </code></pre>
    *
@@ -12315,8 +12375,8 @@ public class AddressClient implements BackgroundResource {
    * @param fieldMask The fields that should be serialized (even if they have empty values). If the containing message object has a non-null fieldmask, then all the fields in the field mask (and only those fields in the field mask) will be serialized. If the containing object does not have a fieldmask, then only non-empty fields will be serialized.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  @BetaApi
-  public final Operation patchAddress(String address, ProjectRegionName region, Address addressResource, List<String> fieldMask) {
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<EmptyMessage, Operation> patchAddressAsync(String address, ProjectRegionName region, Address addressResource, List<String> fieldMask) {
 
     PatchAddressHttpRequest request =
         PatchAddressHttpRequest.newBuilder()
@@ -12325,7 +12385,7 @@ public class AddressClient implements BackgroundResource {
         .setAddressResource(addressResource)
         .addAllFieldMask(fieldMask)
         .build();
-    return patchAddress(request);
+    return patchAddressAsync(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -12339,7 +12399,7 @@ public class AddressClient implements BackgroundResource {
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   List&lt;String&gt; fieldMask = new ArrayList&lt;&gt;();
-   *   Operation response = addressClient.patchAddress(address, region.toString(), addressResource, fieldMask);
+   *   addressClient.patchAddressAsync(address, region.toString(), addressResource, fieldMask).get();
    * }
    * </code></pre>
    *
@@ -12349,8 +12409,8 @@ public class AddressClient implements BackgroundResource {
    * @param fieldMask The fields that should be serialized (even if they have empty values). If the containing message object has a non-null fieldmask, then all the fields in the field mask (and only those fields in the field mask) will be serialized. If the containing object does not have a fieldmask, then only non-empty fields will be serialized.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  @BetaApi
-  public final Operation patchAddress(String address, String region, Address addressResource, List<String> fieldMask) {
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<EmptyMessage, Operation> patchAddressAsync(String address, String region, Address addressResource, List<String> fieldMask) {
 
     PatchAddressHttpRequest request =
         PatchAddressHttpRequest.newBuilder()
@@ -12359,7 +12419,7 @@ public class AddressClient implements BackgroundResource {
         .setAddressResource(addressResource)
         .addAllFieldMask(fieldMask)
         .build();
-    return patchAddress(request);
+    return patchAddressAsync(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -12379,16 +12439,44 @@ public class AddressClient implements BackgroundResource {
    *     .setAddressResource(addressResource)
    *     .addAllFieldMask(fieldMask)
    *     .build();
-   *   Operation response = addressClient.patchAddress(request);
+   *   addressClient.patchAddressAsync(request).get();
    * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  @BetaApi
-  public final Operation patchAddress(PatchAddressHttpRequest request) {
-    return patchAddressCallable().call(request);
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<EmptyMessage, Operation> patchAddressAsync(PatchAddressHttpRequest request) {
+    return patchAddressOperationCallable().futureCall(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates an address in the specified project using the data included in the request. This method supports PATCH semantics and uses the JSON merge patch format and processing rules.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   String address = "";
+   *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
+   *   Address addressResource = Address.newBuilder().build();
+   *   List&lt;String&gt; fieldMask = new ArrayList&lt;&gt;();
+   *   PatchAddressHttpRequest request = PatchAddressHttpRequest.newBuilder()
+   *     .setAddress(address)
+   *     .setRegion(region.toString())
+   *     .setAddressResource(addressResource)
+   *     .addAllFieldMask(fieldMask)
+   *     .build();
+   *   OperationFuture&lt;EmptyMessage, Operation&gt; future = addressClient.patchAddressOperationCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public final OperationCallable<PatchAddressHttpRequest, EmptyMessage, Operation> patchAddressOperationCallable() {
+    return stub.patchAddressOperationCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -12410,7 +12498,7 @@ public class AddressClient implements BackgroundResource {
    *     .build();
    *   ApiFuture&lt;Operation&gt; future = addressClient.patchAddressCallable().futureCall(request);
    *   // Do something
-   *   Operation response = future.get();
+   *   future.get();
    * }
    * </code></pre>
    */
@@ -12429,7 +12517,7 @@ public class AddressClient implements BackgroundResource {
    *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
    *   Address addressResource = Address.newBuilder().build();
    *   List&lt;String&gt; fieldMask = new ArrayList&lt;&gt;();
-   *   Operation response = addressClient.updateAddress(address, addressResource, fieldMask);
+   *   addressClient.updateAddressAsync(address, addressResource, fieldMask).get();
    * }
    * </code></pre>
    *
@@ -12438,8 +12526,8 @@ public class AddressClient implements BackgroundResource {
    * @param fieldMask The fields that should be serialized (even if they have empty values). If the containing message object has a non-null fieldmask, then all the fields in the field mask (and only those fields in the field mask) will be serialized. If the containing object does not have a fieldmask, then only non-empty fields will be serialized.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  @BetaApi
-  public final Operation updateAddress(ProjectGlobalAddressName address, Address addressResource, List<String> fieldMask) {
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<EmptyMessage, Operation> updateAddressAsync(ProjectGlobalAddressName address, Address addressResource, List<String> fieldMask) {
 
     UpdateAddressHttpRequest request =
         UpdateAddressHttpRequest.newBuilder()
@@ -12447,7 +12535,7 @@ public class AddressClient implements BackgroundResource {
         .setAddressResource(addressResource)
         .addAllFieldMask(fieldMask)
         .build();
-    return updateAddress(request);
+    return updateAddressAsync(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -12460,7 +12548,7 @@ public class AddressClient implements BackgroundResource {
    *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
    *   Address addressResource = Address.newBuilder().build();
    *   List&lt;String&gt; fieldMask = new ArrayList&lt;&gt;();
-   *   Operation response = addressClient.updateAddress(address.toString(), addressResource, fieldMask);
+   *   addressClient.updateAddressAsync(address.toString(), addressResource, fieldMask).get();
    * }
    * </code></pre>
    *
@@ -12469,8 +12557,8 @@ public class AddressClient implements BackgroundResource {
    * @param fieldMask The fields that should be serialized (even if they have empty values). If the containing message object has a non-null fieldmask, then all the fields in the field mask (and only those fields in the field mask) will be serialized. If the containing object does not have a fieldmask, then only non-empty fields will be serialized.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  @BetaApi
-  public final Operation updateAddress(String address, Address addressResource, List<String> fieldMask) {
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<EmptyMessage, Operation> updateAddressAsync(String address, Address addressResource, List<String> fieldMask) {
 
     UpdateAddressHttpRequest request =
         UpdateAddressHttpRequest.newBuilder()
@@ -12478,7 +12566,7 @@ public class AddressClient implements BackgroundResource {
         .setAddressResource(addressResource)
         .addAllFieldMask(fieldMask)
         .build();
-    return updateAddress(request);
+    return updateAddressAsync(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -12496,16 +12584,42 @@ public class AddressClient implements BackgroundResource {
    *     .setAddressResource(addressResource)
    *     .addAllFieldMask(fieldMask)
    *     .build();
-   *   Operation response = addressClient.updateAddress(request);
+   *   addressClient.updateAddressAsync(request).get();
    * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  @BetaApi
-  public final Operation updateAddress(UpdateAddressHttpRequest request) {
-    return updateAddressCallable().call(request);
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<EmptyMessage, Operation> updateAddressAsync(UpdateAddressHttpRequest request) {
+    return updateAddressOperationCallable().futureCall(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates the specified Address resource with the data included in the request. There are several restrictions and guidelines to keep in mind when updating an address. Read  Restrictions and Guidelines for more information.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressClient addressClient = AddressClient.create()) {
+   *   ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
+   *   Address addressResource = Address.newBuilder().build();
+   *   List&lt;String&gt; fieldMask = new ArrayList&lt;&gt;();
+   *   UpdateAddressHttpRequest request = UpdateAddressHttpRequest.newBuilder()
+   *     .setAddress(address.toString())
+   *     .setAddressResource(addressResource)
+   *     .addAllFieldMask(fieldMask)
+   *     .build();
+   *   OperationFuture&lt;EmptyMessage, Operation&gt; future = addressClient.updateAddressOperationCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public final OperationCallable<UpdateAddressHttpRequest, EmptyMessage, Operation> updateAddressOperationCallable() {
+    return stub.updateAddressOperationCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -12525,7 +12639,7 @@ public class AddressClient implements BackgroundResource {
    *     .build();
    *   ApiFuture&lt;Operation&gt; future = addressClient.updateAddressCallable().futureCall(request);
    *   // Do something
-   *   Operation response = future.get();
+   *   future.get();
    * }
    * </code></pre>
    */
@@ -12767,15 +12881,21 @@ import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.GaxProperties;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.httpjson.ApiMessageOperationTransformers;
+import com.google.api.gax.httpjson.EmptyMessage;
 import com.google.api.gax.httpjson.GaxHttpJsonProperties;
 import com.google.api.gax.httpjson.HttpJsonTransportChannel;
 import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.ApiClientHeaderProvider;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.ClientSettings;
 import com.google.api.gax.rpc.HeaderProvider;
+import com.google.api.gax.rpc.OperationCallSettings;
 import com.google.api.gax.rpc.PageContext;
 import com.google.api.gax.rpc.PagedCallSettings;
 import com.google.api.gax.rpc.PagedListDescriptor;
@@ -12815,13 +12935,13 @@ import org.threeten.bp.Duration;
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders.
  * When build() is called, the tree of builders is called to create the complete settings
- * object. For example, to set the total timeout of deleteAddress to 30 seconds:
+ * object. For example, to set the total timeout of getAddress to 30 seconds:
  *
  * <pre>
  * <code>
  * AddressSettings.Builder addressSettingsBuilder =
  *     AddressSettings.newBuilder();
- * addressSettingsBuilder.deleteAddressSettings().getRetrySettings().toBuilder()
+ * addressSettingsBuilder.getAddressSettings().getRetrySettings().toBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * AddressSettings addressSettings = addressSettingsBuilder.build();
  * </code>
@@ -12845,6 +12965,14 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
   }
 
   /**
+   * Returns the object with the settings used for calls to deleteAddress.
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public OperationCallSettings<DeleteAddressHttpRequest, EmptyMessage, Operation> deleteAddressOperationSettings() {
+    return ((AddressStubSettings) getStubSettings()).deleteAddressOperationSettings();
+  }
+
+  /**
    * Returns the object with the settings used for calls to getAddress.
    */
   public UnaryCallSettings<GetAddressHttpRequest, Address> getAddressSettings() {
@@ -12856,6 +12984,14 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
    */
   public UnaryCallSettings<InsertAddressHttpRequest, Operation> insertAddressSettings() {
     return ((AddressStubSettings) getStubSettings()).insertAddressSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to insertAddress.
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public OperationCallSettings<InsertAddressHttpRequest, EmptyMessage, Operation> insertAddressOperationSettings() {
+    return ((AddressStubSettings) getStubSettings()).insertAddressOperationSettings();
   }
 
   /**
@@ -12873,10 +13009,26 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
   }
 
   /**
+   * Returns the object with the settings used for calls to patchAddress.
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public OperationCallSettings<PatchAddressHttpRequest, EmptyMessage, Operation> patchAddressOperationSettings() {
+    return ((AddressStubSettings) getStubSettings()).patchAddressOperationSettings();
+  }
+
+  /**
    * Returns the object with the settings used for calls to updateAddress.
    */
   public UnaryCallSettings<UpdateAddressHttpRequest, Operation> updateAddressSettings() {
     return ((AddressStubSettings) getStubSettings()).updateAddressSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to updateAddress.
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public OperationCallSettings<UpdateAddressHttpRequest, EmptyMessage, Operation> updateAddressOperationSettings() {
+    return ((AddressStubSettings) getStubSettings()).updateAddressOperationSettings();
   }
 
 
@@ -13014,6 +13166,14 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
     }
 
     /**
+     * Returns the builder for the settings used for calls to deleteAddress.
+     */
+    @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+    public OperationCallSettings.Builder<DeleteAddressHttpRequest, EmptyMessage, Operation> deleteAddressOperationSettings() {
+      return getStubSettingsBuilder().deleteAddressOperationSettings();
+    }
+
+    /**
      * Returns the builder for the settings used for calls to getAddress.
      */
     public UnaryCallSettings.Builder<GetAddressHttpRequest, Address> getAddressSettings() {
@@ -13025,6 +13185,14 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
      */
     public UnaryCallSettings.Builder<InsertAddressHttpRequest, Operation> insertAddressSettings() {
       return getStubSettingsBuilder().insertAddressSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to insertAddress.
+     */
+    @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+    public OperationCallSettings.Builder<InsertAddressHttpRequest, EmptyMessage, Operation> insertAddressOperationSettings() {
+      return getStubSettingsBuilder().insertAddressOperationSettings();
     }
 
     /**
@@ -13042,10 +13210,26 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
     }
 
     /**
+     * Returns the builder for the settings used for calls to patchAddress.
+     */
+    @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+    public OperationCallSettings.Builder<PatchAddressHttpRequest, EmptyMessage, Operation> patchAddressOperationSettings() {
+      return getStubSettingsBuilder().patchAddressOperationSettings();
+    }
+
+    /**
      * Returns the builder for the settings used for calls to updateAddress.
      */
     public UnaryCallSettings.Builder<UpdateAddressHttpRequest, Operation> updateAddressSettings() {
       return getStubSettingsBuilder().updateAddressSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to updateAddress.
+     */
+    @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+    public OperationCallSettings.Builder<UpdateAddressHttpRequest, EmptyMessage, Operation> updateAddressOperationSettings() {
+      return getStubSettingsBuilder().updateAddressOperationSettings();
     }
 
     @Override
@@ -13080,15 +13264,21 @@ import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.GaxProperties;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.httpjson.ApiMessageOperationTransformers;
+import com.google.api.gax.httpjson.EmptyMessage;
 import com.google.api.gax.httpjson.GaxHttpJsonProperties;
 import com.google.api.gax.httpjson.HttpJsonTransportChannel;
 import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.ApiClientHeaderProvider;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.ClientSettings;
 import com.google.api.gax.rpc.HeaderProvider;
+import com.google.api.gax.rpc.OperationCallSettings;
 import com.google.api.gax.rpc.PageContext;
 import com.google.api.gax.rpc.PagedCallSettings;
 import com.google.api.gax.rpc.PagedListDescriptor;
@@ -13139,13 +13329,13 @@ import org.threeten.bp.Duration;
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders.
  * When build() is called, the tree of builders is called to create the complete settings
- * object. For example, to set the total timeout of deleteAddress to 30 seconds:
+ * object. For example, to set the total timeout of getAddress to 30 seconds:
  *
  * <pre>
  * <code>
  * AddressStubSettings.Builder addressSettingsBuilder =
  *     AddressStubSettings.newBuilder();
- * addressSettingsBuilder.deleteAddressSettings().getRetrySettings().toBuilder()
+ * addressSettingsBuilder.getAddressSettings().getRetrySettings().toBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * AddressStubSettings addressSettings = addressSettingsBuilder.build();
  * </code>
@@ -13168,11 +13358,15 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
 
   private final PagedCallSettings<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings;
   private final UnaryCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressSettings;
+  private final OperationCallSettings<DeleteAddressHttpRequest, EmptyMessage, Operation> deleteAddressOperationSettings;
   private final UnaryCallSettings<GetAddressHttpRequest, Address> getAddressSettings;
   private final UnaryCallSettings<InsertAddressHttpRequest, Operation> insertAddressSettings;
+  private final OperationCallSettings<InsertAddressHttpRequest, EmptyMessage, Operation> insertAddressOperationSettings;
   private final PagedCallSettings<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
   private final UnaryCallSettings<PatchAddressHttpRequest, Operation> patchAddressSettings;
+  private final OperationCallSettings<PatchAddressHttpRequest, EmptyMessage, Operation> patchAddressOperationSettings;
   private final UnaryCallSettings<UpdateAddressHttpRequest, Operation> updateAddressSettings;
+  private final OperationCallSettings<UpdateAddressHttpRequest, EmptyMessage, Operation> updateAddressOperationSettings;
 
   /**
    * Returns the object with the settings used for calls to aggregatedListAddresses.
@@ -13186,6 +13380,14 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
    */
   public UnaryCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressSettings() {
     return deleteAddressSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to deleteAddress.
+   */
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallSettings<DeleteAddressHttpRequest, EmptyMessage, Operation> deleteAddressOperationSettings() {
+    return deleteAddressOperationSettings;
   }
 
   /**
@@ -13203,6 +13405,14 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
   }
 
   /**
+   * Returns the object with the settings used for calls to insertAddress.
+   */
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallSettings<InsertAddressHttpRequest, EmptyMessage, Operation> insertAddressOperationSettings() {
+    return insertAddressOperationSettings;
+  }
+
+  /**
    * Returns the object with the settings used for calls to listAddresses.
    */
   public PagedCallSettings<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings() {
@@ -13217,10 +13427,26 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
   }
 
   /**
+   * Returns the object with the settings used for calls to patchAddress.
+   */
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallSettings<PatchAddressHttpRequest, EmptyMessage, Operation> patchAddressOperationSettings() {
+    return patchAddressOperationSettings;
+  }
+
+  /**
    * Returns the object with the settings used for calls to updateAddress.
    */
   public UnaryCallSettings<UpdateAddressHttpRequest, Operation> updateAddressSettings() {
     return updateAddressSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to updateAddress.
+   */
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallSettings<UpdateAddressHttpRequest, EmptyMessage, Operation> updateAddressOperationSettings() {
+    return updateAddressOperationSettings;
   }
 
 
@@ -13317,11 +13543,15 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
 
     aggregatedListAddressesSettings = settingsBuilder.aggregatedListAddressesSettings().build();
     deleteAddressSettings = settingsBuilder.deleteAddressSettings().build();
+    deleteAddressOperationSettings = settingsBuilder.deleteAddressOperationSettings().build();
     getAddressSettings = settingsBuilder.getAddressSettings().build();
     insertAddressSettings = settingsBuilder.insertAddressSettings().build();
+    insertAddressOperationSettings = settingsBuilder.insertAddressOperationSettings().build();
     listAddressesSettings = settingsBuilder.listAddressesSettings().build();
     patchAddressSettings = settingsBuilder.patchAddressSettings().build();
+    patchAddressOperationSettings = settingsBuilder.patchAddressOperationSettings().build();
     updateAddressSettings = settingsBuilder.updateAddressSettings().build();
+    updateAddressOperationSettings = settingsBuilder.updateAddressOperationSettings().build();
   }
 
   private static final PagedListDescriptor<AggregatedListAddressesHttpRequest, AddressAggregatedList, AddressesScopedList> AGGREGATED_LIST_ADDRESSES_PAGE_STR_DESC =
@@ -13431,11 +13661,15 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
 
     private final PagedCallSettings.Builder<AggregatedListAddressesHttpRequest, AddressAggregatedList, AggregatedListAddressesPagedResponse> aggregatedListAddressesSettings;
     private final UnaryCallSettings.Builder<DeleteAddressHttpRequest, Operation> deleteAddressSettings;
+    private final OperationCallSettings.Builder<DeleteAddressHttpRequest, EmptyMessage, Operation> deleteAddressOperationSettings;
     private final UnaryCallSettings.Builder<GetAddressHttpRequest, Address> getAddressSettings;
     private final UnaryCallSettings.Builder<InsertAddressHttpRequest, Operation> insertAddressSettings;
+    private final OperationCallSettings.Builder<InsertAddressHttpRequest, EmptyMessage, Operation> insertAddressOperationSettings;
     private final PagedCallSettings.Builder<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
     private final UnaryCallSettings.Builder<PatchAddressHttpRequest, Operation> patchAddressSettings;
+    private final OperationCallSettings.Builder<PatchAddressHttpRequest, EmptyMessage, Operation> patchAddressOperationSettings;
     private final UnaryCallSettings.Builder<UpdateAddressHttpRequest, Operation> updateAddressSettings;
+    private final OperationCallSettings.Builder<UpdateAddressHttpRequest, EmptyMessage, Operation> updateAddressOperationSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -13480,16 +13714,24 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
 
       deleteAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
+      deleteAddressOperationSettings = OperationCallSettings.newBuilder();
+
       getAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       insertAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      insertAddressOperationSettings = OperationCallSettings.newBuilder();
 
       listAddressesSettings = PagedCallSettings.newBuilder(
           LIST_ADDRESSES_PAGE_STR_FACT);
 
       patchAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
+      patchAddressOperationSettings = OperationCallSettings.newBuilder();
+
       updateAddressSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      updateAddressOperationSettings = OperationCallSettings.newBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           aggregatedListAddressesSettings,
@@ -13542,6 +13784,86 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
       builder.updateAddressSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+      builder
+          .deleteAddressOperationSettings()
+          .setInitialCallSettings(
+              UnaryCallSettings.<DeleteAddressHttpRequest, OperationSnapshot>newUnaryCallSettingsBuilder()
+                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"))
+                  .build())
+          .setResponseTransformer(ApiMessageOperationTransformers.ResponseTransformer.create(EmptyMessage.class))
+          .setMetadataTransformer(ApiMessageOperationTransformers.MetadataTransformer.create(Operation.class))
+          .setPollingAlgorithm(
+              OperationTimedPollAlgorithm.create(
+                  RetrySettings.newBuilder()
+                     .setInitialRetryDelay(Duration.ofMillis(500L))
+                     .setRetryDelayMultiplier(1.5)
+                     .setMaxRetryDelay(Duration.ofMillis(5000L))
+                     .setInitialRpcTimeout(Duration.ZERO) // ignored
+                     .setRpcTimeoutMultiplier(1.0) // ignored
+                     .setMaxRpcTimeout(Duration.ZERO) // ignored
+                     .setTotalTimeout(Duration.ofMillis(300000L))
+                     .build()));
+      builder
+          .insertAddressOperationSettings()
+          .setInitialCallSettings(
+              UnaryCallSettings.<InsertAddressHttpRequest, OperationSnapshot>newUnaryCallSettingsBuilder()
+                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"))
+                  .build())
+          .setResponseTransformer(ApiMessageOperationTransformers.ResponseTransformer.create(EmptyMessage.class))
+          .setMetadataTransformer(ApiMessageOperationTransformers.MetadataTransformer.create(Operation.class))
+          .setPollingAlgorithm(
+              OperationTimedPollAlgorithm.create(
+                  RetrySettings.newBuilder()
+                     .setInitialRetryDelay(Duration.ofMillis(500L))
+                     .setRetryDelayMultiplier(1.5)
+                     .setMaxRetryDelay(Duration.ofMillis(5000L))
+                     .setInitialRpcTimeout(Duration.ZERO) // ignored
+                     .setRpcTimeoutMultiplier(1.0) // ignored
+                     .setMaxRpcTimeout(Duration.ZERO) // ignored
+                     .setTotalTimeout(Duration.ofMillis(300000L))
+                     .build()));
+      builder
+          .patchAddressOperationSettings()
+          .setInitialCallSettings(
+              UnaryCallSettings.<PatchAddressHttpRequest, OperationSnapshot>newUnaryCallSettingsBuilder()
+                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"))
+                  .build())
+          .setResponseTransformer(ApiMessageOperationTransformers.ResponseTransformer.create(EmptyMessage.class))
+          .setMetadataTransformer(ApiMessageOperationTransformers.MetadataTransformer.create(Operation.class))
+          .setPollingAlgorithm(
+              OperationTimedPollAlgorithm.create(
+                  RetrySettings.newBuilder()
+                     .setInitialRetryDelay(Duration.ofMillis(500L))
+                     .setRetryDelayMultiplier(1.5)
+                     .setMaxRetryDelay(Duration.ofMillis(5000L))
+                     .setInitialRpcTimeout(Duration.ZERO) // ignored
+                     .setRpcTimeoutMultiplier(1.0) // ignored
+                     .setMaxRpcTimeout(Duration.ZERO) // ignored
+                     .setTotalTimeout(Duration.ofMillis(300000L))
+                     .build()));
+      builder
+          .updateAddressOperationSettings()
+          .setInitialCallSettings(
+              UnaryCallSettings.<UpdateAddressHttpRequest, OperationSnapshot>newUnaryCallSettingsBuilder()
+                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"))
+                  .build())
+          .setResponseTransformer(ApiMessageOperationTransformers.ResponseTransformer.create(EmptyMessage.class))
+          .setMetadataTransformer(ApiMessageOperationTransformers.MetadataTransformer.create(Operation.class))
+          .setPollingAlgorithm(
+              OperationTimedPollAlgorithm.create(
+                  RetrySettings.newBuilder()
+                     .setInitialRetryDelay(Duration.ofMillis(500L))
+                     .setRetryDelayMultiplier(1.5)
+                     .setMaxRetryDelay(Duration.ofMillis(5000L))
+                     .setInitialRpcTimeout(Duration.ZERO) // ignored
+                     .setRpcTimeoutMultiplier(1.0) // ignored
+                     .setMaxRpcTimeout(Duration.ZERO) // ignored
+                     .setTotalTimeout(Duration.ofMillis(300000L))
+                     .build()));
 
       return builder;
     }
@@ -13551,11 +13873,15 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
 
       aggregatedListAddressesSettings = settings.aggregatedListAddressesSettings.toBuilder();
       deleteAddressSettings = settings.deleteAddressSettings.toBuilder();
+      deleteAddressOperationSettings = settings.deleteAddressOperationSettings.toBuilder();
       getAddressSettings = settings.getAddressSettings.toBuilder();
       insertAddressSettings = settings.insertAddressSettings.toBuilder();
+      insertAddressOperationSettings = settings.insertAddressOperationSettings.toBuilder();
       listAddressesSettings = settings.listAddressesSettings.toBuilder();
       patchAddressSettings = settings.patchAddressSettings.toBuilder();
+      patchAddressOperationSettings = settings.patchAddressOperationSettings.toBuilder();
       updateAddressSettings = settings.updateAddressSettings.toBuilder();
+      updateAddressOperationSettings = settings.updateAddressOperationSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           aggregatedListAddressesSettings,
@@ -13598,6 +13924,14 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
     }
 
     /**
+     * Returns the builder for the settings used for calls to deleteAddress.
+     */
+    @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+    public OperationCallSettings.Builder<DeleteAddressHttpRequest, EmptyMessage, Operation> deleteAddressOperationSettings() {
+      return deleteAddressOperationSettings;
+    }
+
+    /**
      * Returns the builder for the settings used for calls to getAddress.
      */
     public UnaryCallSettings.Builder<GetAddressHttpRequest, Address> getAddressSettings() {
@@ -13609,6 +13943,14 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
      */
     public UnaryCallSettings.Builder<InsertAddressHttpRequest, Operation> insertAddressSettings() {
       return insertAddressSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to insertAddress.
+     */
+    @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+    public OperationCallSettings.Builder<InsertAddressHttpRequest, EmptyMessage, Operation> insertAddressOperationSettings() {
+      return insertAddressOperationSettings;
     }
 
     /**
@@ -13626,10 +13968,26 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
     }
 
     /**
+     * Returns the builder for the settings used for calls to patchAddress.
+     */
+    @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+    public OperationCallSettings.Builder<PatchAddressHttpRequest, EmptyMessage, Operation> patchAddressOperationSettings() {
+      return patchAddressOperationSettings;
+    }
+
+    /**
      * Returns the builder for the settings used for calls to updateAddress.
      */
     public UnaryCallSettings.Builder<UpdateAddressHttpRequest, Operation> updateAddressSettings() {
       return updateAddressSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to updateAddress.
+     */
+    @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+    public OperationCallSettings.Builder<UpdateAddressHttpRequest, EmptyMessage, Operation> updateAddressOperationSettings() {
+      return updateAddressOperationSettings;
     }
 
     @Override
@@ -13658,6 +14016,9 @@ package com.google.cloud.simplecompute.v1.stub;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.httpjson.EmptyMessage;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.AddressAggregatedList;
@@ -13690,6 +14051,10 @@ import javax.annotation.Generated;
 @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
 public abstract class AddressStub implements BackgroundResource {
 
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public RegionOperationStub getOperationsStub() {
+    throw new UnsupportedOperationException("Not implemented: getOperationsStub()");
+  }
 
   @BetaApi
   public UnaryCallable<AggregatedListAddressesHttpRequest, AggregatedListAddressesPagedResponse> aggregatedListAddressesPagedCallable() {
@@ -13701,6 +14066,11 @@ public abstract class AddressStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: aggregatedListAddressesCallable()");
   }
 
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallable<DeleteAddressHttpRequest, EmptyMessage, Operation> deleteAddressOperationCallable() {
+    throw new UnsupportedOperationException("Not implemented: deleteAddressOperationCallable()");
+  }
+
   @BetaApi
   public UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
     throw new UnsupportedOperationException("Not implemented: deleteAddressCallable()");
@@ -13709,6 +14079,11 @@ public abstract class AddressStub implements BackgroundResource {
   @BetaApi
   public UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable() {
     throw new UnsupportedOperationException("Not implemented: getAddressCallable()");
+  }
+
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallable<InsertAddressHttpRequest, EmptyMessage, Operation> insertAddressOperationCallable() {
+    throw new UnsupportedOperationException("Not implemented: insertAddressOperationCallable()");
   }
 
   @BetaApi
@@ -13726,9 +14101,19 @@ public abstract class AddressStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: listAddressesCallable()");
   }
 
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallable<PatchAddressHttpRequest, EmptyMessage, Operation> patchAddressOperationCallable() {
+    throw new UnsupportedOperationException("Not implemented: patchAddressOperationCallable()");
+  }
+
   @BetaApi
   public UnaryCallable<PatchAddressHttpRequest, Operation> patchAddressCallable() {
     throw new UnsupportedOperationException("Not implemented: patchAddressCallable()");
+  }
+
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallable<UpdateAddressHttpRequest, EmptyMessage, Operation> updateAddressOperationCallable() {
+    throw new UnsupportedOperationException("Not implemented: updateAddressOperationCallable()");
   }
 
   @BetaApi
@@ -13765,9 +14150,13 @@ import com.google.api.gax.core.BackgroundResourceAggregation;
 import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
 import com.google.api.gax.httpjson.ApiMessageHttpResponseParser;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
+import com.google.api.gax.httpjson.EmptyMessage;
 import com.google.api.gax.httpjson.HttpJsonCallSettings;
 import com.google.api.gax.httpjson.HttpJsonStubCallableFactory;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.longrunning.OperationSnapshot;
 import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
@@ -13939,16 +14328,21 @@ public class HttpJsonAddressStub extends AddressStub {
                   .build())
           .build();
   private final BackgroundResource backgroundResources;
+  private final HttpJsonRegionOperationStub operationsStub;
 
   private final UnaryCallable<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesCallable;
   private final UnaryCallable<AggregatedListAddressesHttpRequest, AggregatedListAddressesPagedResponse> aggregatedListAddressesPagedCallable;
   private final UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable;
+  private final OperationCallable<DeleteAddressHttpRequest, EmptyMessage, Operation> deleteAddressOperationCallable;
   private final UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable;
   private final UnaryCallable<InsertAddressHttpRequest, Operation> insertAddressCallable;
+  private final OperationCallable<InsertAddressHttpRequest, EmptyMessage, Operation> insertAddressOperationCallable;
   private final UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable;
   private final UnaryCallable<ListAddressesHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable;
   private final UnaryCallable<PatchAddressHttpRequest, Operation> patchAddressCallable;
+  private final OperationCallable<PatchAddressHttpRequest, EmptyMessage, Operation> patchAddressOperationCallable;
   private final UnaryCallable<UpdateAddressHttpRequest, Operation> updateAddressCallable;
+  private final OperationCallable<UpdateAddressHttpRequest, EmptyMessage, Operation> updateAddressOperationCallable;
 
   private final HttpJsonStubCallableFactory callableFactory;
   public static final HttpJsonAddressStub create(AddressStubSettings settings) throws IOException {
@@ -13979,6 +14373,7 @@ public class HttpJsonAddressStub extends AddressStub {
    */
   protected HttpJsonAddressStub(AddressStubSettings settings, ClientContext clientContext, HttpJsonStubCallableFactory callableFactory) throws IOException {
     this.callableFactory = callableFactory;
+    this.operationsStub = HttpJsonRegionOperationStub.create(clientContext, callableFactory);
 
     HttpJsonCallSettings<AggregatedListAddressesHttpRequest, AddressAggregatedList> aggregatedListAddressesTransportSettings =
         HttpJsonCallSettings.<AggregatedListAddressesHttpRequest, AddressAggregatedList>newBuilder()
@@ -14012,16 +14407,28 @@ public class HttpJsonAddressStub extends AddressStub {
     this.aggregatedListAddressesCallable = callableFactory.createUnaryCallable(aggregatedListAddressesTransportSettings,settings.aggregatedListAddressesSettings(), clientContext);
     this.aggregatedListAddressesPagedCallable = callableFactory.createPagedCallable(aggregatedListAddressesTransportSettings,settings.aggregatedListAddressesSettings(), clientContext);
     this.deleteAddressCallable = callableFactory.createUnaryCallable(deleteAddressTransportSettings,settings.deleteAddressSettings(), clientContext);
+    this.deleteAddressOperationCallable = callableFactory.createOperationCallable(
+        deleteAddressTransportSettings,settings.deleteAddressOperationSettings(), clientContext, this.operationsStub);
     this.getAddressCallable = callableFactory.createUnaryCallable(getAddressTransportSettings,settings.getAddressSettings(), clientContext);
     this.insertAddressCallable = callableFactory.createUnaryCallable(insertAddressTransportSettings,settings.insertAddressSettings(), clientContext);
+    this.insertAddressOperationCallable = callableFactory.createOperationCallable(
+        insertAddressTransportSettings,settings.insertAddressOperationSettings(), clientContext, this.operationsStub);
     this.listAddressesCallable = callableFactory.createUnaryCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
     this.listAddressesPagedCallable = callableFactory.createPagedCallable(listAddressesTransportSettings,settings.listAddressesSettings(), clientContext);
     this.patchAddressCallable = callableFactory.createUnaryCallable(patchAddressTransportSettings,settings.patchAddressSettings(), clientContext);
+    this.patchAddressOperationCallable = callableFactory.createOperationCallable(
+        patchAddressTransportSettings,settings.patchAddressOperationSettings(), clientContext, this.operationsStub);
     this.updateAddressCallable = callableFactory.createUnaryCallable(updateAddressTransportSettings,settings.updateAddressSettings(), clientContext);
+    this.updateAddressOperationCallable = callableFactory.createOperationCallable(
+        updateAddressTransportSettings,settings.updateAddressOperationSettings(), clientContext, this.operationsStub);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
 
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public HttpJsonRegionOperationStub getOperationsStub() {
+    return operationsStub;
+  }
   @BetaApi
   public UnaryCallable<AggregatedListAddressesHttpRequest, AggregatedListAddressesPagedResponse> aggregatedListAddressesPagedCallable() {
     return aggregatedListAddressesPagedCallable;
@@ -14032,6 +14439,11 @@ public class HttpJsonAddressStub extends AddressStub {
     return aggregatedListAddressesCallable;
   }
 
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallable<DeleteAddressHttpRequest, EmptyMessage, Operation> deleteAddressOperationCallable() {
+    return deleteAddressOperationCallable;
+  }
+
   @BetaApi
   public UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
     return deleteAddressCallable;
@@ -14040,6 +14452,11 @@ public class HttpJsonAddressStub extends AddressStub {
   @BetaApi
   public UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable() {
     return getAddressCallable;
+  }
+
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallable<InsertAddressHttpRequest, EmptyMessage, Operation> insertAddressOperationCallable() {
+    return insertAddressOperationCallable;
   }
 
   @BetaApi
@@ -14057,9 +14474,19 @@ public class HttpJsonAddressStub extends AddressStub {
     return listAddressesCallable;
   }
 
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallable<PatchAddressHttpRequest, EmptyMessage, Operation> patchAddressOperationCallable() {
+    return patchAddressOperationCallable;
+  }
+
   @BetaApi
   public UnaryCallable<PatchAddressHttpRequest, Operation> patchAddressCallable() {
     return patchAddressCallable;
+  }
+
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallable<UpdateAddressHttpRequest, EmptyMessage, Operation> updateAddressOperationCallable() {
+    return updateAddressOperationCallable;
   }
 
   @BetaApi
@@ -14124,13 +14551,18 @@ import com.google.api.gax.core.BackgroundResourceAggregation;
 import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
 import com.google.api.gax.httpjson.ApiMessageHttpResponseParser;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
+import com.google.api.gax.httpjson.EmptyMessage;
 import com.google.api.gax.httpjson.HttpJsonCallSettings;
 import com.google.api.gax.httpjson.HttpJsonCallableFactory;
 import com.google.api.gax.httpjson.HttpJsonStubCallableFactory;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.longrunning.OperationSnapshot;
 import com.google.api.gax.rpc.BatchingCallSettings;
 import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.Callables;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.LongRunningClient;
 import com.google.api.gax.rpc.OperationCallSettings;
 import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.PagedCallSettings;
@@ -14141,6 +14573,8 @@ import com.google.api.gax.rpc.StreamingCallSettings;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
+import com.google.cloud.compute.longrunning.ComputeLongRunningClientFactory;
+import com.google.cloud.compute.longrunning.OperationSnapshotCallable;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.AddressAggregatedList;
 import static com.google.cloud.simplecompute.v1.AddressClient.AggregatedListAddressesPagedResponse;
@@ -14177,13 +14611,30 @@ import javax.annotation.Generated;
  */
 @Generated("by gapic-generator")
 @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
-public class HttpJsonAddressCallableFactory implements HttpJsonStubCallableFactory {
+public class HttpJsonAddressCallableFactory implements HttpJsonStubCallableFactory<
+    com.google.cloud.compute.v1.Operation, RegionOperationStub> {
   @Override
   public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createUnaryCallable(
       HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
       UnaryCallSettings<RequestT, ResponseT> callSettings,
       ClientContext clientContext) {
     return HttpJsonCallableFactory.createUnaryCallable(httpJsonCallSettings, callSettings, clientContext);
+  }
+
+
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  @Override
+  public <RequestT, ResponseT, MetadataT> OperationCallable<RequestT, ResponseT, MetadataT> createOperationCallable(
+      HttpJsonCallSettings<RequestT, com.google.cloud.compute.v1.Operation> httpJsonCallSettings,
+      OperationCallSettings<RequestT, ResponseT, MetadataT> operationCallSettings,
+      ClientContext clientContext, RegionOperationStub operationsStub) {
+    UnaryCallable<RequestT, Operation> initialHttpCallable = HttpJsonCallableFactory.createBaseUnaryCallable(httpJsonCallSettings, operationCallSettings.getInitialCallSettings(), clientContext);
+    UnaryCallable<RequestT, OperationSnapshot> initialCallable = new OperationSnapshotCallable<>(initialHttpCallable);
+    LongRunningClient longRunningClient = ComputeLongRunningClientFactory.create(operationsStub);
+    OperationCallable<RequestT, ResponseT, MetadataT> operationCallable = Callables
+        .longRunningOperation(initialCallable, operationCallSettings, clientContext, longRunningClient);
+    return HttpJsonCallableFactory.createOperationCallable(
+        operationCallSettings, clientContext, longRunningClient, initialCallable);
   }
 
   @Override
@@ -14226,6 +14677,7 @@ import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.httpjson.EmptyMessage;
 import com.google.api.gax.paging.AbstractFixedSizeCollection;
 import com.google.api.gax.paging.AbstractPage;
 import com.google.api.gax.paging.AbstractPagedListResponse;
@@ -14599,7 +15051,7 @@ public class DummyObjectClient implements BackgroundResource {
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable() {
+  public final UnaryCallable<GetResourceDummyObjectHttpRequest, EmptyMessage> getResourceDummyObjectCallable() {
     return stub.getResourceDummyObjectCallable();
   }
 
@@ -14694,7 +15146,7 @@ public class DummyObjectClient implements BackgroundResource {
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectCallable() {
+  public final UnaryCallable<DeleteDummyObjectHttpRequest, EmptyMessage> deleteDummyObjectCallable() {
     return stub.deleteDummyObjectCallable();
   }
 
@@ -14843,6 +15295,7 @@ import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.GaxProperties;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.httpjson.EmptyMessage;
 import com.google.api.gax.httpjson.GaxHttpJsonProperties;
 import com.google.api.gax.httpjson.HttpJsonTransportChannel;
 import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
@@ -14915,14 +15368,14 @@ public class DummyObjectSettings extends ClientSettings<DummyObjectSettings> {
   /**
    * Returns the object with the settings used for calls to getResourceDummyObject.
    */
-  public UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
+  public UnaryCallSettings<GetResourceDummyObjectHttpRequest, EmptyMessage> getResourceDummyObjectSettings() {
     return ((DummyObjectStubSettings) getStubSettings()).getResourceDummyObjectSettings();
   }
 
   /**
    * Returns the object with the settings used for calls to deleteDummyObject.
    */
-  public UnaryCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings() {
+  public UnaryCallSettings<DeleteDummyObjectHttpRequest, EmptyMessage> deleteDummyObjectSettings() {
     return ((DummyObjectStubSettings) getStubSettings()).deleteDummyObjectSettings();
   }
 
@@ -15056,14 +15509,14 @@ public class DummyObjectSettings extends ClientSettings<DummyObjectSettings> {
     /**
      * Returns the builder for the settings used for calls to getResourceDummyObject.
      */
-    public UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
+    public UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, EmptyMessage> getResourceDummyObjectSettings() {
       return getStubSettingsBuilder().getResourceDummyObjectSettings();
     }
 
     /**
      * Returns the builder for the settings used for calls to deleteDummyObject.
      */
-    public UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings() {
+    public UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, EmptyMessage> deleteDummyObjectSettings() {
       return getStubSettingsBuilder().deleteDummyObjectSettings();
     }
 
@@ -15099,6 +15552,7 @@ import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.GaxProperties;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.httpjson.EmptyMessage;
 import com.google.api.gax.httpjson.GaxHttpJsonProperties;
 import com.google.api.gax.httpjson.HttpJsonTransportChannel;
 import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
@@ -15178,8 +15632,8 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
       .build();
 
   private final PagedCallSettings<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings;
-  private final UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings;
-  private final UnaryCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings;
+  private final UnaryCallSettings<GetResourceDummyObjectHttpRequest, EmptyMessage> getResourceDummyObjectSettings;
+  private final UnaryCallSettings<DeleteDummyObjectHttpRequest, EmptyMessage> deleteDummyObjectSettings;
 
   /**
    * Returns the object with the settings used for calls to listResourcesDummyObjects.
@@ -15191,14 +15645,14 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
   /**
    * Returns the object with the settings used for calls to getResourceDummyObject.
    */
-  public UnaryCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
+  public UnaryCallSettings<GetResourceDummyObjectHttpRequest, EmptyMessage> getResourceDummyObjectSettings() {
     return getResourceDummyObjectSettings;
   }
 
   /**
    * Returns the object with the settings used for calls to deleteDummyObject.
    */
-  public UnaryCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings() {
+  public UnaryCallSettings<DeleteDummyObjectHttpRequest, EmptyMessage> deleteDummyObjectSettings() {
     return deleteDummyObjectSettings;
   }
 
@@ -15356,8 +15810,8 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
     private final PagedCallSettings.Builder<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsSettings;
-    private final UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings;
-    private final UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings;
+    private final UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, EmptyMessage> getResourceDummyObjectSettings;
+    private final UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, EmptyMessage> deleteDummyObjectSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -15478,14 +15932,14 @@ public class DummyObjectStubSettings extends StubSettings<DummyObjectStubSetting
     /**
      * Returns the builder for the settings used for calls to getResourceDummyObject.
      */
-    public UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectSettings() {
+    public UnaryCallSettings.Builder<GetResourceDummyObjectHttpRequest, EmptyMessage> getResourceDummyObjectSettings() {
       return getResourceDummyObjectSettings;
     }
 
     /**
      * Returns the builder for the settings used for calls to deleteDummyObject.
      */
-    public UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectSettings() {
+    public UnaryCallSettings.Builder<DeleteDummyObjectHttpRequest, EmptyMessage> deleteDummyObjectSettings() {
       return deleteDummyObjectSettings;
     }
 
@@ -15515,6 +15969,7 @@ package com.google.cloud.simplecompute.v1.stub;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.httpjson.EmptyMessage;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
@@ -15549,12 +16004,12 @@ public abstract class DummyObjectStub implements BackgroundResource {
   }
 
   @BetaApi
-  public UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable() {
+  public UnaryCallable<GetResourceDummyObjectHttpRequest, EmptyMessage> getResourceDummyObjectCallable() {
     throw new UnsupportedOperationException("Not implemented: getResourceDummyObjectCallable()");
   }
 
   @BetaApi
-  public UnaryCallable<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectCallable() {
+  public UnaryCallable<DeleteDummyObjectHttpRequest, EmptyMessage> deleteDummyObjectCallable() {
     throw new UnsupportedOperationException("Not implemented: deleteDummyObjectCallable()");
   }
 
@@ -15587,6 +16042,7 @@ import com.google.api.gax.core.BackgroundResourceAggregation;
 import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
 import com.google.api.gax.httpjson.ApiMessageHttpResponseParser;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
+import com.google.api.gax.httpjson.EmptyMessage;
 import com.google.api.gax.httpjson.HttpJsonCallSettings;
 import com.google.api.gax.httpjson.HttpJsonStubCallableFactory;
 import com.google.api.gax.rpc.ClientContext;
@@ -15641,8 +16097,8 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
                   .build())
           .build();
   @InternalApi
-  public static final ApiMethodDescriptor<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectMethodDescriptor =
-      ApiMethodDescriptor.<GetResourceDummyObjectHttpRequest, Void>newBuilder()
+  public static final ApiMethodDescriptor<GetResourceDummyObjectHttpRequest, EmptyMessage> getResourceDummyObjectMethodDescriptor =
+      ApiMethodDescriptor.<GetResourceDummyObjectHttpRequest, EmptyMessage>newBuilder()
           .setFullMethodName("compute.dummyObjects.getResource")
           .setHttpMethod(HttpMethods.GET)
           .setRequestFormatter(
@@ -15655,8 +16111,8 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
                   .build())
           .build();
   @InternalApi
-  public static final ApiMethodDescriptor<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectMethodDescriptor =
-      ApiMethodDescriptor.<DeleteDummyObjectHttpRequest, Void>newBuilder()
+  public static final ApiMethodDescriptor<DeleteDummyObjectHttpRequest, EmptyMessage> deleteDummyObjectMethodDescriptor =
+      ApiMethodDescriptor.<DeleteDummyObjectHttpRequest, EmptyMessage>newBuilder()
           .setFullMethodName("compute.dummyObjects.delete")
           .setHttpMethod(HttpMethods.DELETE)
           .setRequestFormatter(
@@ -15672,8 +16128,8 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
 
   private final UnaryCallable<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources> listResourcesDummyObjectsCallable;
   private final UnaryCallable<ListResourcesDummyObjectsHttpRequest, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsPagedCallable;
-  private final UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable;
-  private final UnaryCallable<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectCallable;
+  private final UnaryCallable<GetResourceDummyObjectHttpRequest, EmptyMessage> getResourceDummyObjectCallable;
+  private final UnaryCallable<DeleteDummyObjectHttpRequest, EmptyMessage> deleteDummyObjectCallable;
 
   private final HttpJsonStubCallableFactory callableFactory;
   public static final HttpJsonDummyObjectStub create(DummyObjectStubSettings settings) throws IOException {
@@ -15709,12 +16165,12 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
         HttpJsonCallSettings.<ListResourcesDummyObjectsHttpRequest, ProjectsGetDummyObjectResources>newBuilder()
             .setMethodDescriptor(listResourcesDummyObjectsMethodDescriptor)
             .build();
-    HttpJsonCallSettings<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectTransportSettings =
-        HttpJsonCallSettings.<GetResourceDummyObjectHttpRequest, Void>newBuilder()
+    HttpJsonCallSettings<GetResourceDummyObjectHttpRequest, EmptyMessage> getResourceDummyObjectTransportSettings =
+        HttpJsonCallSettings.<GetResourceDummyObjectHttpRequest, EmptyMessage>newBuilder()
             .setMethodDescriptor(getResourceDummyObjectMethodDescriptor)
             .build();
-    HttpJsonCallSettings<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectTransportSettings =
-        HttpJsonCallSettings.<DeleteDummyObjectHttpRequest, Void>newBuilder()
+    HttpJsonCallSettings<DeleteDummyObjectHttpRequest, EmptyMessage> deleteDummyObjectTransportSettings =
+        HttpJsonCallSettings.<DeleteDummyObjectHttpRequest, EmptyMessage>newBuilder()
             .setMethodDescriptor(deleteDummyObjectMethodDescriptor)
             .build();
 
@@ -15725,6 +16181,7 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
+
 
   @BetaApi
   public UnaryCallable<ListResourcesDummyObjectsHttpRequest, ListResourcesDummyObjectsPagedResponse> listResourcesDummyObjectsPagedCallable() {
@@ -15737,12 +16194,12 @@ public class HttpJsonDummyObjectStub extends DummyObjectStub {
   }
 
   @BetaApi
-  public UnaryCallable<GetResourceDummyObjectHttpRequest, Void> getResourceDummyObjectCallable() {
+  public UnaryCallable<GetResourceDummyObjectHttpRequest, EmptyMessage> getResourceDummyObjectCallable() {
     return getResourceDummyObjectCallable;
   }
 
   @BetaApi
-  public UnaryCallable<DeleteDummyObjectHttpRequest, Void> deleteDummyObjectCallable() {
+  public UnaryCallable<DeleteDummyObjectHttpRequest, EmptyMessage> deleteDummyObjectCallable() {
     return deleteDummyObjectCallable;
   }
 
@@ -15803,13 +16260,17 @@ import com.google.api.gax.core.BackgroundResourceAggregation;
 import com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter;
 import com.google.api.gax.httpjson.ApiMessageHttpResponseParser;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
+import com.google.api.gax.httpjson.EmptyMessage;
 import com.google.api.gax.httpjson.HttpJsonCallSettings;
 import com.google.api.gax.httpjson.HttpJsonCallableFactory;
 import com.google.api.gax.httpjson.HttpJsonStubCallableFactory;
+import com.google.api.gax.longrunning.OperationSnapshot;
 import com.google.api.gax.rpc.BatchingCallSettings;
 import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.Callables;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.LongRunningClient;
 import com.google.api.gax.rpc.OperationCallSettings;
 import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.PagedCallSettings;
@@ -15820,6 +16281,9 @@ import com.google.api.gax.rpc.StreamingCallSettings;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
+import com.google.cloud.compute.longrunning.ComputeLongRunningClientFactory;
+import com.google.cloud.compute.longrunning.OperationSnapshotCallable;
+import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.DeleteDummyObjectHttpRequest;
 import static com.google.cloud.simplecompute.v1.DummyObjectClient.ListResourcesDummyObjectsPagedResponse;
@@ -15847,13 +16311,24 @@ import javax.annotation.Generated;
  */
 @Generated("by gapic-generator")
 @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
-public class HttpJsonDummyObjectCallableFactory implements HttpJsonStubCallableFactory {
+public class HttpJsonDummyObjectCallableFactory implements HttpJsonStubCallableFactory<
+    Operation, BackgroundResource> {
   @Override
   public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createUnaryCallable(
       HttpJsonCallSettings<RequestT, ResponseT> httpJsonCallSettings,
       UnaryCallSettings<RequestT, ResponseT> callSettings,
       ClientContext clientContext) {
     return HttpJsonCallableFactory.createUnaryCallable(httpJsonCallSettings, callSettings, clientContext);
+  }
+
+
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  @Override
+  public <RequestT, ResponseT, MetadataT> OperationCallable<RequestT, ResponseT, MetadataT> createOperationCallable(
+      HttpJsonCallSettings<RequestT, com.google.cloud.compute.v1.Operation> httpJsonCallSettings,
+      OperationCallSettings<RequestT, ResponseT, MetadataT> operationCallSettings,
+      ClientContext clientContext, BackgroundResource operationsStub) {
+    return null;
   }
 
   @Override
@@ -15906,7 +16381,7 @@ public class HttpJsonDummyObjectCallableFactory implements HttpJsonStubCallableF
  * <code>
  * try (AddressClient addressClient = AddressClient.create()) {
  *   ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
- *   Operation response = addressClient.deleteAddress(address);
+ *   Address response = addressClient.getAddress(address);
  * }
  * </code>
  * </pre>
@@ -15930,6 +16405,311 @@ public class HttpJsonDummyObjectCallableFactory implements HttpJsonStubCallableF
  */
 
 package com.google.cloud.simplecompute.v1;
+============== file: src/main/java/com/google/cloud/simplecompute/v1/SimplecomputeOperationSnapshotCallable.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1.longrunning;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.rpc.ApiCallContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.compute.v1.ComputeOperationSnapshot;
+import com.google.cloud.compute.v1.Operation;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * A {@code UnaryCallable} that wraps a UnaryCallable returning a
+ * long-running operation API resource and returns an OperationSnapshot instead.
+ */
+@Generated("by gapic-generator")
+@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+public class OperationSnapshotCallable<RequestT>
+    extends UnaryCallable<RequestT, OperationSnapshot> {
+  private final UnaryCallable<RequestT, Operation> innerCallable;
+
+  public OperationSnapshotCallable(UnaryCallable<RequestT, Operation> innerCallable) {
+    this.innerCallable = innerCallable;
+  }
+
+  @Override
+  public ApiFuture<OperationSnapshot> futureCall(RequestT request, ApiCallContext context) {
+    return ApiFutures.transform(
+        innerCallable.futureCall(request, context),
+        new ApiFunction<Operation, OperationSnapshot>() {
+          @Override
+          public OperationSnapshot apply(Operation operation) {
+            return ComputeOperationSnapshot.create(operation);
+          }
+        },
+        directExecutor());
+  }
+}
+============== file: src/main/java/com/google/cloud/simplecompute/v1/com.google.cloud.simplecompute.v1.longrunning.longrunning.LongRunningClient.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1.longrunning;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.httpjson.EmptyMessage;
+import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.rpc.LongRunningClient;
+import com.google.api.gax.rpc.TranslatingUnaryCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.compute.v1.ComputeOperationSnapshot;
+import com.google.cloud.compute.v1.Operation;
+import java.util.concurrent.TimeUnit;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Unites all of the Compute Engine API API's long-running operation clients under a
+ * single shared implementation of the LongRunningClient.
+ * Package-private for internal use. Used by gax-java to get callables.
+ */
+@Generated("by gapic-generator")
+@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+class Compute Engine API<GetRequestT, DeleteRequestT>
+    implements LongRunningClient, BackgroundResource {
+
+  private final  UnaryCallable<GetRequestT, Operation> getOperationCallable;
+  private final  UnaryCallable<DeleteRequestT, EmptyMessage> deleteOperationCallable;
+  private final ApiFunction<String, GetRequestT> createGetRequestFunc;
+  private final ApiFunction<String, DeleteRequestT> createDeleteRequestFunc;
+  private final BackgroundResource stub;
+
+  public Compute Engine API(
+      BackgroundResource stub,
+      UnaryCallable<DeleteRequestT, EmptyMessage> deleteOperationCallable,
+      UnaryCallable<GetRequestT, Operation> getOperationCallable,
+      ApiFunction<String, DeleteRequestT> createDeleteRequestFunc,
+      ApiFunction<String, GetRequestT> createGetRequestFunc) {
+    this.stub = stub;
+    this.getOperationCallable = getOperationCallable;
+    this.deleteOperationCallable = deleteOperationCallable;
+    this.createGetRequestFunc = createGetRequestFunc;
+    this.createDeleteRequestFunc = createDeleteRequestFunc;
+  }
+
+  private BackgroundResource getStub() { return stub; }
+
+ @Override
+  public UnaryCallable<String, OperationSnapshot> getOperationCallable() {
+    return TranslatingUnaryCallable.create(
+        getOperationCallable,
+        createGetRequestFunc,
+        new ApiFunction<Operation, OperationSnapshot>() {
+         @Override
+          public OperationSnapshot apply(Operation operation) {
+            return ComputeOperationSnapshot.create(operation);
+          }
+        });
+  }
+
+ @Override
+  public UnaryCallable<String, Void> cancelOperationCallable() {
+    throw new UnsupportedOperationException("Cancelling operations is not supported by this API.");
+  }
+
+ @Override
+  public UnaryCallable<String, Void> deleteOperationCallable() {
+    return TranslatingUnaryCallable.create(
+        deleteOperationCallable,
+        createDeleteRequestFunc,
+        new ApiFunction<EmptyMessage, Void>() {
+         @Override
+          public Void apply(EmptyMessage empty) {
+            return null;
+          }
+        });
+  }
+
+ @Override
+  public void shutdown() {
+    getStub().shutdown();
+  }
+
+ @Override
+  public boolean isShutdown() {
+    return getStub().isShutdown();
+  }
+
+ @Override
+  public boolean isTerminated() {
+    return getStub().isTerminated();
+  }
+
+ @Override
+  public void shutdownNow() {
+    getStub().shutdown();
+  }
+
+ @Override
+  public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
+    return getStub().awaitTermination(l, timeUnit);
+  }
+
+ @Override
+  public void close() throws Exception {
+    getStub().close();
+  }
+}
+============== file: src/main/java/com/google/cloud/simplecompute/v1/com.google.cloud.simplecompute.v1.longrunning.longrunning.SimplecomputeOperationSnapshot.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1.longrunning;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.httpjson.EmptyMessage;
+import com.google.api.gax.httpjson.HttpJsonStatusCode;
+import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.cloud.compute.v1.Operation;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Implementation of a long-running operation for the simplecompute client.
+ * Wraps a {@code Operation} resource object.
+ */
+@Generated("by gapic-generator")
+@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+public class com.google.cloud.simplecompute.v1.longrunning.longrunning.SimplecomputeOperationSnapshot implements OperationSnapshot {
+
+  private static final EmptyMessage response = EmptyMessage.getDefaultInstance();
+
+  private final Operation operation;
+
+  private com.google.cloud.simplecompute.v1.longrunning.longrunning.SimplecomputeOperationSnapshot(Operation operation) {
+    this.operation = operation;
+  }
+
+  public static com.google.cloud.simplecompute.v1.longrunning.longrunning.SimplecomputeOperationSnapshot create(Operation operation) {
+    return new com.google.cloud.simplecompute.v1.longrunning.longrunning.SimplecomputeOperationSnapshot(operation);
+  }
+
+  @Override
+  // Returns full resource name of the operation.
+  public String getName() {
+    return operation.getSelfLink();
+  }
+
+  @Override
+  // Returns the underlying Operation object that is natively returned by
+  // longrunning methods.
+  public Operation getMetadata() {
+    return operation;
+  }
+
+  @Override
+  public boolean isDone() {
+    return "DONE".equals(operation.getStatus());
+  }
+
+  @Override
+  public EmptyMessage getResponse() {
+    return response;
+  }
+
+  @Override
+  public StatusCode getErrorCode() {
+    int code;
+    String message;
+    try {
+      code = Integer.valueOf(
+
+      operation.getError().getErrorsList().get(0).getCode());
+      message = operation.getError().getErrorsList().get(0).getMessage();
+    } catch (NullPointerException | IndexOutOfBoundsException e) {
+      code = 200;
+      message = "OK";
+    }
+
+    return HttpJsonStatusCode.of(code, message);
+  }
+
+  @Override
+  public String getErrorMessage() {
+
+    try {
+      return operation.getError().getErrorsList().toString();
+    } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
+      // No error found.
+      return null;
+    }
+  }
+}
+============== file: src/main/java/com/google/cloud/simplecompute/v1/com.google.cloud.simplecompute.v1.longrunning.longrunning.SimplecomputeLongRunningClientFactory.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1.longrunning;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Factory for creating simplecompute LongRunningClient instances from
+ * a given stub class for the operation resource.
+ */
+@Generated("by gapic-generator")
+@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+public class com.google.cloud.simplecompute.v1.longrunning.longrunning.SimplecomputeLongRunningClientFactory {
+}
 ============== file: build.gradle ==============
 buildscript {
   repositories {
@@ -16010,6 +16790,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
+import com.google.api.gax.httpjson.EmptyMessage;
 import com.google.api.gax.httpjson.GaxHttpJsonProperties;
 import com.google.api.gax.httpjson.testing.MockHttpService;
 import com.google.api.gax.rpc.ApiClientHeaderProvider;
@@ -16030,12 +16811,14 @@ import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.patchAd
 import static com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub.updateAddressMethodDescriptor;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.protobuf.Any;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -16139,57 +16922,19 @@ public class AddressClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void deleteAddressTest() {
-    String clientOperationId = "clientOperationId-239630617";
-    String creationTimestamp = "creationTimestamp567396278";
-    String description = "description-1724546052";
-    String endTime = "endTime1725551537";
-    String httpErrorMessage = "httpErrorMessage1276263769";
-    Integer httpErrorStatusCode = 1386087020;
-    String id = "id3355";
-    String insertTime = "insertTime-103148397";
-    String kind = "kind3292052";
-    String name = "name3373707";
-    String operationType = "operationType-1432962286";
-    Integer progress = 1001078227;
-    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
-    String selfLink = "selfLink-1691268851";
-    String startTime = "startTime-1573145462";
-    String status = "status-892481550";
-    String statusMessage = "statusMessage-239442758";
-    String targetId = "targetId-815576439";
-    String targetLink = "targetLink-2084812312";
-    String user = "user3599307";
-    String zone = "zone3744684";
-    Operation expectedResponse = Operation.newBuilder()
-      .setClientOperationId(clientOperationId)
-      .setCreationTimestamp(creationTimestamp)
-      .setDescription(description)
-      .setEndTime(endTime)
-      .setHttpErrorMessage(httpErrorMessage)
-      .setHttpErrorStatusCode(httpErrorStatusCode)
-      .setId(id)
-      .setInsertTime(insertTime)
-      .setKind(kind)
-      .setName(name)
-      .setOperationType(operationType)
-      .setProgress(progress)
-      .setRegion(region.toString())
-      .setSelfLink(selfLink)
-      .setStartTime(startTime)
-      .setStatus(status)
-      .setStatusMessage(statusMessage)
-      .setTargetId(targetId)
-      .setTargetLink(targetLink)
-      .setUser(user)
-      .setZone(zone)
-      .build();
-    mockService.addResponse(expectedResponse);
+  public void deleteAddressTest() throws Exception {
+    EmptyMessage expectedResponse = EmptyMessage.newBuilder().build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("deleteAddressTest")
+            .setStatus("DONE")
+            .build();
+    mockService.addResponse(resultOperation);
 
     ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
 
-    Operation actualResponse =
-        client.deleteAddress(address);
+    EmptyMessage actualResponse =
+        client.deleteAddressAsync(address).get();
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<String> actualRequests = mockService.getRequestPaths();
@@ -16210,12 +16955,15 @@ public class AddressClientTest {
     try {
       ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
 
-      client.deleteAddress(address);
+      client.deleteAddressAsync(address).get();
       Assert.fail("No exception raised");
-    } catch (InvalidArgumentException e) {
-      // Expected exception
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
     }
   }
+
 
   @Test
   @SuppressWarnings("all")
@@ -16275,58 +17023,20 @@ public class AddressClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void insertAddressTest() {
-    String clientOperationId = "clientOperationId-239630617";
-    String creationTimestamp = "creationTimestamp567396278";
-    String description = "description-1724546052";
-    String endTime = "endTime1725551537";
-    String httpErrorMessage = "httpErrorMessage1276263769";
-    Integer httpErrorStatusCode = 1386087020;
-    String id = "id3355";
-    String insertTime = "insertTime-103148397";
-    String kind = "kind3292052";
-    String name = "name3373707";
-    String operationType = "operationType-1432962286";
-    Integer progress = 1001078227;
-    ProjectRegionName region2 = ProjectRegionName.of("[PROJECT]", "[REGION]");
-    String selfLink = "selfLink-1691268851";
-    String startTime = "startTime-1573145462";
-    String status = "status-892481550";
-    String statusMessage = "statusMessage-239442758";
-    String targetId = "targetId-815576439";
-    String targetLink = "targetLink-2084812312";
-    String user = "user3599307";
-    String zone = "zone3744684";
-    Operation expectedResponse = Operation.newBuilder()
-      .setClientOperationId(clientOperationId)
-      .setCreationTimestamp(creationTimestamp)
-      .setDescription(description)
-      .setEndTime(endTime)
-      .setHttpErrorMessage(httpErrorMessage)
-      .setHttpErrorStatusCode(httpErrorStatusCode)
-      .setId(id)
-      .setInsertTime(insertTime)
-      .setKind(kind)
-      .setName(name)
-      .setOperationType(operationType)
-      .setProgress(progress)
-      .setRegion(region2.toString())
-      .setSelfLink(selfLink)
-      .setStartTime(startTime)
-      .setStatus(status)
-      .setStatusMessage(statusMessage)
-      .setTargetId(targetId)
-      .setTargetLink(targetLink)
-      .setUser(user)
-      .setZone(zone)
-      .build();
-    mockService.addResponse(expectedResponse);
+  public void insertAddressTest() throws Exception {
+    EmptyMessage expectedResponse = EmptyMessage.newBuilder().build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("insertAddressTest")
+            .setStatus("DONE")
+            .build();
+    mockService.addResponse(resultOperation);
 
     ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     Address addressResource = Address.newBuilder().build();
 
-    Operation actualResponse =
-        client.insertAddress(region, addressResource);
+    EmptyMessage actualResponse =
+        client.insertAddressAsync(region, addressResource).get();
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<String> actualRequests = mockService.getRequestPaths();
@@ -16348,12 +17058,15 @@ public class AddressClientTest {
       ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
       Address addressResource = Address.newBuilder().build();
 
-      client.insertAddress(region, addressResource);
+      client.insertAddressAsync(region, addressResource).get();
       Assert.fail("No exception raised");
-    } catch (InvalidArgumentException e) {
-      // Expected exception
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
     }
   }
+
 
   @Test
   @SuppressWarnings("all")
@@ -16409,60 +17122,22 @@ public class AddressClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void patchAddressTest() {
-    String clientOperationId = "clientOperationId-239630617";
-    String creationTimestamp = "creationTimestamp567396278";
-    String description = "description-1724546052";
-    String endTime = "endTime1725551537";
-    String httpErrorMessage = "httpErrorMessage1276263769";
-    Integer httpErrorStatusCode = 1386087020;
-    String id = "id3355";
-    String insertTime = "insertTime-103148397";
-    String kind = "kind3292052";
-    String name = "name3373707";
-    String operationType = "operationType-1432962286";
-    Integer progress = 1001078227;
-    ProjectRegionName region2 = ProjectRegionName.of("[PROJECT]", "[REGION]");
-    String selfLink = "selfLink-1691268851";
-    String startTime = "startTime-1573145462";
-    String status = "status-892481550";
-    String statusMessage = "statusMessage-239442758";
-    String targetId = "targetId-815576439";
-    String targetLink = "targetLink-2084812312";
-    String user = "user3599307";
-    String zone = "zone3744684";
-    Operation expectedResponse = Operation.newBuilder()
-      .setClientOperationId(clientOperationId)
-      .setCreationTimestamp(creationTimestamp)
-      .setDescription(description)
-      .setEndTime(endTime)
-      .setHttpErrorMessage(httpErrorMessage)
-      .setHttpErrorStatusCode(httpErrorStatusCode)
-      .setId(id)
-      .setInsertTime(insertTime)
-      .setKind(kind)
-      .setName(name)
-      .setOperationType(operationType)
-      .setProgress(progress)
-      .setRegion(region2.toString())
-      .setSelfLink(selfLink)
-      .setStartTime(startTime)
-      .setStatus(status)
-      .setStatusMessage(statusMessage)
-      .setTargetId(targetId)
-      .setTargetLink(targetLink)
-      .setUser(user)
-      .setZone(zone)
-      .build();
-    mockService.addResponse(expectedResponse);
+  public void patchAddressTest() throws Exception {
+    EmptyMessage expectedResponse = EmptyMessage.newBuilder().build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("patchAddressTest")
+            .setStatus("DONE")
+            .build();
+    mockService.addResponse(resultOperation);
 
     String address = "address-1147692044";
     ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     Address addressResource = Address.newBuilder().build();
     List<String> fieldMask = new ArrayList<>();
 
-    Operation actualResponse =
-        client.patchAddress(address, region, addressResource, fieldMask);
+    EmptyMessage actualResponse =
+        client.patchAddressAsync(address, region, addressResource, fieldMask).get();
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<String> actualRequests = mockService.getRequestPaths();
@@ -16486,68 +17161,33 @@ public class AddressClientTest {
       Address addressResource = Address.newBuilder().build();
       List<String> fieldMask = new ArrayList<>();
 
-      client.patchAddress(address, region, addressResource, fieldMask);
+      client.patchAddressAsync(address, region, addressResource, fieldMask).get();
       Assert.fail("No exception raised");
-    } catch (InvalidArgumentException e) {
-      // Expected exception
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
     }
   }
 
+
   @Test
   @SuppressWarnings("all")
-  public void updateAddressTest() {
-    String clientOperationId = "clientOperationId-239630617";
-    String creationTimestamp = "creationTimestamp567396278";
-    String description = "description-1724546052";
-    String endTime = "endTime1725551537";
-    String httpErrorMessage = "httpErrorMessage1276263769";
-    Integer httpErrorStatusCode = 1386087020;
-    String id = "id3355";
-    String insertTime = "insertTime-103148397";
-    String kind = "kind3292052";
-    String name = "name3373707";
-    String operationType = "operationType-1432962286";
-    Integer progress = 1001078227;
-    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
-    String selfLink = "selfLink-1691268851";
-    String startTime = "startTime-1573145462";
-    String status = "status-892481550";
-    String statusMessage = "statusMessage-239442758";
-    String targetId = "targetId-815576439";
-    String targetLink = "targetLink-2084812312";
-    String user = "user3599307";
-    String zone = "zone3744684";
-    Operation expectedResponse = Operation.newBuilder()
-      .setClientOperationId(clientOperationId)
-      .setCreationTimestamp(creationTimestamp)
-      .setDescription(description)
-      .setEndTime(endTime)
-      .setHttpErrorMessage(httpErrorMessage)
-      .setHttpErrorStatusCode(httpErrorStatusCode)
-      .setId(id)
-      .setInsertTime(insertTime)
-      .setKind(kind)
-      .setName(name)
-      .setOperationType(operationType)
-      .setProgress(progress)
-      .setRegion(region.toString())
-      .setSelfLink(selfLink)
-      .setStartTime(startTime)
-      .setStatus(status)
-      .setStatusMessage(statusMessage)
-      .setTargetId(targetId)
-      .setTargetLink(targetLink)
-      .setUser(user)
-      .setZone(zone)
-      .build();
-    mockService.addResponse(expectedResponse);
+  public void updateAddressTest() throws Exception {
+    EmptyMessage expectedResponse = EmptyMessage.newBuilder().build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("updateAddressTest")
+            .setStatus("DONE")
+            .build();
+    mockService.addResponse(resultOperation);
 
     ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
     Address addressResource = Address.newBuilder().build();
     List<String> fieldMask = new ArrayList<>();
 
-    Operation actualResponse =
-        client.updateAddress(address, addressResource, fieldMask);
+    EmptyMessage actualResponse =
+        client.updateAddressAsync(address, addressResource, fieldMask).get();
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<String> actualRequests = mockService.getRequestPaths();
@@ -16570,12 +17210,15 @@ public class AddressClientTest {
       Address addressResource = Address.newBuilder().build();
       List<String> fieldMask = new ArrayList<>();
 
-      client.updateAddress(address, addressResource, fieldMask);
+      client.updateAddressAsync(address, addressResource, fieldMask).get();
       Assert.fail("No exception raised");
-    } catch (InvalidArgumentException e) {
-      // Expected exception
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
     }
   }
+
 
 }
 ============== file: src/test/java/com/google/cloud/simplecompute/v1/DummyObjectClientTest.java ==============
@@ -16598,6 +17241,7 @@ package com.google.cloud.simplecompute.v1;
 
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
+import com.google.api.gax.httpjson.EmptyMessage;
 import com.google.api.gax.httpjson.GaxHttpJsonProperties;
 import com.google.api.gax.httpjson.testing.MockHttpService;
 import com.google.api.gax.rpc.ApiClientHeaderProvider;
@@ -16618,6 +17262,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;

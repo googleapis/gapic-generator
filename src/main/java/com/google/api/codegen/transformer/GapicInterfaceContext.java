@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /**
@@ -298,14 +299,11 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  public Iterable<MethodModel> getLongRunningMethods() {
-    List<MethodModel> methods = new ArrayList<>();
-    for (MethodModel method : getSupportedMethods()) {
-      if (getMethodConfig(method).isLongRunningOperation()) {
-        methods.add(method);
-      }
-    }
-    return methods;
+  public List<MethodModel> getLongRunningMethods() {
+    return getSupportedMethods()
+        .stream()
+        .filter(m -> getMethodConfig(m).isLongRunningOperation())
+        .collect(Collectors.toList());
   }
 
   public Iterable<MethodModel> getGrpcStreamingMethods() {
@@ -336,5 +334,12 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
       return hostFromProtoFile;
     }
     return getModel().getServiceConfig().getName();
+  }
+
+  /* The name of the service that does long running operations. */
+  @Override
+  public String getOperationServiceName() {
+    // This refers to the Google longrunning Operations proto3 service.
+    return "Operations";
   }
 }
