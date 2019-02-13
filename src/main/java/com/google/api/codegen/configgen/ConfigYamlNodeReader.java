@@ -42,15 +42,6 @@ public class ConfigYamlNodeReader {
     this.helper = helper;
   }
 
-  /**
-   * @param node A YAML node representing a protobuf message.
-   * @param messageType A descriptor for the message the YAML node represents.
-   * @return A ConfigNode containing the data read from the given node.
-   */
-  public ConfigNode readMessageNode(MappingNode node, Descriptor messageType) {
-    return readMessageNode(0, node, messageType);
-  }
-
   private ConfigNode readMessageNode(int prevLine, MappingNode node, Descriptor messageType) {
     ConfigNode configNode = new NullConfigNode();
     ConfigNode prev = new NullConfigNode();
