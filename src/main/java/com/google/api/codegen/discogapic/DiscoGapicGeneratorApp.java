@@ -27,13 +27,11 @@ import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
-import com.google.api.codegen.configgen.ConfigHelper;
-import com.google.api.codegen.configgen.ConfigYamlReader;
-import com.google.api.codegen.configgen.MessageGenerator;
-import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.discovery.DiscoveryNode;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.ArtifactFlags;
+import com.google.api.codegen.util.MultiYamlReader;
+import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.tools.ToolOptions;
@@ -42,14 +40,15 @@ import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.TypeLiteral;
+import com.google.protobuf.Message;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -213,23 +212,35 @@ public class DiscoGapicGeneratorApp {
     return files;
   }
 
-  private static ConfigProto loadConfigFromFiles(List<String> configFileNames)
-      throws MalformedURLException {
+  private static ConfigSource loadGapicConfigFromFiles(
+      List<String> configFileNames, DiagCollector diagCollector) {
+    List<File> configFiles = pathsToFiles(configFileNames);
+    if (diagCollector.getErrorCount() > 0) {
+      return null;
+    }
+    ImmutableMap<String, Message> supportedConfigTypes =
+        ImmutableMap.of(
+            ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
+    return MultiYamlReader.read(diagCollector, configFiles, supportedConfigTypes);
+  }
+
+  private static ConfigProto loadConfigFromFiles(List<String> configFileNames) {
+
+    ConfigProto configProto = null;
     DiagCollector diagCollector = new SimpleDiagCollector();
-    ConfigYamlReader yamlReader = new ConfigYamlReader();
-    MessageGenerator messageGenerator = new MessageGenerator(ConfigProto.newBuilder());
-    for (File file : pathsToFiles(configFileNames)) {
-      ConfigHelper helper = new ConfigHelper(diagCollector, file.getName());
-      ConfigNode configNode = yamlReader.generateConfigNode(file.toURI().toURL(), helper);
-      if (configNode == null) {
-        continue;
+
+    if (configFileNames.size() > 0) {
+      // Read the YAML config and convert it to proto.
+      ConfigSource configSource = loadGapicConfigFromFiles(configFileNames, diagCollector);
+      if (configSource == null) {
+        return null;
       }
 
-      messageGenerator.visit(configNode.getChild());
-    }
-    ConfigProto configProto = (ConfigProto) messageGenerator.getValue();
-    if (configProto == null || configProto.equals(ConfigProto.getDefaultInstance())) {
-      return null;
+      configProto = (ConfigProto) configSource.getConfig();
+
+      if (configProto == null || configProto.equals(ConfigProto.getDefaultInstance())) {
+        return null;
+      }
     }
 
     return configProto;
