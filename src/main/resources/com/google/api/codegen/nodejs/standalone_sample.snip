@@ -8,33 +8,14 @@
    // FIXME: Insert here set-up comments that we never want to display in cloudsite. These are seen by users perusing the samples directly in the repository.
 
   @let apiMethod = sampleFile.libraryMethod
-     @let sample = apiMethod.samples.get(0)
-       // [START {@sample.regionTag}]
-
-       // FIXME: Insert here boilerplate code not directly related to the method call itself.
-
-       //      calling form: "{@sample.callingForm.toString}"
-       //        region tag: "{@sample.regionTag}"
-       //         className: "{@sampleFile.className}"
-       //          valueSet: "{@sample.valueSet.id}" ("{@sample.valueSet.title}")
-       //       description: "{@sample.valueSet.description}"
-       //        {@sample.valueSet.parameters}
-       //      apiMethod "{@apiMethod.name}" of type "{@apiMethod.type}"
-
-       // [START {@sample.regionTag}_core]
-
-       // FIXME: Insert here code to prepare the request fields, make the call, process the response.
-
-       /*
-       {@standaloneSample(apiMethod, sample)}
-       */
-       // [END {@sample.regionTag}_core]
-
-       // FIXME: Insert here clean-up code.
-       // tslint:disable-next-line:no-any
-       // [END {@sample.regionTag}]
-     @end
-   @end
+    @let sample = apiMethod.samples.get(0)
+      // [START {@sample.regionTag}]
+      // [START {@sample.regionTag}_core]
+      {@standaloneSample(apiMethod, sample)}
+      // [END {@sample.regionTag}_core]
+      // [END {@sample.regionTag}]
+    @end
+  @end
 @end
 
 # The structure of this should be parallel to that of method_sample.snip:@incodeSample
@@ -42,6 +23,16 @@
 # FIXME: Replace the following function calls with calls to functions that emit full standalone samples. These stubs have been adapted from method_sample.snip
 @snippet standaloneSample(apiMethod, sample)
   function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
+    const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
+    @if apiMethod.hasApiVersion
+      const client = new {@apiMethod.localPackageName}.{@apiMethod.apiVersion}.{@apiMethod.apiClassName}({
+        // optional auth parameters.
+      })
+    @else
+      const client = new {@apiMethod.localPackageName}.{@apiClassName}({
+        // optional auth parameters.
+      })
+    @end
     @switch sample.callingForm
     @case "Request"
       @if apiMethod.hasReturnValue
@@ -87,7 +78,7 @@
 @end
 
 @private processCliArguments(sample)
-  require(`yargs`)
+  argv = require(`yargs`)
     @join param : sample.sampleInitCode.argDefaultParams
       .default('{@param.cliFlagName}', {@renderInitValue(param.initValue)})
     @end
