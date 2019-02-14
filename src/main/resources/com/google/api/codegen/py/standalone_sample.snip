@@ -78,14 +78,16 @@
   @end
 
   def main():
-    import argparse
+    @if sample.sampleInitCode.argDefaultParams
+      import argparse
 
-    parser = argparse.ArgumentParser()
-    @join param : sample.sampleInitCode.argDefaultParams
-      parser.add_argument('--{@param.cliFlagName}', type={@param.typeName}, default={@renderInitValue(param.initValue)})
+      parser = argparse.ArgumentParser()
+      @join param : sample.sampleInitCode.argDefaultParams
+        parser.add_argument('--{@param.cliFlagName}', type={@param.typeName}, default={@renderInitValue(param.initValue)})
+      @end
+      args = parser.parse_args()
+
     @end
-    args = parser.parse_args()
-
     {@sample.sampleFunctionName}({@actualArgs(sample.sampleInitCode.argDefaultParams)})
 
   if __name__ == '__main__':
