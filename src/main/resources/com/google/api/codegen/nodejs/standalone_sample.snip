@@ -2,16 +2,21 @@
 @extends "nodejs/init_code.snip"
 
 @snippet generate(sampleFile)
-   //// [ This is an auto-generated sample file produced by the gapic-generator. Sample name: "{@sampleFile.className}" ]
-  'use strict';
   @let apiMethod = sampleFile.libraryMethod
     @let sample = apiMethod.samples.get(0)
+      // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+      'use strict';
       // [START {@sample.regionTag}]
       // [START {@sample.regionTag}_core]
       {@standaloneSample(apiMethod, sample)}
       // [END {@sample.regionTag}_core]
       // tslint:disable-next-line:no-any
       // [END {@sample.regionTag}]
+      @if sample.sampleInitCode.argDefaultParams
+        {@processCliArguments(sample)}
+
+      @end
+      {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)});
     @end
   @end
 @end
@@ -60,11 +65,6 @@
     @end
   }
 
-  @if sample.sampleInitCode.argDefaultParams
-    {@processCliArguments(sample)}
-
-  @end
-  {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)});
 @end
 
 @private processResponse(sample)
