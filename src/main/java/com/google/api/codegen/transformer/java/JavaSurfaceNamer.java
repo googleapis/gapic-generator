@@ -142,7 +142,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     String metadataTypeName =
         typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
     return typeTable.getAndSaveNicknameForContainer(
-        "com.google.api.gax.grpc.OperationFuture", responseTypeName, metadataTypeName);
+        "com.google.api.gax.longrunning.OperationFuture", responseTypeName, metadataTypeName);
   }
 
   @Override
