@@ -121,7 +121,7 @@ public class OutputTransformerTest {
     TypeModel typeModel = mock(TypeModel.class);
     when(fieldModel.getType()).thenReturn(typeModel);
     when(typeModel.makeOptional()).thenReturn(typeModel);
-    when(namer.getAndSaveTypeName(typeTable, typeModel)).thenReturn("TypeName");
+    when(typeTable.getNicknameFor(typeModel)).thenReturn("TypeName");
 
     OutputView.VariableView variableView =
         accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
@@ -138,7 +138,7 @@ public class OutputTransformerTest {
 
     when(config.getPageStreaming()).thenReturn(null);
     TypeModel typeModel = mock(TypeModel.class);
-    when(namer.getAndSaveTypeName(typeTable, typeModel)).thenReturn("TypeName");
+    when(typeTable.getNicknameFor(typeModel)).thenReturn("TypeName");
     when(model.getOutputType()).thenReturn(typeModel);
 
     OutputView.VariableView variableView =
@@ -170,7 +170,7 @@ public class OutputTransformerTest {
     assertThat(parent.put("old_var", oldVarTypeModel, "OldVarTypeName")).isTrue();
     Scanner scanner = new Scanner("old_var");
     when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
-    when(namer.getAndSaveTypeName(typeTable, oldVarTypeModel)).thenReturn("OldVarTypeName");
+    when(typeTable.getNicknameFor(oldVarTypeModel)).thenReturn("OldVarTypeName");
     OutputView.VariableView variableView =
         accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
 
@@ -193,7 +193,7 @@ public class OutputTransformerTest {
     when(oldVarTypeModel.getField("property")).thenReturn(propertyFieldModel);
     TypeModel propertyTypeModel = mock(TypeModel.class);
     when(namer.getFieldGetFunctionName(propertyFieldModel)).thenReturn("getProperty");
-    when(namer.getAndSaveTypeName(typeTable, propertyTypeModel)).thenReturn("PropertyTypeName");
+    when(typeTable.getNicknameFor(propertyTypeModel)).thenReturn("PropertyTypeName");
     when(namer.getFieldAccessorName(propertyFieldModel)).thenReturn(".getProperty()");
     when(propertyFieldModel.getType()).thenReturn(propertyTypeModel);
 
@@ -240,7 +240,7 @@ public class OutputTransformerTest {
     TypeModel optionalPropertyTypeModel = mock(TypeModel.class);
     when(propertyTypeModel.makeOptional()).thenReturn(optionalPropertyTypeModel);
 
-    when(namer.getAndSaveTypeName(typeTable, optionalPropertyTypeModel))
+    when(typeTable.getNicknameFor(optionalPropertyTypeModel))
         .thenReturn("OptionalPropertyTypeName");
     when(namer.getFieldAccessorName(propertyFieldModel)).thenReturn(".getProperty()");
     when(namer.getIndexAccessorName(0)).thenReturn("[0]");
