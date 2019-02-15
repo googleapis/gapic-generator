@@ -27,8 +27,7 @@ import org.junit.Test;
 
 public class DiscoConfigGenerationTest extends DiscoConfigBaselineTestCase {
 
-  private final TestDataLocator testDataLocator =
-      new MixedPathTestDataLocator(this.getClass(), Paths.get("src", "test", "java").toString());
+  private final TestDataLocator testDataLocator = MixedPathTestDataLocator.create(this.getClass());
 
   @Override
   protected String baselineFileName() {
