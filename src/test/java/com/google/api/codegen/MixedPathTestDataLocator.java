@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,8 +31,11 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /**
- * A test data locator which first tries to find the specified resource on a file system, and if the
- * file was not found this class fallbacks to the default ({@link ClassPathTestDataLocator})
+ * Prefer using this class instead of {@link
+ * com.google.api.tools.framework.model.testing.TestDataLocator}.
+ *
+ * <p>A test data locator which first tries to find the specified resource on a file system, and if
+ * the file was not found this class fallbacks to the default ({@link ClassPathTestDataLocator})
  * implementation.
  *
  * <p>This behavior is useful for cases when some parts of test infrastructure expect an actual file
@@ -48,6 +52,10 @@ public class MixedPathTestDataLocator extends ClassPathTestDataLocator {
   public MixedPathTestDataLocator(Class<?> classContext, String... pathPrefixes) {
     super(classContext);
     this.pathPrefixes = ImmutableList.copyOf(pathPrefixes);
+  }
+
+  public static MixedPathTestDataLocator create(Class<?> classContext) {
+    return new MixedPathTestDataLocator(classContext, Paths.get("src", "test", "java").toString());
   }
 
   @Nullable
@@ -69,7 +77,7 @@ public class MixedPathTestDataLocator extends ClassPathTestDataLocator {
   @Override
   public String fetchTestData(URL url) {
     if ("file".equals(url.getProtocol())) {
-      try (Reader reader = new InputStreamReader(url.openStream())) {
+      try (Reader reader = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8)) {
         return CharStreams.toString(reader);
       } catch (IOException e) {
         // Ignore, fallback to parent's implementation.
