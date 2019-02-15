@@ -31,8 +31,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /**
- * Prefer using this class instead of {@link
- * com.google.api.tools.framework.model.testing.TestDataLocator}.
+ * Prefer using this class instead of {@code TestDataLocator}.
  *
  * <p>A test data locator which first tries to find the specified resource on a file system, and if
  * the file was not found this class fallbacks to the default ({@link ClassPathTestDataLocator})
