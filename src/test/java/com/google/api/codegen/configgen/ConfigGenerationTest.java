@@ -29,8 +29,7 @@ import org.junit.Test;
 
 public class ConfigGenerationTest extends ConfigBaselineTestCase {
 
-  private final TestDataLocator testDataLocator =
-      new MixedPathTestDataLocator(this.getClass(), Paths.get("src", "test", "java").toString());
+  private final TestDataLocator testDataLocator = MixedPathTestDataLocator.create(this.getClass());
 
   @Override
   protected TestDataLocator getTestDataLocator() {

@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -53,8 +52,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   @Nullable private final String packageConfigFileName;
   protected ConfigProto config;
   private List<CodeGenerator<?>> discoGapicGenerators;
-  private final TestDataLocator testDataLocator =
-      new MixedPathTestDataLocator(this.getClass(), Paths.get("src", "test", "java").toString());
+  private final TestDataLocator testDataLocator = MixedPathTestDataLocator.create(this.getClass());
 
   public DiscoGapicTestBase(
       TargetLanguage language,

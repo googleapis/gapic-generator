@@ -18,6 +18,7 @@ import com.google.api.Service;
 import com.google.api.codegen.ArtifactType;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.MixedPathTestDataLocator;
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
 import com.google.api.codegen.common.TargetLanguage;
@@ -30,6 +31,7 @@ import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
+import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -56,6 +58,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   private final String baselineFile;
   private final String protoPackage;
   private final String clientPackage;
+  private final TestDataLocator testDataLocator = MixedPathTestDataLocator.create(this.getClass());
 
   public GapicTestBase2(
       TargetLanguage language,
@@ -82,6 +85,11 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, dir);
     getTestDataLocator().addTestDataSource(getClass(), "testdata/" + dir);
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+  }
+
+  @Override
+  protected TestDataLocator getTestDataLocator() {
+    return this.testDataLocator;
   }
 
   @Override

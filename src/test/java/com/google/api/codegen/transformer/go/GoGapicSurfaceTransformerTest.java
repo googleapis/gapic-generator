@@ -18,6 +18,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.MixedPathTestDataLocator;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodModel;
@@ -47,7 +48,7 @@ public class GoGapicSurfaceTransformerTest {
 
   @BeforeClass
   public static void setupClass() {
-    TestDataLocator locator = TestDataLocator.create(GoGapicSurfaceTransformerTest.class);
+    TestDataLocator locator = MixedPathTestDataLocator.create(GoGapicSurfaceTransformerTest.class);
     model =
         CodegenTestUtil.readModel(
             locator,

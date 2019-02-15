@@ -18,6 +18,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.MixedPathTestDataLocator;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
@@ -36,7 +37,7 @@ public class GapicConfigProducerTest {
 
   @Test
   public void missingConfigSchemaVersion() {
-    TestDataLocator locator = TestDataLocator.create(GapicConfigProducerTest.class);
+    TestDataLocator locator = MixedPathTestDataLocator.create(this.getClass());
     locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
     locator.addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
     model =
