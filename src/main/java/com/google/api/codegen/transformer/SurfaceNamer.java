@@ -1581,7 +1581,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
       if (pos == -1) {
         sb.append(spec, p, spec.length());
         return ImmutableList.<String>builder()
-            .add(sb.toString().replace("\"", "\\\""))
+            .add(
+                sb.toString()
+                    .replace("\\", "\\\\")
+                    .replace("\"", "\\\"")
+                    .replace("\t", "\\t")
+                    .replace("\n", "\\n"))
             .addAll(args)
             .build();
       } else {
