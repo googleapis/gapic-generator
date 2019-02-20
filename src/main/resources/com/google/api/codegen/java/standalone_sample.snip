@@ -36,7 +36,11 @@
         // [END {@sample.regionTag}_core]
       }
 
-      public static void main(String[] args) {
+      @if sample.sampleInitCode.argDefaultParams.size
+        public static void main(String[] args) throws Exception {
+      @else
+        public static void main(String[] args) {
+      @end
         @if sample.sampleInitCode.argDefaultParams.size
           {@processCliArguments(sample)}
 
