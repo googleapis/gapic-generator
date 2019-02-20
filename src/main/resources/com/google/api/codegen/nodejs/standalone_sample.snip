@@ -30,15 +30,15 @@
 # FIXME: Replace the following function calls with calls to functions that emit full standalone samples. These stubs have been adapted from method_sample.snip
 @snippet standaloneSample(apiMethod, sample)
 
-  const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}').{@apiMethod.apiVersion};
+  @if apiMethod.hasApiVersion
+    const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}').{@apiMethod.apiVersion};
 
+  @else
+    const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
 
+  @end
   function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
-    @if apiMethod.hasApiVersion
-      const client = new {@apiMethod.localPackageName}.{@apiMethod.apiVersion}.{@apiMethod.apiClassName}();
-    @else
-      const client = new {@apiMethod.localPackageName}.{@apiClassName}({})
-    @end
+    const client = new {@apiMethod.localPackageName}.{@apiMethod.apiClassName}();
     @switch sample.callingForm
     @case "Request"
       @if apiMethod.hasReturnValue
