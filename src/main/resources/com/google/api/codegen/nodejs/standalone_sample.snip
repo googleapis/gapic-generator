@@ -29,16 +29,19 @@
 #
 # FIXME: Replace the following function calls with calls to functions that emit full standalone samples. These stubs have been adapted from method_sample.snip
 @snippet standaloneSample(apiMethod, sample)
-  function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
+
+  @if apiMethod.hasApiVersion
+    const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}').{@apiMethod.apiVersion};
+
+  @else
     const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
+
+  @end
+  function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
     @if apiMethod.hasApiVersion
-      const client = new {@apiMethod.localPackageName}.{@apiMethod.apiVersion}.{@apiMethod.apiClassName}({
-        // optional auth parameters.
-      })
+      const client = new {@apiMethod.localPackageName}.{@apiMethod.apiVersion}.{@apiMethod.apiClassName}({})
     @else
-      const client = new {@apiMethod.localPackageName}.{@apiClassName}({
-        // optional auth parameters.
-      })
+      const client = new {@apiMethod.localPackageName}.{@apiClassName}({})
     @end
     @switch sample.callingForm
     @case "Request"
