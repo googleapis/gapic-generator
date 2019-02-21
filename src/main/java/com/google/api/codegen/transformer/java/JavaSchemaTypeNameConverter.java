@@ -52,7 +52,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
 
   private static String getPrimitiveTypeName(Schema schema) {
     if (schema == null) {
-      return "java.lang.Void";
+      return "com.google.api.gax.httpjson.EmptyMessage";
     }
     switch (schema.type()) {
       case INTEGER:
@@ -94,7 +94,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     if (primitiveType.equals("java.lang.String")) {
       return "\"\"";
     }
-    if (primitiveType.equals("java.lang.Void")) {
+    if (primitiveType.equals("com.google.api.gax.httpjson.EmptyMessage")) {
       return "null";
     }
     throw new IllegalArgumentException("Schema is of unknown type.");
@@ -130,7 +130,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     if (type.isStringType()) {
       return typeNameConverter.getTypeName("java.lang.String");
     } else if (type.isEmptyType()) {
-      return typeNameConverter.getTypeName("java.lang.Void");
+      return typeNameConverter.getTypeName("com.google.api.gax.httpjson.EmptyMessage");
     }
 
     return getTypeNameForElementType((DiscoveryField) type);
@@ -146,7 +146,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   private TypeName getTypeNameForElementType(
       DiscoveryField fieldModel, BoxingBehavior boxingBehavior) {
     if (fieldModel == null) {
-      return new TypeName("java.lang.Void", "Void");
+      return new TypeName("com.google.api.gax.httpjson.EmptyMessage", "Void");
     }
     Schema schema = fieldModel.getOriginalDiscoveryField();
     String primitiveTypeName = getPrimitiveTypeName(schema);
