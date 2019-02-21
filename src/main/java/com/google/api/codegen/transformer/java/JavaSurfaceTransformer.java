@@ -823,7 +823,7 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor(
             "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.GaxHttpJsonProperties");
-        typeTable.saveNicknameFor("java.lang.Void");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.EmptyMessage");
         break;
     }
   }
@@ -883,7 +883,7 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");
         typeTable.saveNicknameFor("com.google.common.collect.Sets");
-        typeTable.saveNicknameFor("java.lang.Void");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.EmptyMessage");
         break;
     }
   }
