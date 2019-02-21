@@ -146,7 +146,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   private TypeName getTypeNameForElementType(
       DiscoveryField fieldModel, BoxingBehavior boxingBehavior) {
     if (fieldModel == null) {
-      return new TypeName("com.google.api.gax.httpjson.EmptyMessage", "Void");
+      return new TypeName("com.google.api.gax.httpjson.EmptyMessage", "EmptyMessage");
     }
     Schema schema = fieldModel.getOriginalDiscoveryField();
     String primitiveTypeName = getPrimitiveTypeName(schema);
