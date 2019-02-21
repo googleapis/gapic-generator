@@ -285,7 +285,7 @@ function sampleDiscussBook(imageFileName) {
 // tslint:disable-next-line:no-any
 // [END turing_prog_request_streaming_bidi]
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('image_file_name', 'image_file.jpg')
   .argv;
 
@@ -317,7 +317,7 @@ function sampleFindRelatedBooks() {
       const resources = responses[0];
       for (const resource of resources) {
         const book = resource;
-        console.log(`Here's a related book: {$book}`);
+        console.log(`Here's a related book: ${book}`);
       }
     })
     .catch(err => {
@@ -364,7 +364,7 @@ function sampleFindRelatedBooks() {
     // const rawResponse = responses[2];
     for (const resource of resources) {
       const book = resource;
-      console.log(`Here's a related book: {$book}`);
+      console.log(`Here's a related book: ${book}`);
     }
     if (nextRequest) {
       // Fetch the next page.
@@ -407,8 +407,8 @@ function sampleGetBigBook(shelf) {
       // Adding a listener for the "complete" event starts polling for the
       // completion of the operation.
       operation.on('complete', (result, metadata, finalApiResponse) => {
-        console.log(`name: {$result.name}`);
-        console.log(`author: {$result.author}`);
+        console.log(`name: ${result.name}`);
+        console.log(`author: ${result.author}`);
       });
 
       // Adding a listener for the "progress" event causes the callback to be
@@ -432,7 +432,7 @@ function sampleGetBigBook(shelf) {
 // tslint:disable-next-line:no-any
 // [END hopper]
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf', 'Novel')
   .argv;
 
@@ -485,7 +485,7 @@ function sampleGetBigBook(shelf, bigBookName) {
 // tslint:disable-next-line:no-any
 // [END hopper]
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf', 'Novel')
   .default('big_book_name', 'War and Peace')
   .argv;
@@ -519,8 +519,8 @@ function sampleGetBigBook(shelf) {
       const metadata = responses[1];
       const finalApiResponse = responses[2];
 
-      console.log(`name: {$result.name}`);
-      console.log(`author: {$result.author}`);
+      console.log(`name: ${result.name}`);
+      console.log(`author: ${result.author}`);
     })
     .catch(err => {
       console.error(err);
@@ -532,7 +532,7 @@ function sampleGetBigBook(shelf) {
 // tslint:disable-next-line:no-any
 // [END hopper]
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf', 'Novel')
   .argv;
 
@@ -578,7 +578,7 @@ function sampleGetBigBook(shelf, bigBookName) {
 // tslint:disable-next-line:no-any
 // [END hopper]
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf', 'Novel')
   .default('big_book_name', 'War and Peace')
   .argv;
@@ -601,7 +601,7 @@ function sampleMonologAboutBook() {
       console.error(err);
       return;
     }
-    console.log(`The stage of the comment is: {$response.stage}`);
+    console.log(`The stage of the comment is: ${response.stage}`);
   });
   const name = 'BASIC';
   const request = {
@@ -662,12 +662,12 @@ function samplePublishSeries(shelfName, edition) {
       const bookNames = response.bookNames;
       for (const title of response.bookNames) {
         // Now we deal with thisSingleBook!
-        console.log(`Title: {$title}`);
+        console.log(`Title: ${title}`);
       }
-      console.log(`The first book is: {$response.bookNames[0]}`);
-      console.log(`The author of the first book is: {$response.books[0].author}`);
+      console.log(`The first book is: ${response.bookNames[0]}`);
+      console.log(`The author of the first book is: ${response.books[0].author}`);
       console.log(`That's all!`);
-      console.log(`series_uuid: {$response.seriesUuid.seriesBytes}`);
+      console.log(`series_uuid: ${response.seriesUuid.seriesBytes}`);
     })
     .catch(err => {
       console.error(err);
@@ -679,7 +679,7 @@ function samplePublishSeries(shelfName, edition) {
 // tslint:disable-next-line:no-any
 // [END canonical]
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf_name', 'Math')
   .default('edition', 123)
   .argv;
