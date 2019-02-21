@@ -7,7 +7,10 @@ package google.example.library.v1;
 import "book_from_anywhere.proto";
 import "field_mask.proto";
 import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
 import "google/longrunning/operations.proto";
+import "google/api/resource.proto";
+import "google/api/client.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/any.proto";
@@ -24,27 +27,26 @@ option java_outer_classname = "LibraryProto";
 option java_package = "com.google.example.library.v1";
 option go_package = "google.golang.org/genproto/googleapis/example/library/v1;library";
 
-option (google.api.metadata) = {
-  product_name: "Library Service"
-  product_uri: "https://cloud.google.com/library/"
-  package_name: "Library"
-  package_namespace: ["Google", "Example"]
+option (google.api.client_package) = {
+  title: "Library Service"
+  namespace: ["Google", "Example"]
+  version: "v1"
 };
 
 // TODO(andrealin): Refer to a common resource for Project, once it exists.
 option (google.api.resource_definition) = {
-  name: "Project"
-  path: "projects/{project}"
+  symbol: "Project"
+  pattern: "projects/{project}"
 };
 
 option (google.api.resource_definition) = {
-  name: "Book"
-  path : "shelves/{shelf_id}/books/{book_id}"
+  symbol: "Book"
+  pattern : "shelves/{shelf_id}/books/{book_id}"
 };
 
 option (google.api.resource_definition) = {
-  name: "ArchivedBook"
-  path : "archives/{archive_path}/books/{book_id=**}"
+  symbol: "ArchivedBook"
+  pattern : "archives/{archive_path}/books/{book_id=**}"
 };
 
 // This API represents a simple digital library.  It lets you manage Shelf
@@ -64,48 +66,35 @@ option (google.api.resource_definition) = {
 //
 service LibraryService {
   option (google.api.default_host) = "library-example.googleapis.com:1234";
-  option (google.api.oauth) = {
-    scopes: ["https://www.googleapis.com/auth/library",
-      "https://www.googleapis.com/auth/cloud-platform"]
-  };
+  option (google.api.oauth_scopes) =
+      "https://www.googleapis.com/auth/library,"
+      "https://www.googleapis.com/auth/cloud-platform";
 
   // Creates a shelf, and returns the new Shelf.
   // RPC method comment may include special characters: <>&"`'@.
   rpc CreateShelf(CreateShelfRequest) returns (Shelf) {
     option (google.api.http) = { post: "/v1/bookShelves" body: "shelf" };
-    option (google.api.method_signature) = {
-      fields: ["shelf"]
-    };
+    option (google.api.method_signature) = "shelf";
   }
 
   // Gets a shelf.
   rpc GetShelf(GetShelfRequest) returns (Shelf) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*}" };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
-    option (google.api.method_signature) = {
-      fields: ["name", "message"],
-    };
-    option (google.api.method_signature) = {
-      fields: ["name", "message", "string_builder"]
-    };
+    option (google.api.method_signature) =  "name";
+    option (google.api.method_signature) = "name,message";
+    option (google.api.method_signature) = "name,message,string_builder";
   }
 
   // Lists shelves.
   rpc ListShelves(ListShelvesRequest) returns (ListShelvesResponse) {
     option (google.api.http) = { get: "/v1/bookShelves" };
-    option (google.api.method_signature) = {
-      fields: []
-    };
+    option (google.api.method_signature) = "";
   }
 
   // Deletes a shelf.
   rpc DeleteShelf(DeleteShelfRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { delete: "/v1/{name=bookShelves/*}" };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Merges two shelves by adding all books from the shelf named
@@ -113,9 +102,7 @@ service LibraryService {
   // `other_shelf_name`. Returns the updated shelf.
   rpc MergeShelves(MergeShelvesRequest) returns (Shelf) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*}:merge" body: "*" };
-    option (google.api.method_signature) = {
-      fields: ["name", "other_shelf_name"]
-    };
+    option (google.api.method_signature) = "name,other_shelf_name";
   }
 
   // Creates a book.
@@ -128,9 +115,7 @@ service LibraryService {
         body: "book"
       }
     };
-    option (google.api.method_signature) = {
-      fields: ["name", "book"]
-    };
+    option (google.api.method_signature) = "name,book";
   }
 
   // Creates a series of books.
@@ -142,71 +127,51 @@ service LibraryService {
         post: "/v1/{shelf.name=shelves/*}:publish"
         body: "*"
     }};
-    option (google.api.method_signature) = {
-      fields: ["shelf", "books", "edition", "series_uuid"]
-    };
+    option (google.api.method_signature) = "shelf,books,edition,series_uuid";
   }
 
   // Gets a book.
   rpc GetBook(GetBookRequest) returns (Book) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}" };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Lists books in a shelf.
   rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*}/books" };
-    option (google.api.method_signature) = {
-      fields: ["name", "filter"]
-    };
+    option (google.api.method_signature) = "name,filter";
   }
 
   // Deletes a book.
   rpc DeleteBook(DeleteBookRequest) returns (protobuf.Empty) {
     option (google.api.http) = { delete: "/v1/{name=bookShelves/*/books/*}" };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Updates a book.
   rpc UpdateBook(UpdateBookRequest) returns (Book) {
     option (google.api.http) = { put: "/v1/{name=bookShelves/*/books/*}" body: "book" };
-    option (google.api.method_signature) = {
-      fields: ["name", "book"]
-    };
-    option (google.api.method_signature) = {
-      fields: ["name", "optional_foo", "book", "update_mask", "physical_mask"]
-    };
+    option (google.api.method_signature) = "name,book";
+    option (google.api.method_signature) = "name,optional_foo,book,update_mask,physical_mask";
   }
 
   // Moves a book to another shelf, and returns the new book.
   rpc MoveBook(MoveBookRequest) returns (Book) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*/books/*}:move" body: "*" };
-    option (google.api.method_signature) = {
-      fields: ["name", "other_shelf_name"]
-    };
+    option (google.api.method_signature) = "name,other_shelf_name";
   }
 
   // Lists a primitive resource. To test go page streaming.
   rpc ListStrings(ListStringsRequest) returns (ListStringsResponse) {
     option (google.api.http) = { get: "/v1/strings" };
-    option (google.api.method_signature) = {
-      fields: []
-    };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "";
+    option (google.api.method_signature) = "name";
   }
 
   // Adds comments to a book
   rpc AddComments(AddCommentsRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*}/comments" body: "*" };
-    option (google.api.method_signature) = {
-      fields: ["name", "comments"]
-    };
+    option (google.api.method_signature) = "name,comments";
   }
 
   // Gets a book from an archive.
@@ -214,17 +179,13 @@ service LibraryService {
     // The http binding on this field does not include the "**" path in order to
     // test the name conflict resolution in configgen.
     option (google.api.http) = { get: "/v1/{name=archives/*/books/*}"};
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Gets a book from a shelf or archive.
   rpc GetBookFromAnywhere(GetBookFromAnywhereRequest) returns (BookFromAnywhere) {
     option (google.api.http) = { get: "/v1/{name=archives/*/books/**}"};
-    option (google.api.method_signature) = {
-      fields: ["name", "alt_book_name"]
-    };
+    option (google.api.method_signature) = "name,alt_book_name";
   }
 
   // Test proper OneOf-Any resource name mapping
@@ -235,17 +196,13 @@ service LibraryService {
         post: "/v1/{alt_book_name=bookShelves/*/books/*}"
       }
     };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Updates the index of a book.
   rpc UpdateBookIndex(UpdateBookIndexRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*/books/*}/index" body: "*" };
-    option (google.api.method_signature) = {
-      fields: ["name", "index_name", "index_map"]
-    };
+    option (google.api.method_signature) = "name,index_name,index_map";
   }
 
   // Test server streaming
@@ -257,34 +214,26 @@ service LibraryService {
   rpc StreamBooks(StreamBooksRequest) returns (stream Book) {
     // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Test bidi-streaming.
   rpc DiscussBook(stream DiscussBookRequest) returns (stream Comment) {
     // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Test client streaming.
   rpc MonologAboutBook(stream DiscussBookRequest) returns (Comment) {
     // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   rpc FindRelatedBooks(FindRelatedBooksRequest) returns (FindRelatedBooksResponse) {
     option (google.api.http) = { get: "/v1/bookShelves" };
-    option (google.api.method_signature) = {
-      fields: ["names", "shelves"]
-    };
+    option (google.api.method_signature) = "names,shelves";
   }
 
   // Adds a tag to the book. This RPC is a mixin.
@@ -297,10 +246,8 @@ service LibraryService {
   // Test long-running operations
   rpc GetBigBook(GetBookRequest) returns (google.longrunning.Operation) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:big" };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
-    option (google.api.operation) = {
+    option (google.api.method_signature) = "name";
+    option (google.longrunning.operation_info) = {
       response_type: "google.example.library.v1.Book"
       metadata_type: "google.example.library.v1.GetBigBookMetadata"
     };
@@ -309,10 +256,8 @@ service LibraryService {
   // Test long-running operations with empty return type.
   rpc GetBigNothing(GetBookRequest) returns (google.longrunning.Operation) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:bignothing" };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
-    option (google.api.operation) = {
+    option (google.api.method_signature) = "name";
+    option (google.longrunning.operation_info) = {
       metadata_type: "google.example.library.v1.GetBigBookMetadata"
       response_type: "google.protobuf.Empty"
     };
@@ -321,102 +266,98 @@ service LibraryService {
   // Test optional flattening parameters of all types
   rpc TestOptionalRequiredFlatteningParams(TestOptionalRequiredFlatteningParamsRequest) returns (TestOptionalRequiredFlatteningParamsResponse) {
     option (google.api.http) = { post: "/v1/testofp" body: "*" };
-    option (google.api.method_signature) = {
-      fields: []
-    };
-    option (google.api.method_signature) = {
-      fields: [
-        "required_singular_int32",
-        "required_singular_int64",
-        "required_singular_float",
-        "required_singular_double",
-        "required_singular_bool",
-        "required_singular_enum",
-        "required_singular_string",
-        "required_singular_bytes",
-        "required_singular_message",
-        "required_singular_resource_name",
-        "required_singular_resource_name_oneof",
-        "required_singular_resource_name_common",
-        "required_singular_fixed32",
-        "required_singular_fixed64",
-        "required_repeated_int32",
-        "required_repeated_int64",
-        "required_repeated_float",
-        "required_repeated_double",
-        "required_repeated_bool",
-        "required_repeated_enum",
-        "required_repeated_string",
-        "required_repeated_bytes",
-        "required_repeated_message",
-        "required_repeated_resource_name",
-        "required_repeated_resource_name_oneof",
-        "required_repeated_resource_name_common",
-        "required_repeated_fixed32",
-        "required_repeated_fixed64",
-        "required_map",
-        "optional_singular_int32",
-        "optional_singular_int64",
-        "optional_singular_float",
-        "optional_singular_double",
-        "optional_singular_bool",
-        "optional_singular_enum",
-        "optional_singular_string",
-        "optional_singular_bytes",
-        "optional_singular_message",
-        "optional_singular_resource_name",
-        "optional_singular_resource_name_oneof",
-        "optional_singular_resource_name_common",
-        "optional_singular_fixed32",
-        "optional_singular_fixed64",
-        "optional_repeated_int32",
-        "optional_repeated_int64",
-        "optional_repeated_float",
-        "optional_repeated_double",
-        "optional_repeated_bool",
-        "optional_repeated_enum",
-        "optional_repeated_string",
-        "optional_repeated_bytes",
-        "optional_repeated_message",
-        "optional_repeated_resource_name",
-        "optional_repeated_resource_name_oneof",
-        "optional_repeated_resource_name_common",
-        "optional_repeated_fixed32",
-        "optional_repeated_fixed64",
-        "optional_map",
-        "any_value",
-        "struct_value",
-        "value_value",
-        "list_value_value",
-        "time_value",
-        "duration_value",
-        "field_mask_value",
-        "int32_value",
-        "uint32_value",
-        "int64_value",
-        "uint64_value",
-        "float_value",
-        "double_value",
-        "string_value",
-        "bool_value",
-        "bytes_value",
-        "repeated_any_value",
-        "repeated_struct_value",
-        "repeated_value_value",
-        "repeated_list_value_value",
-        "repeated_time_value",
-        "repeated_duration_value",
-        "repeated_field_mask_value",
-        "repeated_int32_value",
-        "repeated_uint32_value",
-        "repeated_int64_value",
-        "repeated_uint64_value",
-        "repeated_float_value",
-        "repeated_double_value",
-        "repeated_string_value",
-        "repeated_bool_value",
-        "repeated_bytes_value"]
-    };
+    option (google.api.method_signature) = "";
+    option (google.api.method_signature) = 
+        "required_singular_int32,"
+        "required_singular_int64,"
+        "required_singular_float,"
+        "required_singular_double,"
+        "required_singular_bool,"
+        "required_singular_enum,"
+        "required_singular_string,"
+        "required_singular_bytes,"
+        "required_singular_message,"
+        "required_singular_resource_name,"
+        "required_singular_resource_name_oneof,"
+        "required_singular_resource_name_common,"
+        "required_singular_fixed32,"
+        "required_singular_fixed64,"
+        "required_repeated_int32,"
+        "required_repeated_int64,"
+        "required_repeated_float,"
+        "required_repeated_double,"
+        "required_repeated_bool,"
+        "required_repeated_enum,"
+        "required_repeated_string,"
+        "required_repeated_bytes,"
+        "required_repeated_message,"
+        "required_repeated_resource_name,"
+        "required_repeated_resource_name_oneof,"
+        "required_repeated_resource_name_common,"
+        "required_repeated_fixed32,"
+        "required_repeated_fixed64,"
+        "required_map,"
+        "optional_singular_int32,"
+        "optional_singular_int64,"
+        "optional_singular_float,"
+        "optional_singular_double,"
+        "optional_singular_bool,"
+        "optional_singular_enum,"
+        "optional_singular_string,"
+        "optional_singular_bytes,"
+        "optional_singular_message,"
+        "optional_singular_resource_name,"
+        "optional_singular_resource_name_oneof,"
+        "optional_singular_resource_name_common,"
+        "optional_singular_fixed32,"
+        "optional_singular_fixed64,"
+        "optional_repeated_int32,"
+        "optional_repeated_int64,"
+        "optional_repeated_float,"
+        "optional_repeated_double,"
+        "optional_repeated_bool,"
+        "optional_repeated_enum,"
+        "optional_repeated_string,"
+        "optional_repeated_bytes,"
+        "optional_repeated_message,"
+        "optional_repeated_resource_name,"
+        "optional_repeated_resource_name_oneof,"
+        "optional_repeated_resource_name_common,"
+        "optional_repeated_fixed32,"
+        "optional_repeated_fixed64,"
+        "optional_map,"
+        "any_value,"
+        "struct_value,"
+        "value_value,"
+        "list_value_value,"
+        "time_value,"
+        "duration_value,"
+        "field_mask_value,"
+        "int32_value,"
+        "uint32_value,"
+        "int64_value,"
+        "uint64_value,"
+        "float_value,"
+        "double_value,"
+        "string_value,"
+        "bool_value,"
+        "bytes_value,"
+        "repeated_any_value,"
+        "repeated_struct_value,"
+        "repeated_value_value,"
+        "repeated_list_value_value,"
+        "repeated_time_value,"
+        "repeated_duration_value,"
+        "repeated_field_mask_value,"
+        "repeated_int32_value,"
+        "repeated_uint32_value,"
+        "repeated_int64_value,"
+        "repeated_uint64_value,"
+        "repeated_float_value,"
+        "repeated_double_value,"
+        "repeated_string_value,"
+        "repeated_bool_value,"
+        "repeated_bytes_value";
   }
 
   // This method is not exposed in the GAPIC config.
@@ -435,14 +376,14 @@ message Book {
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_set) = {
-      name: "BookOneOf"
+      symbol: "BookOneOf"
       resources: [
         {
-          name: "DeletedBook"
-          path : "_deleted-book_"
+          symbol: "DeletedBook"
+          pattern : "_deleted-book_"
         }
       ]
-      resource_references: ["ArchivedBook", "Book"]
+      resource_references: ["ArchivedBook,Book"]
     }
   ];
 
@@ -567,7 +508,7 @@ message Shelf {
   // Shelf names have the form `bookShelves/{shelf_id}`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource).path = "shelves/{shelf_id}"];
+    (google.api.resource).pattern = "shelves/{shelf_id}"];
 
   // The theme of the shelf
   string theme = 2;
