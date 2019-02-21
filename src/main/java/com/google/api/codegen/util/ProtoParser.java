@@ -17,11 +17,11 @@ package com.google.api.codegen.util;
 import static com.google.api.FieldBehavior.REQUIRED;
 
 import com.google.api.AnnotationsProto;
+import com.google.api.ClientProto;
+import com.google.api.FieldBehaviorProto;
 import com.google.api.HttpRule;
-import com.google.api.MethodSignature;
-import com.google.api.OAuth;
-import com.google.api.OperationData;
 import com.google.api.Resource;
+import com.google.api.ResourceProto;
 import com.google.api.ResourceSet;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.tools.framework.model.Diag;
@@ -39,12 +39,15 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.longrunning.OperationInfo;
+import com.google.longrunning.OperationsProto;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -142,13 +145,13 @@ public class ProtoParser {
 
   @Nullable
   public Resource getResource(Field element) {
-    return getProtoExtension(element, AnnotationsProto.resource);
+    return getProtoExtension(element, ResourceProto.resource);
   }
 
   /** Return the ResourceSet a resource field. Return null if none found. */
   @Nullable
   public ResourceSet getResourceSet(Field element) {
-    return getProtoExtension(element, AnnotationsProto.resourceSet);
+    return getProtoExtension(element, ResourceProto.resourceSet);
   }
 
   /**
@@ -178,15 +181,15 @@ public class ProtoParser {
       for (Resource resource : allResources.keySet()) {
         ProtoFile protoFile = allResources.get(resource);
         if (getResourceFullName(resource, protoFile).equals(resourceName)
-            || field.getFile().equals(protoFile) && resource.getName().equals(resourceName)) {
-          return resource.getName();
+            || field.getFile().equals(protoFile) && resource.getSymbol().equals(resourceName)) {
+          return resource.getSymbol();
         }
       }
       for (ResourceSet resourceSet : allResourceSets.keySet()) {
         ProtoFile protoFile = allResourceSets.get(resourceSet);
         if (getResourceSetFullName(resourceSet, protoFile).equals(resourceName)
-            || field.getFile().equals(protoFile) && resourceSet.getName().equals(resourceName)) {
-          return resourceSet.getName();
+            || field.getFile().equals(protoFile) && resourceSet.getSymbol().equals(resourceName)) {
+          return resourceSet.getSymbol();
         }
       }
 
@@ -209,8 +212,8 @@ public class ProtoParser {
   /** Return the entity name, e.g. "shelf" for a resource field. */
   String getResourceEntityName(Field field) {
     Resource resource = getResource(field);
-    if (resource != null && !Strings.isNullOrEmpty(resource.getName())) {
-      return resource.getName();
+    if (resource != null && !Strings.isNullOrEmpty(resource.getSymbol())) {
+      return resource.getSymbol();
     }
     return field.getParent().getSimpleName();
   }
@@ -218,15 +221,15 @@ public class ProtoParser {
   /** Return the entity name, e.g. "shelf" for a resource set field. */
   private String getResourceSetEntityName(Field field) {
     ResourceSet resourceSet = getResourceSet(field);
-    if (resourceSet != null && !Strings.isNullOrEmpty(resourceSet.getName())) {
-      return resourceSet.getName();
+    if (resourceSet != null && !Strings.isNullOrEmpty(resourceSet.getSymbol())) {
+      return resourceSet.getSymbol();
     }
     return field.getParent().getSimpleName();
   }
 
   /** Get long running settings. */
-  public OperationData getLongRunningOperation(Method method) {
-    return method.getDescriptor().getMethodAnnotation(AnnotationsProto.operation);
+  public OperationInfo getLongRunningOperation(Method method) {
+    return method.getDescriptor().getMethodAnnotation(OperationsProto.operationInfo);
   }
 
   /* Return a Map of Resources to their containing Protofile.
@@ -236,10 +239,10 @@ public class ProtoParser {
     return getResourceOrSetDefs(
         protoFile,
         diagCollector,
-        AnnotationsProto.resourceDefinition,
-        AnnotationsProto.resource,
-        Resource::getName,
-        (resource, baseNameToSet) -> resource.toBuilder().setName(baseNameToSet).build());
+        ResourceProto.resourceDefinition,
+        ResourceProto.resource,
+        Resource::getSymbol,
+        (resource, baseNameToSet) -> resource.toBuilder().setSymbol(baseNameToSet).build());
   }
 
   /* Return a Map of ResourceSets to their containing Protofile.
@@ -249,10 +252,9 @@ public class ProtoParser {
     return getResourceOrSetDefs(
         protoFile,
         diagCollector,
-        AnnotationsProto.resourceSetDefinition,
-        AnnotationsProto.resourceSet,
-        ResourceSet::getName,
-        (resourceSet, baseNameToSet) -> resourceSet.toBuilder().setName(baseNameToSet).build());
+        ResourceProto.resourceSet,
+        ResourceSet::getSymbol,
+        (resourceSet, baseNameToSet) -> resourceSet.toBuilder().setSymbol(baseNameToSet).build());
   }
 
   /* Return a Map of Resource or ResourceSet elements to their containing ProtoFile. */
@@ -334,16 +336,16 @@ public class ProtoParser {
     return definitions.build();
   }
 
-  @SuppressWarnings("unchecked")
   /* Return a list of method signatures, aka flattenings, specified on a given method.
    * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
-  public List<MethodSignature> getMethodSignatures(Method method) {
-    List<MethodSignature> methodSignatures =
-        getProtoExtension(method, AnnotationsProto.methodSignature);
-    if (methodSignatures == null) {
+  public List<List<String>> getMethodSignatures(Method method) {
+    List<String> commaDelimSignatures =
+        getProtoExtension(method, ClientProto.methodSignature);
+    if (commaDelimSignatures == null) {
       return ImmutableList.of();
     }
-    return ImmutableList.copyOf(methodSignatures);
+    return ImmutableList.copyOf(commaDelimSignatures.stream().map(s -> (Arrays.stream(s.split(",")).map(String::trim).collect(Collectors.toList()))).collect(
+        Collectors.toList()));
   }
 
   /** Return the names of required parameters of a method. */
@@ -361,13 +363,13 @@ public class ProtoParser {
   /* Returns if a field is required, according to the proto annotations. */
   private boolean isFieldRequired(Field field) {
     List<EnumValueDescriptor> fieldBehaviors =
-        getProtoExtensionForEnumValue(field, AnnotationsProto.fieldBehavior);
+        getProtoExtensionForEnumValue(field, FieldBehaviorProto.fieldBehavior);
     return fieldBehaviors != null && fieldBehaviors.contains(REQUIRED.getValueDescriptor());
   }
 
   /** Return the resource reference for the given field, according to the proto annotations. */
   public String getResourceReference(Field field) {
-    return getProtoExtension(field, AnnotationsProto.resourceReference);
+    return getProtoExtension(field, ResourceProto.resourceReference);
   }
 
   /** Return whether the method has the HttpRule for GET. */
@@ -378,14 +380,15 @@ public class ProtoParser {
 
   /** The hostname for this service (e.g. "foo.googleapis.com"). */
   public String getServiceAddress(Interface service) {
-    return getProtoExtension(service, AnnotationsProto.defaultHost);
+    return getProtoExtension(service, ClientProto.defaultHost);
   }
 
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
   public List<String> getAuthScopes(Interface service) {
-    OAuth oAuth = getProtoExtension(service, AnnotationsProto.oauth);
+    String oAuth = getProtoExtension(service, ClientProto.oauthScopes);
     if (oAuth != null) {
-      return ImmutableList.copyOf(oAuth.getScopesList());
+      return ImmutableList.copyOf(Arrays.stream(oAuth.split(",")).map(String::trim).collect(
+          Collectors.toList()));
     }
     return ImmutableList.of();
   }
@@ -401,10 +404,10 @@ public class ProtoParser {
   }
 
   private String getResourceFullName(Resource resource, ProtoFile file) {
-    return String.format("%s.%s", resource.getName(), getProtoPackage(file));
+    return String.format("%s.%s", resource.getSymbol(), getProtoPackage(file));
   }
 
   private String getResourceSetFullName(ResourceSet resource, ProtoFile file) {
-    return String.format("%s.%s", resource.getName(), getProtoPackage(file));
+    return String.format("%s.%s", resource.getSymbol(), getProtoPackage(file));
   }
 }

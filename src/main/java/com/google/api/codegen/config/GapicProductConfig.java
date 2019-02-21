@@ -753,7 +753,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         new LinkedHashMap<>();
     // Create the SingleResourceNameConfigs.
     for (Resource resource : resourceDefs.keySet()) {
-      String resourcePath = resource.getPath();
+      String resourcePath = resource.getPattern();
       ProtoFile protoFile = resourceDefs.get(resource);
       createSingleResourceNameConfig(
           diagCollector,
@@ -786,7 +786,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Create the ResourceNameOneOfConfigs.
     for (ResourceSet resourceSet : resourceSetDefs.keySet()) {
       ProtoFile protoFile = resourceSetDefs.get(resourceSet);
-      String resourceSetName = resourceSet.getName();
+      String resourceSetName = resourceSet.getSymbol();
       ResourceNameOneofConfig resourceNameOneofConfig =
           ResourceNameOneofConfig.createResourceNameOneof(
               diagCollector,
