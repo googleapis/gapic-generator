@@ -51,9 +51,6 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   }
 
   private static String getPrimitiveTypeName(Schema schema) {
-    if (schema == null) {
-      return "com.google.api.gax.httpjson.EmptyMessage";
-    }
     switch (schema.type()) {
       case INTEGER:
         return "int";
@@ -93,9 +90,6 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     }
     if (primitiveType.equals("java.lang.String")) {
       return "\"\"";
-    }
-    if (primitiveType.equals("com.google.api.gax.httpjson.EmptyMessage")) {
-      return "null";
     }
     throw new IllegalArgumentException("Schema is of unknown type.");
   }
@@ -302,7 +296,7 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
   @Override
   public TypedValue getSnippetZeroValue(TypeModel typeModel) {
     if (typeModel.isEmptyType()) {
-      return TypedValue.create(getTypeName((DiscoveryField) null), "null");
+      return TypedValue.create(getTypeNameForElementType(typeModel), "%s.newBuilder().build()");
     }
     return getSnippetZeroValue((DiscoveryField) typeModel);
   }
