@@ -67,9 +67,9 @@ import java.util.Set;
 /** Responsible for producing package metadata related views for Python */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String GITHUB_DOC_HOST =
-      "https://googlecloudplatform.github.io/google-cloud-python/latest";
+      "https://googleapis.github.io/google-cloud-python/latest";
   private static final String GITHUB_REPO_HOST =
-      "https://github.com/GoogleCloudPlatform/google-cloud-python";
+      "https://github.com/googleapis/google-cloud-python";
   private static final String AUTH_DOC_PATH = "/core/auth.html";
   private static final String LIB_DOC_PATH = "/%s/usage.html";
   private static final String MAIN_README_PATH = "/blob/master/README.rst";
