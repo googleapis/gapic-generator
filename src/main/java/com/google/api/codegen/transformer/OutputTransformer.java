@@ -406,6 +406,7 @@ public class OutputTransformer {
             config.input());
         TypeModel keyType = type.getMapKeyType();
         config.scan();
+        keyType.validateValue(config.tokenStr());
         accessors.add(context.getNamer().getMapKeyAccessorName(keyType, config.tokenStr()));
         type = type.getMapValueType();
         Preconditions.checkArgument(

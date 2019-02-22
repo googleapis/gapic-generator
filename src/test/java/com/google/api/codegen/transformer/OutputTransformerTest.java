@@ -256,6 +256,35 @@ public class OutputTransformerTest {
   }
 
   @Test
+  public void testAccessorNewVariableWithMapKeyFail() {
+    Scanner scanner = new Scanner("old_var.property{not_boolean}");
+    when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
+    TypeModel oldVarTypeModel = mock(TypeModel.class);
+    assertThat(parent.put("old_var", oldVarTypeModel, "OldVarType")).isTrue();
+    when(oldVarTypeModel.isMessage()).thenReturn(true);
+    when(oldVarTypeModel.isRepeated()).thenReturn(false);
+    when(oldVarTypeModel.isMap()).thenReturn(false);
+    FieldModel propertyFieldModel = mock(FieldModel.class);
+    when(oldVarTypeModel.getField("property")).thenReturn(propertyFieldModel);
+    TypeModel propertyTypeModel = mock(TypeModel.class);
+    when(propertyFieldModel.getType()).thenReturn(propertyTypeModel);
+    when(propertyTypeModel.isRepeated()).thenReturn(true);
+    when(propertyTypeModel.isMap()).thenReturn(true);
+    when(namer.getFieldGetFunctionName(propertyFieldModel)).thenReturn("getProperty");
+    when(namer.getFieldAccessorName(propertyFieldModel)).thenReturn(".getProperty()");
+    TypeModel boolTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("bool"));
+    TypeModel stringTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
+    when(propertyTypeModel.getMapKeyType()).thenReturn(boolTypeModel);
+    when(propertyTypeModel.getMapValueType()).thenReturn(stringTypeModel);
+    try {
+      accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
+      fail();
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage()).contains("Could not assign value 'not_boolean' to type bool");
+    }
+  }
+
+  @Test
   public void testScopeTablePut() {
     TypeModel stringTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
     assertThat(parent.put("str", stringTypeModel, "String")).isTrue();
