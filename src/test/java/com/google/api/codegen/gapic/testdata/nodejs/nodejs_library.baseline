@@ -282,10 +282,10 @@ function sampleDiscussBook(imageFileName) {
 
 
 // [END turing_prog_request_streaming_bidi_core]
-// tslint:disable-next-line:no-any
 // [END turing_prog_request_streaming_bidi]
+// tslint:disable-next-line:no-any
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('image_file_name', 'image_file.jpg')
   .argv;
 
@@ -317,7 +317,7 @@ function sampleFindRelatedBooks() {
       const resources = responses[0];
       for (const resource of resources) {
         const book = resource;
-        console.log(`Here's a related book: {$book}`);
+        console.log(`Here's a related book: ${book}`);
       }
     })
     .catch(err => {
@@ -327,8 +327,8 @@ function sampleFindRelatedBooks() {
 
 
 // [END sample_core]
-// tslint:disable-next-line:no-any
 // [END sample]
+// tslint:disable-next-line:no-any
 
 sampleFindRelatedBooks();
 ============== file: src/samples/v1/find_related_books_request_async_paged_odyssey.js ==============
@@ -364,7 +364,7 @@ function sampleFindRelatedBooks() {
     // const rawResponse = responses[2];
     for (const resource of resources) {
       const book = resource;
-      console.log(`Here's a related book: {$book}`);
+      console.log(`Here's a related book: ${book}`);
     }
     if (nextRequest) {
       // Fetch the next page.
@@ -380,8 +380,8 @@ function sampleFindRelatedBooks() {
 
 
 // [END sample_core]
-// tslint:disable-next-line:no-any
 // [END sample]
+// tslint:disable-next-line:no-any
 
 sampleFindRelatedBooks();
 ============== file: src/samples/v1/get_big_book_long_running_event_emitter_wap.js ==============
@@ -407,8 +407,8 @@ function sampleGetBigBook(shelf) {
       // Adding a listener for the "complete" event starts polling for the
       // completion of the operation.
       operation.on('complete', (result, metadata, finalApiResponse) => {
-        console.log(`name: {$result.name}`);
-        console.log(`author: {$result.author}`);
+        console.log(`name: ${result.name}`);
+        console.log(`author: ${result.author}`);
       });
 
       // Adding a listener for the "progress" event causes the callback to be
@@ -429,10 +429,10 @@ function sampleGetBigBook(shelf) {
 
 
 // [END hopper_core]
-// tslint:disable-next-line:no-any
 // [END hopper]
+// tslint:disable-next-line:no-any
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf', 'Novel')
   .argv;
 
@@ -482,10 +482,10 @@ function sampleGetBigBook(shelf, bigBookName) {
 
 
 // [END hopper_core]
-// tslint:disable-next-line:no-any
 // [END hopper]
+// tslint:disable-next-line:no-any
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf', 'Novel')
   .default('big_book_name', 'War and Peace')
   .argv;
@@ -519,8 +519,8 @@ function sampleGetBigBook(shelf) {
       const metadata = responses[1];
       const finalApiResponse = responses[2];
 
-      console.log(`name: {$result.name}`);
-      console.log(`author: {$result.author}`);
+      console.log(`name: ${result.name}`);
+      console.log(`author: ${result.author}`);
     })
     .catch(err => {
       console.error(err);
@@ -529,10 +529,10 @@ function sampleGetBigBook(shelf) {
 
 
 // [END hopper_core]
-// tslint:disable-next-line:no-any
 // [END hopper]
+// tslint:disable-next-line:no-any
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf', 'Novel')
   .argv;
 
@@ -575,10 +575,10 @@ function sampleGetBigBook(shelf, bigBookName) {
 
 
 // [END hopper_core]
-// tslint:disable-next-line:no-any
 // [END hopper]
+// tslint:disable-next-line:no-any
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf', 'Novel')
   .default('big_book_name', 'War and Peace')
   .argv;
@@ -601,7 +601,7 @@ function sampleMonologAboutBook() {
       console.error(err);
       return;
     }
-    console.log(`The stage of the comment is: {$response.stage}`);
+    console.log(`The stage of the comment is: ${response.stage}`);
   });
   const name = 'BASIC';
   const request = {
@@ -613,8 +613,8 @@ function sampleMonologAboutBook() {
 
 
 // [END sample_core]
-// tslint:disable-next-line:no-any
 // [END sample]
+// tslint:disable-next-line:no-any
 
 sampleMonologAboutBook();
 ============== file: src/samples/v1/publish_series_request_pi_version.js ==============
@@ -662,12 +662,12 @@ function samplePublishSeries(shelfName, edition) {
       const bookNames = response.bookNames;
       for (const title of response.bookNames) {
         // Now we deal with thisSingleBook!
-        console.log(`Title: {$title}`);
+        console.log(`Title: ${title}`);
       }
-      console.log(`The first book is: {$response.bookNames[0]}`);
-      console.log(`The author of the first book is: {$response.books[0].author}`);
+      console.log(`The first book is: ${response.bookNames[0]}`);
+      console.log(`The author of the first book is: ${response.books[0].author}`);
       console.log(`That's all!`);
-      console.log(`series_uuid: {$response.seriesUuid.seriesBytes}`);
+      console.log(`series_uuid: ${response.seriesUuid.seriesBytes}`);
     })
     .catch(err => {
       console.error(err);
@@ -676,10 +676,10 @@ function samplePublishSeries(shelfName, edition) {
 
 
 // [END canonical_core]
-// tslint:disable-next-line:no-any
 // [END canonical]
+// tslint:disable-next-line:no-any
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf_name', 'Math')
   .default('edition', 123)
   .argv;
@@ -719,8 +719,8 @@ function samplePublishSeries() {
 
 
 // [END canonical_core]
-// tslint:disable-next-line:no-any
 // [END canonical]
+// tslint:disable-next-line:no-any
 
 samplePublishSeries();
 ============== file: src/samples/v1/stream_books_request_streaming_server_prog.js ==============
@@ -743,8 +743,8 @@ function sampleStreamBooks() {
 
 
 // [END lovelace_core]
-// tslint:disable-next-line:no-any
 // [END lovelace]
+// tslint:disable-next-line:no-any
 
 sampleStreamBooks();
 ============== file: src/samples/v1/stream_shelves_request_streaming_server_empty.js ==============
@@ -767,8 +767,8 @@ function sampleStreamShelves() {
 
 
 // [END sample_core]
-// tslint:disable-next-line:no-any
 // [END sample]
+// tslint:disable-next-line:no-any
 
 sampleStreamShelves();
 ============== file: src/v1/doc/google/example/library/v1/doc_book_from_anywhere.js ==============

@@ -13,8 +13,8 @@
       {@standaloneSample(apiMethod, sample)}
 
       // [END {@sample.regionTag}_core]
-      // tslint:disable-next-line:no-any
       // [END {@sample.regionTag}]
+      // tslint:disable-next-line:no-any
 
       @if sample.sampleInitCode.argDefaultParams
         {@processCliArguments(sample)}
@@ -79,7 +79,7 @@
 @end
 
 @private processCliArguments(sample)
-  argv = require(`yargs`)
+  const argv = require(`yargs`)
     @join param : sample.sampleInitCode.argDefaultParams
       .default('{@param.cliFlagName}', {@renderInitValue(param.initValue)})
     @end
