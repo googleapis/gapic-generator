@@ -477,7 +477,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
       cursor = p + 2;
     }
     return ImmutableList.<String>builder()
-        .add(sb.toString().replace("'", "\\'"))
+        .add(
+            sb.toString()
+                .replace("\\", "\\\\")
+                .replace("'", "\\'")
+                .replace("\t", "\\t")
+                .replace("\n", "\\n"))
         .addAll(args)
         .build();
   }
