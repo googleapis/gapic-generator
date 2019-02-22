@@ -287,6 +287,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getMapKeyAccessorName(TypeModel keyType, String key) {
+    return String.format("[%s]", getModelTypeFormatter().renderPrimitiveValue(keyType, key));
+  }
+
+  @Override
   public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
     String arg = "$" + variable + String.join("", accessors);
     if (type != null && type instanceof ProtoTypeRef && type.isMessage()) {

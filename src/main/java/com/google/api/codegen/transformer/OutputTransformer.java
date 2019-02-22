@@ -398,7 +398,22 @@ public class OutputTransformer {
             valueSet.getId(),
             config.input());
       } else if (token == '{') {
-        throw new UnsupportedOperationException("map indexing not supported yet");
+        Preconditions.checkArgument(
+            type.isMap(),
+            "%s:%s: %s is not a map field",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId(),
+            config.input());
+        TypeModel keyType = type.getMapKeyType();
+        config.scan();
+        accessors.add(context.getNamer().getMapKeyAccessorName(keyType, config.tokenStr()));
+        type = type.getMapValueType();
+        Preconditions.checkArgument(
+            config.scan() == '}',
+            "%s:%s: expected '}': %s",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId(),
+            config.input());
       } else {
         throw new IllegalArgumentException(
             String.format(
