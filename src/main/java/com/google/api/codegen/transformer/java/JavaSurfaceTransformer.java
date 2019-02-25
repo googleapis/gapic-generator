@@ -846,6 +846,9 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableMap");
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    if (interfaceConfig.hasPageStreamingMethods()) {
+      typeTable.saveNicknameFor("com.google.common.util.concurrent.MoreExecutors");
+    }
     if (interfaceConfig.hasGrpcStreamingMethods(
         GrpcStreamingConfig.GrpcStreamingType.BidiStreaming)) {
       typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
