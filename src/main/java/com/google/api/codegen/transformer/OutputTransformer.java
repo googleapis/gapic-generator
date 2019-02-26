@@ -191,7 +191,7 @@ public class OutputTransformer {
     }
   }
 
-  private OutputView.LoopView arrayLoopView(
+  private OutputView.ArrayLoopView arrayLoopView(
       OutputSpec.LoopStatement loop,
       MethodContext context,
       SampleValueSet valueSet,
@@ -204,7 +204,7 @@ public class OutputTransformer {
     OutputView.VariableView accessor =
         accessorNewVariable(
             new Scanner(loop.getCollection()), context, valueSet, scope, loopVariable, true, form);
-    return OutputView.LoopView.newBuilder()
+    return OutputView.ArrayLoopView.newBuilder()
         .variableType(scope.getTypeName(loopVariable))
         .variableName(context.getNamer().localVarName(Name.from(loopVariable)))
         .collection(accessor)
@@ -216,7 +216,7 @@ public class OutputTransformer {
         .build();
   }
 
-  private OutputView mapLoopView(
+  private OutputView.MapLoopView mapLoopView(
       OutputSpec.LoopStatement loop,
       MethodContext context,
       SampleValueSet valueSet,

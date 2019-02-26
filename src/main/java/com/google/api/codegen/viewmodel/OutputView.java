@@ -24,7 +24,7 @@ public interface OutputView {
   public enum Kind {
     COMMENT,
     DEFINE,
-    LOOP,
+    ARRAY_LOOP,
     MAP_LOOP,
     PRINT
   }
@@ -80,7 +80,7 @@ public interface OutputView {
   }
 
   @AutoValue
-  abstract class LoopView implements OutputView {
+  abstract class ArrayLoopView implements OutputView {
     public abstract String variableType(); // TODO: Replace with appropriate type type
 
     public abstract String variableName();
@@ -90,11 +90,11 @@ public interface OutputView {
     public abstract ImmutableList<OutputView> body();
 
     public Kind kind() {
-      return Kind.LOOP;
+      return Kind.ARRAY_LOOP;
     }
 
     public static Builder newBuilder() {
-      return new AutoValue_OutputView_LoopView.Builder();
+      return new AutoValue_OutputView_ArrayLoopView.Builder();
     }
 
     @AutoValue.Builder
@@ -107,7 +107,7 @@ public interface OutputView {
 
       public abstract Builder body(ImmutableList<OutputView> val);
 
-      public abstract LoopView build();
+      public abstract ArrayLoopView build();
     }
   }
 

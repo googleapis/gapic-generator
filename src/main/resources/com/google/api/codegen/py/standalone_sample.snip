@@ -223,12 +223,12 @@
         {@processCommentView(view)}
       @case "DEFINE"
         {@processDefineView(view)}
-      @case "LOOP"
-        {@processLoopView(view)}
+      @case "ARRAY_LOOP"
+        {@processArrayLoopView(view)}
+      @case "MAP_LOOP"
+        {@processMapLoopView(view)}
       @case "PRINT"
         {@processPrintView(view)}
-      @case "MAP_LOOP"
-        {@""}
       @default
         $unhandledResponseForm: {@view}
     @end
@@ -252,9 +252,31 @@
   {@toComments(view.lines)}
 @end
 
-@private processLoopView(view)
+@private processArrayLoopView(view)
   for {@view.variableName} in {@variableField(view.collection)}:
     {@processOutputViews(view.body)}
+@end
+
+@private processMapLoopView(view)
+  @if and(view.keyVariableName, view.valueVariableName)
+    for {@view.keyVariableName}, {@view.valueVariableName} in {@variableField(view.map)}.items():
+
+  @else
+    @if view.keyVariableName
+      for {@view.keyVariableName}, _ in {@variableField(view.map)}.items():
+
+    @else
+      @if view.valueVariableName
+        for _, {@view.valueVariableName} in {@variableField(view.map)}.items():
+
+      @else
+        $unhandledMapLoopView: {@view}
+
+      @end
+    @end
+  @end
+    {@processOutputViews(view.body)}
+
 @end
 
 @private processDefineView(view)

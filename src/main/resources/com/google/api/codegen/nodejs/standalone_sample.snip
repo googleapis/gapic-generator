@@ -284,11 +284,12 @@
         {@processCommentView(view)}
       @case "DEFINE"
         {@processDefineView(view)}
-      @case "LOOP"
-        {@processLoopView(view)}
+      @case "ARRAY_LOOP"
+        {@processArrayLoopView(view)}
+      @case "MAP_LOOP"
+        {@processMapLoopView(view)}
       @case "PRINT"
         {@processPrintView(view)}
-      @case "MAP_LOOP"
       @default
         $unhandledResponseForm: {@view}
     @end
@@ -315,12 +316,34 @@
   @end
 @end
 
-@private processLoopView(view)
+@private processArrayLoopView(view)
   for (const {@view.variableName} of {@variableField(view.collection)}) {
     {@processOutputViews(view.body)}
   }
 @end
 
+@private processMapLoopView(view)
+  @if and(@view.keyVariableName, @view.valueVariableName)
+    for (const [{@view.keyVariableName}, {@view.valueVariableName}] of Object.entries({@variableField(view.map)})) {
+
+  @else
+    @if @view.keyVariableName
+      for (const {@view.keyVariableName} of Object.keys({@variableField(view.map)})) {
+
+    @else
+      @if @view.valueVariableName
+        for (const {@view.valueVariableName} of Object.values({@variableField(view.map)})) {
+
+      @else
+        $unhandledMapLoopView: {@view}
+
+      @end
+    @end
+  @end
+    {@processOutputViews(view.body)}
+  }
+
+@end
 
 @private variableField(arg)
   {@arg.variable}{@accessor(arg.accessors)}

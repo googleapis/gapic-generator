@@ -776,32 +776,33 @@ interfaces:
         - parameter: name%shelf_id
           sample_argument_name: shelf
       on_success:
+      - comment:
+        - "Testing interating over map fields when both key and value are specified."
       - loop:
           map: $resp.map_list_value_value
           key: my_key
           value: my_value
           body:
-          - comment:
-            - "Testing interating over map fields when both key and value are specified."
           - print:
             - "key: %s, value: %s"
             - my_key
             - my_value
+      - comment:
+        - "Testing interating over map fields when only key is specified."
       - loop:
           map: $resp.map_list_value_value
           key: another_key
           body:
-          - comment:
-            - "Testing interating over map fields when only key is specified."
           - print:
             - "key: %s"
             - another_key
+      - comment:
+        - "Testing interating over map fields when only value is specified."
       - loop:
+
           map: $resp.map_list_value_value
           value: another_value
           body:
-          - comment:
-            - "Testing interating over map fields when only value is specified."
           - print:
             - "value: %s"
             - another_value

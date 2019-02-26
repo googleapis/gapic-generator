@@ -4508,6 +4508,18 @@ def sample_get_big_book(shelf):
   print('Waiting for operation to complete...')
   response = operation.result()
 
+  # Testing interating over map fields when both key and value are specified.
+  for my_key, my_value in response.map_list_value_value.items():
+    print('key: {}, value: {}'.format(my_key, my_value))
+
+  # Testing interating over map fields when only key is specified.
+  for another_key, _ in response.map_list_value_value.items():
+    print('key: {}'.format(another_key))
+
+  # Testing interating over map fields when only value is specified.
+  for _, another_value in response.map_list_value_value.items():
+    print('value: {}'.format(another_value))
+
   print('name: {}'.format(response.name))
   print('author: {}'.format(response.author))
 
