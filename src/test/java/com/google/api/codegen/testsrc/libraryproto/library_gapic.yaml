@@ -787,24 +787,24 @@ interfaces:
             - "key: %s, value: %s"
             - my_key
             - my_value
-      # - comment:
-      #   - "Testing interating over map fields when only key is specified."
-      # - loop:
-      #     map: book.map_list_value_value
-      #     key: my_key
-      #     body:
-      #     - print:
-      #       - "key: %s"
-      #       - my_key
-      # - comment:
-      #   - "Testing interating over map fields when only value is specified."
-      # - loop:
-      #     map: book.map_list_value_value
-      #     value: my_value
-      #     body:
-      #     - print:
-      #       - "value: %s"
-      #       - my_value
+      - loop:
+          map: $resp.map_list_value_value
+          key: another_key
+          body:
+          - comment:
+            - "Testing interating over map fields when only key is specified."
+          - print:
+            - "key: %s"
+            - another_key
+      - loop:
+          map: $resp.map_list_value_value
+          value: another_value
+          body:
+          - comment:
+            - "Testing interating over map fields when only value is specified."
+          - print:
+            - "value: %s"
+            - another_value
       - print:
         - "name: %s"
         - $resp.name
