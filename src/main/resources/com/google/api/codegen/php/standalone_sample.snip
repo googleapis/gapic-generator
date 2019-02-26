@@ -408,15 +408,15 @@
 
 @private processMapLoopView(view)
     @if and(@view.keyVariableName, @view.valueVariableName)
-        foreach ({@variableField(view.map)} as {@view.keyVariableName} => {@view.valueVariableName}) {
+        foreach ({@variableField(view.map)} as ${@view.keyVariableName} => ${@view.valueVariableName}) {
 
     @else
         @if @view.keyVariableName
-            foreach (array_keys({@variableField(view.map)}) as {@view.keyVariableName}) {
+            foreach (array_keys({@variableField(view.map)}) as ${@view.keyVariableName}) {
 
         @else
             @if @view.valueVariableName
-                foreach ({@variableField(view.map)} as {@view.valueVariableName}) {
+                foreach ({@variableField(view.map)} as ${@view.valueVariableName}) {
 
             @else
                 $unhandledMapLoopView: {@view}
