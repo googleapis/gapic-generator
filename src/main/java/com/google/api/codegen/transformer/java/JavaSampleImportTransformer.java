@@ -112,6 +112,13 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
           }
           addOutputImports(context, loopView.body());
           break;
+        case MAP_LOOP:
+          OutputView.MapLoopView mapLoopView = (OutputView.MapLoopView) view;
+          typeTable.saveNicknameFor(mapLoopView.keyType());
+          typeTable.saveNicknameFor(mapLoopView.valueType());
+          typeTable.saveNicknameFor("java.util.Map");
+          addOutputImports(context, mapLoopView.body());
+          break;
         case COMMENT:
         case PRINT:
           break; // fall through

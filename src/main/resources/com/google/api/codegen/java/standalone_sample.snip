@@ -300,17 +300,19 @@
 
 @private processOutputViews(outputViews)
   @join view : outputViews on BREAK
-   @switch view.kind
-     @case "COMMENT"
-       {@processCommentView(view)}
-     @case "DEFINE"
-       {@processDefineView(view)}
-     @case "LOOP"
-       {@processLoopView(view)}
-     @case "PRINT"
-       {@processPrintView(view)}
-     @default
-       $unhandledResponseForm: {@view}
+    @switch view.kind
+      @case "COMMENT"
+        {@processCommentView(view)}
+      @case "DEFINE"
+        {@processDefineView(view)}
+      @case "LOOP"
+        {@processLoopView(view)}
+      @case "MAP_LOOP"
+        {@processMapLoopView(view)}
+      @case "PRINT"
+        {@processPrintView(view)}
+      @default
+        $unhandledResponseForm: {@view}
     @end
   @end
 @end
@@ -341,6 +343,18 @@
 
 @private processLoopView(view)
   for ({@view.variableType} {@view.variableName} : {@variableField(@view.collection)}) {
+    {@processOutputViews(@view.body)}
+  }
+@end
+
+@private processMapLoopView(view)
+  for (Map.Entry<{@view.keyType}, {@view.valueType}> entry : {@variableField(@view.map)}) {
+    @if view.keyVariableName
+      {@view.keyType} {@view.keyVariableName} = entry.getKey();
+    @end
+    @if view.valueVariableName
+      {@view.valueType} {@view.valueVariableName} = entry.getValue();
+    @end
     {@processOutputViews(@view.body)}
   }
 @end

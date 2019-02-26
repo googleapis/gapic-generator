@@ -25,6 +25,7 @@ public interface OutputView {
     COMMENT,
     DEFINE,
     LOOP,
+    MAP_LOOP,
     PRINT
   }
 
@@ -107,6 +108,48 @@ public interface OutputView {
       public abstract Builder body(ImmutableList<OutputView> val);
 
       public abstract LoopView build();
+    }
+  }
+
+  @AutoValue
+  abstract class MapLoopView implements OutputView {
+    public abstract String keyType();
+
+    @Nullable
+    public abstract String keyVariableName();
+
+    public abstract String valueType();
+
+    @Nullable
+    public abstract String valueVariableName();
+
+    public abstract VariableView map();
+
+    public abstract ImmutableList<OutputView> body();
+
+    public Kind kind() {
+      return Kind.MAP_LOOP;
+    }
+
+    public static Builder newBuilder() {
+      return new AutoValue_OutputView_MapLoopView.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+      public abstract Builder keyType(String val);
+
+      public abstract Builder keyVariableName(String val);
+
+      public abstract Builder valueType(String val);
+
+      public abstract Builder valueVariableName(String val);
+
+      public abstract Builder map(VariableView val);
+
+      public abstract Builder body(ImmutableList<OutputView> val);
+
+      public abstract MapLoopView build();
     }
   }
 
