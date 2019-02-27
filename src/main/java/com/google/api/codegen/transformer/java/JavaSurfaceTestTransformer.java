@@ -163,10 +163,11 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     SurfaceNamer namer = context.getNamer();
 
+    MethodConfig methodConfig = context.getMethodConfig(method);
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-    MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+    MethodContext methodContext = context.asFlattenedMethodContext(methodConfig, flatteningGroup);
     if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
       methodContext = methodContext.withResourceNamesInSamplesOnly();
     }
@@ -298,7 +299,8 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
           clientMethodType = ClientMethodType.FlattenedMethod;
         }
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-          MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+          MethodContext methodContext =
+              context.asFlattenedMethodContext(methodConfig, flatteningGroup);
           if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
             methodContext = methodContext.withResourceNamesInSamplesOnly();
             flatteningGroup = methodContext.getFlatteningConfig();

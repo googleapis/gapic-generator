@@ -19,6 +19,7 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
@@ -237,11 +238,12 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
 
     SurfaceNamer namer = context.getNamer();
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    MethodConfig methodConfig = context.getMethodConfig(method);
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
-            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
+            methodConfig, context.getInterfaceConfig().getSmokeTestConfig());
     GapicMethodContext flattenedMethodContext =
-        context.asFlattenedMethodContext(method, flatteningGroup);
+        context.asFlattenedMethodContext(methodConfig, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     OptionalArrayMethodView apiMethod = createSmokeTestCaseApiMethodView(flattenedMethodContext);

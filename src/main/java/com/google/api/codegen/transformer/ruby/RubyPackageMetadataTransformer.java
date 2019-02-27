@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.ruby;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
@@ -234,11 +235,12 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer<Pr
 
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       MethodModel method = interfaceConfig.getSmokeTestConfig().getMethod();
+      GapicMethodConfig methodConfig = context.getMethodConfig(method);
       FlatteningConfig flatteningGroup =
           testCaseTransformer.getSmokeTestFlatteningGroup(
-              context.getMethodConfig(method), interfaceConfig.getSmokeTestConfig());
+              methodConfig, interfaceConfig.getSmokeTestConfig());
       GapicMethodContext flattenedMethodContext =
-          context.asFlattenedMethodContext(method, flatteningGroup);
+          context.asFlattenedMethodContext(methodConfig, flatteningGroup);
       exampleMethods.add(
           createExampleApiMethodView(flattenedMethodContext, model.hasMultipleServices()));
     }

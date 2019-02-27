@@ -247,15 +247,15 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   public DiscoGapicMethodContext asFlattenedMethodContext(
-      MethodModel method, FlatteningConfig flatteningConfig) {
+      MethodConfig methodConfig, FlatteningConfig flatteningConfig) {
     return DiscoGapicMethodContext.create(
         this,
         getInterfaceName(),
         getProductConfig(),
         getSchemaTypeTable(),
         getNamer(),
-        (DiscoveryMethodModel) method,
-        getMethodConfig(method),
+        (DiscoveryMethodModel) (methodConfig.getMethodModel()),
+        (DiscoGapicMethodConfig) methodConfig,
         flatteningConfig,
         getFeatureConfig());
   }

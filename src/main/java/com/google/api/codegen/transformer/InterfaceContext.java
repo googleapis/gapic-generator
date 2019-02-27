@@ -59,7 +59,8 @@ public interface InterfaceContext extends TransformationContext {
   @Override
   InterfaceContext withNewTypeTable(String newPackageName);
 
-  MethodContext asFlattenedMethodContext(MethodModel method, FlatteningConfig flatteningConfig);
+  MethodContext asFlattenedMethodContext(
+      MethodConfig methodConfig, FlatteningConfig flatteningConfig);
 
   /* @return the methods in the interface. */
   List<? extends MethodModel> getInterfaceMethods();

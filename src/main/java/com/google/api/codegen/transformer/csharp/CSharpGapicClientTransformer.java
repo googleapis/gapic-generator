@@ -433,7 +433,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodConfig, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generateGrpcStreamingFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));
@@ -448,7 +448,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(
-                    requestMethodContext.getMethodModel(), flatteningGroup);
+                    requestMethodContext.getMethodConfig(), flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generateAsyncOperationFlattenedMethod(
                     methodContext,
@@ -476,7 +476,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodConfig, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generatePagedFlattenedAsyncMethod(
                     methodContext, pagedMethodAdditionalParams));
@@ -495,7 +495,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodConfig, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generateFlattenedAsyncMethod(
                     methodContext,

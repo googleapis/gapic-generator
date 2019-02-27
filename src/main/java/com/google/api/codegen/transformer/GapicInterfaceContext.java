@@ -176,14 +176,14 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
 
   @Override
   public GapicMethodContext asFlattenedMethodContext(
-      MethodModel method, FlatteningConfig flatteningConfig) {
+      MethodConfig methodConfig, FlatteningConfig flatteningConfig) {
     return GapicMethodContext.create(
         this,
         getInterface(),
         getProductConfig(),
         getImportTypeTable(),
         getNamer(),
-        getMethodConfig(method),
+        (GapicMethodConfig) methodConfig,
         flatteningConfig,
         getFeatureConfig());
   }

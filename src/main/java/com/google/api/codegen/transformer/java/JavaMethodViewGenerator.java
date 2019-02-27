@@ -67,7 +67,7 @@ public class JavaMethodViewGenerator {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodConfig, flatteningGroup);
             if (!FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
@@ -112,7 +112,7 @@ public class JavaMethodViewGenerator {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodConfig, flatteningGroup);
             if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
             }
@@ -136,7 +136,7 @@ public class JavaMethodViewGenerator {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodConfig, flatteningGroup);
             if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
             }

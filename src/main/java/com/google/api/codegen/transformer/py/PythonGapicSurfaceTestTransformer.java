@@ -22,6 +22,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
@@ -277,11 +278,12 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
         Joiner.on(File.separator).join("tests", "system", "gapic", version, filename);
 
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    MethodConfig methodConfig = context.getMethodConfig(method);
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
-            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
+            methodConfig, context.getInterfaceConfig().getSmokeTestConfig());
     GapicMethodContext flattenedMethodContext =
-        context.asFlattenedMethodContext(method, flatteningGroup);
+        context.asFlattenedMethodContext(methodConfig, flatteningGroup);
     OptionalArrayMethodView apiMethodView =
         createSmokeTestCaseApiMethodView(flattenedMethodContext);
 

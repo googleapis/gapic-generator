@@ -20,6 +20,7 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
@@ -144,11 +145,12 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
 
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       MethodModel method = interfaceConfig.getSmokeTestConfig().getMethod();
+      MethodConfig methodConfig = context.getMethodConfig(method);
       FlatteningConfig flatteningGroup =
           testCaseTransformer.getSmokeTestFlatteningGroup(
-              context.getMethodConfig(method), interfaceConfig.getSmokeTestConfig());
+              methodConfig, interfaceConfig.getSmokeTestConfig());
       GapicMethodContext flattenedMethodContext =
-          context.asFlattenedMethodContext(method, flatteningGroup);
+          context.asFlattenedMethodContext(methodConfig, flatteningGroup);
       exampleMethods.add(
           createExampleApiMethodView(flattenedMethodContext, model.hasMultipleServices()));
     }

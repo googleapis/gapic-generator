@@ -149,7 +149,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     if (methodConfig.isFlattening()) {
       for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
         MethodContext flattenedMethodContext =
-            context.asFlattenedMethodContext(method, flatteningGroup);
+            context.asFlattenedMethodContext(methodConfig, flatteningGroup);
         if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
           flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
         }

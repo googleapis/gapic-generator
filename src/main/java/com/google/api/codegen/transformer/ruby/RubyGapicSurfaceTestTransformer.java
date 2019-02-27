@@ -242,13 +242,14 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    MethodConfig methodConfig = context.getMethodConfig(method);
     TestCaseTransformer testCaseTransformer =
         new TestCaseTransformer(valueProducer, packageHasMultipleServices);
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
-            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
+            methodConfig, context.getInterfaceConfig().getSmokeTestConfig());
     GapicMethodContext flattenedMethodContext =
-        context.asFlattenedMethodContext(method, flatteningGroup);
+        context.asFlattenedMethodContext(methodConfig, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     OptionalArrayMethodView apiMethodView =
