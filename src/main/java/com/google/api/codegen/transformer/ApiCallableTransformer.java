@@ -92,7 +92,7 @@ public class ApiCallableTransformer {
 
     if (context.getMethodConfig().isLongRunningOperation()) {
       // Only Protobuf-based APIs have LongRunningOperations.
-      apiCallables.add(generateOperationApiCallable((GapicMethodContext) context));
+      apiCallables.add(generateOperationApiCallable(context));
     }
 
     return apiCallables;
@@ -167,7 +167,7 @@ public class ApiCallableTransformer {
     return pagedApiCallableBuilder.build();
   }
 
-  private ApiCallableView generateOperationApiCallable(GapicMethodContext context) {
+  private ApiCallableView generateOperationApiCallable(MethodContext context) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
 

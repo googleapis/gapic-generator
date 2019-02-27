@@ -28,11 +28,13 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Schema;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -185,7 +187,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   /* Returns a list of public methods, configured by FeatureConfig. Memoize the result. */
-  public Iterable<DiscoveryMethodModel> getPublicMethods() {
+  public List<DiscoveryMethodModel> getPublicMethods() {
     return getInterfaceConfigMethods()
         .stream()
         .filter(m -> isSupported(m))
@@ -194,7 +196,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   /* Returns a list of supported methods, configured by FeatureConfig. Memoize the result. */
-  public Iterable<DiscoveryMethodModel> getSupportedMethods() {
+  public List<DiscoveryMethodModel> getSupportedMethods() {
     return getPublicMethods();
   }
 
@@ -241,8 +243,11 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  public Iterable<MethodModel> getLongRunningMethods() {
-    return ImmutableList.of();
+  public List<MethodModel> getLongRunningMethods() {
+    return getSupportedMethods()
+        .stream()
+        .filter(m -> getMethodConfig(m).isLongRunningOperation())
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -320,5 +325,28 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   public String getServiceAddress() {
     return getDocument().baseUrl();
+  }
+
+  // TODO(andrealin): Parameterize this in Config instead of hard-coding it.
+  @Override
+  public String getOperationServiceName() {
+    return getOperationsScopeName() + "Operation";
+  }
+
+  private String getOperationsScopeName() {
+    // Hard-code Compute API's GlobalOperationClient in for now.
+    // We can expose this configuration in the GAPIC config later.
+    if (getLongRunningMethods().isEmpty()) {
+      return "$ Failed to find methods to be used by long running client.";
+    }
+    DiscoveryMethodModel methodModel = (DiscoveryMethodModel) getLongRunningMethods().get(0);
+    Map<String, Schema> pathParms = methodModel.getDiscoMethod().pathParams();
+    if (pathParms.containsKey("region")) {
+      return "Region";
+    } else if (pathParms.containsKey("zone")) {
+      return "Zone";
+    } else {
+      return "Global";
+    }
   }
 }

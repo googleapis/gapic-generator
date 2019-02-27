@@ -598,6 +598,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(method.asName().join(Name.from("operation", "callable")));
   }
 
+  public String getOperationClientName(InterfaceContext context) {
+    return publicClassName(Name.anyCamel(context.getOperationServiceName(), "client"));
+  }
+
   /** The name of the plain callable for the given method. */
   public String getCallableName(MethodModel method) {
     return privateFieldName(method.asName().join("callable"));

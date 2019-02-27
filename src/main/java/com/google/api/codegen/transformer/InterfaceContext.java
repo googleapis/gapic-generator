@@ -37,13 +37,13 @@ public interface InterfaceContext extends TransformationContext {
 
   FeatureConfig getFeatureConfig();
 
-  Iterable<? extends MethodModel> getSupportedMethods();
+  List<? extends MethodModel> getSupportedMethods();
 
-  Iterable<? extends MethodModel> getPublicMethods();
+  List<? extends MethodModel> getPublicMethods();
 
-  Iterable<MethodModel> getPageStreamingMethods();
+  List<MethodModel> getPageStreamingMethods();
 
-  Iterable<MethodModel> getBatchingMethods();
+  List<MethodModel> getBatchingMethods();
 
   MethodConfig getMethodConfig(MethodModel method);
 
@@ -67,7 +67,7 @@ public interface InterfaceContext extends TransformationContext {
   /* @return the methods in the interface that have method configs. */
   List<? extends MethodModel> getInterfaceConfigMethods();
 
-  Iterable<MethodModel> getLongRunningMethods();
+  List<MethodModel> getLongRunningMethods();
 
   String serviceTitle();
 
@@ -81,4 +81,7 @@ public interface InterfaceContext extends TransformationContext {
   ImportTypeTable getImportTypeTable();
 
   String getServiceAddress();
+
+  // TODO(andrealin): remove this and parameterize it in config instead.
+  String getOperationServiceName();
 }

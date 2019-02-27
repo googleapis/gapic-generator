@@ -382,7 +382,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   /* The name of the settings member name for the given method. */
   public String getOperationSettingsMemberName(MethodModel method) {
-    return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationSettings"));
+    return publicMethodName(Name.anyCamel(method.getSimpleName(), "OperationSettings"));
   }
 
   @Override

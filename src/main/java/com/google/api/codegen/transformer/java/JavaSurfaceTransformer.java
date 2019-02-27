@@ -212,6 +212,9 @@ public class JavaSurfaceTransformer {
     xapiClass.apiMethods(methods);
     xapiClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
     xapiClass.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
+    if (interfaceConfig.hasLongRunningOperations()) {
+      xapiClass.operationsClientName(context.getNamer().getOperationClientName(context));
+    }
     xapiClass.pagedResponseViews(generatePagedResponseWrappers(context));
     return xapiClass.build();
   }
