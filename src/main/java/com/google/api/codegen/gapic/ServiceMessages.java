@@ -20,8 +20,6 @@ import com.google.protobuf.Empty;
 /** Utility class with methods to work with service methods. */
 public class ServiceMessages {
 
-  private static final String LRO_TYPE = "google.longrunning.Operation";
-
   /** Returns true if the message is the empty message. */
   public boolean isEmptyType(TypeRef type) {
     return s_isEmptyType(type);
