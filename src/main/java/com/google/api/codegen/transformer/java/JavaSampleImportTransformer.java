@@ -137,10 +137,9 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
           typeTable.saveNicknameFor("java.util.HashMap");
           break;
         case ReadFileInitLine:
-          typeTable.saveNicknameFor("java.nio.Files");
-          typeTable.saveNicknameFor("java.nio.File");
-          typeTable.saveNicknameFor("java.nio.Paths");
-          typeTable.saveNicknameFor("java.nio.Path");
+          typeTable.saveNicknameFor("java.nio.file.Files");
+          typeTable.saveNicknameFor("java.nio.file.Path");
+          typeTable.saveNicknameFor("java.nio.file.Paths");
           break;
         case SimpleInitLine:
         case StructureInitLine:
