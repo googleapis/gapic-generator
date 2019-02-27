@@ -18,14 +18,15 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.packagegen.java.JavaPackageTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import java.util.Collections;
 import java.util.List;
 
 /** Generate packaging related views for Java Gapic samples */
@@ -54,7 +55,7 @@ public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
     }
     for (PackageMetadataView.Builder builder :
         this.generateMetadataViewBuilders(model, packageConfig, null)) {
-      builder.additionalDependencies(additionalSampleDependencies());
+      builder.additionalDependencies(additionalSampleDependencies(productionConfig));
       viewModels.add(builder.build());
     }
     return viewModels;
@@ -65,12 +66,20 @@ public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
     return Lists.newArrayList(getSnippetsOutput().keySet());
   }
 
-  private List<PackageDependencyView> additionalSampleDependencies() {
-    return Collections.singletonList(
+  private List<PackageDependencyView> additionalSampleDependencies(
+      GapicProductConfig productionConfig) {
+    PackageDependencyView apiCommonDep =
         PackageDependencyView.newBuilder()
             .group("com.google.api")
             .name("api-common")
             .versionBound(packageConfig.apiCommonVersionBound(TargetLanguage.JAVA))
-            .build());
+            .build();
+    PackageDependencyView commonsCliDep =
+        PackageDependencyView.newBuilder()
+            .group("commons-cli")
+            .name("commons-cli")
+            .versionBound(VersionBound.create("1.4", "1.4"))
+            .build();
+    return ImmutableList.<PackageDependencyView>of(apiCommonDep, commonsCliDep);
   }
 }
