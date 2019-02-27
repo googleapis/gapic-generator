@@ -175,7 +175,7 @@ public class OutputTransformer {
           "Bad format: `variable` must be specified if `collection` is specified.");
       Preconditions.checkArgument(
           loop.getKey().isEmpty() && loop.getValue().isEmpty(),
-          "Bad format: `key` and `value` can't be specified if `collection is specified.");
+          "Bad format: neither `key` nor `value` can be specified if `collection` is specified.");
       return arrayLoopView(loop, context, valueSet, localVars, form);
     } else if (!loop.getMap().isEmpty() && loop.getCollection().isEmpty()) {
       Preconditions.checkArgument(
@@ -183,7 +183,7 @@ public class OutputTransformer {
           "Bad format: `variable` can't be specified if `map` is specified.");
       Preconditions.checkArgument(
           !loop.getKey().isEmpty() || !loop.getValue().isEmpty(),
-          "Bad format: at least one of `key` and `value` must be specified if `collection is specified.");
+          "Bad format: at least one of `key` and `value` must be specified if `collection` is specified.");
       return mapLoopView(loop, context, valueSet, localVars, form);
     } else {
       throw new IllegalArgumentException(
