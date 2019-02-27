@@ -20,6 +20,7 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
@@ -27,6 +28,7 @@ import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -59,10 +61,25 @@ public class JavaMethodViewGenerator {
   public List<StaticLangApiMethodView> generateApiMethods(InterfaceContext context) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
 
+    ImmutableList.Builder<MethodContext> methodContextsToGenerate = ImmutableList.builder();
     for (MethodModel method : context.getSupportedMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodContext requestMethodContext = context.asRequestMethodContext(method);
+      MethodContext methodContext = context.asRequestMethodContext(method);
+      methodContextsToGenerate.add(methodContext);
+      if (methodContext.getMethodConfig().isLongRunningOperation()
+          && context.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
+        // If this was a Discovery LRO method, also generate the original flattening method.
+        // This prevents us from breaking clients when we turn on the LRO toggle for a method.
+        // TODO(andrealin): replace this check with a check for Discovery LRO config in configproto
+        methodContextsToGenerate.add(
+            context.asNonLroMethodContext(method, methodContext.getFlatteningConfig()));
+      }
+    }
 
+    for (MethodContext methodContext : methodContextsToGenerate.build()) {
+      MethodModel method = methodContext.getMethodModel();
+      // MethodConfig methodConfig = context.getMethodConfig(method);
+      MethodConfig methodConfig = methodContext.getMethodConfig();
+      MethodContext requestMethodContext = context.asRequestMethodContext(method);
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
@@ -136,7 +153,7 @@ public class JavaMethodViewGenerator {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodConfig, flatteningGroup);
             if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
             }

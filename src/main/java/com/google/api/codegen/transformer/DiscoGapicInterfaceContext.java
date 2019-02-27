@@ -266,6 +266,21 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
+  public DiscoGapicMethodContext asFlattenedMethodContext(
+      MethodConfig methodConfig, FlatteningConfig flatteningConfig) {
+    return DiscoGapicMethodContext.create(
+        this,
+        getInterfaceName(),
+        getProductConfig(),
+        getSchemaTypeTable(),
+        getNamer(),
+        (DiscoveryMethodModel) methodConfig.getMethodModel(),
+        (DiscoGapicMethodConfig) methodConfig,
+        flatteningConfig,
+        getFeatureConfig());
+  }
+
+  @Override
   public DiscoGapicMethodContext asRequestMethodContext(MethodModel method) {
     return DiscoGapicMethodContext.create(
         this,
@@ -276,6 +291,21 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         (DiscoveryMethodModel) method,
         getMethodConfig(method),
         null,
+        getFeatureConfig());
+  }
+
+  @Override
+  public DiscoGapicMethodContext asNonLroMethodContext(
+      MethodModel method, FlatteningConfig flatteningConfig) {
+    return DiscoGapicMethodContext.create(
+        this,
+        getInterfaceName(),
+        getProductConfig(),
+        getSchemaTypeTable(),
+        getNamer(),
+        (DiscoveryMethodModel) method,
+        getMethodConfig(method).asNonLroConfig(),
+        flatteningConfig,
         getFeatureConfig());
   }
 

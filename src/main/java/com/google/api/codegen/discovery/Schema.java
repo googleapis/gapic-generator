@@ -162,6 +162,13 @@ public abstract class Schema implements Node {
 
     // additionalProperties is a dynamically-keyed map in Discovery docs.
     boolean isMap = additionalProperties != null;
+    if (type == null) {
+      if (isMap) {
+        type = Type.ANY;
+      } else if (items != null) {
+        type = Type.OBJECT;
+      }
+    }
 
     Schema thisSchema =
         Schema.newBuilder()

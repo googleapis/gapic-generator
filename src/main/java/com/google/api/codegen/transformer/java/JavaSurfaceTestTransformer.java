@@ -54,6 +54,7 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -265,19 +266,39 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     return testFile.build();
   }
 
-  private List<TestCaseView> createTestCaseViews(InterfaceContext context) {
+  private List<TestCaseView> createTestCaseViews(InterfaceContext interfaceContext) {
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
-    for (MethodModel method : context.getSupportedMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
+
+    ImmutableList.Builder<MethodContext> methodContextsToGenerate = ImmutableList.builder();
+    for (MethodModel method : interfaceContext.getSupportedMethods()) {
+      MethodContext methodContext = interfaceContext.asRequestMethodContext(method);
+      methodContextsToGenerate.add(methodContext);
+      if (methodContext.getMethodConfig().isLongRunningOperation()
+          && interfaceContext
+              .getProductConfig()
+              .getTransportProtocol()
+              .equals(TransportProtocol.HTTP)) {
+        // If this was a Discovery LRO method, also generate the original flattening method.
+        // This prevents us from breaking clients when we turn on the LRO toggle for a method.
+        // TODO(andrealin): replace this check with a check for Discovery LRO config in configproto
+        methodContextsToGenerate.add(
+            interfaceContext.asNonLroMethodContext(method, methodContext.getFlatteningConfig()));
+      }
+    }
+
+    for (MethodContext context : methodContextsToGenerate.build()) {
+      MethodModel method = context.getMethodModel();
+      // MethodConfig methodConfig = context.getMethodConfig(method);
+      MethodConfig methodConfig = context.getMethodConfig();
       if (methodConfig.isGrpcStreaming()) {
         if (methodConfig.getGrpcStreamingType() == GrpcStreamingType.ClientStreaming) {
           // TODO: Add unit test generation for ClientStreaming methods
           // Issue: https://github.com/googleapis/toolkit/issues/946
           continue;
         }
-        addGrpcStreamingTestImports(context, methodConfig.getGrpcStreamingType());
-        MethodContext methodContext = context.asRequestMethodContext(method);
+        addGrpcStreamingTestImports(interfaceContext, methodConfig.getGrpcStreamingType());
+        MethodContext methodContext = interfaceContext.asRequestMethodContext(method);
         InitCodeContext initCodeContext =
             initCodeTransformer.createRequestInitCodeContext(
                 methodContext,
@@ -298,7 +319,8 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
           clientMethodType = ClientMethodType.FlattenedMethod;
         }
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-          MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+          MethodContext methodContext =
+              interfaceContext.asFlattenedMethodContext(methodConfig, flatteningGroup);
           if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
             methodContext = methodContext.withResourceNamesInSamplesOnly();
             flatteningGroup = methodContext.getFlatteningConfig();

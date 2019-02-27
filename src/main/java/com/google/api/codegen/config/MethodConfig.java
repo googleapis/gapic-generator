@@ -77,6 +77,8 @@ public abstract class MethodConfig {
   @Nullable
   public abstract LongRunningConfig getLongRunningConfig();
 
+  public abstract MethodConfig asNonLroConfig();
+
   /** Returns true if the method is a streaming method */
   public static boolean isGrpcStreamingMethod(MethodModel method) {
     return method.getRequestStreaming() || method.getResponseStreaming();
@@ -113,6 +115,14 @@ public abstract class MethodConfig {
 
   public boolean isLongRunningOperation() {
     return getLongRunningConfig() != null;
+  }
+
+  public boolean displayOutputType() {
+    if (isLongRunningOperation()) {
+      return getLongRunningConfig().getReturnType().isEmptyType();
+    } else {
+      return getMethodModel().isOutputTypeEmpty();
+    }
   }
 
   public ImmutableList<FieldModel> getRequiredFields() {

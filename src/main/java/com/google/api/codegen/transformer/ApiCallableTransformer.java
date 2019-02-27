@@ -91,7 +91,6 @@ public class ApiCallableTransformer {
     }
 
     if (context.getMethodConfig().isLongRunningOperation()) {
-      // Only Protobuf-based APIs have LongRunningOperations.
       apiCallables.add(generateOperationApiCallable(context));
     }
 

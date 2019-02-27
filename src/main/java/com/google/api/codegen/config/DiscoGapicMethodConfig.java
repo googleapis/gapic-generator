@@ -73,6 +73,11 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     return null;
   }
 
+  @Override
+  public boolean displayOutputType() {
+    return getMethodModel().isOutputTypeEmpty();
+  }
+
   /**
    * Creates an instance of DiscoGapicMethodConfig based on MethodConfigProto, linking it up with
    * the provided method. On errors, null will be returned, and diagnostics are reported to the diag
@@ -214,6 +219,27 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
           longRunningConfig,
           methodModel);
     }
+  }
+
+  @Override
+  public DiscoGapicMethodConfig asNonLroConfig() {
+    return new AutoValue_DiscoGapicMethodConfig(
+        getPageStreaming(),
+        getFlatteningConfigs(),
+        getRetryCodesConfigName(),
+        getRetrySettingsConfigName(),
+        getTimeout(),
+        getRequiredFieldConfigs(),
+        getOptionalFieldConfigs(),
+        getDefaultResourceNameTreatment(),
+        getBatching(),
+        getFieldNamePatterns(),
+        getSampleCodeInitFields(),
+        getSampleSpec(),
+        getVisibility(),
+        getReleaseLevel(),
+        null,
+        getMethodModel());
   }
 
   /* Return the list of "one of" instances associated with the fields. */

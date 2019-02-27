@@ -272,6 +272,30 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
   }
 
+  @Override
+  public GapicMethodConfig asNonLroConfig() {
+    return new AutoValue_GapicMethodConfig(
+        getMethodModel(),
+        getPageStreaming(),
+        getGrpcStreaming(),
+        getFlatteningConfigs(),
+        getRetryCodesConfigName(),
+        getRetrySettingsConfigName(),
+        getTimeout(),
+        getRequiredFieldConfigs(),
+        getOptionalFieldConfigs(),
+        getDefaultResourceNameTreatment(),
+        getBatching(),
+        getFieldNamePatterns(),
+        getSampleCodeInitFields(),
+        getSampleSpec(),
+        getRerouteToGrpcInterface(),
+        getVisibility(),
+        getReleaseLevel(),
+        null,
+        getHeaderRequestParams());
+  }
+
   private static List<String> findHeaderRequestParams(
       MethodConfigProto methodConfigProto, Method method, ProtoParser protoParser) {
     List<String> headerRequestParams =
