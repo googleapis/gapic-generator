@@ -24,7 +24,6 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
-import com.google.api.codegen.gapic.ServiceMessages;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
@@ -466,15 +465,11 @@ public class StaticLangApiMethodTransformer {
     return generateAsyncOperationFlattenedMethod(
         context,
         Collections.<ParamWithSimpleDoc>emptyList(),
-        ClientMethodType.AsyncOperationFlattenedMethod,
-        false);
+        ClientMethodType.AsyncOperationFlattenedMethod);
   }
 
   public StaticLangApiMethodView generateAsyncOperationFlattenedMethod(
-      MethodContext context,
-      List<ParamWithSimpleDoc> additionalParams,
-      ClientMethodType type,
-      boolean requiresOperationMethod) {
+      MethodContext context, List<ParamWithSimpleDoc> additionalParams, ClientMethodType type) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -491,9 +486,6 @@ public class StaticLangApiMethodTransformer {
         Synchronicity.Async,
         methodViewBuilder,
         Arrays.asList(CallingForm.LongRunningFlattenedAsync));
-    if (requiresOperationMethod) {
-      methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
-    }
     TypeModel returnType = context.getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
@@ -589,7 +581,6 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.releaseLevelAnnotation(
         namer.getReleaseAnnotation(context.getMethodConfig().getReleaseLevel()));
 
-    ServiceMessages messages = new ServiceMessages();
     if (context.isLongRunningMethodContext()) {
       methodViewBuilder.hasReturnValue(
           !context.getLongRunningConfig().getReturnType().isEmptyType());
