@@ -941,7 +941,6 @@ import com.google.example.library.v1.Book;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
-import com.google.protobuf.ListValue;
 
 // [START sample]
 /*
@@ -952,7 +951,6 @@ import com.google.protobuf.ListValue;
  * import com.google.example.library.v1.GetBookRequest;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ShelfBookName;
- * import com.google.protobuf.ListValue;
  */
 public class GetBookCallableCallableTestOnSuccessMap {
   public static void sampleGetBook() {
@@ -967,12 +965,9 @@ public class GetBookCallableCallableTestOnSuccessMap {
       // Do something
 
       Book response = future.get();
-      ListValue stringKeyVal = response.getMapListValueValueMap().get("key");
-      ListValue anotherStringKeyVal = response.getMapListValueValueMap().get("123");
       String intKeyVal = response.getMapStringValueMap().get(123);
       String booleanKeyVal = response.getMapBoolKeyMap().get(true);
       int mapValueField = response.getMapMessageValueMap().get("key").getField();
-      System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("key"));
       System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("quoted_key"));
       System.out.printf("Test printing enum fields of a map value: %s\n", response.getMapMessageValueMap().get("key").getAlignment());
     } catch (Exception exception) {
@@ -995,7 +990,6 @@ package com.google.example.examples.library.v1;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
-import com.google.protobuf.ListValue;
 
 // [START sample]
 /*
@@ -1004,7 +998,6 @@ import com.google.protobuf.ListValue;
  * import com.google.example.library.v1.Book;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ShelfBookName;
- * import com.google.protobuf.ListValue;
  */
 public class GetBookFlattenedTestOnSuccessMap {
   public static void sampleGetBook() {
@@ -1012,12 +1005,9 @@ public class GetBookFlattenedTestOnSuccessMap {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       Book response = libraryClient.getBook(name.toString());
-      ListValue stringKeyVal = response.getMapListValueValueMap().get("key");
-      ListValue anotherStringKeyVal = response.getMapListValueValueMap().get("123");
       String intKeyVal = response.getMapStringValueMap().get(123);
       String booleanKeyVal = response.getMapBoolKeyMap().get(true);
       int mapValueField = response.getMapMessageValueMap().get("key").getField();
-      System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("key"));
       System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("quoted_key"));
       System.out.printf("Test printing enum fields of a map value: %s\n", response.getMapMessageValueMap().get("key").getAlignment());
     } catch (Exception exception) {
@@ -1041,7 +1031,6 @@ import com.google.example.library.v1.Book;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
-import com.google.protobuf.ListValue;
 
 // [START sample]
 /*
@@ -1051,7 +1040,6 @@ import com.google.protobuf.ListValue;
  * import com.google.example.library.v1.GetBookRequest;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ShelfBookName;
- * import com.google.protobuf.ListValue;
  */
 public class GetBookRequestTestOnSuccessMap {
   public static void sampleGetBook() {
@@ -1062,12 +1050,9 @@ public class GetBookRequestTestOnSuccessMap {
         .setName(name.toString())
         .build();
       Book response = libraryClient.getBook(request);
-      ListValue stringKeyVal = response.getMapListValueValueMap().get("key");
-      ListValue anotherStringKeyVal = response.getMapListValueValueMap().get("123");
       String intKeyVal = response.getMapStringValueMap().get(123);
       String booleanKeyVal = response.getMapBoolKeyMap().get(true);
       int mapValueField = response.getMapMessageValueMap().get("key").getField();
-      System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("key"));
       System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("quoted_key"));
       System.out.printf("Test printing enum fields of a map value: %s\n", response.getMapMessageValueMap().get("key").getAlignment());
     } catch (Exception exception) {

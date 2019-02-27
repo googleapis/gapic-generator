@@ -334,20 +334,15 @@ interfaces:
         defaults:
         - name="test_on_success_map"
       on_success:
-        - define: string_key_val = $resp.map_list_value_value{key}
-        - define: another_string_key_val = $resp.map_list_value_value{123}
         - define: int_key_val = $resp.map_string_value{123}
         - define: boolean_key_val = $resp.map_bool_key{true}
-        - define: map_value_field = $resp.map_message_value{key}.field
-        - print:
-          - "Test printing map fields: %s"
-          - $resp.map_list_value_value{key}
+        - define: map_value_field = $resp.map_message_value{"key"}.field
         - print:
           - "Test printing map fields: %s"
           - $resp.map_list_value_value{"quoted_key"}
         - print:
           - "Test printing enum fields of a map value: %s"
-          - $resp.map_message_value{key}.alignment
+          - $resp.map_message_value{"key"}.alignment
     samples:
       in_code:
       - calling_forms: "foo"

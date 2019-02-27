@@ -600,12 +600,9 @@ function sampleGetBook() {
   client.getBook({name: formattedName})
     .then(responses => {
       const response = responses[0];
-      const stringKeyVal = response.mapListValueValue['key'];
-      const anotherStringKeyVal = response.mapListValueValue['123'];
       const intKeyVal = response.mapStringValue[123];
       const booleanKeyVal = response.mapBoolKey[true];
       const mapValueField = response.mapMessageValue['key'].field;
-      console.log(`Test printing map fields: ${response.mapListValueValue['key']}`);
       console.log(`Test printing map fields: ${response.mapListValueValue['quoted_key']}`);
       console.log(`Test printing enum fields of a map value: ${response.mapMessageValue['key'].alignment}`);
     })

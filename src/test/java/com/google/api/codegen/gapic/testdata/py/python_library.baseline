@@ -4631,12 +4631,9 @@ def sample_get_book():
   name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
   response = client.get_book(name)
-  string_key_val = response.map_list_value_value['key']
-  another_string_key_val = response.map_list_value_value['123']
   int_key_val = response.map_string_value[123]
   boolean_key_val = response.map_bool_key[True]
   map_value_field = response.map_message_value['key'].field
-  print('Test printing map fields: {}'.format(response.map_list_value_value['key']))
   print('Test printing map fields: {}'.format(response.map_list_value_value['quoted_key']))
   print('Test printing enum fields of a map value: {}'.format(enums.SomeMessage.Alignment(response.map_message_value['key'].alignment).name))
 
