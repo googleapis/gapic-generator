@@ -55,7 +55,7 @@ public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
     }
     for (PackageMetadataView.Builder builder :
         this.generateMetadataViewBuilders(model, packageConfig, null)) {
-      builder.additionalDependencies(additionalSampleDependencies(productionConfig));
+      builder.additionalDependencies(additionalSampleDependencies());
       viewModels.add(builder.build());
     }
     return viewModels;
@@ -66,8 +66,7 @@ public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
     return Lists.newArrayList(getSnippetsOutput().keySet());
   }
 
-  private List<PackageDependencyView> additionalSampleDependencies(
-      GapicProductConfig productionConfig) {
+  private List<PackageDependencyView> additionalSampleDependencies() {
     PackageDependencyView apiCommonDep =
         PackageDependencyView.newBuilder()
             .group("com.google.api")
