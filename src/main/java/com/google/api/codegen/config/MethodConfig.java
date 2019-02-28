@@ -74,8 +74,13 @@ public abstract class MethodConfig {
 
   public abstract ReleaseLevel getReleaseLevel();
 
+  /**
+   * package-private for internal use.
+   *
+   * @see MethodContext#getLongRunningConfig for fetching this object.
+   */
   @Nullable
-  public abstract LongRunningConfig getLroConfig();
+  abstract LongRunningConfig getLroConfig();
 
   /** Returns true if the method is a streaming method */
   public static boolean isGrpcStreamingMethod(MethodModel method) {

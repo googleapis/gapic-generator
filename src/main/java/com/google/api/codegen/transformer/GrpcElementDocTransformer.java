@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.gapic.GapicParser;
 import com.google.api.codegen.viewmodel.GrpcElementDocView;
@@ -37,7 +36,6 @@ import com.google.common.collect.ImmutableSortedSet;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -50,12 +48,8 @@ public class GrpcElementDocTransformer {
     ImmutableList.Builder<GrpcElementDocView> children = ImmutableList.builder();
     Set<String> lroTypes =
         productConfig
-            .getInterfaceConfigMap()
-            .values()
+            .getAllLongRunningConfigs()
             .stream()
-            .flatMap(i -> i.getMethodConfigs().stream())
-            .map(MethodConfig::getLroConfig)
-            .filter(Objects::nonNull)
             .flatMap(lro -> Stream.of(lro.getReturnType(), lro.getMetadataType()))
             .map(t -> ((ProtoTypeRef) t).getProtoType())
             .map(TypeRef::getMessageType)
