@@ -31,6 +31,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.LinkedList;
@@ -45,7 +46,40 @@ public class ProtocGeneratorMain {
   private static final ArtifactType DEFAULT_ARTIFACT_TYPE = GAPIC_CODE;
 
   public static void main(String[] args) {
-    // TODO(andrealin): Implement. Handle I/O interfacing with protoc.
+    System.err.println("Parsing System.in for CodeGeneratorRequest.");
+
+    CodeGeneratorResponse response;
+    CodeGeneratorRequest request;
+    int exitCode = 0;
+
+    try {
+      request = PluginProtos.CodeGeneratorRequest.parseFrom(System.in);
+    } catch (IOException e) {
+      System.err.println("Unable to parse CodeGeneraterRequest from stdin.");
+      System.exit(1);
+      return;
+    }
+
+    try {
+      response = generate(request);
+    } catch (Exception e) {
+      StringWriter sw = new StringWriter();
+      PrintWriter pw = new PrintWriter(sw);
+      e.printStackTrace(pw);
+      pw.flush();
+      response = PluginProtos.CodeGeneratorResponse.newBuilder().setError(sw.toString()).build();
+      exitCode = 1;
+    }
+
+    try {
+      response.writeTo(System.out);
+    } catch (IOException e) {
+      exitCode = 1;
+      System.err.println("Failed to write out CodeGeneratorResponse.");
+    }
+
+    System.out.flush();
+    System.exit(exitCode);
   }
 
   @VisibleForTesting
