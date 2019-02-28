@@ -39,7 +39,6 @@ public class GapicConfigProducerTest {
   public void missingConfigSchemaVersion() {
     TestDataLocator locator = MixedPathTestDataLocator.create(this.getClass());
     locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
-    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
     model =
         CodegenTestUtil.readModel(
             locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});

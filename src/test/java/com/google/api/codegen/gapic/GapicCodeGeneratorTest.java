@@ -47,7 +47,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
         protoPackage,
         clientPackage);
     this.baseNames = baseNames;
-    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
   }
 
   @Parameters(name = "{4}")
