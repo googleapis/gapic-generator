@@ -398,7 +398,48 @@ public class OutputTransformer {
             valueSet.getId(),
             config.input());
       } else if (token == '{') {
-        throw new UnsupportedOperationException("map indexing not supported yet");
+        // TODO: honor https://github.com/googleapis/gapic-generator/issues/2600
+        Preconditions.checkArgument(
+            type.isMap(),
+            "%s:%s: %s is not a map field",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId(),
+            config.input());
+        TypeModel keyType = type.getMapKeyType();
+        int keyToken = config.scan();
+        if (keyType.isStringType()) {
+          Preconditions.checkArgument(
+              keyToken == Scanner.STRING,
+              "%s:%s: expected string type for map key: %s",
+              context.getMethodModel().getSimpleName(),
+              valueSet.getId(),
+              config.input());
+        } else if (keyType.isBooleanType()) {
+          // `true` and `false` are the only valid literals here
+          Preconditions.checkArgument(
+              keyToken == Scanner.IDENT,
+              "%s:%s: expected boolean type for map key: %s",
+              context.getMethodModel().getSimpleName(),
+              valueSet.getId(),
+              config.input());
+        } else {
+          // Protobuf map keys can only be strings, booleans or integers
+          Preconditions.checkArgument(
+              keyToken == Scanner.INT,
+              "%s:%s: expected integral type for map key: %s",
+              context.getMethodModel().getSimpleName(),
+              valueSet.getId(),
+              config.input());
+        }
+        keyType.validateValue(config.tokenStr());
+        accessors.add(context.getNamer().getMapKeyAccessorName(keyType, config.tokenStr()));
+        type = type.getMapValueType();
+        Preconditions.checkArgument(
+            config.scan() == '}',
+            "%s:%s: expected '}': %s",
+            context.getMethodModel().getSimpleName(),
+            valueSet.getId(),
+            config.input());
       } else {
         throw new IllegalArgumentException(
             String.format(

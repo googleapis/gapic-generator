@@ -528,6 +528,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getMapKeyAccessorName(TypeModel keyType, String key) {
+    return String.format("[%s]", getModelTypeFormatter().renderPrimitiveValue(keyType, key));
+  }
+
+  @Override
   public String getSampleResponseVarName(MethodContext context, CallingForm form) {
     return Name.anyCamel(super.getSampleResponseVarName(context, form))
         .toLowerUnderscore()

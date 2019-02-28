@@ -930,6 +930,142 @@ public class GetBigBookOperationCallableLongRunningCallableWap2 {
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBookCallableCallableTestOnSuccessMap.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "test_on_success_map")
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.core.ApiFuture;
+ * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ */
+public class GetBookCallableCallableTestOnSuccessMap {
+  public static void sampleGetBook() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Book> future = libraryClient.getBookCallable().futureCall(request);
+
+      // Do something
+
+      Book response = future.get();
+      String intKeyVal = response.getMapStringValueMap().get(123);
+      String booleanKeyVal = response.getMapBoolKeyMap().get(true);
+      int mapValueField = response.getMapMessageValueMap().get("key").getField();
+      System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("quoted_key"));
+      System.out.printf("Test printing enum fields of a map value: %s\n", response.getMapMessageValueMap().get("key").getAlignment());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBook();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBookFlattenedTestOnSuccessMap.java ==============
+// DO NOT EDIT! This is a generated sample ("Flattened",  "test_on_success_map")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ */
+public class GetBookFlattenedTestOnSuccessMap {
+  public static void sampleGetBook() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      Book response = libraryClient.getBook(name.toString());
+      String intKeyVal = response.getMapStringValueMap().get(123);
+      String booleanKeyVal = response.getMapBoolKeyMap().get(true);
+      int mapValueField = response.getMapMessageValueMap().get("key").getField();
+      System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("quoted_key"));
+      System.out.printf("Test printing enum fields of a map value: %s\n", response.getMapMessageValueMap().get("key").getAlignment());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBook();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBookRequestTestOnSuccessMap.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ */
+public class GetBookRequestTestOnSuccessMap {
+  public static void sampleGetBook() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      Book response = libraryClient.getBook(request);
+      String intKeyVal = response.getMapStringValueMap().get(123);
+      String booleanKeyVal = response.getMapBoolKeyMap().get(true);
+      int mapValueField = response.getMapMessageValueMap().get("key").getField();
+      System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("quoted_key"));
+      System.out.printf("Test printing enum fields of a map value: %s\n", response.getMapMessageValueMap().get("key").getAlignment());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBook();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/MonologAboutBookCallableCallableStreamingClientProg.java ==============
 // DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "prog")
 package com.google.example.examples.library.v1;
