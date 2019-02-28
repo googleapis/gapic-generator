@@ -15,11 +15,11 @@
 
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import java.util.Arrays;

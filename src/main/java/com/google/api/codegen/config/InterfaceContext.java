@@ -12,15 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.config;
 
-import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TransformationContext;
 import java.util.List;
 
 /**

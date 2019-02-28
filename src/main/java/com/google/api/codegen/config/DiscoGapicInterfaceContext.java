@@ -12,22 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.config;
 
-import com.google.api.codegen.config.DiscoApiModel;
-import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
-import com.google.api.codegen.config.DiscoGapicMethodConfig;
-import com.google.api.codegen.config.DiscoInterfaceModel;
-import com.google.api.codegen.config.DiscoveryMethodModel;
-import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.SchemaTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
