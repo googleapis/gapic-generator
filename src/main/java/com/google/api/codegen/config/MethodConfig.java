@@ -77,7 +77,8 @@ public abstract class MethodConfig {
   /**
    * package-private for internal use.
    *
-   * @see MethodContext#getLongRunningConfig for fetching this object.
+   * @see MethodContext#getLongRunningConfig wraps this call, because there are times where we want
+   *     to generate the same API method as an LRO method and also as a non-LRO method.
    */
   @Nullable
   abstract LongRunningConfig getLroConfig();
