@@ -398,6 +398,7 @@ public class OutputTransformer {
             valueSet.getId(),
             config.input());
       } else if (token == '{') {
+        // TODO: honor https://github.com/googleapis/gapic-generator/issues/2600
         Preconditions.checkArgument(
             type.isMap(),
             "%s:%s: %s is not a map field",
