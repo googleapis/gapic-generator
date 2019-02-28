@@ -491,6 +491,77 @@ const argv = require(`yargs`)
   .argv;
 
 sampleGetBigBook(argv.shelf, argv.big_book_name);
+============== file: src/samples/v1/get_big_book_long_running_promise_await_wap.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap")
+'use strict';
+
+// [START hopper]
+// [START hopper_core]
+
+
+const library = require('@google-cloud/library').v1;
+
+async function sampleGetBigBook(shelf) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  const formattedName = client.bookPath(shelf, 'War and Peace');
+
+  // Create a job that you can wait for now, or get its result later
+  const [operation] = await client.getBigBook({name: formattedName})
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+
+  console.log(`name: ${response.name}`);
+  console.log(`author: ${response.author}`);
+}
+
+
+// [END hopper_core]
+// [END hopper]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .default('shelf', 'Novel')
+  .argv;
+
+sampleGetBigBook(argv.shelf);
+============== file: src/samples/v1/get_big_book_long_running_promise_await_wap2.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap2")
+'use strict';
+
+// [START hopper]
+// [START hopper_core]
+
+
+const library = require('@google-cloud/library').v1;
+
+async function sampleGetBigBook(shelf, bigBookName) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  // const bigBookName = 'War and Peace';
+  const formattedName = client.bookPath(shelf, bigBookName);
+
+  // Create a job that you can wait for now, or get its result later
+  const [operation] = await client.getBigBook({name: formattedName})
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+
+  console.log(response);
+}
+
+
+// [END hopper_core]
+// [END hopper]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .default('shelf', 'Novel')
+  .default('big_book_name', 'War and Peace')
+  .argv;
+
+sampleGetBigBook(argv.shelf, argv.big_book_name);
 ============== file: src/samples/v1/get_big_book_long_running_promise_wap.js ==============
 // DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
 'use strict';
@@ -5238,6 +5309,8 @@ class LibraryServiceClient {
    *   .catch(err => {
    *     console.error(err);
    *   });
+   *
+   * $unhandledCallingForm: LongRunningPromiseAwait in sample "AutoValue_OptionalArrayMethodView"$
    */
   getBigBook(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -5321,6 +5394,8 @@ class LibraryServiceClient {
    *   .catch(err => {
    *     console.error(err);
    *   });
+   *
+   * $unhandledCallingForm: LongRunningPromiseAwait in sample "AutoValue_OptionalArrayMethodView"$
    */
   getBigNothing(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
