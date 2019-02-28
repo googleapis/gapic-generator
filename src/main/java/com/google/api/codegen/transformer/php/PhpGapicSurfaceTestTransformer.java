@@ -173,7 +173,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (MethodModel method : context.getSupportedMethods()) {
-      GapicMethodContext methodContext = context.asRequestMethodContext(method);
+      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
 
       if (methodContext.getMethodConfig().getGrpcStreamingType()
           == GrpcStreamingType.ClientStreaming) {
@@ -189,7 +189,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
       }
 
       ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
-      if (methodContext.getMethodConfig().isLongRunningOperation()) {
+      if (methodContext.isLongRunningMethodContext()) {
         clientMethodType = ClientMethodType.LongRunningOptionalArrayMethod;
       } else if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
@@ -237,11 +237,12 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
 
     SurfaceNamer namer = context.getNamer();
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    GapicMethodContext defaultMethodContext = context.asDynamicMethodContext(method);
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
     GapicMethodContext flattenedMethodContext =
-        context.asFlattenedMethodContext(method, flatteningGroup);
+        context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     OptionalArrayMethodView apiMethod = createSmokeTestCaseApiMethodView(flattenedMethodContext);

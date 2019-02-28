@@ -313,7 +313,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     }
 
     String returnTypeName =
-        methodConfig.isLongRunningOperation()
+        methodContext.isLongRunningMethodContext()
             ? "google.gax._OperationFuture"
             : getModelTypeFormatter().getFullNameFor(outputType);
     String classInfo =

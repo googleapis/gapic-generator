@@ -389,7 +389,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
       List<ApiCallSettingsView> calls =
           apiCallableTransformer.generateApiCallableSettings(
-              context.asRequestMethodContext(method));
+              context.asDynamicMethodContext(method));
       settingsMembers.addAll(calls);
     }
     return settingsMembers;
@@ -400,7 +400,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     List<ModifyMethodView> modifyMethods = new ArrayList<>();
     Set<String> modifyTypeNames = new HashSet<>();
     for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
-      MethodContext methodContext = context.asRequestMethodContext(method);
+      MethodContext methodContext = context.asDynamicMethodContext(method);
       String inputTypeFullName = methodContext.getMethodModel().getInputFullName();
       if (modifyTypeNames.contains(inputTypeFullName)) {
         continue;
@@ -427,7 +427,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodContext requestMethodContext = context.asRequestMethodContext(method);
+      MethodContext requestMethodContext = context.asDynamicMethodContext(method);
       if (methodConfig.isGrpcStreaming()) {
         // Only for protobuf-based APIs.
         if (methodConfig.isFlattening()) {
@@ -441,14 +441,14 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
         }
         apiMethods.add(
             apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(requestMethodContext));
-      } else if (methodConfig.isLongRunningOperation()) {
+      } else if (requestMethodContext.isLongRunningMethodContext()) {
         // Only for protobuf-based APIs.
         GapicMethodContext gapicMethodContext = (GapicMethodContext) requestMethodContext;
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(
-                    requestMethodContext.getMethodModel(), flatteningGroup);
+                    requestMethodContext, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generateAsyncOperationFlattenedMethod(
                     methodContext,
@@ -476,7 +476,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generatePagedFlattenedAsyncMethod(
                     methodContext, pagedMethodAdditionalParams));
@@ -495,7 +495,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generateFlattenedAsyncMethod(
                     methodContext,

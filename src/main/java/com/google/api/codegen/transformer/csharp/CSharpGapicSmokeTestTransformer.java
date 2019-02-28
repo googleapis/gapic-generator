@@ -122,10 +122,10 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<P
       return null;
     }
     MethodModel method = smokeTestConfig.getMethod();
+    GapicMethodContext defaultMethodContext = context.asDynamicMethodContext(method);
     FlatteningConfig flatteningGroup =
-        testCaseTransformer.getSmokeTestFlatteningGroup(
-            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-    GapicMethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+        testCaseTransformer.getSmokeTestFlatteningGroup(defaultMethodContext.getMethodConfig(), context.getInterfaceConfig().getSmokeTestConfig());
+    GapicMethodContext methodContext = context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
 
     smokeTestBuilder.name(name);
     smokeTestBuilder.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
@@ -156,7 +156,7 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<P
       String callerResponseTypeName =
           namer.getAndSaveCallerPagedResponseTypeName(methodContext, resourceFieldConfig);
       apiMethodView.responseTypeName(callerResponseTypeName);
-    } else if (methodConfig.isLongRunningOperation()) {
+    } else if (methodContext.isLongRunningMethodContext()) {
       ArrayList<ParamWithSimpleDoc> emptyParams = new ArrayList<ParamWithSimpleDoc>();
       apiMethodView =
           apiMethodTransformer

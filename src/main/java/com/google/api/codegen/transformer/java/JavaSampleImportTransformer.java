@@ -172,6 +172,6 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
   private void saveResponseTypeNameForLongRunningMethod(MethodContext context) {
     context
         .getTypeTable()
-        .getAndSaveNicknameFor(context.getMethodConfig().getLongRunningConfig().getReturnType());
+        .getAndSaveNicknameFor(context.getLongRunningConfig().getReturnType());
   }
 }

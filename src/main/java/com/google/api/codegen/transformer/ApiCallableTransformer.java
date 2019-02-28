@@ -65,7 +65,7 @@ public class ApiCallableTransformer {
         continue;
       }
       callableMembers.addAll(
-          generateStaticLangApiCallables(context.asRequestMethodContext(method)));
+          generateStaticLangApiCallables(context.asDynamicMethodContext(method)));
     }
 
     return callableMembers;
@@ -75,7 +75,7 @@ public class ApiCallableTransformer {
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
 
     for (MethodModel method : context.getSupportedMethods()) {
-      settingsMembers.addAll(generateApiCallableSettings(context.asRequestMethodContext(method)));
+      settingsMembers.addAll(generateApiCallableSettings(context.asDynamicMethodContext(method)));
     }
 
     return settingsMembers;
@@ -90,7 +90,7 @@ public class ApiCallableTransformer {
       apiCallables.add(generatePagedApiCallable(context));
     }
 
-    if (context.getMethodConfig().isLongRunningOperation()) {
+    if (context.isLongRunningMethodContext()) {
       // Only Protobuf-based APIs have LongRunningOperations.
       apiCallables.add(generateOperationApiCallable((GapicMethodContext) context));
     }
@@ -257,7 +257,7 @@ public class ApiCallableTransformer {
       settings.add(generateApiCallableSettings(context, ApiCallableImplType.PagedApiCallable));
     } else if (methodConfig.isBatching()) {
       settings.add(generateApiCallableSettings(context, ApiCallableImplType.BatchingApiCallable));
-    } else if (methodConfig.isLongRunningOperation()) {
+    } else if (context.isLongRunningMethodContext()) {
       if (context.getFeatureConfig().enableRawOperationCallSettings()) {
         settings.add(generateApiCallableSettings(context, ApiCallableImplType.SimpleApiCallable));
       }
@@ -368,7 +368,7 @@ public class ApiCallableTransformer {
       if (excludeMixins && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
         continue;
       }
-      callables.add(generateMethodDescriptor(context.asRequestMethodContext(method)));
+      callables.add(generateMethodDescriptor(context.asDynamicMethodContext(method)));
     }
 
     return callables;

@@ -124,7 +124,7 @@ public class DynamicLangApiMethodTransformer {
       apiMethod.pageStreamingView(
           pageStreamingTransformer.generateDescriptor(
               context.getSurfaceInterfaceContext(), method));
-    } else if (context.getMethodConfig().isLongRunningOperation()) {
+    } else if (context.isLongRunningMethodContext()) {
       apiMethod.longRunningView(lroTransformer.generateDetailView(context));
       apiMethod.type(ClientMethodType.LongRunningOptionalArrayMethod);
     } else {

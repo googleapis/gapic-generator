@@ -83,7 +83,7 @@ public class MockServiceTransformer {
       if (context.getMethodConfig(method) == null) {
         continue;
       }
-      MethodContext methodContext = context.asRequestMethodContext(method);
+      MethodContext methodContext = context.asDynamicMethodContext(method);
       String requestTypeName =
           method.getAndSaveRequestTypeName(methodContext.getTypeTable(), methodContext.getNamer());
       String responseTypeName =

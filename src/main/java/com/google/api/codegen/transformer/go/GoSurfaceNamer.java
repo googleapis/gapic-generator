@@ -158,8 +158,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
-    return getAndSaveOperationResponseTypeName(method.getSimpleName());
+      MethodContext methodContext, ImportTypeTable typeTable) {
+    return getAndSaveOperationResponseTypeName(methodContext.getMethodModel().getSimpleName());
   }
 
   @VisibleForTesting

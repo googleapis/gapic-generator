@@ -361,7 +361,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   @Override
   public boolean hasLongRunningOperations() {
     for (MethodConfig methodConfig : getMethodConfigs()) {
-      if (methodConfig.isLongRunningOperation()) {
+      if (methodConfig.getLroConfig() != null) {
         return true;
       }
     }

@@ -82,7 +82,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   @Nullable
   public abstract PageStreamingDescriptorView pageStreamingView();
 
-  public boolean isLongRunningOperation() {
+  public boolean isLongRunningMethodContext() {
     return longRunningView() != null;
   }
 

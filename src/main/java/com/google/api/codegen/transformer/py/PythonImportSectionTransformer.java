@@ -104,7 +104,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   private List<ImportFileView> generateGrpcTransportAppImports(GapicInterfaceContext context) {
     Map<String, InterfaceModel> interfaces = new TreeMap<>();
     for (MethodModel method : context.getSupportedMethods()) {
-      InterfaceModel targetInterface = context.asRequestMethodContext(method).getTargetInterface();
+      InterfaceModel targetInterface = context.asDynamicMethodContext(method).getTargetInterface();
       interfaces.put(targetInterface.getFullName(), targetInterface);
     }
     ModelTypeTable typeTable = context.getImportTypeTable().cloneEmpty();

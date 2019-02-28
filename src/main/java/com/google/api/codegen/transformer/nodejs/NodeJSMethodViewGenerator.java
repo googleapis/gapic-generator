@@ -63,7 +63,7 @@ public class NodeJSMethodViewGenerator {
               initContext,
               packageHasMultipleServices,
               Arrays.asList(CallingForm.RequestAsyncPagedAll, CallingForm.RequestAsyncPaged));
-    } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
+    } else if (methodContext.isLongRunningMethodContext()) {
       methodView =
           clientMethodTransformer.generateLongRunningMethod(
               methodContext,

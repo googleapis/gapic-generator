@@ -156,6 +156,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (MethodModel method : context.getSupportedMethods()) {
+      GapicMethodContext defaultMethodContext = context.asDynamicMethodContext(method);
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (methodConfig.isGrpcStreaming()) {
         // TODO: Add support for streaming methods
@@ -165,7 +166,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         if (methodConfig.isPageStreaming()) {
           // TODO: Add support for page-streaming methods
           continue;
-        } else if (methodConfig.isLongRunningOperation()) {
+        } else if (defaultMethodContext.isLongRunningMethodContext()) {
           // TODO: Add support for LRO methods
           continue;
         } else {
@@ -176,10 +177,10 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
           // TODO: Add support for rerouted methods
           continue;
         }
-        GapicMethodContext requestContext = context.asRequestMethodContext(method);
+        GapicMethodContext requestContext = context.asDynamicMethodContext(method);
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           GapicMethodContext methodContext =
-              context.asFlattenedMethodContext(method, flatteningGroup);
+              context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
           testCaseViews.add(
               createFlattenedTestCase(
                   methodContext,
@@ -205,12 +206,12 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
                 requestContext, methodConfig, testNameTable, Synchronicity.Async));
       } else {
         if (methodConfig.isPageStreaming()
-            || methodConfig.isLongRunningOperation()
+            || defaultMethodContext.isLongRunningMethodContext()
             || methodConfig.getRerouteToGrpcInterface() != null) {
           // TODO: Add support for page-streaming, LRO, and rerouted methods
           continue;
         }
-        GapicMethodContext requestContext = context.asRequestMethodContext(method);
+        GapicMethodContext requestContext = context.asDynamicMethodContext(method);
         testCaseViews.add(
             createRequestObjectTestCase(
                 requestContext, methodConfig, testNameTable, Synchronicity.Sync));

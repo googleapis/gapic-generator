@@ -26,6 +26,7 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.InterfaceContext;
@@ -161,12 +162,13 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     addSmokeTestImports(context);
 
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    MethodContext defaultMethodContext = context.asDynamicMethodContext(method);
     SurfaceNamer namer = context.getNamer();
 
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-    MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+    MethodContext methodContext = context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
     if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
       methodContext = methodContext.withResourceNamesInSamplesOnly();
     }
@@ -201,7 +203,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
       }
     } else if (methodConfig.isGrpcStreaming()) {
       throw new UnsupportedOperationException("Unsupported smoke test type: grpc-streaming");
-    } else if (methodConfig.isLongRunningOperation()) {
+    } else if (methodContext.isLongRunningMethodContext()) {
       if (methodContext.isFlattenedMethodContext()) {
         initialApiMethodView =
             apiMethodTransformer.generateAsyncOperationFlattenedMethod(methodContext);
@@ -277,7 +279,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
           continue;
         }
         addGrpcStreamingTestImports(context, methodConfig.getGrpcStreamingType());
-        MethodContext methodContext = context.asRequestMethodContext(method);
+        MethodContext methodContext = context.asDynamicMethodContext(method);
         InitCodeContext initCodeContext =
             initCodeTransformer.createRequestInitCodeContext(
                 methodContext,
@@ -289,16 +291,17 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
             testCaseTransformer.createTestCaseView(
                 methodContext, testNameTable, initCodeContext, ClientMethodType.CallableMethod));
       } else if (methodConfig.isFlattening()) {
+        MethodContext defaultMethodContext = context.asDynamicMethodContext(method);
         ClientMethodType clientMethodType;
         if (methodConfig.isPageStreaming()) {
           clientMethodType = ClientMethodType.PagedFlattenedMethod;
-        } else if (methodConfig.isLongRunningOperation()) {
+        } else if (defaultMethodContext.isLongRunningMethodContext()) {
           clientMethodType = ClientMethodType.AsyncOperationFlattenedMethod;
         } else {
           clientMethodType = ClientMethodType.FlattenedMethod;
         }
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-          MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+          MethodContext methodContext = context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
           if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
             methodContext = methodContext.withResourceNamesInSamplesOnly();
             flatteningGroup = methodContext.getFlatteningConfig();

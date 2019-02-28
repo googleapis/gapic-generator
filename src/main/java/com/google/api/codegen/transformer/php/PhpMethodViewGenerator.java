@@ -58,7 +58,7 @@ public class PhpMethodViewGenerator {
               initContext,
               false,
               Arrays.asList(CallingForm.RequestPaged, CallingForm.RequestPagedAll));
-    } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
+    } else if (methodContext.isLongRunningMethodContext()) {
       methodView =
           clientMethodTransformer.generateLongRunningMethod(
               methodContext,

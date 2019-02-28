@@ -263,14 +263,14 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (MethodModel method : methods) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodContext methodContext = context.asRequestMethodContext(method);
+      MethodContext methodContext = context.asDynamicMethodContext(method);
 
       if (method.getRequestStreaming() || method.getResponseStreaming()) {
         apiMethods.add(
             apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext));
       } else if (methodConfig.isPageStreaming()) {
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
-      } else if (methodConfig.isLongRunningOperation()) {
+      } else if (methodContext.isLongRunningMethodContext()) {
         apiMethods.add(apiMethodTransformer.generateOperationRequestObjectMethod(methodContext));
       } else {
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
@@ -354,7 +354,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
       InterfaceContext context,
       ImportContext importContext,
       Iterable<? extends MethodModel> methods) {
-    for (ImportKind kind : getImportKinds(context.getInterfaceConfig(), methods)) {
+    for (ImportKind kind : getImportKinds(context, methods)) {
       ImmutableList<String> imps = CONTEXTUAL_IMPORTS.get(importContext, kind);
       if (imps != null) {
         for (String imp : imps) {
@@ -365,14 +365,14 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   }
 
   private Set<ImportKind> getImportKinds(
-      InterfaceConfig interfaceConfig, Iterable<? extends MethodModel> methods) {
+      InterfaceContext interfaceContext, Iterable<? extends MethodModel> methods) {
     EnumSet<ImportKind> kinds = EnumSet.noneOf(ImportKind.class);
     for (MethodModel method : methods) {
       if (method.getResponseStreaming()) {
         kinds.add(ImportKind.SERVER_STREAM);
       }
-      MethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
-      if (methodConfig.isLongRunningOperation()) {
+      MethodConfig methodConfig = interfaceContext.getMethodConfig(method);
+      if (interfaceContext.asDynamicMethodContext(method).isLongRunningMethodContext()) {
         kinds.add(ImportKind.LRO);
       }
       if (methodConfig.isPageStreaming()) {

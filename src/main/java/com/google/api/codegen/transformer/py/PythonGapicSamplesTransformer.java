@@ -134,9 +134,9 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
   private void addMethodImports(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     GapicMethodConfig methodConfig = context.getMethodConfig();
-    if (methodConfig.isLongRunningOperation()) {
-      typeTable.getAndSaveNicknameFor(methodConfig.getLongRunningConfig().getReturnType());
-      typeTable.getAndSaveNicknameFor(methodConfig.getLongRunningConfig().getMetadataType());
+    if (context.isLongRunningMethodContext()) {
+      typeTable.getAndSaveNicknameFor(context.getLongRunningConfig().getReturnType());
+      typeTable.getAndSaveNicknameFor(context.getLongRunningConfig().getMetadataType());
     }
 
     typeTable.getAndSaveNicknameFor(context.getMethod().getInputType());

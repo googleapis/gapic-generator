@@ -246,7 +246,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
 
     for (MethodModel method : context.getLongRunningMethods()) {
       GapicMethodContext methodContext = context.asDynamicMethodContext(method);
-      LongRunningConfig lroConfig = methodContext.getMethodConfig().getLongRunningConfig();
+      LongRunningConfig lroConfig = methodContext.getLongRunningConfig();
       TypeModel returnType = lroConfig.getReturnType();
       TypeModel metadataType = lroConfig.getMetadataType();
       result.add(

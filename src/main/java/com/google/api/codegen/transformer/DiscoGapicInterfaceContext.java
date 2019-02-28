@@ -247,30 +247,17 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   public DiscoGapicMethodContext asFlattenedMethodContext(
-      MethodModel method, FlatteningConfig flatteningConfig) {
+      MethodContext methodContext, FlatteningConfig flatteningConfig) {
     return DiscoGapicMethodContext.create(
         this,
         getInterfaceName(),
         getProductConfig(),
         getSchemaTypeTable(),
         getNamer(),
-        (DiscoveryMethodModel) method,
-        getMethodConfig(method),
+        (DiscoveryMethodModel) methodContext.getMethodModel(),
+        (DiscoGapicMethodConfig) methodContext.getMethodConfig(),
         flatteningConfig,
-        getFeatureConfig());
-  }
-
-  @Override
-  public DiscoGapicMethodContext asRequestMethodContext(MethodModel method) {
-    return DiscoGapicMethodContext.create(
-        this,
-        getInterfaceName(),
-        getProductConfig(),
-        getSchemaTypeTable(),
-        getNamer(),
-        (DiscoveryMethodModel) method,
-        getMethodConfig(method),
-        null,
+        methodContext.getLongRunningConfig(),
         getFeatureConfig());
   }
 
@@ -285,6 +272,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         (DiscoveryMethodModel) method,
         getMethodConfig(method),
         null,
+        getMethodConfig(method).getLroConfig(),
         getFeatureConfig());
   }
 
@@ -299,16 +287,17 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   public DiscoGapicMethodContext asFlattenedMethodContext(
-      MethodModel method, FlatteningConfig flatteningConfig, String interfaceName) {
+      MethodContext methodContext, FlatteningConfig flatteningConfig, String interfaceName) {
     return DiscoGapicMethodContext.create(
         this,
         interfaceName,
         getProductConfig(),
         getSchemaTypeTable(),
         getNamer(),
-        (DiscoveryMethodModel) method,
-        getMethodConfig(method),
+        (DiscoveryMethodModel) methodContext.getMethodModel(),
+        (DiscoGapicMethodConfig) methodContext.getMethodConfig(),
         flatteningConfig,
+        methodContext.getLongRunningConfig(),
         getFeatureConfig());
   }
 

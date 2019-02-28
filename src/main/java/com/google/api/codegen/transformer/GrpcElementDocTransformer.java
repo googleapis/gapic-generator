@@ -54,7 +54,7 @@ public class GrpcElementDocTransformer {
             .values()
             .stream()
             .flatMap(i -> i.getMethodConfigs().stream())
-            .map(MethodConfig::getLongRunningConfig)
+            .map(MethodConfig::getLroConfig)
             .filter(Objects::nonNull)
             .flatMap(lro -> Stream.of(lro.getReturnType(), lro.getMetadataType()))
             .map(t -> ((ProtoTypeRef) t).getProtoType())

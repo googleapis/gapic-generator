@@ -167,11 +167,11 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer<Pro
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (MethodModel method : context.getSupportedMethods()) {
-      GapicMethodContext methodContext = context.asRequestMethodContext(method);
+      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
       ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
       if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedRequestObjectMethod;
-      } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
+      } else if (methodContext.isLongRunningMethodContext()) {
         clientMethodType = ClientMethodType.OperationRequestObjectMethod;
       }
       InitCodeContext initCodeContext =
@@ -192,7 +192,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer<Pro
     SurfaceNamer namer = context.getNamer();
 
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
-    MethodContext methodContext = context.asRequestMethodContext(method);
+    MethodContext methodContext = context.asDynamicMethodContext(method);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     StaticLangApiMethodView apiMethodView = createSmokeTestCaseApiMethodView(methodContext);

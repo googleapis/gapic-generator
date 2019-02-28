@@ -18,6 +18,7 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -45,6 +46,10 @@ public interface MethodContext {
 
   @Nullable
   FlatteningConfig getFlatteningConfig();
+
+  LongRunningConfig getLongRunningConfig();
+
+  boolean isLongRunningMethodContext();
 
   FeatureConfig getFeatureConfig();
 

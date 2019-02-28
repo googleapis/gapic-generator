@@ -147,8 +147,9 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
       FlatteningConfig flatteningGroup =
           testCaseTransformer.getSmokeTestFlatteningGroup(
               context.getMethodConfig(method), interfaceConfig.getSmokeTestConfig());
+      GapicMethodContext defaultMethodContext = context.asDynamicMethodContext(method);
       GapicMethodContext flattenedMethodContext =
-          context.asFlattenedMethodContext(method, flatteningGroup);
+          context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
       exampleMethods.add(
           createExampleApiMethodView(flattenedMethodContext, model.hasMultipleServices()));
     }
@@ -230,15 +231,6 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
         .map(productConfig::getInterfaceConfig)
         .filter(Objects::nonNull)
         .anyMatch(InterfaceConfig::hasBatchingMethods);
-  }
-
-  private boolean hasMixinApis(ApiModel model, GapicProductConfig productConfig) {
-    return model
-        .getInterfaces(productConfig)
-        .stream()
-        .filter(productConfig::hasInterfaceConfig)
-        .map(i -> createContext(i, productConfig))
-        .anyMatch(c -> new GrpcStubTransformer().generateGrpcStubs(c).size() > 1);
   }
 
   private GapicInterfaceContext createContext(

@@ -202,7 +202,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
       return "Google::Gax::PagedEnumerable<" + resourceTypeName + ">";
     }
 
-    if (methodConfig.isLongRunningOperation()) {
+    if (methodContext.isLongRunningMethodContext()) {
       return "Google::Gax::Operation";
     }
 

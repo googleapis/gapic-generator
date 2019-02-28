@@ -22,12 +22,12 @@ import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 public class LongRunningTransformer {
   LongRunningOperationDetailView generateDetailView(MethodContext context) {
     MethodConfig methodConfig = context.getMethodConfig();
-    LongRunningConfig lroConfig = methodConfig.getLongRunningConfig();
+    LongRunningConfig lroConfig = context.getLongRunningConfig();
     SurfaceNamer namer = context.getNamer();
 
     String clientReturnTypeName =
         namer.getAndSaveOperationResponseTypeName(
-            context.getMethodModel(), context.getTypeTable(), methodConfig);
+            context, context.getTypeTable());
     String operationPayloadTypeName =
         namer.getLongRunningOperationTypeName(context.getTypeTable(), lroConfig.getReturnType());
     String metadataTypeName =

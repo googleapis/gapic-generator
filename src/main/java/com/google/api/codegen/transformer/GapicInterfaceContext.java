@@ -176,28 +176,15 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
 
   @Override
   public GapicMethodContext asFlattenedMethodContext(
-      MethodModel method, FlatteningConfig flatteningConfig) {
+      MethodContext methodContext, FlatteningConfig flatteningConfig) {
     return GapicMethodContext.create(
         this,
         getInterface(),
         getProductConfig(),
         getImportTypeTable(),
         getNamer(),
-        getMethodConfig(method),
+        (GapicMethodConfig) methodContext.getMethodConfig(),
         flatteningConfig,
-        getFeatureConfig());
-  }
-
-  @Override
-  public GapicMethodContext asRequestMethodContext(MethodModel method) {
-    return GapicMethodContext.create(
-        this,
-        getInterface(),
-        getProductConfig(),
-        getImportTypeTable(),
-        getNamer(),
-        getMethodConfig(method),
-        null,
         getFeatureConfig());
   }
 
@@ -301,7 +288,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   public Iterable<MethodModel> getLongRunningMethods() {
     List<MethodModel> methods = new ArrayList<>();
     for (MethodModel method : getSupportedMethods()) {
-      if (getMethodConfig(method).isLongRunningOperation()) {
+      if (getMethodConfig(method).getLroConfig() != null) {
         methods.add(method);
       }
     }

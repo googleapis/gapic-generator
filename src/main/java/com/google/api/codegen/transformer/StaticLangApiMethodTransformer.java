@@ -431,7 +431,7 @@ public class StaticLangApiMethodTransformer {
         methodViewBuilder,
         Arrays.asList(CallingForm.LongRunningRequest));
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
-    TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    TypeModel returnType = context.getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
 
     return methodViewBuilder.type(ClientMethodType.OperationRequestObjectMethod).build();
@@ -456,7 +456,7 @@ public class StaticLangApiMethodTransformer {
         methodViewBuilder,
         Arrays.asList(CallingForm.LongRunningFlattened));
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
-    TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    TypeModel returnType = context.getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
     return methodViewBuilder.type(ClientMethodType.OperationFlattenedMethod).build();
   }
@@ -493,7 +493,7 @@ public class StaticLangApiMethodTransformer {
     if (requiresOperationMethod) {
       methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     }
-    TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    TypeModel returnType = context.getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
 
@@ -529,9 +529,9 @@ public class StaticLangApiMethodTransformer {
       // Only for protobuf-based APIs.
       methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     }
-    if (context.getMethodConfig().isLongRunningOperation()) {
+    if (context.isLongRunningMethodContext()) {
       // Only for protobuf-based APIs.
-      TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+      TypeModel returnType = context.getLongRunningConfig().getReturnType();
       methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
       methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     } else {
@@ -554,7 +554,7 @@ public class StaticLangApiMethodTransformer {
         namer.getOperationCallableName(method),
         methodViewBuilder,
         Arrays.asList(CallingForm.LongRunningCallable));
-    TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    TypeModel returnType = context.getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
 
@@ -589,9 +589,9 @@ public class StaticLangApiMethodTransformer {
         namer.getReleaseAnnotation(context.getMethodConfig().getReleaseLevel()));
 
     ServiceMessages messages = new ServiceMessages();
-    if (context.getMethodConfig().isLongRunningOperation()) {
+    if (context.isLongRunningMethodContext()) {
       methodViewBuilder.hasReturnValue(
-          !context.getMethodConfig().getLongRunningConfig().getReturnType().isEmptyType());
+          !context.getLongRunningConfig().getReturnType().isEmptyType());
     } else {
       methodViewBuilder.hasReturnValue(!method.isOutputTypeEmpty());
     }

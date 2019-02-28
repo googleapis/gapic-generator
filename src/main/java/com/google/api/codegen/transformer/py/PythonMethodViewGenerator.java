@@ -65,7 +65,7 @@ public class PythonMethodViewGenerator {
               initContext,
               packageHasMultipleServices,
               Arrays.asList(CallingForm.RequestPagedAll, CallingForm.RequestPaged));
-    } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
+    } else if (methodContext.isLongRunningMethodContext()) {
       methodView =
           clientMethodTransformer.generateLongRunningMethod(
               methodContext,

@@ -137,11 +137,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
+      MethodContext methodContext, ImportTypeTable typeTable) {
     String responseTypeName =
-        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+        typeTable.getFullNameFor(methodContext.getLongRunningConfig().getReturnType());
     String metadataTypeName =
-        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
+        typeTable.getFullNameFor(methodContext.getLongRunningConfig().getMetadataType());
     return typeTable.getAndSaveNicknameForContainer(
         "com.google.api.gax.longrunning.OperationFuture", responseTypeName, metadataTypeName);
   }

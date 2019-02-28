@@ -72,7 +72,7 @@ public class PageStreamingTransformer {
     List<PageStreamingDescriptorClassView> descriptors = new ArrayList<>();
 
     for (MethodModel method : context.getPageStreamingMethods()) {
-      descriptors.add(generateDescriptorClass(context.asRequestMethodContext(method)));
+      descriptors.add(generateDescriptorClass(context.asDynamicMethodContext(method)));
     }
 
     return descriptors;
@@ -119,7 +119,7 @@ public class PageStreamingTransformer {
     List<PagedListResponseFactoryClassView> factories = new ArrayList<>();
 
     for (MethodModel method : context.getPageStreamingMethods()) {
-      factories.add(generateFactoryClass(context.asRequestMethodContext(method)));
+      factories.add(generateFactoryClass(context.asDynamicMethodContext(method)));
     }
 
     return factories;

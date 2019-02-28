@@ -74,8 +74,7 @@ public abstract class MethodConfig {
 
   public abstract ReleaseLevel getReleaseLevel();
 
-  @Nullable
-  public abstract LongRunningConfig getLongRunningConfig();
+  public abstract LongRunningConfig getLroConfig();
 
   /** Returns true if the method is a streaming method */
   public static boolean isGrpcStreamingMethod(MethodModel method) {
@@ -109,10 +108,6 @@ public abstract class MethodConfig {
   /** Returns true if this method has batching configured. */
   public boolean isBatching() {
     return getBatching() != null;
-  }
-
-  public boolean isLongRunningOperation() {
-    return getLongRunningConfig() != null;
   }
 
   public ImmutableList<FieldModel> getRequiredFields() {

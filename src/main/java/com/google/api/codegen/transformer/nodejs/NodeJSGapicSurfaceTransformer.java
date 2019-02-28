@@ -33,6 +33,7 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -225,7 +226,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
 
     for (MethodModel method : context.getLongRunningMethods()) {
       GapicMethodContext methodContext = context.asDynamicMethodContext(method);
-      LongRunningConfig lroConfig = methodContext.getMethodConfig().getLongRunningConfig();
+      LongRunningConfig lroConfig = methodContext.getLongRunningConfig();
       TypeModel returnType = lroConfig.getReturnType();
       TypeModel metadataType = lroConfig.getMetadataType();
       result.add(

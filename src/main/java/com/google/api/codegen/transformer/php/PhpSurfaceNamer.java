@@ -143,7 +143,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     if (methodConfig.isPageStreaming()) {
       return "\\Google\\ApiCore\\PagedListResponse";
     }
-    if (methodConfig.isLongRunningOperation()) {
+    if (methodContext.isLongRunningMethodContext()) {
       return "\\Google\\ApiCore\\OperationResponse";
     }
     switch (methodConfig.getGrpcStreamingType()) {

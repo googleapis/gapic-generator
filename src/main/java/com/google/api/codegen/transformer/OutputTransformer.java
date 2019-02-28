@@ -309,8 +309,8 @@ public class OutputTransformer {
                 .getField()
                 .getType()
                 .makeOptional();
-      } else if (context.getMethodConfig().isLongRunningOperation()) {
-        type = context.getMethodConfig().getLongRunningConfig().getReturnType();
+      } else if (context.isLongRunningMethodContext()) {
+        type = context.getLongRunningConfig().getReturnType();
       } else {
         type = context.getMethodModel().getOutputType();
       }

@@ -165,8 +165,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
     ImmutableList.Builder<TestCaseView> testCases = ImmutableList.builder();
     for (MethodModel method : context.getSupportedMethods()) {
       GapicMethodContext requestMethodContext =
-          context.withNewTypeTable().asRequestMethodContext(method);
-      MethodConfig methodConfig = requestMethodContext.getMethodConfig();
+          context.withNewTypeTable().asDynamicMethodContext(method);
       TestCaseTransformer testCaseTransformer =
           new TestCaseTransformer(valueProducer, packageHasMultipleServices);
       TestCaseView testCase =
@@ -174,7 +173,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
               requestMethodContext,
               new SymbolTable(),
               createUnitTestCaseInitCodeContext(context, method),
-              getMethodType(methodConfig));
+              getMethodType(requestMethodContext));
       testCases.add(testCase);
     }
     return testCases.build();
@@ -182,7 +181,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
 
   private InitCodeContext createUnitTestCaseInitCodeContext(
       GapicInterfaceContext context, MethodModel method) {
-    MethodContext requestMethodContext = context.asRequestMethodContext(method);
+    MethodContext requestMethodContext = context.asDynamicMethodContext(method);
     MethodContext dynamicMethodContext = context.asDynamicMethodContext(method);
     MethodConfig methodConfig = requestMethodContext.getMethodConfig();
     Collection<FieldConfig> fieldConfigs = methodConfig.getRequiredFieldConfigs();
@@ -203,13 +202,13 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
         .build();
   }
 
-  private ClientMethodType getMethodType(MethodConfig config) {
+  private ClientMethodType getMethodType(MethodContext context) {
     ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
-    if (config.isPageStreaming()) {
+    if (context.getMethodConfig().isPageStreaming()) {
       clientMethodType = ClientMethodType.PagedRequestObjectMethod;
-    } else if (config.isGrpcStreaming()) {
+    } else if (context.getMethodConfig().isGrpcStreaming()) {
       clientMethodType = ClientMethodType.AsyncRequestObjectMethod;
-    } else if (config.isLongRunningOperation()) {
+    } else if (context.isLongRunningMethodContext()) {
       clientMethodType = ClientMethodType.OperationCallableMethod;
     }
     return clientMethodType;
@@ -242,13 +241,13 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    MethodContext methodContext = context.asDynamicMethodContext(method);
     TestCaseTransformer testCaseTransformer =
         new TestCaseTransformer(valueProducer, packageHasMultipleServices);
     FlatteningConfig flatteningGroup =
-        testCaseTransformer.getSmokeTestFlatteningGroup(
-            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
+        testCaseTransformer.getSmokeTestFlatteningGroup(methodContext.getMethodConfig(), context.getInterfaceConfig().getSmokeTestConfig());
     GapicMethodContext flattenedMethodContext =
-        context.asFlattenedMethodContext(method, flatteningGroup);
+        context.asFlattenedMethodContext(methodContext, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     OptionalArrayMethodView apiMethodView =

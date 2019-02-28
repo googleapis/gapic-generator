@@ -212,9 +212,9 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
       testCaseViews = ImmutableList.builder();
       SymbolTable testNameTable = new SymbolTable();
       for (MethodModel method : context.getSupportedMethods()) {
-        GapicMethodContext methodContext = context.asRequestMethodContext(method);
+        GapicMethodContext methodContext = context.asDynamicMethodContext(method);
         ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
-        if (methodContext.getMethodConfig().isLongRunningOperation()) {
+        if (methodContext.isLongRunningMethodContext()) {
           clientMethodType = ClientMethodType.LongRunningOptionalArrayMethod;
         } else if (methodContext.getMethodConfig().isPageStreaming()) {
           clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
@@ -275,13 +275,13 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     String filename = namer.classFileNameBase(Name.upperCamel(name).join(version)) + ".py";
     String outputPath =
         Joiner.on(File.separator).join("tests", "system", "gapic", version, filename);
-
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    GapicMethodContext methodContext = context.asDynamicMethodContext(method);
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
     GapicMethodContext flattenedMethodContext =
-        context.asFlattenedMethodContext(method, flatteningGroup);
+        context.asFlattenedMethodContext(methodContext, flatteningGroup);
     OptionalArrayMethodView apiMethodView =
         createSmokeTestCaseApiMethodView(flattenedMethodContext);
 
