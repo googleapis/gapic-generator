@@ -161,7 +161,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     addSmokeTestImports(context);
 
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
-    MethodContext defaultMethodContext = context.asDynamicMethodContext(method);
+    MethodContext defaultMethodContext = context.asRequestMethodContext(method);
     SurfaceNamer namer = context.getNamer();
 
     FlatteningConfig flatteningGroup =
@@ -279,7 +279,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
           continue;
         }
         addGrpcStreamingTestImports(context, methodConfig.getGrpcStreamingType());
-        MethodContext methodContext = context.asDynamicMethodContext(method);
+        MethodContext methodContext = context.asRequestMethodContext(method);
         InitCodeContext initCodeContext =
             initCodeTransformer.createRequestInitCodeContext(
                 methodContext,
@@ -291,7 +291,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
             testCaseTransformer.createTestCaseView(
                 methodContext, testNameTable, initCodeContext, ClientMethodType.CallableMethod));
       } else if (methodConfig.isFlattening()) {
-        MethodContext defaultMethodContext = context.asDynamicMethodContext(method);
+        MethodContext defaultMethodContext = context.asRequestMethodContext(method);
         ClientMethodType clientMethodType;
         if (methodConfig.isPageStreaming()) {
           clientMethodType = ClientMethodType.PagedFlattenedMethod;

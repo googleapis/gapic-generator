@@ -263,7 +263,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (MethodModel method : methods) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodContext methodContext = context.asDynamicMethodContext(method);
+      MethodContext methodContext = context.asRequestMethodContext(method);
 
       if (method.getRequestStreaming() || method.getResponseStreaming()) {
         apiMethods.add(
@@ -372,7 +372,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
         kinds.add(ImportKind.SERVER_STREAM);
       }
       MethodConfig methodConfig = interfaceContext.getMethodConfig(method);
-      if (interfaceContext.asDynamicMethodContext(method).isLongRunningMethodContext()) {
+      if (interfaceContext.asRequestMethodContext(method).isLongRunningMethodContext()) {
         kinds.add(ImportKind.LRO);
       }
       if (methodConfig.isPageStreaming()) {

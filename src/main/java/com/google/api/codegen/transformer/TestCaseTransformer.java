@@ -326,7 +326,7 @@ public class TestCaseTransformer {
     methodContext =
         methodContext
             .getSurfaceInterfaceContext()
-            .asDynamicMethodContext(methodContext.getMethodModel());
+            .asRequestMethodContext(methodContext.getMethodModel());
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(methodContext, responseInitCodeContext);
     String typeName =

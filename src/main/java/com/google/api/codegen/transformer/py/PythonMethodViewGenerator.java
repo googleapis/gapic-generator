@@ -49,7 +49,7 @@ public class PythonMethodViewGenerator {
     return context
         .getSupportedMethods()
         .stream()
-        .map(methodModel -> generateOneApiMethod(context.asDynamicMethodContext(methodModel)))
+        .map(methodModel -> generateOneApiMethod(context.asRequestMethodContext(methodModel)))
         .collect(Collectors.toList());
   }
 

@@ -189,7 +189,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  public GapicMethodContext asDynamicMethodContext(MethodModel method) {
+  public GapicMethodContext asRequestMethodContext(MethodModel method) {
     return GapicMethodContext.create(
         this,
         getInterface(),

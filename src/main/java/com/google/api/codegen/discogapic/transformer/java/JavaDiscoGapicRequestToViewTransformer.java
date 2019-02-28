@@ -149,7 +149,7 @@ public class JavaDiscoGapicRequestToViewTransformer
     // Generate the ResourceName methods.
     if (methodConfig.isFlattening()) {
       for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-        DiscoGapicMethodContext defaultMethodContext = context.asDynamicMethodContext(method);
+        DiscoGapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
         MethodContext flattenedMethodContext =
             context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
         if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {

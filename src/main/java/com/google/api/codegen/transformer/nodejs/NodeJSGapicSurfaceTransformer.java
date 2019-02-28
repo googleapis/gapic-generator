@@ -200,7 +200,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
 
     for (MethodModel method : context.getGrpcStreamingMethods()) {
       GrpcStreamingConfig grpcStreamingConfig =
-          context.asDynamicMethodContext(method).getMethodConfig().getGrpcStreaming();
+          context.asRequestMethodContext(method).getMethodConfig().getGrpcStreaming();
       String resourcesFieldGetFunction = null;
       if (grpcStreamingConfig.hasResourceField()) {
         resourcesFieldGetFunction =
@@ -224,7 +224,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     List<LongRunningOperationDetailView> result = new ArrayList<>();
 
     for (MethodModel method : context.getLongRunningMethods()) {
-      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
       LongRunningConfig lroConfig = methodContext.getLongRunningConfig();
       TypeModel returnType = lroConfig.getReturnType();
       TypeModel metadataType = lroConfig.getMetadataType();

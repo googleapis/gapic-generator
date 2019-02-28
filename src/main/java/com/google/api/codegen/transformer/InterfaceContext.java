@@ -47,7 +47,7 @@ public interface InterfaceContext extends TransformationContext {
 
   MethodConfig getMethodConfig(MethodModel method);
 
-  MethodContext asDynamicMethodContext(MethodModel method);
+  MethodContext asRequestMethodContext(MethodModel method);
 
   String getInterfaceDescription();
 

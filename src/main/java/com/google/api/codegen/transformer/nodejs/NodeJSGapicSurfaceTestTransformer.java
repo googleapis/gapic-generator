@@ -170,7 +170,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (MethodModel method : context.getSupportedMethods()) {
-      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
       if (methodContext.getMethodConfig().getGrpcStreamingType()
           == GrpcStreamingType.ClientStreaming) {
         // TODO: Add unit test generation for ClientStreaming methods
@@ -233,7 +233,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-    GapicMethodContext defaultMethodContext = context.asDynamicMethodContext(method);
+    GapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
     GapicMethodContext flattenedMethodContext =
         context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
 

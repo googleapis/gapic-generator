@@ -307,7 +307,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
 
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       MethodModel method = interfaceConfig.getSmokeTestConfig().getMethod();
-      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
       FlatteningConfig flatteningGroup =
           testCaseTransformer.getSmokeTestFlatteningGroup(
               context.getMethodConfig(method), interfaceConfig.getSmokeTestConfig());

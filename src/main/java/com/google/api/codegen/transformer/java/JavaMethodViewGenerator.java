@@ -61,7 +61,7 @@ public class JavaMethodViewGenerator {
 
     for (MethodModel method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodContext requestMethodContext = context.asDynamicMethodContext(method);
+      MethodContext requestMethodContext = context.asRequestMethodContext(method);
 
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {

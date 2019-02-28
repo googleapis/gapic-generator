@@ -245,7 +245,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     List<LongRunningOperationDetailView> result = new ArrayList<>();
 
     for (MethodModel method : context.getLongRunningMethods()) {
-      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
       LongRunningConfig lroConfig = methodContext.getLongRunningConfig();
       TypeModel returnType = lroConfig.getReturnType();
       TypeModel metadataType = lroConfig.getMetadataType();
@@ -310,7 +310,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     Service serviceConfig = serviceModel.getServiceConfig();
 
     for (MethodModel methodModel : context.getSupportedMethods()) {
-      GapicMethodContext methodContext = context.asDynamicMethodContext(methodModel);
+      GapicMethodContext methodContext = context.asRequestMethodContext(methodModel);
       MethodConfig methodConfig = methodContext.getMethodConfig();
       Method method = methodContext.getMethod();
 
@@ -431,7 +431,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
 
     for (MethodModel method : context.getGrpcStreamingMethods()) {
       GrpcStreamingConfig grpcStreamingConfig =
-          context.asDynamicMethodContext(method).getMethodConfig().getGrpcStreaming();
+          context.asRequestMethodContext(method).getMethodConfig().getGrpcStreaming();
       String resourcesFieldGetFunction = null;
       if (grpcStreamingConfig.hasResourceField()) {
         resourcesFieldGetFunction =
@@ -478,7 +478,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     List<ApiMethodView> apiMethods = new ArrayList<>(context.getInterface().getMethods().size());
 
     for (MethodModel method : context.getSupportedMethods()) {
-      apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
+      apiMethods.add(apiMethodTransformer.generateMethod(context.asRequestMethodContext(method)));
     }
 
     return apiMethods;

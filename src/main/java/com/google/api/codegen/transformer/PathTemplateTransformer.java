@@ -68,7 +68,7 @@ public class PathTemplateTransformer {
       foundSet.add(config.getEntityId());
     }
     for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
-      MethodContext methodContext = context.asDynamicMethodContext(methodConfig.getMethodModel());
+      MethodContext methodContext = context.asRequestMethodContext(methodConfig.getMethodModel());
       for (String fieldNamePattern : methodConfig.getFieldNamePatterns().values()) {
         SingleResourceNameConfig resourceNameConfig =
             methodContext.getSingleResourceNameConfig(fieldNamePattern);

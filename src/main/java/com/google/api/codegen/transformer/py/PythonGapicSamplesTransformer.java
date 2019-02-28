@@ -127,7 +127,7 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
     }
 
     for (MethodModel method : context.getSupportedMethods()) {
-      addMethodImports(context.asDynamicMethodContext(method));
+      addMethodImports(context.asRequestMethodContext(method));
     }
   }
 

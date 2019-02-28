@@ -211,7 +211,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     for (MethodModel method : context.getSupportedMethods()) {
       apiMethods.add(
           apiMethodTransformer.generateMethod(
-              context.asDynamicMethodContext(method), context.getApiModel().hasMultipleServices()));
+              context.asRequestMethodContext(method), context.getApiModel().hasMultipleServices()));
     }
     return apiMethods.build();
   }

@@ -165,7 +165,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
     ImmutableList.Builder<TestCaseView> testCases = ImmutableList.builder();
     for (MethodModel method : context.getSupportedMethods()) {
       GapicMethodContext requestMethodContext =
-          context.withNewTypeTable().asDynamicMethodContext(method);
+          context.withNewTypeTable().asRequestMethodContext(method);
       TestCaseTransformer testCaseTransformer =
           new TestCaseTransformer(valueProducer, packageHasMultipleServices);
       TestCaseView testCase =
@@ -181,8 +181,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
 
   private InitCodeContext createUnitTestCaseInitCodeContext(
       GapicInterfaceContext context, MethodModel method) {
-    MethodContext requestMethodContext = context.asDynamicMethodContext(method);
-    MethodContext dynamicMethodContext = context.asDynamicMethodContext(method);
+    MethodContext requestMethodContext = context.asRequestMethodContext(method);
+    MethodContext dynamicMethodContext = context.asRequestMethodContext(method);
     MethodConfig methodConfig = requestMethodContext.getMethodConfig();
     Collection<FieldConfig> fieldConfigs = methodConfig.getRequiredFieldConfigs();
 
@@ -241,7 +241,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
-    MethodContext methodContext = context.asDynamicMethodContext(method);
+    MethodContext methodContext = context.asRequestMethodContext(method);
     TestCaseTransformer testCaseTransformer =
         new TestCaseTransformer(valueProducer, packageHasMultipleServices);
     FlatteningConfig flatteningGroup =

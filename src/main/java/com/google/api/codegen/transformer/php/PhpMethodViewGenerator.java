@@ -44,7 +44,7 @@ public class PhpMethodViewGenerator {
     return context
         .getSupportedMethods()
         .stream()
-        .map(methodModel -> generateOneApiMethod(context.asDynamicMethodContext(methodModel), null))
+        .map(methodModel -> generateOneApiMethod(context.asRequestMethodContext(methodModel), null))
         .collect(Collectors.toList());
   }
 

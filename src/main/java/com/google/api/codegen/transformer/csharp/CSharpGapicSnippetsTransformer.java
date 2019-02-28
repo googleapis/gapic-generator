@@ -126,7 +126,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
 
     for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodContext methodContext = context.asDynamicMethodContext(method);
+      MethodContext methodContext = context.asRequestMethodContext(method);
       if (methodConfig.isGrpcStreaming()) {
         methods.add(generateGrpcStreamingRequestMethod(methodContext));
       } else if (methodContext.isLongRunningMethodContext()) {

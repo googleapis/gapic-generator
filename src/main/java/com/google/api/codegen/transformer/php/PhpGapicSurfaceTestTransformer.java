@@ -173,7 +173,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (MethodModel method : context.getSupportedMethods()) {
-      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
 
       if (methodContext.getMethodConfig().getGrpcStreamingType()
           == GrpcStreamingType.ClientStreaming) {
@@ -237,7 +237,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
 
     SurfaceNamer namer = context.getNamer();
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
-    GapicMethodContext defaultMethodContext = context.asDynamicMethodContext(method);
+    GapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());

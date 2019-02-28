@@ -146,7 +146,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
       FlatteningConfig flatteningGroup =
           testCaseTransformer.getSmokeTestFlatteningGroup(
               context.getMethodConfig(method), interfaceConfig.getSmokeTestConfig());
-      GapicMethodContext defaultMethodContext = context.asDynamicMethodContext(method);
+      GapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
       GapicMethodContext flattenedMethodContext =
           context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
       exampleMethods.add(

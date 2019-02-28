@@ -262,7 +262,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  public DiscoGapicMethodContext asDynamicMethodContext(MethodModel method) {
+  public DiscoGapicMethodContext asRequestMethodContext(MethodModel method) {
     return DiscoGapicMethodContext.create(
         this,
         getInterfaceName(),

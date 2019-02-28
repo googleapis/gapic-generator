@@ -227,7 +227,7 @@ public class JavaSurfaceTransformer {
       if (context.getMethodConfig(method).isPageStreaming()) {
         pagedResponseWrappersList.add(
             generatePagedResponseWrapper(
-                context.asDynamicMethodContext(method), context.getImportTypeTable()));
+                context.asRequestMethodContext(method), context.getImportTypeTable()));
       }
     }
 

@@ -47,7 +47,7 @@ public class NodeJSMethodViewGenerator {
         .map(
             methodModel ->
                 generateOneApiMethod(
-                    context.asDynamicMethodContext(methodModel), null, packageHasMultipleServices))
+                    context.asRequestMethodContext(methodModel), null, packageHasMultipleServices))
         .collect(Collectors.toList());
   }
 

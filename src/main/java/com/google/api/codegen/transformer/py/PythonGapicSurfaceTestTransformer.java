@@ -212,7 +212,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
       testCaseViews = ImmutableList.builder();
       SymbolTable testNameTable = new SymbolTable();
       for (MethodModel method : context.getSupportedMethods()) {
-        GapicMethodContext methodContext = context.asDynamicMethodContext(method);
+        GapicMethodContext methodContext = context.asRequestMethodContext(method);
         ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
         if (methodContext.isLongRunningMethodContext()) {
           clientMethodType = ClientMethodType.LongRunningOptionalArrayMethod;
@@ -276,7 +276,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     String outputPath =
         Joiner.on(File.separator).join("tests", "system", "gapic", version, filename);
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
-    GapicMethodContext methodContext = context.asDynamicMethodContext(method);
+    GapicMethodContext methodContext = context.asRequestMethodContext(method);
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());

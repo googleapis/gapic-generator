@@ -156,7 +156,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (MethodModel method : context.getSupportedMethods()) {
-      GapicMethodContext defaultMethodContext = context.asDynamicMethodContext(method);
+      GapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (methodConfig.isGrpcStreaming()) {
         // TODO: Add support for streaming methods
@@ -177,7 +177,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
           // TODO: Add support for rerouted methods
           continue;
         }
-        GapicMethodContext requestContext = context.asDynamicMethodContext(method);
+        GapicMethodContext requestContext = context.asRequestMethodContext(method);
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           GapicMethodContext methodContext =
               context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
@@ -211,7 +211,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
           // TODO: Add support for page-streaming, LRO, and rerouted methods
           continue;
         }
-        GapicMethodContext requestContext = context.asDynamicMethodContext(method);
+        GapicMethodContext requestContext = context.asRequestMethodContext(method);
         testCaseViews.add(
             createRequestObjectTestCase(
                 requestContext, methodConfig, testNameTable, Synchronicity.Sync));

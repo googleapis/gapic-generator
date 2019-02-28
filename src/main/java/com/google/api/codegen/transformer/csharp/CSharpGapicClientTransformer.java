@@ -389,7 +389,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
       List<ApiCallSettingsView> calls =
           apiCallableTransformer.generateApiCallableSettings(
-              context.asDynamicMethodContext(method));
+              context.asRequestMethodContext(method));
       settingsMembers.addAll(calls);
     }
     return settingsMembers;
@@ -400,7 +400,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     List<ModifyMethodView> modifyMethods = new ArrayList<>();
     Set<String> modifyTypeNames = new HashSet<>();
     for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
-      MethodContext methodContext = context.asDynamicMethodContext(method);
+      MethodContext methodContext = context.asRequestMethodContext(method);
       String inputTypeFullName = methodContext.getMethodModel().getInputFullName();
       if (modifyTypeNames.contains(inputTypeFullName)) {
         continue;
@@ -427,7 +427,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodContext requestMethodContext = context.asDynamicMethodContext(method);
+      MethodContext requestMethodContext = context.asRequestMethodContext(method);
       if (methodConfig.isGrpcStreaming()) {
         // Only for protobuf-based APIs.
         if (methodConfig.isFlattening()) {
