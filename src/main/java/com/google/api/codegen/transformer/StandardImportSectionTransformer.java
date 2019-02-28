@@ -98,9 +98,8 @@ public class StandardImportSectionTransformer implements ImportSectionTransforme
   }
 
   private static void generateIOUtilityImports(MethodContext context) {
-    context.getTypeTable().getAndSaveNicknameFor("java.nio.File");
-    context.getTypeTable().getAndSaveNicknameFor("java.nio.Files");
-    context.getTypeTable().getAndSaveNicknameFor("java.nio.Path");
-    context.getTypeTable().getAndSaveNicknameFor("java.nio.Paths");
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.file.Files");
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.file.Path");
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.file.Paths");
   }
 }

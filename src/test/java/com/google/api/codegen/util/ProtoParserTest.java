@@ -16,8 +16,6 @@ package com.google.api.codegen.util;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.MethodSignature;
-import com.google.api.OperationData;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.codegen.CodegenTestUtil;
@@ -33,6 +31,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.common.collect.ImmutableSet;
+import com.google.longrunning.OperationInfo;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -124,7 +123,8 @@ public class ProtoParserTest {
   public void testGetResourcePath() {
     Field shelfNameField =
         shelf.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
-    assertThat(protoParser.getResource(shelfNameField).getPath()).isEqualTo("shelves/{shelf_id}");
+    assertThat(protoParser.getResource(shelfNameField).getPattern())
+        .isEqualTo("shelves/{shelf_id}");
   }
 
   @Test
@@ -153,10 +153,11 @@ public class ProtoParserTest {
         book.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
     ResourceSet bookResourceSet = protoParser.getResourceSet(bookNameField);
     assertThat(bookResourceSet).isNotNull();
-    assertThat(bookResourceSet.getName()).isEqualTo("BookOneOf");
+    assertThat(bookResourceSet.getSymbol()).isEqualTo("BookOneOf");
     assertThat(bookResourceSet.getResourcesCount()).isEqualTo(1);
     assertThat(bookResourceSet.getResources(0))
-        .isEqualTo(Resource.newBuilder().setName("DeletedBook").setPath("_deleted-book_").build());
+        .isEqualTo(
+            Resource.newBuilder().setSymbol("DeletedBook").setPattern("_deleted-book_").build());
     assertThat(bookResourceSet.getResourceReferencesList()).containsExactly("ArchivedBook", "Book");
   }
 
@@ -167,24 +168,24 @@ public class ProtoParserTest {
     assertThat(resourceDefs).hasSize(4);
     assertThat(resourceDefs)
         .containsEntry(
-            Resource.newBuilder().setName("Shelf").setPath("shelves/{shelf_id}").build(),
+            Resource.newBuilder().setSymbol("Shelf").setPattern("shelves/{shelf_id}").build(),
             libraryProtoFile);
     assertThat(resourceDefs)
         .containsEntry(
-            Resource.newBuilder().setName("Project").setPath("projects/{project}").build(),
+            Resource.newBuilder().setSymbol("Project").setPattern("projects/{project}").build(),
             libraryProtoFile);
     assertThat(resourceDefs)
         .containsEntry(
             Resource.newBuilder()
-                .setName("Book")
-                .setPath("shelves/{shelf_id}/books/{book_id}")
+                .setSymbol("Book")
+                .setPattern("shelves/{shelf_id}/books/{book_id}")
                 .build(),
             libraryProtoFile);
     assertThat(resourceDefs)
         .containsEntry(
             Resource.newBuilder()
-                .setName("ArchivedBook")
-                .setPath("archives/{archive_path}/books/{book_id=**}")
+                .setSymbol("ArchivedBook")
+                .setPattern("archives/{archive_path}/books/{book_id=**}")
                 .build(),
             libraryProtoFile);
   }
@@ -196,9 +197,9 @@ public class ProtoParserTest {
     assertThat(resourceSetDefs)
         .containsEntry(
             ResourceSet.newBuilder()
-                .setName("BookOneOf")
+                .setSymbol("BookOneOf")
                 .addResources(
-                    Resource.newBuilder().setName("DeletedBook").setPath("_deleted-book_"))
+                    Resource.newBuilder().setSymbol("DeletedBook").setPattern("_deleted-book_"))
                 .addResourceReferences("ArchivedBook")
                 .addResourceReferences("Book")
                 .build(),
@@ -243,10 +244,10 @@ public class ProtoParserTest {
 
   @Test
   public void testGetLongRunningOperation() {
-    OperationData operationTypes = protoParser.getLongRunningOperation(getBigBookMethod);
+    OperationInfo operationTypes = protoParser.getLongRunningOperation(getBigBookMethod);
 
-    OperationData expected =
-        OperationData.newBuilder()
+    OperationInfo expected =
+        OperationInfo.newBuilder()
             .setResponseType("google.example.library.v1.Book")
             .setMetadataType("google.example.library.v1.GetBigBookMetadata")
             .build();
@@ -295,39 +296,37 @@ public class ProtoParserTest {
   @Test
   public void testGetMethodSignatures() {
     Method getShelfMethod = libraryService.lookupMethod("GetShelf");
-    List<MethodSignature> getShelfFlattenings = protoParser.getMethodSignatures(getShelfMethod);
+    List<List<String>> getShelfFlattenings = protoParser.getMethodSignatures(getShelfMethod);
     assertThat(getShelfFlattenings.size()).isEqualTo(3);
 
-    MethodSignature firstSignature = getShelfFlattenings.get(0);
-    assertThat(firstSignature.getFieldsList().size()).isEqualTo(1);
-    assertThat(firstSignature.getFieldsList().get(0)).isEqualTo("name");
+    List<String> firstSignature = getShelfFlattenings.get(0);
+    assertThat(firstSignature.size()).isEqualTo(1);
+    assertThat(firstSignature.get(0)).isEqualTo("name");
 
-    MethodSignature additionalSignature = getShelfFlattenings.get(1);
-    assertThat(additionalSignature.getFieldsList().size()).isEqualTo(2);
-    assertThat(additionalSignature.getFieldsList().get(0)).isEqualTo("name");
-    assertThat(additionalSignature.getFieldsList().get(1)).isEqualTo("message");
+    List<String> additionalSignature = getShelfFlattenings.get(1);
+    assertThat(additionalSignature.size()).isEqualTo(2);
+    assertThat(additionalSignature.get(0)).isEqualTo("name");
+    assertThat(additionalSignature.get(1)).isEqualTo("message");
 
-    MethodSignature additionalSignature2 = getShelfFlattenings.get(2);
-    assertThat(additionalSignature2.getFieldsList())
-        .containsExactly("name", "message", "string_builder");
+    List<String> additionalSignature2 = getShelfFlattenings.get(2);
+    assertThat(additionalSignature2).containsExactly("name", "message", "string_builder");
   }
 
   @Test
   public void testEmptySignature() {
     // Test that we can detect empty method signatures.
     Method listShelvesMethod = libraryService.lookupMethod("ListShelves");
-    List<MethodSignature> listShelvesFlattenings =
-        protoParser.getMethodSignatures(listShelvesMethod);
+    List<List<String>> listShelvesFlattenings = protoParser.getMethodSignatures(listShelvesMethod);
     assertThat(listShelvesFlattenings.size()).isEqualTo(1);
-    MethodSignature emptySignature = listShelvesFlattenings.get(0);
-    assertThat(emptySignature.getFieldsList().size()).isEqualTo(0);
+    List<String> emptySignature = listShelvesFlattenings.get(0);
+    assertThat(emptySignature.size()).isEqualTo(0);
   }
 
   @Test
   public void testNoSignature() {
     // Test that we can detect the absence of method signatures.
     Method streamShelvesMethod = libraryService.lookupMethod("StreamShelves");
-    List<MethodSignature> listShelvesFlattenings =
+    List<List<String>> listShelvesFlattenings =
         protoParser.getMethodSignatures(streamShelvesMethod);
     assertThat(listShelvesFlattenings.size()).isEqualTo(0);
   }

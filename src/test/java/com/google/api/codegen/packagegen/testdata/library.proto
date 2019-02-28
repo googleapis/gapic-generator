@@ -17,6 +17,10 @@ syntax = "proto3";
 package google.example.library.v1;
 
 import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/longrunning/operations.proto";
+import "google/api/resource.proto";
+import "google/api/client.proto";
 import "google/protobuf/empty.proto";
 
 option java_multiple_files = true;
@@ -34,34 +38,28 @@ option java_package = "com.google.example.library.v1";
 // - Each Shelf has a collection of [Book][google.example.library.v1.Book]
 //   resources, named `shelves/{shelf_id}/books/{book_id}`
 
-option (google.api.metadata) = {
-  product_name: "Library Service"
-  product_uri: "https://cloud.google.com/library/"
-  package_name: "Library"
-  package_namespace: ["Google", "Example"]
+option (google.api.client_package) = {
+  title: "Library Service"
+  namespace: ["Google", "Example"]
+  version: "v1"
 };
 
 service LibraryService {
   option (google.api.default_host) = "library-example.googleapis.com";
-  option (google.api.oauth) = {
-    scopes: ["https://www.googleapis.com/auth/library",
-             "https://www.googleapis.com/auth/cloud-platform"]
-  };
+  option (google.api.oauth_scopes) =
+    "https://www.googleapis.com/auth/library,"
+    "https://www.googleapis.com/auth/cloud-platform";
 
   // Creates a shelf, and returns the new Shelf.
   rpc CreateShelf(CreateShelfRequest) returns (Shelf) {
     option (google.api.http) = { post: "/v1/shelves" body: "shelf" };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Gets a shelf. Returns NOT_FOUND if the shelf does not exist.
   rpc GetShelf(GetShelfRequest) returns (Shelf) {
     option (google.api.http) = { get: "/v1/{name=shelves/*}" };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Lists shelves. The order is unspecified but deterministic. Newly created
@@ -73,9 +71,7 @@ service LibraryService {
   // Deletes a shelf. Returns NOT_FOUND if the shelf does not exist.
   rpc DeleteShelf(DeleteShelfRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { delete: "/v1/{name=shelves/*}" };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Merges two shelves by adding all books from the shelf named
@@ -87,25 +83,23 @@ service LibraryService {
   // This call is a no-op if the specified shelves are the same.
   rpc MergeShelves(MergeShelvesRequest) returns (Shelf) {
     option (google.api.http) = { post: "/v1/{name=shelves/*}:merge" body: "*" };
-    option (google.api.method_signature) = {
-      fields: ["name", "other_shelf_name"]
-    };
+    option (google.api.method_signature) =
+        "name,"
+        "other_shelf_name";
   }
 
   // Creates a book, and returns the new Book.
   rpc CreateBook(CreateBookRequest) returns (Book) {
     option (google.api.http) = { post: "/v1/{name=shelves/*}/books" body: "book" };
-    option (google.api.method_signature) = {
-      fields: ["name", "book"]
-    };
+    option (google.api.method_signature) =
+        "name,"
+        "book";
   }
 
   // Gets a book. Returns NOT_FOUND if the book does not exist.
   rpc GetBook(GetBookRequest) returns (Book) {
     option (google.api.http) = { get: "/v1/{name=shelves/*/books/*}" };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Lists books in a shelf. The order is unspecified but deterministic. Newly
@@ -113,35 +107,32 @@ service LibraryService {
   // Returns NOT_FOUND if the shelf does not exist.
   rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
     option (google.api.http) = { get: "/v1/{name=shelves/*}/books" };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Deletes a book. Returns NOT_FOUND if the book does not exist.
   rpc DeleteBook(DeleteBookRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { delete: "/v1/{name=shelves/*/books/*}" };
-    option (google.api.method_signature) = {
-      fields: ["name"]
-    };
+    option (google.api.method_signature) = "name";
   }
 
   // Updates a book. Returns INVALID_ARGUMENT if the name of the book
   // is non-empty and does equal the previous name.
   rpc UpdateBook(UpdateBookRequest) returns (Book) {
     option (google.api.http) = { put: "/v1/{name=shelves/*/books/*}" body: "book" };
-    option (google.api.method_signature) = {
-      fields: ["name", "book", "update_mask"]
-    };
+    option (google.api.method_signature) =
+        "name,"
+        "book,"
+        "update_mask";
   }
 
   // Moves a book to another shelf, and returns the new book. The book
   // id of the new book may not be the same as the original book.
   rpc MoveBook(MoveBookRequest) returns (Book) {
     option (google.api.http) = { post: "/v1/{name=shelves/*/books/*}:move" body: "*" };
-    option (google.api.method_signature) = {
-      fields: ["name", "other_shelf_name"]
-    };
+    option (google.api.method_signature) =
+        "name,"
+        "other_shelf_name";
   }
 }
 
@@ -152,7 +143,7 @@ message Book {
   // The name is ignored when creating a book.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource).path = "shelves/{shelf_id}/books/{book_id}"];
+    (google.api.resource).pattern = "shelves/{shelf_id}/books/{book_id}"];
 
   // The name of the book author.
   string author = 2;
@@ -171,7 +162,7 @@ message Shelf {
   // The name is ignored when creating a shelf.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource).path = "shelves/*"];
+    (google.api.resource).pattern = "shelves/*"];
 
   // The theme of the shelf
   string theme = 2;

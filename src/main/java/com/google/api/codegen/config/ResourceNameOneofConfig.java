@@ -127,7 +127,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     for (Resource resource : resourceDefs) {
       SingleResourceNameConfig singleResourceNameConfig =
           SingleResourceNameConfig.createSingleResourceName(
-              resource, resource.getPath(), file, diagCollector);
+              resource, resource.getPattern(), file, diagCollector);
       configList.add(singleResourceNameConfig);
     }
     for (String resourceRef : resourceReferences) {
