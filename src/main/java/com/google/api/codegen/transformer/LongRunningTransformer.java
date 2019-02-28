@@ -26,8 +26,7 @@ public class LongRunningTransformer {
     SurfaceNamer namer = context.getNamer();
 
     String clientReturnTypeName =
-        namer.getAndSaveOperationResponseTypeName(
-            context, context.getTypeTable());
+        namer.getAndSaveOperationResponseTypeName(context, context.getTypeTable());
     String operationPayloadTypeName =
         namer.getLongRunningOperationTypeName(context.getTypeTable(), lroConfig.getReturnType());
     String metadataTypeName =

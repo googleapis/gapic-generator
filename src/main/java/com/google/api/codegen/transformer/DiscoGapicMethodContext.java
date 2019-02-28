@@ -131,4 +131,9 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         getLongRunningConfig(),
         getFeatureConfig());
   }
+
+  @Override
+  public boolean isLongRunningMethodContext() {
+    return getLongRunningConfig() != null;
+  }
 }

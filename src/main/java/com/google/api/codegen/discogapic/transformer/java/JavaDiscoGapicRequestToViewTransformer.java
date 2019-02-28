@@ -32,6 +32,7 @@ import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
+import com.google.api.codegen.transformer.DiscoGapicMethodContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
@@ -148,8 +149,9 @@ public class JavaDiscoGapicRequestToViewTransformer
     // Generate the ResourceName methods.
     if (methodConfig.isFlattening()) {
       for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+        DiscoGapicMethodContext defaultMethodContext = context.asDynamicMethodContext(method);
         MethodContext flattenedMethodContext =
-            context.asFlattenedMethodContext(method, flatteningGroup);
+            context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
         if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
           flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
         }

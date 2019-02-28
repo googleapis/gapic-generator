@@ -47,6 +47,7 @@ public interface MethodContext {
   @Nullable
   FlatteningConfig getFlatteningConfig();
 
+  @Nullable
   LongRunningConfig getLongRunningConfig();
 
   boolean isLongRunningMethodContext();

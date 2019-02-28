@@ -43,6 +43,7 @@ public abstract class GapicMethodContext implements MethodContext {
         productConfig,
         namer,
         flatteningConfig,
+        methodConfig.getLroConfig(),
         featureConfig,
         methodConfig,
         surfaceTransformerContext,
@@ -129,5 +130,10 @@ public abstract class GapicMethodContext implements MethodContext {
             ? null
             : getFlatteningConfig().withResourceNamesInSamplesOnly(),
         getFeatureConfig());
+  }
+
+  @Override
+  public boolean isLongRunningMethodContext() {
+    return getLongRunningConfig() != null;
   }
 }

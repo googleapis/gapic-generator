@@ -74,6 +74,7 @@ public abstract class MethodConfig {
 
   public abstract ReleaseLevel getReleaseLevel();
 
+  @Nullable
   public abstract LongRunningConfig getLroConfig();
 
   /** Returns true if the method is a streaming method */

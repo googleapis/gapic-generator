@@ -257,7 +257,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       return responseStreamingReturnDocLines(method);
     }
 
-    List<String> callbackLines = returnCallbackDocLines(context.getImportTypeTable(), gapicMethodContext);
+    List<String> callbackLines =
+        returnCallbackDocLines(context.getImportTypeTable(), gapicMethodContext);
     List<String> returnObjectLines =
         returnObjectDocLines(context.getImportTypeTable(), gapicMethodContext);
     return ImmutableList.<String>builder().addAll(callbackLines).addAll(returnObjectLines).build();
@@ -361,7 +362,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
               "  The first element is " + returnTypeDoc + " in a single response.",
               "  The second element is the next request object if the response",
               "  indicates the next page exists, or null. The third element is ",
-              "  " + getTypeNameDoc(typeTable, methodContext.getMethodModel().getOutputType()) + ".",
+              "  "
+                  + getTypeNameDoc(typeTable, methodContext.getMethodModel().getOutputType())
+                  + ".",
               "");
         }
       }
@@ -394,7 +397,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     String returnTypeDoc = "";
     if (methodContext.getMethodConfig().isPageStreaming()) {
       returnTypeDoc = "Array of ";
-      FieldModel resourcesType = methodContext.getMethodConfig().getPageStreaming().getResourcesField();
+      FieldModel resourcesType =
+          methodContext.getMethodConfig().getPageStreaming().getResourcesField();
       if (resourcesType.isMessage()) {
         returnTypeDoc +=
             commentReformatter.getLinkedElementName(

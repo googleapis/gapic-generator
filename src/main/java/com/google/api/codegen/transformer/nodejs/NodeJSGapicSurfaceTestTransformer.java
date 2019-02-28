@@ -193,10 +193,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
 
       testCaseViews.add(
           testCaseTransformer.createTestCaseView(
-              methodContext,
-              testNameTable,
-              initCodeContext,
-              getMethodType(methodContext)));
+              methodContext, testNameTable, initCodeContext, getMethodType(methodContext)));
     }
     return testCaseViews;
   }
@@ -236,8 +233,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-    GapicMethodContext defaultMethodContext =
-        context.asDynamicMethodContext(method);
+    GapicMethodContext defaultMethodContext = context.asDynamicMethodContext(method);
     GapicMethodContext flattenedMethodContext =
         context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
 

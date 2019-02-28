@@ -26,7 +26,6 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.InterfaceContext;
@@ -168,7 +167,8 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-    MethodContext methodContext = context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
+    MethodContext methodContext =
+        context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
     if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
       methodContext = methodContext.withResourceNamesInSamplesOnly();
     }
@@ -301,7 +301,8 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
           clientMethodType = ClientMethodType.FlattenedMethod;
         }
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-          MethodContext methodContext = context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
+          MethodContext methodContext =
+              context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
           if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
             methodContext = methodContext.withResourceNamesInSamplesOnly();
             flatteningGroup = methodContext.getFlatteningConfig();

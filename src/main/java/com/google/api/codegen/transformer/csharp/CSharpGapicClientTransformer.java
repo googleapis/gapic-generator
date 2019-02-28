@@ -433,7 +433,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generateGrpcStreamingFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));
@@ -447,8 +447,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(
-                    requestMethodContext, flatteningGroup);
+                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generateAsyncOperationFlattenedMethod(
                     methodContext,
