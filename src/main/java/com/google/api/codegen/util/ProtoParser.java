@@ -44,6 +44,7 @@ import com.google.longrunning.OperationsProto;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
@@ -252,6 +253,7 @@ public class ProtoParser {
     return getResourceOrSetDefs(
         protoFile,
         diagCollector,
+        null,
         ResourceProto.resourceSet,
         ResourceSet::getSymbol,
         (resourceSet, baseNameToSet) -> resourceSet.toBuilder().setSymbol(baseNameToSet).build());
@@ -261,7 +263,7 @@ public class ProtoParser {
   private <T> Map<T, ProtoFile> getResourceOrSetDefs(
       List<ProtoFile> protoFiles,
       DiagCollector diagCollector,
-      GeneratedExtension<FileOptions, List<T>> fileExtension,
+      @Nullable GeneratedExtension<FileOptions, List<T>> fileExtension,
       GeneratedExtension<FieldOptions, T> fieldExtension,
       Function<T, String> getNameFunc,
       BiFunction<T, String, T> setNameFunc) {
@@ -273,31 +275,33 @@ public class ProtoParser {
       Map<String, T> localDefs = new LinkedHashMap<>();
 
       // Get Resource definitions from protofile options.
-      List<T> resourcesAtFileLevel = getProtoExtension(protoFile, fileExtension);
-      if (resourcesAtFileLevel != null) {
+      if (fileExtension != null) {
+        List<T> resourcesAtFileLevel = getProtoExtension(protoFile, fileExtension);
+        if (resourcesAtFileLevel != null) {
 
-        for (T definition : resourcesAtFileLevel) {
-          String baseName = getNameFunc.apply(definition);
-          if (Strings.isNullOrEmpty(baseName)) {
-            diagCollector.addDiag(
-                Diag.error(
-                    SimpleLocation.TOPLEVEL,
-                    "There is a %s option with"
-                        + " no name defined in proto file %s. %s.name is required.",
-                    fileExtension.getDescriptor().getFullName(),
-                    protoFile.getFullName(),
-                    fileExtension.getDescriptor().getFullName()));
-          }
-          if (localDefs.put(baseName, definition) != null) {
-            diagCollector.addDiag(
-                Diag.error(
-                    SimpleLocation.TOPLEVEL,
-                    "Multiple %s defintions with the name"
-                        + " %s are defined in proto file %s. Values for %s.name must be unique.",
-                    fieldExtension.getDescriptor().getFullName(),
-                    baseName,
-                    protoFile.getFullName(),
-                    fieldExtension.getDescriptor().getFullName()));
+          for (T definition : resourcesAtFileLevel) {
+            String baseName = getNameFunc.apply(definition);
+            if (Strings.isNullOrEmpty(baseName)) {
+              diagCollector.addDiag(
+                  Diag.error(
+                      SimpleLocation.TOPLEVEL,
+                      "There is a %s option with"
+                          + " no name defined in proto file %s. %s.name is required.",
+                      fileExtension.getDescriptor().getFullName(),
+                      protoFile.getFullName(),
+                      fileExtension.getDescriptor().getFullName()));
+            }
+            if (localDefs.put(baseName, definition) != null) {
+              diagCollector.addDiag(
+                  Diag.error(
+                      SimpleLocation.TOPLEVEL,
+                      "Multiple %s defintions with the name"
+                          + " %s are defined in proto file %s. Values for %s.name must be unique.",
+                      fieldExtension.getDescriptor().getFullName(),
+                      baseName,
+                      protoFile.getFullName(),
+                      fieldExtension.getDescriptor().getFullName()));
+            }
           }
         }
       }
@@ -339,13 +343,20 @@ public class ProtoParser {
   /* Return a list of method signatures, aka flattenings, specified on a given method.
    * This flattens the repeated additionalSignatures into the returned list of MethodSignatures. */
   public List<List<String>> getMethodSignatures(Method method) {
-    List<String> commaDelimSignatures =
-        getProtoExtension(method, ClientProto.methodSignature);
+    List<String> commaDelimSignatures = getProtoExtension(method, ClientProto.methodSignature);
     if (commaDelimSignatures == null) {
       return ImmutableList.of();
     }
-    return ImmutableList.copyOf(commaDelimSignatures.stream().map(s -> (Arrays.stream(s.split(",")).map(String::trim).collect(Collectors.toList()))).collect(
-        Collectors.toList()));
+    return ImmutableList.copyOf(
+        commaDelimSignatures
+            .stream()
+            .map(
+                s ->
+                    (Arrays.stream(s.split(","))
+                        .map(String::trim)
+                        .filter(param -> !Strings.isNullOrEmpty(param))
+                        .collect(Collectors.toList())))
+            .collect(Collectors.toList()));
   }
 
   /** Return the names of required parameters of a method. */
@@ -387,8 +398,8 @@ public class ProtoParser {
   public List<String> getAuthScopes(Interface service) {
     String oAuth = getProtoExtension(service, ClientProto.oauthScopes);
     if (oAuth != null) {
-      return ImmutableList.copyOf(Arrays.stream(oAuth.split(",")).map(String::trim).collect(
-          Collectors.toList()));
+      return ImmutableList.copyOf(
+          Arrays.stream(oAuth.split(",")).map(String::trim).collect(Collectors.toList()));
     }
     return ImmutableList.of();
   }
@@ -409,5 +420,14 @@ public class ProtoParser {
 
   private String getResourceSetFullName(ResourceSet resource, ProtoFile file) {
     return String.format("%s.%s", resource.getSymbol(), getProtoPackage(file));
+  }
+
+  /** Register all extensions needed to process API protofiles. */
+  public static void registerAllExtensions(ExtensionRegistry extensionRegistry) {
+    OperationsProto.registerAllExtensions(extensionRegistry);
+    AnnotationsProto.registerAllExtensions(extensionRegistry);
+    ClientProto.registerAllExtensions(extensionRegistry);
+    ResourceProto.registerAllExtensions(extensionRegistry);
+    FieldBehaviorProto.registerAllExtensions(extensionRegistry);
   }
 }

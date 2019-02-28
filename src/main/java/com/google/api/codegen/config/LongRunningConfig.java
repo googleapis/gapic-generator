@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.longrunning.OperationInfo;
 import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -24,6 +23,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
+import com.google.longrunning.OperationInfo;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
