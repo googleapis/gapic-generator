@@ -397,7 +397,7 @@ public class ProtoParser {
   /** The OAuth scopes for this service (e.g. "https://cloud.google.com/auth/cloud-platform"). */
   public List<String> getAuthScopes(Interface service) {
     String oAuth = getProtoExtension(service, ClientProto.oauthScopes);
-    if (oAuth != null) {
+    if (!Strings.isNullOrEmpty(oAuth)) {
       return ImmutableList.copyOf(
           Arrays.stream(oAuth.split(",")).map(String::trim).collect(Collectors.toList()));
     }
