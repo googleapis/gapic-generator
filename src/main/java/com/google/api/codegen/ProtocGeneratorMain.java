@@ -46,8 +46,6 @@ public class ProtocGeneratorMain {
   private static final ArtifactType DEFAULT_ARTIFACT_TYPE = GAPIC_CODE;
 
   public static void main(String[] args) {
-    System.err.println("Parsing System.in for CodeGeneratorRequest.");
-
     CodeGeneratorResponse response;
     CodeGeneratorRequest request;
     int exitCode = 0;
