@@ -24,6 +24,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.TransportProtocol;
@@ -413,6 +414,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getIndexAccessorName(int index) {
     return String.format(".get(%d)", index);
+  }
+
+  @Override
+  public String getMapKeyAccessorName(TypeModel keyType, String key) {
+    return String.format(
+        ".get(%s)", getModelTypeFormatter().renderPrimitiveValue((ProtoTypeRef) keyType, key));
   }
 
   @Override

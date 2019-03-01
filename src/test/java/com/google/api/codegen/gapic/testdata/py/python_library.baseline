@@ -4592,6 +4592,59 @@ def main():
 
 if __name__ == '__main__':
   main()
+============== file: samples/google/cloud/example/library_v1/gapic/get_book/get_book_request_test_on_success_map.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
+
+def sample_get_book():
+  """"""
+
+  # [START sample_core]
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+  response = client.get_book(name)
+  int_key_val = response.map_string_value[123]
+  boolean_key_val = response.map_bool_key[True]
+  map_value_field = response.map_message_value['key'].field
+  print('Test printing map fields: {}'.format(response.map_list_value_value['quoted_key']))
+  print('Test printing enum fields of a map value: {}'.format(enums.SomeMessage.Alignment(response.map_message_value['key'].alignment).name))
+
+  # [END sample_core]
+# [END sample]
+
+def main():
+  sample_get_book()
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/google/cloud/example/library_v1/gapic/monolog_about_book/monolog_about_book_request_streaming_client_prog.py ==============
 # -*- coding: utf-8 -*-
 #

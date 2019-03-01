@@ -1633,6 +1633,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getFieldAccessorName");
   }
 
+  /**
+   * Returns the expression to get the value of a map entry by its key.
+   *
+   * <p>Note that the returned value includes the language-specific syntax for accessing a map entry
+   * by key. For example, the returned value will be `.get("key")` in Java, and `["key"]` in Python.
+   */
+  public String getMapKeyAccessorName(TypeModel keyType, String key) {
+    return getNotImplementedString("SurfaceNamer.getMapKeyAccessorName");
+  }
+
   public String getSampleResponseVarName(MethodContext context, CallingForm form) {
     MethodConfig config = context.getMethodConfig();
     if (config.getPageStreaming() != null) {
