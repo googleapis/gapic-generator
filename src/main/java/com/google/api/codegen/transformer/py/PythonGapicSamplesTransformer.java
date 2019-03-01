@@ -15,7 +15,9 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
@@ -27,8 +29,6 @@ import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -127,16 +127,16 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
     }
 
     for (MethodModel method : context.getSupportedMethods()) {
-      addMethodImports(context.asDynamicMethodContext(method));
+      addMethodImports(context.asRequestMethodContext(method));
     }
   }
 
   private void addMethodImports(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     GapicMethodConfig methodConfig = context.getMethodConfig();
-    if (methodConfig.isLongRunningOperation()) {
-      typeTable.getAndSaveNicknameFor(methodConfig.getLongRunningConfig().getReturnType());
-      typeTable.getAndSaveNicknameFor(methodConfig.getLongRunningConfig().getMetadataType());
+    if (context.isLongRunningMethodContext()) {
+      typeTable.getAndSaveNicknameFor(context.getLongRunningConfig().getReturnType());
+      typeTable.getAndSaveNicknameFor(context.getLongRunningConfig().getMetadataType());
     }
 
     typeTable.getAndSaveNicknameFor(context.getMethod().getInputType());

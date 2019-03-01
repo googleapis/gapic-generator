@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.transformer.MethodContext;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.transformer.OutputTransformer;
 import com.google.api.codegen.util.ImportType;
 import com.google.api.codegen.viewmodel.ImportFileView;

@@ -17,12 +17,12 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.viewmodel.CallingForm;
@@ -67,7 +67,7 @@ public class JavaMethodViewGenerator {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             if (!FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
@@ -107,12 +107,12 @@ public class JavaMethodViewGenerator {
         }
         apiMethods.add(
             clientMethodTransformer.generateCallableMethod(requestMethodContext, callingForms));
-      } else if (methodConfig.isLongRunningOperation()) {
+      } else if (requestMethodContext.isLongRunningMethodContext()) {
         context.getImportTypeTable().saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
             }
@@ -136,7 +136,7 @@ public class JavaMethodViewGenerator {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
             }

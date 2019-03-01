@@ -16,19 +16,19 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.SampleTransformer;
@@ -129,7 +129,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
       MethodContext methodContext = context.asRequestMethodContext(method);
       if (methodConfig.isGrpcStreaming()) {
         methods.add(generateGrpcStreamingRequestMethod(methodContext));
-      } else if (methodConfig.isLongRunningOperation()) {
+      } else if (methodContext.isLongRunningMethodContext()) {
         if (methodConfig.isFlattening()) {
           ImmutableList<FlatteningConfig> flatteningGroups = methodConfig.getFlatteningConfigs();
           boolean requiresNameSuffix = flatteningGroups.size() > 1;
@@ -137,7 +137,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
             String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
             MethodContext methodContextFlat =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodContext, flatteningGroup);
             methods.add(generateOperationFlattenedAsyncMethod(methodContextFlat, nameSuffix));
             methods.add(generateOperationFlattenedMethod(methodContextFlat, nameSuffix));
           }
@@ -189,7 +189,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
             String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
             MethodContext methodContextFlat =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodContext, flatteningGroup);
             methods.add(
                 generatePagedFlattenedAsyncMethod(
                     methodContextFlat, nameSuffix, requiresNamedParameters[i]));
@@ -208,7 +208,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
             String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
             MethodContext methodContextFlat =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodContext, flatteningGroup);
             methods.add(generateFlattenedAsyncMethod(methodContextFlat, nameSuffix));
             methods.add(generateFlattenedMethod(methodContextFlat, nameSuffix));
           }

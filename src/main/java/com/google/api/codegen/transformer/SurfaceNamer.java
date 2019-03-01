@@ -22,6 +22,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
@@ -995,7 +996,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * given type table, and returns it.
    */
   public String getAndSaveOperationResponseTypeName(
-      MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
+      MethodContext methodContext, ImportTypeTable typeTable) {
     return getNotImplementedString("SurfaceNamer.getAndSaveOperationResponseTypeName");
   }
 

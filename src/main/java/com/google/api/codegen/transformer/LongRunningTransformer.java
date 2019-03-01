@@ -16,18 +16,18 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 
 public class LongRunningTransformer {
   LongRunningOperationDetailView generateDetailView(MethodContext context) {
     MethodConfig methodConfig = context.getMethodConfig();
-    LongRunningConfig lroConfig = methodConfig.getLongRunningConfig();
+    LongRunningConfig lroConfig = context.getLongRunningConfig();
     SurfaceNamer namer = context.getNamer();
 
     String clientReturnTypeName =
-        namer.getAndSaveOperationResponseTypeName(
-            context.getMethodModel(), context.getTypeTable(), methodConfig);
+        namer.getAndSaveOperationResponseTypeName(context, context.getTypeTable());
     String operationPayloadTypeName =
         namer.getLongRunningOperationTypeName(context.getTypeTable(), lroConfig.getReturnType());
     String metadataTypeName =
