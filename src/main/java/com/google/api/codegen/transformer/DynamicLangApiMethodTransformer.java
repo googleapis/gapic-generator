@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
@@ -124,7 +125,7 @@ public class DynamicLangApiMethodTransformer {
       apiMethod.pageStreamingView(
           pageStreamingTransformer.generateDescriptor(
               context.getSurfaceInterfaceContext(), method));
-    } else if (context.getMethodConfig().isLongRunningOperation()) {
+    } else if (context.isLongRunningMethodContext()) {
       apiMethod.longRunningView(lroTransformer.generateDetailView(context));
       apiMethod.type(ClientMethodType.LongRunningOptionalArrayMethod);
     } else {

@@ -18,8 +18,10 @@ import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -28,8 +30,6 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
@@ -161,12 +161,14 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     addSmokeTestImports(context);
 
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    MethodContext defaultMethodContext = context.asRequestMethodContext(method);
     SurfaceNamer namer = context.getNamer();
 
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-    MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+    MethodContext methodContext =
+        context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
     if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
       methodContext = methodContext.withResourceNamesInSamplesOnly();
     }
@@ -201,7 +203,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
       }
     } else if (methodConfig.isGrpcStreaming()) {
       throw new UnsupportedOperationException("Unsupported smoke test type: grpc-streaming");
-    } else if (methodConfig.isLongRunningOperation()) {
+    } else if (methodContext.isLongRunningMethodContext()) {
       if (methodContext.isFlattenedMethodContext()) {
         initialApiMethodView =
             apiMethodTransformer.generateAsyncOperationFlattenedMethod(methodContext);
@@ -289,16 +291,18 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
             testCaseTransformer.createTestCaseView(
                 methodContext, testNameTable, initCodeContext, ClientMethodType.CallableMethod));
       } else if (methodConfig.isFlattening()) {
+        MethodContext defaultMethodContext = context.asRequestMethodContext(method);
         ClientMethodType clientMethodType;
         if (methodConfig.isPageStreaming()) {
           clientMethodType = ClientMethodType.PagedFlattenedMethod;
-        } else if (methodConfig.isLongRunningOperation()) {
+        } else if (defaultMethodContext.isLongRunningMethodContext()) {
           clientMethodType = ClientMethodType.AsyncOperationFlattenedMethod;
         } else {
           clientMethodType = ClientMethodType.FlattenedMethod;
         }
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-          MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+          MethodContext methodContext =
+              context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
           if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
             methodContext = methodContext.withResourceNamesInSamplesOnly();
             flatteningGroup = methodContext.getFlatteningConfig();

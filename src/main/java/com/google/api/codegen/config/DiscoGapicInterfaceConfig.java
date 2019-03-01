@@ -237,7 +237,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   @Override
   public boolean hasLongRunningOperations() {
     for (MethodConfig methodConfig : getMethodConfigs()) {
-      if (methodConfig.isLongRunningOperation()) {
+      if (methodConfig.hasLroConfig()) {
         return true;
       }
     }
