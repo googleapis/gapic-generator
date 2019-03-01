@@ -203,10 +203,11 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
   }
 
   private ClientMethodType getMethodType(MethodContext context) {
+    MethodConfig config = context.getMethodConfig();
     ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
-    if (context.getMethodConfig().isPageStreaming()) {
+    if (config.isPageStreaming()) {
       clientMethodType = ClientMethodType.PagedRequestObjectMethod;
-    } else if (context.getMethodConfig().isGrpcStreaming()) {
+    } else if (config.isGrpcStreaming()) {
       clientMethodType = ClientMethodType.AsyncRequestObjectMethod;
     } else if (context.isLongRunningMethodContext()) {
       clientMethodType = ClientMethodType.OperationCallableMethod;

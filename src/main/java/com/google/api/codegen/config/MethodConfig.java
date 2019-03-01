@@ -77,11 +77,16 @@ public abstract class MethodConfig {
   /**
    * package-private for internal use.
    *
-   * @see MethodContext#getLongRunningConfig wraps this call, because there are times where we want
-   *     to generate the same API method as an LRO method and also as a non-LRO method.
+   * <p>{@link MethodContext#getLongRunningConfig} wraps this call, because there are times where we
+   * want to generate the same API method as an LRO method and also as a non-LRO method.
    */
   @Nullable
   abstract LongRunningConfig getLroConfig();
+
+  /* package-private for internal use. */
+  boolean hasLroConfig() {
+    return getLroConfig() != null;
+  }
 
   /** Returns true if the method is a streaming method */
   public static boolean isGrpcStreamingMethod(MethodModel method) {

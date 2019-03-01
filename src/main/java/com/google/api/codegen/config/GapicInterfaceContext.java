@@ -279,7 +279,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   public Iterable<MethodModel> getLongRunningMethods() {
     List<MethodModel> methods = new ArrayList<>();
     for (MethodModel method : getSupportedMethods()) {
-      if (getMethodConfig(method).getLroConfig() != null) {
+      if (getMethodConfig(method).hasLroConfig()) {
         methods.add(method);
       }
     }
