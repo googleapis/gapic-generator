@@ -197,6 +197,8 @@ def _possibly_artifact_id_version_chunk(chunk):
     return True
 
 def _possibly_artifact_id_classifier_chunk(chunk):
+    if chunk == "android" or chunk == "jre":
+        return False
     for j in range(0, len(chunk)):
         if chunk[j].isdigit():
             return False

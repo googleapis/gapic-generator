@@ -55,41 +55,18 @@ def protoVersion = '3.6.0'
 // ------------
 
 ext {
-  // Shortcuts for libraries we are using
-  libraries = [
-    // General
-    apiCommon: 'com.google.api:api-common:1.1.0',
-    apiCompiler: 'com.google.api:api-compiler:0.0.8',
-    autovalue: 'com.google.auto.value:auto-value:1.6',
-    autovalueAnnotation: 'com.google.auto.value:auto-value-annotations:1.6',
-    commonmark: 'com.atlassian.commonmark:commonmark:0.9.0',
-    commonProtos: 'com.google.api.grpc:proto-google-common-protos:1.13.0-pre3',
-    commonsLang: 'org.apache.commons:commons-lang3:3.6',
-    commonsCli: 'commons-cli:commons-cli:1.4',
-    guava: 'com.google.guava:guava:26.0-jre',
-    jacksonAnnotations: 'com.fasterxml.jackson.core:jackson-annotations:2.9.0',
-    jacksonCore: 'com.fasterxml.jackson.core:jackson-core:2.9.0',
-    jacksonDatabind: 'com.fasterxml.jackson.core:jackson-databind:2.9.0',
-    jsr305: 'com.google.code.findbugs:jsr305:3.0.0',
-    snakeyaml: 'org.yaml:snakeyaml:1.18',
-    threetenbp: 'org.threeten:threetenbp:1.3.3',
+  // Load Dependencies shared between Bazel and Gradle build scripts
+  libraries = new Properties()
+  file("dependencies.properties").withReader{ libraries.load((Reader) it) }
 
-    // Testing
-    junit: 'junit:junit:4.12',
-    mockito: 'org.mockito:mockito-core:2.+',
-    truth: 'com.google.truth:truth:0.42',
-    truth8: 'com.google.truth.extensions:truth-java8-extension:0.42',
-    toolsFxTesting: 'com.google.api:api-compiler:0.0.7:testing',
-    junitParams: 'pl.pragmatists:JUnitParams:1.1.1',
-
-    // Protobuf
-    protobuf: 'com.google.protobuf:protobuf-java:' + protoVersion,
-    protoc:  'com.google.protobuf:protoc:' + protoVersion,
-
-    // Formatter
-    javaFormatter: 'com.google.googlejavaformat:google-java-format:1.6'
-  ]
+  // Gradle-specific build script dependencies
+  libraries.putAll([
+    protobuf: 'com.google.protobuf:protobuf-java:' + libraries['version.com_google_protobuf'],
+    protoc:  'com.google.protobuf:protoc:' + libraries['version.com_google_protobuf'],
+    javaFormatter: 'com.google.googlejavaformat:google-java-format:' + libraries['version.google_java_format'],
+  ])
 }
+
 
 repositories {
   mavenLocal()
@@ -97,32 +74,32 @@ repositories {
 }
 
 dependencies {
-  compile libraries.apiCommon,
-    libraries.apiCompiler,
-    libraries.autovalueAnnotation,
-    libraries.commonmark,
-    libraries.commonsCli,
-    libraries.commonsLang,
-    libraries.guava,
-    libraries.jacksonAnnotations,
-    libraries.jacksonCore,
-    libraries.jacksonDatabind,
-    libraries.javaFormatter,
-    libraries.jsr305,
-    libraries.protobuf,
-    libraries.snakeyaml,
-    libraries.threetenbp,
-    libraries.commonProtos,
-    libraries.toolsFxTesting
+  compile libraries['maven.com_google_api_api_common'],
+    libraries['maven.com_google_api_api_compiler'],
+    libraries['maven.com_google_auto_value_auto_value_annotations'],
+    libraries['maven.com_atlassian_commonmark_commonmark'],
+    libraries['maven.commons_cli_commons_cli'],
+    libraries['maven.org_apache_commons_commons_lang3'],
+    libraries['maven.com_google_guava_guava__com_google_api_codegen'],
+    libraries['maven.com_fasterxml_jackson_core_jackson_annotations'],
+    libraries['maven.com_fasterxml_jackson_core_jackson_core'],
+    libraries['maven.com_fasterxml_jackson_core_jackson_databind'],
+    libraries['javaFormatter'],
+    libraries['maven.com_google_code_findbugs_jsr305'],
+    libraries['protobuf'],
+    libraries['maven.org_yaml_snakeyaml'],
+    libraries['maven.org_threeten_threetenbp'],
+    libraries['maven.com_google_api_grpc_proto_google_common_protos__com_google_api_codegen'],
+    libraries['maven.com_google_api_api_compiler_testing']
 
-  testCompile libraries.junit,
-    libraries.truth,
-    libraries.truth8,
-    libraries.toolsFxTesting,
-    libraries.mockito,
-    libraries.junitParams
+  testCompile libraries['maven.junit_junit'],
+    libraries['maven.com_google_truth_truth'],
+    libraries['maven.com_google_truth_extensions_truth_java8_extension'],
+    libraries['maven.com_google_api_api_compiler_testing'],
+    libraries['maven.org_mockito_mockito_core'],
+    libraries['maven.pl_pragmatists_JUnitParams']
 
-  annotationProcessor libraries.autovalue
+  annotationProcessor libraries['maven.com_google_auto_value_auto_value']
 }
 
 task fatJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
@@ -178,7 +155,7 @@ sourceSets {
 
 protobuf {
   protoc {
-    artifact = libraries.protoc
+    artifact = libraries['protoc']
   }
 }
 
@@ -257,7 +234,7 @@ configurations {
 }
 
 dependencies {
-  codeGeneration libraries.autovalue, libraries.jsr305
+  codeGeneration libraries['maven.com_google_auto_value_auto_value'], libraries['maven.com_google_code_findbugs_jsr305']
 }
 
 compileJava.classpath += configurations.codeGeneration
@@ -402,7 +379,7 @@ task createToolPaths {
     Symlinks.createSymbolicLink("$buildDir/toolpaths/protoGenGrpcJavaExe", protoGenGrpcJavaExe)
 
     def protobufJavaDir = resolver.extractArchive(
-            'com.google.protobuf:protobuf-java:' + protoVersion)
+            'com.google.protobuf:protobuf-java:' + libraries["version.com_google_protobuf"])
     Symlinks.createSymbolicLink("$buildDir/toolpaths/protobufJavaDir", protobufJavaDir)
 
     def googleJavaFormatJar = resolver.locateArchive(
