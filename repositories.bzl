@@ -165,7 +165,7 @@ def com_google_api_api_compiler():
 def com_google_api_grpc_proto_google_common_protos():
     native.maven_jar(
         name = "com_google_api_grpc_proto_google_common_protos",
-        artifact = "com.google.api.grpc:proto-google-common-protos:1.13.0-pre2",
+        artifact = "com.google.api.grpc:proto-google-common-protos:1.13.0-pre3",
     )
 
 def com_google_auto_value_auto_value():
