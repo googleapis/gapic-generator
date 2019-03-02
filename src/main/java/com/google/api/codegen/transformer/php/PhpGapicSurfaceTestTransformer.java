@@ -16,6 +16,8 @@ package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceModel;
@@ -27,8 +29,6 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -189,7 +189,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
       }
 
       ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
-      if (methodContext.getMethodConfig().isLongRunningOperation()) {
+      if (methodContext.isLongRunningMethodContext()) {
         clientMethodType = ClientMethodType.LongRunningOptionalArrayMethod;
       } else if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
@@ -237,11 +237,12 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
 
     SurfaceNamer namer = context.getNamer();
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    GapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
     GapicMethodContext flattenedMethodContext =
-        context.asFlattenedMethodContext(method, flatteningGroup);
+        context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     OptionalArrayMethodView apiMethod = createSmokeTestCaseApiMethodView(flattenedMethodContext);

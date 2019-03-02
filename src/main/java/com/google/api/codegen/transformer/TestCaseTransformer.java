@@ -22,6 +22,7 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SmokeTestConfig;
@@ -117,17 +118,17 @@ public class TestCaseTransformer {
       callerResponseTypeName =
           namer.getAndSaveCallerPagedResponseTypeName(
               methodContext, methodConfig.getPageStreaming().getResourcesFieldConfig());
-    } else if (methodConfig.isLongRunningOperation()) {
+    } else if (methodContext.isLongRunningMethodContext()) {
       clientMethodName = namer.getLroApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
           methodContext
               .getTypeTable()
-              .getAndSaveNicknameFor(methodConfig.getLongRunningConfig().getReturnType());
+              .getAndSaveNicknameFor(methodContext.getLongRunningConfig().getReturnType());
       callerResponseTypeName = responseTypeName;
       fullyQualifiedResponseTypeName =
           methodContext
               .getTypeTable()
-              .getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+              .getFullNameFor(methodContext.getLongRunningConfig().getReturnType());
     } else if (clientMethodType == ClientMethodType.CallableMethod) {
       clientMethodName = namer.getCallableMethodName(method);
       responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
@@ -150,8 +151,8 @@ public class TestCaseTransformer {
 
     boolean hasRequestParameters = initCode.lines().size() > 0;
     boolean hasReturnValue = !method.isOutputTypeEmpty();
-    if (methodConfig.isLongRunningOperation()) {
-      hasReturnValue = !methodConfig.getLongRunningConfig().getReturnType().isEmptyType();
+    if (methodContext.isLongRunningMethodContext()) {
+      hasReturnValue = !methodContext.getLongRunningConfig().getReturnType().isEmptyType();
     }
 
     // Escape variables names that may clash with hardcoded variable names in generated test
@@ -342,8 +343,8 @@ public class TestCaseTransformer {
   private InitCodeContext createResponseInitCodeContext(
       MethodContext context, SymbolTable symbolTable) {
     TypeModel outputType = context.getMethodModel().getOutputType();
-    if (context.getMethodConfig().isLongRunningOperation()) {
-      outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    if (context.isLongRunningMethodContext()) {
+      outputType = context.getLongRunningConfig().getReturnType();
     }
     return InitCodeContext.newBuilder()
         .initObjectType(outputType)

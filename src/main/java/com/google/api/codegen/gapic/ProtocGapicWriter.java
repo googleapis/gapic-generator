@@ -32,7 +32,10 @@ public class ProtocGapicWriter implements GapicWriter {
   }
 
   // If isDone() is true, then this returns the populated CodeGeneratorResponse object.
-  public CodeGeneratorResponse getCodegenResponse() {
+  public CodeGeneratorResponse getCodegenResponse() throws IllegalStateException {
+    if (!isDone) {
+      throw new IllegalStateException("writeCodeGenOutput() has not completed.");
+    }
     return response;
   }
 

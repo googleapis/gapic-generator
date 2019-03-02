@@ -17,13 +17,13 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.viewmodel.CallingForm;
@@ -65,26 +65,24 @@ public class JavaMethodViewGenerator {
     for (MethodModel method : context.getSupportedMethods()) {
       MethodContext methodContext = context.asRequestMethodContext(method);
       methodContextsToGenerate.add(methodContext);
-      if (methodContext.getMethodConfig().isLongRunningOperation()
+      if (methodContext.isLongRunningMethodContext()
           && context.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
         // If this was a Discovery LRO method, also generate the original flattening method.
         // This prevents us from breaking clients when we turn on the LRO toggle for a method.
         // TODO(andrealin): replace this check with a check for Discovery LRO config in configproto
         methodContextsToGenerate.add(
-            context.asNonLroMethodContext(method, methodContext.getFlatteningConfig()));
+            context.asNonLroMethodContext(methodContext, methodContext.getFlatteningConfig()));
       }
     }
 
     for (MethodContext methodContext : methodContextsToGenerate.build()) {
-      MethodModel method = methodContext.getMethodModel();
       // MethodConfig methodConfig = context.getMethodConfig(method);
       MethodConfig methodConfig = methodContext.getMethodConfig();
-      MethodContext requestMethodContext = context.asRequestMethodContext(method);
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodContext, flatteningGroup);
             if (!FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
@@ -96,12 +94,10 @@ public class JavaMethodViewGenerator {
             }
           }
         }
-        apiMethods.add(
-            clientMethodTransformer.generatePagedRequestObjectMethod(requestMethodContext));
-        apiMethods.add(clientMethodTransformer.generatePagedCallableMethod(requestMethodContext));
+        apiMethods.add(clientMethodTransformer.generatePagedRequestObjectMethod(methodContext));
+        apiMethods.add(clientMethodTransformer.generatePagedCallableMethod(methodContext));
 
-        apiMethods.add(
-            clientMethodTransformer.generateUnpagedListCallableMethod(requestMethodContext));
+        apiMethods.add(clientMethodTransformer.generateUnpagedListCallableMethod(methodContext));
       } else if (methodConfig.isGrpcStreaming()) {
         List<CallingForm> callingForms;
         ImportTypeTable typeTable = context.getImportTypeTable();
@@ -122,14 +118,13 @@ public class JavaMethodViewGenerator {
             throw new IllegalArgumentException(
                 "Invalid streaming type: " + methodConfig.getGrpcStreamingType());
         }
-        apiMethods.add(
-            clientMethodTransformer.generateCallableMethod(requestMethodContext, callingForms));
-      } else if (methodConfig.isLongRunningOperation()) {
+        apiMethods.add(clientMethodTransformer.generateCallableMethod(methodContext, callingForms));
+      } else if (methodContext.isLongRunningMethodContext()) {
         context.getImportTypeTable().saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodContext, flatteningGroup);
             if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
             }
@@ -144,16 +139,14 @@ public class JavaMethodViewGenerator {
           }
         }
         apiMethods.add(
-            clientMethodTransformer.generateAsyncOperationRequestObjectMethod(
-                requestMethodContext));
-        apiMethods.add(
-            clientMethodTransformer.generateOperationCallableMethod(requestMethodContext));
-        apiMethods.add(clientMethodTransformer.generateCallableMethod(requestMethodContext));
+            clientMethodTransformer.generateAsyncOperationRequestObjectMethod(methodContext));
+        apiMethods.add(clientMethodTransformer.generateOperationCallableMethod(methodContext));
+        apiMethods.add(clientMethodTransformer.generateCallableMethod(methodContext));
       } else {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(methodConfig, flatteningGroup);
+                context.asFlattenedMethodContext(methodContext, flatteningGroup);
             if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
             }
@@ -166,9 +159,9 @@ public class JavaMethodViewGenerator {
             }
           }
         }
-        apiMethods.add(clientMethodTransformer.generateRequestObjectMethod(requestMethodContext));
+        apiMethods.add(clientMethodTransformer.generateRequestObjectMethod(methodContext));
 
-        apiMethods.add(clientMethodTransformer.generateCallableMethod(requestMethodContext));
+        apiMethods.add(clientMethodTransformer.generateCallableMethod(methodContext));
       }
     }
 

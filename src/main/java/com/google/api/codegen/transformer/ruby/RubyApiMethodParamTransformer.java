@@ -15,9 +15,9 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ParamDocView;

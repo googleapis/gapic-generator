@@ -24,6 +24,7 @@ import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ProtoTypeRef;
@@ -253,6 +254,63 @@ public class OutputTransformerTest {
     assertThat(variableView.accessors()).containsExactly(".getProperty()", "[0]").inOrder();
     assertThat(parent.getTypeName("newVar")).isEqualTo("OptionalPropertyTypeName");
     assertThat(parent.getTypeModel("newVar")).isEqualTo(optionalPropertyTypeModel);
+  }
+
+  @Test
+  public void testAccessorNewVariableMapKeyInvalidBooleanFail() {
+    Scanner scanner = new Scanner("old_var.property{not_boolean}");
+    when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
+    TypeModel oldVarTypeModel = mock(TypeModel.class);
+    assertThat(parent.put("old_var", oldVarTypeModel, "OldVarType")).isTrue();
+    when(oldVarTypeModel.isMessage()).thenReturn(true);
+    when(oldVarTypeModel.isRepeated()).thenReturn(false);
+    when(oldVarTypeModel.isMap()).thenReturn(false);
+    FieldModel propertyFieldModel = mock(FieldModel.class);
+    when(oldVarTypeModel.getField("property")).thenReturn(propertyFieldModel);
+    TypeModel propertyTypeModel = mock(TypeModel.class);
+    when(propertyFieldModel.getType()).thenReturn(propertyTypeModel);
+    when(propertyTypeModel.isRepeated()).thenReturn(true);
+    when(propertyTypeModel.isMap()).thenReturn(true);
+    when(namer.getFieldGetFunctionName(propertyFieldModel)).thenReturn("getProperty");
+    when(namer.getFieldAccessorName(propertyFieldModel)).thenReturn(".getProperty()");
+    TypeModel boolTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("bool"));
+    TypeModel stringTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
+    when(propertyTypeModel.getMapKeyType()).thenReturn(boolTypeModel);
+    when(propertyTypeModel.getMapValueType()).thenReturn(stringTypeModel);
+    try {
+      accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
+      fail();
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage()).contains("Could not assign value 'not_boolean' to type bool");
+    }
+  }
+
+  @Test
+  public void testAccessorNewVariableMapKeyUnquoatedStringFail() {
+    Scanner scanner = new Scanner("old_var.property{unquoted_string}");
+    when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
+    TypeModel oldVarTypeModel = mock(TypeModel.class);
+    assertThat(parent.put("old_var", oldVarTypeModel, "OldVarType")).isTrue();
+    when(oldVarTypeModel.isMessage()).thenReturn(true);
+    when(oldVarTypeModel.isRepeated()).thenReturn(false);
+    when(oldVarTypeModel.isMap()).thenReturn(false);
+    FieldModel propertyFieldModel = mock(FieldModel.class);
+    when(oldVarTypeModel.getField("property")).thenReturn(propertyFieldModel);
+    TypeModel propertyTypeModel = mock(TypeModel.class);
+    when(propertyFieldModel.getType()).thenReturn(propertyTypeModel);
+    when(propertyTypeModel.isRepeated()).thenReturn(true);
+    when(propertyTypeModel.isMap()).thenReturn(true);
+    when(namer.getFieldGetFunctionName(propertyFieldModel)).thenReturn("getProperty");
+    when(namer.getFieldAccessorName(propertyFieldModel)).thenReturn(".getProperty()");
+    TypeModel stringTypeModel = ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
+    when(propertyTypeModel.getMapKeyType()).thenReturn(stringTypeModel);
+    when(propertyTypeModel.getMapValueType()).thenReturn(stringTypeModel);
+    try {
+      accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
+      fail();
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage()).contains("expected string type for map key");
+    }
   }
 
   @Test

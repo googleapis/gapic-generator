@@ -74,8 +74,19 @@ public abstract class MethodConfig {
 
   public abstract ReleaseLevel getReleaseLevel();
 
+  /**
+   * package-private for internal use.
+   *
+   * <p>{@link MethodContext#getLongRunningConfig} wraps this call, because there are times where we
+   * want to generate the same API method as an LRO method and also as a non-LRO method.
+   */
   @Nullable
-  public abstract LongRunningConfig getLongRunningConfig();
+  abstract LongRunningConfig getLroConfig();
+
+  /* package-private for internal use. */
+  boolean hasLroConfig() {
+    return getLroConfig() != null;
+  }
 
   public abstract MethodConfig asNonLroConfig();
 
@@ -111,18 +122,6 @@ public abstract class MethodConfig {
   /** Returns true if this method has batching configured. */
   public boolean isBatching() {
     return getBatching() != null;
-  }
-
-  public boolean isLongRunningOperation() {
-    return getLongRunningConfig() != null;
-  }
-
-  public boolean displayOutputType() {
-    if (isLongRunningOperation()) {
-      return getLongRunningConfig().getReturnType().isEmptyType();
-    } else {
-      return getMethodModel().isOutputTypeEmpty();
-    }
   }
 
   public ImmutableList<FieldModel> getRequiredFields() {

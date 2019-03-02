@@ -17,18 +17,18 @@ package com.google.api.codegen.transformer.ruby;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
@@ -234,11 +234,12 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer<Pr
 
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       MethodModel method = interfaceConfig.getSmokeTestConfig().getMethod();
+      GapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
       FlatteningConfig flatteningGroup =
           testCaseTransformer.getSmokeTestFlatteningGroup(
               context.getMethodConfig(method), interfaceConfig.getSmokeTestConfig());
       GapicMethodContext flattenedMethodContext =
-          context.asFlattenedMethodContext(method, flatteningGroup);
+          context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
       exampleMethods.add(
           createExampleApiMethodView(flattenedMethodContext, model.hasMultipleServices()));
     }

@@ -15,11 +15,11 @@
 
 package com.google.api.codegen.transformer.py;
 
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public class PythonMethodViewGenerator {
     return context
         .getSupportedMethods()
         .stream()
-        .map(methodModel -> generateOneApiMethod(context.asDynamicMethodContext(methodModel)))
+        .map(methodModel -> generateOneApiMethod(context.asRequestMethodContext(methodModel)))
         .collect(Collectors.toList());
   }
 
@@ -65,7 +65,7 @@ public class PythonMethodViewGenerator {
               initContext,
               packageHasMultipleServices,
               Arrays.asList(CallingForm.RequestPagedAll, CallingForm.RequestPaged));
-    } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
+    } else if (methodContext.isLongRunningMethodContext()) {
       methodView =
           clientMethodTransformer.generateLongRunningMethod(
               methodContext,

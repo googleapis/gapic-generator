@@ -18,6 +18,8 @@ import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -32,8 +34,6 @@ import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -214,7 +214,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
       for (MethodModel method : context.getSupportedMethods()) {
         GapicMethodContext methodContext = context.asRequestMethodContext(method);
         ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
-        if (methodContext.getMethodConfig().isLongRunningOperation()) {
+        if (methodContext.isLongRunningMethodContext()) {
           clientMethodType = ClientMethodType.LongRunningOptionalArrayMethod;
         } else if (methodContext.getMethodConfig().isPageStreaming()) {
           clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
@@ -275,13 +275,13 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     String filename = namer.classFileNameBase(Name.upperCamel(name).join(version)) + ".py";
     String outputPath =
         Joiner.on(File.separator).join("tests", "system", "gapic", version, filename);
-
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    GapicMethodContext methodContext = context.asRequestMethodContext(method);
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
     GapicMethodContext flattenedMethodContext =
-        context.asFlattenedMethodContext(method, flatteningGroup);
+        context.asFlattenedMethodContext(methodContext, flatteningGroup);
     OptionalArrayMethodView apiMethodView =
         createSmokeTestCaseApiMethodView(flattenedMethodContext);
 

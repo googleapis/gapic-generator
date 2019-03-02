@@ -22,15 +22,16 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SchemaTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -136,11 +137,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
+      MethodContext methodContext, ImportTypeTable typeTable) {
     String responseTypeName =
-        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+        typeTable.getFullNameFor(methodContext.getLongRunningConfig().getReturnType());
     String metadataTypeName =
-        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
+        typeTable.getFullNameFor(methodContext.getLongRunningConfig().getMetadataType());
     return typeTable.getAndSaveNicknameForContainer(
         "com.google.api.gax.longrunning.OperationFuture", responseTypeName, metadataTypeName);
   }
@@ -413,6 +414,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getIndexAccessorName(int index) {
     return String.format(".get(%d)", index);
+  }
+
+  @Override
+  public String getMapKeyAccessorName(TypeModel keyType, String key) {
+    return String.format(
+        ".get(%s)", getModelTypeFormatter().renderPrimitiveValue((ProtoTypeRef) keyType, key));
   }
 
   @Override

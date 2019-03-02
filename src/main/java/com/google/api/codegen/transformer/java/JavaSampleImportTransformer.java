@@ -15,11 +15,11 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StandardSampleImportTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -170,8 +170,6 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
   }
 
   private void saveResponseTypeNameForLongRunningMethod(MethodContext context) {
-    context
-        .getTypeTable()
-        .getAndSaveNicknameFor(context.getMethodConfig().getLongRunningConfig().getReturnType());
+    context.getTypeTable().getAndSaveNicknameFor(context.getLongRunningConfig().getReturnType());
   }
 }
