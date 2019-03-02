@@ -28,6 +28,7 @@ import com.google.api.codegen.configgen.transformer.DiscoveryMethodTransformer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.core.BetaApi;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -73,6 +74,9 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     return null;
   }
 
+  @BetaApi
+
+  @BetaApi
   /**
    * Creates an instance of DiscoGapicMethodConfig based on MethodConfigProto, linking it up with
    * the provided method. On errors, null will be returned, and diagnostics are reported to the diag
