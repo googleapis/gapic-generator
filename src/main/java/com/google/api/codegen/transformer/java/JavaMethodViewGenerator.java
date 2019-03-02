@@ -76,7 +76,6 @@ public class JavaMethodViewGenerator {
     }
 
     for (MethodContext methodContext : methodContextsToGenerate.build()) {
-      // MethodConfig methodConfig = context.getMethodConfig(method);
       MethodConfig methodConfig = methodContext.getMethodConfig();
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
@@ -96,7 +95,6 @@ public class JavaMethodViewGenerator {
         }
         apiMethods.add(clientMethodTransformer.generatePagedRequestObjectMethod(methodContext));
         apiMethods.add(clientMethodTransformer.generatePagedCallableMethod(methodContext));
-
         apiMethods.add(clientMethodTransformer.generateUnpagedListCallableMethod(methodContext));
       } else if (methodConfig.isGrpcStreaming()) {
         List<CallingForm> callingForms;
@@ -160,7 +158,6 @@ public class JavaMethodViewGenerator {
           }
         }
         apiMethods.add(clientMethodTransformer.generateRequestObjectMethod(methodContext));
-
         apiMethods.add(clientMethodTransformer.generateCallableMethod(methodContext));
       }
     }

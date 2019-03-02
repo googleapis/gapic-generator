@@ -421,9 +421,6 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     typeTable.saveNicknameFor("org.junit.Assert");
     typeTable.saveNicknameFor("org.junit.BeforeClass");
     typeTable.saveNicknameFor("org.junit.Test");
-    if (context.getInterfaceConfig().hasLongRunningOperations()) {
-      typeTable.saveNicknameFor("com.google.protobuf.Any");
-    }
     switch (context.getProductConfig().getTransportProtocol()) {
       case GRPC:
         typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiClientHeaderProvider");
@@ -433,6 +430,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.LocalChannelProvider");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockServiceHelper");
+        typeTable.saveNicknameFor("com.google.protobuf.Any");
         typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
         typeTable.saveNicknameFor("io.grpc.Status");
         typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");

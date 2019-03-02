@@ -580,9 +580,6 @@ public class StaticLangApiMethodTransformer {
         namer.getVisiblityKeyword(context.getMethodConfig().getVisibility()));
     methodViewBuilder.releaseLevelAnnotation(
         namer.getReleaseAnnotation(context.getMethodConfig().getReleaseLevel()));
-    // <<<<<<< HEAD
-    //     methodViewBuilder.hasReturnValue(!context.getMethodConfig().displayOutputType());
-    // =======
 
     if (context.isLongRunningMethodContext()) {
       methodViewBuilder.hasReturnValue(
@@ -590,7 +587,6 @@ public class StaticLangApiMethodTransformer {
     } else {
       methodViewBuilder.hasReturnValue(!method.isOutputTypeEmpty());
     }
-    // >>>>>>> origin_lro
     methodViewBuilder.headerRequestParams(
         headerRequestParamTransformer.generateHeaderRequestParams(context));
   }
