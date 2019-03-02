@@ -176,7 +176,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         getNamer(),
         (GapicMethodConfig) methodContext.getMethodConfig(),
         flatteningConfig,
-        methodContext.getMethodConfig().getLroConfig(),
+        methodContext.getLongRunningConfig(),
         getFeatureConfig());
   }
 

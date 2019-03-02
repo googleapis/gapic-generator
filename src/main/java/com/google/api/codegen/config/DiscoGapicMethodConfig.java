@@ -216,27 +216,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     }
   }
 
-  @Override
-  public DiscoGapicMethodConfig asNonLroConfig() {
-    return new AutoValue_DiscoGapicMethodConfig(
-        getPageStreaming(),
-        getFlatteningConfigs(),
-        getRetryCodesConfigName(),
-        getRetrySettingsConfigName(),
-        getTimeout(),
-        getRequiredFieldConfigs(),
-        getOptionalFieldConfigs(),
-        getDefaultResourceNameTreatment(),
-        getBatching(),
-        getFieldNamePatterns(),
-        getSampleCodeInitFields(),
-        getSampleSpec(),
-        getVisibility(),
-        getReleaseLevel(),
-        null,
-        getMethodModel());
-  }
-
   /* Return the list of "one of" instances associated with the fields. */
   @Override
   public ImmutableList<ImmutableList<String>> getOneofNames(SurfaceNamer namer) {

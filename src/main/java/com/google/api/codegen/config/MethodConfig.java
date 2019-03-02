@@ -88,8 +88,6 @@ public abstract class MethodConfig {
     return getLroConfig() != null;
   }
 
-  public abstract MethodConfig asNonLroConfig();
-
   /** Returns true if the method is a streaming method */
   public static boolean isGrpcStreamingMethod(MethodModel method) {
     return method.getRequestStreaming() || method.getResponseStreaming();
