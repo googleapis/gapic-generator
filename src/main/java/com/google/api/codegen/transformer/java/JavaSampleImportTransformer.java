@@ -102,15 +102,22 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
             saveResourceTypeName(context);
           }
           break;
-        case LOOP:
-          OutputView.LoopView loopView = (OutputView.LoopView) view;
-          type = loopView.collection().type();
+        case ARRAY_LOOP:
+          OutputView.ArrayLoopView arrayLoopView = (OutputView.ArrayLoopView) view;
+          type = arrayLoopView.collection().type();
           if (type != null) {
             typeTable.getAndSaveNicknameFor(type.makeOptional());
           } else {
             saveResourceTypeName(context);
           }
-          addOutputImports(context, loopView.body());
+          addOutputImports(context, arrayLoopView.body());
+          break;
+        case MAP_LOOP:
+          OutputView.MapLoopView mapLoopView = (OutputView.MapLoopView) view;
+          typeTable.getAndSaveNicknameFor(mapLoopView.map().type().getMapKeyType());
+          typeTable.getAndSaveNicknameFor(mapLoopView.map().type().getMapValueType());
+          typeTable.saveNicknameFor("java.util.Map");
+          addOutputImports(context, mapLoopView.body());
           break;
         case COMMENT:
         case PRINT:

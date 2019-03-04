@@ -300,17 +300,19 @@
 
 @private processOutputViews(outputViews)
   @join view : outputViews on BREAK
-   @switch view.kind
-     @case "COMMENT"
-       {@processCommentView(view)}
-     @case "DEFINE"
-       {@processDefineView(view)}
-     @case "LOOP"
-       {@processLoopView(view)}
-     @case "PRINT"
-       {@processPrintView(view)}
-     @default
-       $unhandledResponseForm: {@view}
+    @switch view.kind
+      @case "COMMENT"
+        {@processCommentView(view)}
+      @case "DEFINE"
+        {@processDefineView(view)}
+      @case "ARRAY_LOOP"
+        {@processArrayLoopView(view)}
+      @case "MAP_LOOP"
+        {@processMapLoopView(view)}
+      @case "PRINT"
+        {@processPrintView(view)}
+      @default
+        $unhandledResponseForm: {@view}
     @end
   @end
 @end
@@ -339,10 +341,34 @@
   @end
 @end
 
-@private processLoopView(view)
+@private processArrayLoopView(view)
   for ({@view.variableType} {@view.variableName} : {@variableField(@view.collection)}) {
     {@processOutputViews(@view.body)}
   }
+@end
+
+@private processMapLoopView(view)
+  @if and(view.keyVariableName, view.valueVariableName)
+    for (Map.Entry<{@view.keyType}, {@view.valueType}> entry : {@variableField(@view.map)}.entrySet()) {
+      {@view.keyType} {@view.keyVariableName} = entry.getKey();
+      {@view.valueType} {@view.valueVariableName} = entry.getValue();
+
+  @else
+    @if view.keyVariableName
+      for ({@view.keyType} {@view.keyVariableName}: {@variableField(@view.map)}.keySet()) {
+
+    @else
+      @if view.valueVariableName
+        for ({@view.valueType} {@view.valueVariableName}: {@variableField(@view.map)}.values()) {
+
+      @else
+        $unhandledMapLoopView: {@view}
+      @end
+    @end
+  @end
+    {@processOutputViews(@view.body)}
+  }
+
 @end
 
 @private commaSeparatedFields(args)
