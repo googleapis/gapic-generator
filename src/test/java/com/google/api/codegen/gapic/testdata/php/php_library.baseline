@@ -3228,6 +3228,21 @@ function sampleGetBigBook($shelf)
         }
         if ($newOperationResponse->operationSucceeded()) {
           $response = $newOperationResponse->getResult();
+          // Testing iterating over map fields when both key and value are specified.
+          foreach ($response->getMapListValueValue() as $myKey => $myValue) {
+              printf("key: %s, value: %s" . PHP_EOL, $myKey, print_r($myValue, true));
+          }
+
+          // Testing iterating over map fields when only key is specified.
+          foreach (array_keys($response->getMapListValueValue()) as $anotherKey) {
+              printf("key: %s" . PHP_EOL, $anotherKey);
+          }
+
+          // Testing iterating over map fields when only value is specified.
+          foreach ($response->getMapListValueValue() as $anotherValue) {
+              printf("value: %s" . PHP_EOL, print_r($anotherValue, true));
+          }
+
           printf("name: %s" . PHP_EOL, $response->getName());
           printf("author: %s" . PHP_EOL, $response->getAuthor());
         } else {
@@ -3376,6 +3391,21 @@ function sampleGetBigBook($shelf)
         $operationResponse->pollUntilComplete();
         if ($operationResponse->operationSucceeded()) {
             $response = $operationResponse->getResult();
+            // Testing iterating over map fields when both key and value are specified.
+            foreach ($response->getMapListValueValue() as $myKey => $myValue) {
+                printf("key: %s, value: %s" . PHP_EOL, $myKey, print_r($myValue, true));
+            }
+
+            // Testing iterating over map fields when only key is specified.
+            foreach (array_keys($response->getMapListValueValue()) as $anotherKey) {
+                printf("key: %s" . PHP_EOL, $anotherKey);
+            }
+
+            // Testing iterating over map fields when only value is specified.
+            foreach ($response->getMapListValueValue() as $anotherValue) {
+                printf("value: %s" . PHP_EOL, print_r($anotherValue, true));
+            }
+
             printf("name: %s" . PHP_EOL, $response->getName());
             printf("author: %s" . PHP_EOL, $response->getAuthor());
         } else {
