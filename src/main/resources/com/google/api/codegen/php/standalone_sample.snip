@@ -376,8 +376,10 @@
             {@processCommentView(view)}
         @case "DEFINE"
             {@processDefineView(view)}
-        @case "LOOP"
-            {@processLoopView(view)}
+        @case "ARRAY_LOOP"
+            {@processArrayLoopView(view)}
+        @case "MAP_LOOP"
+            {@processMapLoopView(view)}
         @case "PRINT"
             {@processPrintView(view)}
         @default
@@ -398,10 +400,32 @@
     {@toComments(view.lines)}
 @end
 
-@private processLoopView(view)
+@private processArrayLoopView(view)
     foreach ({@variableField(view.collection)} as {@variable(view.variableName)}) {
         {@processOutputViews(view.body)}
     }
+@end
+
+@private processMapLoopView(view)
+    @if and(@view.keyVariableName, @view.valueVariableName)
+        foreach ({@variableField(view.map)} as ${@view.keyVariableName} => ${@view.valueVariableName}) {
+
+    @else
+        @if @view.keyVariableName
+            foreach (array_keys({@variableField(view.map)}) as ${@view.keyVariableName}) {
+
+        @else
+            @if @view.valueVariableName
+                foreach ({@variableField(view.map)} as ${@view.valueVariableName}) {
+
+            @else
+                $unhandledMapLoopView: {@view}
+            @end
+        @end
+    @end
+        {@processOutputViews(view.body)}
+    }
+
 @end
 
 @private processDefineView(view)
