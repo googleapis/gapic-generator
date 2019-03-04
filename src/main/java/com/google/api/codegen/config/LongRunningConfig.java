@@ -225,8 +225,8 @@ public abstract class LongRunningConfig {
     return new AutoValue_LongRunningConfig(
         returnType,
         metadataType,
-        implementsCancel,
         implementsDelete,
+        implementsCancel,
         initialPollDelay,
         LRO_POLL_DELAY_MULTIPLIER,
         maxPollDelay,
