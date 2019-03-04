@@ -407,6 +407,21 @@ function sampleGetBigBook(shelf) {
       // Adding a listener for the "complete" event starts polling for the
       // completion of the operation.
       operation.on('complete', (result, metadata, finalApiResponse) => {
+        // Testing iterating over map fields when both key and value are specified.
+        for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
+          console.log(`key: ${myKey}, value: ${myValue}`);
+        }
+
+        // Testing iterating over map fields when only key is specified.
+        for (const anotherKey of Object.keys(result.mapListValueValue)) {
+          console.log(`key: ${anotherKey}`);
+        }
+
+        // Testing iterating over map fields when only value is specified.
+        for (const anotherValue of Object.values(result.mapListValueValue)) {
+          console.log(`value: ${anotherValue}`);
+        }
+
         console.log(`name: ${result.name}`);
         console.log(`author: ${result.author}`);
       });
@@ -518,6 +533,21 @@ function sampleGetBigBook(shelf) {
       const result = responses[0];
       const metadata = responses[1];
       const finalApiResponse = responses[2];
+
+      // Testing iterating over map fields when both key and value are specified.
+      for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
+        console.log(`key: ${myKey}, value: ${myValue}`);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (const anotherKey of Object.keys(result.mapListValueValue)) {
+        console.log(`key: ${anotherKey}`);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (const anotherValue of Object.values(result.mapListValueValue)) {
+        console.log(`value: ${anotherValue}`);
+      }
 
       console.log(`name: ${result.name}`);
       console.log(`author: ${result.author}`);
