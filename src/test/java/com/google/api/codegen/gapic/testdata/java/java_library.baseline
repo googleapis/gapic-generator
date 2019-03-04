@@ -435,6 +435,8 @@ import org.apache.commons.cli.Options;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.ListValue;
+import java.util.Map;
 
 // [START hopper]
 /*
@@ -443,6 +445,8 @@ import com.google.example.library.v1.ShelfBookName;
  * import com.google.example.library.v1.Book;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.ListValue;
+ * import java.util.Map;
  */
 public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
   public static void sampleGetBigBook(String shelf) {
@@ -451,6 +455,23 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
       // String shelf = "Novel";
       ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
       Book response = libraryClient.getBigBookAsync(name.toString()).get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
       System.out.printf("name: %s\n", response.getName());
       System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
@@ -549,6 +570,8 @@ import com.google.example.library.v1.Book;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.ListValue;
+import java.util.Map;
 
 // [START hopper]
 /*
@@ -558,6 +581,8 @@ import com.google.example.library.v1.ShelfBookName;
  * import com.google.example.library.v1.GetBookRequest;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.ListValue;
+ * import java.util.Map;
  */
 public class GetBigBookAsyncLongRunningRequestAsyncWap {
   public static void sampleGetBigBook(String shelf) {
@@ -569,6 +594,23 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap {
         .setName(name.toString())
         .build();
       Book response = libraryClient.getBigBookAsync(request).get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
       System.out.printf("name: %s\n", response.getName());
       System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
@@ -673,6 +715,8 @@ import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 import com.google.longrunning.Operation;
+import com.google.protobuf.ListValue;
+import java.util.Map;
 
 // [START hopper]
 /*
@@ -683,6 +727,8 @@ import com.google.longrunning.Operation;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ShelfBookName;
  * import com.google.longrunning.Operation;
+ * import com.google.protobuf.ListValue;
+ * import java.util.Map;
  */
 public class GetBigBookCallableCallableWap {
   public static void sampleGetBigBook(String shelf) {
@@ -698,6 +744,23 @@ public class GetBigBookCallableCallableWap {
       // Do something
 
       Operation response = future.get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
       System.out.printf("name: %s\n", response.getName());
       System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
@@ -808,6 +871,8 @@ import com.google.example.library.v1.Book;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.ListValue;
+import java.util.Map;
 
 // [START hopper]
 /*
@@ -818,6 +883,8 @@ import com.google.example.library.v1.ShelfBookName;
  * import com.google.example.library.v1.GetBookRequest;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.ListValue;
+ * import java.util.Map;
  */
 public class GetBigBookOperationCallableLongRunningCallableWap {
   public static void sampleGetBigBook(String shelf) {
@@ -833,6 +900,23 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
       // Do something
 
       Book response = future.get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
       System.out.printf("name: %s\n", response.getName());
       System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
