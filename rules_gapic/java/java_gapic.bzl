@@ -28,9 +28,8 @@ def _java_gapic_srcjar_impl(ctx):
     # must ensure uniqueness within a build.
     script = """
     unzip -q {gapic_srcjar} -d {output_dir_path}
-    echo '--replace' > {output_dir_path}/{output_dir_name}.txt
-    find {output_dir_path} -type f >> {output_dir_path}/{output_dir_name}.txt
-    {formatter} @{output_dir_path}/{output_dir_name}.txt
+    # This may fail if there are spaces and/or too many files (exceed max length of command length).
+    {formatter} --replace $(find {output_dir_path} -type f -printf "%p ")
     pushd .
     cd {output_dir_path}
     cd src/main/java && zip -q -r ../../../{output_dir_name}.srcjar ./* && cd -
