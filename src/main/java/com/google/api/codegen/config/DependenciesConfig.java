@@ -90,7 +90,7 @@ public abstract class DependenciesConfig {
   }
 
   /**
-   * The version of the command line parser package generated sample packages depend on. Only used
+   * The version of the command line argument parser package generated sample packages depend on. Only used
    * in Java.
    */
   public VersionBound commonsCliVersionBound(TargetLanguage language) {

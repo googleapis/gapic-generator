@@ -113,7 +113,7 @@ public abstract class PackageMetadataConfig {
   }
 
   /**
-   * The version of the commandline argument parser that sample package depends on. Used only in
+   * The version of the command line argument parser that sample package depends on. Used only in
    * Java.
    */
   public VersionBound commonsCliVersionBound(TargetLanguage language) {
