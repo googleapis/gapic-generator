@@ -175,7 +175,7 @@ def java_gapic_proto_gradle_pkg(
         #  (because of missing the maven artifacts for the Bazel dependencies
         #  we now depend on (gax, grpc). Fix this.
         deps = deps + [
-            #            "@com_google_protobuf_protobuf_java//jar",
+            # "@com_google_protobuf_protobuf_java//jar",
         ],
         test_deps = test_deps,
         visibility = visibility,
@@ -196,8 +196,8 @@ def java_gapic_grpc_gradle_pkg(
         name = name,
         pkg_type = "grpc",
         deps = deps + [
-            #            "@io_grpc_grpc_protobuf//jar",
-            #            "@io_grpc_grpc_stub//jar",
+            # "@io_grpc_grpc_protobuf//jar",
+            # "@io_grpc_grpc_stub//jar",
         ],
         test_deps = test_deps,
         visibility = visibility,

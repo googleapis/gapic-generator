@@ -197,6 +197,8 @@ def _possibly_artifact_id_version_chunk(chunk):
     return True
 
 def _possibly_artifact_id_classifier_chunk(chunk):
+    # A hack to support guava-androind and guava-jre (androind and jre belong to a version chunk,
+    # but will be detected as a classifier chunck without this hack).
     if chunk == "android" or chunk == "jre":
         return False
     for j in range(0, len(chunk)):
