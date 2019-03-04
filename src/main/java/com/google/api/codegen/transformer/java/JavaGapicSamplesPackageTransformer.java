@@ -18,7 +18,6 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.packagegen.java.JavaPackageTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -77,7 +76,7 @@ public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
         PackageDependencyView.newBuilder()
             .group("commons-cli")
             .name("commons-cli")
-            .versionBound(VersionBound.create("1.4", "1.4"))
+            .versionBound(packageConfig.commonsCliVersionBound(TargetLanguage.JAVA))
             .build();
     return ImmutableList.<PackageDependencyView>of(apiCommonDep, commonsCliDep);
   }

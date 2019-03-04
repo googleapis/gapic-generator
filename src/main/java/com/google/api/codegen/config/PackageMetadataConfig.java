@@ -48,6 +48,8 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, VersionBound> generatedNonGAPackageVersionBound();
 
+  protected abstract Map<TargetLanguage, VersionBound> commonsCliVersionBound();
+
   @Nullable
   protected abstract Map<TargetLanguage, VersionBound> generatedGAPackageVersionBound();
 
@@ -110,6 +112,14 @@ public abstract class PackageMetadataConfig {
     return authVersionBound().get(language);
   }
 
+  /**
+   * The version of the commandline argument parser that sample package depends on. Used only in
+   * Java.
+   */
+  public VersionBound commonsCliVersionBound(TargetLanguage language) {
+    return commonsCliVersionBound().get(language);
+  }
+
   /** The versions of the proto packages that this package depends on. Configured per language. */
   public Map<String, VersionBound> protoPackageDependencies(TargetLanguage language) {
     return protoPackageDependencies().get(language);
@@ -170,6 +180,8 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder authVersionBound(Map<TargetLanguage, VersionBound> val);
 
+    abstract Builder commonsCliVersionBound(Map<TargetLanguage, VersionBound> val);
+
     abstract Builder packageName(String val);
 
     abstract Builder generatedNonGAPackageVersionBound(Map<TargetLanguage, VersionBound> val);
@@ -215,6 +227,7 @@ public abstract class PackageMetadataConfig {
         .packageName("")
         .authVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .apiCommonVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .commonsCliVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .generatedNonGAPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .generatedGAPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
@@ -243,7 +256,8 @@ public abstract class PackageMetadataConfig {
             .grpcVersionBound(dependenciesConfig.grpcVersionBound())
             .protoVersionBound(dependenciesConfig.protoVersionBound())
             .authVersionBound(dependenciesConfig.authVersionBound())
-            .apiCommonVersionBound(dependenciesConfig.apiCommonVersionBound());
+            .apiCommonVersionBound(dependenciesConfig.apiCommonVersionBound())
+            .commonsCliVersionBound(dependenciesConfig.commonsCliVersionBound());
 
     // api_defaults config
     builder
