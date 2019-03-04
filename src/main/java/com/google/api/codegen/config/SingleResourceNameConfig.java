@@ -86,7 +86,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     }
 
     return new AutoValue_SingleResourceNameConfig(
-        pathTemplate, nameTemplate, resource.getName(), resource.getName(), null, file);
+        pathTemplate, nameTemplate, resource.getSymbol(), resource.getSymbol(), null, file);
   }
 
   /** Returns the name pattern for the resource name config. */

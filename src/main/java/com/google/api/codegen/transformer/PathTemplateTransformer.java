@@ -15,8 +15,11 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FixedResourceNameConfig;
+import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;

@@ -17,11 +17,13 @@ package com.google.api.codegen.transformer.nodejs;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -29,8 +31,6 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -193,21 +193,18 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
 
       testCaseViews.add(
           testCaseTransformer.createTestCaseView(
-              methodContext,
-              testNameTable,
-              initCodeContext,
-              getMethodType(methodContext.getMethodConfig())));
+              methodContext, testNameTable, initCodeContext, getMethodType(methodContext)));
     }
     return testCaseViews;
   }
 
-  private ClientMethodType getMethodType(MethodConfig config) {
+  private ClientMethodType getMethodType(MethodContext methodContext) {
     ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
-    if (config.isPageStreaming()) {
+    if (methodContext.getMethodConfig().isPageStreaming()) {
       clientMethodType = ClientMethodType.PagedRequestObjectMethod;
-    } else if (config.isGrpcStreaming()) {
+    } else if (methodContext.getMethodConfig().isGrpcStreaming()) {
       clientMethodType = ClientMethodType.AsyncRequestObjectMethod;
-    } else if (config.isLongRunningOperation()) {
+    } else if (methodContext.isLongRunningMethodContext()) {
       clientMethodType = ClientMethodType.OperationCallableMethod;
     }
     return clientMethodType;
@@ -236,8 +233,9 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
+    GapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
     GapicMethodContext flattenedMethodContext =
-        context.asFlattenedMethodContext(method, flatteningGroup);
+        context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     OptionalArrayMethodView apiMethodView =

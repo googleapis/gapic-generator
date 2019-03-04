@@ -15,6 +15,8 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceModel;
@@ -30,8 +32,6 @@ import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -200,7 +200,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
 
     for (MethodModel method : context.getGrpcStreamingMethods()) {
       GrpcStreamingConfig grpcStreamingConfig =
-          context.asDynamicMethodContext(method).getMethodConfig().getGrpcStreaming();
+          context.asRequestMethodContext(method).getMethodConfig().getGrpcStreaming();
       String resourcesFieldGetFunction = null;
       if (grpcStreamingConfig.hasResourceField()) {
         resourcesFieldGetFunction =
@@ -224,8 +224,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     List<LongRunningOperationDetailView> result = new ArrayList<>();
 
     for (MethodModel method : context.getLongRunningMethods()) {
-      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
-      LongRunningConfig lroConfig = methodContext.getMethodConfig().getLongRunningConfig();
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
+      LongRunningConfig lroConfig = methodContext.getLongRunningConfig();
       TypeModel returnType = lroConfig.getReturnType();
       TypeModel metadataType = lroConfig.getMetadataType();
       result.add(

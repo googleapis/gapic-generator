@@ -18,7 +18,10 @@ import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GapicMethodContext;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -90,7 +93,7 @@ public class ApiCallableTransformer {
       apiCallables.add(generatePagedApiCallable(context));
     }
 
-    if (context.getMethodConfig().isLongRunningOperation()) {
+    if (context.isLongRunningMethodContext()) {
       // Only Protobuf-based APIs have LongRunningOperations.
       apiCallables.add(generateOperationApiCallable((GapicMethodContext) context));
     }
@@ -257,7 +260,7 @@ public class ApiCallableTransformer {
       settings.add(generateApiCallableSettings(context, ApiCallableImplType.PagedApiCallable));
     } else if (methodConfig.isBatching()) {
       settings.add(generateApiCallableSettings(context, ApiCallableImplType.BatchingApiCallable));
-    } else if (methodConfig.isLongRunningOperation()) {
+    } else if (context.isLongRunningMethodContext()) {
       if (context.getFeatureConfig().enableRawOperationCallSettings()) {
         settings.add(generateApiCallableSettings(context, ApiCallableImplType.SimpleApiCallable));
       }
