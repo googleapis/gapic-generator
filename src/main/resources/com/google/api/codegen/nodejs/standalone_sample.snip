@@ -20,7 +20,11 @@
         {@processCliArguments(sample)}
 
       @end
-      {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)});
+      @if sample.callingForm == "LongRunningPromiseAwait"
+        {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)}).catch(console.error);
+      @else
+       {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)});
+      @end
     @end
   @end
 @end
@@ -248,7 +252,7 @@
 @private methodCallSampleCodeLongRunningPromiseAwait(apiMethod, sample)
   {@initCode(apiMethod, sample.sampleInitCode)}
 
-  // Create a job that you can wait for now, or get its result later
+  // Create a job whose results you can either wait for now, or get later
   const [operation] = await {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)};
 
   // Get a Promise representation of the final result of the job
