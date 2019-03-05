@@ -182,8 +182,6 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
   }
 
   private void saveMetadataTypeNameForLongRunningMethod(MethodContext context) {
-    context
-        .getTypeTable()
-        .getAndSaveNicknameFor(context.getMethodConfig().getLongRunningConfig().getMetadataType());
+    context.getTypeTable().getAndSaveNicknameFor(context.getLongRunningConfig().getMetadataType());
   }
 }
