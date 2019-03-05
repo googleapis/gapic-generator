@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.transformer.MethodContext;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;

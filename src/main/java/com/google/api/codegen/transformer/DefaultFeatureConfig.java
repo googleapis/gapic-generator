@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.MethodContext;
 
 public class DefaultFeatureConfig implements FeatureConfig {
 

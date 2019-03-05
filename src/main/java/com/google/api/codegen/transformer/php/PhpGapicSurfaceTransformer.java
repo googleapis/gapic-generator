@@ -17,6 +17,8 @@ package com.google.api.codegen.transformer.php;
 import com.google.api.HttpRule;
 import com.google.api.Service;
 import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceModel;
@@ -30,8 +32,6 @@ import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -245,8 +245,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     List<LongRunningOperationDetailView> result = new ArrayList<>();
 
     for (MethodModel method : context.getLongRunningMethods()) {
-      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
-      LongRunningConfig lroConfig = methodContext.getMethodConfig().getLongRunningConfig();
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
+      LongRunningConfig lroConfig = methodContext.getLongRunningConfig();
       TypeModel returnType = lroConfig.getReturnType();
       TypeModel metadataType = lroConfig.getMetadataType();
       result.add(
@@ -310,7 +310,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     Service serviceConfig = serviceModel.getServiceConfig();
 
     for (MethodModel methodModel : context.getSupportedMethods()) {
-      GapicMethodContext methodContext = context.asDynamicMethodContext(methodModel);
+      GapicMethodContext methodContext = context.asRequestMethodContext(methodModel);
       MethodConfig methodConfig = methodContext.getMethodConfig();
       Method method = methodContext.getMethod();
 
@@ -431,7 +431,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
 
     for (MethodModel method : context.getGrpcStreamingMethods()) {
       GrpcStreamingConfig grpcStreamingConfig =
-          context.asDynamicMethodContext(method).getMethodConfig().getGrpcStreaming();
+          context.asRequestMethodContext(method).getMethodConfig().getGrpcStreaming();
       String resourcesFieldGetFunction = null;
       if (grpcStreamingConfig.hasResourceField()) {
         resourcesFieldGetFunction =
@@ -478,7 +478,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     List<ApiMethodView> apiMethods = new ArrayList<>(context.getInterface().getMethods().size());
 
     for (MethodModel method : context.getSupportedMethods()) {
-      apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
+      apiMethods.add(apiMethodTransformer.generateMethod(context.asRequestMethodContext(method)));
     }
 
     return apiMethods;

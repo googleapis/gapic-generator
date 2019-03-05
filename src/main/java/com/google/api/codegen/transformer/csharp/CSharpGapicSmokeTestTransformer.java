@@ -16,18 +16,18 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
@@ -122,10 +122,13 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<P
       return null;
     }
     MethodModel method = smokeTestConfig.getMethod();
+    GapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
-            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-    GapicMethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+            defaultMethodContext.getMethodConfig(),
+            context.getInterfaceConfig().getSmokeTestConfig());
+    GapicMethodContext methodContext =
+        context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
 
     smokeTestBuilder.name(name);
     smokeTestBuilder.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
@@ -156,7 +159,7 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<P
       String callerResponseTypeName =
           namer.getAndSaveCallerPagedResponseTypeName(methodContext, resourceFieldConfig);
       apiMethodView.responseTypeName(callerResponseTypeName);
-    } else if (methodConfig.isLongRunningOperation()) {
+    } else if (methodContext.isLongRunningMethodContext()) {
       ArrayList<ParamWithSimpleDoc> emptyParams = new ArrayList<ParamWithSimpleDoc>();
       apiMethodView =
           apiMethodTransformer
