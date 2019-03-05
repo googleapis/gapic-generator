@@ -647,7 +647,16 @@ public class JavaSurfaceTransformer {
     callableFactory.releaseLevelAnnotation(namer.getReleaseAnnotation(ReleaseLevel.BETA));
     callableFactory.name(
         namer.getCallableFactoryClassName(interfaceConfig, productConfig.getTransportProtocol()));
-
+    if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      callableFactory.operationStubType(
+          context
+              .getImportTypeTable()
+              .getAndSaveNicknameFor("com.google.api.gax.core.BackgroundResource"));
+      callableFactory.operationMessage(
+          context
+              .getImportTypeTable()
+              .getAndSaveNicknameFor("com.google.api.gax.httpjson.ApiMessage"));
+    }
     return callableFactory.build();
   }
 
