@@ -81,6 +81,7 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
       case LongRunningCallable:
         typeTable.saveNicknameFor(OPERATION_FUTURE);
         saveResponseTypeNameForLongRunningMethod(context);
+        saveMetadataTypeNameForLongRunningMethod(context);
         break;
       case LongRunningFlattenedAsync:
       case LongRunningRequestAsync:
@@ -178,5 +179,9 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
 
   private void saveResponseTypeNameForLongRunningMethod(MethodContext context) {
     context.getTypeTable().getAndSaveNicknameFor(context.getLongRunningConfig().getReturnType());
+  }
+
+  private void saveMetadataTypeNameForLongRunningMethod(MethodContext context) {
+    context.getTypeTable().getAndSaveNicknameFor(context.getLongRunningConfig().getMetadataType());
   }
 }
