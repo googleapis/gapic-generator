@@ -91,18 +91,20 @@
 @end
 
 @private processDoc(doc)
+  # If there are no parameters, we generate the method description in one line.
+  @if doc.parameters.isEmpty
+    /** {@doc.description} */
+  @else
+    /**
     @if doc.description
-        /** {@doc.description}
-
-    @else
-        /**
-
+      {@""} * {@doc.description}
+      {@""} *
     @end
-    {@""} *
     @join param : doc.parameters
-        {@""} * @@param param.typeName ${@param.identifier} {@param.description}
+      {@""} * @@param {@param.typeName} {@param.identifier} {@param.description}
     @end
     {@""} */
+  @end
 @end
 
 @private processCliArguments(sample)

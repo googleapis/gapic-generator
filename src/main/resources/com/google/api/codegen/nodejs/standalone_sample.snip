@@ -9,9 +9,6 @@
 
       // [START {@sample.regionTag}]
       // [START {@sample.regionTag}_core]
-      @if not(sample.sampleFunctionDoc.isEmpty)
-        {@processDoc(sample.sampleFunctionDoc)}
-      @end
       {@standaloneSample(apiMethod, sample)}
 
       // [END {@sample.regionTag}_core]
@@ -38,6 +35,9 @@
   @else
     const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
 
+  @end
+  @if not(sample.sampleFunctionDoc.isEmpty)
+    {@processDoc(sample.sampleFunctionDoc)}
   @end
   function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
     const client = new {@apiMethod.localPackageName}.{@apiMethod.apiClassName}();
@@ -73,15 +73,20 @@
 @end
 
 @private processDoc(doc)
-  /**
-  @if doc.description
-    {@""} * {@doc.description}
-    {@""} *
+  # If there are no parameters, we generate the method description in one line.
+  @if doc.parameters.isEmpty
+    /** {@doc.description} */
+  @else
+    /**
+    @if doc.description
+      {@""} * {@doc.description}
+      {@""} *
+    @end
+    @join param : doc.parameters
+      {@""} * @@param {@param.identifier} {{@param.typeName}} {@param.description}
+    @end
+    {@""} */
   @end
-  @join param : doc.parameters
-    {@""} * @@param {@param.identifier} {{@param.typeName}} {@param.description}
-  @end
-  {@""} */
 @end
 
 @private processResponse(sample)

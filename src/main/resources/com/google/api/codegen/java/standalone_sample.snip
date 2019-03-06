@@ -294,12 +294,20 @@
 @end
 
 @private processDoc(doc)
+  # 
+  @if doc.parameters.isEmpty
+    /** {@doc.description} */
+  @else
     /**
-    {@""} * {@doc.description}
+    @if doc.description
+      {@""} * {@doc.description}
+      {@""} *
+    @end
     @join param : doc.parameters
       {@""} * @@param {@param.identifier} {@param.description}
     @end
     {@""} */
+  @end
 @end
 
 @private processResponse(sample)

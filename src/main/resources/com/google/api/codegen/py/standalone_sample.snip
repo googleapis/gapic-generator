@@ -35,8 +35,10 @@
     @end
 
     def {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}):
-      {@processDoc(sample.sampleFunctionDoc)}
-
+      @if not(sample.sampleFunctionDoc.isEmpty)
+        {@processDoc(sample.sampleFunctionDoc)}
+      
+      @end
       @# [START {@sample.regionTag}_core]
 
       client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
@@ -95,14 +97,24 @@
 @end
 
 @private processDoc(doc)
-  """{@doc.description}
-  @if doc.parameters
+  # If there are no parameters, we generate the method description in one line.
+  @if doc.parameters.isEmpty
+    """{@doc.description}"""
+
+  # 
+  @else
+    @if doc.description
+      """ {@doc.description}
+
+    @else
+      """
+    @end
     Args:
+    @join param : doc.parameters
+      {@param.identifier}: {@param.description}
+    @end
+    """
   @end
-  @join param : doc.parameters
-    {@param.identifier}: {@param.description}
-  @end
-  """
 @end
 
 @private actualArgs(sampleArgs)
