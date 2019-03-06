@@ -15,39 +15,31 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 
-/* A view model for the standalone sample function pararmeters. */
 @AutoValue
-public abstract class SampleFunctionParameterView {
+public abstract class SampleFunctionDocView {
 
-  public abstract String typeName();
+  public abstract ImmutableList<SampleFunctionParameterView> parameters();
 
-  public abstract String identifier();
-
-  public abstract InitValueView initValue();
-
-  /** We need to keep the cli flag names in the same case (snake_case) across all languages. */
-  public abstract String cliFlagName();
-
+  /** Description of the sample function. */
   public abstract String description();
 
   public static Builder newBuilder() {
-    return new AutoValue_SampleFunctionParameterView.Builder();
+    return new AutoValue_SampleFunctionDocView.Builder();
+  }
+
+  public boolean isEmpty() {
+    return description().isEmpty() && parameters().isEmpty();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
 
-    public abstract Builder typeName(String val);
-
-    public abstract Builder identifier(String val);
-
-    public abstract Builder initValue(InitValueView val);
-
-    public abstract Builder cliFlagName(String val);
+    public abstract Builder parameters(ImmutableList<SampleFunctionParameterView> val);
 
     public abstract Builder description(String val);
 
-    public abstract SampleFunctionParameterView build();
+    public abstract SampleFunctionDocView build();
   }
 }

@@ -23,6 +23,7 @@ import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
 import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.FieldStructureParser;
@@ -130,7 +131,9 @@ public class InitCodeTransformer {
       // Remove the request object for flattened method
       orderedItems.remove(orderedItems.size() - 1);
     }
-    for (InitCodeNode param : sampleFuncParams(root, initCodeContext.sampleArgStrings())) {
+    for (InitCodeNode param :
+        sampleFuncParams(
+            root, initCodeContext.sampleArgStrings(), initCodeContext.sampleParamConfigMap())) {
       List<InitCodeNode> paramInits = param.listInInitializationOrder();
       orderedItems.removeAll(paramInits);
     }
@@ -279,7 +282,8 @@ public class InitCodeTransformer {
         context,
         orderedItems,
         ImmutableList.copyOf(root.getChildren().values()),
-        sampleFuncParams(root, initCodeContext.sampleArgStrings()));
+        sampleFuncParams(
+            root, initCodeContext.sampleArgStrings(), initCodeContext.sampleParamConfigMap()));
   }
 
   private InitCodeView buildInitCodeViewRequestObject(
@@ -289,7 +293,8 @@ public class InitCodeTransformer {
         context,
         root.listInInitializationOrder(),
         ImmutableList.of(root),
-        sampleFuncParams(root, initCodeContext.sampleArgStrings()));
+        sampleFuncParams(
+            root, initCodeContext.sampleArgStrings(), initCodeContext.sampleParamConfigMap()));
   }
 
   /**
@@ -300,7 +305,8 @@ public class InitCodeTransformer {
    * <li>a ReadFile node, returns the child node of that node.
    * <li>a resource path, returns the child node whose key equals the entity name in the path.
    */
-  private List<InitCodeNode> sampleFuncParams(InitCodeNode root, List<String> paths) {
+  private List<InitCodeNode> sampleFuncParams(
+      InitCodeNode root, List<String> paths, Map<String, SampleParameterConfig> paramConfigMap) {
     List<InitCodeNode> params = new ArrayList<>();
     for (String path : paths) {
       Scanner scanner = new Scanner(path);
@@ -308,10 +314,15 @@ public class InitCodeTransformer {
       int token = scanner.lastToken();
       if (token == '%') {
         scanner.scan();
-        params.add(node.getChildren().get(scanner.tokenStr()));
+        node = node.getChildren().get(scanner.tokenStr());
+        node.setDescription(paramConfigMap.get(path).description());
+        params.add(node);
       } else if (node.getLineType() == InitCodeLineType.ReadFileInitLine) {
-        params.add(node.getChildren().get(InitCodeNode.FILE_NAME_KEY));
+        node = node.getChildren().get(InitCodeNode.FILE_NAME_KEY);
+        node.setDescription(paramConfigMap.get(path).description());
+        params.add(node);
       } else {
+        node.setDescription(paramConfigMap.get(path).description());
         params.add(node);
       }
     }
@@ -424,6 +435,7 @@ public class InitCodeTransformer {
               .identifier(simpleInitLine.identifier())
               .typeName(simpleInitLine.typeName())
               .cliFlagName(param.getIdentifier().toLowerUnderscore())
+              .description(param.getDescription())
               .build());
 
       // Since we're going to write the inits for the params here,

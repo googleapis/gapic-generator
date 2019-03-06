@@ -33,6 +33,7 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OutputView;
+import com.google.api.codegen.viewmodel.SampleFunctionDocView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.CaseFormat;
@@ -251,6 +252,17 @@ public abstract class SampleTransformer {
                     initCodeContext.cloneWithEmptySymbolTable())); // to avoid symbol collision
     ImportSectionView sampleImportSectionView =
         sampleImportTransformer().generateImportSection(methodContext);
+    SampleFunctionDocView docView =
+        SampleFunctionDocView.newBuilder()
+            .parameters(
+                initCodeView
+                    .argDefaultParams()
+                    .stream()
+                    .filter(p -> !p.description().isEmpty())
+                    .collect(ImmutableList.toImmutableList()))
+            .description(valueSet.getDescription())
+            .build();
+
     return MethodSampleView.newBuilder()
         .callingForm(form)
         .valueSet(SampleValueSetView.of(valueSet))
@@ -270,6 +282,7 @@ public abstract class SampleTransformer {
                 valueSet.getId()))
         .sampleFunctionName(
             methodContext.getNamer().getSampleFunctionName(methodContext.getMethodModel()))
+        .sampleFunctionDoc(docView)
         .build();
   }
 
@@ -340,6 +353,7 @@ public abstract class SampleTransformer {
               .identifier(identifier)
               .readFromFile(attr.getReadFile())
               .sampleArgumentName(attr.getSampleArgumentName())
+              .description(attr.getDescription())
               .build();
       builder.put(identifier, config);
     }

@@ -20,6 +20,9 @@
         {@importList(sample.sampleInitCode.importSection.appImports)}
 
     @end
+    @if not(sample.sampleFunctionDoc.isEmpty)
+        {@processDoc(sample.sampleFunctionDoc)}
+    @end
     function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)})
     {
         // [START {@sample.regionTag}_core]
@@ -85,6 +88,21 @@
     // [END {@sample.regionTag}]
     {@processCliArguments(sample)}
     {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)});
+@end
+
+@private processDoc(doc)
+    @if doc.description
+        /** {@doc.description}
+
+    @else
+        /**
+
+    @end
+    {@""} *
+    @join param : doc.parameters
+        {@""} * @@param param.typeName ${@param.identifier} {@param.description}
+    @end
+    {@""} */
 @end
 
 @private processCliArguments(sample)

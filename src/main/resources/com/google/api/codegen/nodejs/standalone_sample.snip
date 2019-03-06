@@ -9,7 +9,9 @@
 
       // [START {@sample.regionTag}]
       // [START {@sample.regionTag}_core]
-
+      @if not(sample.sampleFunctionDoc.isEmpty)
+        {@processDoc(sample.sampleFunctionDoc)}
+      @end
       {@standaloneSample(apiMethod, sample)}
 
       // [END {@sample.regionTag}_core]
@@ -68,6 +70,18 @@
     @end
   }
 
+@end
+
+@private processDoc(doc)
+  /**
+  @if doc.description
+    {@""} * {@doc.description}
+    {@""} *
+  @end
+  @join param : doc.parameters
+    {@""} * @@param {@param.identifier} {{@param.typeName}} {@param.description}
+  @end
+  {@""} */
 @end
 
 @private processResponse(sample)

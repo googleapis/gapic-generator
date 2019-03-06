@@ -24,6 +24,9 @@
       {@commentedImportList(sample.sampleImports.appImports)}
     @end
     public class {@sampleFile.classView.name} {
+      @if not(sample.sampleFunctionDoc.isEmpty)
+        {@processDoc(sample.sampleFunctionDoc)}
+      @end
       public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)}) {
         // [START {@sample.regionTag}_core]
         try ({@apiMethod.apiClassName} {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.create()) {
@@ -288,6 +291,15 @@
   @join arg : args on ", "
     {@arg.typeName} {@arg.identifier}
   @end
+@end
+
+@private processDoc(doc)
+    /**
+    {@""} * {@doc.description}
+    @join param : doc.parameters
+      {@""} * @@param {@param.identifier} {@param.description}
+    @end
+    {@""} */
 @end
 
 @private processResponse(sample)

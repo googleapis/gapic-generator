@@ -35,7 +35,7 @@
     @end
 
     def {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}):
-      """{@sample.valueSet.description}"""
+      {@processDoc(sample.sampleFunctionDoc)}
 
       @# [START {@sample.regionTag}_core]
 
@@ -92,6 +92,17 @@
 
   if __name__ == '__main__':
     main()
+@end
+
+@private processDoc(doc)
+  """{@doc.description}
+  @if doc.parameters
+    Args:
+  @end
+  @join param : doc.parameters
+    {@param.identifier}: {@param.description}
+  @end
+  """
 @end
 
 @private actualArgs(sampleArgs)
