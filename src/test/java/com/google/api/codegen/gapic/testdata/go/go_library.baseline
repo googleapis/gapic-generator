@@ -96,10 +96,9 @@ func TestLibClientSmoke(t *testing.T) {
 //
 // Use of Context
 //
-// NewClient and all client methods require a context. NewClient context is
-// used for authentication requests as well as gRPC transport setup, but not
-// for any future calls. Context passed to client methods are used for the
-// lifetime of the request.
+// The ctx passed to NewClient is used for authentication requests and gRPC
+// transport setup, but not for future calls performed using the client.
+// These calls use the ctx passed to individual methods on the client.
 //
 // Using deadlines on requests is recommended. See more information at
 // https://golang.org/pkg/context/.
