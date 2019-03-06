@@ -94,6 +94,16 @@ func TestLibClientSmoke(t *testing.T) {
 //
 // A simple Google Example Library API.
 //
+// Use of Context
+//
+// NewClient and all client methods require a context. NewClient context is
+// used for authentication requests as well as gRPC transport setup, but not
+// for any future calls. Context passed to client methods are used for the
+// lifetime of the request.
+//
+// Using deadlines on requests is recommended. See more information at
+// https://golang.org/pkg/context/.
+//
 // Use the client at cloud.google.com/go/library in preference to this.
 package library // import "cloud.google.com/go/library/apiv1"
 

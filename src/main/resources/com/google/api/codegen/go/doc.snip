@@ -10,6 +10,16 @@
     @join line : view.packageDoc
         // {@line}
     @end
+    //
+    // Use of Context
+    //
+    // NewClient and all client methods require a context. NewClient context is
+    // used for authentication requests as well as gRPC transport setup, but not
+    // for any future calls. Context passed to client methods are used for the
+    // lifetime of the request.
+    //
+    // Using deadlines on requests is recommended. See more information at
+    // https://golang.org/pkg/context/.
     @if view.domainLayerLocation
         //
         // Use the client at {@view.domainLayerLocation} in preference to this.
