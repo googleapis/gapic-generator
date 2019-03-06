@@ -49,6 +49,8 @@ public abstract class DependenciesConfig {
 
   protected abstract Map<TargetLanguage, VersionBound> authVersionBound();
 
+  protected abstract Map<TargetLanguage, VersionBound> commonsCliVersionBound();
+
   /** The version of GAX that this package depends on. Configured per language. */
   public VersionBound gaxVersionBound(TargetLanguage language) {
     return gaxVersionBound().get(language);
@@ -87,6 +89,14 @@ public abstract class DependenciesConfig {
     return authVersionBound().get(language);
   }
 
+  /**
+   * The version of the command line argument parser package that sample packages depend on. Only
+   * used in Java.
+   */
+  public VersionBound commonsCliVersionBound(TargetLanguage language) {
+    return commonsCliVersionBound().get(language);
+  }
+
   private static Builder newBuilder() {
     return new AutoValue_DependenciesConfig.Builder();
   }
@@ -108,6 +118,8 @@ public abstract class DependenciesConfig {
     abstract Builder apiCommonVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract Builder authVersionBound(Map<TargetLanguage, VersionBound> val);
+
+    abstract Builder commonsCliVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract DependenciesConfig build();
   }
@@ -140,7 +152,10 @@ public abstract class DependenciesConfig {
                     (Map<String, Map<String, String>>) configMap.get("auth_version")))
             .apiCommonVersionBound(
                 Configs.createVersionMap(
-                    (Map<String, Map<String, String>>) configMap.get("api_common_version")));
+                    (Map<String, Map<String, String>>) configMap.get("api_common_version")))
+            .commonsCliVersionBound(
+                Configs.createVersionMap(
+                    (Map<String, Map<String, String>>) configMap.get("commons_cli_version")));
     return builder.build();
   }
 
