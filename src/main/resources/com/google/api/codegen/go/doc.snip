@@ -13,12 +13,12 @@
     //
     // Use of Context
     //
-    // The ctx passed to NewClient is used for authentication requests and gRPC
-    // transport setup, but not for future calls performed using the client.
-    // These calls use the ctx passed to individual methods on the client.
+    // The ctx passed to NewClient is used for authentication requests and
+    // for the underlying connection, which is shared between requests.
+    // Individual methods on the client use the ctx given to them.
     //
-    // Using deadlines on requests is recommended. See more information at
-    // https://golang.org/pkg/context/.
+    // For information about setting deadlines, reusing contexts, and more
+    // please visit godoc.org/cloud.google.com/go
     @if view.domainLayerLocation
         //
         // Use the client at {@view.domainLayerLocation} in preference to this.
