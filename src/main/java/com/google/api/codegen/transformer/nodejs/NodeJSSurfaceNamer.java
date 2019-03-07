@@ -153,6 +153,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
             "responses", "operation", "initApiResponse", "result", "metadata", "finalApiResponse");
       case LongRunningPromise:
         return ImmutableSet.of("responses", "result", "metadata", "finalApiResponse");
+      case LongRunningPromiseAwait:
+        return ImmutableSet.of("response", "operation");
       default:
         throw new IllegalArgumentException("unrecognized calling form: " + form);
     }
@@ -612,6 +614,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       case RequestStreamingBidi:
       case RequestStreamingClient:
       case RequestStreamingServer:
+      case LongRunningPromiseAwait:
         return "response";
       case RequestAsyncPaged:
       case RequestAsyncPagedAll:

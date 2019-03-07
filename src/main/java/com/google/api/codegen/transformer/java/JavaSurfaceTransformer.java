@@ -647,7 +647,16 @@ public class JavaSurfaceTransformer {
     callableFactory.releaseLevelAnnotation(namer.getReleaseAnnotation(ReleaseLevel.BETA));
     callableFactory.name(
         namer.getCallableFactoryClassName(interfaceConfig, productConfig.getTransportProtocol()));
-
+    if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      callableFactory.operationStubType(
+          context
+              .getImportTypeTable()
+              .getAndSaveNicknameFor("com.google.api.gax.core.BackgroundResource"));
+      callableFactory.operationMessage(
+          context
+              .getImportTypeTable()
+              .getAndSaveNicknameFor("com.google.api.gax.httpjson.ApiMessage"));
+    }
     return callableFactory.build();
   }
 
@@ -913,6 +922,7 @@ public class JavaSurfaceTransformer {
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");
+        typeTable.saveNicknameFor("javax.annotation.Nullable");
         break;
     }
   }
