@@ -51,13 +51,13 @@ def construct_gradle_assembly_includes_subs(deps_struct):
     return {"{{includes}}": "\n".join(includes)}
 
 def is_java_dependency(dep):
-    return hasattr(dep, "java")
+    return JavaInfo in dep
 
 def is_source_dependency(dep):
-    return is_java_dependency(dep) and hasattr(dep.java, "source_jars") and dep.label.package != "jar"
+    return is_java_dependency(dep) and hasattr(dep[JavaInfo], "source_jars") and dep.label.package != "jar"
 
 def is_proto_dependency(dep):
-    return hasattr(dep, "proto")
+    return ProtoInfo in dep
 
 def is_gapic_pkg_dependency(dep):
     files_list = dep.files.to_list()
@@ -96,7 +96,7 @@ def _reconstruct_artifact_id_strings(deps, group_overrides = {}):
     for dep in deps:
         if not is_java_dependency(dep):
             continue
-        for f in dep.java.transitive_deps.to_list():
+        for f in dep[JavaInfo].transitive_deps.to_list():
             id = _reconstruct_artifact_id(f, group_overrides)
             if id[0]:
                 dep_dict[":".join((id[0], id[1], id[3]))] = id
@@ -197,7 +197,7 @@ def _possibly_artifact_id_version_chunk(chunk):
     return True
 
 def _possibly_artifact_id_classifier_chunk(chunk):
-    # A hack to support guava-androind and guava-jre (androind and jre belong to a version chunk,
+    # A hack to support guava-android and guava-jre (android and jre belong to a version chunk,
     # but will be detected as a classifier chunck without this hack).
     if chunk == "android" or chunk == "jre":
         return False
