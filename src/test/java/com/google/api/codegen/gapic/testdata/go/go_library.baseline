@@ -97,8 +97,10 @@ func TestLibClientSmoke(t *testing.T) {
 // Use of Context
 //
 // The ctx passed to NewClient is used for authentication requests and
-// for the underlying connection, which is shared between requests.
+// for creating the underlying connection, but is not used across methods.
 // Individual methods on the client use the ctx given to them.
+//
+// To close the open connection, use the Close() method.
 //
 // For information about setting deadlines, reusing contexts, and more
 // please visit godoc.org/cloud.google.com/go
