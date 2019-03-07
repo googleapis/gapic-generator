@@ -13,22 +13,16 @@
 # limitations under the License.
 
 # Generated libraries direct dependencies
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
 def java_gapic_repositories():
-#    _maybe(
-#        http_archive,
-#        name = "com_google_api_gax_java",
-#        urls = ["https://github.com/googleapis/gax-java/archive/v1.38.0.zip"],
-#        strip_prefix = "gax-java-1.38.0" % _gax_version,
-#    )
-
-    # TODO: switch to http_archive once the gax change is pushed
+    _gax_java_version = "8c9f9a5a6e90cb6b94f06a23217c2a4dfe214b80"
     _maybe(
-        native.local_repository,
+        http_archive,
         name = "com_google_api_gax_java",
-        path = "/usr/local/google/home/vam/_/projects/github/vam-google/gax-java"
+        urls = ["https://github.com/googleapis/gax-java/archive/%s.zip" % _gax_java_version],
+        strip_prefix = "gax-java-%s" % _gax_java_version,
     )
-
-    return "hello"
 
 def _maybe(repo_rule, name, strip_repo_prefix = "", **kwargs):
     if not name.startswith(strip_repo_prefix):
