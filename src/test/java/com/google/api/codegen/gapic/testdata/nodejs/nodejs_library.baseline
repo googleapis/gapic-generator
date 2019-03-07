@@ -527,6 +527,21 @@ async function sampleGetBigBook(shelf) {
   // Get a Promise representation of the final result of the job
   const [response] = await operation.promise();
 
+  // Testing iterating over map fields when both key and value are specified.
+  for (const [myKey, myValue] of Object.entries(response.mapListValueValue)) {
+    console.log(`key: ${myKey}, value: ${myValue}`);
+  }
+
+  // Testing iterating over map fields when only key is specified.
+  for (const anotherKey of Object.keys(response.mapListValueValue)) {
+    console.log(`key: ${anotherKey}`);
+  }
+
+  // Testing iterating over map fields when only value is specified.
+  for (const anotherValue of Object.values(response.mapListValueValue)) {
+    console.log(`value: ${anotherValue}`);
+  }
+
   console.log(`name: ${response.name}`);
   console.log(`author: ${response.author}`);
 }
