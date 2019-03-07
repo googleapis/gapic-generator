@@ -304,6 +304,8 @@ public class InitCodeTransformer {
    * <li>a normal node, returns that node.
    * <li>a ReadFile node, returns the child node of that node.
    * <li>a resource path, returns the child node whose key equals the entity name in the path.
+   *
+   * @param paramConfigMap the sample parameter configurations derived from {@code InitCodeContext}
    */
   private List<InitCodeNode> sampleFuncParams(
       InitCodeNode root, List<String> paths, Map<String, SampleParameterConfig> paramConfigMap) {

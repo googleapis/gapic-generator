@@ -273,7 +273,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   public String getParamDocText(String paramName, String paramTypeName, String text) {
     return String.format(
-        "@param %s %s %s", paramTypeName, paramName, getCommentReformatter().reformat(text));
+        "@param %s $%s %s", paramTypeName, paramName, getCommentReformatter().reformat(text));
   }
 
   @Override
