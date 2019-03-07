@@ -24,7 +24,8 @@ public interface OutputView {
   public enum Kind {
     COMMENT,
     DEFINE,
-    LOOP,
+    ARRAY_LOOP,
+    MAP_LOOP,
     PRINT
   }
 
@@ -79,7 +80,7 @@ public interface OutputView {
   }
 
   @AutoValue
-  abstract class LoopView implements OutputView {
+  abstract class ArrayLoopView implements OutputView {
     public abstract String variableType(); // TODO: Replace with appropriate type type
 
     public abstract String variableName();
@@ -89,11 +90,11 @@ public interface OutputView {
     public abstract ImmutableList<OutputView> body();
 
     public Kind kind() {
-      return Kind.LOOP;
+      return Kind.ARRAY_LOOP;
     }
 
     public static Builder newBuilder() {
-      return new AutoValue_OutputView_LoopView.Builder();
+      return new AutoValue_OutputView_ArrayLoopView.Builder();
     }
 
     @AutoValue.Builder
@@ -106,7 +107,49 @@ public interface OutputView {
 
       public abstract Builder body(ImmutableList<OutputView> val);
 
-      public abstract LoopView build();
+      public abstract ArrayLoopView build();
+    }
+  }
+
+  @AutoValue
+  abstract class MapLoopView implements OutputView {
+    public abstract String keyType();
+
+    @Nullable
+    public abstract String keyVariableName();
+
+    public abstract String valueType();
+
+    @Nullable
+    public abstract String valueVariableName();
+
+    public abstract VariableView map();
+
+    public abstract ImmutableList<OutputView> body();
+
+    public Kind kind() {
+      return Kind.MAP_LOOP;
+    }
+
+    public static Builder newBuilder() {
+      return new AutoValue_OutputView_MapLoopView.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+      public abstract Builder keyType(String val);
+
+      public abstract Builder keyVariableName(String val);
+
+      public abstract Builder valueType(String val);
+
+      public abstract Builder valueVariableName(String val);
+
+      public abstract Builder map(VariableView val);
+
+      public abstract Builder body(ImmutableList<OutputView> val);
+
+      public abstract MapLoopView build();
     }
   }
 

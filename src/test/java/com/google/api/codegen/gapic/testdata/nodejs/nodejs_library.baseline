@@ -407,6 +407,21 @@ function sampleGetBigBook(shelf) {
       // Adding a listener for the "complete" event starts polling for the
       // completion of the operation.
       operation.on('complete', (result, metadata, finalApiResponse) => {
+        // Testing iterating over map fields when both key and value are specified.
+        for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
+          console.log(`key: ${myKey}, value: ${myValue}`);
+        }
+
+        // Testing iterating over map fields when only key is specified.
+        for (const anotherKey of Object.keys(result.mapListValueValue)) {
+          console.log(`key: ${anotherKey}`);
+        }
+
+        // Testing iterating over map fields when only value is specified.
+        for (const anotherValue of Object.values(result.mapListValueValue)) {
+          console.log(`value: ${anotherValue}`);
+        }
+
         console.log(`name: ${result.name}`);
         console.log(`author: ${result.author}`);
       });
@@ -491,6 +506,92 @@ const argv = require(`yargs`)
   .argv;
 
 sampleGetBigBook(argv.shelf, argv.big_book_name);
+============== file: src/samples/v1/get_big_book_long_running_promise_await_wap.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap")
+'use strict';
+
+// [START hopper]
+// [START hopper_core]
+
+
+const library = require('@google-cloud/library').v1;
+
+async function sampleGetBigBook(shelf) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  const formattedName = client.bookPath(shelf, 'War and Peace');
+
+  // Create a job whose results you can either wait for now, or get later
+  const [operation] = await client.getBigBook({name: formattedName});
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+
+  // Testing iterating over map fields when both key and value are specified.
+  for (const [myKey, myValue] of Object.entries(response.mapListValueValue)) {
+    console.log(`key: ${myKey}, value: ${myValue}`);
+  }
+
+  // Testing iterating over map fields when only key is specified.
+  for (const anotherKey of Object.keys(response.mapListValueValue)) {
+    console.log(`key: ${anotherKey}`);
+  }
+
+  // Testing iterating over map fields when only value is specified.
+  for (const anotherValue of Object.values(response.mapListValueValue)) {
+    console.log(`value: ${anotherValue}`);
+  }
+
+  console.log(`name: ${response.name}`);
+  console.log(`author: ${response.author}`);
+}
+
+
+// [END hopper_core]
+// [END hopper]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .default('shelf', 'Novel')
+  .argv;
+
+sampleGetBigBook(argv.shelf).catch(console.error);
+============== file: src/samples/v1/get_big_book_long_running_promise_await_wap2.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap2")
+'use strict';
+
+// [START hopper]
+// [START hopper_core]
+
+
+const library = require('@google-cloud/library').v1;
+
+async function sampleGetBigBook(shelf, bigBookName) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  // const bigBookName = 'War and Peace';
+  const formattedName = client.bookPath(shelf, bigBookName);
+
+  // Create a job whose results you can either wait for now, or get later
+  const [operation] = await client.getBigBook({name: formattedName});
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+
+  console.log(response);
+}
+
+
+// [END hopper_core]
+// [END hopper]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .default('shelf', 'Novel')
+  .default('big_book_name', 'War and Peace')
+  .argv;
+
+sampleGetBigBook(argv.shelf, argv.big_book_name).catch(console.error);
 ============== file: src/samples/v1/get_big_book_long_running_promise_wap.js ==============
 // DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
 'use strict';
@@ -518,6 +619,21 @@ function sampleGetBigBook(shelf) {
       const result = responses[0];
       const metadata = responses[1];
       const finalApiResponse = responses[2];
+
+      // Testing iterating over map fields when both key and value are specified.
+      for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
+        console.log(`key: ${myKey}, value: ${myValue}`);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (const anotherKey of Object.keys(result.mapListValueValue)) {
+        console.log(`key: ${anotherKey}`);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (const anotherValue of Object.values(result.mapListValueValue)) {
+        console.log(`value: ${anotherValue}`);
+      }
 
       console.log(`name: ${result.name}`);
       console.log(`author: ${result.author}`);
@@ -3184,7 +3300,7 @@ module.exports.LibraryServiceClient = LibraryServiceClient;
 
 'use strict';
 
-const gapicConfig = require('./library_service_client_config');
+const gapicConfig = require('./library_service_client_config.json');
 const gax = require('google-gax');
 const merge = require('lodash.merge');
 const path = require('path');
@@ -5274,6 +5390,13 @@ class LibraryServiceClient {
    *   .catch(err => {
    *     console.error(err);
    *   });
+   *
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   *
+   * // Handle the operation using the await pattern.
+   * const [operation] = await client.getBigBook({name: formattedName});
+   *
+   * const [response] = await operation.promise();
    */
   getBigBook(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -5357,6 +5480,13 @@ class LibraryServiceClient {
    *   .catch(err => {
    *     console.error(err);
    *   });
+   *
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   *
+   * // Handle the operation using the await pattern.
+   * const [operation] = await client.getBigNothing({name: formattedName});
+   *
+   * const [response] = await operation.promise();
    */
   getBigNothing(request, options, callback) {
     if (options instanceof Function && callback === undefined) {

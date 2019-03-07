@@ -17,9 +17,11 @@ package com.google.api.codegen.transformer.nodejs;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -28,7 +30,6 @@ import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -152,6 +153,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
             "responses", "operation", "initApiResponse", "result", "metadata", "finalApiResponse");
       case LongRunningPromise:
         return ImmutableSet.of("responses", "result", "metadata", "finalApiResponse");
+      case LongRunningPromiseAwait:
+        return ImmutableSet.of("response", "operation");
       default:
         throw new IllegalArgumentException("unrecognized calling form: " + form);
     }
@@ -247,6 +250,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getReturnDocLines(
       TransformationContext context, MethodContext methodContext, Synchronicity synchronicity) {
+    GapicMethodContext gapicMethodContext = (GapicMethodContext) methodContext;
     GapicMethodConfig methodConfig = (GapicMethodConfig) methodContext.getMethodConfig();
     Method method = methodConfig.getMethod();
     if (method.getRequestStreaming() && method.getResponseStreaming()) {
@@ -255,9 +259,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       return responseStreamingReturnDocLines(method);
     }
 
-    List<String> callbackLines = returnCallbackDocLines(context.getImportTypeTable(), methodConfig);
+    List<String> callbackLines =
+        returnCallbackDocLines(context.getImportTypeTable(), gapicMethodContext);
     List<String> returnObjectLines =
-        returnObjectDocLines(context.getImportTypeTable(), methodConfig);
+        returnObjectDocLines(context.getImportTypeTable(), gapicMethodContext);
     return ImmutableList.<String>builder().addAll(callbackLines).addAll(returnObjectLines).build();
   }
 
@@ -299,15 +304,15 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   private List<String> returnCallbackDocLines(
-      ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
-    String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
-    Method method = methodConfig.getMethod();
-    MethodModel methodModel = methodConfig.getMethodModel();
+      ImportTypeTable typeTable, GapicMethodContext methodContext) {
+    String returnTypeDoc = returnTypeDoc(typeTable, methodContext);
+    Method method = methodContext.getMethod();
+    MethodModel methodModel = methodContext.getMethodModel();
     String classInfo = getParamTypeName(typeTable, methodModel.getOutputType());
     String callbackType;
     if (isProtobufEmpty(method.getOutputMessage())) {
       callbackType = "function(?Error)";
-    } else if (methodConfig.isPageStreaming()) {
+    } else if (methodContext.getMethodConfig().isPageStreaming()) {
       callbackType = String.format("function(?Error, ?Array, ?Object, ?%s)", classInfo);
     } else {
       callbackType = String.format("function(?Error, ?%s)", classInfo);
@@ -318,7 +323,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         "  The function which will be called with the result of the API call.");
     if (!isProtobufEmpty(method.getOutputMessage())) {
       callbackLines.add("", "  The second parameter to the callback is " + returnTypeDoc + ".");
-      if (methodConfig.isPageStreaming()) {
+      if (methodContext.getMethodConfig().isPageStreaming()) {
         callbackLines.add(
             "",
             "  When autoPaginate: false is specified through options, it contains the result",
@@ -333,9 +338,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   private List<String> returnObjectDocLines(
-      ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
-    String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
-    Method method = methodConfig.getMethod();
+      ImportTypeTable typeTable, GapicMethodContext methodContext) {
+    String returnTypeDoc = returnTypeDoc(typeTable, methodContext);
+    Method method = methodContext.getMethod();
     ImmutableList.Builder<String> returnMessageLines = ImmutableList.builder();
     if (method.getRequestStreaming()) {
       returnMessageLines.add(
@@ -351,7 +356,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         returnMessageLines.add(
             "@returns {Promise} - The promise which resolves to an array.",
             "  The first element of the array is " + returnTypeDoc + ".");
-        if (methodConfig.isPageStreaming()) {
+        if (methodContext.getMethodConfig().isPageStreaming()) {
           returnMessageLines.add(
               "",
               "  When autoPaginate: false is specified through options, the array has three "
@@ -359,7 +364,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
               "  The first element is " + returnTypeDoc + " in a single response.",
               "  The second element is the next request object if the response",
               "  indicates the next page exists, or null. The third element is ",
-              "  " + getTypeNameDoc(typeTable, methodConfig.getMethodModel().getOutputType()) + ".",
+              "  "
+                  + getTypeNameDoc(typeTable, methodContext.getMethodModel().getOutputType())
+                  + ".",
               "");
         }
       }
@@ -388,11 +395,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return message.getFullName().equals("google.protobuf.Empty");
   }
 
-  private String returnTypeDoc(ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
+  private String returnTypeDoc(ImportTypeTable typeTable, GapicMethodContext methodContext) {
     String returnTypeDoc = "";
-    if (methodConfig.isPageStreaming()) {
+    if (methodContext.getMethodConfig().isPageStreaming()) {
       returnTypeDoc = "Array of ";
-      FieldModel resourcesType = methodConfig.getPageStreaming().getResourcesField();
+      FieldModel resourcesType =
+          methodContext.getMethodConfig().getPageStreaming().getResourcesField();
       if (resourcesType.isMessage()) {
         returnTypeDoc +=
             commentReformatter.getLinkedElementName(
@@ -406,12 +414,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         returnTypeDoc +=
             getParamTypeNoCardinality(typeTable, resourcesType.getType()).toLowerCase();
       }
-    } else if (methodConfig.isLongRunningOperation()) {
+    } else if (methodContext.isLongRunningMethodContext()) {
       returnTypeDoc =
           "a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object";
     } else {
       returnTypeDoc =
-          getTypeNameDoc(typeTable, ProtoTypeRef.create(methodConfig.getMethod().getOutputType()));
+          getTypeNameDoc(typeTable, ProtoTypeRef.create(methodContext.getMethod().getOutputType()));
     }
     return returnTypeDoc;
   }
@@ -600,6 +608,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       case RequestStreamingBidi:
       case RequestStreamingClient:
       case RequestStreamingServer:
+      case LongRunningPromiseAwait:
         return "response";
       case RequestAsyncPaged:
       case RequestAsyncPagedAll:

@@ -25,6 +25,7 @@ import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETR
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;

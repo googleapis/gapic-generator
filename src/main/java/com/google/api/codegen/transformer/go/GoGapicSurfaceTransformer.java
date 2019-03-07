@@ -17,10 +17,13 @@ package com.google.api.codegen.transformer.go;
 import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
@@ -31,11 +34,8 @@ import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -270,7 +270,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
             apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext));
       } else if (methodConfig.isPageStreaming()) {
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
-      } else if (methodConfig.isLongRunningOperation()) {
+      } else if (methodContext.isLongRunningMethodContext()) {
         apiMethods.add(apiMethodTransformer.generateOperationRequestObjectMethod(methodContext));
       } else {
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
@@ -354,7 +354,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
       InterfaceContext context,
       ImportContext importContext,
       Iterable<? extends MethodModel> methods) {
-    for (ImportKind kind : getImportKinds(context.getInterfaceConfig(), methods)) {
+    for (ImportKind kind : getImportKinds(context, methods)) {
       ImmutableList<String> imps = CONTEXTUAL_IMPORTS.get(importContext, kind);
       if (imps != null) {
         for (String imp : imps) {
@@ -365,14 +365,14 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   }
 
   private Set<ImportKind> getImportKinds(
-      InterfaceConfig interfaceConfig, Iterable<? extends MethodModel> methods) {
+      InterfaceContext interfaceContext, Iterable<? extends MethodModel> methods) {
     EnumSet<ImportKind> kinds = EnumSet.noneOf(ImportKind.class);
     for (MethodModel method : methods) {
       if (method.getResponseStreaming()) {
         kinds.add(ImportKind.SERVER_STREAM);
       }
-      MethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
-      if (methodConfig.isLongRunningOperation()) {
+      MethodConfig methodConfig = interfaceContext.getMethodConfig(method);
+      if (interfaceContext.asRequestMethodContext(method).isLongRunningMethodContext()) {
         kinds.add(ImportKind.LRO);
       }
       if (methodConfig.isPageStreaming()) {

@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer.go;
 
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportFileView;

@@ -17,6 +17,8 @@ package com.google.api.codegen.discogapic.transformer.java;
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
 import com.google.api.codegen.config.DiscoApiModel;
+import com.google.api.codegen.config.DiscoGapicInterfaceContext;
+import com.google.api.codegen.config.DiscoGapicMethodContext;
 import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.FieldConfig;
@@ -25,16 +27,15 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
 import com.google.api.codegen.transformer.SchemaTypeTable;
@@ -148,8 +149,9 @@ public class JavaDiscoGapicRequestToViewTransformer
     // Generate the ResourceName methods.
     if (methodConfig.isFlattening()) {
       for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+        DiscoGapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
         MethodContext flattenedMethodContext =
-            context.asFlattenedMethodContext(method, flatteningGroup);
+            context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
         if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
           flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
         }

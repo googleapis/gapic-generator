@@ -23,9 +23,9 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import java.util.Collections;
 import java.util.List;
 
 /** Generate packaging related views for Java Gapic samples */
@@ -66,11 +66,18 @@ public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
   }
 
   private List<PackageDependencyView> additionalSampleDependencies() {
-    return Collections.singletonList(
+    PackageDependencyView apiCommonDep =
         PackageDependencyView.newBuilder()
             .group("com.google.api")
             .name("api-common")
             .versionBound(packageConfig.apiCommonVersionBound(TargetLanguage.JAVA))
-            .build());
+            .build();
+    PackageDependencyView commonsCliDep =
+        PackageDependencyView.newBuilder()
+            .group("commons-cli")
+            .name("commons-cli")
+            .versionBound(packageConfig.commonsCliVersionBound(TargetLanguage.JAVA))
+            .build();
+    return ImmutableList.<PackageDependencyView>of(apiCommonDep, commonsCliDep);
   }
 }

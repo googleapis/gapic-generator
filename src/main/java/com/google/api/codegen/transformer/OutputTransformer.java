@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.OutputSpec;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
@@ -163,13 +164,40 @@ public class OutputTransformer {
     return OutputView.PrintView.newBuilder().format(specs.get(0)).args(args).build();
   }
 
-  private OutputView.LoopView loopView(
+  private OutputView loopView(
       OutputSpec.LoopStatement loop,
       MethodContext context,
       SampleValueSet valueSet,
       ScopeTable localVars,
       CallingForm form) {
+    if (!loop.getCollection().isEmpty() && loop.getMap().isEmpty()) {
+      Preconditions.checkArgument(
+          !loop.getVariable().isEmpty(),
+          "Bad format: `variable` must be specified if `collection` is specified.");
+      Preconditions.checkArgument(
+          loop.getKey().isEmpty() && loop.getValue().isEmpty(),
+          "Bad format: neither `key` nor `value` can be specified if `collection` is specified.");
+      return arrayLoopView(loop, context, valueSet, localVars, form);
+    } else if (!loop.getMap().isEmpty() && loop.getCollection().isEmpty()) {
+      Preconditions.checkArgument(
+          loop.getVariable().isEmpty(),
+          "Bad format: `variable` can't be specified if `map` is specified.");
+      Preconditions.checkArgument(
+          !loop.getKey().isEmpty() || !loop.getValue().isEmpty(),
+          "Bad format: at least one of `key` and `value` must be specified if `collection` is specified.");
+      return mapLoopView(loop, context, valueSet, localVars, form);
+    } else {
+      throw new IllegalArgumentException(
+          "Bad format: exactly one of `map` and `collection` should be specified in `loop`.");
+    }
+  }
 
+  private OutputView.ArrayLoopView arrayLoopView(
+      OutputSpec.LoopStatement loop,
+      MethodContext context,
+      SampleValueSet valueSet,
+      ScopeTable localVars,
+      CallingForm form) {
     ScopeTable scope = localVars.newChild();
     String loopVariable = loop.getVariable();
     assertIdentifierNotUsed(
@@ -177,18 +205,57 @@ public class OutputTransformer {
     OutputView.VariableView accessor =
         accessorNewVariable(
             new Scanner(loop.getCollection()), context, valueSet, scope, loopVariable, true, form);
-    OutputView.LoopView ret =
-        OutputView.LoopView.newBuilder()
-            .variableType(scope.getTypeName(loopVariable))
-            .variableName(context.getNamer().localVarName(Name.from(loopVariable)))
-            .collection(accessor)
-            .body(
-                loop.getBodyList()
-                    .stream()
-                    .map(body -> toView(body, context, valueSet, scope, form))
-                    .collect(ImmutableList.toImmutableList()))
-            .build();
-    return ret;
+    return OutputView.ArrayLoopView.newBuilder()
+        .variableType(scope.getTypeName(loopVariable))
+        .variableName(context.getNamer().localVarName(Name.from(loopVariable)))
+        .collection(accessor)
+        .body(
+            loop.getBodyList()
+                .stream()
+                .map(body -> toView(body, context, valueSet, scope, form))
+                .collect(ImmutableList.toImmutableList()))
+        .build();
+  }
+
+  private OutputView.MapLoopView mapLoopView(
+      OutputSpec.LoopStatement loop,
+      MethodContext context,
+      SampleValueSet valueSet,
+      ScopeTable localVars,
+      CallingForm form) {
+    ScopeTable scope = localVars.newChild();
+    String key = loop.getKey();
+    String value = loop.getValue();
+
+    OutputView.VariableView mapVar =
+        accessor(new Scanner(loop.getMap()), context, valueSet, scope, form);
+    TypeModel keyType = mapVar.type().getMapKeyType();
+    TypeModel valueType = mapVar.type().getMapValueType();
+    String keyTypeName = context.getTypeTable().getNicknameFor(keyType);
+    String valueTypeName = context.getTypeTable().getNicknameFor(valueType);
+
+    if (!key.isEmpty()) {
+      assertIdentifierNotUsed(
+          key, context.getMethodModel().getSimpleName(), valueSet.getId(), context, form);
+      scope.put(key, keyType, keyTypeName);
+    }
+    if (!value.isEmpty()) {
+      assertIdentifierNotUsed(
+          value, context.getMethodModel().getSimpleName(), valueSet.getId(), context, form);
+      scope.put(value, valueType, valueTypeName);
+    }
+    return OutputView.MapLoopView.newBuilder()
+        .keyVariableName(context.getNamer().localVarName(Name.anyLower(key)))
+        .keyType(keyTypeName)
+        .valueVariableName(context.getNamer().localVarName(Name.anyLower(value)))
+        .valueType(valueTypeName)
+        .map(mapVar)
+        .body(
+            loop.getBodyList()
+                .stream()
+                .map(body -> toView(body, context, valueSet, scope, form))
+                .collect(ImmutableList.toImmutableList()))
+        .build();
   }
 
   private OutputView.DefineView defineView(
@@ -309,8 +376,8 @@ public class OutputTransformer {
                 .getField()
                 .getType()
                 .makeOptional();
-      } else if (context.getMethodConfig().isLongRunningOperation()) {
-        type = context.getMethodConfig().getLongRunningConfig().getReturnType();
+      } else if (context.isLongRunningMethodContext()) {
+        type = context.getLongRunningConfig().getReturnType();
       } else {
         type = context.getMethodModel().getOutputType();
       }
