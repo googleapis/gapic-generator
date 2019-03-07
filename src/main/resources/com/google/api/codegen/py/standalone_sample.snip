@@ -97,19 +97,23 @@
 
 @private processDoc(doc)
   # If there are no parameters, we generate the method description in one line.
-  @if doc.parameters.isEmpty
-    """{@doc.description}"""
-
+  @if doc.paramDocLines.isEmpty
+    @if doc.mainDocLines.size.toString == "1"
+      """{@doc.mainDocLines.get(0)}"""
+    @end
   @else
-    @if doc.description
-      """ {@doc.description}
+    """
+    @if doc.mainDocLines.size
+      @join line : @doc.mainDocLines
+        {@line}
+      @end
 
-    @else
-      """
     @end
     Args:
-    @join param : doc.parameters
-      {@param.identifier}: {@param.description}
+    @join paramDoc : doc.paramDocLines
+      @join line : paramDoc
+        {@""}  {@line}
+      @end
     @end
     """
   @end

@@ -244,6 +244,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
   }
 
+  @Override
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format(
+        "@param %s {%s} %s", paramName, paramTypeName, getCommentReformatter().reformat(text));
+  }
+
   /** Return JSDoc callback comment and return type comment for the given method. */
   @Override
   public List<String> getReturnDocLines(

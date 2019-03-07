@@ -279,6 +279,10 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName()).join("client_config"));
   }
 
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format("%s %s", paramName, getCommentReformatter().reformat(text));
+  }
+
   @Override
   public List<String> getThrowsDocLines(MethodConfig methodConfig) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();

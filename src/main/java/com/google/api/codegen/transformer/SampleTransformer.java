@@ -263,7 +263,7 @@ public abstract class SampleTransformer {
                     .addAll(
                         methodContext
                             .getNamer()
-                            .getDocLines(valueSet.getDescription(), DOC_LINE_MAX_WIDTH))
+                            .getDocLines(valueSet.getDescription(), DOC_LINE_MAX_WIDTH, false))
                     .build())
             .build();
 
@@ -375,7 +375,8 @@ public abstract class SampleTransformer {
       List<String> paramDoc =
           namer.getDocLines(
               namer.getParamDocText(param.identifier(), param.typeName(), param.description()),
-              DOC_LINE_MAX_WIDTH);
+              DOC_LINE_MAX_WIDTH,
+              false);
       builder.add(paramDoc);
     }
     return builder.build();

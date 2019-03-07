@@ -170,6 +170,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return nameFormatter;
   }
 
+  public CommentReformatter getCommentReformatter() {
+    return commentReformatter;
+  }
+
   public String getPackageName() {
     return packageName;
   }
@@ -1386,11 +1390,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * Converts the given text to doc lines in the format of the current language, and split on
-   * maxWidth.
+   * Converts the given text to doc lines and split at maxWidth. If reformat is true, text is also
+   * reformatted in the format of the current language.
    */
-  public List<String> getDocLines(String text, int maxWidth) {
-    return CommonRenderingUtil.getDocLines(commentReformatter.reformat(text), maxWidth);
+  public List<String> getDocLines(String text, int maxWidth, boolean reformat) {
+    if (reformat) {
+      return CommonRenderingUtil.getDocLines(commentReformatter.reformat(text), maxWidth);
+    }
+    return CommonRenderingUtil.getDocLines(text, maxWidth);
   }
 
   /** Converts the given text to doc lines in the format of the current language. */
