@@ -1375,9 +1375,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return localVarName(Name.from(var));
   }
 
+  /** Returns the language specific format of parameter documentation. */
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return getNotImplementedString("SurfaceNamer.getParamDocText");
+  }
+
   /** Converts the given text to doc lines in the format of the current language. */
   public List<String> getDocLines(String text) {
     return CommonRenderingUtil.getDocLines(commentReformatter.reformat(text));
+  }
+
+  /**
+   * Converts the given text to doc lines in the format of the current language, and split on
+   * maxWidth.
+   */
+  public List<String> getDocLines(String text, int maxWidth) {
+    return CommonRenderingUtil.getDocLines(commentReformatter.reformat(text), maxWidth);
   }
 
   /** Converts the given text to doc lines in the format of the current language. */

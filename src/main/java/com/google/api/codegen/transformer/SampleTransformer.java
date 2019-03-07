@@ -34,6 +34,7 @@ import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.codegen.viewmodel.SampleFunctionDocView;
+import com.google.api.codegen.viewmodel.SampleFunctionParameterView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.CaseFormat;
@@ -51,6 +52,8 @@ import java.util.List;
  */
 @AutoValue
 public abstract class SampleTransformer {
+
+  private static final int DOC_LINE_MAX_WIDTH = 80;
 
   private static final InitCodeTransformer defaultInitCodeTransformer = new InitCodeTransformer();
   private static final OutputTransformer defaultOutputTransformer = new OutputTransformer();
@@ -252,15 +255,16 @@ public abstract class SampleTransformer {
                     initCodeContext.cloneWithEmptySymbolTable())); // to avoid symbol collision
     ImportSectionView sampleImportSectionView =
         sampleImportTransformer().generateImportSection(methodContext);
-    SampleFunctionDocView docView =
+    SampleFunctionDocView sampleFunctionDocView =
         SampleFunctionDocView.newBuilder()
-            .parameters(
-                initCodeView
-                    .argDefaultParams()
-                    .stream()
-                    .filter(p -> !p.description().isEmpty())
-                    .collect(ImmutableList.toImmutableList()))
-            .description(valueSet.getDescription())
+            .paramDocLines(paramDocLines(methodContext, initCodeView))
+            .mainDocLines(
+                ImmutableList.<String>builder()
+                    .addAll(
+                        methodContext
+                            .getNamer()
+                            .getDocLines(valueSet.getDescription(), DOC_LINE_MAX_WIDTH))
+                    .build())
             .build();
 
     return MethodSampleView.newBuilder()
@@ -282,7 +286,7 @@ public abstract class SampleTransformer {
                 valueSet.getId()))
         .sampleFunctionName(
             methodContext.getNamer().getSampleFunctionName(methodContext.getMethodModel()))
-        .sampleFunctionDoc(docView)
+        .sampleFunctionDoc(sampleFunctionDocView)
         .build();
   }
 
@@ -356,6 +360,23 @@ public abstract class SampleTransformer {
               .description(attr.getDescription())
               .build();
       builder.put(identifier, config);
+    }
+    return builder.build();
+  }
+
+  private ImmutableList<List<String>> paramDocLines(
+      MethodContext context, InitCodeView initCodeView) {
+    SurfaceNamer namer = context.getNamer();
+    ImmutableList.Builder<List<String>> builder = ImmutableList.builder();
+    for (SampleFunctionParameterView param : initCodeView.argDefaultParams()) {
+      if (param.description().isEmpty()) {
+        continue;
+      }
+      List<String> paramDoc =
+          namer.getDocLines(
+              namer.getParamDocText(param.identifier(), param.typeName(), param.description()),
+              DOC_LINE_MAX_WIDTH);
+      builder.add(paramDoc);
     }
     return builder.build();
   }

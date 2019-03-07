@@ -16,29 +16,30 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 @AutoValue
 public abstract class SampleFunctionDocView {
 
-  public abstract ImmutableList<SampleFunctionParameterView> parameters();
+  public abstract ImmutableList<List<String>> paramDocLines();
 
   /** Description of the sample function. */
-  public abstract String description();
+  public abstract ImmutableList<String> mainDocLines();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleFunctionDocView.Builder();
   }
 
   public boolean isEmpty() {
-    return description().isEmpty() && parameters().isEmpty();
+    return mainDocLines().isEmpty() && paramDocLines().isEmpty();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
 
-    public abstract Builder parameters(ImmutableList<SampleFunctionParameterView> val);
+    public abstract Builder paramDocLines(ImmutableList<List<String>> val);
 
-    public abstract Builder description(String val);
+    public abstract Builder mainDocLines(ImmutableList<String> val);
 
     public abstract SampleFunctionDocView build();
   }
