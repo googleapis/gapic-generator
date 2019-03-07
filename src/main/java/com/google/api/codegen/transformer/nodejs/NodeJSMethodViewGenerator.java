@@ -15,11 +15,11 @@
 
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import java.util.Arrays;
@@ -47,7 +47,7 @@ public class NodeJSMethodViewGenerator {
         .map(
             methodModel ->
                 generateOneApiMethod(
-                    context.asDynamicMethodContext(methodModel), null, packageHasMultipleServices))
+                    context.asRequestMethodContext(methodModel), null, packageHasMultipleServices))
         .collect(Collectors.toList());
   }
 
@@ -63,7 +63,7 @@ public class NodeJSMethodViewGenerator {
               initContext,
               packageHasMultipleServices,
               Arrays.asList(CallingForm.RequestAsyncPagedAll, CallingForm.RequestAsyncPaged));
-    } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
+    } else if (methodContext.isLongRunningMethodContext()) {
       methodView =
           clientMethodTransformer.generateLongRunningMethod(
               methodContext,

@@ -63,7 +63,7 @@ ext {
     autovalue: 'com.google.auto.value:auto-value:1.6',
     autovalueAnnotation: 'com.google.auto.value:auto-value-annotations:1.6',
     commonmark: 'com.atlassian.commonmark:commonmark:0.9.0',
-    commonProtos: 'com.google.api.grpc:proto-google-common-protos:1.13.0-pre2',
+    commonProtos: 'com.google.api.grpc:proto-google-common-protos:1.13.0-pre3',
     commonsLang: 'org.apache.commons:commons-lang3:3.6',
     commonsCli: 'commons-cli:commons-cli:1.4',
     guava: 'com.google.guava:guava:26.0-jre',
@@ -123,6 +123,32 @@ dependencies {
     libraries.junitParams
 
   annotationProcessor libraries.autovalue
+}
+
+task protocPluginJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+  manifest {
+    attributes 'Main-Class': 'com.google.api.codegen.ProtocGeneratorMain'
+  }
+
+  baseName = 'protoc-plugin-gapic-generator'
+
+  classifier = 'fatjar'
+  from sourceSets.main.output.filter {
+    // This jar file needs to be excluded or else the shadow plugin will actually explode the classes into
+    // the fat jar. We want to retain the file as a unit because we want to put it into the output directory.
+    // StaticResourcesHandler performs the rename back to `gradle-wrapper.jar`.
+    rename 'gradle-wrapper.jar', 'gradle-wrapper.zjar'
+  }
+  configurations = [ project.configurations.runtime ]
+  exclude 'META-INF/*.SF'
+  exclude 'META-INF/*.DSA'
+  exclude 'META-INF/*.RSA'
+
+  doLast {
+    Symlinks.createSymbolicLink(
+            "$buildDir/libs/protoc-plugin-gapic-generator-latest-fatjar.jar",
+            "$buildDir/libs/protoc-plugin-gapic-generator-${project.version}-fatjar.jar")
+  }
 }
 
 task fatJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {

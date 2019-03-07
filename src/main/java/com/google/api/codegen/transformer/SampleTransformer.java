@@ -20,6 +20,7 @@ import com.google.api.codegen.SampleParameters;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.SampleSpec.ValueSetAndTags;

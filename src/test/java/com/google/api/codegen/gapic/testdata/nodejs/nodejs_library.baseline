@@ -407,6 +407,21 @@ function sampleGetBigBook(shelf) {
       // Adding a listener for the "complete" event starts polling for the
       // completion of the operation.
       operation.on('complete', (result, metadata, finalApiResponse) => {
+        // Testing iterating over map fields when both key and value are specified.
+        for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
+          console.log(`key: ${myKey}, value: ${myValue}`);
+        }
+
+        // Testing iterating over map fields when only key is specified.
+        for (const anotherKey of Object.keys(result.mapListValueValue)) {
+          console.log(`key: ${anotherKey}`);
+        }
+
+        // Testing iterating over map fields when only value is specified.
+        for (const anotherValue of Object.values(result.mapListValueValue)) {
+          console.log(`value: ${anotherValue}`);
+        }
+
         console.log(`name: ${result.name}`);
         console.log(`author: ${result.author}`);
       });
@@ -590,6 +605,21 @@ function sampleGetBigBook(shelf) {
       const metadata = responses[1];
       const finalApiResponse = responses[2];
 
+      // Testing iterating over map fields when both key and value are specified.
+      for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
+        console.log(`key: ${myKey}, value: ${myValue}`);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (const anotherKey of Object.keys(result.mapListValueValue)) {
+        console.log(`key: ${anotherKey}`);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (const anotherValue of Object.values(result.mapListValueValue)) {
+        console.log(`value: ${anotherValue}`);
+      }
+
       console.log(`name: ${result.name}`);
       console.log(`author: ${result.author}`);
     })
@@ -655,6 +685,39 @@ const argv = require(`yargs`)
   .argv;
 
 sampleGetBigBook(argv.shelf, argv.big_book_name);
+============== file: src/samples/v1/get_book_request_test_on_success_map.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+
+const library = require('@google-cloud/library').v1;
+
+function sampleGetBook() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  client.getBook({name: formattedName})
+    .then(responses => {
+      const response = responses[0];
+      const intKeyVal = response.mapStringValue[123];
+      const booleanKeyVal = response.mapBoolKey[true];
+      const mapValueField = response.mapMessageValue['key'].field;
+      console.log(`Test printing map fields: ${response.mapListValueValue['quoted_key']}`);
+      console.log(`Test printing enum fields of a map value: ${response.mapMessageValue['key'].alignment}`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleGetBook();
 ============== file: src/samples/v1/monolog_about_book_request_streaming_client_prog.js ==============
 // DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
 'use strict';
@@ -1037,6 +1100,9 @@ const FieldMask = {
  *   resource, but *not* its import, other_shared_type
  *
  *   This object should have the same structure as [Used]{@link google.test.shared.data.Used}
+ *
+ * @property {Object.<boolean, string>} mapBoolKey
+ *   For testing accessing map fields in samplegen
  *
  * @typedef Book
  * @memberof google.example.library.v1
@@ -3219,7 +3285,7 @@ module.exports.LibraryServiceClient = LibraryServiceClient;
 
 'use strict';
 
-const gapicConfig = require('./library_service_client_config');
+const gapicConfig = require('./library_service_client_config.json');
 const gax = require('google-gax');
 const merge = require('lodash.merge');
 const path = require('path');

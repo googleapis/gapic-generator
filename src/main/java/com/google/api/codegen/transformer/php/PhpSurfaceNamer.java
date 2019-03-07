@@ -18,6 +18,7 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -25,7 +26,6 @@ import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
@@ -143,7 +143,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     if (methodConfig.isPageStreaming()) {
       return "\\Google\\ApiCore\\PagedListResponse";
     }
-    if (methodConfig.isLongRunningOperation()) {
+    if (methodContext.isLongRunningMethodContext()) {
       return "\\Google\\ApiCore\\OperationResponse";
     }
     switch (methodConfig.getGrpcStreamingType()) {
@@ -284,6 +284,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldAccessorName(FieldModel field) {
     return String.format("->%s()", getFieldGetFunctionName(field));
+  }
+
+  @Override
+  public String getMapKeyAccessorName(TypeModel keyType, String key) {
+    return String.format("[%s]", getModelTypeFormatter().renderPrimitiveValue(keyType, key));
   }
 
   @Override

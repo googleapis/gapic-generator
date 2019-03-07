@@ -328,10 +328,28 @@ interfaces:
       parameters:
         defaults:
         - name="Unreal book"
+    - id: test_on_success_map
+      title: "test maps in response handling"
+      parameters:
+        defaults:
+        - name="test_on_success_map"
+      on_success:
+        - define: int_key_val = $resp.map_string_value{123}
+        - define: boolean_key_val = $resp.map_bool_key{true}
+        - define: map_value_field = $resp.map_message_value{"key"}.field
+        - print:
+          - "Test printing map fields: %s"
+          - $resp.map_list_value_value{"quoted_key"}
+        - print:
+          - "Test printing enum fields of a map value: %s"
+          - $resp.map_message_value{"key"}.alignment
     samples:
       in_code:
       - calling_forms: "foo"
         value_sets: not_here
+      standalone:
+      - calling_forms: ".*"
+        value_sets: test_on_success_map
   - name: ListBooks
     flattening:
       groups:
@@ -776,6 +794,36 @@ interfaces:
         - parameter: name%shelf_id
           sample_argument_name: shelf
       on_success:
+      - comment:
+        - "Testing iterating over map fields when both key and value are specified."
+      - loop:
+          map: $resp.map_list_value_value
+          key: my_key
+          value: my_value
+          body:
+          - print:
+            - "key: %s, value: %s"
+            - my_key
+            - my_value
+      - comment:
+        - "Testing iterating over map fields when only key is specified."
+      - loop:
+          map: $resp.map_list_value_value
+          key: another_key
+          body:
+          - print:
+            - "key: %s"
+            - another_key
+      - comment:
+        - "Testing iterating over map fields when only value is specified."
+      - loop:
+
+          map: $resp.map_list_value_value
+          value: another_value
+          body:
+          - print:
+            - "value: %s"
+            - another_value
       - print:
         - "name: %s"
         - $resp.name

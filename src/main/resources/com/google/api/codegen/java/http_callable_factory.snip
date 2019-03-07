@@ -17,7 +17,8 @@
 @end
 
 @private renderClass(classView)
-  public class {@classView.name} implements HttpJsonStubCallableFactory {
+  public class {@classView.name} implements HttpJsonStubCallableFactory<
+      {@classView.operationMessage}, {@classView.operationStubType}> {
     {@memberMethods(classView)}
   }
 @end
@@ -38,6 +39,17 @@
       UnaryCallSettings<RequestT, ResponseT> callSettings,
       ClientContext clientContext) {
     return HttpJsonCallableFactory.createUnaryCallable(httpJsonCallSettings, callSettings, clientContext);
+  }
+
+
+  @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  @@Override
+  @@Nullable
+  public <RequestT, ResponseT, MetadataT> OperationCallable<RequestT, ResponseT, MetadataT> createOperationCallable(
+      HttpJsonCallSettings<RequestT, ApiMessage> httpJsonCallSettings,
+      OperationCallSettings<RequestT, ResponseT, MetadataT> operationCallSettings,
+      ClientContext clientContext, {@xapiClass.operationStubType} operationsStub) {
+      return null;
   }
 
   @@Override

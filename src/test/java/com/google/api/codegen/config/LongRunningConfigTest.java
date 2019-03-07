@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.OperationData;
 import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
@@ -26,6 +25,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SymbolTable;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.longrunning.OperationInfo;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
@@ -89,7 +89,7 @@ public class LongRunningConfigTest {
 
     Mockito.when(protoParser.getLongRunningOperation(lroAnnotatedMethod))
         .thenReturn(
-            OperationData.newBuilder()
+            OperationInfo.newBuilder()
                 .setMetadataType(ANNOTATIONS_METADATA_TYPE)
                 .setResponseType(ANNOTATIONS_RETURN_TYPE_NAME)
                 .build());
