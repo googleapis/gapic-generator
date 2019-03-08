@@ -28,9 +28,8 @@ def _java_gapic_srcjar_impl(ctx):
     # must ensure uniqueness within a build.
     script = """
     unzip -q {gapic_srcjar} -d {output_dir_path}
-    echo '--replace' > {output_dir_path}/{output_dir_name}.txt
-    find {output_dir_path} -type f >> {output_dir_path}/{output_dir_name}.txt
-    {formatter} @{output_dir_path}/{output_dir_name}.txt
+    # This may fail if there are spaces and/or too many files (exceed max length of command length).
+    {formatter} --replace $(find {output_dir_path} -type f -printf "%p ")
     pushd .
     cd {output_dir_path}
     cd src/main/java && zip -q -r ../../../{output_dir_name}.srcjar ./* && cd -
@@ -148,13 +147,13 @@ def java_gapic_library(
         name = name,
         src = src,
         deps = deps + [
-            "@com_google_protobuf_protobuf_java//jar",
+            "@com_google_protobuf//:protobuf_java",
             "@com_google_api_api_common//jar",
-            "@com_google_api_gax//jar",
-            "@com_google_api_gax_grpc//jar",
+            "@com_google_api_gax_java//gax:gax",
+            "@com_google_api_gax_java//gax-grpc:gax_grpc",
             "@com_google_guava_guava//jar",
-            "@io_grpc_grpc_core//jar",
-            "@io_grpc_grpc_protobuf//jar",
+            "@io_grpc_grpc_java//core:core",
+            "@io_grpc_grpc_java//protobuf:protobuf",
             "@com_google_code_findbugs_jsr305//jar",
             "@org_threeten_threetenbp//jar",
             "@io_opencensus_opencensus_api//jar",
@@ -163,12 +162,12 @@ def java_gapic_library(
             "@com_google_http_client_google_http_client//jar",
         ],
         test_deps = test_deps + [
-            "@com_google_api_gax_grpc_testlib//jar",
-            "@com_google_api_gax_testlib//jar",
+            "@com_google_api_gax_java//gax-grpc:gax_grpc_testlib",
+            "@com_google_api_gax_java//gax:gax_testlib",
             "@com_google_code_gson_gson//jar",
-            "@io_grpc_grpc_auth//jar",
+            "@io_grpc_grpc_java//auth:auth",
             "@io_grpc_grpc_netty_shaded//jar",
-            "@io_grpc_grpc_stub//jar",
+            "@io_grpc_grpc_java//stub:stub",
             "@io_opencensus_opencensus_contrib_grpc_metrics//jar",
             "@junit_junit//jar",
         ],
@@ -189,10 +188,10 @@ def java_discogapic_library(
         name = name,
         src = src,
         deps = deps + [
-            "@com_google_protobuf_protobuf_java//jar",
+            "@com_google_protobuf//:protobuf_java",
             "@com_google_api_api_common//jar",
-            "@com_google_api_gax//jar",
-            "@com_google_api_gax_httpjson//jar",
+            "@com_google_api_gax_java//gax:gax",
+            "@com_google_api_gax_java//gax-httpjson:gax_httpjson",
             "@com_google_guava_guava//jar",
             "@com_google_code_findbugs_jsr305//jar",
             "@org_threeten_threetenbp//jar",
@@ -202,10 +201,10 @@ def java_discogapic_library(
             "@com_google_http_client_google_http_client//jar",
         ],
         test_deps = test_deps + [
-            "@com_google_api_gax_httpjson_testlib//jar",
+            "@com_google_api_gax_java//gax-httpjson:gax_httpjson_testlib",
             "@com_google_http_client_google_http_client_jackson2//jar",
             "@com_fasterxml_jackson_core_jackson_core//jar",
-            "@com_google_api_gax_testlib//jar",
+            "@com_google_api_gax_java//gax:gax_testlib",
             "@com_google_code_gson_gson//jar",
             "@junit_junit//jar",
         ],
