@@ -29,17 +29,17 @@ public enum CallingForm {
   //
   // [Method signature type][Request pattern][Response pattern][Idiomatic pattern]
 
-  Request, // used by: java nodejs php py
+  Request, // used by: java nodejs php py ruby
   RequestAsync,
   RequestAsyncPaged, // used by: nodejs
   RequestAsyncPagedAll, // used by: nodejs
   RequestPaged, // used by: java php py
   RequestPagedAll, // used by: php py
-  RequestStreamingBidi, // used by: nodejs php py
+  RequestStreamingBidi, // used by: nodejs php py ruby
   RequestStreamingBidiAsync, // used by: php
-  RequestStreamingClient, // used by: nodejs php py
+  RequestStreamingClient, // used by: nodejs php py ruby
   RequestStreamingClientAsync, // used by: php
-  RequestStreamingServer, // used by: nodejs php py
+  RequestStreamingServer, // used by: nodejs php py ruby
 
   Flattened, // used by: java
   FlattenedPaged, // used by: java
@@ -59,7 +59,7 @@ public enum CallingForm {
   LongRunningFlattenedAsync, // used by: java
   LongRunningPromise, // used by: nodejs py
   LongRunningRequest, // used by: php
-  LongRunningRequestAsync, // used by: java php
+  LongRunningRequestAsync, // used by: java php ruby
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.

@@ -484,10 +484,18 @@ public class GapicGeneratorFactory {
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(new RubyPackageMetadataTransformer(packageConfig))
                 .build();
-
+        if (devSamples) {
+          CodeGenerator sampleGenerator =
+              GapicGenerator.newBuilder()
+                  .setModel(model)
+                  .setProductConfig(productConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(new RubyGapicSamplesTransformer(rubyPathMapper, packageConfig));
+        }
         generators.add(mainGenerator);
         generators.add(clientConfigGenerator);
         generators.add(metadataGenerator);
+        generators.add(sampleGenerator);
 
         CodeGenerator messageGenerator =
             GapicGenerator.newBuilder()
