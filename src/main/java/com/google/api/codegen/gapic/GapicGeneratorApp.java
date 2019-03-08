@@ -25,6 +25,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
 import com.google.api.codegen.util.MultiYamlReader;
+import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -36,7 +37,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.TypeLiteral;
-import com.google.longrunning.OperationsProto;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import java.io.File;
@@ -111,7 +111,7 @@ public class GapicGeneratorApp extends ToolDriverBase {
   @Override
   public ExtensionRegistry getPlatformExtensions() {
     ExtensionRegistry extensionRegistry = super.getPlatformExtensions();
-    OperationsProto.registerAllExtensions(extensionRegistry);
+    ProtoParser.registerAllExtensions(extensionRegistry);
     return extensionRegistry;
   }
 

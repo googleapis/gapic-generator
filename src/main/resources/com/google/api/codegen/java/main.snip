@@ -171,7 +171,8 @@
               public {@pagedResponseClass.pagedResponseTypeName} apply({@pagedResponseClass.pageTypeName} input) {
                 return new {@pagedResponseClass.pagedResponseTypeName}(input);
               }
-            });
+            },
+            MoreExecutors.directExecutor());
       }
 
       private {@pagedResponseClass.pagedResponseTypeName}({@pagedResponseClass.pageTypeName} page) {
@@ -550,10 +551,7 @@
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
+  # TODO: when LRO is no longer @Beta, set the apiMethod.releaseLevelAnnotation.
   @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
   {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}, \
       {@apiMethod.operationMethod.metadataTypeName}> {@apiMethod.name}(\
@@ -567,10 +565,7 @@
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
+  # TODO: when LRO is no longer @Beta, set the apiMethod.releaseLevelAnnotation.
   @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
   {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<\
       {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
@@ -583,10 +578,7 @@
   @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
+  # TODO: when LRO is no longer @Beta, set the apiMethod.releaseLevelAnnotation.
   @@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
   {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \

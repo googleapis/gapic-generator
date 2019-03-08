@@ -15,9 +15,13 @@
 package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -25,11 +29,7 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -171,7 +171,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer<Pro
       ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
       if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedRequestObjectMethod;
-      } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
+      } else if (methodContext.isLongRunningMethodContext()) {
         clientMethodType = ClientMethodType.OperationRequestObjectMethod;
       }
       InitCodeContext initCodeContext =

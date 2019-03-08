@@ -14,12 +14,12 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.ruby.RubyUtil;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TransformationContext;

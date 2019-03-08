@@ -104,6 +104,7 @@ dependencies {
   compile 'com.google.api:gax-grpc:1.0.0'
   compile 'io.grpc:grpc-netty-shaded:1.9.0'
   compile 'com.google.api:api-common:0.0.2'
+  compile 'commons-cli:commons-cli:1.4'
   compile project(':gapic-google-cloud-library-v1')
 }
 
@@ -132,10 +133,9 @@ import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.protobuf.ByteString;
-import java.nio.File;
-import java.nio.Files;
-import java.nio.Path;
-import java.nio.Paths;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 // [START turing_prog_callable_streaming_bidi]
 /*
@@ -146,10 +146,9 @@ import java.nio.Paths;
  * import com.google.example.library.v1.DiscussBookRequest;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.protobuf.ByteString;
- * import java.nio.File;
- * import java.nio.Files;
- * import java.nio.Path;
- * import java.nio.Paths;
+ * import java.nio.file.Files;
+ * import java.nio.file.Path;
+ * import java.nio.file.Paths;
  */
 public class DiscussBookCallableCallableStreamingBidiProg {
   public static void sampleDiscussBook(String imageFileName) {
@@ -437,6 +436,8 @@ import org.apache.commons.cli.Options;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.ListValue;
+import java.util.Map;
 
 // [START hopper]
 /*
@@ -445,6 +446,8 @@ import com.google.example.library.v1.ShelfBookName;
  * import com.google.example.library.v1.Book;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.ListValue;
+ * import java.util.Map;
  */
 public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
   public static void sampleGetBigBook(String shelf) {
@@ -453,6 +456,23 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
       // String shelf = "Novel";
       ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
       Book response = libraryClient.getBigBookAsync(name.toString()).get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
       System.out.printf("name: %s\n", response.getName());
       System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
@@ -551,6 +571,8 @@ import com.google.example.library.v1.Book;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.ListValue;
+import java.util.Map;
 
 // [START hopper]
 /*
@@ -560,6 +582,8 @@ import com.google.example.library.v1.ShelfBookName;
  * import com.google.example.library.v1.GetBookRequest;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.ListValue;
+ * import java.util.Map;
  */
 public class GetBigBookAsyncLongRunningRequestAsyncWap {
   public static void sampleGetBigBook(String shelf) {
@@ -571,6 +595,23 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap {
         .setName(name.toString())
         .build();
       Book response = libraryClient.getBigBookAsync(request).get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
       System.out.printf("name: %s\n", response.getName());
       System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
@@ -675,6 +716,8 @@ import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
 import com.google.longrunning.Operation;
+import com.google.protobuf.ListValue;
+import java.util.Map;
 
 // [START hopper]
 /*
@@ -685,6 +728,8 @@ import com.google.longrunning.Operation;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ShelfBookName;
  * import com.google.longrunning.Operation;
+ * import com.google.protobuf.ListValue;
+ * import java.util.Map;
  */
 public class GetBigBookCallableCallableWap {
   public static void sampleGetBigBook(String shelf) {
@@ -700,6 +745,23 @@ public class GetBigBookCallableCallableWap {
       // Do something
 
       Operation response = future.get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
       System.out.printf("name: %s\n", response.getName());
       System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
@@ -807,9 +869,12 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBigBookMetadata;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.ListValue;
+import java.util.Map;
 
 // [START hopper]
 /*
@@ -817,9 +882,12 @@ import com.google.example.library.v1.ShelfBookName;
  *
  * import com.google.api.gax.longrunning.OperationFuture;
  * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.GetBigBookMetadata;
  * import com.google.example.library.v1.GetBookRequest;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.ListValue;
+ * import java.util.Map;
  */
 public class GetBigBookOperationCallableLongRunningCallableWap {
   public static void sampleGetBigBook(String shelf) {
@@ -835,6 +903,23 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
       // Do something
 
       Book response = future.get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
       System.out.printf("name: %s\n", response.getName());
       System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
@@ -871,6 +956,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBigBookMetadata;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
@@ -881,6 +967,7 @@ import com.google.example.library.v1.ShelfBookName;
  *
  * import com.google.api.gax.longrunning.OperationFuture;
  * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.GetBigBookMetadata;
  * import com.google.example.library.v1.GetBookRequest;
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ShelfBookName;
@@ -932,6 +1019,142 @@ public class GetBigBookOperationCallableLongRunningCallableWap2 {
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBookCallableCallableTestOnSuccessMap.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "test_on_success_map")
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.core.ApiFuture;
+ * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ */
+public class GetBookCallableCallableTestOnSuccessMap {
+  public static void sampleGetBook() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Book> future = libraryClient.getBookCallable().futureCall(request);
+
+      // Do something
+
+      Book response = future.get();
+      String intKeyVal = response.getMapStringValueMap().get(123);
+      String booleanKeyVal = response.getMapBoolKeyMap().get(true);
+      int mapValueField = response.getMapMessageValueMap().get("key").getField();
+      System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("quoted_key"));
+      System.out.printf("Test printing enum fields of a map value: %s\n", response.getMapMessageValueMap().get("key").getAlignment());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBook();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBookFlattenedTestOnSuccessMap.java ==============
+// DO NOT EDIT! This is a generated sample ("Flattened",  "test_on_success_map")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ */
+public class GetBookFlattenedTestOnSuccessMap {
+  public static void sampleGetBook() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      Book response = libraryClient.getBook(name.toString());
+      String intKeyVal = response.getMapStringValueMap().get(123);
+      String booleanKeyVal = response.getMapBoolKeyMap().get(true);
+      int mapValueField = response.getMapMessageValueMap().get("key").getField();
+      System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("quoted_key"));
+      System.out.printf("Test printing enum fields of a map value: %s\n", response.getMapMessageValueMap().get("key").getAlignment());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBook();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBookRequestTestOnSuccessMap.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ */
+public class GetBookRequestTestOnSuccessMap {
+  public static void sampleGetBook() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      Book response = libraryClient.getBook(request);
+      String intKeyVal = response.getMapStringValueMap().get(123);
+      String booleanKeyVal = response.getMapBoolKeyMap().get(true);
+      int mapValueField = response.getMapMessageValueMap().get("key").getField();
+      System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("quoted_key"));
+      System.out.printf("Test printing enum fields of a map value: %s\n", response.getMapMessageValueMap().get("key").getAlignment());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBook();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/MonologAboutBookCallableCallableStreamingClientProg.java ==============
 // DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "prog")
 package com.google.example.examples.library.v1;
@@ -1063,7 +1286,7 @@ public class PublishSeriesCallableCallablePiVersion {
       List<String> bookNames = response.getBookNamesList();
       for (String title : response.getBookNamesList()) {
         // Now we deal with thisSingleBook!
-        System.out.printf("Title: %s\n", title);
+        System.out.printf("\t%%`` The book's title: \"%s\", \\\nand the book costs $50.00 ``%%\n", title);
       }
       System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
       System.out.printf("The author of the first book is: %s\n", response.getBooksList().get(0).getAuthor());
@@ -1221,7 +1444,7 @@ public class PublishSeriesFlattenedPiVersion {
       List<String> bookNames = response.getBookNamesList();
       for (String title : response.getBookNamesList()) {
         // Now we deal with thisSingleBook!
-        System.out.printf("Title: %s\n", title);
+        System.out.printf("\t%%`` The book's title: \"%s\", \\\nand the book costs $50.00 ``%%\n", title);
       }
       System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
       System.out.printf("The author of the first book is: %s\n", response.getBooksList().get(0).getAuthor());
@@ -1373,7 +1596,7 @@ public class PublishSeriesRequestPiVersion {
       List<String> bookNames = response.getBookNamesList();
       for (String title : response.getBookNamesList()) {
         // Now we deal with thisSingleBook!
-        System.out.printf("Title: %s\n", title);
+        System.out.printf("\t%%`` The book's title: \"%s\", \\\nand the book costs $50.00 ``%%\n", title);
       }
       System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
       System.out.printf("The author of the first book is: %s\n", response.getBooksList().get(0).getAuthor());
@@ -1593,6 +1816,7 @@ import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.example.library.v1.stub.LibraryServiceStub;
@@ -5257,7 +5481,8 @@ public class LibraryClient implements BackgroundResource {
             public ListShelvesPagedResponse apply(ListShelvesPage input) {
               return new ListShelvesPagedResponse(input);
             }
-          });
+          },
+          MoreExecutors.directExecutor());
     }
 
     private ListShelvesPagedResponse(ListShelvesPage page) {
@@ -5344,7 +5569,8 @@ public class LibraryClient implements BackgroundResource {
             public ListBooksPagedResponse apply(ListBooksPage input) {
               return new ListBooksPagedResponse(input);
             }
-          });
+          },
+          MoreExecutors.directExecutor());
     }
 
     private ListBooksPagedResponse(ListBooksPage page) {
@@ -5431,7 +5657,8 @@ public class LibraryClient implements BackgroundResource {
             public ListStringsPagedResponse apply(ListStringsPage input) {
               return new ListStringsPagedResponse(input);
             }
-          });
+          },
+          MoreExecutors.directExecutor());
     }
 
     private ListStringsPagedResponse(ListStringsPage page) {
@@ -5550,7 +5777,8 @@ public class LibraryClient implements BackgroundResource {
             public FindRelatedBooksPagedResponse apply(FindRelatedBooksPage input) {
               return new FindRelatedBooksPagedResponse(input);
             }
-          });
+          },
+          MoreExecutors.directExecutor());
     }
 
     private FindRelatedBooksPagedResponse(FindRelatedBooksPage page) {
@@ -7530,7 +7758,6 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: addLabelCallable()");
   }
 
-
   @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
   public OperationCallable<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationCallable() {
     throw new UnsupportedOperationException("Not implemented: getBigBookOperationCallable()");
@@ -7539,7 +7766,6 @@ public abstract class LibraryServiceStub implements BackgroundResource {
   public UnaryCallable<GetBookRequest, Operation> getBigBookCallable() {
     throw new UnsupportedOperationException("Not implemented: getBigBookCallable()");
   }
-
 
   @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
   public OperationCallable<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationCallable() {

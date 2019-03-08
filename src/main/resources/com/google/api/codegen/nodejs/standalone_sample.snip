@@ -13,14 +13,18 @@
       {@standaloneSample(apiMethod, sample)}
 
       // [END {@sample.regionTag}_core]
-      // tslint:disable-next-line:no-any
       // [END {@sample.regionTag}]
+      // tslint:disable-next-line:no-any
 
       @if sample.sampleInitCode.argDefaultParams
         {@processCliArguments(sample)}
 
       @end
-      {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)});
+      @if sample.callingForm == "LongRunningPromiseAwait"
+        {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)}).catch(console.error);
+      @else
+       {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)});
+      @end
     @end
   @end
 @end
@@ -37,7 +41,12 @@
     const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
 
   @end
-  function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
+  @switch sample.callingForm
+  @case "LongRunningPromiseAwait"
+    async function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
+  @default
+    function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
+  @end
     const client = new {@apiMethod.localPackageName}.{@apiMethod.apiClassName}();
     @switch sample.callingForm
     @case "Request"
@@ -63,6 +72,8 @@
       {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample)}
     @case "LongRunningPromise"
       {@methodCallSampleCodeLongrunningPromise(apiMethod, sample)}
+    @case "LongRunningPromiseAwait"
+      {@methodCallSampleCodeLongRunningPromiseAwait(apiMethod, sample)}
     @default
       $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
@@ -79,7 +90,7 @@
 @end
 
 @private processCliArguments(sample)
-  argv = require(`yargs`)
+  const argv = require(`yargs`)
     @join param : sample.sampleInitCode.argDefaultParams
       .default('{@param.cliFlagName}', {@renderInitValue(param.initValue)})
     @end
@@ -238,6 +249,18 @@
     });
 @end
 
+@private methodCallSampleCodeLongRunningPromiseAwait(apiMethod, sample)
+  {@initCode(apiMethod, sample.sampleInitCode)}
+
+  // Create a job whose results you can either wait for now, or get later
+  const [operation] = await {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)};
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+  
+  {@processResponse(sample)}
+@end
+
 @private methodCallSampleCode(apiMethod, init)
     client.{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod, init)})
@@ -284,8 +307,10 @@
         {@processCommentView(view)}
       @case "DEFINE"
         {@processDefineView(view)}
-      @case "LOOP"
-        {@processLoopView(view)}
+      @case "ARRAY_LOOP"
+        {@processArrayLoopView(view)}
+      @case "MAP_LOOP"
+        {@processMapLoopView(view)}
       @case "PRINT"
         {@processPrintView(view)}
       @default
@@ -314,12 +339,34 @@
   @end
 @end
 
-@private processLoopView(view)
+@private processArrayLoopView(view)
   for (const {@view.variableName} of {@variableField(view.collection)}) {
     {@processOutputViews(view.body)}
   }
 @end
 
+@private processMapLoopView(view)
+  @if and(@view.keyVariableName, @view.valueVariableName)
+    for (const [{@view.keyVariableName}, {@view.valueVariableName}] of Object.entries({@variableField(view.map)})) {
+
+  @else
+    @if @view.keyVariableName
+      for (const {@view.keyVariableName} of Object.keys({@variableField(view.map)})) {
+
+    @else
+      @if @view.valueVariableName
+        for (const {@view.valueVariableName} of Object.values({@variableField(view.map)})) {
+
+      @else
+        $unhandledMapLoopView: {@view}
+
+      @end
+    @end
+  @end
+    {@processOutputViews(view.body)}
+  }
+
+@end
 
 @private variableField(arg)
   {@arg.variable}{@accessor(arg.accessors)}

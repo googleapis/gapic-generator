@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.util.ImportType;
@@ -98,9 +99,8 @@ public class StandardImportSectionTransformer implements ImportSectionTransforme
   }
 
   private static void generateIOUtilityImports(MethodContext context) {
-    context.getTypeTable().getAndSaveNicknameFor("java.nio.File");
-    context.getTypeTable().getAndSaveNicknameFor("java.nio.Files");
-    context.getTypeTable().getAndSaveNicknameFor("java.nio.Path");
-    context.getTypeTable().getAndSaveNicknameFor("java.nio.Paths");
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.file.Files");
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.file.Path");
+    context.getTypeTable().getAndSaveNicknameFor("java.nio.file.Paths");
   }
 }

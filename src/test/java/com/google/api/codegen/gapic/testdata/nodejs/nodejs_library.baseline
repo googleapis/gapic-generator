@@ -92,7 +92,7 @@ $ npm install --save @google-cloud/library
     "Google Example Library API"
   ],
   "dependencies": {
-    "google-gax": "^0.17.1",
+    "google-gax": "^0.25.3",
     "google-some-other-package-v1": "^0.2.1",
     "lodash.merge": "^4.6.0",
     "protobufjs": "^6.8.0"
@@ -282,10 +282,10 @@ function sampleDiscussBook(imageFileName) {
 
 
 // [END turing_prog_request_streaming_bidi_core]
-// tslint:disable-next-line:no-any
 // [END turing_prog_request_streaming_bidi]
+// tslint:disable-next-line:no-any
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('image_file_name', 'image_file.jpg')
   .argv;
 
@@ -317,7 +317,7 @@ function sampleFindRelatedBooks() {
       const resources = responses[0];
       for (const resource of resources) {
         const book = resource;
-        console.log(`Here's a related book: {$book}`);
+        console.log(`Here's a related book: ${book}`);
       }
     })
     .catch(err => {
@@ -327,8 +327,8 @@ function sampleFindRelatedBooks() {
 
 
 // [END sample_core]
-// tslint:disable-next-line:no-any
 // [END sample]
+// tslint:disable-next-line:no-any
 
 sampleFindRelatedBooks();
 ============== file: src/samples/v1/find_related_books_request_async_paged_odyssey.js ==============
@@ -364,7 +364,7 @@ function sampleFindRelatedBooks() {
     // const rawResponse = responses[2];
     for (const resource of resources) {
       const book = resource;
-      console.log(`Here's a related book: {$book}`);
+      console.log(`Here's a related book: ${book}`);
     }
     if (nextRequest) {
       // Fetch the next page.
@@ -380,8 +380,8 @@ function sampleFindRelatedBooks() {
 
 
 // [END sample_core]
-// tslint:disable-next-line:no-any
 // [END sample]
+// tslint:disable-next-line:no-any
 
 sampleFindRelatedBooks();
 ============== file: src/samples/v1/get_big_book_long_running_event_emitter_wap.js ==============
@@ -407,8 +407,23 @@ function sampleGetBigBook(shelf) {
       // Adding a listener for the "complete" event starts polling for the
       // completion of the operation.
       operation.on('complete', (result, metadata, finalApiResponse) => {
-        console.log(`name: {$result.name}`);
-        console.log(`author: {$result.author}`);
+        // Testing iterating over map fields when both key and value are specified.
+        for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
+          console.log(`key: ${myKey}, value: ${myValue}`);
+        }
+
+        // Testing iterating over map fields when only key is specified.
+        for (const anotherKey of Object.keys(result.mapListValueValue)) {
+          console.log(`key: ${anotherKey}`);
+        }
+
+        // Testing iterating over map fields when only value is specified.
+        for (const anotherValue of Object.values(result.mapListValueValue)) {
+          console.log(`value: ${anotherValue}`);
+        }
+
+        console.log(`name: ${result.name}`);
+        console.log(`author: ${result.author}`);
       });
 
       // Adding a listener for the "progress" event causes the callback to be
@@ -429,10 +444,10 @@ function sampleGetBigBook(shelf) {
 
 
 // [END hopper_core]
-// tslint:disable-next-line:no-any
 // [END hopper]
+// tslint:disable-next-line:no-any
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf', 'Novel')
   .argv;
 
@@ -482,15 +497,101 @@ function sampleGetBigBook(shelf, bigBookName) {
 
 
 // [END hopper_core]
-// tslint:disable-next-line:no-any
 // [END hopper]
+// tslint:disable-next-line:no-any
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf', 'Novel')
   .default('big_book_name', 'War and Peace')
   .argv;
 
 sampleGetBigBook(argv.shelf, argv.big_book_name);
+============== file: src/samples/v1/get_big_book_long_running_promise_await_wap.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap")
+'use strict';
+
+// [START hopper]
+// [START hopper_core]
+
+
+const library = require('@google-cloud/library').v1;
+
+async function sampleGetBigBook(shelf) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  const formattedName = client.bookPath(shelf, 'War and Peace');
+
+  // Create a job whose results you can either wait for now, or get later
+  const [operation] = await client.getBigBook({name: formattedName});
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+
+  // Testing iterating over map fields when both key and value are specified.
+  for (const [myKey, myValue] of Object.entries(response.mapListValueValue)) {
+    console.log(`key: ${myKey}, value: ${myValue}`);
+  }
+
+  // Testing iterating over map fields when only key is specified.
+  for (const anotherKey of Object.keys(response.mapListValueValue)) {
+    console.log(`key: ${anotherKey}`);
+  }
+
+  // Testing iterating over map fields when only value is specified.
+  for (const anotherValue of Object.values(response.mapListValueValue)) {
+    console.log(`value: ${anotherValue}`);
+  }
+
+  console.log(`name: ${response.name}`);
+  console.log(`author: ${response.author}`);
+}
+
+
+// [END hopper_core]
+// [END hopper]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .default('shelf', 'Novel')
+  .argv;
+
+sampleGetBigBook(argv.shelf).catch(console.error);
+============== file: src/samples/v1/get_big_book_long_running_promise_await_wap2.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap2")
+'use strict';
+
+// [START hopper]
+// [START hopper_core]
+
+
+const library = require('@google-cloud/library').v1;
+
+async function sampleGetBigBook(shelf, bigBookName) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  // const bigBookName = 'War and Peace';
+  const formattedName = client.bookPath(shelf, bigBookName);
+
+  // Create a job whose results you can either wait for now, or get later
+  const [operation] = await client.getBigBook({name: formattedName});
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+
+  console.log(response);
+}
+
+
+// [END hopper_core]
+// [END hopper]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .default('shelf', 'Novel')
+  .default('big_book_name', 'War and Peace')
+  .argv;
+
+sampleGetBigBook(argv.shelf, argv.big_book_name).catch(console.error);
 ============== file: src/samples/v1/get_big_book_long_running_promise_wap.js ==============
 // DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
 'use strict';
@@ -519,8 +620,23 @@ function sampleGetBigBook(shelf) {
       const metadata = responses[1];
       const finalApiResponse = responses[2];
 
-      console.log(`name: {$result.name}`);
-      console.log(`author: {$result.author}`);
+      // Testing iterating over map fields when both key and value are specified.
+      for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
+        console.log(`key: ${myKey}, value: ${myValue}`);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (const anotherKey of Object.keys(result.mapListValueValue)) {
+        console.log(`key: ${anotherKey}`);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (const anotherValue of Object.values(result.mapListValueValue)) {
+        console.log(`value: ${anotherValue}`);
+      }
+
+      console.log(`name: ${result.name}`);
+      console.log(`author: ${result.author}`);
     })
     .catch(err => {
       console.error(err);
@@ -529,10 +645,10 @@ function sampleGetBigBook(shelf) {
 
 
 // [END hopper_core]
-// tslint:disable-next-line:no-any
 // [END hopper]
+// tslint:disable-next-line:no-any
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf', 'Novel')
   .argv;
 
@@ -575,15 +691,48 @@ function sampleGetBigBook(shelf, bigBookName) {
 
 
 // [END hopper_core]
-// tslint:disable-next-line:no-any
 // [END hopper]
+// tslint:disable-next-line:no-any
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf', 'Novel')
   .default('big_book_name', 'War and Peace')
   .argv;
 
 sampleGetBigBook(argv.shelf, argv.big_book_name);
+============== file: src/samples/v1/get_book_request_test_on_success_map.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+
+const library = require('@google-cloud/library').v1;
+
+function sampleGetBook() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  client.getBook({name: formattedName})
+    .then(responses => {
+      const response = responses[0];
+      const intKeyVal = response.mapStringValue[123];
+      const booleanKeyVal = response.mapBoolKey[true];
+      const mapValueField = response.mapMessageValue['key'].field;
+      console.log(`Test printing map fields: ${response.mapListValueValue['quoted_key']}`);
+      console.log(`Test printing enum fields of a map value: ${response.mapMessageValue['key'].alignment}`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleGetBook();
 ============== file: src/samples/v1/monolog_about_book_request_streaming_client_prog.js ==============
 // DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
 'use strict';
@@ -601,7 +750,7 @@ function sampleMonologAboutBook() {
       console.error(err);
       return;
     }
-    console.log(`The stage of the comment is: {$response.stage}`);
+    console.log(`The stage of the comment is: ${response.stage}`);
   });
   const name = 'BASIC';
   const request = {
@@ -613,8 +762,8 @@ function sampleMonologAboutBook() {
 
 
 // [END sample_core]
-// tslint:disable-next-line:no-any
 // [END sample]
+// tslint:disable-next-line:no-any
 
 sampleMonologAboutBook();
 ============== file: src/samples/v1/publish_series_request_pi_version.js ==============
@@ -662,12 +811,12 @@ function samplePublishSeries(shelfName, edition) {
       const bookNames = response.bookNames;
       for (const title of response.bookNames) {
         // Now we deal with thisSingleBook!
-        console.log(`Title: {$title}`);
+        console.log(`\t%\`\` The book's title: "${title}", \\\nand the book costs $50.00 \`\`%`);
       }
-      console.log(`The first book is: {$response.bookNames[0]}`);
-      console.log(`The author of the first book is: {$response.books[0].author}`);
+      console.log(`The first book is: ${response.bookNames[0]}`);
+      console.log(`The author of the first book is: ${response.books[0].author}`);
       console.log(`That's all!`);
-      console.log(`series_uuid: {$response.seriesUuid.seriesBytes}`);
+      console.log(`series_uuid: ${response.seriesUuid.seriesBytes}`);
     })
     .catch(err => {
       console.error(err);
@@ -676,10 +825,10 @@ function samplePublishSeries(shelfName, edition) {
 
 
 // [END canonical_core]
-// tslint:disable-next-line:no-any
 // [END canonical]
+// tslint:disable-next-line:no-any
 
-argv = require(`yargs`)
+const argv = require(`yargs`)
   .default('shelf_name', 'Math')
   .default('edition', 123)
   .argv;
@@ -719,8 +868,8 @@ function samplePublishSeries() {
 
 
 // [END canonical_core]
-// tslint:disable-next-line:no-any
 // [END canonical]
+// tslint:disable-next-line:no-any
 
 samplePublishSeries();
 ============== file: src/samples/v1/stream_books_request_streaming_server_prog.js ==============
@@ -743,8 +892,8 @@ function sampleStreamBooks() {
 
 
 // [END lovelace_core]
-// tslint:disable-next-line:no-any
 // [END lovelace]
+// tslint:disable-next-line:no-any
 
 sampleStreamBooks();
 ============== file: src/samples/v1/stream_shelves_request_streaming_server_empty.js ==============
@@ -767,8 +916,8 @@ function sampleStreamShelves() {
 
 
 // [END sample_core]
-// tslint:disable-next-line:no-any
 // [END sample]
+// tslint:disable-next-line:no-any
 
 sampleStreamShelves();
 ============== file: src/v1/doc/google/example/library/v1/doc_book_from_anywhere.js ==============
@@ -966,6 +1115,9 @@ const FieldMask = {
  *   resource, but *not* its import, other_shared_type
  *
  *   This object should have the same structure as [Used]{@link google.test.shared.data.Used}
+ *
+ * @property {Object.<boolean, string>} mapBoolKey
+ *   For testing accessing map fields in samplegen
  *
  * @typedef Book
  * @memberof google.example.library.v1
@@ -3148,7 +3300,7 @@ module.exports.LibraryServiceClient = LibraryServiceClient;
 
 'use strict';
 
-const gapicConfig = require('./library_service_client_config');
+const gapicConfig = require('./library_service_client_config.json');
 const gax = require('google-gax');
 const merge = require('lodash.merge');
 const path = require('path');
@@ -5238,6 +5390,13 @@ class LibraryServiceClient {
    *   .catch(err => {
    *     console.error(err);
    *   });
+   *
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   *
+   * // Handle the operation using the await pattern.
+   * const [operation] = await client.getBigBook({name: formattedName});
+   *
+   * const [response] = await operation.promise();
    */
   getBigBook(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -5321,6 +5480,13 @@ class LibraryServiceClient {
    *   .catch(err => {
    *     console.error(err);
    *   });
+   *
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   *
+   * // Handle the operation using the await pattern.
+   * const [operation] = await client.getBigNothing({name: formattedName});
+   *
+   * const [response] = await operation.promise();
    */
   getBigNothing(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
