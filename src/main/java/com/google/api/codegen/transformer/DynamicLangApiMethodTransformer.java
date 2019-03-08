@@ -57,6 +57,10 @@ public class DynamicLangApiMethodTransformer {
     this.sampleTransformer = sampleTransformer;
   }
 
+  protected List<OptionalArrayMethodView> generateApiMethods(InterfaceContext context) {
+    return ImmutableList.<OptionalArrayMethodView>of();
+  }
+
   public OptionalArrayMethodView generateMethod(GapicMethodContext context) {
     return generateMethod(context, false);
   }
