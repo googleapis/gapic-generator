@@ -309,10 +309,7 @@ public class JavaSurfaceTransformer {
           searchExampleMethod(methods, ClientMethodType.AsyncOperationFlattenedMethod);
     }
     if (exampleApiMethod == null) {
-      // https://github.com/googleapis/gapic-generator/issues/393
-      // We need to have non-flattening method samples.
-      exampleApiMethod =
-          searchExampleMethod(methods, ClientMethodType.CallableMethod);
+      exampleApiMethod = searchExampleMethod(methods, ClientMethodType.CallableMethod);
     }
     return exampleApiMethod;
   }
