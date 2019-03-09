@@ -57,6 +57,8 @@ public class DynamicLangApiMethodTransformer {
     this.sampleTransformer = sampleTransformer;
   }
 
+  // TODO: by default this method returns an empty list. Each subclass should override this
+  // method to return the methods in each language.
   protected List<OptionalArrayMethodView> generateApiMethods(InterfaceContext context) {
     return ImmutableList.<OptionalArrayMethodView>of();
   }

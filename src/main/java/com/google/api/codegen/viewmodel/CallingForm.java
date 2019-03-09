@@ -14,7 +14,11 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.config.MethodContext;
 import com.google.common.base.CaseFormat;
+import com.google.common.collect.ImmutableList;
+import java.util.Collections;
 
 /**
  * The different calling forms we wish to illustrate in samples. Not every method type will have
@@ -34,7 +38,7 @@ public enum CallingForm {
   RequestAsyncPaged, // used by: nodejs
   RequestAsyncPagedAll, // used by: nodejs
   RequestPaged, // used by: java php py
-  RequestPagedAll, // used by: php py
+  RequestPagedAll, // used by: php py ruby
   RequestStreamingBidi, // used by: nodejs php py ruby
   RequestStreamingBidiAsync, // used by: php
   RequestStreamingClient, // used by: nodejs php py ruby
@@ -72,5 +76,86 @@ public enum CallingForm {
    */
   public String toLowerCamel() {
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, toString());
+  }
+
+  public static List<CallingForm> getCallingForms(
+      MethodContext methodContext, TargetLanguage lang) {
+    if (methodContext.getMethodConfig().isPageStreaming()) {
+      return getCallingFormsForPagedStreamingMethods(lang);
+    }
+    if (methodContext.isLongRunningMethodContext()) {
+      return getCallingFormsForLongRunningMethods(lang);
+    }
+    if (methodContext.getMethodConfig().isGrpcStreaming()) {
+      GrpcStreamingType streamingType = methodContext.getMethodConfig().getGrpcStreamingType();
+      switch (streamingType) {
+        case BidiStreaming:
+          return getCallingFormsForBidiStreamingMethods(lang);
+        case ClientStreaming:
+          return getCallingFormsForBidiStreamingMethods(lang);
+        case ServerStreaming:
+          return getCallingFormsForBidiStreamingMethods(lang);
+        case NonStreaming:
+          return getCallingFormsForBidiStreamingMethods(lang);
+        default:
+          throw new IllegalArgumentException(
+              "unhandled grpcStreamingType: " + streamingType.toString());
+      }
+    }
+    return ImmutableList.<CallingForm>of();
+  }
+
+  public static List<CallingForm> getCallingFormsForUnaryMethods(TargetLanguage lang) {
+    switch (lang) {
+      case RUBY:
+        return Collections.singletonList(Request);
+      default:
+        throw UnsupportedOperationException("unhandled language: " + lang);
+    }
+  }
+
+  public static List<CallingForm> getCallingFormsForLongRunningMethods(TargetLanguage lang) {
+    switch (lang) {
+      case RUBY:
+        return Collections.singletonList(LongRunningRequestAsync);
+      default:
+        throw UnsupportedOperationException("unhandled language: " + lang);
+    }
+  }
+
+  public static List<CallingForm> getCallingFormsForClientStreamingMethods(TargetLanguage lang) {
+    switch (lang) {
+      case RUBY:
+        return Collections.singletonList(RequestStreamingClient);
+      default:
+        throw UnsupportedOperationException("unhandled language: " + lang);
+    }
+  }
+
+  public static List<CallingForm> getCallingFormsForServerStreamingMethods(TargetLanguage lang) {
+    switch (lang) {
+      case RUBY:
+        return Collections.singletonList(RequestStreamingServer);
+      default:
+        throw UnsupportedOperationException("unhandled language: " + lang);
+    }
+  }
+
+  public static List<CallingForm> getCallingFormsForBidiStreamingMethods(TargetLanguage lang) {
+    switch (lang) {
+      case RUBY:
+        return Collections.singletonList(RequestStreamingBidi);
+      default:
+        throw UnsupportedOperationException("unhandled language: " + lang);
+    }
+  }
+
+  public static List<CallingForm> getCallingFormsForPagedStreamingMethods(TargetLanguage lang) {
+    switch (lang) {
+      case RUBY:
+        return Collections.singletonList(RequestPagedAll);
+      default:
+        throw UnsupportedOperationException("unhandled language: " + lang);
+    }
   }
 }
