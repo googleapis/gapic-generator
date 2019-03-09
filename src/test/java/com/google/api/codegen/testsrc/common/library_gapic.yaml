@@ -160,6 +160,20 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
+    sample_value_sets:
+    - id: empty_response_type_with_response_handling
+      title: "Test response handling for methods that return empty"
+      description: "Test response handling for methods that return empty"
+      on_success:
+      - comment: "Shelf deleted"
+      - print: "Shelf deleted."
+    - id: empty_response_type_without_response_handling
+      title: "Test default response handling is turned off for methods that return empty"
+      description: "Test default response handling is turned off for methods that return empty"
+    samples:
+      standalone:
+      - calling_forms: ".*"
+        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
   - name: MergeShelves
     flattening:
       groups:
@@ -666,6 +680,21 @@ interfaces:
       api_explorer:
       - calling_forms: ".*"
         value_sets: ".*"
+  - name: BabbleAboutBook
+    sample_value_sets:
+    - id: empty_response_type_with_response_handling
+      title: "Test response handling for methods that return empty"
+      description: "Test response handling for methods that return empty"
+      on_success:
+      - comment: "No one replied"
+      - print: "No one replied."
+    - id: empty_response_type_without_response_handling
+      title: "Test default response handling is turned off for methods that return empty"
+      description: "Test default response handling is turned off for methods that return empty"
+    samples:
+      standalone:
+      - calling_forms: ".*"
+        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
   - name: FindRelatedBooks
     flattening:
       groups:
@@ -868,6 +897,20 @@ interfaces:
       poll_delay_multiplier: 1.3
       max_poll_delay_millis: 60000
       total_poll_timeout_millis: 600000
+    sample_value_sets:
+    - id: empty_response_type_with_response_handling
+      title: "Test response handling for methods that return empty"
+      description: "Test response handling for methods that return empty"
+      on_success:
+      - comment: "Got nothing"
+      - print: "Got nothing."
+    - id: empty_response_type_without_response_handling
+      title: "Test default response handling is turned off for methods that return empty"
+      description: "Test default response handling is turned off for methods that return empty"
+    samples:
+      standalone:
+      - calling_forms: ".*"
+        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
   - name: TestOptionalRequiredFlatteningParams
     flattening:
       groups:

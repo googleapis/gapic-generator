@@ -3104,6 +3104,11 @@ module Library
           defaults["monolog_about_book"],
           exception_transformer: exception_transformer
         )
+        @babble_about_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:babble_about_book),
+          defaults["babble_about_book"],
+          exception_transformer: exception_transformer
+        )
         @find_related_books = Google::Gax.create_api_call(
           @library_service_stub.method(:find_related_books),
           defaults["find_related_books"],
@@ -3999,6 +4004,37 @@ module Library
         @monolog_about_book.call(request_protos, options)
       end
 
+      # Test samplegen response handling when a client streaming method returns Empty.
+      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+      #
+      # @param reqs [Enumerable<Google::Example::Library::V1::DiscussBookRequest>]
+      #   The input requests.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      #
+      # @note
+      #   EXPERIMENTAL:
+      #     Streaming requests are still undergoing review.
+      #     This method interface might change in the future.
+      #
+      # @example
+      #   require "library"
+      #
+      #   library_service_client = Library.new(version: :v1)
+      #   request = {}
+      #   requests = [request]
+      #   library_service_client.babble_about_book(requests)
+
+      def babble_about_book reqs, options: nil
+        request_protos = reqs.lazy.map do |req|
+          Google::Gax::to_proto(req, Google::Example::Library::V1::DiscussBookRequest)
+        end
+        @babble_about_book.call(request_protos, options)
+        nil
+      end
+
       # @param names [Array<String>]
       # @param shelves [Array<String>]
       # @param page_size [Integer]
@@ -4723,6 +4759,7 @@ end
           "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
+        "no_retry": [],
         "non_idempotent": []
       },
       "retry_params": {
@@ -4857,6 +4894,11 @@ end
         "MonologAboutBook": {
           "timeout_millis": 30000,
           "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "BabbleAboutBook": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "no_retry",
           "retry_params_name": "default"
         },
         "FindRelatedBooks": {
@@ -6733,6 +6775,65 @@ describe Library::V1::LibraryServiceClient do
           # Call method
           err = assert_raises Google::Gax::GaxError do
             client.monolog_about_book([request])
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'babble_about_book' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#babble_about_book."
+
+    it 'invokes babble_about_book without error' do
+      # Create request parameters
+      request = {}
+
+      # Mock Grpc layer
+      mock_method = proc do |requests|
+        request = requests.first
+        OpenStruct.new(execute: nil)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:babble_about_book, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("babble_about_book")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
+
+          # Call method
+          client.babble_about_book([request])
+
+          # Verify the response
+          assert_nil(response)
+        end
+      end
+    end
+
+    it 'invokes babble_about_book with error' do
+      # Create request parameters
+      request = {}
+
+      # Mock Grpc layer
+      mock_method = proc do |requests|
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:babble_about_book, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("babble_about_book")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.babble_about_book([request])
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
