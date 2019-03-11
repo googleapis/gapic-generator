@@ -62,17 +62,23 @@
   @switch sample.callingForm
   @case "Request"
     {@syncMethodSampleCode(apiMethod, sample)}
-    {@processResponse(sample)}
+    @if sample.outputs
+      {@processResponse(sample)}
+    @end
   @case "RequestPaged"
     {@pagedIterableMethodSampleCode(apiMethod, sample)}
   @case "Flattened"
     {@syncMethodSampleCode(apiMethod, sample)}
-    {@processResponse(sample)}
+    @if sample.outputs
+      {@processResponse(sample)}
+    @end
   @case "FlattenedPaged"
     {@pagedCallableMethodSampleCode(apiMethod, sample)}
   @case "Callable"
     {@callableMethodSampleCode(apiMethod, sample)}
-    {@processResponse(sample)}
+    @if sample.outputs
+      {@processResponse(sample)}
+    @end
   @case "CallableList"
     {@unpagedListCallableMethodSampleCode(apiMethod, sample)}
   @case "CallablePaged"
@@ -88,10 +94,14 @@
     {@processResponse(sample)}
   @case "LongRunningFlattenedAsync"
     {@asyncOperationMethodSampleCode(apiMethod, sample)}
-    {@processResponse(sample)}
+    @if sample.outputs
+      {@processResponse(sample)}
+    @end
   @case "LongRunningRequestAsync"
     {@asyncOperationMethodSampleCode(apiMethod, sample)}
-    {@processResponse(sample)}
+    @if sample.outputs
+      {@processResponse(sample)}
+    @end
   @default
     $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
   @end
@@ -161,7 +171,7 @@
         {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)}).get();
   @else
     {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-        {@sampleMethodCallArgList(initCode.fieldSettings)}).get();
+        {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)}).get();
   @end
 @end
 
@@ -317,11 +327,7 @@
 @end
 
 @private processResponse(sample)
-  @if sample.outputs.size == 0
-    System.out.println(response);
-  @else
-    {@processOutputViews(sample.outputs)}
-  @end
+  {@processOutputViews(sample.outputs)}
 @end
 
 @private processOutputViews(outputViews)
@@ -433,9 +439,13 @@
   ApiStreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}> responseObserver =
       new ApiStreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}>() {
         @@Override
-        public void onNext({@apiMethod.callableMethod.genericAwareResponseType} response) {
-          {@processResponse(sample)}
-        }
+        @if sample.outputs
+          public void onNext({@apiMethod.callableMethod.genericAwareResponseType} response) {
+            {@processResponse(sample)}
+          }
+        @else
+          public void onNext({@apiMethod.callableMethod.genericAwareResponseType} response) {}
+        @end
 
         @@Override
         public void onError(Throwable t) {

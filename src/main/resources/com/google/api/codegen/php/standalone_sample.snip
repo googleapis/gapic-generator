@@ -172,7 +172,9 @@
             // operation succeeded and returns no value
         @else
             $response = $operationResponse->getResult();
-            {@processResponse(sample)}
+            @if sample.outputs
+                {@processResponse(sample)}
+            @end
         @end
     } else {
         $error = $operationResponse->getError();
@@ -191,12 +193,14 @@
         $newOperationResponse->reload();
     }
     if ($newOperationResponse->operationSucceeded()) {
-      @if apiMethod.longRunningView.isEmptyOperation
-          // operation succeeded and returns no value
-      @else
-          $response = $newOperationResponse->getResult();
-          {@processResponse(sample)}
-      @end
+        @if apiMethod.longRunningView.isEmptyOperation
+            // operation succeeded and returns no value
+        @else
+            $response = $newOperationResponse->getResult();
+            @if sample.outputs
+                {@processResponse(sample)}
+            @end
+        @end
     } else {
       $error = $newOperationResponse->getError();
       // handleError($error)
@@ -209,8 +213,11 @@
 
     @else
         {@methodCallSampleCode(apiMethod)};
+
     @end
-    {@processResponse(sample)}
+    @if sample.outputs
+        {@processResponse(sample)}
+    @end
 @end
 
 @private pagedSampleCode(sample, apiMethod)
@@ -236,7 +243,9 @@
     $requests = [$request];
     $stream = {@methodCallSampleCode(apiMethod)};
     $response = $stream->writeAllAndReadResponse($requests);
-    {@processResponse(sample)}
+    @if sample.outputs
+        {@processResponse(sample)}
+    @end
 @end
 
 @private clientStreamingAsyncSampleCode(sample, apiMethod)
@@ -247,7 +256,9 @@
         $stream->write($request);
     }
     $response = $stream->readResponse();
-    {@processResponse(sample)}
+    @if sample.outputs
+        {@processResponse(sample)}
+    @end
 @end
 
 @private serverStreamingSampleCode(sample, apiMethod)
@@ -388,11 +399,7 @@
 @end
 
 @private processResponse(sample)
-    @if sample.outputs.size == 0
-        print_r($response);
-    @else
-        {@processOutputViews(sample.outputs)}
-    @end
+    {@processOutputViews(sample.outputs)}
 @end
 
 @private processOutputViews(outputViews)
