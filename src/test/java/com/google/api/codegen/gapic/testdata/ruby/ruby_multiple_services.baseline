@@ -1106,22 +1106,33 @@ module Google
 
           # Decrement.
           #
+          # @param reqs [Enumerable<Google::Cloud::Example::V1::Foo::DecrementRequest>]
+          #   The input requests.
           # @param options [Google::Gax::CallOptions]
           #   Overrides the default settings for this call, e.g, timeout,
           #   retries, etc.
-          # @yield [result, operation] Access the result along with the RPC operation
-          # @yieldparam result []
-          # @yieldparam operation [GRPC::ActiveCall::Operation]
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
+          #
+          # @note
+          #   EXPERIMENTAL:
+          #     Streaming requests are still undergoing review.
+          #     This method interface might change in the future.
+          #
           # @example
           #   require "google/example"
           #
           #   decrementer_service_client = Google::Example::Decrementer.new(version: :v1)
-          #   decrementer_service_client.decrement
+          #   request = {}
+          #   requests = [request]
+          #   decrementer_service_client.decrement(requests).each do |element|
+          #     # Process element.
+          #   end
 
-          def decrement options: nil, &block
-            req = Google::Cloud::Example::V1::Foo::DecrementRequest.new
-            @decrement.call(req, options, &block)
+          def decrement reqs, options: nil
+            request_protos = reqs.lazy.map do |req|
+              Google::Gax::to_proto(req, Google::Cloud::Example::V1::Foo::DecrementRequest)
+            end
+            @decrement.call(request_protos, options)
             nil
           end
         end
@@ -1512,10 +1523,17 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
     custom_error = CustomTestError_v1.new "Custom test error for Google::Example::V1::Foo::DecrementerServiceClient#decrement."
 
     it 'invokes decrement without error' do
+      # Create request parameters
+      request = {}
+
+      # Create expected grpc response
+      expected_response = {}
+      expected_response = Google::Gax::to_proto(expected_response, Google::Protobuf::Empty)
 
       # Mock Grpc layer
-      mock_method = proc do
-        OpenStruct.new(execute: nil)
+      mock_method = proc do |requests|
+        request = requests.first
+        OpenStruct.new(execute: [expected_response])
       end
       mock_stub = MockGrpcClientStub_v1.new(:decrement, mock_method)
 
@@ -1527,24 +1545,21 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
           client = Google::Example::Decrementer.new(version: :v1)
 
           # Call method
-          response = client.decrement
+          client.decrement([request])
 
           # Verify the response
-          assert_nil(response)
-
-          # Call method with block
-          client.decrement do |response, operation|
-            # Verify the response
-            assert_nil(response)
-            refute_nil(operation)
-          end
+          assert_equal(1, response.count)
+          assert_equal(expected_response, response.first)
         end
       end
     end
 
     it 'invokes decrement with error' do
+      # Create request parameters
+      request = {}
+
       # Mock Grpc layer
-      mock_method = proc do
+      mock_method = proc do |requests|
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:decrement, mock_method)
@@ -1558,7 +1573,7 @@ describe Google::Example::V1::Foo::DecrementerServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
-            client.decrement
+            client.decrement([request])
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
