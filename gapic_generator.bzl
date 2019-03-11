@@ -62,7 +62,6 @@ google_java_format_verification = rule(
     attrs = {
         "srcs": attr.label_list(allow_files = True),
         "formatter": attr.label(
-            default = Label("//:google_java_format_binary"),
             executable = True,
             cfg = "host",
         ),
