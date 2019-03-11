@@ -9441,7 +9441,7 @@ public class AddressClient implements BackgroundResource {
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   List&lt;String&gt; fieldMask = new ArrayList&lt;&gt;();
-   *   Operation response = addressClient.patchAddress(address, region, addressResource, fieldMask);
+   *   addressClient.patchAddress(address, region, addressResource, fieldMask);
    * }
    * </code></pre>
    *
@@ -9452,7 +9452,7 @@ public class AddressClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation patchAddress(String address, ProjectRegionName region, Address addressResource, List<String> fieldMask) {
+  public final void patchAddress(String address, ProjectRegionName region, Address addressResource, List<String> fieldMask) {
 
     PatchAddressHttpRequest request =
         PatchAddressHttpRequest.newBuilder()
@@ -9461,7 +9461,7 @@ public class AddressClient implements BackgroundResource {
         .setAddressResource(addressResource)
         .addAllFieldMask(fieldMask)
         .build();
-    return patchAddress(request);
+    patchAddress(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -9475,7 +9475,7 @@ public class AddressClient implements BackgroundResource {
    *   ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
    *   Address addressResource = Address.newBuilder().build();
    *   List&lt;String&gt; fieldMask = new ArrayList&lt;&gt;();
-   *   Operation response = addressClient.patchAddress(address, region.toString(), addressResource, fieldMask);
+   *   addressClient.patchAddress(address, region.toString(), addressResource, fieldMask);
    * }
    * </code></pre>
    *
@@ -9486,7 +9486,7 @@ public class AddressClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation patchAddress(String address, String region, Address addressResource, List<String> fieldMask) {
+  public final void patchAddress(String address, String region, Address addressResource, List<String> fieldMask) {
 
     PatchAddressHttpRequest request =
         PatchAddressHttpRequest.newBuilder()
@@ -9495,7 +9495,7 @@ public class AddressClient implements BackgroundResource {
         .setAddressResource(addressResource)
         .addAllFieldMask(fieldMask)
         .build();
-    return patchAddress(request);
+    patchAddress(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -9515,7 +9515,7 @@ public class AddressClient implements BackgroundResource {
    *     .setAddressResource(addressResource)
    *     .addAllFieldMask(fieldMask)
    *     .build();
-   *   Operation response = addressClient.patchAddress(request);
+   *   addressClient.patchAddress(request);
    * }
    * </code></pre>
    *
@@ -9523,8 +9523,8 @@ public class AddressClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation patchAddress(PatchAddressHttpRequest request) {
-    return patchAddressCallable().call(request);
+  public final void patchAddress(PatchAddressHttpRequest request) {
+    patchAddressCallable().call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -9544,14 +9544,14 @@ public class AddressClient implements BackgroundResource {
    *     .setAddressResource(addressResource)
    *     .addAllFieldMask(fieldMask)
    *     .build();
-   *   ApiFuture&lt;Operation&gt; future = addressClient.patchAddressCallable().futureCall(request);
+   *   ApiFuture&lt;Void&gt; future = addressClient.patchAddressCallable().futureCall(request);
    *   // Do something
-   *   Operation response = future.get();
+   *   future.get();
    * }
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<PatchAddressHttpRequest, Operation> patchAddressCallable() {
+  public final UnaryCallable<PatchAddressHttpRequest, Void> patchAddressCallable() {
     return stub.patchAddressCallable();
   }
 
@@ -10004,7 +10004,7 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
   /**
    * Returns the object with the settings used for calls to patchAddress.
    */
-  public UnaryCallSettings<PatchAddressHttpRequest, Operation> patchAddressSettings() {
+  public UnaryCallSettings<PatchAddressHttpRequest, Void> patchAddressSettings() {
     return ((AddressStubSettings) getStubSettings()).patchAddressSettings();
   }
 
@@ -10173,7 +10173,7 @@ public class AddressSettings extends ClientSettings<AddressSettings> {
     /**
      * Returns the builder for the settings used for calls to patchAddress.
      */
-    public UnaryCallSettings.Builder<PatchAddressHttpRequest, Operation> patchAddressSettings() {
+    public UnaryCallSettings.Builder<PatchAddressHttpRequest, Void> patchAddressSettings() {
       return getStubSettingsBuilder().patchAddressSettings();
     }
 
@@ -10305,7 +10305,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
   private final UnaryCallSettings<GetAddressHttpRequest, Address> getAddressSettings;
   private final UnaryCallSettings<InsertAddressHttpRequest, Operation> insertAddressSettings;
   private final PagedCallSettings<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
-  private final UnaryCallSettings<PatchAddressHttpRequest, Operation> patchAddressSettings;
+  private final UnaryCallSettings<PatchAddressHttpRequest, Void> patchAddressSettings;
   private final UnaryCallSettings<UpdateAddressHttpRequest, Operation> updateAddressSettings;
 
   /**
@@ -10346,7 +10346,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
   /**
    * Returns the object with the settings used for calls to patchAddress.
    */
-  public UnaryCallSettings<PatchAddressHttpRequest, Operation> patchAddressSettings() {
+  public UnaryCallSettings<PatchAddressHttpRequest, Void> patchAddressSettings() {
     return patchAddressSettings;
   }
 
@@ -10568,7 +10568,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
     private final UnaryCallSettings.Builder<GetAddressHttpRequest, Address> getAddressSettings;
     private final UnaryCallSettings.Builder<InsertAddressHttpRequest, Operation> insertAddressSettings;
     private final PagedCallSettings.Builder<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
-    private final UnaryCallSettings.Builder<PatchAddressHttpRequest, Operation> patchAddressSettings;
+    private final UnaryCallSettings.Builder<PatchAddressHttpRequest, Void> patchAddressSettings;
     private final UnaryCallSettings.Builder<UpdateAddressHttpRequest, Operation> updateAddressSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
@@ -10755,7 +10755,7 @@ public class AddressStubSettings extends StubSettings<AddressStubSettings> {
     /**
      * Returns the builder for the settings used for calls to patchAddress.
      */
-    public UnaryCallSettings.Builder<PatchAddressHttpRequest, Operation> patchAddressSettings() {
+    public UnaryCallSettings.Builder<PatchAddressHttpRequest, Void> patchAddressSettings() {
       return patchAddressSettings;
     }
 
@@ -10861,7 +10861,7 @@ public abstract class AddressStub implements BackgroundResource {
   }
 
   @BetaApi
-  public UnaryCallable<PatchAddressHttpRequest, Operation> patchAddressCallable() {
+  public UnaryCallable<PatchAddressHttpRequest, Void> patchAddressCallable() {
     throw new UnsupportedOperationException("Not implemented: patchAddressCallable()");
   }
 
@@ -11035,8 +11035,8 @@ public class HttpJsonAddressStub extends AddressStub {
                   .build())
           .build();
   @InternalApi
-  public static final ApiMethodDescriptor<PatchAddressHttpRequest, Operation> patchAddressMethodDescriptor =
-      ApiMethodDescriptor.<PatchAddressHttpRequest, Operation>newBuilder()
+  public static final ApiMethodDescriptor<PatchAddressHttpRequest, Void> patchAddressMethodDescriptor =
+      ApiMethodDescriptor.<PatchAddressHttpRequest, Void>newBuilder()
           .setFullMethodName("compute.addresses.patch")
           .setHttpMethod(HttpMethods.PATCH)
           .setRequestFormatter(
@@ -11047,10 +11047,6 @@ public class HttpJsonAddressStub extends AddressStub {
                                      ))
                   .setResourceNameFactory(ProjectRegionName.newFactory())
                   .setResourceNameField("region")
-                  .build())
-          .setResponseParser(
-              ApiMessageHttpResponseParser.<Operation>newBuilder()
-                  .setResponseInstance(Operation.getDefaultInstance())
                   .build())
           .build();
   @InternalApi
@@ -11081,7 +11077,7 @@ public class HttpJsonAddressStub extends AddressStub {
   private final UnaryCallable<InsertAddressHttpRequest, Operation> insertAddressCallable;
   private final UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable;
   private final UnaryCallable<ListAddressesHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable;
-  private final UnaryCallable<PatchAddressHttpRequest, Operation> patchAddressCallable;
+  private final UnaryCallable<PatchAddressHttpRequest, Void> patchAddressCallable;
   private final UnaryCallable<UpdateAddressHttpRequest, Operation> updateAddressCallable;
 
   private final HttpJsonStubCallableFactory callableFactory;
@@ -11134,8 +11130,8 @@ public class HttpJsonAddressStub extends AddressStub {
         HttpJsonCallSettings.<ListAddressesHttpRequest, AddressList>newBuilder()
             .setMethodDescriptor(listAddressesMethodDescriptor)
             .build();
-    HttpJsonCallSettings<PatchAddressHttpRequest, Operation> patchAddressTransportSettings =
-        HttpJsonCallSettings.<PatchAddressHttpRequest, Operation>newBuilder()
+    HttpJsonCallSettings<PatchAddressHttpRequest, Void> patchAddressTransportSettings =
+        HttpJsonCallSettings.<PatchAddressHttpRequest, Void>newBuilder()
             .setMethodDescriptor(patchAddressMethodDescriptor)
             .build();
     HttpJsonCallSettings<UpdateAddressHttpRequest, Operation> updateAddressTransportSettings =
@@ -11192,7 +11188,7 @@ public class HttpJsonAddressStub extends AddressStub {
   }
 
   @BetaApi
-  public UnaryCallable<PatchAddressHttpRequest, Operation> patchAddressCallable() {
+  public UnaryCallable<PatchAddressHttpRequest, Void> patchAddressCallable() {
     return patchAddressCallable;
   }
 
@@ -11854,52 +11850,14 @@ public class AddressClientTest {
   @Test
   @SuppressWarnings("all")
   public void patchAddressTest() {
-    String clientOperationId = "clientOperationId-239630617";
-    String description = "description-1724546052";
-    String httpErrorMessage = "httpErrorMessage1276263769";
-    Integer httpErrorStatusCode = 1386087020;
-    String id = "id3355";
-    String kind = "kind3292052";
-    String name = "name3373707";
-    String operationType = "operationType-1432962286";
-    Integer progress = 1001078227;
-    ProjectRegionName region2 = ProjectRegionName.of("[PROJECT]", "[REGION]");
-    String selfLink = "selfLink-1691268851";
-    String startTime = "startTime-1573145462";
-    String status = "status-892481550";
-    String statusMessage = "statusMessage-239442758";
-    String targetId = "targetId-815576439";
-    String targetLink = "targetLink-2084812312";
-    String zone = "zone3744684";
-    Operation expectedResponse = Operation.newBuilder()
-      .setClientOperationId(clientOperationId)
-      .setDescription(description)
-      .setHttpErrorMessage(httpErrorMessage)
-      .setHttpErrorStatusCode(httpErrorStatusCode)
-      .setId(id)
-      .setKind(kind)
-      .setName(name)
-      .setOperationType(operationType)
-      .setProgress(progress)
-      .setRegion(region2.toString())
-      .setSelfLink(selfLink)
-      .setStartTime(startTime)
-      .setStatus(status)
-      .setStatusMessage(statusMessage)
-      .setTargetId(targetId)
-      .setTargetLink(targetLink)
-      .setZone(zone)
-      .build();
-    mockService.addResponse(expectedResponse);
+    mockService.addNullResponse();
 
     String address = "address-1147692044";
     ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
     Address addressResource = Address.newBuilder().build();
     List<String> fieldMask = new ArrayList<>();
 
-    Operation actualResponse =
-        client.patchAddress(address, region, addressResource, fieldMask);
-    Assert.assertEquals(expectedResponse, actualResponse);
+    client.patchAddress(address, region, addressResource, fieldMask);
 
     List<String> actualRequests = mockService.getRequestPaths();
     Assert.assertEquals(1, actualRequests.size());
