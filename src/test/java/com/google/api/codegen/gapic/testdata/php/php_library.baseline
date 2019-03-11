@@ -3547,7 +3547,7 @@ function sampleGetBook()
         $booleanKeyVal = $response->getMapBoolKey()[true];
         $mapValueField = $response->getMapMessageValue()['key']->getField();
         printf("Test printing map fields: %s" . PHP_EOL, print_r($response->getMapListValueValue()['quoted_key'], true));
-        printf("Test printing enum fields of a map value: %s" . PHP_EOL, $response->getMapMessageValue()['key']->getAlignment());
+        printf("Test printing enum fields of a map value: %s" . PHP_EOL, SomeMessage_Alignment::name($response->getMapMessageValue()['key']->getAlignment()));
     } finally {
         $libraryServiceClient->close();
     }
@@ -3603,7 +3603,7 @@ function sampleMonologAboutBook()
             $stream->write($request);
         }
         $response = $stream->readResponse();
-        printf("The stage of the comment is: %s" . PHP_EOL, $response->getStage());
+        printf("The stage of the comment is: %s" . PHP_EOL, Comment_Stage::name($response->getStage()));
     } finally {
         $libraryServiceClient->close();
     }
@@ -3656,7 +3656,7 @@ function sampleMonologAboutBook()
         $requests = [$request];
         $stream = $libraryServiceClient->monologAboutBook();
         $response = $stream->writeAllAndReadResponse($requests);
-        printf("The stage of the comment is: %s" . PHP_EOL, $response->getStage());
+        printf("The stage of the comment is: %s" . PHP_EOL, Comment_Stage::name($response->getStage()));
     } finally {
         $libraryServiceClient->close();
     }
