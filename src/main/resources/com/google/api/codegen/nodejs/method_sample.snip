@@ -66,6 +66,8 @@
     {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample.sampleInitCode, additionalCallback)}
   @case "LongRunningPromise"
     {@methodCallSampleCodeLongrunningPromise(apiMethod, sample.sampleInitCode, additionalCallback)}
+  @case "LongRunningPromiseAwait"
+    {@methodCallSampleCodeLongrunningPromiseAwait(apiMethod, sample.sampleInitCode, additionalCallback)}
   @default
     $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
   @end
@@ -285,6 +287,15 @@
       @end
     })
     {@promiseCallbacks(additionalCallback)}
+@end
+
+@private methodCallSampleCodeLongrunningPromiseAwait(apiMethod, init, additionalCallback)
+  {@initCode(apiMethod, init)}
+
+  // Handle the operation using the await pattern.
+  const [operation] = await {@methodCallSampleCodePrefix(apiMethod, init)};
+
+  const [response] = await operation.promise();
 @end
 
 @snippet methodCallSampleCodeLongrunningEventEmitter(apiMethod, init, additionalCallback)

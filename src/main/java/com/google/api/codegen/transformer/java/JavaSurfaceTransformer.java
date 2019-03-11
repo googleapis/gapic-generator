@@ -312,6 +312,9 @@ public class JavaSurfaceTransformer {
           searchExampleMethod(methods, ClientMethodType.AsyncOperationFlattenedMethod);
     }
     if (exampleApiMethod == null) {
+      exampleApiMethod = searchExampleMethod(methods, ClientMethodType.CallableMethod);
+    }
+    if (exampleApiMethod == null) {
       throw new RuntimeException("Could not find method to use as an example method");
     }
     return exampleApiMethod;
