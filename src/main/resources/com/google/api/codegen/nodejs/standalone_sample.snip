@@ -66,7 +66,7 @@
     @case "RequestStreamingServer"
       {@initCode(apiMethod, sample.sampleInitCode)}
         {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}.on('data', response => {
-            {@processResponse(sample)}
+          {@processResponse(sample)}
         });
     @case "LongRunningEventEmitter"
       {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample)}
@@ -82,11 +82,7 @@
 @end
 
 @private processResponse(sample)
-  @if sample.outputs.size == 0
-    console.log(response);
-  @else
     {@processOutputViews(sample.outputs)}
-  @end
 @end
 
 @private processCliArguments(sample)
@@ -126,6 +122,9 @@
   {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}.catch(err => {
     console.error(err);
   });
+  @if sample.outputs
+    {@processResponse(sample)}
+  @end
 @end
 
 @private methodCallSampleCodeForPagedResponse(apiMethod, sample)
@@ -190,7 +189,9 @@
         console.error(err);
         return;
       }
-      {@processResponse(sample)}
+      @if sample.outputs
+        {@processResponse(sample)}
+      @end
     });
     {@initCode(apiMethod, sample.sampleInitCode)}
     {@sampleWriteStreamingRequest(apiMethod)}
@@ -207,7 +208,9 @@
       // Adding a listener for the "complete" event starts polling for the
       // completion of the operation.
       operation.on('complete', (result, metadata, finalApiResponse) => {
-        {@processResponse(sample)}
+        @if sample.outputs
+          {@processResponse(sample)}
+        @end
       });
 
       // Adding a listener for the "progress" event causes the callback to be
@@ -242,7 +245,9 @@
       const metadata = responses[1];
       const finalApiResponse = responses[2];
 
-      {@processResponse(sample)}
+      @if sample.outputs
+        {@processResponse(sample)}
+      @end
     })
     .catch(err => {
       console.error(err);
@@ -258,7 +263,9 @@
   // Get a Promise representation of the final result of the job
   const [response] = await operation.promise();
   
-  {@processResponse(sample)}
+  @if sample.outputs
+    {@processResponse(sample)}
+  @end
 @end
 
 @private methodCallSampleCode(apiMethod, init)
