@@ -263,7 +263,7 @@ public abstract class SampleTransformer {
                     .addAll(
                         methodContext
                             .getNamer()
-                            .getDocLines(valueSet.getDescription(), DOC_LINE_MAX_WIDTH, false))
+                            .getWrappedDocLines(valueSet.getDescription(), true))
                     .build())
             .build();
 
@@ -364,6 +364,7 @@ public abstract class SampleTransformer {
     return builder.build();
   }
 
+  /** Generate parameter descriptions in sample function documentation. */
   private ImmutableList<List<String>> paramDocLines(
       MethodContext context, InitCodeView initCodeView) {
     SurfaceNamer namer = context.getNamer();
@@ -373,9 +374,8 @@ public abstract class SampleTransformer {
         continue;
       }
       List<String> paramDoc =
-          namer.getDocLines(
+          namer.getWrappedDocLines(
               namer.getParamDocText(param.identifier(), param.typeName(), param.description()),
-              DOC_LINE_MAX_WIDTH,
               false);
       builder.add(paramDoc);
     }

@@ -279,8 +279,14 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName()).join("client_config"));
   }
 
+  @Override
   public String getParamDocText(String paramName, String paramTypeName, String text) {
     return String.format("%s %s", paramName, getCommentReformatter().reformat(text));
+  }
+
+  @Override
+  public List<String> getWrappedDocLines(String text, boolean reformat) {
+    return getWrappedDocLines(text, reformat, 80);
   }
 
   @Override

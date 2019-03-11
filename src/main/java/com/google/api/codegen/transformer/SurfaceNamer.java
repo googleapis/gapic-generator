@@ -1390,12 +1390,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * Converts the given text to doc lines and split at maxWidth. If reformat is true, text is also
-   * reformatted in the format of the current language.
+   * Wrap the text when it is too long. By default wrap at 100 characters. If reformat is true, text
+   * is also reformatted in the format of the current language.
    */
-  public List<String> getDocLines(String text, int maxWidth, boolean reformat) {
+  public List<String> getWrappedDocLines(String text, boolean reformat) {
+    return getWrappedDocLines(text, reformat, 100);
+  }
+
+  protected List<String> getWrappedDocLines(String text, boolean reformat, int maxWidth) {
     if (reformat) {
-      return CommonRenderingUtil.getDocLines(commentReformatter.reformat(text), maxWidth);
+      return CommonRenderingUtil.getDocLines(getCommentReformatter().reformat(text), maxWidth);
     }
     return CommonRenderingUtil.getDocLines(text, maxWidth);
   }
