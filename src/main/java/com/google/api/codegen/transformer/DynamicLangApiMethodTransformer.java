@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceContext;
@@ -33,7 +32,6 @@ import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,25 +63,17 @@ public class DynamicLangApiMethodTransformer {
 
   // Entrance for XlangGapicSurfaceTransformer and XlangGapicSamplesTransformer
   public List<OptionalArrayMethodView> generateApiMethods(InterfaceContext context) {
-    return ((GapicInterfaceContext) context)
-        .getSupportedMethods()
-        .stream()
-        .map(
-            methodModel -> generateApiMethod(context.asRequestMethodContext(methodModel), null, false))
+    return context.getSupportedMethods().stream()
+        .map(m -> generateApiMethod(context.asRequestMethodContext(m)))
         .collect(Collectors.toList());
-
-    for (MethodModel method : context.getSupportedMethods()) {
-      
-    }
   }
 
-  // Hide calling forms from XlangSurfaceTestTransformers. Those do not need to generate samples.
   public OptionalArrayMethodView generateApiMethod(MethodContext context) {
-    return generateApiMethod(context, Collections.singletonList(CallingForm.Generic));
-  }
-
-  public OptionalArrayMethodView generateApiMethod(MethodContext context, List<CallingForm> callingForms) {
-    return generateMethod(context, null, false, callingForms);
+    return generateApiMethod(
+        context,
+        null,
+        context.getSurfaceInterfaceContext().getApiModel().hasMultipleServices(),
+        context.getNamer().getCallingForms(context));
   }
 
   public OptionalArrayMethodView generateApiMethod(
@@ -91,7 +81,6 @@ public class DynamicLangApiMethodTransformer {
       @Nullable InitCodeContext initCodeContext,
       boolean packageHasMultipleServices,
       List<CallingForm> callingForms) {
-    List<CallingForm> callingForms = getCallingForms(methodContext);
     if (methodContext.getMethodConfig().isPageStreaming()) {
       return generatePagedStreamingMethod(
           (GapicMethodContext) methodContext,

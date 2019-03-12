@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -616,5 +617,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       default:
         throw new IllegalArgumentException("illegal calling form for Node.js: " + form);
     }
+  }
+
+  @Override
+  public List<CallingForm> getCallingForms(MethodContext context) {
+    return CallingForm.getCallingForms(context, TargetLanguage.NODEJS);
   }
 }

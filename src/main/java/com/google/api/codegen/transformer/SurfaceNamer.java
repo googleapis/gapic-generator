@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.AnyResourceNameConfig;
 import com.google.api.codegen.config.FieldConfig;
@@ -1668,6 +1669,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getSampleFunctionName(MethodModel method) {
     return getApiMethodName(Name.from("sample").join(method.asName()), VisibilityConfig.PRIVATE);
+  }
+
+  public List<CallingForm> getCallingForms(MethodContext context) {
+    return CallingForm.Generic;
   }
 
   /////////////////////////////////// Transport Protocol /////////////////////////////////////////

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import com.google.api.codegen.viewmodel.CallingForm;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.api.codegen.ReleaseLevel;
@@ -420,6 +421,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public String getMapKeyAccessorName(TypeModel keyType, String key) {
     return String.format(
         ".get(%s)", getModelTypeFormatter().renderPrimitiveValue((ProtoTypeRef) keyType, key));
+  }
+
+  @Override
+  public List<CallingForm> getCallingForms(MethodContext context) {
+    return CallingForm.getCallingForms(context, TargetLanguage.JAVA);
   }
 
   @Override
