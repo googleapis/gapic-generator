@@ -133,7 +133,7 @@ public enum CallingForm {
           .put(JAVA, RpcType.BIDI_STREAMING, ImmutableList.of(CallableStreamingBidi))
           .put(PYTHON, RpcType.UNARY, ImmutableList.of(Request))
           .put(PYTHON, RpcType.LRO, ImmutableList.of(LongRunningPromise))
-          .put(PYTHON, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
+          .put(PYTHON, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPagedAll, RequestPaged))
           .put(PYTHON, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
           .put(PYTHON, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
           .put(PYTHON, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))

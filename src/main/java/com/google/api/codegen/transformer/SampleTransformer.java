@@ -36,6 +36,7 @@ import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A class that performs the transformations needed to generate the MethodSampleView for the
@@ -165,6 +167,12 @@ public abstract class SampleTransformer {
     // non-null value. For an in-code sample not specified through the SampleSpec, the correct value
     // to
     // use is the first one on the list, since we set it in the overload of generateSamples.
+    Preconditions.checkArgument(
+        methodSampleViews.size() > 0,
+        "Invalid number of samples: calling forms: %s, method context: %s",
+        String.join(
+            ", ", callingForms.stream().map(c -> c.toString()).collect(Collectors.toList())),
+        context.toString());
     if (methodSampleViews.size() > 0) {
       methodViewBuilder.initCode(methodSampleViews.get(0).sampleInitCode());
 

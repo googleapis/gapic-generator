@@ -63,23 +63,34 @@ public class DynamicLangApiMethodTransformer {
     this.sampleTransformer = sampleTransformer;
   }
 
+  // Entrance for XlangGapicSurfaceTransformer and XlangGapicSamplesTransformer
   public List<OptionalArrayMethodView> generateApiMethods(InterfaceContext context) {
     return ((GapicInterfaceContext) context)
         .getSupportedMethods()
         .stream()
         .map(
-            methodModel -> generateMethod(context.asRequestMethodContext(methodModel), null, false))
+            methodModel -> generateApiMethod(context.asRequestMethodContext(methodModel), null, false))
         .collect(Collectors.toList());
+
+    for (MethodModel method : context.getSupportedMethods()) {
+      
+    }
   }
 
-  public OptionalArrayMethodView generateMethod(MethodContext context) {
-    return generateMethod(context, null, false);
+  // Hide calling forms from XlangSurfaceTestTransformers. Those do not need to generate samples.
+  public OptionalArrayMethodView generateApiMethod(MethodContext context) {
+    return generateApiMethod(context, Collections.singletonList(CallingForm.Generic));
   }
 
-  public OptionalArrayMethodView generateMethod(
+  public OptionalArrayMethodView generateApiMethod(MethodContext context, List<CallingForm> callingForms) {
+    return generateMethod(context, null, false, callingForms);
+  }
+
+  public OptionalArrayMethodView generateApiMethod(
       MethodContext methodContext,
       @Nullable InitCodeContext initCodeContext,
-      boolean packageHasMultipleServices) {
+      boolean packageHasMultipleServices,
+      List<CallingForm> callingForms) {
     List<CallingForm> callingForms = getCallingForms(methodContext);
     if (methodContext.getMethodConfig().isPageStreaming()) {
       return generatePagedStreamingMethod(
@@ -102,10 +113,6 @@ public class DynamicLangApiMethodTransformer {
         callingForms);
   }
 
-  protected List<CallingForm> getCallingForms(MethodContext context) {
-    return ImmutableList.<CallingForm>of();
-  }
-
   public OptionalArrayMethodView generateRequestMethod(
       GapicMethodContext context,
       InitCodeContext initContext,
@@ -116,7 +123,6 @@ public class DynamicLangApiMethodTransformer {
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
     apiMethod.type(ClientMethodType.OptionalArrayMethod);
-
     generateMethodCommon(
         context, initContext, packageHasMultipleServices, method, apiMethod, callingForms);
 
@@ -160,6 +166,7 @@ public class DynamicLangApiMethodTransformer {
   }
 
   // For languages that don't yet call the more specific methods above.
+  @Deprecated
   public OptionalArrayMethodView generateMethod(
       GapicMethodContext context, boolean packageHasMultipleServices) {
     MethodModel method = context.getMethodModel();
@@ -195,7 +202,6 @@ public class DynamicLangApiMethodTransformer {
       MethodModel method,
       OptionalArrayMethodView.Builder apiMethod,
       List<CallingForm> callingForms) {
-
     SurfaceNamer namer = context.getNamer();
 
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));

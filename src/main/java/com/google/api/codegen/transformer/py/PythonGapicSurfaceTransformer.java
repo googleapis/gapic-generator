@@ -85,7 +85,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
-      new PythonApiMethodTransformer(
+      new DynamicLangApiMethodTransformer(
+          new PythonApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
               .sampleType(SampleType.IN_CODE)
               .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
