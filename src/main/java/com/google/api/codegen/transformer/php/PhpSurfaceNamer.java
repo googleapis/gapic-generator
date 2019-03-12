@@ -271,6 +271,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     return Joiner.on(". ").join(stringParts);
   }
 
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format(
+        "@param %s $%s %s", paramTypeName, paramName, getCommentReformatter().reformat(text));
+  }
+
   @Override
   public String getApiSampleFileName(String className) {
     return className + ".php";

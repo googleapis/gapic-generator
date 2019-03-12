@@ -170,6 +170,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return nameFormatter;
   }
 
+  public CommentReformatter getCommentReformatter() {
+    return commentReformatter;
+  }
+
   public String getPackageName() {
     return packageName;
   }
@@ -1375,9 +1379,29 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return localVarName(Name.from(var));
   }
 
+  /** Returns the language specific format of parameter documentation. */
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return getNotImplementedString("SurfaceNamer.getParamDocText");
+  }
+
   /** Converts the given text to doc lines in the format of the current language. */
   public List<String> getDocLines(String text) {
     return CommonRenderingUtil.getDocLines(commentReformatter.reformat(text));
+  }
+
+  /**
+   * Wrap the text when it is too long. By default wrap at 100 characters. If reformat is true, text
+   * is also reformatted in the format of the current language.
+   */
+  public List<String> getWrappedDocLines(String text, boolean reformat) {
+    return getWrappedDocLines(text, reformat, 100);
+  }
+
+  protected List<String> getWrappedDocLines(String text, boolean reformat, int maxWidth) {
+    if (reformat) {
+      return CommonRenderingUtil.getDocLines(getCommentReformatter().reformat(text), maxWidth);
+    }
+    return CommonRenderingUtil.getDocLines(text, maxWidth);
   }
 
   /** Converts the given text to doc lines in the format of the current language. */

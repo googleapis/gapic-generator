@@ -9,7 +9,6 @@
 
       // [START {@sample.regionTag}]
       // [START {@sample.regionTag}_core]
-
       {@standaloneSample(apiMethod, sample)}
 
       // [END {@sample.regionTag}_core]
@@ -40,6 +39,9 @@
   @else
     const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
 
+  @end
+  @if not(sample.sampleFunctionDoc.isEmpty)
+    {@processDoc(sample.sampleFunctionDoc)}
   @end
   @switch sample.callingForm
   @case "LongRunningPromiseAwait"
@@ -79,6 +81,29 @@
     @end
   }
 
+@end
+
+@private processDoc(doc)
+  @if doc.paramDocLines.isEmpty
+    @if doc.mainDocLines.size.toString == "1"
+      /** {@doc.mainDocLines.get(0)} */
+    @end
+  @else
+    /**
+    @if doc.mainDocLines.size
+      @join line : @doc.mainDocLines
+        {@""} * {@line}
+      @end
+
+      {@""} *
+    @end
+    @join paramDoc : doc.paramDocLines
+      @join line : paramDoc
+        {@""} * {@line}
+      @end
+    @end
+    {@""} */
+  @end
 @end
 
 @private processResponse(sample)

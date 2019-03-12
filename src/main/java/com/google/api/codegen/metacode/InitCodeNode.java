@@ -55,6 +55,7 @@ public class InitCodeNode {
   private OneofConfig oneofConfig;
   private String varName;
   private SampleParameterConfig sampleParamConfig;
+  private String description;
 
   /*
    * Get the key associated with the node. For InitCodeNode objects that are not a root object, they
@@ -129,6 +130,14 @@ public class InitCodeNode {
 
   public OneofConfig getOneofConfig() {
     return oneofConfig;
+  }
+
+  public void setDescription(String desc) {
+    this.description = desc;
+  }
+
+  public String getDescription() {
+    return this.description;
   }
 
   public static InitCodeNode create(String key) {
