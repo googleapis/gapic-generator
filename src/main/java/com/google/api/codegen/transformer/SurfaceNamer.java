@@ -22,6 +22,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
@@ -167,6 +168,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public NameFormatter getNameFormatter() {
     return nameFormatter;
+  }
+
+  public CommentReformatter getCommentReformatter() {
+    return commentReformatter;
   }
 
   public String getPackageName() {
@@ -995,7 +1000,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * given type table, and returns it.
    */
   public String getAndSaveOperationResponseTypeName(
-      MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
+      MethodContext methodContext, ImportTypeTable typeTable) {
     return getNotImplementedString("SurfaceNamer.getAndSaveOperationResponseTypeName");
   }
 
@@ -1374,9 +1379,29 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return localVarName(Name.from(var));
   }
 
+  /** Returns the language specific format of parameter documentation. */
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return getNotImplementedString("SurfaceNamer.getParamDocText");
+  }
+
   /** Converts the given text to doc lines in the format of the current language. */
   public List<String> getDocLines(String text) {
     return CommonRenderingUtil.getDocLines(commentReformatter.reformat(text));
+  }
+
+  /**
+   * Wrap the text when it is too long. By default wrap at 100 characters. If reformat is true, text
+   * is also reformatted in the format of the current language.
+   */
+  public List<String> getWrappedDocLines(String text, boolean reformat) {
+    return getWrappedDocLines(text, reformat, 100);
+  }
+
+  protected List<String> getWrappedDocLines(String text, boolean reformat, int maxWidth) {
+    if (reformat) {
+      return CommonRenderingUtil.getDocLines(getCommentReformatter().reformat(text), maxWidth);
+    }
+    return CommonRenderingUtil.getDocLines(text, maxWidth);
   }
 
   /** Converts the given text to doc lines in the format of the current language. */
@@ -1574,7 +1599,34 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * a format string followed by all the arguments to replace the placeholders.
    */
   public List<String> getPrintSpecs(String spec, List<String> args) {
-    return ImmutableList.<String>builder().add(spec).addAll(args).build();
+    StringBuilder sb = new StringBuilder();
+    int p = 0;
+    while (true) {
+      int pos = spec.indexOf('%', p);
+      if (pos == -1) {
+        sb.append(spec, p, spec.length());
+        return ImmutableList.<String>builder()
+            .add(
+                sb.toString()
+                    .replace("\\", "\\\\")
+                    .replace("\"", "\\\"")
+                    .replace("\t", "\\t")
+                    .replace("\n", "\\n"))
+            .addAll(args)
+            .build();
+      } else {
+        sb.append(spec, p, pos);
+      }
+      if (spec.startsWith("%s", pos)) {
+        sb.append("%s");
+        p = pos + 2;
+      } else if (spec.startsWith("%%", pos)) {
+        sb.append("%%");
+        p = pos + 2;
+      } else {
+        throw new IllegalArgumentException(String.format("bad format verb: %s", spec));
+      }
+    }
   }
 
   /** Returns the formatted expression to nicely print a field of a variable. */
@@ -1604,6 +1656,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getFieldAccessorName(FieldModel field) {
     return getNotImplementedString("SurfaceNamer.getFieldAccessorName");
+  }
+
+  /**
+   * Returns the expression to get the value of a map entry by its key.
+   *
+   * <p>Note that the returned value includes the language-specific syntax for accessing a map entry
+   * by key. For example, the returned value will be `.get("key")` in Java, and `["key"]` in Python.
+   */
+  public String getMapKeyAccessorName(TypeModel keyType, String key) {
+    return getNotImplementedString("SurfaceNamer.getMapKeyAccessorName");
   }
 
   public String getSampleResponseVarName(MethodContext context, CallingForm form) {

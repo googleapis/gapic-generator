@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -29,7 +30,6 @@ import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.ServiceMessages;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
@@ -280,6 +280,16 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format("%s %s", paramName, getCommentReformatter().reformat(text));
+  }
+
+  @Override
+  public List<String> getWrappedDocLines(String text, boolean reformat) {
+    return getWrappedDocLines(text, reformat, 80);
+  }
+
+  @Override
   public List<String> getThrowsDocLines(MethodConfig methodConfig) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
     lines.add(
@@ -313,7 +323,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     }
 
     String returnTypeName =
-        methodConfig.isLongRunningOperation()
+        methodContext.isLongRunningMethodContext()
             ? "google.gax._OperationFuture"
             : getModelTypeFormatter().getFullNameFor(outputType);
     String classInfo =
@@ -477,7 +487,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
       cursor = p + 2;
     }
     return ImmutableList.<String>builder()
-        .add(sb.toString().replace("'", "\\'"))
+        .add(
+            sb.toString()
+                .replace("\\", "\\\\")
+                .replace("'", "\\'")
+                .replace("\t", "\\t")
+                .replace("\n", "\\n"))
         .addAll(args)
         .build();
   }
@@ -520,6 +535,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldAccessorName(FieldModel field) {
     return "." + getFieldGetFunctionName(field);
+  }
+
+  @Override
+  public String getMapKeyAccessorName(TypeModel keyType, String key) {
+    return String.format("[%s]", getModelTypeFormatter().renderPrimitiveValue(keyType, key));
   }
 
   @Override

@@ -160,6 +160,20 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
+    sample_value_sets:
+    - id: empty_response_type_with_response_handling
+      title: "Test response handling for methods that return empty"
+      description: "Test response handling for methods that return empty"
+      on_success:
+      - comment: "Shelf deleted"
+      - print: "Shelf deleted."
+    - id: empty_response_type_without_response_handling
+      title: "Test default response handling is turned off for methods that return empty"
+      description: "Test default response handling is turned off for methods that return empty"
+    samples:
+      standalone:
+      - calling_forms: ".*"
+        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
   - name: MergeShelves
     flattening:
       groups:
@@ -234,7 +248,7 @@ interfaces:
       # callingFormCheck: pi_version py: Request
     - id: pi_version
       title: "Pi version"
-      description: "Testing calling forms"
+      description: "Testing <@calling forms>"
       parameters:
         defaults:
         - shelf.name=Math
@@ -243,8 +257,10 @@ interfaces:
         attributes:
         - parameter: shelf.name
           sample_argument_name: shelf_name
+          description: "The name of the shelf where books are published to."
         - parameter: edition
           sample_argument_name: edition
+          description: "The edition of the series."
       on_success:
       - comment:
         - "%% %% %% output handling %% %% %% %%"
@@ -270,7 +286,7 @@ interfaces:
               - "Now we deal with %s!"
               - this_single_book
           - print:
-              - "Title: %s"
+              - "\t%%`` The book's title: \"%s\", \\\nand the book costs $50.00 ``%%"
               - title
       - print:
         - "The first book is: %s"
@@ -328,10 +344,28 @@ interfaces:
       parameters:
         defaults:
         - name="Unreal book"
+    - id: test_on_success_map
+      title: "test maps in response handling"
+      parameters:
+        defaults:
+        - name="test_on_success_map"
+      on_success:
+        - define: int_key_val = $resp.map_string_value{123}
+        - define: boolean_key_val = $resp.map_bool_key{true}
+        - define: map_value_field = $resp.map_message_value{"key"}.field
+        - print:
+          - "Test printing map fields: %s"
+          - $resp.map_list_value_value{"quoted_key"}
+        - print:
+          - "Test printing enum fields of a map value: %s"
+          - $resp.map_message_value{"key"}.alignment
     samples:
       in_code:
       - calling_forms: "foo"
         value_sets: not_here
+      standalone:
+      - calling_forms: ".*"
+        value_sets: test_on_success_map
   - name: ListBooks
     flattening:
       groups:
@@ -648,6 +682,21 @@ interfaces:
       api_explorer:
       - calling_forms: ".*"
         value_sets: ".*"
+  - name: BabbleAboutBook
+    sample_value_sets:
+    - id: empty_response_type_with_response_handling
+      title: "Test response handling for methods that return empty"
+      description: "Test response handling for methods that return empty"
+      on_success:
+      - comment: "No one replied"
+      - print: "No one replied."
+    - id: empty_response_type_without_response_handling
+      title: "Test default response handling is turned off for methods that return empty"
+      description: "Test default response handling is turned off for methods that return empty"
+    samples:
+      standalone:
+      - calling_forms: ".*"
+        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
   - name: FindRelatedBooks
     flattening:
       groups:
@@ -776,6 +825,36 @@ interfaces:
         - parameter: name%shelf_id
           sample_argument_name: shelf
       on_success:
+      - comment:
+        - "Testing iterating over map fields when both key and value are specified."
+      - loop:
+          map: $resp.map_list_value_value
+          key: my_key
+          value: my_value
+          body:
+          - print:
+            - "key: %s, value: %s"
+            - my_key
+            - my_value
+      - comment:
+        - "Testing iterating over map fields when only key is specified."
+      - loop:
+          map: $resp.map_list_value_value
+          key: another_key
+          body:
+          - print:
+            - "key: %s"
+            - another_key
+      - comment:
+        - "Testing iterating over map fields when only value is specified."
+      - loop:
+
+          map: $resp.map_list_value_value
+          value: another_value
+          body:
+          - print:
+            - "value: %s"
+            - another_value
       - print:
         - "name: %s"
         - $resp.name
@@ -792,8 +871,10 @@ interfaces:
         attributes:
         - parameter: name%shelf_id
           sample_argument_name: shelf
+          description: "Test word wrapping for long lines. This is a long comment. The name of the shelf to retrieve the big book from."
         - parameter: name%book_id
           sample_argument_name: big_book_name
+          description: "The name of the book."
     samples:
       standalone:
       - calling_forms: ".*"
@@ -820,6 +901,20 @@ interfaces:
       poll_delay_multiplier: 1.3
       max_poll_delay_millis: 60000
       total_poll_timeout_millis: 600000
+    sample_value_sets:
+    - id: empty_response_type_with_response_handling
+      title: "Test response handling for methods that return empty"
+      description: "Test response handling for methods that return empty"
+      on_success:
+      - comment: "Got nothing"
+      - print: "Got nothing."
+    - id: empty_response_type_without_response_handling
+      title: "Test default response handling is turned off for methods that return empty"
+      description: "Test default response handling is turned off for methods that return empty"
+    samples:
+      standalone:
+      - calling_forms: ".*"
+        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
   - name: TestOptionalRequiredFlatteningParams
     flattening:
       groups:

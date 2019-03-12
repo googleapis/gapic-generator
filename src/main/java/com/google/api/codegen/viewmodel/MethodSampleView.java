@@ -42,6 +42,9 @@ public abstract class MethodSampleView {
   /** The name of the sample function. */
   public abstract String sampleFunctionName();
 
+  /** The documentation of the sample function. */
+  public abstract SampleFunctionDocView sampleFunctionDoc();
+
   public abstract ImportSectionView sampleImports();
 
   public static Builder newBuilder() {
@@ -65,6 +68,8 @@ public abstract class MethodSampleView {
     public abstract Builder sampleFunctionName(String val);
 
     public abstract Builder sampleImports(ImportSectionView val);
+
+    public abstract Builder sampleFunctionDoc(SampleFunctionDocView val);
 
     public abstract MethodSampleView build();
   }

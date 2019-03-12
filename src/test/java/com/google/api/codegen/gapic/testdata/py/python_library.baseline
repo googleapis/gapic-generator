@@ -2664,6 +2664,58 @@ class LibraryServiceClient(object):
 
         return self._inner_api_calls['monolog_about_book'](requests, retry=retry, timeout=timeout, metadata=metadata)
 
+    def babble_about_book(
+            self,
+            requests,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+        Test samplegen response handling when a client streaming method returns Empty.
+        gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+
+        EXPERIMENTAL: This method interface might change in the future.
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> request = {}
+            >>>
+            >>> requests = [request]
+            >>> client.babble_about_book(requests)
+
+        Args:
+            requests (iterator[dict|google.cloud.example.library_v1.proto.library_pb2.DiscussBookRequest]): The input objects. If a dict is provided, it must be of the
+                same form as the protobuf message :class:`~google.cloud.example.library_v1.types.DiscussBookRequest`
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'babble_about_book' not in self._inner_api_calls:
+            self._inner_api_calls['babble_about_book'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.babble_about_book,
+                default_retry=self._method_configs['BabbleAboutBook'].retry,
+                default_timeout=self._method_configs['BabbleAboutBook'].timeout,
+                client_info=self._client_info,
+            )
+
+        self._inner_api_calls['babble_about_book'](requests, retry=retry, timeout=timeout, metadata=metadata)
+
     def find_related_books(
             self,
             names,
@@ -3499,6 +3551,7 @@ config = {
           "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
+        "no_retry": [],
         "non_idempotent": []
       },
       "retry_params": {
@@ -3633,6 +3686,11 @@ config = {
         "MonologAboutBook": {
           "timeout_millis": 30000,
           "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "BabbleAboutBook": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "no_retry",
           "retry_params_name": "default"
         },
         "FindRelatedBooks": {
@@ -4083,6 +4141,20 @@ class LibraryServiceGrpcTransport(object):
         return self._stubs['library_service_stub'].MonologAboutBook
 
     @property
+    def babble_about_book(self):
+        """Return the gRPC stub for :meth:`LibraryServiceClient.babble_about_book`.
+
+        Test samplegen response handling when a client streaming method returns Empty.
+        gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['library_service_stub'].BabbleAboutBook
+
+    @property
     def find_related_books(self):
         """Return the gRPC stub for :meth:`LibraryServiceClient.find_related_books`.
 
@@ -4318,6 +4390,196 @@ def lint_setup_py(session):
     session.install('docutils', 'pygments')
     session.run(
         'python', 'setup.py', 'check', '--restructuredtext', '--strict')
+============== file: samples/google/cloud/example/library_v1/gapic/babble_about_book/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_with_response_handling")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+
+def sample_babble_about_book():
+  """Test response handling for methods that return empty"""
+  # [START sample_core]
+
+  client = library_v1.LibraryServiceClient()
+
+  request = {}
+
+  requests = [request]
+  client.babble_about_book(requests)
+  # No one replied
+  print('No one replied.')
+
+  # [END sample_core]
+# [END sample]
+
+def main():
+  sample_babble_about_book()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/google/cloud/example/library_v1/gapic/babble_about_book/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+
+def sample_babble_about_book():
+  """Test default response handling is turned off for methods that return empty"""
+  # [START sample_core]
+
+  client = library_v1.LibraryServiceClient()
+
+  request = {}
+
+  requests = [request]
+  client.babble_about_book(requests)
+
+  # [END sample_core]
+# [END sample]
+
+def main():
+  sample_babble_about_book()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/google/cloud/example/library_v1/gapic/delete_shelf/delete_shelf_request_empty_response_type_with_response_handling.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+
+def sample_delete_shelf():
+  """Test response handling for methods that return empty"""
+  # [START sample_core]
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.shelf_path('[SHELF_ID]')
+
+  client.delete_shelf(name)
+  # Shelf deleted
+  print('Shelf deleted.')
+
+  # [END sample_core]
+# [END sample]
+
+def main():
+  sample_delete_shelf()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/google/cloud/example/library_v1/gapic/delete_shelf/delete_shelf_request_empty_response_type_without_response_handling.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+
+def sample_delete_shelf():
+  """Test default response handling is turned off for methods that return empty"""
+  # [START sample_core]
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.shelf_path('[SHELF_ID]')
+
+  client.delete_shelf(name)
+
+  # [END sample_core]
+# [END sample]
+
+def main():
+  sample_delete_shelf()
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/google/cloud/example/library_v1/gapic/discuss_book/discuss_book_request_streaming_bidi_prog.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -4350,7 +4612,6 @@ import six
 
 def sample_discuss_book(image_file_name):
   """Testing calling forms"""
-
   # [START turing_prog_request_streaming_bidi_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4370,7 +4631,7 @@ def sample_discuss_book(image_file_name):
 
   requests = [request]
   for response_item in client.discuss_book(requests):
-      print(response_item)
+    print(response_item)
 
   # [END turing_prog_request_streaming_bidi_core]
 # [END turing_prog_request_streaming_bidi]
@@ -4416,7 +4677,6 @@ from google.cloud.example import library_v1
 
 def sample_find_related_books():
   """Testing calling forms"""
-
   # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4428,8 +4688,8 @@ def sample_find_related_books():
 
   # Iterate over all results
   for response_item in client.find_related_books(names, shelves):
-      book = response_item
-      print('Here\'s a related book: {}'.format(book))
+    book = response_item
+    print('Here\'s a related book: {}'.format(book))
 
   # [END sample_core]
 # [END sample]
@@ -4469,7 +4729,6 @@ from google.cloud.example import library_v1
 
 def sample_find_related_books():
   """Testing calling forms"""
-
   # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4481,9 +4740,9 @@ def sample_find_related_books():
 
   # Iterate over results one page at a time
   for page in client.find_related_books(names, shelves).pages:
-      for response_item in page:
-          book = response_item
-          print('Here\'s a related book: {}'.format(book))
+    for response_item in page:
+      book = response_item
+      print('Here\'s a related book: {}'.format(book))
 
   # [END sample_core]
 # [END sample]
@@ -4524,7 +4783,6 @@ import six
 
 def sample_get_big_book(shelf):
   """Testing calling forms"""
-
   # [START hopper_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4539,6 +4797,18 @@ def sample_get_big_book(shelf):
 
   print('Waiting for operation to complete...')
   response = operation.result()
+
+  # Testing iterating over map fields when both key and value are specified.
+  for my_key, my_value in response.map_list_value_value.items():
+    print('key: {}, value: {}'.format(my_key, my_value))
+
+  # Testing iterating over map fields when only key is specified.
+  for another_key, _ in response.map_list_value_value.items():
+    print('key: {}'.format(another_key))
+
+  # Testing iterating over map fields when only value is specified.
+  for _, another_value in response.map_list_value_value.items():
+    print('value: {}'.format(another_value))
 
   print('name: {}'.format(response.name))
   print('author: {}'.format(response.author))
@@ -4587,8 +4857,14 @@ from google.cloud.example import library_v1
 import six
 
 def sample_get_big_book(shelf, big_book_name):
-  """Testing resource name overlap"""
+  """
+    Testing resource name overlap
 
+    Args:
+      shelf Test word wrapping for long lines. This is a long comment. The name of
+      the shelf to retrieve the big book from.
+      big_book_name The name of the book.
+    """
   # [START hopper_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4624,6 +4900,159 @@ def main():
 
 if __name__ == '__main__':
   main()
+============== file: samples/google/cloud/example/library_v1/gapic/get_big_nothing/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_with_response_handling")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+
+def sample_get_big_nothing():
+  """Test response handling for methods that return empty"""
+  # [START sample_core]
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+  operation = client.get_big_nothing(name)
+
+  print('Waiting for operation to complete...')
+  response = operation.result()
+
+  # Got nothing
+  print('Got nothing.')
+
+  # [END sample_core]
+# [END sample]
+
+def main():
+  sample_get_big_nothing()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/google/cloud/example/library_v1/gapic/get_big_nothing/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_without_response_handling")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+
+def sample_get_big_nothing():
+  """Test default response handling is turned off for methods that return empty"""
+  # [START sample_core]
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+  operation = client.get_big_nothing(name)
+
+  print('Waiting for operation to complete...')
+  response = operation.result()
+
+
+  # [END sample_core]
+# [END sample]
+
+def main():
+  sample_get_big_nothing()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/google/cloud/example/library_v1/gapic/get_book/get_book_request_test_on_success_map.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
+
+def sample_get_book():
+  # [START sample_core]
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+  response = client.get_book(name)
+  int_key_val = response.map_string_value[123]
+  boolean_key_val = response.map_bool_key[True]
+  map_value_field = response.map_message_value['key'].field
+  print('Test printing map fields: {}'.format(response.map_list_value_value['quoted_key']))
+  print('Test printing enum fields of a map value: {}'.format(enums.SomeMessage.Alignment(response.map_message_value['key'].alignment).name))
+
+  # [END sample_core]
+# [END sample]
+
+def main():
+  sample_get_book()
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/google/cloud/example/library_v1/gapic/monolog_about_book/monolog_about_book_request_streaming_client_prog.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -4655,7 +5084,6 @@ from google.cloud.example.library_v1 import enums
 
 def sample_monolog_about_book():
   """Testing calling forms"""
-
   # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4705,8 +5133,13 @@ from google.cloud.example import library_v1
 import six
 
 def sample_publish_series(shelf_name, edition):
-  """Testing calling forms"""
+  """
+    Testing <@calling forms>
 
+    Args:
+      shelf_name The name of the shelf where books are published to.
+      edition The edition of the series.
+    """
   # [START canonical_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4739,7 +5172,7 @@ def sample_publish_series(shelf_name, edition):
   book_names = response.book_names
   for title in response.book_names:
     # Now we deal with this_single_book!
-    print('Title: {}'.format(title))
+    print('\t%`` The book\'s title: "{}", \\\nand the book costs $50.00 ``%'.format(title))
   print('The first book is: {}'.format(response.book_names[0]))
   print('The author of the first book is: {}'.format(response.books[0].author))
   print('That\'s all!')
@@ -4790,7 +5223,6 @@ from google.cloud.example import library_v1
 
 def sample_publish_series():
   """Testing calling forms"""
-
   # [START canonical_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4846,7 +5278,6 @@ from google.cloud.example import library_v1
 
 def sample_stream_books():
   """Testing calling forms"""
-
   # [START lovelace_core]
 
   client = library_v1.LibraryServiceClient()
@@ -4854,7 +5285,7 @@ def sample_stream_books():
   name = 'BASIC'
 
   for response_item in client.stream_books(name):
-      print(response_item)
+    print(response_item)
 
   # [END lovelace_core]
 # [END lovelace]
@@ -4894,13 +5325,12 @@ from google.cloud.example import library_v1
 
 def sample_stream_shelves():
   """Testing calling forms"""
-
   # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
   for response_item in client.stream_shelves():
-      print(response_item)
+    print(response_item)
 
   # [END sample_core]
 # [END sample]
@@ -6017,6 +6447,44 @@ class TestLibraryServiceClient(object):
 
         with pytest.raises(CustomException):
             client.monolog_about_book(requests)
+
+    def test_babble_about_book(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        # Setup Request
+        request = {}
+        request = library_pb2.DiscussBookRequest(**request)
+        requests = [request]
+
+        client.babble_about_book(requests)
+
+        assert len(channel.requests) == 1
+        actual_requests = channel.requests[0][1]
+        assert len(actual_requests) == 1
+        actual_request = list(actual_requests)[0]
+        assert request == actual_request
+
+    def test_babble_about_book_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        # Setup request
+        request = {}
+
+        request = library_pb2.DiscussBookRequest(**request)
+        requests = [request]
+
+        with pytest.raises(CustomException):
+            client.babble_about_book(requests)
 
     def test_find_related_books(self):
         # Setup Expected Response

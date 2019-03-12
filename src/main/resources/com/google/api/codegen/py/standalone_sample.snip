@@ -35,8 +35,9 @@
     @end
 
     def {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}):
-      """{@sample.valueSet.description}"""
-
+      @if not(sample.sampleFunctionDoc.isEmpty)
+        {@processDoc(sample.sampleFunctionDoc)}
+      @end
       @# [START {@sample.regionTag}_core]
 
       client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
@@ -94,6 +95,31 @@
     main()
 @end
 
+@private processDoc(doc)
+  # If there are no parameters, we generate the method description in one line.
+  @if doc.paramDocLines.isEmpty
+    @if doc.mainDocLines.size.toString == "1"
+      """{@doc.mainDocLines.get(0)}"""
+    @end
+  @else
+  """
+    @if doc.mainDocLines.size
+      @join line : @doc.mainDocLines
+        {@line}
+      @end
+
+
+    @end
+    Args:
+    @join paramDoc : doc.paramDocLines
+      @join line : paramDoc
+        {@""}  {@line}
+      @end
+    @end
+    """
+  @end
+@end
+
 @private actualArgs(sampleArgs)
   @join param : sampleArgs on ", "
     args.{@param.cliFlagName}
@@ -117,20 +143,22 @@
 
 @private optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)
   {@singularResponseSampleCode(apiMethod, sample.sampleInitCode)}
-  {@processResponse(sample)}
+  @if sample.outputs
+    {@processResponse(sample)}
+  @end
 @end
 
 @private pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)
   @# Iterate over results one page at a time
   for page in {@pagedMethodCallSampleCode(apiMethod, sample.sampleInitCode)}:
-      for response_item in page:
-          {@processResponse(sample)}
+    for response_item in page:
+      {@processResponse(sample)}
 @end
 
 @private pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)
   @# Iterate over all results
   for response_item in {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}:
-      {@processResponse(sample)}
+    {@processResponse(sample)}
 @end
 
 @private optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)
@@ -141,7 +169,9 @@
 @private optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)
   requests = [request]
   {@singularResponseSampleCode(apiMethod, sample.sampleInitCode)}
-  {@processResponse(sample)}
+  @if sample.outputs
+    {@processResponse(sample)}
+  @end
 @end
 
 @private optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)
@@ -154,7 +184,9 @@
   print('Waiting for operation to complete...')
   response = operation.result()
 
-  {@processResponse(sample)}
+  @if sample.outputs
+    {@processResponse(sample)}
+  @end
 @end
 
 @private singularResponseSampleCode(apiMethod, sampleInitCode)
@@ -178,7 +210,7 @@
 
 @private responseStreamingSampleCode(apiMethod, sample)
   for response_item in {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}:
-      {@processResponse(sample)}
+    {@processResponse(sample)}
 @end
 
 # Render the API method call for page streaming
@@ -209,11 +241,7 @@
 @end
 
 @private processResponse(sample)
-  @if sample.outputs.size == 0
-    print(response)
-  @else
-    {@processOutputViews(sample.outputs)}
-  @end
+  {@processOutputViews(sample.outputs)}
 @end
 
 @private processOutputViews(outputViews)
@@ -223,8 +251,10 @@
         {@processCommentView(view)}
       @case "DEFINE"
         {@processDefineView(view)}
-      @case "LOOP"
-        {@processLoopView(view)}
+      @case "ARRAY_LOOP"
+        {@processArrayLoopView(view)}
+      @case "MAP_LOOP"
+        {@processMapLoopView(view)}
       @case "PRINT"
         {@processPrintView(view)}
       @default
@@ -250,9 +280,31 @@
   {@toComments(view.lines)}
 @end
 
-@private processLoopView(view)
+@private processArrayLoopView(view)
   for {@view.variableName} in {@variableField(view.collection)}:
     {@processOutputViews(view.body)}
+@end
+
+@private processMapLoopView(view)
+  @if and(view.keyVariableName, view.valueVariableName)
+    for {@view.keyVariableName}, {@view.valueVariableName} in {@variableField(view.map)}.items():
+
+  @else
+    @if view.keyVariableName
+      for {@view.keyVariableName}, _ in {@variableField(view.map)}.items():
+
+    @else
+      @if view.valueVariableName
+        for _, {@view.valueVariableName} in {@variableField(view.map)}.items():
+
+      @else
+        $unhandledMapLoopView: {@view}
+
+      @end
+    @end
+  @end
+    {@processOutputViews(view.body)}
+
 @end
 
 @private processDefineView(view)

@@ -9,18 +9,21 @@
 
       // [START {@sample.regionTag}]
       // [START {@sample.regionTag}_core]
-
       {@standaloneSample(apiMethod, sample)}
 
       // [END {@sample.regionTag}_core]
-      // tslint:disable-next-line:no-any
       // [END {@sample.regionTag}]
+      // tslint:disable-next-line:no-any
 
       @if sample.sampleInitCode.argDefaultParams
         {@processCliArguments(sample)}
 
       @end
-      {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)});
+      @if sample.callingForm == "LongRunningPromiseAwait"
+        {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)}).catch(console.error);
+      @else
+       {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)});
+      @end
     @end
   @end
 @end
@@ -37,7 +40,15 @@
     const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
 
   @end
-  function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
+  @if not(sample.sampleFunctionDoc.isEmpty)
+    {@processDoc(sample.sampleFunctionDoc)}
+  @end
+  @switch sample.callingForm
+  @case "LongRunningPromiseAwait"
+    async function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
+  @default
+    function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
+  @end
     const client = new {@apiMethod.localPackageName}.{@apiMethod.apiClassName}();
     @switch sample.callingForm
     @case "Request"
@@ -57,12 +68,14 @@
     @case "RequestStreamingServer"
       {@initCode(apiMethod, sample.sampleInitCode)}
         {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}.on('data', response => {
-            {@processResponse(sample)}
+          {@processResponse(sample)}
         });
     @case "LongRunningEventEmitter"
       {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample)}
     @case "LongRunningPromise"
       {@methodCallSampleCodeLongrunningPromise(apiMethod, sample)}
+    @case "LongRunningPromiseAwait"
+      {@methodCallSampleCodeLongRunningPromiseAwait(apiMethod, sample)}
     @default
       $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
@@ -70,16 +83,35 @@
 
 @end
 
-@private processResponse(sample)
-  @if sample.outputs.size == 0
-    console.log(response);
+@private processDoc(doc)
+  @if doc.paramDocLines.isEmpty
+    @if doc.mainDocLines.size.toString == "1"
+      /** {@doc.mainDocLines.get(0)} */
+    @end
   @else
-    {@processOutputViews(sample.outputs)}
+    /**
+    @if doc.mainDocLines.size
+      @join line : @doc.mainDocLines
+        {@""} * {@line}
+      @end
+
+      {@""} *
+    @end
+    @join paramDoc : doc.paramDocLines
+      @join line : paramDoc
+        {@""} * {@line}
+      @end
+    @end
+    {@""} */
   @end
 @end
 
+@private processResponse(sample)
+    {@processOutputViews(sample.outputs)}
+@end
+
 @private processCliArguments(sample)
-  argv = require(`yargs`)
+  const argv = require(`yargs`)
     @join param : sample.sampleInitCode.argDefaultParams
       .default('{@param.cliFlagName}', {@renderInitValue(param.initValue)})
     @end
@@ -115,6 +147,9 @@
   {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}.catch(err => {
     console.error(err);
   });
+  @if sample.outputs
+    {@processResponse(sample)}
+  @end
 @end
 
 @private methodCallSampleCodeForPagedResponse(apiMethod, sample)
@@ -179,7 +214,9 @@
         console.error(err);
         return;
       }
-      {@processResponse(sample)}
+      @if sample.outputs
+        {@processResponse(sample)}
+      @end
     });
     {@initCode(apiMethod, sample.sampleInitCode)}
     {@sampleWriteStreamingRequest(apiMethod)}
@@ -196,7 +233,9 @@
       // Adding a listener for the "complete" event starts polling for the
       // completion of the operation.
       operation.on('complete', (result, metadata, finalApiResponse) => {
-        {@processResponse(sample)}
+        @if sample.outputs
+          {@processResponse(sample)}
+        @end
       });
 
       // Adding a listener for the "progress" event causes the callback to be
@@ -231,11 +270,27 @@
       const metadata = responses[1];
       const finalApiResponse = responses[2];
 
-      {@processResponse(sample)}
+      @if sample.outputs
+        {@processResponse(sample)}
+      @end
     })
     .catch(err => {
       console.error(err);
     });
+@end
+
+@private methodCallSampleCodeLongRunningPromiseAwait(apiMethod, sample)
+  {@initCode(apiMethod, sample.sampleInitCode)}
+
+  // Create a job whose results you can either wait for now, or get later
+  const [operation] = await {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)};
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+  
+  @if sample.outputs
+    {@processResponse(sample)}
+  @end
 @end
 
 @private methodCallSampleCode(apiMethod, init)
@@ -284,8 +339,10 @@
         {@processCommentView(view)}
       @case "DEFINE"
         {@processDefineView(view)}
-      @case "LOOP"
-        {@processLoopView(view)}
+      @case "ARRAY_LOOP"
+        {@processArrayLoopView(view)}
+      @case "MAP_LOOP"
+        {@processMapLoopView(view)}
       @case "PRINT"
         {@processPrintView(view)}
       @default
@@ -314,12 +371,34 @@
   @end
 @end
 
-@private processLoopView(view)
+@private processArrayLoopView(view)
   for (const {@view.variableName} of {@variableField(view.collection)}) {
     {@processOutputViews(view.body)}
   }
 @end
 
+@private processMapLoopView(view)
+  @if and(@view.keyVariableName, @view.valueVariableName)
+    for (const [{@view.keyVariableName}, {@view.valueVariableName}] of Object.entries({@variableField(view.map)})) {
+
+  @else
+    @if @view.keyVariableName
+      for (const {@view.keyVariableName} of Object.keys({@variableField(view.map)})) {
+
+    @else
+      @if @view.valueVariableName
+        for (const {@view.valueVariableName} of Object.values({@variableField(view.map)})) {
+
+      @else
+        $unhandledMapLoopView: {@view}
+
+      @end
+    @end
+  @end
+    {@processOutputViews(view.body)}
+  }
+
+@end
 
 @private variableField(arg)
   {@arg.variable}{@accessor(arg.accessors)}

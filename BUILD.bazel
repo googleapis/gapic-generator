@@ -5,8 +5,6 @@ load(
     "google_java_format_verification",
 )
 
-_SRCS = glob(["src/main/java/**/*.java"])
-
 _COMPILE_DEPS = [
     "@cglib_cglib//jar",
     "@com_atlassian_commonmark_commonmark//jar",
@@ -15,12 +13,12 @@ _COMPILE_DEPS = [
     "@com_fasterxml_jackson_core_jackson_databind//jar",
     "@com_google_api_api_common//jar",
     "@com_google_api_api_compiler//jar",
-    "@com_google_api_grpc_proto_google_common_protos//jar",
+    "@com_google_api_grpc_proto_google_common_protos__com_google_api_codegen//jar",
     "@com_google_auto_value_auto_value//jar",
     "@com_google_auto_value_auto_value_annotations//jar",
     "@com_google_code_findbugs_jsr305//jar",
     "@com_google_code_gson_gson//jar",
-    "@com_google_guava_guava//jar",
+    "@com_google_guava_guava__com_google_api_codegen//jar",
     "@com_google_inject_guice//jar",
     "@com_google_protobuf//:protobuf_java",
     "@commons_cli_commons_cli//jar",
@@ -31,8 +29,6 @@ _COMPILE_DEPS = [
     "@org_threeten_threetenbp//jar",
     "@org_yaml_snakeyaml//jar",
 ]
-
-_TEST_SRCS = glob(["src/test/java/**/*.java"])
 
 _TEST_COMPILE_DEPS = [
     "@com_google_api_api_compiler_testing//jar",
@@ -72,7 +68,7 @@ java_proto_library(
 
 java_binary(
     name = "gapic_generator",
-    srcs = _SRCS,
+    srcs = glob(["src/main/java/**/*.java"]),
     create_executable = True,
     javacopts = _JAVA_COPTS,
     jvm_flags = ["-Xmx512m"],
@@ -98,7 +94,7 @@ genrule(
 
 java_library(
     name = "gapic_generator_testlib",
-    srcs = _TEST_SRCS,
+    srcs = glob(["src/test/java/**/*.java"]),
     data = glob([
         "src/**/testdata/**/*",
         "src/**/testsrc/**/*",
@@ -149,6 +145,7 @@ java_binary(
 google_java_format_verification(
     name = "google_java_format_verification",
     srcs = glob(["src/**/*.java"]),
+    formatter = "//:google_java_format_binary",
 )
 
 # Run `bazel run //:google_java_format` to format gapic-generator sources

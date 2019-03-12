@@ -20,6 +20,7 @@ import com.google.api.codegen.SampleParameters;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.SampleSpec.ValueSetAndTags;
@@ -32,6 +33,8 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OutputView;
+import com.google.api.codegen.viewmodel.SampleFunctionDocView;
+import com.google.api.codegen.viewmodel.SampleFunctionParameterView;
 import com.google.api.codegen.viewmodel.SampleValueSetView;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.CaseFormat;
@@ -49,6 +52,8 @@ import java.util.List;
  */
 @AutoValue
 public abstract class SampleTransformer {
+
+  private static final int DOC_LINE_MAX_WIDTH = 80;
 
   private static final InitCodeTransformer defaultInitCodeTransformer = new InitCodeTransformer();
   private static final OutputTransformer defaultOutputTransformer = new OutputTransformer();
@@ -234,7 +239,7 @@ public abstract class SampleTransformer {
     SampleValueSet valueSet = setAndTag.values();
     List<OutputSpec> outputs = valueSet.getOnSuccessList();
     if (outputs.isEmpty()) {
-      outputs = OutputTransformer.defaultOutputSpecs(methodContext.getMethodModel());
+      outputs = OutputTransformer.defaultOutputSpecs(methodContext);
     }
     ImmutableList<OutputView> outputViews =
         outputTransformer().toViews(outputs, methodContext, valueSet, form);
@@ -250,6 +255,18 @@ public abstract class SampleTransformer {
                     initCodeContext.cloneWithEmptySymbolTable())); // to avoid symbol collision
     ImportSectionView sampleImportSectionView =
         sampleImportTransformer().generateImportSection(methodContext);
+    SampleFunctionDocView sampleFunctionDocView =
+        SampleFunctionDocView.newBuilder()
+            .paramDocLines(paramDocLines(methodContext, initCodeView))
+            .mainDocLines(
+                ImmutableList.<String>builder()
+                    .addAll(
+                        methodContext
+                            .getNamer()
+                            .getWrappedDocLines(valueSet.getDescription(), true))
+                    .build())
+            .build();
+
     return MethodSampleView.newBuilder()
         .callingForm(form)
         .valueSet(SampleValueSetView.of(valueSet))
@@ -269,6 +286,7 @@ public abstract class SampleTransformer {
                 valueSet.getId()))
         .sampleFunctionName(
             methodContext.getNamer().getSampleFunctionName(methodContext.getMethodModel()))
+        .sampleFunctionDoc(sampleFunctionDocView)
         .build();
   }
 
@@ -339,8 +357,27 @@ public abstract class SampleTransformer {
               .identifier(identifier)
               .readFromFile(attr.getReadFile())
               .sampleArgumentName(attr.getSampleArgumentName())
+              .description(attr.getDescription())
               .build();
       builder.put(identifier, config);
+    }
+    return builder.build();
+  }
+
+  /** Generate parameter descriptions in sample function documentation. */
+  private ImmutableList<List<String>> paramDocLines(
+      MethodContext context, InitCodeView initCodeView) {
+    SurfaceNamer namer = context.getNamer();
+    ImmutableList.Builder<List<String>> builder = ImmutableList.builder();
+    for (SampleFunctionParameterView param : initCodeView.argDefaultParams()) {
+      if (param.description().isEmpty()) {
+        continue;
+      }
+      List<String> paramDoc =
+          namer.getWrappedDocLines(
+              namer.getParamDocText(param.identifier(), param.typeName(), param.description()),
+              false);
+      builder.add(paramDoc);
     }
     return builder.build();
   }

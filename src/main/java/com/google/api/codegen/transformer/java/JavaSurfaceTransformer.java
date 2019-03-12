@@ -22,7 +22,9 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
@@ -32,8 +34,6 @@ import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
@@ -307,6 +307,9 @@ public class JavaSurfaceTransformer {
     if (exampleApiMethod == null) {
       exampleApiMethod =
           searchExampleMethod(methods, ClientMethodType.AsyncOperationFlattenedMethod);
+    }
+    if (exampleApiMethod == null) {
+      exampleApiMethod = searchExampleMethod(methods, ClientMethodType.CallableMethod);
     }
     if (exampleApiMethod == null) {
       throw new RuntimeException("Could not find method to use as an example method");
@@ -647,7 +650,16 @@ public class JavaSurfaceTransformer {
     callableFactory.releaseLevelAnnotation(namer.getReleaseAnnotation(ReleaseLevel.BETA));
     callableFactory.name(
         namer.getCallableFactoryClassName(interfaceConfig, productConfig.getTransportProtocol()));
-
+    if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      callableFactory.operationStubType(
+          context
+              .getImportTypeTable()
+              .getAndSaveNicknameFor("com.google.api.gax.core.BackgroundResource"));
+      callableFactory.operationMessage(
+          context
+              .getImportTypeTable()
+              .getAndSaveNicknameFor("com.google.api.gax.httpjson.ApiMessage"));
+    }
     return callableFactory.build();
   }
 
@@ -913,6 +925,7 @@ public class JavaSurfaceTransformer {
       case HTTP:
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");
+        typeTable.saveNicknameFor("javax.annotation.Nullable");
         break;
     }
   }
@@ -947,6 +960,7 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.rpc.PageContext");
     typeTable.saveNicknameFor("com.google.common.base.Function");
     typeTable.saveNicknameFor("com.google.common.collect.Iterables");
+    typeTable.saveNicknameFor("com.google.common.util.concurrent.MoreExecutors");
     typeTable.saveNicknameFor("javax.annotation.Generated");
     typeTable.saveNicknameFor("java.util.Iterator");
     typeTable.saveNicknameFor("java.util.List");

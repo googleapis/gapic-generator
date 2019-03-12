@@ -26,6 +26,12 @@ public abstract class StaticLangCallableFactoryView {
 
   public abstract String name();
 
+  @Nullable // Used by HTTP clients.
+  public abstract String operationMessage();
+
+  @Nullable // Used by HTTP clients.
+  public abstract String operationStubType();
+
   public static StaticLangCallableFactoryView.Builder newBuilder() {
     return new AutoValue_StaticLangCallableFactoryView.Builder();
   }
@@ -38,6 +44,10 @@ public abstract class StaticLangCallableFactoryView {
     public abstract Builder releaseLevelAnnotation(String val);
 
     public abstract Builder name(String val);
+
+    public abstract Builder operationMessage(String val);
+
+    public abstract Builder operationStubType(String val);
 
     public abstract StaticLangCallableFactoryView build();
   }

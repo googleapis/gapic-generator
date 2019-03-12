@@ -1018,20 +1018,30 @@ class DecrementerServiceClient(object):
     # Service calls
     def decrement(
             self,
+            requests,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
         """
         Decrement.
 
+        EXPERIMENTAL: This method interface might change in the future.
+
         Example:
             >>> from google.cloud import example_v1
             >>>
             >>> client = example_v1.DecrementerServiceClient()
             >>>
-            >>> client.decrement()
+            >>> request = {}
+            >>>
+            >>> requests = [request]
+            >>> for element in client.decrement(requests):
+            ...     # process element
+            ...     pass
 
         Args:
+            requests (iterator[dict|google.cloud.example_v1.proto.foo.multiple_services_pb2.DecrementRequest]): The input objects. If a dict is provided, it must be of the
+                same form as the protobuf message :class:`~google.cloud.example_v1.types.DecrementRequest`
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will not
                 be retried.
@@ -1056,8 +1066,7 @@ class DecrementerServiceClient(object):
                 client_info=self._client_info,
             )
 
-        request = multiple_services_pb2.DecrementRequest()
-        self._inner_api_calls['decrement'](request, retry=retry, timeout=timeout, metadata=metadata)
+        self._inner_api_calls['decrement'](requests, retry=retry, timeout=timeout, metadata=metadata)
 
 ============== file: google/cloud/example_v1/gapic/foo/decrementer_service_client_config.py ==============
 config = {
@@ -1810,7 +1819,7 @@ class ChannelStub(object):
         self.responses = responses
         self.requests = []
 
-    def unary_unary(
+    def stream_stream(
             self, method, request_serializer=None, response_deserializer=None):
         return MultiCallableStub(method, self)
 
@@ -1822,18 +1831,32 @@ class CustomException(Exception):
 class TestDecrementerServiceClient(object):
 
     def test_decrement(self):
-        channel = ChannelStub()
+        # Setup Expected Response
+        expected_response = {}
+        expected_response = empty_pb2.Empty(**expected_response)
+
+        # Mock the API response
+        channel = ChannelStub(responses = [iter([expected_response])])
         patch = mock.patch('google.api_core.grpc_helpers.create_channel')
         with patch as create_channel:
             create_channel.return_value = channel
             client = example_v1.DecrementerServiceClient()
 
-        client.decrement()
+        # Setup Request
+        request = {}
+        request = multiple_services_pb2.DecrementRequest(**request)
+        requests = [request]
+
+        response = client.decrement(requests)
+        resources = list(response)
+        assert len(resources) == 1
+        assert expected_response == resources[0]
 
         assert len(channel.requests) == 1
-        expected_request = multiple_services_pb2.DecrementRequest()
-        actual_request = channel.requests[0][1]
-        assert expected_request == actual_request
+        actual_requests = channel.requests[0][1]
+        assert len(actual_requests) == 1
+        actual_request = list(actual_requests)[0]
+        assert request == actual_request
 
     def test_decrement_exception(self):
         # Mock the API response
@@ -1843,8 +1866,14 @@ class TestDecrementerServiceClient(object):
             create_channel.return_value = channel
             client = example_v1.DecrementerServiceClient()
 
+        # Setup request
+        request = {}
+
+        request = multiple_services_pb2.DecrementRequest(**request)
+        requests = [request]
+
         with pytest.raises(CustomException):
-            client.decrement()
+            client.decrement(requests)
 
 ============== file: tests/unit/gapic/v1/test_incrementer_service_client_v1.py ==============
 # -*- coding: utf-8 -*-

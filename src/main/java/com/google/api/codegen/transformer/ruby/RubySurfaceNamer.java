@@ -19,6 +19,7 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
@@ -27,7 +28,6 @@ import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
@@ -202,7 +202,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
       return "Google::Gax::PagedEnumerable<" + resourceTypeName + ">";
     }
 
-    if (methodConfig.isLongRunningOperation()) {
+    if (methodContext.isLongRunningMethodContext()) {
       return "Google::Gax::Operation";
     }
 

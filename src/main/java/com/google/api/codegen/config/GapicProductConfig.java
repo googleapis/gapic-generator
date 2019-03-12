@@ -54,6 +54,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -753,7 +754,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         new LinkedHashMap<>();
     // Create the SingleResourceNameConfigs.
     for (Resource resource : resourceDefs.keySet()) {
-      String resourcePath = resource.getPath();
+      String resourcePath = resource.getPattern();
       ProtoFile protoFile = resourceDefs.get(resource);
       createSingleResourceNameConfig(
           diagCollector,
@@ -786,7 +787,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Create the ResourceNameOneOfConfigs.
     for (ResourceSet resourceSet : resourceSetDefs.keySet()) {
       ProtoFile protoFile = resourceSetDefs.get(resourceSet);
-      String resourceSetName = resourceSet.getName();
+      String resourceSetName = resourceSet.getSymbol();
       ResourceNameOneofConfig resourceNameOneofConfig =
           ResourceNameOneofConfig.createResourceNameOneof(
               diagCollector,
@@ -1035,5 +1036,15 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
     return null;
+  }
+
+  public List<LongRunningConfig> getAllLongRunningConfigs() {
+    return getInterfaceConfigMap()
+        .values()
+        .stream()
+        .flatMap(i -> i.getMethodConfigs().stream())
+        .map(MethodConfig::getLroConfig)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
   }
 }

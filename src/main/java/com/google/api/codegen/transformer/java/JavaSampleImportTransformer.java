@@ -15,11 +15,11 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StandardSampleImportTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -81,6 +81,7 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
       case LongRunningCallable:
         typeTable.saveNicknameFor(OPERATION_FUTURE);
         saveResponseTypeNameForLongRunningMethod(context);
+        saveMetadataTypeNameForLongRunningMethod(context);
         break;
       case LongRunningFlattenedAsync:
       case LongRunningRequestAsync:
@@ -102,15 +103,22 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
             saveResourceTypeName(context);
           }
           break;
-        case LOOP:
-          OutputView.LoopView loopView = (OutputView.LoopView) view;
-          type = loopView.collection().type();
+        case ARRAY_LOOP:
+          OutputView.ArrayLoopView arrayLoopView = (OutputView.ArrayLoopView) view;
+          type = arrayLoopView.collection().type();
           if (type != null) {
             typeTable.getAndSaveNicknameFor(type.makeOptional());
           } else {
             saveResourceTypeName(context);
           }
-          addOutputImports(context, loopView.body());
+          addOutputImports(context, arrayLoopView.body());
+          break;
+        case MAP_LOOP:
+          OutputView.MapLoopView mapLoopView = (OutputView.MapLoopView) view;
+          typeTable.getAndSaveNicknameFor(mapLoopView.map().type().getMapKeyType());
+          typeTable.getAndSaveNicknameFor(mapLoopView.map().type().getMapValueType());
+          typeTable.saveNicknameFor("java.util.Map");
+          addOutputImports(context, mapLoopView.body());
           break;
         case COMMENT:
         case PRINT:
@@ -136,10 +144,9 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
           typeTable.saveNicknameFor("java.util.HashMap");
           break;
         case ReadFileInitLine:
-          typeTable.saveNicknameFor("java.nio.Files");
-          typeTable.saveNicknameFor("java.nio.File");
-          typeTable.saveNicknameFor("java.nio.Paths");
-          typeTable.saveNicknameFor("java.nio.Path");
+          typeTable.saveNicknameFor("java.nio.file.Files");
+          typeTable.saveNicknameFor("java.nio.file.Path");
+          typeTable.saveNicknameFor("java.nio.file.Paths");
           break;
         case SimpleInitLine:
         case StructureInitLine:
@@ -171,8 +178,10 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
   }
 
   private void saveResponseTypeNameForLongRunningMethod(MethodContext context) {
-    context
-        .getTypeTable()
-        .getAndSaveNicknameFor(context.getMethodConfig().getLongRunningConfig().getReturnType());
+    context.getTypeTable().getAndSaveNicknameFor(context.getLongRunningConfig().getReturnType());
+  }
+
+  private void saveMetadataTypeNameForLongRunningMethod(MethodContext context) {
+    context.getTypeTable().getAndSaveNicknameFor(context.getLongRunningConfig().getMetadataType());
   }
 }

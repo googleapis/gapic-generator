@@ -16,19 +16,19 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -156,6 +156,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (MethodModel method : context.getSupportedMethods()) {
+      GapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (methodConfig.isGrpcStreaming()) {
         // TODO: Add support for streaming methods
@@ -165,7 +166,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         if (methodConfig.isPageStreaming()) {
           // TODO: Add support for page-streaming methods
           continue;
-        } else if (methodConfig.isLongRunningOperation()) {
+        } else if (defaultMethodContext.isLongRunningMethodContext()) {
           // TODO: Add support for LRO methods
           continue;
         } else {
@@ -179,7 +180,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         GapicMethodContext requestContext = context.asRequestMethodContext(method);
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           GapicMethodContext methodContext =
-              context.asFlattenedMethodContext(method, flatteningGroup);
+              context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
           testCaseViews.add(
               createFlattenedTestCase(
                   methodContext,
@@ -205,7 +206,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
                 requestContext, methodConfig, testNameTable, Synchronicity.Async));
       } else {
         if (methodConfig.isPageStreaming()
-            || methodConfig.isLongRunningOperation()
+            || defaultMethodContext.isLongRunningMethodContext()
             || methodConfig.getRerouteToGrpcInterface() != null) {
           // TODO: Add support for page-streaming, LRO, and rerouted methods
           continue;

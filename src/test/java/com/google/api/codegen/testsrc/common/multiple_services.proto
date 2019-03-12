@@ -23,7 +23,7 @@ service IncrementerService {
 
 service DecrementerService {
   // Decrement.
-  rpc Decrement(DecrementRequest) returns (google.protobuf.Empty) {
+  rpc Decrement(stream DecrementRequest) returns (stream google.protobuf.Empty) {
       option (google.api.http) = { post: "/v1/me:decrement" body: "*" };
   }
 }

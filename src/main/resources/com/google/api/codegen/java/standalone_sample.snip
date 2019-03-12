@@ -24,6 +24,9 @@
       {@commentedImportList(sample.sampleImports.appImports)}
     @end
     public class {@sampleFile.classView.name} {
+      @if not(sample.sampleFunctionDoc.isEmpty)
+        {@processDoc(sample.sampleFunctionDoc)}
+      @end
       public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)}) {
         // [START {@sample.regionTag}_core]
         try ({@apiMethod.apiClassName} {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.create()) {
@@ -59,17 +62,23 @@
   @switch sample.callingForm
   @case "Request"
     {@syncMethodSampleCode(apiMethod, sample)}
-    {@processResponse(sample)}
+    @if sample.outputs
+      {@processResponse(sample)}
+    @end
   @case "RequestPaged"
     {@pagedIterableMethodSampleCode(apiMethod, sample)}
   @case "Flattened"
     {@syncMethodSampleCode(apiMethod, sample)}
-    {@processResponse(sample)}
+    @if sample.outputs
+      {@processResponse(sample)}
+    @end
   @case "FlattenedPaged"
     {@pagedCallableMethodSampleCode(apiMethod, sample)}
   @case "Callable"
     {@callableMethodSampleCode(apiMethod, sample)}
-    {@processResponse(sample)}
+    @if sample.outputs
+      {@processResponse(sample)}
+    @end
   @case "CallableList"
     {@unpagedListCallableMethodSampleCode(apiMethod, sample)}
   @case "CallablePaged"
@@ -85,10 +94,14 @@
     {@processResponse(sample)}
   @case "LongRunningFlattenedAsync"
     {@asyncOperationMethodSampleCode(apiMethod, sample)}
-    {@processResponse(sample)}
+    @if sample.outputs
+      {@processResponse(sample)}
+    @end
   @case "LongRunningRequestAsync"
     {@asyncOperationMethodSampleCode(apiMethod, sample)}
-    {@processResponse(sample)}
+    @if sample.outputs
+      {@processResponse(sample)}
+    @end
   @default
     $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
   @end
@@ -158,7 +171,7 @@
         {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)}).get();
   @else
     {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-        {@sampleMethodCallArgList(initCode.fieldSettings)}).get();
+        {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)}).get();
   @end
 @end
 
@@ -290,27 +303,48 @@
   @end
 @end
 
-@private processResponse(sample)
-  @if sample.outputs.size == 0
-    System.out.println(response);
+@private processDoc(doc)
+  @if doc.paramDocLines.isEmpty
+    @if doc.mainDocLines.size.toString == "1"
+      /** {@doc.mainDocLines.get(0)} */
+    @end
   @else
-    {@processOutputViews(sample.outputs)}
+    /**
+    @if doc.mainDocLines.size
+      @join line : @doc.mainDocLines
+        {@""} * {@line}
+      @end
+
+      {@""} *
+    @end
+    @join paramDoc : doc.paramDocLines
+      @join line : paramDoc
+        {@""} * {@line}
+      @end
+    @end
+    {@""} */
   @end
+@end
+
+@private processResponse(sample)
+  {@processOutputViews(sample.outputs)}
 @end
 
 @private processOutputViews(outputViews)
   @join view : outputViews on BREAK
-   @switch view.kind
-     @case "COMMENT"
-       {@processCommentView(view)}
-     @case "DEFINE"
-       {@processDefineView(view)}
-     @case "LOOP"
-       {@processLoopView(view)}
-     @case "PRINT"
-       {@processPrintView(view)}
-     @default
-       $unhandledResponseForm: {@view}
+    @switch view.kind
+      @case "COMMENT"
+        {@processCommentView(view)}
+      @case "DEFINE"
+        {@processDefineView(view)}
+      @case "ARRAY_LOOP"
+        {@processArrayLoopView(view)}
+      @case "MAP_LOOP"
+        {@processMapLoopView(view)}
+      @case "PRINT"
+        {@processPrintView(view)}
+      @default
+        $unhandledResponseForm: {@view}
     @end
   @end
 @end
@@ -339,10 +373,34 @@
   @end
 @end
 
-@private processLoopView(view)
+@private processArrayLoopView(view)
   for ({@view.variableType} {@view.variableName} : {@variableField(@view.collection)}) {
     {@processOutputViews(@view.body)}
   }
+@end
+
+@private processMapLoopView(view)
+  @if and(view.keyVariableName, view.valueVariableName)
+    for (Map.Entry<{@view.keyType}, {@view.valueType}> entry : {@variableField(@view.map)}.entrySet()) {
+      {@view.keyType} {@view.keyVariableName} = entry.getKey();
+      {@view.valueType} {@view.valueVariableName} = entry.getValue();
+
+  @else
+    @if view.keyVariableName
+      for ({@view.keyType} {@view.keyVariableName}: {@variableField(@view.map)}.keySet()) {
+
+    @else
+      @if view.valueVariableName
+        for ({@view.valueType} {@view.valueVariableName}: {@variableField(@view.map)}.values()) {
+
+      @else
+        $unhandledMapLoopView: {@view}
+      @end
+    @end
+  @end
+    {@processOutputViews(@view.body)}
+  }
+
 @end
 
 @private commaSeparatedFields(args)
@@ -381,9 +439,13 @@
   ApiStreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}> responseObserver =
       new ApiStreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}>() {
         @@Override
-        public void onNext({@apiMethod.callableMethod.genericAwareResponseType} response) {
-          {@processResponse(sample)}
-        }
+        @if sample.outputs
+          public void onNext({@apiMethod.callableMethod.genericAwareResponseType} response) {
+            {@processResponse(sample)}
+          }
+        @else
+          public void onNext({@apiMethod.callableMethod.genericAwareResponseType} response) {}
+        @end
 
         @@Override
         public void onError(Throwable t) {

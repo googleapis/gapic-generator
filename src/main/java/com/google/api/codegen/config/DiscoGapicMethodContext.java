@@ -12,16 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.config;
 
-import com.google.api.codegen.config.DiscoGapicMethodConfig;
-import com.google.api.codegen.config.DiscoInterfaceModel;
-import com.google.api.codegen.config.DiscoveryMethodModel;
-import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.SchemaTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.auto.value.AutoValue;
 
 /** The context for transforming a method to a view model object. */
@@ -36,10 +31,12 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
       DiscoveryMethodModel method,
       DiscoGapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
+      LongRunningConfig longRunningConfig,
       FeatureConfig featureConfig) {
     return new AutoValue_DiscoGapicMethodContext(
         productConfig,
         flatteningConfig,
+        longRunningConfig,
         featureConfig,
         new DiscoInterfaceModel(interfaceName, surfaceTransformerContext.getApiModel()),
         methodConfig,
@@ -85,6 +82,7 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         getMethodModel(),
         getMethodConfig(),
         getFlatteningConfig(),
+        getLongRunningConfig(),
         getFeatureConfig());
   }
 
@@ -124,6 +122,12 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         getFlatteningConfig() == null
             ? null
             : getFlatteningConfig().withResourceNamesInSamplesOnly(),
+        getLongRunningConfig(),
         getFeatureConfig());
+  }
+
+  @Override
+  public boolean isLongRunningMethodContext() {
+    return getLongRunningConfig() != null;
   }
 }

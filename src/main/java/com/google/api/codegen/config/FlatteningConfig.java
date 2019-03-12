@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.MethodSignature;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
@@ -146,10 +145,10 @@ public abstract class FlatteningConfig {
     Map<String, FlatteningConfig> flatteningConfigs = new LinkedHashMap<>();
 
     // Get flattenings from protofile annotations, let these override flattenings from GAPIC config.
-    List<MethodSignature> methodSignatures =
+    List<List<String>> methodSignatures =
         protoParser.getMethodSignatures(methodModel.getProtoMethod());
-    for (MethodSignature signature : methodSignatures) {
-      if (signature.getFieldsCount() == 0) {
+    for (List<String> signature : methodSignatures) {
+      if (signature.isEmpty()) {
         break;
       }
       FlatteningConfig groupConfig =
@@ -264,7 +263,7 @@ public abstract class FlatteningConfig {
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      MethodSignature methodSignature,
+      List<String> flattenedParams,
       ProtoMethodModel method,
       ProtoParser protoParser) {
 
@@ -272,7 +271,6 @@ public abstract class FlatteningConfig {
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
     Set<String> oneofNames = new HashSet<>();
 
-    List<String> flattenedParams = Lists.newArrayList(methodSignature.getFieldsList());
     for (String parameter : flattenedParams) {
 
       ProtoField parameterField = method.getInputField(parameter);

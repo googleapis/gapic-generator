@@ -59,7 +59,7 @@ $ npm install --save @google-cloud/multiple-services
     "Google Example API"
   ],
   "dependencies": {
-    "google-gax": "^0.17.1",
+    "google-gax": "^0.25.3",
     "google-some-other-package-v1": "^0.2.1",
     "lodash.merge": "^4.6.0",
     "lodash.union": "^4.6.0"
@@ -185,7 +185,7 @@ module.exports.default = Object.assign({}, module.exports);
 
 'use strict';
 
-const gapicConfig = require('./decrementer_service_client_config');
+const gapicConfig = require('./decrementer_service_client_config.json');
 const gax = require('google-gax');
 const merge = require('lodash.merge');
 const path = require('path');
@@ -265,6 +265,12 @@ class DecrementerServiceClient {
       )
     );
 
+    // Some of the methods on this service provide streaming responses.
+    // Provide descriptors for these.
+    this._descriptors.stream = {
+      decrement: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
+    };
+
     // Put together the default options sent with requests.
     const defaults = gaxGrpc.constructSettings(
       'google.cloud.example.v1.foo.DecrementerService',
@@ -304,7 +310,7 @@ class DecrementerServiceClient {
             }
         ),
         defaults[methodName],
-        null
+        this._descriptors.stream[methodName]
       );
     }
   }
@@ -348,15 +354,13 @@ class DecrementerServiceClient {
   /**
    * Decrement.
    *
-   * @param {Object} [request]
-   *   The request object that will be sent.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error)} [callback]
-   *   The function which will be called with the result of the API call.
-   * @returns {Promise} - The promise which resolves when API call finishes.
-   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   * @returns {Stream}
+   *   An object stream which is both readable and writable. It accepts objects
+   *   representing [DecrementRequest]{@link google.cloud.example.v1.foo.DecrementRequest} for write() method, and
+   *   will emit objects representing [Empty]{@link google.protobuf.Empty} on 'data' event asynchronously.
    *
    * @example
    *
@@ -366,21 +370,17 @@ class DecrementerServiceClient {
    *   // optional auth parameters.
    * });
    *
-   *
-   * client.decrement({}).catch(err => {
-   *   console.error(err);
+   * const stream = client.decrement().on('data', response => {
+   *   // doThingsWith(response)
    * });
+   * const request = {};
+   * // Write request objects.
+   * stream.write(request);
    */
-  decrement(request, options, callback) {
-    if (options instanceof Function && callback === undefined) {
-      callback = options;
-      options = {};
-    }
+  decrement(options) {
     options = options || {};
-    if (request === undefined) {
-      request = {};
-    }
-    return this._innerApiCalls.decrement(request, options, callback);
+
+    return this._innerApiCalls.decrement(options);
   }
 }
 
@@ -503,7 +503,7 @@ const Empty = {
 
 'use strict';
 
-const gapicConfig = require('./incrementer_service_client_config');
+const gapicConfig = require('./incrementer_service_client_config.json');
 const gax = require('google-gax');
 const merge = require('lodash.merge');
 const path = require('path');
@@ -775,6 +775,7 @@ module.exports.DecrementerServiceClient = DecrementerServiceClient;
 'use strict';
 
 const assert = require('assert');
+const through2 = require('through2');
 
 const multipleServicesModule = require('../src');
 
@@ -838,13 +839,20 @@ describe('DecrementerServiceClient', () => {
       // Mock request
       const request = {};
 
-      // Mock Grpc layer
-      client._innerApiCalls.decrement = mockSimpleGrpcMethod(request);
+      // Mock response
+      const expectedResponse = {};
 
-      client.decrement(request, err => {
-        assert.ifError(err);
+      // Mock Grpc layer
+      client._innerApiCalls.decrement = mockBidiStreamingGrpcMethod(request, expectedResponse);
+
+      const stream = client.decrement().on('data', response => {
+        assert.deepStrictEqual(response, expectedResponse);
         done();
+      }).on('error', err => {
+        done(err);
       });
+
+      stream.write(request);
     });
 
     it('invokes decrement with error', done => {
@@ -857,17 +865,17 @@ describe('DecrementerServiceClient', () => {
       const request = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.decrement = mockSimpleGrpcMethod(
-        request,
-        null,
-        error
-      );
+      client._innerApiCalls.decrement = mockBidiStreamingGrpcMethod(request, null, error);
 
-      client.decrement(request, err => {
+      const stream = client.decrement().on('data', () => {
+        assert.fail();
+      }).on('error', err => {
         assert(err instanceof Error);
         assert.strictEqual(err.code, FAKE_STATUS_CODE);
         done();
       });
+
+      stream.write(request);
     });
   });
 
@@ -884,5 +892,20 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
       callback(null);
     }
   };
+}
+
+function mockBidiStreamingGrpcMethod(expectedRequest, response, error) {
+  return () => {
+    const mockStream = through2.obj((chunk, enc, callback) => {
+      assert.deepStrictEqual(chunk, expectedRequest);
+      if (error) {
+        callback(error);
+      }
+      else {
+        callback(null, response);
+      }
+    });
+    return mockStream;
+  }
 }
 

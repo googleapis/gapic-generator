@@ -370,6 +370,10 @@ message SampleInitAttribute {
   // If this parameter is repeated, the original value of this parameter is a list of
   // comma-separated list of file names.
   bool read_file = 3;
+
+  // The description of the parameter passed to the sample function.
+  // Should only be specified when `sample_argument_name` is specified.
+  string description = 4;
 }
 
 // `SampleConfiguration` defines combinations of "calling forms"
@@ -686,13 +690,29 @@ message LongRunningConfigProto {
 message OutputSpec {
   message LoopStatement {
     // The collection over which to iterate.
+    // Exactly one of `map` and `collection` should be specified.
     string collection = 1;
 
     // The iteration variable.
+    // Required and should only be specified if `collection` is specified.
     string variable = 2;
 
     // The contents of the loop.
     repeated OutputSpec body = 3;
+
+    // The map over which to iterate.
+    // Exactly one of `map` and `collection` should be specified. 
+    string map = 4;
+
+    // The iteration variable for key.
+    // Can only be specified when `map` is specified.
+    // At least one of `key` and `value` should be specified if `map` is specified.
+    string key = 5;
+
+    // The iteration variable for value.
+    // Can only be specified when `map` is specified.
+    // At least one of `key` and `value` should be specified if `map` is specified.
+    string value = 6;
   }
 
   // Exactly one of the following should be set.
