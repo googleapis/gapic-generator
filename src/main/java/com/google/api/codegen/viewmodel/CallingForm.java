@@ -14,11 +14,21 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import static com.google.api.codegen.common.TargetLanguage.JAVA;
+import static com.google.api.codegen.common.TargetLanguage.NODEJS;
+import static com.google.api.codegen.common.TargetLanguage.PHP;
+import static com.google.api.codegen.common.TargetLanguage.PYTHON;
+import static com.google.api.codegen.common.TargetLanguage.RUBY;
+
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import java.util.Collections;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
+import java.util.List;
 
 /**
  * The different calling forms we wish to illustrate in samples. Not every method type will have
@@ -69,6 +79,84 @@ public enum CallingForm {
   // this value never set.
   Generic;
 
+  private static enum RpcType {
+    UNARY,
+    LRO,
+    CLIENT_STREAMING,
+    SERVER_STREAMING,
+    BIDI_STREAMING,
+    PAGED_STREAMING;
+
+    static RpcType fromMethodContext(MethodContext context) {
+      if (context.getMethodConfig().isPageStreaming()) {
+        return PAGED_STREAMING;
+      }
+      if (context.isLongRunningMethodContext()) {
+        return LRO;
+      }
+      if (context.getMethodConfig().isGrpcStreaming()) {
+        GrpcStreamingConfig.GrpcStreamingType streamingType =
+            context.getMethodConfig().getGrpcStreamingType();
+        switch (streamingType) {
+          case BidiStreaming:
+            return BIDI_STREAMING;
+          case ClientStreaming:
+            return CLIENT_STREAMING;
+          case ServerStreaming:
+            return SERVER_STREAMING;
+          case NonStreaming:
+            return UNARY;
+          default:
+            throw new IllegalArgumentException(
+                "Illegal MethodContext: unhandled streaming type: " + streamingType);
+        }
+      }
+      return UNARY;
+    }
+  }
+
+  // TODO: Factor this out to a yaml file :)
+  private static final Table<TargetLanguage, RpcType, List<CallingForm>> CALLING_FORM_TABLE =
+      ImmutableTable.<TargetLanguage, RpcType, List<CallingForm>>builder()
+          .put(JAVA, RpcType.UNARY, ImmutableList.of(Request, Flattened, Callable))
+          .put(
+              JAVA,
+              RpcType.LRO,
+              ImmutableList.of(
+                  LongRunningRequest, LongRunningFlattenedAsync, LongRunningRequestAsync))
+          .put(
+              JAVA,
+              RpcType.PAGED_STREAMING,
+              ImmutableList.of(RequestPaged, RequestPagedAll, FlattenedPaged, CallableList))
+          .put(JAVA, RpcType.CLIENT_STREAMING, ImmutableList.of(CallableStreamingClient))
+          .put(JAVA, RpcType.SERVER_STREAMING, ImmutableList.of(CallableStreamingServer))
+          .put(JAVA, RpcType.BIDI_STREAMING, ImmutableList.of(CallableStreamingBidi))
+          .put(PYTHON, RpcType.UNARY, ImmutableList.of(Request))
+          .put(PYTHON, RpcType.LRO, ImmutableList.of(LongRunningPromise))
+          .put(PYTHON, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
+          .put(PYTHON, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
+          .put(PYTHON, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
+          .put(PYTHON, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
+          .put(PHP, RpcType.UNARY, ImmutableList.of(Request))
+          .put(PHP, RpcType.LRO, ImmutableList.of(LongRunningRequest, LongRunningRequestAsync))
+          .put(PHP, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
+          .put(PHP, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
+          .put(PHP, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
+          .put(PHP, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
+          .put(NODEJS, RpcType.UNARY, ImmutableList.of(Request))
+          .put(NODEJS, RpcType.LRO, ImmutableList.of(LongRunningEventEmitter, LongRunningPromise))
+          .put(NODEJS, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
+          .put(NODEJS, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
+          .put(NODEJS, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
+          .put(NODEJS, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
+          .put(RUBY, RpcType.UNARY, ImmutableList.of(Request))
+          .put(RUBY, RpcType.LRO, ImmutableList.of(LongRunningRequestAsync))
+          .put(RUBY, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPagedAll))
+          .put(RUBY, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
+          .put(RUBY, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
+          .put(RUBY, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
+          .build();
+
   /**
    * Returns the {@code String} representation of this enum, but in lower camelcase.
    *
@@ -80,82 +168,41 @@ public enum CallingForm {
 
   public static List<CallingForm> getCallingForms(
       MethodContext methodContext, TargetLanguage lang) {
-    if (methodContext.getMethodConfig().isPageStreaming()) {
-      return getCallingFormsForPagedStreamingMethods(lang);
-    }
-    if (methodContext.isLongRunningMethodContext()) {
-      return getCallingFormsForLongRunningMethods(lang);
-    }
-    if (methodContext.getMethodConfig().isGrpcStreaming()) {
-      GrpcStreamingType streamingType = methodContext.getMethodConfig().getGrpcStreamingType();
-      switch (streamingType) {
-        case BidiStreaming:
-          return getCallingFormsForBidiStreamingMethods(lang);
-        case ClientStreaming:
-          return getCallingFormsForBidiStreamingMethods(lang);
-        case ServerStreaming:
-          return getCallingFormsForBidiStreamingMethods(lang);
-        case NonStreaming:
-          return getCallingFormsForBidiStreamingMethods(lang);
-        default:
-          throw new IllegalArgumentException(
-              "unhandled grpcStreamingType: " + streamingType.toString());
-      }
-    }
-    return ImmutableList.<CallingForm>of();
+    return CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
   }
 
   public static List<CallingForm> getCallingFormsForUnaryMethods(TargetLanguage lang) {
-    switch (lang) {
-      case RUBY:
-        return Collections.singletonList(Request);
-      default:
-        throw UnsupportedOperationException("unhandled language: " + lang);
-    }
+    checkLanguageNotCSharpOrGo(lang);
+    return CALLING_FORM_TABLE.get(lang, RpcType.UNARY);
   }
 
   public static List<CallingForm> getCallingFormsForLongRunningMethods(TargetLanguage lang) {
-    switch (lang) {
-      case RUBY:
-        return Collections.singletonList(LongRunningRequestAsync);
-      default:
-        throw UnsupportedOperationException("unhandled language: " + lang);
-    }
+    checkLanguageNotCSharpOrGo(lang);
+    return CALLING_FORM_TABLE.get(lang, RpcType.LRO);
   }
 
   public static List<CallingForm> getCallingFormsForClientStreamingMethods(TargetLanguage lang) {
-    switch (lang) {
-      case RUBY:
-        return Collections.singletonList(RequestStreamingClient);
-      default:
-        throw UnsupportedOperationException("unhandled language: " + lang);
-    }
+    checkLanguageNotCSharpOrGo(lang);
+    return CALLING_FORM_TABLE.get(lang, RpcType.CLIENT_STREAMING);
   }
 
   public static List<CallingForm> getCallingFormsForServerStreamingMethods(TargetLanguage lang) {
-    switch (lang) {
-      case RUBY:
-        return Collections.singletonList(RequestStreamingServer);
-      default:
-        throw UnsupportedOperationException("unhandled language: " + lang);
-    }
+    checkLanguageNotCSharpOrGo(lang);
+    return CALLING_FORM_TABLE.get(lang, RpcType.SERVER_STREAMING);
   }
 
   public static List<CallingForm> getCallingFormsForBidiStreamingMethods(TargetLanguage lang) {
-    switch (lang) {
-      case RUBY:
-        return Collections.singletonList(RequestStreamingBidi);
-      default:
-        throw UnsupportedOperationException("unhandled language: " + lang);
-    }
+    checkLanguageNotCSharpOrGo(lang);
+    return CALLING_FORM_TABLE.get(lang, RpcType.BIDI_STREAMING);
   }
 
   public static List<CallingForm> getCallingFormsForPagedStreamingMethods(TargetLanguage lang) {
-    switch (lang) {
-      case RUBY:
-        return Collections.singletonList(RequestPagedAll);
-      default:
-        throw UnsupportedOperationException("unhandled language: " + lang);
-    }
+    checkLanguageNotCSharpOrGo(lang);
+    return CALLING_FORM_TABLE.get(lang, RpcType.PAGED_STREAMING);
+  }
+
+  private static void checkLanguageNotCSharpOrGo(TargetLanguage lang) {
+    Preconditions.checkArgument(lang != TargetLanguage.CSHARP, "CSharp is not supported for now.");
+    Preconditions.checkArgument(lang != TargetLanguage.GO, "Go is not supported for now.");
   }
 }

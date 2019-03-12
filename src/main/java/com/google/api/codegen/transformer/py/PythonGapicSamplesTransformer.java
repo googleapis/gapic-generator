@@ -26,7 +26,6 @@ import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
-import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
@@ -60,9 +59,8 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
       new PythonImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
-  private final DynamicLangApiMethodTransformer apiMethodTransformer =
-      new DynamicLangApiMethodTransformer(
-          new PythonApiMethodParamTransformer(),
+  private final PythonApiMethodTransformer apiMethodTransformer =
+      new PythonApiMethodTransformer(
           SampleTransformer.newBuilder()
               .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
               .sampleType(sampleType)
@@ -70,8 +68,6 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
               .sampleImportTransformer(
                   new StandardSampleImportTransformer(importSectionTransformer))
               .build());
-  private final PythonMethodViewGenerator methodGenerator =
-      new PythonMethodViewGenerator(apiMethodTransformer);
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
 
@@ -155,7 +151,7 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
     SurfaceNamer namer = context.getNamer();
     SampleFileRegistry generatedSamples = new SampleFileRegistry();
 
-    List<OptionalArrayMethodView> allmethods = methodGenerator.generateApiMethods(context);
+    List<OptionalArrayMethodView> allmethods = apiMethodTransformer.generateApiMethods(context);
 
     DynamicLangSampleView.Builder sampleClassBuilder = DynamicLangSampleView.newBuilder();
     for (OptionalArrayMethodView method : allmethods) {

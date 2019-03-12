@@ -16,9 +16,12 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.ServiceMessages;
@@ -30,10 +33,13 @@ import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 /**
  * DynamicLangApiMethodTransformer generates view objects from method definitions for dynamic
@@ -57,14 +63,47 @@ public class DynamicLangApiMethodTransformer {
     this.sampleTransformer = sampleTransformer;
   }
 
-  // TODO: by default this method returns an empty list. Each subclass should override this
-  // method to return the methods in each language.
-  protected List<OptionalArrayMethodView> generateApiMethods(InterfaceContext context) {
-    return ImmutableList.<OptionalArrayMethodView>of();
+  public List<OptionalArrayMethodView> generateApiMethods(InterfaceContext context) {
+    return ((GapicInterfaceContext) context)
+        .getSupportedMethods()
+        .stream()
+        .map(
+            methodModel -> generateMethod(context.asRequestMethodContext(methodModel), null, false))
+        .collect(Collectors.toList());
   }
 
-  public OptionalArrayMethodView generateMethod(GapicMethodContext context) {
-    return generateMethod(context, false);
+  public OptionalArrayMethodView generateMethod(MethodContext context) {
+    return generateMethod(context, null, false);
+  }
+
+  public OptionalArrayMethodView generateMethod(
+      MethodContext methodContext,
+      @Nullable InitCodeContext initCodeContext,
+      boolean packageHasMultipleServices) {
+    List<CallingForm> callingForms = getCallingForms(methodContext);
+    if (methodContext.getMethodConfig().isPageStreaming()) {
+      return generatePagedStreamingMethod(
+          (GapicMethodContext) methodContext,
+          initCodeContext,
+          packageHasMultipleServices,
+          callingForms);
+    }
+    if (methodContext.isLongRunningMethodContext()) {
+      return generateLongRunningMethod(
+          (GapicMethodContext) methodContext,
+          initCodeContext,
+          packageHasMultipleServices,
+          callingForms);
+    }
+    return generateRequestMethod(
+        (GapicMethodContext) methodContext,
+        initCodeContext,
+        packageHasMultipleServices,
+        callingForms);
+  }
+
+  protected List<CallingForm> getCallingForms(MethodContext context) {
+    return ImmutableList.<CallingForm>of();
   }
 
   public OptionalArrayMethodView generateRequestMethod(

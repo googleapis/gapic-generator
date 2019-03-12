@@ -14,64 +14,50 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.SampleTransformer;
-import com.google.api.codegen.transformer.ruby.RubyApiMethodParamTransformer;
-import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
-import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.ruby.RubyImportSectionTransformer;
-import java.util.
+public class RubyGapicSamplesTranformer {} // implements ModelToViewTransformer<ProtoApiModel> {
 
-public class RubyGapicSamplesTranformer implements ModelToViewTransformer<ProtoApiModel> {
+//   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME =
+// "ruby/standalone_sample.snip";
+//   private static final SampleType sampleType = SampleType.STANDALONE;
 
-  private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "ruby/standalone_sample.snip";
-  private static final SampleType sampleType = SampleType.STANDALONE;
+//   private final RubyImportSectionTransformer importSectionTransformer =
+//       new RubyImportSectionTransformer();
+//   private final FileHeaderTransformer fileHeaderTransformer =
+//       new FileHeaderTransformer(importSectionTransformer);
+//   private final DynamicLangApiMethodTransformer apiMethodTransformer =
+//       new DynamicLangApiMethodTransformer(
+//           new RubyApiMethodParamTransformer(),
+//           SampleTransformer.newBuilder()
+//               .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
+//               .sampleType(sampleType)
+//               .sampleImportTransformer(new RubySampleImportTransformer(importSectionTransformer))
+//               .build());
+//   private final GapicCodePathMapper pathMapper;
+//   private final PackageMetadataConfig packageConfig;
 
-  private final RubyImportSectionTransformer importSectionTransformer =
-      new RubyImportSectionTransformer();
-  private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(importSectionTransformer);
-  private final DynamicLangApiMethodTransformer apiMethodTransformer =
-      new DynamicLangApiMethodTransformer(
-          new RubyApiMethodParamTransformer(),
-          SampleTransformer.newBuilder()
-              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
-              .sampleType(sampleType)
-              .sampleImportTransformer(new RubySampleImportTransformer(importSectionTransformer))
-              .build());
-  private final GapicCodePathMapper pathMapper;
-  private final PackageMetadataConfig packageConfig;
+//   public RubyGapicSamplesTranformer(
+//       GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
+//     this.pathMapper = pathMapper;
+//     this.packageConfig = packageConfig;
+//   }
 
-  public RubyGapicSamplesTranformer(
-      GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
-    this.pathMapper = pathMapper;
-    this.packageConfig = packageConfig;
-  }
+//   @Override
+//   public List<String> getTemplateFileNames() {
+//     return ImmutableList.of(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
+//   }
 
-  @Override
-  public List<String> getTemplateFileNames() {
-    return ImmutableList.of(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
-  }
+//   @Override
+//   public List<ViewModel> transform(ProtoApiModel apiModel, GapicProductConfig productConfig) {
+//     return Streams.stream(apiModel.getInterfaces(productConfig))
+//         .filter(i -> productConfig.hasInterfaceConfig())
+//         .flatMap(i -> generateSampleFiles(createContext(i, productConfig)).stream())
+//         .collect(ImmutableList.toImmutableList());
+//   }
 
-  @Override
-  public List<ViewModel> transform(ProtoApiModel apiModel, GapicProductConfig productConfig) {
-    return Streams
-        .stream(apiModel.getInterfaces(productConfig))
-        .filter(i -> productConfig.hasInterfaceConfig())
-        .flatMap(i -> generateSampleFiles(createContext(i, productConfig)).stream())
-        .collect(ImmutableList.toImmutableList());
-  }
-
-  private List<ViewModel> generateSampleFiles(GapicInterfaceContext context, boolean hasMultipleServices) {
-  	SurfaceNamer namer = context.getNamer();
-    SampleFileRegistry generatedSamples = new SampleFileRegistry();
-    String outputPath = GapicCodePathMapper.SAMPLE_DIRECTORY;
-    
-  }
-}
+//   private List<ViewModel> generateSampleFiles(
+//       GapicInterfaceContext context, boolean hasMultipleServices) {
+//     SurfaceNamer namer = context.getNamer();
+//     SampleFileRegistry generatedSamples = new SampleFileRegistry();
+//     String outputPath = GapicCodePathMapper.SAMPLE_DIRECTORY;
+//   }
+// }
