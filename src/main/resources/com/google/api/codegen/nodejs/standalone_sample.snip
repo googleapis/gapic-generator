@@ -9,7 +9,6 @@
 
       // [START {@sample.regionTag}]
       // [START {@sample.regionTag}_core]
-
       {@standaloneSample(apiMethod, sample)}
 
       // [END {@sample.regionTag}_core]
@@ -41,6 +40,9 @@
     const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
 
   @end
+  @if not(sample.sampleFunctionDoc.isEmpty)
+    {@processDoc(sample.sampleFunctionDoc)}
+  @end
   @switch sample.callingForm
   @case "LongRunningPromiseAwait"
     async function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
@@ -66,7 +68,7 @@
     @case "RequestStreamingServer"
       {@initCode(apiMethod, sample.sampleInitCode)}
         {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}.on('data', response => {
-            {@processResponse(sample)}
+          {@processResponse(sample)}
         });
     @case "LongRunningEventEmitter"
       {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample)}
@@ -81,12 +83,31 @@
 
 @end
 
-@private processResponse(sample)
-  @if sample.outputs.size == 0
-    console.log(response);
+@private processDoc(doc)
+  @if doc.paramDocLines.isEmpty
+    @if doc.mainDocLines.size.toString == "1"
+      /** {@doc.mainDocLines.get(0)} */
+    @end
   @else
-    {@processOutputViews(sample.outputs)}
+    /**
+    @if doc.mainDocLines.size
+      @join line : @doc.mainDocLines
+        {@""} * {@line}
+      @end
+
+      {@""} *
+    @end
+    @join paramDoc : doc.paramDocLines
+      @join line : paramDoc
+        {@""} * {@line}
+      @end
+    @end
+    {@""} */
   @end
+@end
+
+@private processResponse(sample)
+    {@processOutputViews(sample.outputs)}
 @end
 
 @private processCliArguments(sample)
@@ -126,6 +147,9 @@
   {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}.catch(err => {
     console.error(err);
   });
+  @if sample.outputs
+    {@processResponse(sample)}
+  @end
 @end
 
 @private methodCallSampleCodeForPagedResponse(apiMethod, sample)
@@ -190,7 +214,9 @@
         console.error(err);
         return;
       }
-      {@processResponse(sample)}
+      @if sample.outputs
+        {@processResponse(sample)}
+      @end
     });
     {@initCode(apiMethod, sample.sampleInitCode)}
     {@sampleWriteStreamingRequest(apiMethod)}
@@ -207,7 +233,9 @@
       // Adding a listener for the "complete" event starts polling for the
       // completion of the operation.
       operation.on('complete', (result, metadata, finalApiResponse) => {
-        {@processResponse(sample)}
+        @if sample.outputs
+          {@processResponse(sample)}
+        @end
       });
 
       // Adding a listener for the "progress" event causes the callback to be
@@ -242,7 +270,9 @@
       const metadata = responses[1];
       const finalApiResponse = responses[2];
 
-      {@processResponse(sample)}
+      @if sample.outputs
+        {@processResponse(sample)}
+      @end
     })
     .catch(err => {
       console.error(err);
@@ -258,7 +288,9 @@
   // Get a Promise representation of the final result of the job
   const [response] = await operation.promise();
   
-  {@processResponse(sample)}
+  @if sample.outputs
+    {@processResponse(sample)}
+  @end
 @end
 
 @private methodCallSampleCode(apiMethod, init)
