@@ -46,6 +46,15 @@ public abstract class DynamicLangSampleView implements ViewModel {
 
   public abstract String gapicPackageName();
 
+  // TODO: Currently we put generated samples in libraryMethod(),
+  // extract them, flatten them out and put the samples back so that
+  // for standalone samples there are only one sample in libraryMethod().samples().
+  // This is a bit too convoluted, so for Ruby, we just put the sampleView
+  // here. After we are done with Ruby consider change the structure
+  // for other languages as well and remove @Nullable here.
+  @Nullable
+  public abstract MethodSampleView sample();
+
   @Nullable
   public abstract SampleExtraInfo extraInfo();
 
@@ -70,7 +79,9 @@ public abstract class DynamicLangSampleView implements ViewModel {
 
     public abstract Builder gapicPackageName(String val);
 
-    public abstract Builder extraInfo(SampleExtraInfo extraInfo);
+    public abstract Builder extraInfo(SampleExtraInfo val);
+
+    public abstract Builder sample(MethodSampleView val);
 
     public abstract DynamicLangSampleView build();
   }

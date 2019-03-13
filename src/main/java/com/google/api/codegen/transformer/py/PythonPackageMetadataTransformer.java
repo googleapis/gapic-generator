@@ -322,7 +322,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
             SampleTransformer.newBuilder()
                 .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
                 .build())
-        .generateMethod(context);
+        .generateApiMethod(context);
   }
 
   /**

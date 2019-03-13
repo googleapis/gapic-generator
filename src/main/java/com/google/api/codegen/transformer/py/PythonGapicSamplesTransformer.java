@@ -26,6 +26,7 @@ import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
@@ -59,8 +60,9 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
       new PythonImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
-  private final PythonApiMethodTransformer apiMethodTransformer =
-      new PythonApiMethodTransformer(
+  private final DynamicLangApiMethodTransformer apiMethodTransformer =
+      new DynamicLangApiMethodTransformer(
+          new PythonApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
               .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
               .sampleType(sampleType)

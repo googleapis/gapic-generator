@@ -33,6 +33,7 @@ import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Streams;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,7 +64,7 @@ public class DynamicLangApiMethodTransformer {
 
   // Entrance for XlangGapicSurfaceTransformer and XlangGapicSamplesTransformer
   public List<OptionalArrayMethodView> generateApiMethods(InterfaceContext context) {
-    return context.getSupportedMethods().stream()
+    return Streams.stream(context.getSupportedMethods())
         .map(m -> generateApiMethod(context.asRequestMethodContext(m)))
         .collect(Collectors.toList());
   }

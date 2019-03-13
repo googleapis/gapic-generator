@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.viewmodel.CallingForm;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -41,6 +41,7 @@ import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.tools.framework.model.Interface;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -456,5 +457,10 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public List<CallingForm> getCallingForms(MethodContext context) {
     return CallingForm.getCallingForms(context, TargetLanguage.RUBY);
+  }
+
+  @Override
+  public String getExamplePackageName() {
+    return "samples";
   }
 }
