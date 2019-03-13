@@ -47,7 +47,7 @@ public enum CallingForm {
   RequestAsync,
   RequestAsyncPaged, // used by: nodejs
   RequestAsyncPagedAll, // used by: nodejs
-  RequestPaged, // used by: java php py
+  RequestPaged, // used by: java php py ruby
   RequestPagedAll, // used by: php py ruby
   RequestStreamingBidi, // used by: nodejs php py ruby
   RequestStreamingBidiAsync, // used by: php
@@ -151,7 +151,7 @@ public enum CallingForm {
           .put(NODEJS, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
           .put(RUBY, RpcType.UNARY, ImmutableList.of(Request))
           .put(RUBY, RpcType.LRO, ImmutableList.of(LongRunningRequestAsync))
-          .put(RUBY, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPagedAll))
+          .put(RUBY, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPagedAll, RequestPaged))
           .put(RUBY, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
           .put(RUBY, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
           .put(RUBY, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))

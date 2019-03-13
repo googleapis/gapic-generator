@@ -39,6 +39,7 @@ public abstract class DynamicLangSampleView implements ViewModel {
 
   public abstract String outputPath();
 
+  @Nullable
   public abstract String className();
 
   /** The client library method illustrated in this sample. */

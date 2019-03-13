@@ -40,7 +40,7 @@ import com.google.common.collect.Streams;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class RubyGapicSamplesTranformer implements ModelToViewTransformer<ProtoApiModel> {
+public class RubyGapicSamplesTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "ruby/standalone_sample.snip";
   private static final SampleSpec.SampleType sampleType = SampleSpec.SampleType.STANDALONE;
@@ -61,7 +61,7 @@ public class RubyGapicSamplesTranformer implements ModelToViewTransformer<ProtoA
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
 
-  public RubyGapicSamplesTranformer(
+  public RubyGapicSamplesTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
     this.pathMapper = pathMapper;
     this.packageConfig = packageConfig;
@@ -74,11 +74,11 @@ public class RubyGapicSamplesTranformer implements ModelToViewTransformer<ProtoA
 
   @Override
   public List<ViewModel> transform(ProtoApiModel apiModel, GapicProductConfig productConfig) {
-    RubySurfaceNamer namer = new RubySurfaceNamer(RUBY_SAMPLE_PACKAGE_NAME);
+    String packageName = productConfig.getPackageName();
+    RubySurfaceNamer namer = new RubySurfaceNamer(packageName);
     ModelTypeTable typeTable =
         new ModelTypeTable(
-            new RubyTypeTable(RUBY_SAMPLE_PACKAGE_NAME),
-            new RubyModelTypeNameConverter(RUBY_SAMPLE_PACKAGE_NAME));
+            new RubyTypeTable(packageName), new RubyModelTypeNameConverter(packageName));
 
     List<InterfaceContext> interfaceContexts =
         Streams.stream(apiModel.getInterfaces(productConfig))

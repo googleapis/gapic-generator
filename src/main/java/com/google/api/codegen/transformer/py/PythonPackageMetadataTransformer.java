@@ -27,6 +27,7 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -318,7 +319,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
   }
 
   private OptionalArrayMethodView createExampleApiMethodView(GapicMethodContext context) {
-    return new PythonApiMethodTransformer(
+    return new DynamicLangApiMethodTransformer(
+            new PythonApiMethodParamTransformer(),
             SampleTransformer.newBuilder()
                 .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
                 .build())
