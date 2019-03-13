@@ -35,7 +35,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -62,13 +61,14 @@ public class DynamicLangApiMethodTransformer {
     this.sampleTransformer = sampleTransformer;
   }
 
-  // Entrance for XlangGapicSurfaceTransformer and XlangGapicSamplesTransformer
+  /** Grenerates method views for all methods in an interface. */
   public List<OptionalArrayMethodView> generateApiMethods(InterfaceContext context) {
     return Streams.stream(context.getSupportedMethods())
         .map(m -> generateApiMethod(context.asRequestMethodContext(m)))
         .collect(Collectors.toList());
   }
 
+  /** Generate the method view for an RPC method. */
   public OptionalArrayMethodView generateApiMethod(MethodContext context) {
     return generateApiMethod(
         context,
@@ -77,7 +77,7 @@ public class DynamicLangApiMethodTransformer {
         context.getNamer().getCallingForms(context));
   }
 
-  public OptionalArrayMethodView generateApiMethod(
+  private OptionalArrayMethodView generateApiMethod(
       MethodContext methodContext,
       @Nullable InitCodeContext initCodeContext,
       boolean packageHasMultipleServices,
@@ -103,6 +103,9 @@ public class DynamicLangApiMethodTransformer {
         callingForms);
   }
 
+  // TODO: After we migrate Node.js and PHP to use the public `generateApiMethod` and
+  // `generateApiMethods`, we can remove PhpMethodViewGenerator and NodejsMethodViewGenerator
+  // and make this method and the following two private.
   public OptionalArrayMethodView generateRequestMethod(
       GapicMethodContext context,
       InitCodeContext initContext,
@@ -151,36 +154,6 @@ public class DynamicLangApiMethodTransformer {
 
     generateMethodCommon(
         context, initContext, packageHasMultipleServices, method, apiMethod, callingForms);
-
-    return apiMethod.build();
-  }
-
-  // For languages that don't yet call the more specific methods above.
-  @Deprecated
-  public OptionalArrayMethodView generateMethod(
-      GapicMethodContext context, boolean packageHasMultipleServices) {
-    MethodModel method = context.getMethodModel();
-    OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
-
-    if (context.getMethodConfig().isPageStreaming()) {
-      apiMethod.type(ClientMethodType.PagedOptionalArrayMethod);
-      apiMethod.pageStreamingView(
-          pageStreamingTransformer.generateDescriptor(
-              context.getSurfaceInterfaceContext(), method));
-    } else if (context.isLongRunningMethodContext()) {
-      apiMethod.longRunningView(lroTransformer.generateDetailView(context));
-      apiMethod.type(ClientMethodType.LongRunningOptionalArrayMethod);
-    } else {
-      apiMethod.type(ClientMethodType.OptionalArrayMethod);
-    }
-
-    generateMethodCommon(
-        context,
-        null,
-        packageHasMultipleServices,
-        method,
-        apiMethod,
-        Arrays.asList(CallingForm.Generic));
 
     return apiMethod.build();
   }

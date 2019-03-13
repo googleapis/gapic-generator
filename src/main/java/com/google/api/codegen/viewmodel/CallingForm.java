@@ -115,7 +115,7 @@ public enum CallingForm {
     }
   }
 
-  // TODO: Factor this out to a yaml file :)
+  // TODO: Factor this out to a yaml file
   private static final Table<TargetLanguage, RpcType, List<CallingForm>> CALLING_FORM_TABLE =
       ImmutableTable.<TargetLanguage, RpcType, List<CallingForm>>builder()
           .put(JAVA, RpcType.UNARY, ImmutableList.of(Request, Flattened, Callable))
@@ -166,43 +166,15 @@ public enum CallingForm {
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, toString());
   }
 
+  /** Returns the string representation of this enum, but in lower snake case. */
+  public String toLowerUnderscore() {
+    return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, toString());
+  }
+
   public static List<CallingForm> getCallingForms(
       MethodContext methodContext, TargetLanguage lang) {
-    return CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
-  }
-
-  public static List<CallingForm> getCallingFormsForUnaryMethods(TargetLanguage lang) {
-    checkLanguageNotCSharpOrGo(lang);
-    return CALLING_FORM_TABLE.get(lang, RpcType.UNARY);
-  }
-
-  public static List<CallingForm> getCallingFormsForLongRunningMethods(TargetLanguage lang) {
-    checkLanguageNotCSharpOrGo(lang);
-    return CALLING_FORM_TABLE.get(lang, RpcType.LRO);
-  }
-
-  public static List<CallingForm> getCallingFormsForClientStreamingMethods(TargetLanguage lang) {
-    checkLanguageNotCSharpOrGo(lang);
-    return CALLING_FORM_TABLE.get(lang, RpcType.CLIENT_STREAMING);
-  }
-
-  public static List<CallingForm> getCallingFormsForServerStreamingMethods(TargetLanguage lang) {
-    checkLanguageNotCSharpOrGo(lang);
-    return CALLING_FORM_TABLE.get(lang, RpcType.SERVER_STREAMING);
-  }
-
-  public static List<CallingForm> getCallingFormsForBidiStreamingMethods(TargetLanguage lang) {
-    checkLanguageNotCSharpOrGo(lang);
-    return CALLING_FORM_TABLE.get(lang, RpcType.BIDI_STREAMING);
-  }
-
-  public static List<CallingForm> getCallingFormsForPagedStreamingMethods(TargetLanguage lang) {
-    checkLanguageNotCSharpOrGo(lang);
-    return CALLING_FORM_TABLE.get(lang, RpcType.PAGED_STREAMING);
-  }
-
-  private static void checkLanguageNotCSharpOrGo(TargetLanguage lang) {
     Preconditions.checkArgument(lang != TargetLanguage.CSHARP, "CSharp is not supported for now.");
     Preconditions.checkArgument(lang != TargetLanguage.GO, "Go is not supported for now.");
+    return CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
   }
 }

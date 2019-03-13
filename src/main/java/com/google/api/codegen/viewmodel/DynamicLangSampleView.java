@@ -39,6 +39,7 @@ public abstract class DynamicLangSampleView implements ViewModel {
 
   public abstract String outputPath();
 
+  // Only needed in Java for now
   @Nullable
   public abstract String className();
 

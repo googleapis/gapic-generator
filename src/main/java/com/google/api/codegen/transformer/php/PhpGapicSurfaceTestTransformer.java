@@ -272,7 +272,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
   private OptionalArrayMethodView createSmokeTestCaseApiMethodView(GapicMethodContext context) {
     OptionalArrayMethodView initialApiMethodView =
         new DynamicLangApiMethodTransformer(new PhpApiMethodParamTransformer())
-            .generateMethod(context, false);
+            .generateApiMethod(context);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
 

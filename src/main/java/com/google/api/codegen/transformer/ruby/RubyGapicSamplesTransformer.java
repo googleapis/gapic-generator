@@ -29,23 +29,27 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
 import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * A transformer to generate Ruby standalone samples for each method in the GAPIC surface generated
+ * from the same ApiModel.
+ */
 public class RubyGapicSamplesTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "ruby/standalone_sample.snip";
   private static final SampleSpec.SampleType sampleType = SampleSpec.SampleType.STANDALONE;
 
-  private static final String RUBY_SAMPLE_PACKAGE_NAME = "sample";
+  private static final String RUBY_SAMPLE_PACKAGE_NAME = "samples";
 
   private final RubyImportSectionTransformer importSectionTransformer =
       new RubyImportSectionTransformer();
@@ -106,16 +110,13 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
       MethodSampleView sample,
       SurfaceNamer namer) {
     SampleFileRegistry registry = new SampleFileRegistry();
-    String callingForm = sample.callingForm().toLowerCamel();
+    String callingForm = sample.callingForm().toLowerUnderscore();
     String valueSet = sample.valueSet().id();
     String regionTag = sample.regionTag();
     String sampleOutputPath =
         Paths.get(
                 RUBY_SAMPLE_PACKAGE_NAME,
-                namer.getApiSampleClassName(
-                    CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, method.name()),
-                    callingForm,
-                    valueSet))
+                Name.anyLower(method.name(), callingForm, valueSet).toLowerUnderscore() + ".rb")
             .toString();
 
     registry.addFile(sampleOutputPath, method.name(), callingForm, valueSet, regionTag);
