@@ -69,7 +69,10 @@ public class NodeJSMethodViewGenerator {
               methodContext,
               initContext,
               packageHasMultipleServices,
-              Arrays.asList(CallingForm.LongRunningPromise, CallingForm.LongRunningEventEmitter));
+              Arrays.asList(
+                  CallingForm.LongRunningPromise,
+                  CallingForm.LongRunningEventEmitter,
+                  CallingForm.LongRunningPromiseAwait));
     } else {
       List<CallingForm> callingForms;
       GrpcStreamingType streamingType = methodContext.getMethodConfig().getGrpcStreamingType();

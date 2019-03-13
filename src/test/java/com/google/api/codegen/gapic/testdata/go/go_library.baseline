@@ -238,6 +238,7 @@ type CallOptions struct {
     StreamBooks []gax.CallOption
     DiscussBook []gax.CallOption
     MonologAboutBook []gax.CallOption
+    BabbleAboutBook []gax.CallOption
     FindRelatedBooks []gax.CallOption
     AddLabel []gax.CallOption
     GetBigBook []gax.CallOption
@@ -290,6 +291,7 @@ func defaultCallOptions() *CallOptions {
         StreamBooks: retry[[2]string{"default", "idempotent"}],
         DiscussBook: retry[[2]string{"default", "non_idempotent"}],
         MonologAboutBook: retry[[2]string{"default", "non_idempotent"}],
+        BabbleAboutBook: retry[[2]string{"default", "no_retry"}],
         FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
         GetBigBook: retry[[2]string{"default", "non_idempotent"}],
@@ -786,6 +788,23 @@ func (c *LibClient) MonologAboutBook(ctx context.Context, opts ...gax.CallOption
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
         resp, err = c.client.MonologAboutBook(ctx, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// BabbleAboutBook test samplegen response handling when a client streaming method returns Empty.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+func (c *LibClient) BabbleAboutBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_BabbleAboutBookClient, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.BabbleAboutBook[0:len(c.CallOptions.BabbleAboutBook):len(c.CallOptions.BabbleAboutBook)], opts...)
+    var resp librarypb.LibraryService_BabbleAboutBookClient
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.BabbleAboutBook(ctx, settings.GRPC...)
         return err
     }, opts...)
     if err != nil {
@@ -1654,6 +1673,32 @@ func ExampleClient_MonologAboutBook() {
     _ = resp
 }
 
+func ExampleClient_BabbleAboutBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    stream, err := c.BabbleAboutBook(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    reqs := []*librarypb.DiscussBookRequest{
+        // TODO: Create requests.
+    }
+    for _, req := range reqs {
+        if err := stream.Send(req); err != nil {
+            // TODO: Handle error.
+        }
+    }
+    resp, err := stream.CloseAndRecv()
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
 func ExampleClient_FindRelatedBooks() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
@@ -2098,6 +2143,26 @@ func (s *mockLibraryServer) MonologAboutBook(stream librarypb.LibraryService_Mon
         return s.err
     }
     return stream.SendAndClose(s.resps[0].(*librarypb.Comment))
+}
+
+func (s *mockLibraryServer) BabbleAboutBook(stream librarypb.LibraryService_BabbleAboutBookServer) error {
+    md, _ := metadata.FromIncomingContext(stream.Context())
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    for {
+        if req, err := stream.Recv(); err == io.EOF {
+            break
+        } else if err != nil {
+            return err
+        } else {
+            s.reqs = append(s.reqs, req)
+        }
+    }
+    if s.err != nil {
+        return s.err
+    }
+    return stream.SendAndClose(s.resps[0].(*emptypb.Empty))
 }
 
 func (s *mockLibraryServer) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelatedBooksRequest) (*librarypb.FindRelatedBooksResponse, error) {
@@ -3705,6 +3770,66 @@ func TestLibraryServiceMonologAboutBookError(t *testing.T) {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
+}
+func TestLibraryServiceBabbleAboutBook(t *testing.T) {
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var request *librarypb.DiscussBookRequest = &librarypb.DiscussBookRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.BabbleAboutBook(context.Background())
+    if err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.Send(request); err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.CloseAndRecv()
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+}
+
+func TestLibraryServiceBabbleAboutBookError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var request *librarypb.DiscussBookRequest = &librarypb.DiscussBookRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.BabbleAboutBook(context.Background())
+    if err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.Send(request); err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.CloseAndRecv()
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
 }
 func TestLibraryServiceFindRelatedBooks(t *testing.T) {
     var nextPageToken string = ""

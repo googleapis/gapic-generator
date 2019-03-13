@@ -281,6 +281,16 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format("%s %s", paramName, getCommentReformatter().reformat(text));
+  }
+
+  @Override
+  public List<String> getWrappedDocLines(String text, boolean reformat) {
+    return getWrappedDocLines(text, reformat, 80);
+  }
+
+  @Override
   public List<String> getThrowsDocLines(MethodConfig methodConfig) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
     lines.add(

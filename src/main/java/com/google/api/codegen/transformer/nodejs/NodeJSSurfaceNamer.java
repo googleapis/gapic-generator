@@ -154,6 +154,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
             "responses", "operation", "initApiResponse", "result", "metadata", "finalApiResponse");
       case LongRunningPromise:
         return ImmutableSet.of("responses", "result", "metadata", "finalApiResponse");
+      case LongRunningPromiseAwait:
+        return ImmutableSet.of("response", "operation");
       default:
         throw new IllegalArgumentException("unrecognized calling form: " + form);
     }
@@ -243,6 +245,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAsyncApiMethodName(MethodModel method, VisibilityConfig visibility) {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
+  }
+
+  @Override
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format(
+        "@param %s {%s} %s", paramName, paramTypeName, getCommentReformatter().reformat(text));
   }
 
   /** Return JSDoc callback comment and return type comment for the given method. */
@@ -607,6 +615,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       case RequestStreamingBidi:
       case RequestStreamingClient:
       case RequestStreamingServer:
+      case LongRunningPromiseAwait:
         return "response";
       case RequestAsyncPaged:
       case RequestAsyncPagedAll:

@@ -119,6 +119,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format("@param %s %s", paramName, getCommentReformatter().reformat(text));
+  }
+
+  @Override
   public List<String> getDocLines(String text) {
     return JavaRenderingUtil.getDocLines(text);
   }

@@ -25,6 +25,7 @@ public abstract class ApiMethodDocView {
 
   public abstract List<ParamDocView> paramDocs();
 
+  @Nullable
   public abstract List<String> throwsDocLines();
 
   @Nullable

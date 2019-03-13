@@ -72,6 +72,7 @@ public enum CallingForm {
   LongRunningFlattened,
   LongRunningFlattenedAsync, // used by: java
   LongRunningPromise, // used by: nodejs py
+  LongRunningPromiseAwait, // used by: nodejs
   LongRunningRequest, // used by: php
   LongRunningRequestAsync, // used by: java php ruby
 
