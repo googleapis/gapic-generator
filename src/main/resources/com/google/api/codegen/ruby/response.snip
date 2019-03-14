@@ -1,0 +1,79 @@
+@extends "ruby/common.snip"
+
+@snippet processOutputViews(outputViews)
+  @join view : outputViews on BREAK
+    @switch view.kind
+      @case "COMMENT"
+        {@processCommentView(view)}
+      @case "DEFINE"
+        {@processDefineView(view)}
+      @case "ARRAY_LOOP"
+        {@processArrayLoopView(view)}
+      @case "MAP_LOOP"
+        {@processMapLoopView(view)}
+      @case "PRINT"
+        {@processPrintView(view)}
+      @default
+        $unhandledResponseForm: {@view}
+    @end
+  @end
+@end
+
+@private processCommentView(view)
+  {@toComments(view.lines)}
+@end
+
+@private processDefineView(view)
+  {@view.variableName} = {@variableField(view.reference)};
+@end
+
+@private processPrintView(view)
+  @if view.args.size == 0
+    console.log({@view.format});
+  @else
+    @if view.format == "%s"
+      puts {@view.args.get(0).formattedName}
+    @else
+      puts "{@view.format}"
+    @end
+  @end
+@end
+
+@private processArrayLoopView(view)
+  {@variableField(view.collection)}.each do |{@view.variableName}|
+    {@processOutputViews(view.body)}
+  end
+@end
+
+@private processMapLoopView(view)
+  @if and(@view.keyVariableName, @view.valueVariableName)
+    {@variableField(view.map)}.each do |{@view.keyVariableName}, {@view.valueVariableName}|
+
+  @else
+    @if @view.keyVariableName
+      {@variableField(view.map)}.keys.each do |{@view.keyVariableName}|
+
+    @else
+      @if @view.valueVariableName
+        {@variableField(view.map)}.values.each do |{@view.valueVariableName}|
+
+      @else
+        $unhandledMapLoopView: {@view}
+
+      @end
+    @end
+  @end
+    {@processOutputViews(view.body)}
+  end
+
+@end
+
+@private variableField(arg)
+  {@arg.variable}{@accessor(arg.accessors)}
+@end
+
+@private accessor(accessors)
+  @join field : accessors on ""
+    {@field}
+  @end
+@end

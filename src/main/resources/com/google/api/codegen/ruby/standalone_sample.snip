@@ -1,50 +1,104 @@
+@extends "ruby/common.snip"
 @extends "ruby/initcode.snip"
+@extends "ruby/response.snip"
 
 @snippet generate(sampleFile)
-  //FIXME: license section
-
   @let apiMethod = sampleFile.libraryMethod
     @let sample = sampleFile.sample
+      {@license(sampleFile.fileHeader)}
+
       @# DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+      
+      require "{@apiMethod.initCode.topLevelIndexFileImportName}"
+
       {@standaloneSample(apiMethod, sample)}
     @end
   @end
 @end
 
 @private standaloneSample(apiMethod, sample)
-  @# FIXME: import section
-  @# FIXME: sample function declaration
-  @# FIXME: initialize client
-
-  {@initCode(sample.sampleInitCode)}
-
-  @switch sample.callingForm
-  @case "Request"
-    {@optionalArrayMethodSampleCodeNonStreaming(apiMethod)}
-  @case "RequestPaged"
-    {@pagedOptionalArrayMethodSampleCode(apiMethod)}
-  @case "RequestPagedAll"
-    {@pagedAllOptionalArrayMethodSampleCode(apiMethod)}
-  @case "RequestStreamingBidi"
-    {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod)}
-  @case "RequestStreamingClient"
-    {@optionalArrayMethodSampleCodeClientStreaming(apiMethod)}
-  @case "RequestStreamingServer"
-    {@optionalArrayMethodSampleCodeServerStreaming(apiMethod)}
-  @case "LongRunningRequestAsync"
-    {@longRunningAsyncMethodSampleCode(apiMethod)}
-  @default
-    $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+  @# [START {@sample.regionTag}]
+  
+  @if not(sample.sampleFunctionDoc.isEmpty)
+    {@processSampleFunctionDoc(sample.sampleFunctionDoc)}
   @end
-  @# FIXME: response handling
-  @# FIXME: main function
+  def {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)})
+    @# [START {@sample.regionTag}_core]
+    @# Instantiate a client
+    @if apiMethod.hasApiVersion
+      client = {@apiMethod.topLevelAliasedApiClassName}.new(version: :{@apiMethod.apiVersion.toLowerCase})
+    @else
+      client = {@apiMethod.topLevelAliasedApiClassName}.new
+    @end
+
+    # Construct request
+    {@initCode(sample.sampleInitCode)}
+    
+    @switch sample.callingForm
+    @case "Request"
+      {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)}
+    @case "RequestPaged"
+      {@pagedOptionalArrayMethodSampleCode(apiMethod, sample)}
+    @case "RequestPagedAll"
+      {@pagedAllOptionalArrayMethodSampleCode(apiMethod, sample)}
+    @case "RequestStreamingBidi"
+      {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)}
+    @case "RequestStreamingClient"
+      {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)}
+    @case "RequestStreamingServer"
+      {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)}
+    @case "LongRunningRequestAsync"
+      {@longRunningAsyncMethodSampleCode(apiMethod, sample)}
+    @default
+      $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+    @end
+
+    @# [END {@sample.regionTag}_core]
+  end
+  @# [END {@sample.regionTag}]
+  
+  # Code below processes command-line arguments to execute this code sample.
+
+  require "optparse"
+
+  if $0 == __FILE__
+    @if sample.sampleInitCode.argDefaultParams
+      {@processCliArguments(sample.sampleInitCode.argDefaultParams)}
+
+    @end
+    {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)})
+  end
 @end
 
-@private longRunningAsyncMethodSampleCode(apiMethod)
-  operation = {@methodCallSampleCode(apiMethod)} do |op|
+@private processSampleFunctionDoc(doc)
+  @if doc.paramDocLines.isEmpty
+    @if doc.mainDocLines.size.toString == "1"
+      @# {@doc.mainDocLines.get(0)}
+    @end
+  @else
+    @if doc.mainDocLines.size
+      @join line : @doc.mainDocLines
+        {@""} # {@line}
+      @end
+
+      {@""} #
+
+    @end
+    @join paramDoc : doc.paramDocLines
+      @join line : paramDoc
+        {@""} # {@line}
+      @end
+    @end
+  @end
+@end
+
+@private longRunningAsyncMethodSampleCode(apiMethod, sample)
+  operation = {@methodCallSampleCode(apiMethod, sample)} do |op|
     raise op.results.message if op.error?
-    op_results = op.results
-    @# Process the results.
+    response = op.results
+    @if sample.outputs
+      {@processOutputViews(sample.outputs)}
+    @end
 
     metadata = op.metadata
     @# Process the metadata.
@@ -53,63 +107,76 @@
   operation.wait_until_done!
 @end
 
-@private optionalArrayMethodSampleCodeNonStreaming(apiMethod)
+@private optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)
   @if apiMethod.hasReturnValue
-    response = {@methodCallSampleCode(apiMethod)}
+    response = {@methodCallSampleCode(apiMethod, sample)}
+    @if sample.outputs
+      {@processOutputViews(sample.outputs)}
+    @end
   @else
-    {@methodCallSampleCode(apiMethod)}
+    {@methodCallSampleCode(apiMethod, sample)}
+    @if sample.outputs
+      {@processOutputViews(sample.outputs)}
+    @end
   @end
 @end
 
-@private optionalArrayMethodSampleCodeServerStreaming(apiMethod)
-  {@methodCallSampleCode(apiMethod)}.each do |element|
-    @# Process element.
+@private optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)
+  {@methodCallSampleCode(apiMethod, sample)}.each do |element|
+    {@processOutputViews(sample.outputs)}
   end
 @end
 
-@private optionalArrayMethodSampleCodeClientStreaming(apiMethod)
+@private optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)
   requests = [request]
   @if apiMethod.hasReturnValue
-    response = {@apiMethod.apiVariableName}.{@apiMethod.name}(requests)
+    response = client.{@apiMethod.name}(requests, sample)
   @else
-    {@apiMethod.apiVariableName}.{@apiMethod.name}(requests)
+    client.{@apiMethod.name}(requests)
+  @end
+  @if sample.outputs
+    {@processOutputViews(sample.outputs)}
   @end
 @end
 
-@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod)
+@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)
   requests = [request]
-  {@apiMethod.apiVariableName}.{@apiMethod.name}(requests).each do |element|
-    @# Process element.
+  client.{@apiMethod.name}(requests).each do |element|
+    @if sample.outputs
+      {@processOutputViews(sample.outputs)}
+    @end
   end
 @end
 
-@private pagedAllOptionalArrayMethodSampleCode(apiMethod)
+@private pagedAllOptionalArrayMethodSampleCode(apiMethod, sample)
   @# Iterate over all results.
-  {@methodCallSampleCode(apiMethod)}.each do |element|
-    @# Process element.
+  {@methodCallSampleCode(apiMethod, sample)}.each do |element|
+    {@processOutputViews(sample.outputs)}
   end
 @end
 
-@private pagedOptionalArrayMethodSampleCode(apiMethod)
+@private pagedOptionalArrayMethodSampleCode(apiMethod, sample)
   @# Iterate over results one page at a time.
-  {@methodCallSampleCode(apiMethod)}.each_page do |page|
+  {@methodCallSampleCode(apiMethod, sample)}.each_page do |page|
     @# Process each page at a time.
     page.each do |element|
-      @# Process element.
+      @if sample.outputs
+        {@processOutputViews(sample.outputs)}
+      @end
     end
   end
 @end
 
-@private methodCallSampleCode(apiMethod)
+@private methodCallSampleCode(apiMethod, sample)
   @if apiMethod.initCode.fieldSettings
-    {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+    client.{@apiMethod.name}(\
       {@sampleMethodCallArgList(apiMethod.initCode)})
   @else
-    {@apiMethod.apiVariableName}.{@apiMethod.name}
+    client.{@apiMethod.name}
   @end
 @end
 
-@snippet sampleMethodCallArgList(initCode)
+@private sampleMethodCallArgList(initCode)
   @join fieldSetting : initCode.requiredFieldSettings on ", "
     {@fieldSetting.identifier}
   @end
@@ -120,5 +187,26 @@
     @join fieldSetting : initCode.optionalFieldSettings on ", "
       {@fieldSetting.fieldName}: {@fieldSetting.identifier}
     @end
+  @end
+@end
+
+@private processCliArguments(params)
+
+  @join param : params
+    {@param.identifier} = {@renderInitValue(param.initValue)}
+  @end
+
+  ARGV.options do |opts|
+    @join param: params
+      opts.on("--{@param.identifier}=val") { |val| {@param.identifier} = val }
+    @end
+    opts.parse!
+  end
+
+@end
+
+@private formalArgs(params)
+  @join param : params on ", "
+    {@param.identifier}
   @end
 @end
