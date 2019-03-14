@@ -61,7 +61,7 @@ public class DynamicLangApiMethodTransformer {
     this.sampleTransformer = sampleTransformer;
   }
 
-  /** Grenerates method views for all methods in an interface. */
+  /** Generates method views for all methods in an interface. */
   public List<OptionalArrayMethodView> generateApiMethods(InterfaceContext context) {
     return Streams.stream(context.getSupportedMethods())
         .map(m -> generateApiMethod(context.asRequestMethodContext(m)))

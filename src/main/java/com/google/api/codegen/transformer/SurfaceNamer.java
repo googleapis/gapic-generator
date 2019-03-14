@@ -1695,7 +1695,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   // TODO(hzyi): this method doesn't fit very well in SurfaceNamer. So far we don't have a
-  // better place for this logic but consider move this out when we implement default
+  // better place for this logic but consider moving this out when we implement default
   // calling forms.
   public List<CallingForm> getCallingForms(MethodContext context) {
     return Collections.singletonList(CallingForm.Generic);
