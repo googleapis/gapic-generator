@@ -1694,6 +1694,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getApiMethodName(Name.from("sample").join(method.asName()), VisibilityConfig.PRIVATE);
   }
 
+  // TODO(hzyi): this method doesn't fit very well in SurfaceNamer. So far we don't have a
+  // better place for this logic but consider moving this out when we implement default
+  // calling forms.
+  public List<CallingForm> getCallingForms(MethodContext context) {
+    return Collections.singletonList(CallingForm.Generic);
+  }
+
   /////////////////////////////////// Transport Protocol /////////////////////////////////////////
 
   public Name getTransportProtocolName(TransportProtocol protocol) {

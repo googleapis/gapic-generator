@@ -319,15 +319,12 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
   }
 
   private OptionalArrayMethodView createExampleApiMethodView(GapicMethodContext context) {
-    PythonMethodViewGenerator methodViewGenerator =
-        new PythonMethodViewGenerator(
-            new DynamicLangApiMethodTransformer(
-                new PythonApiMethodParamTransformer(),
-                SampleTransformer.newBuilder()
-                    .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
-                    .build()));
-
-    return methodViewGenerator.generateOneApiMethod(context);
+    return new DynamicLangApiMethodTransformer(
+            new PythonApiMethodParamTransformer(),
+            SampleTransformer.newBuilder()
+                .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
+                .build())
+        .generateApiMethod(context);
   }
 
   /**
