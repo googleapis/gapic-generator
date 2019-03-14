@@ -331,12 +331,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   private String getOperationsScopeName() {
-    // Hard-code Compute API's GlobalOperationClient in for now.
-    // We can expose this configuration in the GAPIC config later.
-    if (getLongRunningMethods().isEmpty()) {
-      return "$ Failed to find methods to be used by long running client.";
-    }
-
     // For now, assume that for each interface, the interface's methods will be of a consistent
     // scope, i.e. exactly one of "Region", "Zone", "Global".
     // TODO(andrealin): Put this in the GAPIC config instead of hard-coding this.
