@@ -527,13 +527,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
       case RequestPaged:
         return ImmutableSet.of("element", "page");
       case RequestPagedAll:
-        return ImmutableSet.of("element");
+      case RequestStreamingServer:
       case RequestStreamingBidi:
         return ImmutableSet.of("element");
       case RequestStreamingClient:
         return ImmutableSet.of("response");
-      case RequestStreamingServer:
-        return ImmutableSet.of("element");
       case LongRunningRequestAsync:
         return ImmutableSet.of("op", "response", "metadata");
       default:

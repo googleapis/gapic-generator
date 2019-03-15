@@ -4991,15 +4991,16 @@ require "library"
 # [START sample]
 
 # Test response handling for methods that return empty
-def sample_babble_about_book()
+def sample_babble_about_book
   # [START sample_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
   request = {}
 
   requests = [request]
-  client.babble_about_book(requests)
+  library_service_client.babble_about_book(requests)
+
   # No one replied
   puts "No one replied."
 
@@ -5035,15 +5036,15 @@ require "library"
 # [START sample]
 
 # Test default response handling is turned off for methods that return empty
-def sample_babble_about_book()
+def sample_babble_about_book
   # [START sample_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
   request = {}
 
   requests = [request]
-  client.babble_about_book(requests)
+  library_service_client.babble_about_book(requests)
 
   # [END sample_core]
 end
@@ -5077,14 +5078,15 @@ require "library"
 # [START sample]
 
 # Test response handling for methods that return empty
-def sample_delete_shelf()
+def sample_delete_shelf
   # [START sample_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
-  formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+  formatted_name = library_service_client.class.shelf_path("[SHELF_ID]")
 
-  client.delete_shelf(formatted_name)
+  library_service_client.delete_shelf(formatted_name)
+
   # Shelf deleted
   puts "Shelf deleted."
 
@@ -5120,14 +5122,14 @@ require "library"
 # [START sample]
 
 # Test default response handling is turned off for methods that return empty
-def sample_delete_shelf()
+def sample_delete_shelf
   # [START sample_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
-  formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+  formatted_name = library_service_client.class.shelf_path("[SHELF_ID]")
 
-  client.delete_shelf(formatted_name)
+  library_service_client.delete_shelf(formatted_name)
 
   # [END sample_core]
 end
@@ -5164,7 +5166,7 @@ require "library"
 def sample_discuss_book(image_file_name)
   # [START turing_prog_request_streaming_bidi_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
   name = "BASIC"
   file_name = "comment_file"
@@ -5178,7 +5180,7 @@ def sample_discuss_book(image_file_name)
   }
 
   requests = [request]
-  client.discuss_book(requests).each do |element|
+  library_service_client.discuss_book(requests).each do |element|
     puts element
   end
 
@@ -5223,10 +5225,10 @@ require "library"
 # [START sample]
 
 # Testing calling forms
-def sample_find_related_books()
+def sample_find_related_books
   # [START sample_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
   names_element = "Odyssey"
   names = [names_element]
@@ -5234,8 +5236,8 @@ def sample_find_related_books()
   shelves = [shelves_element]
 
   # Iterate over all results.
-  client.find_related_books(names, shelves).each do |element|
-    book = element;
+  library_service_client.find_related_books(names, shelves).each do |element|
+    book = element
     puts "Here's a related book: #{book}"
   end
 
@@ -5271,10 +5273,10 @@ require "library"
 # [START sample]
 
 # Testing calling forms
-def sample_find_related_books()
+def sample_find_related_books
   # [START sample_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
   names_element = "Odyssey"
   names = [names_element]
@@ -5282,10 +5284,10 @@ def sample_find_related_books()
   shelves = [shelves_element]
 
   # Iterate over results one page at a time.
-  client.find_related_books(names, shelves).each_page do |page|
+  library_service_client.find_related_books(names, shelves).each_page do |page|
     # Process each page at a time.
     page.each do |element|
-      book = element;
+      book = element
       puts "Here's a related book: #{book}"
     end
   end
@@ -5325,36 +5327,37 @@ require "library"
 def sample_get_big_book(shelf)
   # [START hopper_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
-  formatted_name = Library::V1::LibraryServiceClient.book_path(shelf, "War and Peace")
+  formatted_name = library_service_client.class.book_path(shelf, "War and Peace")
 
-  operation = client.get_big_book(formatted_name) do |op|
-    raise op.results.message if op.error?
-    response = op.results
-    # Testing iterating over map fields when both key and value are specified.
-    response.map_list_value_value.each do |my_key, my_value|
-      puts "key: #{my_key}, value: #{my_value}"
-    end
+  # Make the long-running operation request
+  operation = library_service_client.get_big_book(formatted_name)
 
-    # Testing iterating over map fields when only key is specified.
-    response.map_list_value_value.keys.each do |another_key|
-      puts "key: #{another_key}"
-    end
+  # Block until operation complete
+  operation.wait_until_done!
 
-    # Testing iterating over map fields when only value is specified.
-    response.map_list_value_value.values.each do |another_value|
-      puts "value: #{another_value}"
-    end
+  raise operation.results.message if operation.error?
 
-    puts "name: #{response.name}"
-    puts "author: #{response.author}"
+  results = operation.response.results
 
-    metadata = op.metadata
-    # Process the metadata.
+  # Testing iterating over map fields when both key and value are specified.
+  response.map_list_value_value.each do |my_key, my_value|
+    puts "key: #{my_key}, value: #{my_value}"
   end
 
-  operation.wait_until_done!
+  # Testing iterating over map fields when only key is specified.
+  response.map_list_value_value.keys.each do |another_key|
+    puts "key: #{another_key}"
+  end
+
+  # Testing iterating over map fields when only value is specified.
+  response.map_list_value_value.values.each do |another_value|
+    puts "value: #{another_value}"
+  end
+
+  puts "name: #{response.name}"
+  puts "author: #{response.author}"
 
   # [END hopper_core]
 end
@@ -5404,20 +5407,21 @@ require "library"
 def sample_get_big_book(shelf, big_book_name)
   # [START hopper_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
-  formatted_name = Library::V1::LibraryServiceClient.book_path(shelf, big_book_name)
+  formatted_name = library_service_client.class.book_path(shelf, big_book_name)
 
-  operation = client.get_big_book(formatted_name) do |op|
-    raise op.results.message if op.error?
-    response = op.results
-    puts response
+  # Make the long-running operation request
+  operation = library_service_client.get_big_book(formatted_name)
 
-    metadata = op.metadata
-    # Process the metadata.
-  end
-
+  # Block until operation complete
   operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  results = operation.response.results
+
+  puts response
 
   # [END hopper_core]
 end
@@ -5462,24 +5466,25 @@ require "library"
 # [START sample]
 
 # Test response handling for methods that return empty
-def sample_get_big_nothing()
+def sample_get_big_nothing
   # [START sample_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
-  formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_name = library_service_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
 
-  operation = client.get_big_nothing(formatted_name) do |op|
-    raise op.results.message if op.error?
-    response = op.results
-    # Got nothing
-    puts "Got nothing."
+  # Make the long-running operation request
+  operation = library_service_client.get_big_nothing(formatted_name)
 
-    metadata = op.metadata
-    # Process the metadata.
-  end
-
+  # Block until operation complete
   operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  results = operation.response.results
+
+  # Got nothing
+  puts "Got nothing."
 
   # [END sample_core]
 end
@@ -5513,22 +5518,22 @@ require "library"
 # [START sample]
 
 # Test default response handling is turned off for methods that return empty
-def sample_get_big_nothing()
+def sample_get_big_nothing
   # [START sample_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
-  formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_name = library_service_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
 
-  operation = client.get_big_nothing(formatted_name) do |op|
-    raise op.results.message if op.error?
-    response = op.results
+  # Make the long-running operation request
+  operation = library_service_client.get_big_nothing(formatted_name)
 
-    metadata = op.metadata
-    # Process the metadata.
-  end
-
+  # Block until operation complete
   operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  results = operation.response.results
 
   # [END sample_core]
 end
@@ -5561,17 +5566,17 @@ require "library"
 
 # [START sample]
 
-def sample_get_book()
+def sample_get_book
   # [START sample_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
-  formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_name = library_service_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
 
-  response = client.get_book(formatted_name)
-  int_key_val = response.map_string_value[123];
-  boolean_key_val = response.map_bool_key[true];
-  map_value_field = response.map_message_value["key"].field;
+  response = library_service_client.get_book(formatted_name)
+  int_key_val = response.map_string_value[123]
+  boolean_key_val = response.map_bool_key[true]
+  map_value_field = response.map_message_value["key"].field
   puts "Test printing map fields: #{response.map_list_value_value["quoted_key"]}"
   puts "Test printing enum fields of a map value: #{response.map_message_value["key"].alignment}"
 
@@ -5607,16 +5612,17 @@ require "library"
 # [START sample]
 
 # Testing calling forms
-def sample_monolog_about_book()
+def sample_monolog_about_book
   # [START sample_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
   name = "BASIC"
   request = { name: name }
 
   requests = [request]
-  response = client.monolog_about_book(requests, sample)
+  response = library_service_client.monolog_about_book(requests, sample)
+
   puts "The stage of the comment is: #{response.stage}"
 
   # [END sample_core]
@@ -5657,7 +5663,7 @@ require "library"
 def sample_publish_series(shelf_name, edition)
   # [START canonical_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
   shelf = { name: shelf_name }
 
@@ -5666,7 +5672,7 @@ def sample_publish_series(shelf_name, edition)
   series_string = "xyz3141592654"
   series_uuid = { series_string: series_string }
 
-  response = client.publish_series(shelf, books, series_uuid, edition: edition)
+  response = library_service_client.publish_series(shelf, books, series_uuid, edition: edition)
   # % % % output handling % % % %
   # four_score_and_seven_years ago
   #
@@ -5678,7 +5684,7 @@ def sample_publish_series(shelf_name, edition)
   # and dedicated to the proposition that all_men_are_created_equal.
   #
   # Do something with book_names one by one
-  book_names = response.book_names;
+  book_names = response.book_names
   response.book_names.each do |title|
     # Now we deal with this_single_book!
     puts "\t%`` The book's title: \"#{title}\", \\\nand the book costs $50.00 ``%"
@@ -5731,10 +5737,10 @@ require "library"
 # [START canonical]
 
 # Testing calling forms
-def sample_publish_series()
+def sample_publish_series
   # [START canonical_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
 
   # TODO: Initialize `shelf`:
@@ -5747,7 +5753,7 @@ def sample_publish_series()
   series_uuid = {}
   edition = 2
 
-  response = client.publish_series(shelf, books, series_uuid, edition: edition)
+  response = library_service_client.publish_series(shelf, books, series_uuid, edition: edition)
   puts response
 
   # [END canonical_core]
@@ -5782,14 +5788,14 @@ require "library"
 # [START lovelace]
 
 # Testing calling forms
-def sample_stream_books()
+def sample_stream_books
   # [START lovelace_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
   name = "BASIC"
 
-  client.stream_books(name).each do |element|
+  library_service_client.stream_books(name).each do |element|
     puts element
   end
 
@@ -5825,14 +5831,14 @@ require "library"
 # [START sample]
 
 # Testing calling forms
-def sample_stream_shelves()
+def sample_stream_shelves
   # [START sample_core]
   # Instantiate a client
-  client = Library.new(version: :v1)
+  library_service_client = Library.new version: :v1
 
 
 
-  client.stream_shelves.each do |element|
+  library_service_client.stream_shelves.each do |element|
     puts element
   end
 
