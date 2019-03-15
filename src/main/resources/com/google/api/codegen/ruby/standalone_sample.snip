@@ -69,7 +69,11 @@
       {@processCliArguments(sample.sampleInitCode.argDefaultParams)}
 
     @end
-    {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)})
+    @if sample.sampleInitCode.argDefaultParams.size
+      {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)})
+    @else
+      {@sample.sampleFunctionName}
+    @end
   end
 @end
 
