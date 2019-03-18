@@ -56,7 +56,7 @@
   @case "PagedFlattenedMethod"
       {@unaryTestCase(test)}
   @case "AsyncOperationFlattenedMethod"
-      #TODO(andrealin): Implement this.
+      {@longRunningMethodTestCase(test)}
   @end
 @end
 
@@ -88,6 +88,46 @@
       // Expected exception
     }
   }
+@end
+
+
+@private longRunningMethodTestCase(test)
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.name}() throws Exception {
+    {@initCode(test.mockResponse.rpcResponseInitCode)}
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("{@test.name}")
+            .setStatus("DONE")
+            .build();
+    mockService.addResponse(resultOperation);
+
+    {@initCode(test.testCaseInitCode)}
+
+    {@longRunningMethodCall(test)}
+
+    {@unarySuccessAsserts(test)}
+  }
+
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.nameWithException}() throws Exception {
+    {@addException(test)}
+
+    try {
+      {@initCode(test.testCaseInitCode)}
+
+      client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)}).get();
+      Assert.fail("No exception raised");
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
+    }
+  }
+
 @end
 
 @private addResponse(test)
@@ -152,3 +192,17 @@
     {@fieldSetting.identifier}
   @end
 @end
+
+@snippet longRunningMethodCall(test)
+  {@test.responseTypeName} actualResponse =
+      client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)}).get();
+  Assert.assertEquals(expectedResponse, actualResponse);
+@end
+
+@snippet sampleMethodCallArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end
+

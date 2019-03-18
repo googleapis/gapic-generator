@@ -12264,6 +12264,49 @@ public class AddressClientTest {
     }
   }
 
+  @Test
+  @SuppressWarnings("all")
+  public void deleteAddressTest() throws Exception {
+    EmptyMessage expectedResponse = EmptyMessage.newBuilder().build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("deleteAddressTest")
+            .setStatus("DONE")
+            .build();
+    mockService.addResponse(resultOperation);
+
+    ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+
+    EmptyMessage actualResponse =
+        client.deleteAddressAsync(address).get();
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<String> actualRequests = mockService.getRequestPaths();
+    Assert.assertEquals(1, actualRequests.size());
+
+    String apiClientHeaderKey = mockService.getRequestHeaders()
+        .get(ApiClientHeaderProvider.getDefaultApiClientHeaderKey()).iterator().next();
+    Assert.assertTrue(GaxHttpJsonProperties.getDefaultApiClientHeaderPattern()
+        .matcher(apiClientHeaderKey).matches());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteAddressExceptionTest() throws Exception {
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
+
+    try {
+      ProjectRegionAddressName address = ProjectRegionAddressName.of("[PROJECT]", "[REGION]", "[ADDRESS]");
+
+      client.deleteAddressAsync(address).get();
+      Assert.fail("No exception raised");
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
+    }
+  }
 
 
   @Test
@@ -12392,6 +12435,51 @@ public class AddressClientTest {
     }
   }
 
+  @Test
+  @SuppressWarnings("all")
+  public void insertAddressTest() throws Exception {
+    EmptyMessage expectedResponse = EmptyMessage.newBuilder().build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("insertAddressTest")
+            .setStatus("DONE")
+            .build();
+    mockService.addResponse(resultOperation);
+
+    ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
+    Address addressResource = Address.newBuilder().build();
+
+    EmptyMessage actualResponse =
+        client.insertAddressAsync(region, addressResource).get();
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<String> actualRequests = mockService.getRequestPaths();
+    Assert.assertEquals(1, actualRequests.size());
+
+    String apiClientHeaderKey = mockService.getRequestHeaders()
+        .get(ApiClientHeaderProvider.getDefaultApiClientHeaderKey()).iterator().next();
+    Assert.assertTrue(GaxHttpJsonProperties.getDefaultApiClientHeaderPattern()
+        .matcher(apiClientHeaderKey).matches());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void insertAddressExceptionTest() throws Exception {
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
+
+    try {
+      ProjectRegionName region = ProjectRegionName.of("[PROJECT]", "[REGION]");
+      Address addressResource = Address.newBuilder().build();
+
+      client.insertAddressAsync(region, addressResource).get();
+      Assert.fail("No exception raised");
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
+    }
+  }
 
 
   @Test
@@ -12560,6 +12648,53 @@ public class AddressClientTest {
     }
   }
 
+  @Test
+  @SuppressWarnings("all")
+  public void updateAddressTest() throws Exception {
+    EmptyMessage expectedResponse = EmptyMessage.newBuilder().build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("updateAddressTest")
+            .setStatus("DONE")
+            .build();
+    mockService.addResponse(resultOperation);
+
+    ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
+    Address addressResource = Address.newBuilder().build();
+    List<String> fieldMask = new ArrayList<>();
+
+    EmptyMessage actualResponse =
+        client.updateAddressAsync(address, addressResource, fieldMask).get();
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<String> actualRequests = mockService.getRequestPaths();
+    Assert.assertEquals(1, actualRequests.size());
+
+    String apiClientHeaderKey = mockService.getRequestHeaders()
+        .get(ApiClientHeaderProvider.getDefaultApiClientHeaderKey()).iterator().next();
+    Assert.assertTrue(GaxHttpJsonProperties.getDefaultApiClientHeaderPattern()
+        .matcher(apiClientHeaderKey).matches());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void updateAddressExceptionTest() throws Exception {
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
+
+    try {
+      ProjectGlobalAddressName address = ProjectGlobalAddressName.of("[PROJECT]", "[ADDRESS]");
+      Address addressResource = Address.newBuilder().build();
+      List<String> fieldMask = new ArrayList<>();
+
+      client.updateAddressAsync(address, addressResource, fieldMask).get();
+      Assert.fail("No exception raised");
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
+    }
+  }
 
 
   @Test
