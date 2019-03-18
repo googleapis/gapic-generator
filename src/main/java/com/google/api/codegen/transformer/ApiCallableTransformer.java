@@ -18,7 +18,6 @@ import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
@@ -95,7 +94,7 @@ public class ApiCallableTransformer {
 
     if (context.isLongRunningMethodContext()) {
       // Only Protobuf-based APIs have LongRunningOperations.
-      apiCallables.add(generateOperationApiCallable((GapicMethodContext) context));
+      apiCallables.add(generateOperationApiCallable(context));
     }
 
     return apiCallables;
@@ -170,7 +169,7 @@ public class ApiCallableTransformer {
     return pagedApiCallableBuilder.build();
   }
 
-  private ApiCallableView generateOperationApiCallable(GapicMethodContext context) {
+  private ApiCallableView generateOperationApiCallable(MethodContext context) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
 

@@ -900,7 +900,7 @@ public class StaticLangApiMethodTransformer {
       paramDoc.paramName(context.getNamer().getVariableName(field));
       paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field));
 
-      List<String> docLines = null;
+      List<String> docLines;
       MethodConfig methodConfig = context.getMethodConfig();
       if (methodConfig.isPageStreaming()
           && methodConfig.getPageStreaming().hasPageSizeField()

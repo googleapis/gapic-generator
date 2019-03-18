@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SchemaTypeTable;
@@ -25,6 +26,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -177,7 +179,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   /* Returns a list of public methods, configured by FeatureConfig. Memoize the result. */
-  public Iterable<DiscoveryMethodModel> getPublicMethods() {
+  public List<DiscoveryMethodModel> getPublicMethods() {
     return getInterfaceConfigMethods()
         .stream()
         .filter(m -> isSupported(m))
@@ -186,7 +188,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   /* Returns a list of supported methods, configured by FeatureConfig. Memoize the result. */
-  public Iterable<DiscoveryMethodModel> getSupportedMethods() {
+  public List<DiscoveryMethodModel> getSupportedMethods() {
     return getPublicMethods();
   }
 
@@ -233,8 +235,11 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  public Iterable<MethodModel> getLongRunningMethods() {
-    return ImmutableList.of();
+  public List<MethodModel> getLongRunningMethods() {
+    return getSupportedMethods()
+        .stream()
+        .filter(m -> getMethodConfig(m).hasLroConfig())
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -265,6 +270,22 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getMethodConfig(method),
         null,
         getMethodConfig(method).getLroConfig(),
+        getFeatureConfig());
+  }
+
+  @Override
+  public DiscoGapicMethodContext asNonLroMethodContext(
+      MethodContext methodContext, FlatteningConfig flatteningConfig) {
+    return DiscoGapicMethodContext.create(
+        this,
+        getInterfaceName(),
+        getProductConfig(),
+        getSchemaTypeTable(),
+        getNamer(),
+        (DiscoveryMethodModel) methodContext.getMethodModel(),
+        (DiscoGapicMethodConfig) methodContext.getMethodConfig(),
+        flatteningConfig,
+        null,
         getFeatureConfig());
   }
 
@@ -301,5 +322,26 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   public String getServiceAddress() {
     return getDocument().baseUrl();
+  }
+
+  // TODO(andrealin): Parameterize this in Config instead of hard-coding it.
+  @Override
+  public String getOperationServiceName() {
+    return getOperationsScopeName() + "Operation";
+  }
+
+  private String getOperationsScopeName() {
+    // For now, assume that for each interface, the interface's methods will be of a consistent
+    // scope, i.e. exactly one of "Region", "Zone", "Global".
+    // TODO(andrealin): Put this in the GAPIC config instead of hard-coding this.
+    DiscoveryMethodModel methodModel = (DiscoveryMethodModel) getLongRunningMethods().get(0);
+    Map<String, Schema> pathParms = methodModel.getDiscoMethod().pathParams();
+    if (pathParms.containsKey("region")) {
+      return "Region";
+    } else if (pathParms.containsKey("zone")) {
+      return "Zone";
+    } else {
+      return "Global";
+    }
   }
 }

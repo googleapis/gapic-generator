@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.LongRunningConfigProto;
+import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -23,6 +24,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
 import com.google.longrunning.OperationInfo;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
@@ -30,6 +32,10 @@ import org.threeten.bp.Duration;
 /** LongRunningConfig represents the long-running operation configuration for a method. */
 @AutoValue
 public abstract class LongRunningConfig {
+
+  // Assume that a method with this return type is an LRO method.
+  // TODO(andrealin): Put this in config proto instead of hardcoding Compute API.
+  private static final String DISCOVERY_LRO_TYPE = "Operation";
 
   // Default values for LongRunningConfig fields.
   static final boolean LRO_IMPLEMENTS_CANCEL = true;
@@ -170,6 +176,57 @@ public abstract class LongRunningConfig {
         ProtoTypeRef.create(metadataType),
         LRO_IMPLEMENTS_CANCEL,
         LRO_IMPLEMENTS_DELETE,
+        initialPollDelay,
+        LRO_POLL_DELAY_MULTIPLIER,
+        maxPollDelay,
+        totalPollTimeout);
+  }
+
+  /** Creates an instance of LongRunningConfig from a Discovery method. */
+  @Nullable
+  static LongRunningConfig createLongRunningConfig(DiscoveryMethodModel methodModel) {
+
+    com.google.api.codegen.discovery.Method method = methodModel.getDiscoMethod();
+
+    for (String part : method.id().split("\\.")) {
+      if (DISCOVERY_LRO_TYPE.toLowerCase().equals(part.toLowerCase())) {
+        // This is a method from the Operation Client itself; it isn't a method that *uses* LRO.
+        return null;
+      }
+    }
+    if (method.id().toLowerCase().contains(DISCOVERY_LRO_TYPE.toLowerCase())) {
+      return null;
+    }
+
+    // LRO methods will have Operation as the return type.
+    try {
+      if (method.response() == null
+          || Strings.isNullOrEmpty(method.response().reference())
+          || !DISCOVERY_LRO_TYPE.equals(method.response().reference())) {
+        return null;
+      }
+    } catch (NullPointerException e) {
+      System.exit(1);
+    }
+
+    // Use default retry settings.
+    Duration initialPollDelay = Duration.ofMillis(LRO_INITIAL_POLL_DELAY_MILLIS);
+    Duration maxPollDelay = Duration.ofMillis(LRO_MAX_POLL_DELAY_MILLIS);
+    Duration totalPollTimeout = Duration.ofMillis(LRO_TOTAL_POLL_TIMEOUT_MILLS);
+
+    // Canceling is not available in Compute currently.
+    boolean implementsCancel = false;
+    boolean implementsDelete = true;
+
+    TypeModel returnType = EmptyTypeModel.getInstance();
+    // Let the return Operation type be the metadata type instead.
+    TypeModel metadataType = methodModel.getOutputType();
+
+    return new AutoValue_LongRunningConfig(
+        returnType,
+        metadataType,
+        implementsDelete,
+        implementsCancel,
         initialPollDelay,
         LRO_POLL_DELAY_MULTIPLIER,
         maxPollDelay,

@@ -81,13 +81,13 @@ def _proto_custom_library_impl(ctx):
     check_dep_sources_list = []
 
     for dep in ctx.attr.deps:
-        src = dep.proto.check_deps_sources
+        src = dep[ProtoInfo].check_deps_sources
         srcs_list.append(src)
 
         # This is needed to properly support `go_proto_library`
         if cur_package == dep.label.package:
             check_dep_sources_list.append(src)
-        imports_list.append(dep.proto.transitive_imports)
+        imports_list.append(dep[ProtoInfo].transitive_imports)
 
     srcs = depset(direct = [], transitive = srcs_list)
     imports = depset(direct = [], transitive = imports_list)
@@ -162,7 +162,7 @@ def _proto_custom_library_impl(ctx):
 
 proto_custom_library = rule(
     attrs = {
-        "deps": attr.label_list(mandatory = True, allow_empty = False, providers = ["proto"]),
+        "deps": attr.label_list(mandatory = True, allow_empty = False, providers = [ProtoInfo]),
         "plugin": attr.label(mandatory = False, executable = True, cfg = "host"),
         "plugin_args": attr.label_list(
             mandatory = False,

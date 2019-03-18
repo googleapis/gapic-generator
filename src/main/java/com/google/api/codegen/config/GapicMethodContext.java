@@ -33,12 +33,13 @@ public abstract class GapicMethodContext implements MethodContext {
       SurfaceNamer namer,
       GapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
+      LongRunningConfig longRunningConfig,
       FeatureConfig featureConfig) {
     return new AutoValue_GapicMethodContext(
         productConfig,
         namer,
         flatteningConfig,
-        methodConfig.getLroConfig(),
+        longRunningConfig,
         featureConfig,
         methodConfig,
         surfaceTransformerContext,
@@ -104,6 +105,7 @@ public abstract class GapicMethodContext implements MethodContext {
         getNamer(),
         getMethodConfig(),
         getFlatteningConfig(),
+        getLongRunningConfig(),
         getFeatureConfig());
   }
 
@@ -124,6 +126,7 @@ public abstract class GapicMethodContext implements MethodContext {
         getFlatteningConfig() == null
             ? null
             : getFlatteningConfig().withResourceNamesInSamplesOnly(),
+        getLongRunningConfig(),
         getFeatureConfig());
   }
 

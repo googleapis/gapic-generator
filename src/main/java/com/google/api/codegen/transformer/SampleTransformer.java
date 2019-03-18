@@ -235,7 +235,7 @@ public abstract class SampleTransformer {
     SampleValueSet valueSet = setAndTag.values();
     List<OutputSpec> outputs = valueSet.getOnSuccessList();
     if (outputs.isEmpty()) {
-      outputs = OutputTransformer.defaultOutputSpecs(methodContext.getMethodModel());
+      outputs = OutputTransformer.defaultOutputSpecs(methodContext);
     }
     ImmutableList<OutputView> outputViews =
         outputTransformer().toViews(outputs, methodContext, valueSet, form);

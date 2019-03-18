@@ -101,14 +101,14 @@ def _java_gapic_srcs_pkg_impl(ctx):
     proto_srcs = []
     for src_dep in ctx.attr.deps:
         if is_source_dependency(src_dep):
-            srcs.extend(src_dep.java.source_jars.to_list())
+            srcs.extend(src_dep[JavaInfo].source_jars)
         if is_proto_dependency(src_dep):
-            proto_srcs.extend(src_dep.proto.check_deps_sources.to_list())
+            proto_srcs.extend(src_dep[ProtoInfo].check_deps_sources.to_list())
 
     test_srcs = []
     for test_src_dep in ctx.attr.test_deps:
         if is_source_dependency(test_src_dep):
-            test_srcs.extend(test_src_dep.java.source_jars.to_list())
+            test_srcs.extend(test_src_dep[JavaInfo].source_jars)
 
     paths = _construct_package_dir_paths(ctx.attr.package_dir, ctx.outputs.pkg, ctx.label.name)
 
@@ -171,8 +171,11 @@ def java_gapic_proto_gradle_pkg(
     _java_gapic_gradle_pkg(
         name = name,
         pkg_type = "proto",
+        # TODO: the output of `java_gapic_assembly_gradle_pkg` is broken now
+        #  (because of missing the maven artifacts for the Bazel dependencies
+        #  we now depend on (gax, grpc). Fix this.
         deps = deps + [
-            "@com_google_protobuf_protobuf_java//jar",
+            # "@com_google_protobuf_protobuf_java//jar",
         ],
         test_deps = test_deps,
         visibility = visibility,
@@ -193,8 +196,8 @@ def java_gapic_grpc_gradle_pkg(
         name = name,
         pkg_type = "grpc",
         deps = deps + [
-            "@io_grpc_grpc_protobuf//jar",
-            "@io_grpc_grpc_stub//jar",
+            # "@io_grpc_grpc_protobuf//jar",
+            # "@io_grpc_grpc_stub//jar",
         ],
         test_deps = test_deps,
         visibility = visibility,

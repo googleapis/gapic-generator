@@ -65,6 +65,9 @@ public abstract class StaticLangApiView {
 
   public abstract boolean hasLongRunningOperations();
 
+  @Nullable
+  public abstract String operationsClientName();
+
   // Used in C#
   public abstract boolean apiHasUnaryMethod();
 
@@ -134,6 +137,8 @@ public abstract class StaticLangApiView {
     public abstract Builder hasDefaultInstance(boolean val);
 
     public abstract Builder hasLongRunningOperations(boolean val);
+
+    public abstract Builder operationsClientName(String val);
 
     public abstract Builder apiHasUnaryMethod(boolean val);
 

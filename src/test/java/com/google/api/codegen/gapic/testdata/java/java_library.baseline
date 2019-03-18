@@ -120,6 +120,351 @@ clean {
   delete 'all-jars'
 }
 
+============== file: samples/src/main/java/com/google/example/examples/library/v1/BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.gax.rpc.ApiStreamObserver;
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.gax.rpc.ApiStreamObserver;
+ * import com.google.example.library.v1.DiscussBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ */
+public class BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithResponseHandling {
+  public static void sampleBabbleAboutBook() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ApiStreamObserver<Void> responseObserver =
+          new ApiStreamObserver<Void>() {
+            @Override
+            public void onNext(Void response) {
+              // No one replied
+              System.out.println("No one replied.");
+            }
+
+            @Override
+            public void onError(Throwable t) {
+              // Add error-handling
+            }
+
+            @Override
+            public void onCompleted() {
+              // Do something when complete.
+            }
+          };
+      ApiStreamObserver<DiscussBookRequest> requestObserver =
+          libraryClient.babbleAboutBookCallable().clientStreamingCall(responseObserver);
+
+      DiscussBookRequest request = DiscussBookRequest.newBuilder().build();
+      requestObserver.onNext(request);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleBabbleAboutBook();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.gax.rpc.ApiStreamObserver;
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.gax.rpc.ApiStreamObserver;
+ * import com.google.example.library.v1.DiscussBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ */
+public class BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithoutResponseHandling {
+  public static void sampleBabbleAboutBook() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ApiStreamObserver<Void> responseObserver =
+          new ApiStreamObserver<Void>() {
+            @Override
+            public void onNext(Void response) {}
+
+            @Override
+            public void onError(Throwable t) {
+              // Add error-handling
+            }
+
+            @Override
+            public void onCompleted() {
+              // Do something when complete.
+            }
+          };
+      ApiStreamObserver<DiscussBookRequest> requestObserver =
+          libraryClient.babbleAboutBookCallable().clientStreamingCall(responseObserver);
+
+      DiscussBookRequest request = DiscussBookRequest.newBuilder().build();
+      requestObserver.onNext(request);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleBabbleAboutBook();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfCallableCallableEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.core.ApiFuture;
+ * import com.google.example.library.v1.DeleteShelfRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfName;
+ */
+public class DeleteShelfCallableCallableEmptyResponseTypeWithResponseHandling {
+  public static void sampleDeleteShelf() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Void> future = libraryClient.deleteShelfCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+      // Shelf deleted
+      System.out.println("Shelf deleted.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfCallableCallableEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.core.ApiFuture;
+ * import com.google.example.library.v1.DeleteShelfRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfName;
+ */
+public class DeleteShelfCallableCallableEmptyResponseTypeWithoutResponseHandling {
+  public static void sampleDeleteShelf() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Void> future = libraryClient.deleteShelfCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Flattened",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfName;
+ */
+public class DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling {
+  public static void sampleDeleteShelf() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      libraryClient.deleteShelf(name.toString());
+      // Shelf deleted
+      System.out.println("Shelf deleted.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Flattened",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfName;
+ */
+public class DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling {
+  public static void sampleDeleteShelf() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      libraryClient.deleteShelf(name.toString());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfRequestEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.DeleteShelfRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfName;
+ */
+public class DeleteShelfRequestEmptyResponseTypeWithResponseHandling {
+  public static void sampleDeleteShelf() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      libraryClient.deleteShelf(request);
+      // Shelf deleted
+      System.out.println("Shelf deleted.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.DeleteShelfRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfName;
+ */
+public class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling {
+  public static void sampleDeleteShelf() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      libraryClient.deleteShelf(request);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/DiscussBookCallableCallableStreamingBidiProg.java ==============
 // DO NOT EDIT! This is a generated sample ("CallableStreamingBidi",  "prog")
 package com.google.example.examples.library.v1;
@@ -1019,6 +1364,353 @@ public class GetBigBookOperationCallableLongRunningCallableWap2 {
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.Empty;
+ */
+public class GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithResponseHandling {
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      libraryClient.getBigNothingAsync(name.toString()).get();
+      // Got nothing
+      System.out.println("Got nothing.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.Empty;
+ */
+public class GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithoutResponseHandling {
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      libraryClient.getBigNothingAsync(name.toString()).get();
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.Empty;
+ */
+public class GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithResponseHandling {
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      libraryClient.getBigNothingAsync(request).get();
+      // Got nothing
+      System.out.println("Got nothing.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.Empty;
+ */
+public class GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithoutResponseHandling {
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      libraryClient.getBigNothingAsync(request).get();
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingCallableCallableEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.longrunning.Operation;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.core.ApiFuture;
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.longrunning.Operation;
+ */
+public class GetBigNothingCallableCallableEmptyResponseTypeWithResponseHandling {
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Operation> future = libraryClient.getBigNothingCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+      // Got nothing
+      System.out.println("Got nothing.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingCallableCallableEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.longrunning.Operation;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.core.ApiFuture;
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.longrunning.Operation;
+ */
+public class GetBigNothingCallableCallableEmptyResponseTypeWithoutResponseHandling {
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Operation> future = libraryClient.getBigNothingCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.GetBigBookMetadata;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.gax.longrunning.OperationFuture;
+ * import com.google.example.library.v1.GetBigBookMetadata;
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.Empty;
+ */
+public class GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithResponseHandling {
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingOperationCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+      // Got nothing
+      System.out.println("Got nothing.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.GetBigBookMetadata;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.gax.longrunning.OperationFuture;
+ * import com.google.example.library.v1.GetBigBookMetadata;
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.Empty;
+ */
+public class GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithoutResponseHandling {
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingOperationCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBookCallableCallableTestOnSuccessMap.java ==============
 // DO NOT EDIT! This is a generated sample ("Callable",  "test_on_success_map")
 package com.google.example.examples.library.v1;
@@ -4172,6 +4864,43 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
+   * Test samplegen response handling when a client streaming method returns Empty.
+   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ApiStreamObserver&lt;Void&gt; responseObserver =
+   *       new ApiStreamObserver&lt;Void&gt;() {
+   *         {@literal @}Override
+   *         public void onNext(Void response) {
+   *           // Do something when receive a response
+   *         }
+   *
+   *         {@literal @}Override
+   *         public void onError(Throwable t) {
+   *           // Add error-handling
+   *         }
+   *
+   *         {@literal @}Override
+   *         public void onCompleted() {
+   *           // Do something when complete.
+   *         }
+   *       };
+   *   ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
+   *       libraryClient.babbleAboutBookCallable().clientStreamingCall(responseObserver);
+   *
+   *   DiscussBookRequest request = DiscussBookRequest.newBuilder().build();
+   *   requestObserver.onNext(request);
+   * }
+   * </code></pre>
+   */
+  public final ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable() {
+    return stub.babbleAboutBookCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
    *
    *
    * Sample code:
@@ -6149,6 +6878,13 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   }
 
   /**
+   * Returns the object with the settings used for calls to babbleAboutBook.
+   */
+  public StreamingCallSettings<DiscussBookRequest, Empty> babbleAboutBookSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).babbleAboutBookSettings();
+  }
+
+  /**
    * Returns the object with the settings used for calls to findRelatedBooks.
    */
   public PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
@@ -6472,6 +7208,13 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
      */
     public StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings() {
       return getStubSettingsBuilder().monologAboutBookSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to babbleAboutBook.
+     */
+    public StreamingCallSettings.Builder<DiscussBookRequest, Empty> babbleAboutBookSettings() {
+      return getStubSettingsBuilder().babbleAboutBookSettings();
     }
 
     /**
@@ -7063,6 +7806,13 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setRequestMarshaller(ProtoUtils.marshaller(DiscussBookRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(Comment.getDefaultInstance()))
           .build();
+  private static final MethodDescriptor<DiscussBookRequest, Empty> babbleAboutBookMethodDescriptor =
+      MethodDescriptor.<DiscussBookRequest, Empty>newBuilder()
+          .setType(MethodDescriptor.MethodType.CLIENT_STREAMING)
+          .setFullMethodName("google.example.library.v1.LibraryService/BabbleAboutBook")
+          .setRequestMarshaller(ProtoUtils.marshaller(DiscussBookRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))
+          .build();
   private static final MethodDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksMethodDescriptor =
       MethodDescriptor.<FindRelatedBooksRequest, FindRelatedBooksResponse>newBuilder()
           .setType(MethodDescriptor.MethodType.UNARY)
@@ -7135,6 +7885,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final ServerStreamingCallable<StreamBooksRequest, Book> streamBooksCallable;
   private final BidiStreamingCallable<DiscussBookRequest, Comment> discussBookCallable;
   private final ClientStreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable;
+  private final ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
   private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
@@ -7284,6 +8035,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
         GrpcCallSettings.<DiscussBookRequest, Comment>newBuilder()
             .setMethodDescriptor(monologAboutBookMethodDescriptor)
             .build();
+    GrpcCallSettings<DiscussBookRequest, Empty> babbleAboutBookTransportSettings =
+        GrpcCallSettings.<DiscussBookRequest, Empty>newBuilder()
+            .setMethodDescriptor(babbleAboutBookMethodDescriptor)
+            .build();
     GrpcCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksTransportSettings =
         GrpcCallSettings.<FindRelatedBooksRequest, FindRelatedBooksResponse>newBuilder()
             .setMethodDescriptor(findRelatedBooksMethodDescriptor)
@@ -7334,6 +8089,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.streamBooksCallable = callableFactory.createServerStreamingCallable(streamBooksTransportSettings,settings.streamBooksSettings(), clientContext);
     this.discussBookCallable = callableFactory.createBidiStreamingCallable(discussBookTransportSettings,settings.discussBookSettings(), clientContext);
     this.monologAboutBookCallable = callableFactory.createClientStreamingCallable(monologAboutBookTransportSettings,settings.monologAboutBookSettings(), clientContext);
+    this.babbleAboutBookCallable = callableFactory.createClientStreamingCallable(babbleAboutBookTransportSettings,settings.babbleAboutBookSettings(), clientContext);
     this.findRelatedBooksCallable = callableFactory.createUnaryCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
     this.findRelatedBooksPagedCallable = callableFactory.createPagedCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
     this.addTagCallable = callableFactory.createUnaryCallable(addTagTransportSettings,settings.addTagSettings(), clientContext);
@@ -7451,6 +8207,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public ClientStreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable() {
     return monologAboutBookCallable;
+  }
+
+  public ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable() {
+    return babbleAboutBookCallable;
   }
 
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
@@ -7741,6 +8501,10 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: monologAboutBookCallable()");
   }
 
+  public ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable() {
+    throw new UnsupportedOperationException("Not implemented: babbleAboutBookCallable()");
+  }
+
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
     throw new UnsupportedOperationException("Not implemented: findRelatedBooksPagedCallable()");
   }
@@ -7964,6 +8728,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final ServerStreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
+  private final StreamingCallSettings<DiscussBookRequest, Empty> babbleAboutBookSettings;
   private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
   private final UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final UnaryCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
@@ -8125,6 +8890,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
    */
   public StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings() {
     return monologAboutBookSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to babbleAboutBook.
+   */
+  public StreamingCallSettings<DiscussBookRequest, Empty> babbleAboutBookSettings() {
+    return babbleAboutBookSettings;
   }
 
   /**
@@ -8292,6 +9064,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     streamBooksSettings = settingsBuilder.streamBooksSettings().build();
     discussBookSettings = settingsBuilder.discussBookSettings().build();
     monologAboutBookSettings = settingsBuilder.monologAboutBookSettings().build();
+    babbleAboutBookSettings = settingsBuilder.babbleAboutBookSettings().build();
     findRelatedBooksSettings = settingsBuilder.findRelatedBooksSettings().build();
     addTagSettings = settingsBuilder.addTagSettings().build();
     addLabelSettings = settingsBuilder.addLabelSettings().build();
@@ -8645,6 +9418,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final ServerStreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings;
+    private final StreamingCallSettings.Builder<DiscussBookRequest, Empty> babbleAboutBookSettings;
     private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
     private final UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final UnaryCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
@@ -8661,6 +9435,9 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       definitions.put(
           "idempotent",
           ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
+      definitions.put(
+          "no_retry",
+          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
       definitions.put(
           "non_idempotent",
           ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
@@ -8742,6 +9519,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       discussBookSettings = StreamingCallSettings.newBuilder();
 
       monologAboutBookSettings = StreamingCallSettings.newBuilder();
+
+      babbleAboutBookSettings = StreamingCallSettings.newBuilder();
 
       findRelatedBooksSettings = PagedCallSettings.newBuilder(
           FIND_RELATED_BOOKS_PAGE_STR_FACT);
@@ -8993,6 +9772,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       streamBooksSettings = settings.streamBooksSettings.toBuilder();
       discussBookSettings = settings.discussBookSettings.toBuilder();
       monologAboutBookSettings = settings.monologAboutBookSettings.toBuilder();
+      babbleAboutBookSettings = settings.babbleAboutBookSettings.toBuilder();
       findRelatedBooksSettings = settings.findRelatedBooksSettings.toBuilder();
       addTagSettings = settings.addTagSettings.toBuilder();
       addLabelSettings = settings.addLabelSettings.toBuilder();
@@ -9197,6 +9977,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
      */
     public StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings() {
       return monologAboutBookSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to babbleAboutBook.
+     */
+    public StreamingCallSettings.Builder<DiscussBookRequest, Empty> babbleAboutBookSettings() {
+      return babbleAboutBookSettings;
     }
 
     /**
@@ -11887,6 +12674,36 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
       public void onNext(DiscussBookRequest value) {
         if (response instanceof Comment) {
           responseObserver.onNext((Comment) response);
+        } else if (response instanceof Exception) {
+          responseObserver.onError((Exception) response);
+        } else {
+          responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+        }
+      }
+
+      @Override
+      public void onError(Throwable t) {
+        responseObserver.onError(t);
+      }
+
+      @Override
+      public void onCompleted() {
+        responseObserver.onCompleted();
+      }
+    };
+    return requestObserver;
+  }
+
+  @Override
+  public StreamObserver<DiscussBookRequest> babbleAboutBook(
+      final StreamObserver<Empty> responseObserver) {
+    final Object response = responses.remove();
+    StreamObserver<DiscussBookRequest> requestObserver =
+        new StreamObserver<DiscussBookRequest>() {
+      @Override
+      public void onNext(DiscussBookRequest value) {
+        if (response instanceof Empty) {
+          responseObserver.onNext((Empty) response);
         } else if (response instanceof Exception) {
           responseObserver.onError((Exception) response);
         } else {

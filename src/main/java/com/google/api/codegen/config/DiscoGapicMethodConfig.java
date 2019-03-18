@@ -191,7 +191,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       }
     }
 
-    LongRunningConfig longRunningConfig = null;
+    LongRunningConfig longRunningConfig = LongRunningConfig.createLongRunningConfig(methodModel);
 
     if (error) {
       return null;

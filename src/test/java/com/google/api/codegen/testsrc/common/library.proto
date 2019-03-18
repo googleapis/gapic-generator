@@ -231,6 +231,13 @@ service LibraryService {
     option (google.api.method_signature) = "name";
   }
 
+  // Test samplegen response handling when a client streaming method returns Empty.
+  rpc BabbleAboutBook(stream DiscussBookRequest) returns (google.protobuf.Empty) {
+    // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+
+    option (google.api.method_signature) = "name";
+  }
+
   rpc FindRelatedBooks(FindRelatedBooksRequest) returns (FindRelatedBooksResponse) {
     option (google.api.http) = { get: "/v1/bookShelves" };
     option (google.api.method_signature) = "names,shelves";

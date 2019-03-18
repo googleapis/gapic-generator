@@ -176,19 +176,37 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         getNamer(),
         (GapicMethodConfig) methodContext.getMethodConfig(),
         flatteningConfig,
+        methodContext.getLongRunningConfig(),
         getFeatureConfig());
   }
 
   @Override
-  public GapicMethodContext asRequestMethodContext(MethodModel method) {
+  public GapicMethodContext asNonLroMethodContext(
+      MethodContext methodContext, FlatteningConfig flatteningConfig) {
     return GapicMethodContext.create(
         this,
         getInterface(),
         getProductConfig(),
         getImportTypeTable(),
         getNamer(),
-        getMethodConfig(method),
+        (GapicMethodConfig) methodContext.getMethodConfig(),
+        flatteningConfig,
         null,
+        getFeatureConfig());
+  }
+
+  @Override
+  public GapicMethodContext asRequestMethodContext(MethodModel method) {
+    GapicMethodConfig methodConfig = getMethodConfig(method);
+    return GapicMethodContext.create(
+        this,
+        getInterface(),
+        getProductConfig(),
+        getImportTypeTable(),
+        getNamer(),
+        methodConfig,
+        null,
+        methodConfig.getLroConfig(),
         getFeatureConfig());
   }
 
@@ -276,7 +294,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  public Iterable<MethodModel> getLongRunningMethods() {
+  public List<MethodModel> getLongRunningMethods() {
     List<MethodModel> methods = new ArrayList<>();
     for (MethodModel method : getSupportedMethods()) {
       if (getMethodConfig(method).hasLroConfig()) {
@@ -314,5 +332,12 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
       return hostFromProtoFile;
     }
     return getModel().getServiceConfig().getName();
+  }
+
+  /* The name of the service that does long running operations. */
+  @Override
+  public String getOperationServiceName() {
+    // This refers to the Google longrunning Operations proto3 service.
+    return "Operations";
   }
 }

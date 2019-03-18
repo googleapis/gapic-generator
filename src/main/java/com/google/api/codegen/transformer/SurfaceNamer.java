@@ -20,6 +20,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
@@ -597,6 +598,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the operation callable variant of the given method. */
   public String getOperationCallableMethodName(MethodModel method) {
     return publicMethodName(method.asName().join(Name.from("operation", "callable")));
+  }
+
+  public String getOperationClientName(InterfaceContext context) {
+    return publicClassName(Name.anyCamel(context.getOperationServiceName(), "client"));
   }
 
   /** The name of the plain callable for the given method. */
