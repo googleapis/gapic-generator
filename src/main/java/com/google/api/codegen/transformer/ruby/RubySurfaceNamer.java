@@ -363,6 +363,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiWrapperVariableName(InterfaceConfig interfaceConfig) {
+    Name reducedServiceName = getReducedServiceName(interfaceConfig.getName());
+    return localVarName(reducedServiceName.join("client"));
+  }
+
+  @Override
   public String getModuleServiceName() {
     List<String> apiModules = getTopLevelApiModules();
     return apiModules.get(apiModules.size() - 1);
