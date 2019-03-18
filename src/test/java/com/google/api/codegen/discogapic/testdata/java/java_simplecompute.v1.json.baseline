@@ -12053,6 +12053,62 @@ public class HttpJsonAddressCallableFactory implements HttpJsonStubCallableFacto
  */
 
 package com.google.cloud.simplecompute.v1;
+============== file: src/main/java/com/google/cloud/simplecompute/v1/SimplecomputeOperationSnapshotCallable.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1.longrunning;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.rpc.ApiCallContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.compute.v1.ComputeOperationSnapshot;
+import com.google.cloud.compute.v1.Operation;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * A {@code UnaryCallable} that wraps a UnaryCallable returning a
+ * long-running operation API resource and returns an OperationSnapshot instead.
+ */
+@Generated("by gapic-generator")
+@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+public class OperationSnapshotCallable<RequestT>
+    extends UnaryCallable<RequestT, OperationSnapshot> {
+  private final UnaryCallable<RequestT, Operation> innerCallable;
+
+  public OperationSnapshotCallable(UnaryCallable<RequestT, Operation> innerCallable) {
+    this.innerCallable = innerCallable;
+  }
+
+  @Override
+  public ApiFuture<OperationSnapshot> futureCall(RequestT request, ApiCallContext context) {
+    return ApiFutures.transform(
+        innerCallable.futureCall(request, context),
+        new ApiFunction<Operation, OperationSnapshot>() {
+          @Override
+          public OperationSnapshot apply(Operation operation) {
+            return ComputeOperationSnapshot.create(operation);
+          }
+        },
+        directExecutor());
+  }
+}
 ============== file: build.gradle ==============
 buildscript {
   repositories {

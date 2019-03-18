@@ -183,6 +183,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return rootPackageName + ".stub";
   }
 
+  public String getApiLroPackageName() {
+    return rootPackageName + ".longrunning";
+  }
+
+  public String getApiLroOperationCallableName() {
+    return getApiLroPackageName()
+        + "."
+        + nameFormatter.publicClassName(Name.upperCamel("OperationSnapshotCallable"));
+  }
+
   public String getNotImplementedString(String feature) {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }
@@ -775,6 +785,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the class that operates on a particular Discovery Document resource type. */
   public String getApiWrapperClassName(Document document) {
     return publicClassName(Name.anyCamel(document.name(), "Client"));
+  }
+
+  /** The name of the class that wraps Callables for the API LRO client. */
+  public String getApiLroOperationCallableName(Document document) {
+    return publicClassName(Name.anyCamel(document.name(), "OperationSnapshotCallable"));
   }
 
   public String getGrpcTransportClassName(InterfaceConfig interfaceConfig) {
