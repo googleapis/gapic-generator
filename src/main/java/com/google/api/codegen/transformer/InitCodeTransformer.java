@@ -603,9 +603,8 @@ public class InitCodeTransformer {
     ImportTypeTable typeTable = context.getTypeTable();
     checkState(
         item.getType().isBytesType(),
-        "Error setting %s to be read from file. "
-            + "Replacing field value with file contents is only allowed for fields of type 'bytes', "
-            + "but the type is %s.",
+        "Error setting %s to be read from file. Replacing field value with file contents is only"
+            + " allowed for fields of type 'bytes', but the type is %s.",
         item.getIdentifier(),
         item.getType());
     typeTable.getAndSaveNicknameFor(item.getType());
@@ -705,7 +704,8 @@ public class InitCodeTransformer {
       if (context.getFeatureConfig().enableStringFormatFunctions()
           || fieldConfig.getResourceNameConfig() == null) {
         FormattedInitValueView.Builder formattedInitValue = FormattedInitValueView.newBuilder();
-
+        formattedInitValue.apiVariableName(
+            context.getNamer().getApiWrapperVariableName(context.getInterfaceConfig()));
         formattedInitValue.apiWrapperName(
             context.getNamer().getApiWrapperClassName(context.getInterfaceConfig()));
         formattedInitValue.fullyQualifiedApiWrapperName(

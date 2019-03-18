@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.ruby;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
@@ -46,9 +47,12 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /** The SurfaceNamer for Ruby. */
 public class RubySurfaceNamer extends SurfaceNamer {
@@ -359,6 +363,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiWrapperVariableName(InterfaceConfig interfaceConfig) {
+    Name reducedServiceName = getReducedServiceName(interfaceConfig.getName());
+    return localVarName(reducedServiceName.join("client"));
+  }
+
+  @Override
   public String getModuleServiceName() {
     List<String> apiModules = getTopLevelApiModules();
     return apiModules.get(apiModules.size() - 1);
@@ -457,5 +467,90 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public List<CallingForm> getCallingForms(MethodContext context) {
     return CallingForm.getCallingForms(context, TargetLanguage.RUBY);
+  }
+
+  @Override
+  public List<String> getPrintSpecs(String spec, List<String> args) {
+    spec =
+        spec.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("\"", "\\\"");
+    if (args.isEmpty()) {
+      return Collections.singletonList(spec);
+    }
+    if (args.size() == 1 && "%s".equals(spec)) {
+      return ImmutableList.of(spec, args.get(0));
+    }
+    Object[] formattedArgs =
+        args.stream().map(a -> String.format("#{%s}", a)).toArray(Object[]::new);
+    return Collections.singletonList(String.format(spec, formattedArgs));
+  }
+
+  @Override
+  public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
+    if (accessors.isEmpty()) {
+      return variable;
+    }
+    return variable + String.join("", accessors);
+  }
+
+  @Override
+  public String getIndexAccessorName(int index) {
+    return String.format("[%d]", index);
+  }
+
+  @Override
+  public String getFieldAccessorName(FieldModel field) {
+    return String.format(".%s", getFieldGetFunctionName(field));
+  }
+
+  @Override
+  public String getMapKeyAccessorName(TypeModel keyType, String key) {
+    return String.format("[%s]", getModelTypeFormatter().renderPrimitiveValue(keyType, key));
+  }
+
+  public String getSampleResponseVarName(MethodContext context, CallingForm form) {
+    MethodConfig config = context.getMethodConfig();
+    if (config.getPageStreaming() != null) {
+      return "element";
+    }
+    if (config.getGrpcStreaming() != null) {
+      GrpcStreamingConfig.GrpcStreamingType type = config.getGrpcStreaming().getType();
+      if (type == GrpcStreamingConfig.GrpcStreamingType.ServerStreaming
+          || type == GrpcStreamingConfig.GrpcStreamingType.BidiStreaming) {
+        return "element";
+      }
+    }
+    return "response";
+  }
+
+  public Set<String> getSampleUsedVarNames(MethodContext context, CallingForm form) {
+    switch (form) {
+      case Request:
+        if (context.getMethodModel().isOutputTypeEmpty()) {
+          return ImmutableSet.of();
+        } else {
+          return ImmutableSet.of("response");
+        }
+      case RequestPaged:
+        return ImmutableSet.of("element", "page");
+      case RequestPagedAll:
+      case RequestStreamingServer:
+      case RequestStreamingBidi:
+        return ImmutableSet.of("element");
+      case RequestStreamingClient:
+        return ImmutableSet.of("response");
+      case LongRunningRequestAsync:
+        return ImmutableSet.of("op", "response", "metadata");
+      default:
+        throw new IllegalArgumentException("unrecognized calling form: " + form);
+    }
+  }
+
+  public String getSampleFunctionName(MethodModel method) {
+    return getApiMethodName(Name.from("sample").join(method.asName()), VisibilityConfig.PRIVATE);
+  }
+
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format(
+        "@param %s {%s} %s", paramName, paramTypeName, getCommentReformatter().reformat(text));
   }
 }
