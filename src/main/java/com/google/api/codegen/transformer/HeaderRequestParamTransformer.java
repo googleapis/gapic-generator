@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.viewmodel.HeaderRequestParamView;

@@ -22,7 +22,9 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
@@ -32,8 +34,6 @@ import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
-import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
@@ -310,6 +310,9 @@ public class JavaSurfaceTransformer {
     if (exampleApiMethod == null) {
       exampleApiMethod =
           searchExampleMethod(methods, ClientMethodType.AsyncOperationFlattenedMethod);
+    }
+    if (exampleApiMethod == null) {
+      exampleApiMethod = searchExampleMethod(methods, ClientMethodType.CallableMethod);
     }
     if (exampleApiMethod == null) {
       throw new RuntimeException("Could not find method to use as an example method");
@@ -763,7 +766,6 @@ public class JavaSurfaceTransformer {
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.api.gax.longrunning.OperationFuture");
-
       if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
         typeTable.saveNicknameFor("com.google.longrunning.Operation");
         typeTable.saveNicknameFor("com.google.longrunning.OperationsClient");
@@ -774,7 +776,6 @@ public class JavaSurfaceTransformer {
       case HTTP:
         typeTable.saveNicknameFor("java.util.List");
         typeTable.saveNicknameFor("java.util.ArrayList");
-        typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
     }
   }
 
@@ -853,6 +854,7 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingGrpcChannelProvider");
         if (interfaceConfig.hasLongRunningOperations()) {
           typeTable.saveNicknameFor("com.google.api.gax.grpc.ProtoOperationTransformers");
+          typeTable.saveNicknameFor("com.google.longrunning.Operation");
         }
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GaxGrpcProperties");
         break;
@@ -958,6 +960,7 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.gax.rpc.Callables");
         typeTable.saveNicknameFor("com.google.api.gax.rpc.LongRunningClient");
         typeTable.saveNicknameFor("com.google.cloud.compute.longrunning.OperationSnapshotCallable");
+        typeTable.saveNicknameFor("javax.annotation.Nullable");
         break;
     }
   }

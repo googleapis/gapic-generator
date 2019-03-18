@@ -47,7 +47,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
         protoPackage,
         clientPackage);
     this.baseNames = baseNames;
-    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/libraryproto");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
   }
 
   @Parameters(name = "{4}")
@@ -75,6 +75,12 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
             "library"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA,
+            new String[] {"multiple_services_gapic.yaml"},
+            "multiple_services_pkg2.yaml",
+            "multiple_services",
+            "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"no_path_templates_gapic.yaml"},

@@ -20,8 +20,10 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
@@ -202,7 +204,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
         + "."
         + nameFormatter.publicClassName(Name.anyCamel(serviceName, "LongRunningClientFactory"));
   }
-
 
   public String getOperationSnapshotName(String serviceName) {
     return getApiLroPackageName()
@@ -1037,7 +1038,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * given type table, and returns it.
    */
   public String getAndSaveOperationResponseTypeName(
-      MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
+      MethodContext methodContext, ImportTypeTable typeTable) {
     return getNotImplementedString("SurfaceNamer.getAndSaveOperationResponseTypeName");
   }
 
@@ -1683,6 +1684,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getFieldAccessorName(FieldModel field) {
     return getNotImplementedString("SurfaceNamer.getFieldAccessorName");
+  }
+
+  /**
+   * Returns the expression to get the value of a map entry by its key.
+   *
+   * <p>Note that the returned value includes the language-specific syntax for accessing a map entry
+   * by key. For example, the returned value will be `.get("key")` in Java, and `["key"]` in Python.
+   */
+  public String getMapKeyAccessorName(TypeModel keyType, String key) {
+    return getNotImplementedString("SurfaceNamer.getMapKeyAccessorName");
   }
 
   public String getSampleResponseVarName(MethodContext context, CallingForm form) {

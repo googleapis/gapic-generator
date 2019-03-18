@@ -17,7 +17,6 @@ package com.google.api.codegen.config;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
-import com.google.api.MethodSignature;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionConfigProto;
@@ -84,13 +83,13 @@ public class ResourceNameMessageConfigsTest {
 
   private static final Map<Resource, ProtoFile> allResourceDefs =
       ImmutableMap.of(
-          Resource.newBuilder().setName("Shelf").setPath(PROTO_SHELF_PATH).build(),
+          Resource.newBuilder().setSymbol("Shelf").setPattern(PROTO_SHELF_PATH).build(),
           protoFile,
-          Resource.newBuilder().setName("Book").setPath(PROTO_BOOK_PATH).build(),
+          Resource.newBuilder().setSymbol("Book").setPattern(PROTO_BOOK_PATH).build(),
           protoFile,
           Resource.newBuilder()
-              .setName("archived_book")
-              .setPath("archives/{archive}/books/{book}")
+              .setSymbol("archived_book")
+              .setPattern("archives/{archive}/books/{book}")
               .build(),
           protoFile);
 
@@ -180,10 +179,10 @@ public class ResourceNameMessageConfigsTest {
     ConfigProto emptyConfigProto = ConfigProto.getDefaultInstance();
     String defaultPackage = "";
 
-    Mockito.doReturn(Resource.newBuilder().setPath(PROTO_BOOK_PATH).build())
+    Mockito.doReturn(Resource.newBuilder().setPattern(PROTO_BOOK_PATH).build())
         .when(protoParser)
         .getResource(bookName);
-    Mockito.doReturn(Resource.newBuilder().setPath(PROTO_SHELF_PATH).build())
+    Mockito.doReturn(Resource.newBuilder().setPattern(PROTO_SHELF_PATH).build())
         .when(protoParser)
         .getResource(shelfName);
 
@@ -336,10 +335,7 @@ public class ResourceNameMessageConfigsTest {
     Mockito.doReturn("library.Shelf").when(protoParser).getResourceReference(nameField);
 
     // ProtoFile contributes flattenings {["name", "book"], ["name"]}.
-    Mockito.doReturn(
-            Arrays.asList(
-                MethodSignature.newBuilder().addFields("name").addFields("book").build(),
-                MethodSignature.newBuilder().addFields("name").build()))
+    Mockito.doReturn(Arrays.asList(Arrays.asList("name", "book"), Arrays.asList("name")))
         .when(protoParser)
         .getMethodSignatures(createShelvesMethod);
 

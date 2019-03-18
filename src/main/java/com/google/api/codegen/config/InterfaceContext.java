@@ -12,15 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.config;
 
-import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TransformationContext;
 import java.util.List;
 
 /**
@@ -49,8 +46,6 @@ public interface InterfaceContext extends TransformationContext {
 
   MethodContext asRequestMethodContext(MethodModel method);
 
-  MethodContext asDynamicMethodContext(MethodModel method);
-
   String getInterfaceDescription();
 
   @Override
@@ -59,7 +54,11 @@ public interface InterfaceContext extends TransformationContext {
   @Override
   InterfaceContext withNewTypeTable(String newPackageName);
 
-  MethodContext asFlattenedMethodContext(MethodModel method, FlatteningConfig flatteningConfig);
+  MethodContext asFlattenedMethodContext(
+      MethodContext methodContext, FlatteningConfig flatteningConfig);
+
+  MethodContext asNonLroMethodContext(
+      MethodContext methodContext, FlatteningConfig flatteningConfig);
 
   /* @return the methods in the interface. */
   List<? extends MethodModel> getInterfaceMethods();
@@ -82,5 +81,6 @@ public interface InterfaceContext extends TransformationContext {
 
   String getServiceAddress();
 
+  // TODO(andrealin): remove this and parameterize it in config instead.
   String getOperationServiceName();
 }

@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.OperationData;
 import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.discogapic.EmptyTypeModel;
 import com.google.api.codegen.util.ProtoParser;
@@ -26,6 +25,7 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
+import com.google.longrunning.OperationInfo;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
 
@@ -34,6 +34,7 @@ import org.threeten.bp.Duration;
 public abstract class LongRunningConfig {
 
   // Assume that a method with this return type is an LRO method.
+  // TODO(andrealin): Put this in config proto instead of hardcoding Compute API.
   private static final String DISCOVERY_LRO_TYPE = "Operation";
 
   // Default values for LongRunningConfig fields.
@@ -112,7 +113,7 @@ public abstract class LongRunningConfig {
     int preexistingErrors = diagCollector.getErrorCount();
 
     Model model = method.getModel();
-    OperationData operationTypes = protoParser.getLongRunningOperation(method);
+    OperationInfo operationTypes = protoParser.getLongRunningOperation(method);
     if (operationTypes == null
         || operationTypes.equals(operationTypes.getDefaultInstanceForType())) {
       return null;
@@ -224,8 +225,8 @@ public abstract class LongRunningConfig {
     return new AutoValue_LongRunningConfig(
         returnType,
         metadataType,
-        implementsCancel,
         implementsDelete,
+        implementsCancel,
         initialPollDelay,
         LRO_POLL_DELAY_MULTIPLIER,
         maxPollDelay,

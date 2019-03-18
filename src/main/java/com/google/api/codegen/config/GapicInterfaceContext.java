@@ -12,21 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.config;
 
-import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoInterfaceModel;
-import com.google.api.codegen.config.ProtoMethodModel;
-import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.ProtoModels;
+import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -38,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /**
@@ -177,41 +167,46 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
 
   @Override
   public GapicMethodContext asFlattenedMethodContext(
-      MethodModel method, FlatteningConfig flatteningConfig) {
+      MethodContext methodContext, FlatteningConfig flatteningConfig) {
     return GapicMethodContext.create(
         this,
         getInterface(),
         getProductConfig(),
         getImportTypeTable(),
         getNamer(),
-        getMethodConfig(method),
+        (GapicMethodConfig) methodContext.getMethodConfig(),
         flatteningConfig,
+        methodContext.getLongRunningConfig(),
+        getFeatureConfig());
+  }
+
+  @Override
+  public GapicMethodContext asNonLroMethodContext(
+      MethodContext methodContext, FlatteningConfig flatteningConfig) {
+    return GapicMethodContext.create(
+        this,
+        getInterface(),
+        getProductConfig(),
+        getImportTypeTable(),
+        getNamer(),
+        (GapicMethodConfig) methodContext.getMethodConfig(),
+        flatteningConfig,
+        null,
         getFeatureConfig());
   }
 
   @Override
   public GapicMethodContext asRequestMethodContext(MethodModel method) {
+    GapicMethodConfig methodConfig = getMethodConfig(method);
     return GapicMethodContext.create(
         this,
         getInterface(),
         getProductConfig(),
         getImportTypeTable(),
         getNamer(),
-        getMethodConfig(method),
+        methodConfig,
         null,
-        getFeatureConfig());
-  }
-
-  @Override
-  public GapicMethodContext asDynamicMethodContext(MethodModel method) {
-    return GapicMethodContext.create(
-        this,
-        getInterface(),
-        getProductConfig(),
-        getImportTypeTable(),
-        getNamer(),
-        getMethodConfig(method),
-        null,
+        methodConfig.getLroConfig(),
         getFeatureConfig());
   }
 
@@ -300,10 +295,13 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
 
   @Override
   public List<MethodModel> getLongRunningMethods() {
-    return getSupportedMethods()
-        .stream()
-        .filter(m -> getMethodConfig(m).isLongRunningOperation())
-        .collect(Collectors.toList());
+    List<MethodModel> methods = new ArrayList<>();
+    for (MethodModel method : getSupportedMethods()) {
+      if (getMethodConfig(method).hasLroConfig()) {
+        methods.add(method);
+      }
+    }
+    return methods;
   }
 
   public Iterable<MethodModel> getGrpcStreamingMethods() {

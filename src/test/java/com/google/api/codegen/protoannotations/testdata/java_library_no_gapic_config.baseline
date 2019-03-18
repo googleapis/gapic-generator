@@ -1307,6 +1307,46 @@ public class LibraryServiceClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
+   * Test samplegen response handling when a client streaming method returns Empty.
+   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ApiStreamObserver&lt;Void&gt; responseObserver =
+   *       new ApiStreamObserver&lt;Void&gt;() {
+   *         {@literal @}Override
+   *         public void onNext(Void response) {
+   *           // Do something when receive a response
+   *         }
+   *
+   *         {@literal @}Override
+   *         public void onError(Throwable t) {
+   *           // Add error-handling
+   *         }
+   *
+   *         {@literal @}Override
+   *         public void onCompleted() {
+   *           // Do something when complete.
+   *         }
+   *       };
+   *   ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
+   *       libraryServiceClient.babbleAboutBookCallable().clientStreamingCall(responseObserver);
+   *
+   *   String name = "";
+   *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
+   *     .setName(name)
+   *     .build();
+   *   requestObserver.onNext(request);
+   * }
+   * </code></pre>
+   */
+  public final ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable() {
+    return stub.babbleAboutBookCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
    *
    *
    * Sample code:
@@ -2438,6 +2478,13 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
   }
 
   /**
+   * Returns the object with the settings used for calls to babbleAboutBook.
+   */
+  public StreamingCallSettings<DiscussBookRequest, Empty> babbleAboutBookSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).babbleAboutBookSettings();
+  }
+
+  /**
    * Returns the object with the settings used for calls to findRelatedBooks.
    */
   public PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
@@ -2761,6 +2808,13 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
      */
     public StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings() {
       return getStubSettingsBuilder().monologAboutBookSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to babbleAboutBook.
+     */
+    public StreamingCallSettings.Builder<DiscussBookRequest, Empty> babbleAboutBookSettings() {
+      return getStubSettingsBuilder().babbleAboutBookSettings();
     }
 
     /**
@@ -3300,6 +3354,13 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setRequestMarshaller(ProtoUtils.marshaller(DiscussBookRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(Comment.getDefaultInstance()))
           .build();
+  private static final MethodDescriptor<DiscussBookRequest, Empty> babbleAboutBookMethodDescriptor =
+      MethodDescriptor.<DiscussBookRequest, Empty>newBuilder()
+          .setType(MethodDescriptor.MethodType.CLIENT_STREAMING)
+          .setFullMethodName("google.example.library.v1.LibraryService/BabbleAboutBook")
+          .setRequestMarshaller(ProtoUtils.marshaller(DiscussBookRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))
+          .build();
   private static final MethodDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksMethodDescriptor =
       MethodDescriptor.<FindRelatedBooksRequest, FindRelatedBooksResponse>newBuilder()
           .setType(MethodDescriptor.MethodType.UNARY)
@@ -3372,6 +3433,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final ServerStreamingCallable<StreamBooksRequest, Book> streamBooksCallable;
   private final BidiStreamingCallable<DiscussBookRequest, Comment> discussBookCallable;
   private final ClientStreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable;
+  private final ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
   private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
@@ -3638,6 +3700,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
         GrpcCallSettings.<DiscussBookRequest, Comment>newBuilder()
             .setMethodDescriptor(monologAboutBookMethodDescriptor)
             .build();
+    GrpcCallSettings<DiscussBookRequest, Empty> babbleAboutBookTransportSettings =
+        GrpcCallSettings.<DiscussBookRequest, Empty>newBuilder()
+            .setMethodDescriptor(babbleAboutBookMethodDescriptor)
+            .build();
     GrpcCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksTransportSettings =
         GrpcCallSettings.<FindRelatedBooksRequest, FindRelatedBooksResponse>newBuilder()
             .setMethodDescriptor(findRelatedBooksMethodDescriptor)
@@ -3724,6 +3790,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.streamBooksCallable = callableFactory.createServerStreamingCallable(streamBooksTransportSettings,settings.streamBooksSettings(), clientContext);
     this.discussBookCallable = callableFactory.createBidiStreamingCallable(discussBookTransportSettings,settings.discussBookSettings(), clientContext);
     this.monologAboutBookCallable = callableFactory.createClientStreamingCallable(monologAboutBookTransportSettings,settings.monologAboutBookSettings(), clientContext);
+    this.babbleAboutBookCallable = callableFactory.createClientStreamingCallable(babbleAboutBookTransportSettings,settings.babbleAboutBookSettings(), clientContext);
     this.findRelatedBooksCallable = callableFactory.createUnaryCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
     this.findRelatedBooksPagedCallable = callableFactory.createPagedCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
     this.addTagCallable = callableFactory.createUnaryCallable(addTagTransportSettings,settings.addTagSettings(), clientContext);
@@ -3841,6 +3908,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public ClientStreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable() {
     return monologAboutBookCallable;
+  }
+
+  public ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable() {
+    return babbleAboutBookCallable;
   }
 
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
@@ -4101,6 +4172,10 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: monologAboutBookCallable()");
   }
 
+  public ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable() {
+    throw new UnsupportedOperationException("Not implemented: babbleAboutBookCallable()");
+  }
+
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
     throw new UnsupportedOperationException("Not implemented: findRelatedBooksPagedCallable()");
   }
@@ -4310,6 +4385,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final ServerStreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
+  private final StreamingCallSettings<DiscussBookRequest, Empty> babbleAboutBookSettings;
   private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
   private final UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final UnaryCallSettings<GetBookRequest, Operation> getBigBookSettings;
@@ -4471,6 +4547,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
    */
   public StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings() {
     return monologAboutBookSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to babbleAboutBook.
+   */
+  public StreamingCallSettings<DiscussBookRequest, Empty> babbleAboutBookSettings() {
+    return babbleAboutBookSettings;
   }
 
   /**
@@ -4638,6 +4721,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     streamBooksSettings = settingsBuilder.streamBooksSettings().build();
     discussBookSettings = settingsBuilder.discussBookSettings().build();
     monologAboutBookSettings = settingsBuilder.monologAboutBookSettings().build();
+    babbleAboutBookSettings = settingsBuilder.babbleAboutBookSettings().build();
     findRelatedBooksSettings = settingsBuilder.findRelatedBooksSettings().build();
     addTagSettings = settingsBuilder.addTagSettings().build();
     getBigBookSettings = settingsBuilder.getBigBookSettings().build();
@@ -4870,6 +4954,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final ServerStreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings;
+    private final StreamingCallSettings.Builder<DiscussBookRequest, Empty> babbleAboutBookSettings;
     private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
     private final UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final UnaryCallSettings.Builder<GetBookRequest, Operation> getBigBookSettings;
@@ -4963,6 +5048,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       discussBookSettings = StreamingCallSettings.newBuilder();
 
       monologAboutBookSettings = StreamingCallSettings.newBuilder();
+
+      babbleAboutBookSettings = StreamingCallSettings.newBuilder();
 
       findRelatedBooksSettings = PagedCallSettings.newBuilder(
           FIND_RELATED_BOOKS_PAGE_STR_FACT);
@@ -5194,6 +5281,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       streamBooksSettings = settings.streamBooksSettings.toBuilder();
       discussBookSettings = settings.discussBookSettings.toBuilder();
       monologAboutBookSettings = settings.monologAboutBookSettings.toBuilder();
+      babbleAboutBookSettings = settings.babbleAboutBookSettings.toBuilder();
       findRelatedBooksSettings = settings.findRelatedBooksSettings.toBuilder();
       addTagSettings = settings.addTagSettings.toBuilder();
       getBigBookSettings = settings.getBigBookSettings.toBuilder();
@@ -5398,6 +5486,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
      */
     public StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings() {
       return monologAboutBookSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to babbleAboutBook.
+     */
+    public StreamingCallSettings.Builder<DiscussBookRequest, Empty> babbleAboutBookSettings() {
+      return babbleAboutBookSettings;
     }
 
     /**
@@ -6168,6 +6263,36 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
       public void onNext(DiscussBookRequest value) {
         if (response instanceof Comment) {
           responseObserver.onNext((Comment) response);
+        } else if (response instanceof Exception) {
+          responseObserver.onError((Exception) response);
+        } else {
+          responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+        }
+      }
+
+      @Override
+      public void onError(Throwable t) {
+        responseObserver.onError(t);
+      }
+
+      @Override
+      public void onCompleted() {
+        responseObserver.onCompleted();
+      }
+    };
+    return requestObserver;
+  }
+
+  @Override
+  public StreamObserver<DiscussBookRequest> babbleAboutBook(
+      final StreamObserver<Empty> responseObserver) {
+    final Object response = responses.remove();
+    StreamObserver<DiscussBookRequest> requestObserver =
+        new StreamObserver<DiscussBookRequest>() {
+      @Override
+      public void onNext(DiscussBookRequest value) {
+        if (response instanceof Empty) {
+          responseObserver.onNext((Empty) response);
         } else if (response instanceof Exception) {
           responseObserver.onError((Exception) response);
         } else {

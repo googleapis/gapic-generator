@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.transformer.MethodContext;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.transformer.OutputTransformer;
 import com.google.api.codegen.util.ImportType;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -47,8 +47,11 @@ public class PythonSampleOutputImportTransformer
 
   private static void addImports(
       ImmutableSet.Builder<ImportFileView> imports, MethodContext context, OutputView outputView) {
-    if (outputView.kind() == OutputView.Kind.LOOP) {
-      OutputView.LoopView loopView = (OutputView.LoopView) outputView;
+    if (outputView.kind() == OutputView.Kind.ARRAY_LOOP) {
+      OutputView.ArrayLoopView loopView = (OutputView.ArrayLoopView) outputView;
+      addImports(imports, context, loopView.body());
+    } else if (outputView.kind() == OutputView.Kind.MAP_LOOP) {
+      OutputView.MapLoopView loopView = (OutputView.MapLoopView) outputView;
       addImports(imports, context, loopView.body());
     } else if (outputView.kind() == OutputView.Kind.PRINT) {
       addEnumImports(imports, context, (OutputView.PrintView) outputView);

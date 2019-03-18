@@ -1645,6 +1645,57 @@ class LibraryServiceGapicClient
     }
 
     /**
+     * Test samplegen response handling when a client streaming method returns Empty.
+     * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+     *
+     * Sample code:
+     * ```
+     * $libraryServiceClient = new LibraryServiceClient();
+     * try {
+     *     $request = new DiscussBookRequest();
+     *     // Write data to server and wait for a response
+     *     $requests = [$request];
+     *     $stream = $libraryServiceClient->babbleAboutBook();
+     *     $result = $stream->writeAllAndReadResponse($requests);
+     *     // doSomethingWith($result)
+     *
+     *
+     *     // Alternatively:
+     *
+     *     // Write data as it becomes available, then wait for a response
+     *     $requests = [$request];
+     *     $stream = $libraryServiceClient->babbleAboutBook();
+     *     foreach ($requests as $request) {
+     *         $stream->write($request);
+     *     }
+     *     $result = $stream->readResponse();
+     *     // doSomethingWith($result)
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call.
+     * }
+     *
+     * @throws ApiException if the remote call fails
+     * @experimental
+     */
+    public function babbleAboutBook(array $optionalArgs = [])
+    {
+        return $this->startCall(
+            'BabbleAboutBook',
+            GPBEmpty::class,
+            $optionalArgs,
+            null,
+            Call::CLIENT_STREAMING_CALL
+        );
+    }
+
+    /**
      *
      *
      * Sample code:
@@ -2375,6 +2426,7 @@ class LibraryServiceClient extends LibraryServiceGapicClient
           "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
+        "no_retry": [],
         "non_idempotent": []
       },
       "retry_params": {
@@ -2503,6 +2555,9 @@ class LibraryServiceClient extends LibraryServiceGapicClient
         "MonologAboutBook": {
           "timeout_millis": 30000
         },
+        "BabbleAboutBook": {
+          "timeout_millis": 60000
+        },
         "FindRelatedBooks": {
           "timeout_millis": 3000,
           "retry_codes_name": "idempotent",
@@ -2619,6 +2674,11 @@ return [
                 ]
             ],
             'MonologAboutBook' => [
+                'grpcStreaming' => [
+                    'grpcStreamingType' => 'ClientStreaming',
+                ]
+            ],
+            'BabbleAboutBook' => [
                 'grpcStreaming' => [
                     'grpcStreamingType' => 'ClientStreaming',
                 ]
@@ -2905,6 +2965,311 @@ return [
     ]
 ];
 
+============== file: src/V1/samples/babbleAboutBook/BabbleAboutBookRequestStreamingClientAsyncEmptyResponseTypeWithResponseHandling.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClientAsync",  "empty_response_type_with_response_handling")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\DiscussBookRequest;
+
+function sampleBabbleAboutBook()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $request = new DiscussBookRequest();
+
+    try {
+        // Write data as it becomes available, then wait for a response
+        $requests = [$request];
+        $stream = $libraryServiceClient->babbleAboutBook();
+        foreach ($requests as $request) {
+            $stream->write($request);
+        }
+        $response = $stream->readResponse();
+        // No one replied
+        printf("No one replied." . PHP_EOL);
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleBabbleAboutBook();
+============== file: src/V1/samples/babbleAboutBook/BabbleAboutBookRequestStreamingClientAsyncEmptyResponseTypeWithoutResponseHandling.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClientAsync",  "empty_response_type_without_response_handling")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\DiscussBookRequest;
+
+function sampleBabbleAboutBook()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $request = new DiscussBookRequest();
+
+    try {
+        // Write data as it becomes available, then wait for a response
+        $requests = [$request];
+        $stream = $libraryServiceClient->babbleAboutBook();
+        foreach ($requests as $request) {
+            $stream->write($request);
+        }
+        $response = $stream->readResponse();
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleBabbleAboutBook();
+============== file: src/V1/samples/babbleAboutBook/BabbleAboutBookRequestStreamingClientEmptyResponseTypeWithResponseHandling.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_with_response_handling")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\DiscussBookRequest;
+
+function sampleBabbleAboutBook()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $request = new DiscussBookRequest();
+
+    try {
+        // Write data to server and wait for a response
+        $requests = [$request];
+        $stream = $libraryServiceClient->babbleAboutBook();
+        $response = $stream->writeAllAndReadResponse($requests);
+        // No one replied
+        printf("No one replied." . PHP_EOL);
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleBabbleAboutBook();
+============== file: src/V1/samples/babbleAboutBook/BabbleAboutBookRequestStreamingClientEmptyResponseTypeWithoutResponseHandling.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\DiscussBookRequest;
+
+function sampleBabbleAboutBook()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $request = new DiscussBookRequest();
+
+    try {
+        // Write data to server and wait for a response
+        $requests = [$request];
+        $stream = $libraryServiceClient->babbleAboutBook();
+        $response = $stream->writeAllAndReadResponse($requests);
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleBabbleAboutBook();
+============== file: src/V1/samples/deleteShelf/DeleteShelfRequestEmptyResponseTypeWithResponseHandling.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+function sampleDeleteShelf()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+
+    try {
+        $libraryServiceClient->deleteShelf($formattedName);
+        // Shelf deleted
+        printf("Shelf deleted." . PHP_EOL);
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleDeleteShelf();
+============== file: src/V1/samples/deleteShelf/DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+function sampleDeleteShelf()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+
+    try {
+        $libraryServiceClient->deleteShelf($formattedName);
+
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleDeleteShelf();
 ============== file: src/V1/samples/discussBook/DiscussBookRequestStreamingBidiAsyncProg.php ==============
 <?php
 /*
@@ -3227,9 +3592,24 @@ function sampleGetBigBook($shelf)
             $newOperationResponse->reload();
         }
         if ($newOperationResponse->operationSucceeded()) {
-          $response = $newOperationResponse->getResult();
-          printf("name: %s" . PHP_EOL, $response->getName());
-          printf("author: %s" . PHP_EOL, $response->getAuthor());
+            $response = $newOperationResponse->getResult();
+            // Testing iterating over map fields when both key and value are specified.
+            foreach ($response->getMapListValueValue() as $myKey => $myValue) {
+                printf("key: %s, value: %s" . PHP_EOL, $myKey, print_r($myValue, true));
+            }
+
+            // Testing iterating over map fields when only key is specified.
+            foreach (array_keys($response->getMapListValueValue()) as $anotherKey) {
+                printf("key: %s" . PHP_EOL, $anotherKey);
+            }
+
+            // Testing iterating over map fields when only value is specified.
+            foreach ($response->getMapListValueValue() as $anotherValue) {
+                printf("value: %s" . PHP_EOL, print_r($anotherValue, true));
+            }
+
+            printf("name: %s" . PHP_EOL, $response->getName());
+            printf("author: %s" . PHP_EOL, $response->getAuthor());
         } else {
           $error = $newOperationResponse->getError();
           // handleError($error)
@@ -3304,8 +3684,8 @@ function sampleGetBigBook($shelf, $bigBookName)
             $newOperationResponse->reload();
         }
         if ($newOperationResponse->operationSucceeded()) {
-          $response = $newOperationResponse->getResult();
-          printf("%s" . PHP_EOL, print_r($response, true));
+            $response = $newOperationResponse->getResult();
+            printf("%s" . PHP_EOL, print_r($response, true));
         } else {
           $error = $newOperationResponse->getError();
           // handleError($error)
@@ -3376,6 +3756,21 @@ function sampleGetBigBook($shelf)
         $operationResponse->pollUntilComplete();
         if ($operationResponse->operationSucceeded()) {
             $response = $operationResponse->getResult();
+            // Testing iterating over map fields when both key and value are specified.
+            foreach ($response->getMapListValueValue() as $myKey => $myValue) {
+                printf("key: %s, value: %s" . PHP_EOL, $myKey, print_r($myValue, true));
+            }
+
+            // Testing iterating over map fields when only key is specified.
+            foreach (array_keys($response->getMapListValueValue()) as $anotherKey) {
+                printf("key: %s" . PHP_EOL, $anotherKey);
+            }
+
+            // Testing iterating over map fields when only value is specified.
+            foreach ($response->getMapListValueValue() as $anotherValue) {
+                printf("value: %s" . PHP_EOL, print_r($anotherValue, true));
+            }
+
             printf("name: %s" . PHP_EOL, $response->getName());
             printf("author: %s" . PHP_EOL, $response->getAuthor());
         } else {
@@ -3476,6 +3871,283 @@ $shelf = $options['shelf'];
 $bigBookName = $options['big_book_name'];
 
 sampleGetBigBook($shelf, $bigBookName);
+============== file: src/V1/samples/getBigNothing/GetBigNothingLongRunningRequestAsyncEmptyResponseTypeWithResponseHandling.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_with_response_handling")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+function sampleGetBigNothing()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+
+    try {
+        // start the operation, keep the operation name, and resume later
+        $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
+        $operationName = $operationResponse->getName();
+        // ... do other work
+        $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigNothing');
+        while (!$newOperationResponse->isDone()) {
+            // ... do other work
+            $newOperationResponse->reload();
+        }
+        if ($newOperationResponse->operationSucceeded()) {
+            // operation succeeded and returns no value
+        } else {
+          $error = $newOperationResponse->getError();
+          // handleError($error)
+        }
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleGetBigNothing();
+============== file: src/V1/samples/getBigNothing/GetBigNothingLongRunningRequestAsyncEmptyResponseTypeWithoutResponseHandling.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_without_response_handling")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+function sampleGetBigNothing()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+
+    try {
+        // start the operation, keep the operation name, and resume later
+        $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
+        $operationName = $operationResponse->getName();
+        // ... do other work
+        $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigNothing');
+        while (!$newOperationResponse->isDone()) {
+            // ... do other work
+            $newOperationResponse->reload();
+        }
+        if ($newOperationResponse->operationSucceeded()) {
+            // operation succeeded and returns no value
+        } else {
+          $error = $newOperationResponse->getError();
+          // handleError($error)
+        }
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleGetBigNothing();
+============== file: src/V1/samples/getBigNothing/GetBigNothingLongRunningRequestEmptyResponseTypeWithResponseHandling.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("LongRunningRequest",  "empty_response_type_with_response_handling")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+function sampleGetBigNothing()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+
+    try {
+        $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
+        $operationResponse->pollUntilComplete();
+        if ($operationResponse->operationSucceeded()) {
+            // operation succeeded and returns no value
+        } else {
+            $error = $operationResponse->getError();
+            // handleError($error)
+        }
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleGetBigNothing();
+============== file: src/V1/samples/getBigNothing/GetBigNothingLongRunningRequestEmptyResponseTypeWithoutResponseHandling.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("LongRunningRequest",  "empty_response_type_without_response_handling")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+function sampleGetBigNothing()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+
+    try {
+        $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
+        $operationResponse->pollUntilComplete();
+        if ($operationResponse->operationSucceeded()) {
+            // operation succeeded and returns no value
+        } else {
+            $error = $operationResponse->getError();
+            // handleError($error)
+        }
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleGetBigNothing();
+============== file: src/V1/samples/getBook/GetBookRequestTestOnSuccessMap.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+function sampleGetBook()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+
+    try {
+        $response = $libraryServiceClient->getBook($formattedName);
+        $intKeyVal = $response->getMapStringValue()[123];
+        $booleanKeyVal = $response->getMapBoolKey()[true];
+        $mapValueField = $response->getMapMessageValue()['key']->getField();
+        printf("Test printing map fields: %s" . PHP_EOL, print_r($response->getMapListValueValue()['quoted_key'], true));
+        printf("Test printing enum fields of a map value: %s" . PHP_EOL, $response->getMapMessageValue()['key']->getAlignment());
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleGetBook();
 ============== file: src/V1/samples/monologAboutBook/MonologAboutBookRequestStreamingClientAsyncProg.php ==============
 <?php
 /*

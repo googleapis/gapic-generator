@@ -15,9 +15,9 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.MapParamDocView;

@@ -12,16 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.config;
 
-import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoInterfaceModel;
-import com.google.api.codegen.config.ProtoMethodModel;
-import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
@@ -38,11 +33,13 @@ public abstract class GapicMethodContext implements MethodContext {
       SurfaceNamer namer,
       GapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
+      LongRunningConfig longRunningConfig,
       FeatureConfig featureConfig) {
     return new AutoValue_GapicMethodContext(
         productConfig,
         namer,
         flatteningConfig,
+        longRunningConfig,
         featureConfig,
         methodConfig,
         surfaceTransformerContext,
@@ -108,6 +105,7 @@ public abstract class GapicMethodContext implements MethodContext {
         getNamer(),
         getMethodConfig(),
         getFlatteningConfig(),
+        getLongRunningConfig(),
         getFeatureConfig());
   }
 
@@ -128,6 +126,12 @@ public abstract class GapicMethodContext implements MethodContext {
         getFlatteningConfig() == null
             ? null
             : getFlatteningConfig().withResourceNamesInSamplesOnly(),
+        getLongRunningConfig(),
         getFeatureConfig());
+  }
+
+  @Override
+  public boolean isLongRunningMethodContext() {
+    return getLongRunningConfig() != null;
   }
 }

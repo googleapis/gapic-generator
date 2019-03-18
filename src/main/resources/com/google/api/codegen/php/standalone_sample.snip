@@ -146,7 +146,9 @@
             // operation succeeded and returns no value
         @else
             $response = $operationResponse->getResult();
-            {@processResponse(sample)}
+            @if sample.outputs
+                {@processResponse(sample)}
+            @end
         @end
     } else {
         $error = $operationResponse->getError();
@@ -165,12 +167,14 @@
         $newOperationResponse->reload();
     }
     if ($newOperationResponse->operationSucceeded()) {
-      @if apiMethod.longRunningView.isEmptyOperation
-          // operation succeeded and returns no value
-      @else
-          $response = $newOperationResponse->getResult();
-          {@processResponse(sample)}
-      @end
+        @if apiMethod.longRunningView.isEmptyOperation
+            // operation succeeded and returns no value
+        @else
+            $response = $newOperationResponse->getResult();
+            @if sample.outputs
+                {@processResponse(sample)}
+            @end
+        @end
     } else {
       $error = $newOperationResponse->getError();
       // handleError($error)
@@ -183,8 +187,11 @@
 
     @else
         {@methodCallSampleCode(apiMethod)};
+
     @end
-    {@processResponse(sample)}
+    @if sample.outputs
+        {@processResponse(sample)}
+    @end
 @end
 
 @private pagedSampleCode(sample, apiMethod)
@@ -210,7 +217,9 @@
     $requests = [$request];
     $stream = {@methodCallSampleCode(apiMethod)};
     $response = $stream->writeAllAndReadResponse($requests);
-    {@processResponse(sample)}
+    @if sample.outputs
+        {@processResponse(sample)}
+    @end
 @end
 
 @private clientStreamingAsyncSampleCode(sample, apiMethod)
@@ -221,7 +230,9 @@
         $stream->write($request);
     }
     $response = $stream->readResponse();
-    {@processResponse(sample)}
+    @if sample.outputs
+        {@processResponse(sample)}
+    @end
 @end
 
 @private serverStreamingSampleCode(sample, apiMethod)
@@ -362,11 +373,7 @@
 @end
 
 @private processResponse(sample)
-    @if sample.outputs.size == 0
-        print_r($response);
-    @else
-        {@processOutputViews(sample.outputs)}
-    @end
+    {@processOutputViews(sample.outputs)}
 @end
 
 @private processOutputViews(outputViews)
@@ -376,8 +383,10 @@
             {@processCommentView(view)}
         @case "DEFINE"
             {@processDefineView(view)}
-        @case "LOOP"
-            {@processLoopView(view)}
+        @case "ARRAY_LOOP"
+            {@processArrayLoopView(view)}
+        @case "MAP_LOOP"
+            {@processMapLoopView(view)}
         @case "PRINT"
             {@processPrintView(view)}
         @default
@@ -398,10 +407,32 @@
     {@toComments(view.lines)}
 @end
 
-@private processLoopView(view)
+@private processArrayLoopView(view)
     foreach ({@variableField(view.collection)} as {@variable(view.variableName)}) {
         {@processOutputViews(view.body)}
     }
+@end
+
+@private processMapLoopView(view)
+    @if and(@view.keyVariableName, @view.valueVariableName)
+        foreach ({@variableField(view.map)} as ${@view.keyVariableName} => ${@view.valueVariableName}) {
+
+    @else
+        @if @view.keyVariableName
+            foreach (array_keys({@variableField(view.map)}) as ${@view.keyVariableName}) {
+
+        @else
+            @if @view.valueVariableName
+                foreach ({@variableField(view.map)} as ${@view.valueVariableName}) {
+
+            @else
+                $unhandledMapLoopView: {@view}
+            @end
+        @end
+    @end
+        {@processOutputViews(view.body)}
+    }
+
 @end
 
 @private processDefineView(view)

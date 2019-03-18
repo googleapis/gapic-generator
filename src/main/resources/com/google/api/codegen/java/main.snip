@@ -47,6 +47,11 @@
          decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
       {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
+  @case "CallableMethod"
+    @let coreSampleCode = callableMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
+         decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(doc, decoratedSampleCode)}
+    @end
   @default
     $unhandledCase: {@doc.exampleApiMethod.type}$
   @end
@@ -551,6 +556,7 @@
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
+  # TODO: when LRO is no longer @Beta, set the apiMethod.releaseLevelAnnotation.
   @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
   {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}, \
       {@apiMethod.operationMethod.metadataTypeName}> {@apiMethod.name}(\
@@ -564,6 +570,7 @@
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
+  # TODO: when LRO is no longer @Beta, set the apiMethod.releaseLevelAnnotation.
   @@BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
   {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<\
       {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
@@ -576,6 +583,7 @@
   @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod, apiMethod.initCode)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
+  # TODO: when LRO is no longer @Beta, set the apiMethod.releaseLevelAnnotation.
   @@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
   {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \

@@ -41,7 +41,7 @@ public abstract class LroClientFactoryView {
   }
 
   @AutoValue
-  public static abstract class LroClientInstanceView {
+  public abstract static class LroClientInstanceView {
     public abstract String deleteGlobalOperationCallable();
 
     public abstract String getGlobalOperationCallable();
@@ -59,7 +59,7 @@ public abstract class LroClientFactoryView {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder {
+    public abstract static class Builder {
       public abstract Builder deleteGlobalOperationCallable(String val);
 
       public abstract Builder getGlobalOperationCallable(String val);

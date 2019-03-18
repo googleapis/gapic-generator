@@ -15,10 +15,10 @@
 package com.google.api.codegen.discogapic.transformer.java;
 
 import com.google.api.codegen.config.DiscoApiModel;
+import com.google.api.codegen.config.DiscoGapicInterfaceContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -285,7 +285,8 @@ public class JavaDiscoGapicSurfaceTransformer
     OperationSnapshotView.Builder xapiClass = OperationSnapshotView.newBuilder();
 
     xapiClass.serviceName(model.getSimpleName());
-    xapiClass.operationSnapshotName(context.getNamer().getOperationSnapshotName(model.getSimpleName()));
+    xapiClass.operationSnapshotName(
+        context.getNamer().getOperationSnapshotName(model.getSimpleName()));
     // TODO(andrealin): Parameterize this in config.
     xapiClass.operationResourceName(
         typeTable.getAndSaveNicknameFor("com.google.cloud.compute.v1.Operation"));
@@ -321,7 +322,6 @@ public class JavaDiscoGapicSurfaceTransformer
     return apiFile.build();
   }
 
-
   private LroClientFactoryView generateLroClientFactoryView(
       DiscoApiModel model, TransformationContext context) {
     addLroClientFactoryImports(context.getImportTypeTable());
@@ -329,7 +329,8 @@ public class JavaDiscoGapicSurfaceTransformer
     LroClientFactoryView.Builder xapiClass = LroClientFactoryView.newBuilder();
 
     xapiClass.serviceName(model.getSimpleName());
-    xapiClass.lroClientFactoryName(context.getNamer().getApiLroClientFactoryName(model.getSimpleName()));
+    xapiClass.lroClientFactoryName(
+        context.getNamer().getApiLroClientFactoryName(model.getSimpleName()));
     // TODO(andrealin): Parameterize this in config.
     xapiClass.clientInstances(new LinkedList<>());
     return xapiClass.build();

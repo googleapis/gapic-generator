@@ -20,6 +20,7 @@ import com.google.api.codegen.SampleParameters;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.SampleSpec.ValueSetAndTags;
@@ -234,7 +235,7 @@ public abstract class SampleTransformer {
     SampleValueSet valueSet = setAndTag.values();
     List<OutputSpec> outputs = valueSet.getOnSuccessList();
     if (outputs.isEmpty()) {
-      outputs = OutputTransformer.defaultOutputSpecs(methodContext.getMethodModel());
+      outputs = OutputTransformer.defaultOutputSpecs(methodContext);
     }
     ImmutableList<OutputView> outputViews =
         outputTransformer().toViews(outputs, methodContext, valueSet, form);
