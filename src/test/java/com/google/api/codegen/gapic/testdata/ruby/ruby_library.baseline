@@ -4996,6 +4996,8 @@ def sample_babble_about_book
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  request = {}
+
   requests = [request]
   library_client.babble_about_book(requests)
 
@@ -5039,6 +5041,8 @@ def sample_babble_about_book
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  request = {}
+
   requests = [request]
   library_client.babble_about_book(requests)
 
@@ -5078,6 +5082,8 @@ def sample_delete_shelf
   # [START sample_core]
   # Instantiate a client
   library_client = Library.new version: :v1
+
+  formatted_name = library_client.class.shelf_path("[SHELF_ID]")
 
   library_client.delete_shelf(formatted_name)
 
@@ -5121,6 +5127,8 @@ def sample_delete_shelf
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  formatted_name = library_client.class.shelf_path("[SHELF_ID]")
+
   library_client.delete_shelf(formatted_name)
 
   # [END sample_core]
@@ -5159,6 +5167,17 @@ def sample_discuss_book(image_file_name)
   # [START turing_prog_request_streaming_bidi_core]
   # Instantiate a client
   library_client = Library.new version: :v1
+
+  name = "BASIC"
+  file_name = "comment_file"
+  comment = File.binread file_name
+  comment_2 = { comment: comment }
+  image = File.binread image_file_name
+  request = {
+    name: name,
+    comment: comment_2,
+    image: image
+  }
 
   requests = [request]
   library_client.discuss_book(requests).each do |element|
@@ -5211,6 +5230,11 @@ def sample_find_related_books
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  names_element = "Odyssey"
+  names = [names_element]
+  shelves_element = "Classics"
+  shelves = [shelves_element]
+
   # Iterate over all results.
   library_client.find_related_books(names, shelves).each do |element|
     book = element
@@ -5253,6 +5277,11 @@ def sample_find_related_books
   # [START sample_core]
   # Instantiate a client
   library_client = Library.new version: :v1
+
+  names_element = "Odyssey"
+  names = [names_element]
+  shelves_element = "Classics"
+  shelves = [shelves_element]
 
   # Iterate over results one page at a time.
   library_client.find_related_books(names, shelves).each_page do |page|
@@ -5299,6 +5328,8 @@ def sample_get_big_book(shelf)
   # [START hopper_core]
   # Instantiate a client
   library_client = Library.new version: :v1
+
+  formatted_name = library_client.class.book_path(shelf, "War and Peace")
 
   # Make the long-running operation request
   operation = library_client.get_big_book(formatted_name)
@@ -5378,6 +5409,8 @@ def sample_get_big_book(shelf, big_book_name)
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  formatted_name = library_client.class.book_path(shelf, big_book_name)
+
   # Make the long-running operation request
   operation = library_client.get_big_book(formatted_name)
 
@@ -5438,6 +5471,8 @@ def sample_get_big_nothing
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+
   # Make the long-running operation request
   operation = library_client.get_big_nothing(formatted_name)
 
@@ -5488,6 +5523,8 @@ def sample_get_big_nothing
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+
   # Make the long-running operation request
   operation = library_client.get_big_nothing(formatted_name)
 
@@ -5534,6 +5571,8 @@ def sample_get_book
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+
   response = library_client.get_book(formatted_name)
   int_key_val = response.map_string_value[123]
   boolean_key_val = response.map_bool_key[true]
@@ -5577,6 +5616,9 @@ def sample_monolog_about_book
   # [START sample_core]
   # Instantiate a client
   library_client = Library.new version: :v1
+
+  name = "BASIC"
+  request = { name: name }
 
   requests = [request]
   response = library_client.monolog_about_book(requests, sample)
@@ -5622,6 +5664,13 @@ def sample_publish_series(shelf_name, edition)
   # [START canonical_core]
   # Instantiate a client
   library_client = Library.new version: :v1
+
+  shelf = { name: shelf_name }
+
+  # TODO: Initialize `books`:
+  books = []
+  series_string = "xyz3141592654"
+  series_uuid = { series_string: series_string }
 
   response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
   # % % % output handling % % % %
@@ -5693,6 +5742,17 @@ def sample_publish_series
   # Instantiate a client
   library_client = Library.new version: :v1
 
+
+  # TODO: Initialize `shelf`:
+  shelf = {}
+
+  # TODO: Initialize `books`:
+  books = []
+
+  # TODO: Initialize `series_uuid`:
+  series_uuid = {}
+  edition = 2
+
   response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
   puts response
 
@@ -5732,6 +5792,8 @@ def sample_stream_books
   # [START lovelace_core]
   # Instantiate a client
   library_client = Library.new version: :v1
+
+  name = "BASIC"
 
   library_client.stream_books(name).each do |element|
     puts element
