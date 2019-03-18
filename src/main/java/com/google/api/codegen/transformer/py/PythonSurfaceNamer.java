@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -547,5 +548,10 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return Name.anyCamel(super.getSampleResponseVarName(context, form))
         .toLowerUnderscore()
         .toString();
+  }
+
+  @Override
+  public List<CallingForm> getCallingForms(MethodContext context) {
+    return CallingForm.getCallingForms(context, TargetLanguage.PYTHON);
   }
 }

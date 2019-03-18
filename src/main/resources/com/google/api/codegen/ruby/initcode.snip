@@ -11,10 +11,16 @@
       {@initLineMap(line)}
     @case "SimpleInitLine"
       {@initLineSimple(line)}
+    @case "ReadFileInitLine"
+      {@initLineReadFile(line)}
     @default
       $unhandledCase: {@line.lineType.toString}$
     @end
   @end
+@end
+
+@private initLineReadFile(line)
+  {@line.identifier} = File.binread {@renderInitValue(line.fileName)}
 @end
 
 @private initLineStructure(line)

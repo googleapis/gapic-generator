@@ -4969,6 +4969,312 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "yard", "~> 0.9"
 end
 
+============== file: samples/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_with_response_handling")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+request = {}
+
+requests = [request]
+library_service_client.babble_about_book(requests)
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+request = {}
+
+requests = [request]
+library_service_client.babble_about_book(requests)
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/delete_shelf_request_empty_response_type_with_response_handling.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+
+library_service_client.delete_shelf(formatted_name)
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/delete_shelf_request_empty_response_type_without_response_handling.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+
+library_service_client.delete_shelf(formatted_name)
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/discuss_book_request_streaming_bidi_prog.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+name = "BASIC"
+file_name = "comment_file"
+comment = File.binread file_name
+comment_2 = { comment: comment }
+image = File.binread image_file_name
+request = {
+  name: name,
+  comment: comment_2,
+  image: image
+}
+
+requests = [request]
+library_service_client.discuss_book(requests).each do |element|
+  # Process element.
+end
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/find_related_books_request_paged_all_odyssey.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+names_element = "Odyssey"
+names = [names_element]
+shelves_element = "Classics"
+shelves = [shelves_element]
+
+# Iterate over all results.
+library_service_client.find_related_books(names, shelves).each do |element|
+  # Process element.
+end
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/find_related_books_request_paged_odyssey.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+names_element = "Odyssey"
+names = [names_element]
+shelves_element = "Classics"
+shelves = [shelves_element]
+
+# Iterate over results one page at a time.
+library_service_client.find_related_books(names, shelves).each_page do |page|
+  # Process each page at a time.
+  page.each do |element|
+    # Process element.
+  end
+end
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/get_big_book_long_running_request_async_wap.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+formatted_name = Library::V1::LibraryServiceClient.book_path(shelf, "War and Peace")
+
+operation = library_service_client.get_big_book(formatted_name) do |op|
+  raise op.results.message if op.error?
+  op_results = op.results
+  # Process the results.
+
+  metadata = op.metadata
+  # Process the metadata.
+end
+
+operation.wait_until_done!
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/get_big_book_long_running_request_async_wap2.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap2")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+formatted_name = Library::V1::LibraryServiceClient.book_path(shelf, big_book_name)
+
+operation = library_service_client.get_big_book(formatted_name) do |op|
+  raise op.results.message if op.error?
+  op_results = op.results
+  # Process the results.
+
+  metadata = op.metadata
+  # Process the metadata.
+end
+
+operation.wait_until_done!
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_with_response_handling")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+operation = library_service_client.get_big_nothing(formatted_name) do |op|
+  raise op.results.message if op.error?
+  op_results = op.results
+  # Process the results.
+
+  metadata = op.metadata
+  # Process the metadata.
+end
+
+operation.wait_until_done!
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_without_response_handling")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+operation = library_service_client.get_big_nothing(formatted_name) do |op|
+  raise op.results.message if op.error?
+  op_results = op.results
+  # Process the results.
+
+  metadata = op.metadata
+  # Process the metadata.
+end
+
+operation.wait_until_done!
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/get_book_request_test_on_success_map.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+response = library_service_client.get_book(formatted_name)
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/monolog_about_book_request_streaming_client_prog.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+name = "BASIC"
+request = { name: name }
+
+requests = [request]
+response = library_service_client.monolog_about_book(requests)
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/publish_series_request_pi_version.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+shelf = { name: shelf_name }
+
+# TODO: Initialize `books`:
+books = []
+series_string = "xyz3141592654"
+series_uuid = { series_string: series_string }
+
+response = library_service_client.publish_series(shelf, books, series_uuid, edition: edition)
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/publish_series_request_second_edition.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+
+# TODO: Initialize `shelf`:
+shelf = {}
+
+# TODO: Initialize `books`:
+books = []
+
+# TODO: Initialize `series_uuid`:
+series_uuid = {}
+edition = 2
+
+response = library_service_client.publish_series(shelf, books, series_uuid, edition: edition)
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/stream_books_request_streaming_server_prog.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+name = "BASIC"
+
+library_service_client.stream_books(name).each do |element|
+  # Process element.
+end
+# FIXME: response handling
+# FIXME: main function
+============== file: samples/stream_shelves_request_streaming_server_empty.rb ==============
+//FIXME: license section
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
+# FIXME: import section
+# FIXME: sample function declaration
+# FIXME: initialize client
+
+
+
+library_service_client.stream_shelves.each do |element|
+  # Process element.
+end
+# FIXME: response handling
+# FIXME: main function
 ============== file: test/library/v1/library_service_client_test.rb ==============
 # Copyright 2019 Google LLC
 #

@@ -250,7 +250,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer<Pr
       GapicMethodContext context, boolean packageHasMultipleServices) {
     OptionalArrayMethodView initialApiMethodView =
         new DynamicLangApiMethodTransformer(new RubyApiMethodParamTransformer())
-            .generateMethod(context, packageHasMultipleServices);
+            .generateApiMethod(context);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
 

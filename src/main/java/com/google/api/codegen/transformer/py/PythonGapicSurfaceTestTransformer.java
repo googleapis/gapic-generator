@@ -309,7 +309,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
   private OptionalArrayMethodView createSmokeTestCaseApiMethodView(GapicMethodContext context) {
     OptionalArrayMethodView initialApiMethodView =
         new DynamicLangApiMethodTransformer(new PythonApiMethodParamTransformer())
-            .generateMethod(context);
+            .generateApiMethod(context);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
 

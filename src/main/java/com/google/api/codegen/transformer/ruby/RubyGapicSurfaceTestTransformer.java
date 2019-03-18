@@ -281,7 +281,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
       GapicMethodContext context, boolean packageHasMultipleServices) {
     OptionalArrayMethodView initialApiMethodView =
         new DynamicLangApiMethodTransformer(new RubyApiMethodParamTransformer())
-            .generateMethod(context, packageHasMultipleServices);
+            .generateApiMethod(context);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
     TestCaseTransformer testCaseTransformer =

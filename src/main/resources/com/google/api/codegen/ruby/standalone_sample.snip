@@ -1,0 +1,124 @@
+@extends "ruby/initcode.snip"
+
+@snippet generate(sampleFile)
+  //FIXME: license section
+
+  @let apiMethod = sampleFile.libraryMethod
+    @let sample = sampleFile.sample
+      @# DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+      {@standaloneSample(apiMethod, sample)}
+    @end
+  @end
+@end
+
+@private standaloneSample(apiMethod, sample)
+  @# FIXME: import section
+  @# FIXME: sample function declaration
+  @# FIXME: initialize client
+
+  {@initCode(sample.sampleInitCode)}
+
+  @switch sample.callingForm
+  @case "Request"
+    {@optionalArrayMethodSampleCodeNonStreaming(apiMethod)}
+  @case "RequestPaged"
+    {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+  @case "RequestPagedAll"
+    {@pagedAllOptionalArrayMethodSampleCode(apiMethod)}
+  @case "RequestStreamingBidi"
+    {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod)}
+  @case "RequestStreamingClient"
+    {@optionalArrayMethodSampleCodeClientStreaming(apiMethod)}
+  @case "RequestStreamingServer"
+    {@optionalArrayMethodSampleCodeServerStreaming(apiMethod)}
+  @case "LongRunningRequestAsync"
+    {@longRunningAsyncMethodSampleCode(apiMethod)}
+  @default
+    $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+  @end
+  @# FIXME: response handling
+  @# FIXME: main function
+@end
+
+@private longRunningAsyncMethodSampleCode(apiMethod)
+  operation = {@methodCallSampleCode(apiMethod)} do |op|
+    raise op.results.message if op.error?
+    op_results = op.results
+    @# Process the results.
+
+    metadata = op.metadata
+    @# Process the metadata.
+  end
+
+  operation.wait_until_done!
+@end
+
+@private optionalArrayMethodSampleCodeNonStreaming(apiMethod)
+  @if apiMethod.hasReturnValue
+    response = {@methodCallSampleCode(apiMethod)}
+  @else
+    {@methodCallSampleCode(apiMethod)}
+  @end
+@end
+
+@private optionalArrayMethodSampleCodeServerStreaming(apiMethod)
+  {@methodCallSampleCode(apiMethod)}.each do |element|
+    @# Process element.
+  end
+@end
+
+@private optionalArrayMethodSampleCodeClientStreaming(apiMethod)
+  requests = [request]
+  @if apiMethod.hasReturnValue
+    response = {@apiMethod.apiVariableName}.{@apiMethod.name}(requests)
+  @else
+    {@apiMethod.apiVariableName}.{@apiMethod.name}(requests)
+  @end
+@end
+
+@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod)
+  requests = [request]
+  {@apiMethod.apiVariableName}.{@apiMethod.name}(requests).each do |element|
+    @# Process element.
+  end
+@end
+
+@private pagedAllOptionalArrayMethodSampleCode(apiMethod)
+  @# Iterate over all results.
+  {@methodCallSampleCode(apiMethod)}.each do |element|
+    @# Process element.
+  end
+@end
+
+@private pagedOptionalArrayMethodSampleCode(apiMethod)
+  @# Iterate over results one page at a time.
+  {@methodCallSampleCode(apiMethod)}.each_page do |page|
+    @# Process each page at a time.
+    page.each do |element|
+      @# Process element.
+    end
+  end
+@end
+
+@private methodCallSampleCode(apiMethod)
+  @if apiMethod.initCode.fieldSettings
+    {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod.initCode)})
+  @else
+    {@apiMethod.apiVariableName}.{@apiMethod.name}
+  @end
+@end
+
+@snippet sampleMethodCallArgList(initCode)
+  @join fieldSetting : initCode.requiredFieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+  @if initCode.optionalFieldSettings
+    @if initCode.requiredFieldSettings
+      ,{@" "}
+    @end
+    @join fieldSetting : initCode.optionalFieldSettings on ", "
+      {@fieldSetting.fieldName}: {@fieldSetting.identifier}
+    @end
+  @end
+@end
