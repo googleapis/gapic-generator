@@ -236,8 +236,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer<Pr
       MethodModel method = interfaceConfig.getSmokeTestConfig().getMethod();
       GapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
       FlatteningConfig flatteningGroup =
-          testCaseTransformer.getSmokeTestFlatteningGroup(
-              context.getMethodConfig(method), interfaceConfig.getSmokeTestConfig());
+          testCaseTransformer.getSmokeTestFlatteningGroup(context.getMethodConfig(method));
       GapicMethodContext flattenedMethodContext =
           context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
       exampleMethods.add(

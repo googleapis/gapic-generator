@@ -4591,13 +4591,10 @@ class LibraryServiceSmokeTest extends GeneratedTest
 
         $libraryServiceClient = new LibraryServiceClient();
         $formattedName = $libraryServiceClient->bookName('testShelf-'. time(), $projectId);
-        $optionalFoo = '';
         $rating = Book_Rating::GOOD;
         $book = new Book();
         $book->setRating($rating);
-        $updateMask = new FieldMask();
-        $physicalMask = new \Google\Example\Library\V1\FieldMask();
-        $libraryServiceClient->updateBook($formattedName, $book, ['optionalFoo' => $optionalFoo, 'updateMask' => $updateMask, 'physicalMask' => $physicalMask]);
+        $libraryServiceClient->updateBook($formattedName, $book);
     }
 }
 ============== file: tests/Unit/V1/LibraryServiceClientTest.php ==============
