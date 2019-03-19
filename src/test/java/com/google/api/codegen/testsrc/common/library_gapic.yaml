@@ -95,7 +95,6 @@ interfaces:
       - name%shelf_id="testShelf-$RANDOM"
       - name%book_id=$PROJECT_ID
       - book . rating=GOOD
-    flattening_group_name: update_book_2
   methods:
   - name: CreateShelf
     flattening:
@@ -326,8 +325,7 @@ interfaces:
   - name: GetBook
     flattening:
       groups:
-      - flattening_group_name: get_book_1
-        parameters:
+      - parameters:
         - name
     required_fields:
       - name
@@ -407,12 +405,10 @@ interfaces:
   - name: UpdateBook
     flattening:
       groups:
-      - flattening_group_name: update_book_1
-        parameters:
+      - parameters:
         - name
         - book
-      - flattening_group_name: update_book_2
-        parameters:
+      - parameters:
         - name
         - optional_foo
         - book

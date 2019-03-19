@@ -165,8 +165,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     SurfaceNamer namer = context.getNamer();
 
     FlatteningConfig flatteningGroup =
-        testCaseTransformer.getSmokeTestFlatteningGroup(
-            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
+        testCaseTransformer.getSmokeTestFlatteningGroup(context.getMethodConfig(method));
     MethodContext methodContext =
         context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
     if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
