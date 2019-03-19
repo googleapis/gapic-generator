@@ -288,14 +288,14 @@ $ gem install library
 ```rb
 require "library"
 
-library_service_client = Library.new
+library_client = Library.new
 formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
 optional_foo = ''
 rating = :GOOD
 book = { rating: rating }
 update_mask = {}
 physical_mask = {}
-response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+response = library_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 ```
 
 ### Next Steps
@@ -569,14 +569,14 @@ describe "LibraryServiceSmokeTest v1" do
     end
     project_id = ENV["LIBRARY_TEST_PROJECT"].freeze
 
-    library_service_client = Library.new(version: :v1)
+    library_client = Library.new(version: :v1)
     formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
     optional_foo = ''
     rating = :GOOD
     book = { rating: rating }
     update_mask = {}
     physical_mask = {}
-    response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+    response = library_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
   end
 end
 
@@ -626,14 +626,14 @@ require "pathname"
 # ```rb
 # require "library"
 #
-# library_service_client = Library.new
+# library_client = Library.new
 # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
 # optional_foo = ''
 # rating = :GOOD
 # book = { rating: rating }
 # update_mask = {}
 # physical_mask = {}
-# response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+# response = library_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 # ```
 #
 # ### Next Steps
@@ -792,14 +792,14 @@ module Library
   # ```rb
   # require "library"
   #
-  # library_service_client = Library.new(version: :v1)
+  # library_client = Library.new(version: :v1)
   # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
   # optional_foo = ''
   # rating = :GOOD
   # book = { rating: rating }
   # update_mask = {}
   # physical_mask = {}
-  # response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+  # response = library_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
   # ```
   #
   # ### Next Steps
@@ -3161,11 +3161,11 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #
       #   # TODO: Initialize `shelf`:
       #   shelf = {}
-      #   response = library_service_client.create_shelf(shelf)
+      #   response = library_client.create_shelf(shelf)
 
       def create_shelf \
           shelf,
@@ -3202,12 +3202,12 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #
       #   # TODO: Initialize `options_`:
       #   options_ = ''
-      #   response = library_service_client.get_shelf(formatted_name, options_)
+      #   response = library_client.get_shelf(formatted_name, options_)
 
       def get_shelf \
           name,
@@ -3243,15 +3243,15 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #
       #   # Iterate over all results.
-      #   library_service_client.list_shelves.each do |element|
+      #   library_client.list_shelves.each do |element|
       #     # Process element.
       #   end
       #
       #   # Or iterate over results one page at a time.
-      #   library_service_client.list_shelves.each_page do |page|
+      #   library_client.list_shelves.each_page do |page|
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
@@ -3277,9 +3277,9 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
-      #   library_service_client.delete_shelf(formatted_name)
+      #   library_client.delete_shelf(formatted_name)
 
       def delete_shelf \
           name,
@@ -3312,10 +3312,10 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
-      #   response = library_service_client.merge_shelves(formatted_name, formatted_other_shelf_name)
+      #   response = library_client.merge_shelves(formatted_name, formatted_other_shelf_name)
 
       def merge_shelves \
           name,
@@ -3349,12 +3349,12 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #
       #   # TODO: Initialize `book`:
       #   book = {}
-      #   response = library_service_client.create_book(formatted_name, book)
+      #   response = library_client.create_book(formatted_name, book)
 
       def create_book \
           name,
@@ -3398,7 +3398,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #
       #   # TODO: Initialize `shelf`:
       #   shelf = {}
@@ -3407,7 +3407,7 @@ module Library
       #   books = []
       #   series_string = "foobar"
       #   series_uuid = { series_string: series_string }
-      #   response = library_service_client.publish_series(shelf, books, series_uuid)
+      #   response = library_client.publish_series(shelf, books, series_uuid)
 
       def publish_series \
           shelf,
@@ -3443,9 +3443,9 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   response = library_service_client.get_book(formatted_name)
+      #   response = library_client.get_book(formatted_name)
 
       def get_book \
           name,
@@ -3485,17 +3485,17 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   filter = "book-filter-string"
       #
       #   # Iterate over all results.
-      #   library_service_client.list_books(formatted_name, filter: filter).each do |element|
+      #   library_client.list_books(formatted_name, filter: filter).each do |element|
       #     # Process element.
       #   end
       #
       #   # Or iterate over results one page at a time.
-      #   library_service_client.list_books(formatted_name, filter: filter).each_page do |page|
+      #   library_client.list_books(formatted_name, filter: filter).each_page do |page|
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
@@ -3531,9 +3531,9 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   library_service_client.delete_book(formatted_name)
+      #   library_client.delete_book(formatted_name)
 
       def delete_book \
           name,
@@ -3576,12 +3576,12 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # TODO: Initialize `book`:
       #   book = {}
-      #   response = library_service_client.update_book(formatted_name, book)
+      #   response = library_client.update_book(formatted_name, book)
 
       def update_book \
           name,
@@ -3619,10 +3619,10 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
-      #   response = library_service_client.move_book(formatted_name, formatted_other_shelf_name)
+      #   response = library_client.move_book(formatted_name, formatted_other_shelf_name)
 
       def move_book \
           name,
@@ -3661,15 +3661,15 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #
       #   # Iterate over all results.
-      #   library_service_client.list_strings.each do |element|
+      #   library_client.list_strings.each do |element|
       #     # Process element.
       #   end
       #
       #   # Or iterate over results one page at a time.
-      #   library_service_client.list_strings.each_page do |page|
+      #   library_client.list_strings.each_page do |page|
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
@@ -3705,7 +3705,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   comment = ''
       #   stage = :UNSET
@@ -3716,7 +3716,7 @@ module Library
       #     alignment: alignment
       #   }
       #   comments = [comments_element]
-      #   library_service_client.add_comments(formatted_name, comments)
+      #   library_client.add_comments(formatted_name, comments)
 
       def add_comments \
           name,
@@ -3747,9 +3747,9 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
-      #   response = library_service_client.get_book_from_archive(formatted_name)
+      #   response = library_client.get_book_from_archive(formatted_name)
 
       def get_book_from_archive \
           name,
@@ -3780,10 +3780,10 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   response = library_service_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+      #   response = library_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
 
       def get_book_from_anywhere \
           name,
@@ -3816,9 +3816,9 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   response = library_service_client.get_book_from_absolutely_anywhere(formatted_name)
+      #   response = library_client.get_book_from_absolutely_anywhere(formatted_name)
 
       def get_book_from_absolutely_anywhere \
           name,
@@ -3851,14 +3851,14 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   index_name = "default index"
       #
       #   # TODO: Initialize `index_map_item`:
       #   index_map_item = ''
       #   index_map = { "default_key" => index_map_item }
-      #   library_service_client.update_book_index(formatted_name, index_name, index_map)
+      #   library_client.update_book_index(formatted_name, index_name, index_map)
 
       def update_book_index \
           name,
@@ -3889,8 +3889,8 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
-      #   library_service_client.stream_shelves.each do |element|
+      #   library_client = Library.new(version: :v1)
+      #   library_client.stream_shelves.each do |element|
       #     # Process element.
       #   end
 
@@ -3914,11 +3914,11 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #
       #   # TODO: Initialize `name`:
       #   name = ''
-      #   library_service_client.stream_books(name).each do |element|
+      #   library_client.stream_books(name).each do |element|
       #     # Process element.
       #   end
 
@@ -3953,13 +3953,13 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #
       #   # TODO: Initialize `name`:
       #   name = ''
       #   request = { name: name }
       #   requests = [request]
-      #   library_service_client.discuss_book(requests).each do |element|
+      #   library_client.discuss_book(requests).each do |element|
       #     # Process element.
       #   end
 
@@ -3989,13 +3989,13 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #
       #   # TODO: Initialize `name`:
       #   name = ''
       #   request = { name: name }
       #   requests = [request]
-      #   response = library_service_client.monolog_about_book(requests)
+      #   response = library_client.monolog_about_book(requests)
 
       def monolog_about_book reqs, options: nil
         request_protos = reqs.lazy.map do |req|
@@ -4022,10 +4022,10 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   request = {}
       #   requests = [request]
-      #   library_service_client.babble_about_book(requests)
+      #   library_client.babble_about_book(requests)
 
       def babble_about_book reqs, options: nil
         request_protos = reqs.lazy.map do |req|
@@ -4058,7 +4058,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #
       #   # TODO: Initialize `names_element`:
       #   names_element = ''
@@ -4068,12 +4068,12 @@ module Library
       #   shelves = []
       #
       #   # Iterate over all results.
-      #   library_service_client.find_related_books(names, shelves).each do |element|
+      #   library_client.find_related_books(names, shelves).each do |element|
       #     # Process element.
       #   end
       #
       #   # Or iterate over results one page at a time.
-      #   library_service_client.find_related_books(names, shelves).each_page do |page|
+      #   library_client.find_related_books(names, shelves).each_page do |page|
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
@@ -4114,12 +4114,12 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # TODO: Initialize `tag`:
       #   tag = ''
-      #   response = library_service_client.add_tag(formatted_resource, tag)
+      #   response = library_client.add_tag(formatted_resource, tag)
 
       def add_tag \
           resource,
@@ -4153,12 +4153,12 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # TODO: Initialize `label`:
       #   label = ''
-      #   response = library_service_client.add_label(formatted_resource, label)
+      #   response = library_client.add_label(formatted_resource, label)
 
       def add_label \
           resource,
@@ -4185,11 +4185,11 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # Register a callback during the method call.
-      #   operation = library_service_client.get_big_book(formatted_name) do |op|
+      #   operation = library_client.get_big_book(formatted_name) do |op|
       #     raise op.results.message if op.error?
       #     op_results = op.results
       #     # Process the results.
@@ -4245,11 +4245,11 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # Register a callback during the method call.
-      #   operation = library_service_client.get_big_nothing(formatted_name) do |op|
+      #   operation = library_client.get_big_nothing(formatted_name) do |op|
       #     raise op.results.message if op.error?
       #     op_results = op.results
       #     # Process the results.
@@ -4468,7 +4468,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_service_client = Library.new(version: :v1)
+      #   library_client = Library.new(version: :v1)
       #
       #   # TODO: Initialize `required_singular_int32`:
       #   required_singular_int32 = 0
@@ -4556,7 +4556,7 @@ module Library
       #
       #   # TODO: Initialize `required_map`:
       #   required_map = {}
-      #   response = library_service_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
+      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
       def test_optional_required_flattening_params \
           required_singular_int32,
@@ -4970,311 +4970,886 @@ Gem::Specification.new do |gem|
 end
 
 ============== file: samples/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_with_response_handling")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-request = {}
+require "library"
 
-requests = [request]
-library_service_client.babble_about_book(requests)
-# FIXME: response handling
-# FIXME: main function
+# [START sample]
+
+# Test response handling for methods that return empty
+def sample_babble_about_book
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  request = {}
+
+  requests = [request]
+  library_client.babble_about_book(requests)
+
+  # No one replied
+  puts "No one replied."
+
+  # [END sample_core]
+end
+# [END sample]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_babble_about_book
+end
 ============== file: samples/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-request = {}
+require "library"
 
-requests = [request]
-library_service_client.babble_about_book(requests)
-# FIXME: response handling
-# FIXME: main function
+# [START sample]
+
+# Test default response handling is turned off for methods that return empty
+def sample_babble_about_book
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  request = {}
+
+  requests = [request]
+  library_client.babble_about_book(requests)
+
+  # [END sample_core]
+end
+# [END sample]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_babble_about_book
+end
 ============== file: samples/delete_shelf_request_empty_response_type_with_response_handling.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+require "library"
 
-library_service_client.delete_shelf(formatted_name)
-# FIXME: response handling
-# FIXME: main function
+# [START sample]
+
+# Test response handling for methods that return empty
+def sample_delete_shelf
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  formatted_name = library_client.class.shelf_path("[SHELF_ID]")
+
+  library_client.delete_shelf(formatted_name)
+
+  # Shelf deleted
+  puts "Shelf deleted."
+
+  # [END sample_core]
+end
+# [END sample]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_delete_shelf
+end
 ============== file: samples/delete_shelf_request_empty_response_type_without_response_handling.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+require "library"
 
-library_service_client.delete_shelf(formatted_name)
-# FIXME: response handling
-# FIXME: main function
+# [START sample]
+
+# Test default response handling is turned off for methods that return empty
+def sample_delete_shelf
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  formatted_name = library_client.class.shelf_path("[SHELF_ID]")
+
+  library_client.delete_shelf(formatted_name)
+
+  # [END sample_core]
+end
+# [END sample]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_delete_shelf
+end
 ============== file: samples/discuss_book_request_streaming_bidi_prog.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-name = "BASIC"
-file_name = "comment_file"
-comment = File.binread file_name
-comment_2 = { comment: comment }
-image = File.binread image_file_name
-request = {
-  name: name,
-  comment: comment_2,
-  image: image
-}
+require "library"
 
-requests = [request]
-library_service_client.discuss_book(requests).each do |element|
-  # Process element.
+# [START turing_prog_request_streaming_bidi]
+
+# Testing calling forms
+def sample_discuss_book(image_file_name)
+  # [START turing_prog_request_streaming_bidi_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  name = "BASIC"
+  file_name = "comment_file"
+  comment = File.binread file_name
+  comment_2 = { comment: comment }
+  image = File.binread image_file_name
+  request = {
+    name: name,
+    comment: comment_2,
+    image: image
+  }
+
+  requests = [request]
+  library_client.discuss_book(requests).each do |element|
+    puts element
+  end
+
+  # [END turing_prog_request_streaming_bidi_core]
 end
-# FIXME: response handling
-# FIXME: main function
+# [END turing_prog_request_streaming_bidi]
+
+
+require "optparse"
+
+if $0 == __FILE__
+
+  image_file_name = "image_file.jpg"
+
+  ARGV.options do |opts|
+    opts.on("--image_file_name=val") { |val| image_file_name = val }
+    opts.parse!
+  end
+
+
+  sample_discuss_book(image_file_name)
+end
 ============== file: samples/find_related_books_request_paged_all_odyssey.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-names_element = "Odyssey"
-names = [names_element]
-shelves_element = "Classics"
-shelves = [shelves_element]
+require "library"
 
-# Iterate over all results.
-library_service_client.find_related_books(names, shelves).each do |element|
-  # Process element.
+# [START sample]
+
+# Testing calling forms
+def sample_find_related_books
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  names_element = "Odyssey"
+  names = [names_element]
+  shelves_element = "Classics"
+  shelves = [shelves_element]
+
+  # Iterate over all results.
+  library_client.find_related_books(names, shelves).each do |element|
+    book = element
+    puts "Here's a related book: #{book}"
+  end
+
+  # [END sample_core]
 end
-# FIXME: response handling
-# FIXME: main function
+# [END sample]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_find_related_books
+end
 ============== file: samples/find_related_books_request_paged_odyssey.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-names_element = "Odyssey"
-names = [names_element]
-shelves_element = "Classics"
-shelves = [shelves_element]
+require "library"
 
-# Iterate over results one page at a time.
-library_service_client.find_related_books(names, shelves).each_page do |page|
-  # Process each page at a time.
-  page.each do |element|
-    # Process element.
+# [START sample]
+
+# Testing calling forms
+def sample_find_related_books
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  names_element = "Odyssey"
+  names = [names_element]
+  shelves_element = "Classics"
+  shelves = [shelves_element]
+
+  # Iterate over results one page at a time.
+  library_client.find_related_books(names, shelves).each_page do |page|
+    # Process each page at a time.
+    page.each do |element|
+      book = element
+      puts "Here's a related book: #{book}"
+    end
   end
+
+  # [END sample_core]
 end
-# FIXME: response handling
-# FIXME: main function
+# [END sample]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_find_related_books
+end
 ============== file: samples/get_big_book_long_running_request_async_wap.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-formatted_name = Library::V1::LibraryServiceClient.book_path(shelf, "War and Peace")
+require "library"
 
-operation = library_service_client.get_big_book(formatted_name) do |op|
-  raise op.results.message if op.error?
-  op_results = op.results
-  # Process the results.
+# [START hopper]
 
-  metadata = op.metadata
-  # Process the metadata.
+# Testing calling forms
+def sample_get_big_book(shelf)
+  # [START hopper_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  formatted_name = library_client.class.book_path(shelf, "War and Peace")
+
+  # Make the long-running operation request
+  operation = library_client.get_big_book(formatted_name)
+
+  # Block until operation complete
+  operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  results = operation.response.results
+
+  # Testing iterating over map fields when both key and value are specified.
+  response.map_list_value_value.each do |my_key, my_value|
+    puts "key: #{my_key}, value: #{my_value}"
+  end
+
+  # Testing iterating over map fields when only key is specified.
+  response.map_list_value_value.keys.each do |another_key|
+    puts "key: #{another_key}"
+  end
+
+  # Testing iterating over map fields when only value is specified.
+  response.map_list_value_value.values.each do |another_value|
+    puts "value: #{another_value}"
+  end
+
+  puts "name: #{response.name}"
+  puts "author: #{response.author}"
+
+  # [END hopper_core]
 end
+# [END hopper]
 
-operation.wait_until_done!
-# FIXME: response handling
-# FIXME: main function
+
+require "optparse"
+
+if $0 == __FILE__
+
+  shelf = "Novel"
+
+  ARGV.options do |opts|
+    opts.on("--shelf=val") { |val| shelf = val }
+    opts.parse!
+  end
+
+
+  sample_get_big_book(shelf)
+end
 ============== file: samples/get_big_book_long_running_request_async_wap2.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap2")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-formatted_name = Library::V1::LibraryServiceClient.book_path(shelf, big_book_name)
+require "library"
 
-operation = library_service_client.get_big_book(formatted_name) do |op|
-  raise op.results.message if op.error?
-  op_results = op.results
-  # Process the results.
+# [START hopper]
 
-  metadata = op.metadata
-  # Process the metadata.
+ # Testing resource name overlap
+ #
+ # @param shelf {String} Test word wrapping for long lines. This is a long comment. The name of the
+ # shelf to retrieve the big book from.
+ # @param big_book_name {String} The name of the book.
+def sample_get_big_book(shelf, big_book_name)
+  # [START hopper_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  formatted_name = library_client.class.book_path(shelf, big_book_name)
+
+  # Make the long-running operation request
+  operation = library_client.get_big_book(formatted_name)
+
+  # Block until operation complete
+  operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  results = operation.response.results
+
+  puts response
+
+  # [END hopper_core]
 end
+# [END hopper]
 
-operation.wait_until_done!
-# FIXME: response handling
-# FIXME: main function
+
+require "optparse"
+
+if $0 == __FILE__
+
+  shelf = "Novel"
+  big_book_name = "War and Peace"
+
+  ARGV.options do |opts|
+    opts.on("--shelf=val") { |val| shelf = val }
+    opts.on("--big_book_name=val") { |val| big_book_name = val }
+    opts.parse!
+  end
+
+
+  sample_get_big_book(shelf, big_book_name)
+end
 ============== file: samples/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_with_response_handling")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+require "library"
 
-operation = library_service_client.get_big_nothing(formatted_name) do |op|
-  raise op.results.message if op.error?
-  op_results = op.results
-  # Process the results.
+# [START sample]
 
-  metadata = op.metadata
-  # Process the metadata.
+# Test response handling for methods that return empty
+def sample_get_big_nothing
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+  # Make the long-running operation request
+  operation = library_client.get_big_nothing(formatted_name)
+
+  # Block until operation complete
+  operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  results = operation.response.results
+
+  # Got nothing
+  puts "Got nothing."
+
+  # [END sample_core]
 end
+# [END sample]
 
-operation.wait_until_done!
-# FIXME: response handling
-# FIXME: main function
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_get_big_nothing
+end
 ============== file: samples/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_without_response_handling")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+require "library"
 
-operation = library_service_client.get_big_nothing(formatted_name) do |op|
-  raise op.results.message if op.error?
-  op_results = op.results
-  # Process the results.
+# [START sample]
 
-  metadata = op.metadata
-  # Process the metadata.
+# Test default response handling is turned off for methods that return empty
+def sample_get_big_nothing
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+  # Make the long-running operation request
+  operation = library_client.get_big_nothing(formatted_name)
+
+  # Block until operation complete
+  operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  results = operation.response.results
+
+  # [END sample_core]
 end
+# [END sample]
 
-operation.wait_until_done!
-# FIXME: response handling
-# FIXME: main function
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_get_big_nothing
+end
 ============== file: samples/get_book_request_test_on_success_map.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+require "library"
 
-response = library_service_client.get_book(formatted_name)
-# FIXME: response handling
-# FIXME: main function
+# [START sample]
+
+def sample_get_book
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+  response = library_client.get_book(formatted_name)
+  int_key_val = response.map_string_value[123]
+  boolean_key_val = response.map_bool_key[true]
+  map_value_field = response.map_message_value["key"].field
+  puts "Test printing map fields: #{response.map_list_value_value["quoted_key"]}"
+  puts "Test printing enum fields of a map value: #{response.map_message_value["key"].alignment}"
+
+  # [END sample_core]
+end
+# [END sample]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_get_book
+end
 ============== file: samples/monolog_about_book_request_streaming_client_prog.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-name = "BASIC"
-request = { name: name }
+require "library"
 
-requests = [request]
-response = library_service_client.monolog_about_book(requests)
-# FIXME: response handling
-# FIXME: main function
+# [START sample]
+
+# Testing calling forms
+def sample_monolog_about_book
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  name = "BASIC"
+  request = { name: name }
+
+  requests = [request]
+  response = library_client.monolog_about_book(requests, sample)
+
+  puts "The stage of the comment is: #{response.stage}"
+
+  # [END sample_core]
+end
+# [END sample]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_monolog_about_book
+end
 ============== file: samples/publish_series_request_pi_version.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-shelf = { name: shelf_name }
+require "library"
 
-# TODO: Initialize `books`:
-books = []
-series_string = "xyz3141592654"
-series_uuid = { series_string: series_string }
+# [START canonical]
 
-response = library_service_client.publish_series(shelf, books, series_uuid, edition: edition)
-# FIXME: response handling
-# FIXME: main function
+ # Testing <@calling forms>
+ #
+ # @param shelf_name {String} The name of the shelf where books are published to.
+ # @param edition {Integer} The edition of the series.
+def sample_publish_series(shelf_name, edition)
+  # [START canonical_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  shelf = { name: shelf_name }
+
+  # TODO: Initialize `books`:
+  books = []
+  series_string = "xyz3141592654"
+  series_uuid = { series_string: series_string }
+
+  response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
+  # % % % output handling % % % %
+  # four_score_and_seven_years ago
+  #
+  # our fathers brought forth upon this continent
+  #
+  # a new nation
+  # conceived in liberty
+  #
+  # and dedicated to the proposition that all_men_are_created_equal.
+  #
+  # Do something with book_names one by one
+  book_names = response.book_names
+  response.book_names.each do |title|
+    # Now we deal with this_single_book!
+    puts "\t%`` The book's title: \"#{title}\", \\\nand the book costs $50.00 ``%"
+  end
+  puts "The first book is: #{response.book_names[0]}"
+  puts "The author of the first book is: #{response.books[0].author}"
+  puts "That's all!"
+  puts "series_uuid: #{response.series_uuid.series_bytes}"
+
+  # [END canonical_core]
+end
+# [END canonical]
+
+
+require "optparse"
+
+if $0 == __FILE__
+
+  shelf_name = "Math"
+  edition = 123
+
+  ARGV.options do |opts|
+    opts.on("--shelf_name=val") { |val| shelf_name = val }
+    opts.on("--edition=val") { |val| edition = val }
+    opts.parse!
+  end
+
+
+  sample_publish_series(shelf_name, edition)
+end
 ============== file: samples/publish_series_request_second_edition.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
+
+require "library"
+
+# [START canonical]
+
+# Testing calling forms
+def sample_publish_series
+  # [START canonical_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
 
 
-# TODO: Initialize `shelf`:
-shelf = {}
+  # TODO: Initialize `shelf`:
+  shelf = {}
 
-# TODO: Initialize `books`:
-books = []
+  # TODO: Initialize `books`:
+  books = []
 
-# TODO: Initialize `series_uuid`:
-series_uuid = {}
-edition = 2
+  # TODO: Initialize `series_uuid`:
+  series_uuid = {}
+  edition = 2
 
-response = library_service_client.publish_series(shelf, books, series_uuid, edition: edition)
-# FIXME: response handling
-# FIXME: main function
+  response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
+  puts response
+
+  # [END canonical_core]
+end
+# [END canonical]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_publish_series
+end
 ============== file: samples/stream_books_request_streaming_server_prog.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
-name = "BASIC"
+require "library"
 
-library_service_client.stream_books(name).each do |element|
-  # Process element.
+# [START lovelace]
+
+# Testing calling forms
+def sample_stream_books
+  # [START lovelace_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  name = "BASIC"
+
+  library_client.stream_books(name).each do |element|
+    puts element
+  end
+
+  # [END lovelace_core]
 end
-# FIXME: response handling
-# FIXME: main function
+# [END lovelace]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_stream_books
+end
 ============== file: samples/stream_shelves_request_streaming_server_empty.rb ==============
-//FIXME: license section
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
-# FIXME: import section
-# FIXME: sample function declaration
-# FIXME: initialize client
 
+require "library"
 
+# [START sample]
 
-library_service_client.stream_shelves.each do |element|
-  # Process element.
+# Testing calling forms
+def sample_stream_shelves
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  library_client.stream_shelves.each do |element|
+    puts element
+  end
+
+  # [END sample_core]
 end
-# FIXME: response handling
-# FIXME: main function
+# [END sample]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_stream_shelves
+end
 ============== file: test/library/v1/library_service_client_test.rb ==============
 # Copyright 2019 Google LLC
 #
