@@ -23,6 +23,16 @@ import java.util.List;
 
 public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
 
+  private static final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
+
+  public CSharpApiMethodTransformer(SampleTransformer sampleTransformer) {
+    super(sampleTransformer);
+  }
+
+  public CSharpApiMethodTransformer() {
+    super();
+  }
+
   @Override
   protected void setServiceResponseTypeName(
       MethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
@@ -85,5 +95,118 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
         throw new UnsupportedOperationException(
             "Cannot handle streaming type: " + context.getMethodConfig().getGrpcStreamingType());
     }
+  }
+
+  @Override
+  public List<StaticLangApiMethodView> generateApiMethods(GapicInterfaceContext context) {
+    List<ParamWithSimpleDoc> pagedMethodAdditionalParams =
+        new ImmutableList.Builder<ParamWithSimpleDoc>()
+            .addAll(csharpCommonTransformer.pagedMethodAdditionalParams())
+            .addAll(csharpCommonTransformer.callSettingsParam())
+            .build();
+
+    List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
+    for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
+      MethodConfig methodConfig = context.getMethodConfig(method);
+      MethodContext requestMethodContext = context.asRequestMethodContext(method);
+      if (methodConfig.isGrpcStreaming()) {
+        // Only for protobuf-based APIs.
+        if (methodConfig.isFlattening()) {
+          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+            GapicMethodContext methodContext =
+                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
+            apiMethods.add(
+                apiMethodTransformer.generateGrpcStreamingFlattenedMethod(
+                    methodContext, csharpCommonTransformer.callSettingsParam()));
+          }
+        }
+        apiMethods.add(
+            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(requestMethodContext));
+      } else if (requestMethodContext.isLongRunningMethodContext()) {
+        // Only for protobuf-based APIs.
+        GapicMethodContext gapicMethodContext = (GapicMethodContext) requestMethodContext;
+        if (methodConfig.isFlattening()) {
+          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+            GapicMethodContext methodContext =
+                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
+            apiMethods.add(
+                apiMethodTransformer.generateAsyncOperationFlattenedMethod(
+                    methodContext,
+                    csharpCommonTransformer.callSettingsParam(),
+                    ClientMethodType.AsyncOperationFlattenedCallSettingsMethod,
+                    true));
+            apiMethods.add(
+                apiMethodTransformer.generateAsyncOperationFlattenedMethod(
+                    methodContext,
+                    csharpCommonTransformer.cancellationTokenParam(),
+                    ClientMethodType.AsyncOperationFlattenedCancellationMethod,
+                    true));
+            apiMethods.add(
+                apiMethodTransformer.generateOperationFlattenedMethod(
+                    methodContext, csharpCommonTransformer.callSettingsParam()));
+          }
+        }
+        apiMethods.add(
+            apiMethodTransformer.generateAsyncOperationRequestObjectMethod(
+                requestMethodContext, csharpCommonTransformer.callSettingsParam(), true));
+        apiMethods.add(
+            apiMethodTransformer.generateOperationRequestObjectMethod(
+                gapicMethodContext, csharpCommonTransformer.callSettingsParam()));
+      } else if (methodConfig.isPageStreaming()) {
+        if (methodConfig.isFlattening()) {
+          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+            GapicMethodContext methodContext =
+                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
+            apiMethods.add(
+                apiMethodTransformer.generatePagedFlattenedAsyncMethod(
+                    methodContext, pagedMethodAdditionalParams));
+            apiMethods.add(
+                apiMethodTransformer.generatePagedFlattenedMethod(
+                    methodContext, pagedMethodAdditionalParams));
+          }
+        }
+        apiMethods.add(
+            apiMethodTransformer.generatePagedRequestObjectAsyncMethod(
+                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+        apiMethods.add(
+            apiMethodTransformer.generatePagedRequestObjectMethod(
+                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+      } else {
+        if (methodConfig.isFlattening()) {
+          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+            GapicMethodContext methodContext =
+                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
+            apiMethods.add(
+                apiMethodTransformer.generateFlattenedAsyncMethod(
+                    methodContext,
+                    csharpCommonTransformer.callSettingsParam(),
+                    ClientMethodType.FlattenedAsyncCallSettingsMethod));
+            apiMethods.add(
+                apiMethodTransformer.generateFlattenedAsyncMethod(
+                    methodContext,
+                    csharpCommonTransformer.cancellationTokenParam(),
+                    ClientMethodType.FlattenedAsyncCancellationTokenMethod));
+            apiMethods.add(
+                apiMethodTransformer.generateFlattenedMethod(
+                    methodContext, csharpCommonTransformer.callSettingsParam()));
+          }
+        }
+        apiMethods.add(
+            apiMethodTransformer.generateRequestObjectAsyncMethod(
+                requestMethodContext,
+                csharpCommonTransformer.callSettingsParam(),
+                ClientMethodType.AsyncRequestObjectCallSettingsMethod));
+        apiMethods.add(
+            apiMethodTransformer.generateRequestObjectAsyncMethod(
+                requestMethodContext,
+                csharpCommonTransformer.cancellationTokenParam(),
+                ClientMethodType.AsyncRequestObjectCancellationMethod));
+        apiMethods.add(
+            apiMethodTransformer.generateRequestObjectMethod(
+                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+      }
+    }
+
+    return apiMethods;
   }
 }
