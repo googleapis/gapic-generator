@@ -1364,6 +1364,17 @@ class LibraryServiceClient(object):
             message=message,
             string_builder=string_builder,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         return self._inner_api_calls['get_shelf'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def list_shelves(
@@ -1483,6 +1494,17 @@ class LibraryServiceClient(object):
         request = library_pb2.DeleteShelfRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         self._inner_api_calls['delete_shelf'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def merge_shelves(
@@ -1542,6 +1564,17 @@ class LibraryServiceClient(object):
             name=name,
             other_shelf_name=other_shelf_name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         return self._inner_api_calls['merge_shelves'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def create_book(
@@ -1608,7 +1641,7 @@ class LibraryServiceClient(object):
             metadata = []
         metadata = list(metadata)
         try:
-            routing_header = [('name', name), ('book.read', book.read)]
+            routing_header = [('name', name)]
         except AttributeError:
             pass
         else:
@@ -1766,6 +1799,17 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         return self._inner_api_calls['get_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def list_books(
@@ -1845,6 +1889,17 @@ class LibraryServiceClient(object):
             page_size=page_size,
             filter=filter_,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         iterator = google.api_core.page_iterator.GRPCIterator(
             client=None,
             method=functools.partial(self._inner_api_calls['list_books'], retry=retry, timeout=timeout, metadata=metadata),
@@ -1903,6 +1958,17 @@ class LibraryServiceClient(object):
         request = library_pb2.DeleteBookRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         self._inner_api_calls['delete_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def update_book(
@@ -1980,6 +2046,17 @@ class LibraryServiceClient(object):
             update_mask=update_mask,
             physical_mask=physical_mask,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         return self._inner_api_calls['update_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def move_book(
@@ -2037,6 +2114,17 @@ class LibraryServiceClient(object):
             name=name,
             other_shelf_name=other_shelf_name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         return self._inner_api_calls['move_book'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def list_strings(
@@ -2179,6 +2267,17 @@ class LibraryServiceClient(object):
             name=name,
             comments=comments,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         self._inner_api_calls['add_comments'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book_from_archive(
@@ -2232,6 +2331,17 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookFromArchiveRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         return self._inner_api_calls['get_book_from_archive'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book_from_anywhere(
@@ -2290,6 +2400,17 @@ class LibraryServiceClient(object):
             name=name,
             alt_book_name=alt_book_name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         return self._inner_api_calls['get_book_from_anywhere'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_book_from_absolutely_anywhere(
@@ -2347,6 +2468,17 @@ class LibraryServiceClient(object):
             name=name,
             alt_book_name=alt_book_name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name), ('alt_book_name', alt_book_name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         return self._inner_api_calls['get_book_from_absolutely_anywhere'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def update_book_index(
@@ -2408,6 +2540,17 @@ class LibraryServiceClient(object):
             index_name=index_name,
             index_map=index_map,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         self._inner_api_calls['update_book_index'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def stream_shelves(
@@ -2833,6 +2976,17 @@ class LibraryServiceClient(object):
             resource=resource,
             tag=tag,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('resource', resource)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         return self._inner_api_calls['add_tag'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def add_label(
@@ -2894,6 +3048,17 @@ class LibraryServiceClient(object):
             resource=resource,
             label=label,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('resource', resource)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         return self._inner_api_calls['add_label'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def get_big_book(
@@ -2956,6 +3121,17 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         operation = self._inner_api_calls['get_big_book'](request, retry=retry, timeout=timeout, metadata=metadata)
         return google.api_core.operation.from_gapic(
             operation,
@@ -3024,6 +3200,17 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookRequest(
             name=name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         operation = self._inner_api_calls['get_big_nothing'](request, retry=retry, timeout=timeout, metadata=metadata)
         return google.api_core.operation.from_gapic(
             operation,
