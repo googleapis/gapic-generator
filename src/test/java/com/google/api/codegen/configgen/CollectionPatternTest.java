@@ -81,7 +81,7 @@ public class CollectionPatternTest {
   @Test
   public void collectionPatternEndWithLiteral() {
     CollectionPattern collectionPattern = constructCollectionPattern("name", "shelves/*/books");
-    assertThat(collectionPattern.getSimpleName()).isEqualTo("shelf");
+    assertThat(collectionPattern.getSimpleName()).isEqualTo("shelf_books");
     assertThat(collectionPattern.getTemplatizedResourcePath()).isEqualTo("shelves/{shelf}/books");
   }
 
@@ -89,7 +89,7 @@ public class CollectionPatternTest {
   public void collectionPatternCustomVerb() {
     CollectionPattern collectionPattern =
         constructCollectionPattern("name", "shelves/*/books/*", "reader");
-    assertThat(collectionPattern.getSimpleName()).isEqualTo("book");
+    assertThat(collectionPattern.getSimpleName()).isEqualTo("book_reader");
     assertThat(collectionPattern.getTemplatizedResourcePath())
         .isEqualTo("shelves/{shelf}/books/{book}:reader");
   }
