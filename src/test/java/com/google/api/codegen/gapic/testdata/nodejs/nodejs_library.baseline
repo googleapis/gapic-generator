@@ -30,19 +30,13 @@ $ npm install --save @google-cloud/library
  });
 
  const formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
- const optionalFoo = '';
  const rating = 'GOOD';
  const book = {
    rating: rating,
  };
- const updateMask = {};
- const physicalMask = {};
  const request = {
    name: formattedName,
-   optionalFoo: optionalFoo,
    book: book,
-   updateMask: updateMask,
-   physicalMask: physicalMask,
  };
  client.updateBook(request)
    .then(responses => {
@@ -143,19 +137,13 @@ describe('LibraryServiceSmokeTest', () => {
     });
 
     const formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
-    const optionalFoo = '';
     const rating = 'GOOD';
     const book = {
       rating: rating,
     };
-    const updateMask = {};
-    const physicalMask = {};
     const request = {
       name: formattedName,
-      optionalFoo: optionalFoo,
       book: book,
-      updateMask: updateMask,
-      physicalMask: physicalMask,
     };
     client.updateBook(request)
       .then(responses => {

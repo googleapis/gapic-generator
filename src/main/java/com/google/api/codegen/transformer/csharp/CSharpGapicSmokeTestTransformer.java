@@ -124,9 +124,7 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<P
     MethodModel method = smokeTestConfig.getMethod();
     GapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
     FlatteningConfig flatteningGroup =
-        testCaseTransformer.getSmokeTestFlatteningGroup(
-            defaultMethodContext.getMethodConfig(),
-            context.getInterfaceConfig().getSmokeTestConfig());
+        testCaseTransformer.getSmokeTestFlatteningGroup(defaultMethodContext.getMethodConfig());
     GapicMethodContext methodContext =
         context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
 

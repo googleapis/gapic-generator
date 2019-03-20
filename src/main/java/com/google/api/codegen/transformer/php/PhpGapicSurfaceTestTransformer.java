@@ -239,8 +239,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     GapicMethodContext defaultMethodContext = context.asRequestMethodContext(method);
     FlatteningConfig flatteningGroup =
-        testCaseTransformer.getSmokeTestFlatteningGroup(
-            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
+        testCaseTransformer.getSmokeTestFlatteningGroup(context.getMethodConfig(method));
     GapicMethodContext flattenedMethodContext =
         context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
 

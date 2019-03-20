@@ -5460,12 +5460,9 @@ class TestSystemLibraryService(object):
 
         client = library_v1.LibraryServiceClient()
         name = client.book_path('testShelf-{0}'.format(time.time()), project_id)
-        optional_foo = ''
         rating = enums.Book.Rating.GOOD
         book = {'rating': rating}
-        update_mask = {}
-        physical_mask = {}
-        response = client.update_book(name, book, optional_foo=optional_foo, update_mask=update_mask, physical_mask=physical_mask)
+        response = client.update_book(name, book)
 ============== file: tests/unit/gapic/v1/test_library_service_client_v1.py ==============
 # -*- coding: utf-8 -*-
 #
