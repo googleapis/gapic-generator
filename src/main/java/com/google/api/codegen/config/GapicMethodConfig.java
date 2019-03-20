@@ -272,7 +272,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
   }
 
   private static List<String> findHeaderRequestParams(Method method) {
-    // Always parse header request params from proto annotations, even if GAPIC config is given.
+    // Always parse header request params only from proto annotations, even if GAPIC config is
+    // given.
     ProtoParser protoParser = new ProtoParser(true);
     return protoParser.getHeaderParams(method).asList();
   }
