@@ -69,6 +69,9 @@ public class StaticLangApiMethodTransformer {
     this(SampleTransformer.create(SampleType.IN_CODE));
   }
 
+  // TODO: Currently overrode in CSharpApiMethodTransformer. Inspect whether the same logic applies
+  // to Java as well.
+  /** Generates method views for all methods in an interface. */
   public List<StaticLangApiMethodView> generateApiMethods(InterfaceContext interfaceContext) {
     throw new UnsupportedOperationException(
         "unimplemented: StaticLangApiMethodTransformer:generateApiMethods");
