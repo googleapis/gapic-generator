@@ -43,7 +43,8 @@ public enum CallingForm {
   //
   // [Method signature type][Request pattern][Response pattern][Idiomatic pattern]
 
-  Request, // used by:  java nodejs php py ruby
+  Request, // used by: java nodejs php py ruby
+  RequestAsync,
   RequestAsyncPaged, // used by: nodejs
   RequestAsyncPagedAll, // used by: nodejs
   RequestPaged, // used by: java php py ruby
@@ -54,8 +55,8 @@ public enum CallingForm {
   RequestStreamingClientAsync, // used by: php
   RequestStreamingServer, // used by: nodejs php py ruby
 
-  Flattened, // used by:  java
-  FlattenedPaged, // used by:  java
+  Flattened, // used by: java
+  FlattenedPaged, // used by: java
   FlattenedAsync,
   FlattenedAsyncPaged,
 
@@ -68,6 +69,7 @@ public enum CallingForm {
 
   LongRunningCallable, // used by: java
   LongRunningEventEmitter, // used by: nodejs
+  LongRunningFlattened,
   LongRunningFlattenedAsync, // used by: java
   LongRunningPromise, // used by: nodejs py
   LongRunningPromiseAwait, // used by: nodejs
