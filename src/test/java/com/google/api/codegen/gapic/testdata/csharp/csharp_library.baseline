@@ -62,16 +62,13 @@ namespace Google.Example.Library.V1.SmokeTests
 
             // Initialize request argument(s)
             BookName name = new BookName($"testShelf-{Guid.NewGuid()}", projectId);
-            string optionalFoo = "";
             Book book = new Book
             {
                 Rating = Book.Types.Rating.Good,
             };
-            FieldMask updateMask = new FieldMask();
-            FieldMask physicalMask = new FieldMask();
 
             // Call API method
-            Book response = client.UpdateBook(name, optionalFoo, book, updateMask, physicalMask);
+            Book response = client.UpdateBook(name, book);
             // Show the result
             Console.WriteLine(response);
 
