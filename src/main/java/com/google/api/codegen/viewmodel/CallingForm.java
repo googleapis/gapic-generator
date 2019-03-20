@@ -43,20 +43,20 @@ public enum CallingForm {
   //
   // [Method signature type][Request pattern][Response pattern][Idiomatic pattern]
 
-  Request, // used by: csharp java nodejs php py ruby
-  RequestAsync, // used by: csharp
+  Request, // used by:  java nodejs php py ruby
+  RequestAsync, // used by: 
   RequestAsyncPaged, // used by: nodejs
   RequestAsyncPagedAll, // used by: nodejs
-  RequestPaged, // used by: csharp java php py ruby
-  RequestPagedAll, // used by: csharp php py ruby
-  RequestStreamingBidi, // used by: csharp nodejs php py ruby
+  RequestPaged, // used by:  java php py ruby
+  RequestPagedAll, // used by:  php py ruby
+  RequestStreamingBidi, // used by:  nodejs php py ruby
   RequestStreamingBidiAsync, // used by: php
-  RequestStreamingClient, // used by: csharp nodejs php py ruby
+  RequestStreamingClient, // used by:  nodejs php py ruby
   RequestStreamingClientAsync, // used by: php
-  RequestStreamingServer, // used by: csharp nodejs php py ruby
+  RequestStreamingServer, // used by:  nodejs php py ruby
 
-  Flattened, // used by: csharp java
-  FlattenedPaged, // used by: csharp java
+  Flattened, // used by:  java
+  FlattenedPaged, // used by:  java
   FlattenedAsync,
   FlattenedAsyncPaged,
 
@@ -69,12 +69,12 @@ public enum CallingForm {
 
   LongRunningCallable, // used by: java
   LongRunningEventEmitter, // used by: nodejs
-  LongRunningFlattened, // used by: csharp
-  LongRunningFlattenedAsync, // used by: csharp, java
+  LongRunningFlattened, // used by: 
+  LongRunningFlattenedAsync, // used by: , java
   LongRunningPromise, // used by: nodejs py
   LongRunningPromiseAwait, // used by: nodejs
-  LongRunningRequest, // used by: csharp php
-  LongRunningRequestAsync, // used by: csharp java php ruby
+  LongRunningRequest, // used by:  php
+  LongRunningRequestAsync, // used by:  java php ruby
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.
