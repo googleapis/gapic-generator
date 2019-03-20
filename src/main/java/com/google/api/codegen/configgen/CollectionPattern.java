@@ -45,7 +45,7 @@ public class CollectionPattern {
         Streams.findLast(wildcardSegments)
             .map(segment -> fieldSegment.getSubPath().indexOf(segment))
             .filter(index -> index >= 0)
-            .map(index -> buildEntityName(fieldSegment.getSubPath(), index))
+            .map(index -> buildLastWildcardEntityName(fieldSegment.getSubPath(), index))
             .orElseThrow(() -> new IllegalStateException("Field segment contained no wildcards."));
 
     List<PathSegment> templatizedSubpath =
@@ -74,17 +74,16 @@ public class CollectionPattern {
       return segment;
     }
 
-    String prefix = buildSimpleEntityPrefix(pathSegments, index);
-    String entityName = buildEntityName(pathSegments, index, prefix);
+    String entityName = buildSimpleWildcardEntityName(pathSegments, index);
     if (((WildcardSegment) segment).isUnbounded()) {
-      return new LiteralSegment(String.format("{%s=**}", entityName));
+      return new LiteralSegment(String.format("{%s_path=**}", entityName));
     }
 
     return new LiteralSegment(String.format("{%s}", entityName));
   }
 
   /**
-   * Builds an entity name for a wildcard path segment, handling singular resources.
+   * Builds an entity name for the final wildcard path segment in pathSegments.
    *
    * <p>The entity name of a singular resource will be prefixed by its parent collection resource.
    *
@@ -92,36 +91,49 @@ public class CollectionPattern {
    * @param wildcardIndex the index of the wildcard segment
    * @return the entity name that corresponds to the wildcard segment
    */
-  private static String buildEntityName(List<PathSegment> pathSegments, int wildcardIndex) {
-    String prefix = buildEntityPrefix(pathSegments, wildcardIndex);
-    return buildEntityName(pathSegments, wildcardIndex, prefix);
+  private static String buildLastWildcardEntityName(
+      List<PathSegment> pathSegments, int wildcardIndex) {
+    String collectionEntityName = buildSimpleWildcardEntityName(pathSegments, wildcardIndex);
+
+    // If there are an odd number of remaining segments, then the last segment is for a singular
+    // resource. For example, "users/*/profile" has an odd number (1) segment after the wildcard.
+    // "users/*" has an even number (0) segments after the wildcard.
+    int remainingSegments = pathSegments.size() - wildcardIndex - 1;
+    if (remainingSegments > 0) {
+      PathSegment nextSegment = pathSegments.get(wildcardIndex + 1);
+      String singularEntityName = LanguageUtil.upperCamelToLowerUnderscore(nextSegment.syntax());
+      String entityName = String.format("%s_%s", collectionEntityName, singularEntityName);
+      return appendUnboundWildcardSuffix(pathSegments, wildcardIndex, entityName);
+    }
+
+    return appendUnboundWildcardSuffix(pathSegments, wildcardIndex, collectionEntityName);
   }
 
   /**
-   * Builds an entity name for a wildcard path segment.
+   * Appends a suffix to entityName if the wildcard segment is unbounded.
    *
    * @param pathSegments the full path containing the wildcard segment at wildcardIndex
    * @param wildcardIndex the index of the wildcard segment
-   * @param prefix the prefix to the entity name. Should be the resource name.
-   * @return the entity name that corresponds to the wildcard segment
+   * @param entityName the name of the resource entity
+   * @return the suffixed entity name
    */
-  private static String buildEntityName(
-      List<PathSegment> pathSegments, int wildcardIndex, String prefix) {
+  private static String appendUnboundWildcardSuffix(
+      List<PathSegment> pathSegments, int wildcardIndex, String entityName) {
     WildcardSegment wildcardSegment = (WildcardSegment) pathSegments.get(wildcardIndex);
-    return wildcardSegment.isUnbounded() ? String.format("%s_path", prefix) : prefix;
+    return wildcardSegment.isUnbounded() ? String.format("%s_path", entityName) : entityName;
   }
 
   /**
-   * Builds the entity prefix for a wildcard path segment.
+   * Builds the entity name for collection resource.
    *
-   * <p>The entity prefix is just the entity name for the collection resource without handling
-   * singular resources or unbounded wildcards.
+   * <p>Does not handle singular resources or unbounded wildcards.
    *
    * @param pathSegments the full path containing the wildcard segment at wildcardIndex
    * @param wildcardIndex the index of the wildcard segment
-   * @return the entity prefix that corresponds to the wildcard segment
+   * @return the entity name for a collection resource
    */
-  private static String buildSimpleEntityPrefix(List<PathSegment> pathSegments, int wildcardIndex) {
+  private static String buildSimpleWildcardEntityName(
+      List<PathSegment> pathSegments, int wildcardIndex) {
     PathSegment wildcardSegment = pathSegments.get(wildcardIndex);
     if (wildcardIndex == 0) {
       return "unknown";
@@ -133,31 +145,6 @@ public class CollectionPattern {
     }
 
     return LanguageUtil.upperCamelToLowerUnderscore(Inflector.singularize(prevSegment.syntax()));
-  }
-
-  /**
-   * Builds the entity prefix for a wildcard path segment, handling singular resources.
-   *
-   * <p>The entity prefix for singular resources contains the entity name of the parent collection.
-   *
-   * @param pathSegments the full path containing the wildcard segment at wildcardIndex
-   * @param wildcardIndex the index of the wildcard segment
-   * @return the entity prefix that corresponds to the wildcard segment
-   */
-  private static String buildEntityPrefix(List<PathSegment> pathSegments, int wildcardIndex) {
-    String collectionEntityName = buildSimpleEntityPrefix(pathSegments, wildcardIndex);
-
-    // If there are an odd number of remaining segments, then the last segment is for a singular
-    // resource. For example, "users/*/profile" has an odd number (1) segment after the wildcard.
-    // "users/*" has an even number (0) segments after the wildcard.
-    int remainingSegments = pathSegments.size() - wildcardIndex + 1;
-    if (remainingSegments % 2 == 0) {
-      return collectionEntityName;
-    }
-
-    PathSegment nextSegment = pathSegments.get(wildcardIndex + 1);
-    String singularEntityName = LanguageUtil.upperCamelToLowerUnderscore(nextSegment.syntax());
-    return String.format("%s_%s", collectionEntityName, singularEntityName);
   }
 
   private final FieldSegment fieldSegment;
