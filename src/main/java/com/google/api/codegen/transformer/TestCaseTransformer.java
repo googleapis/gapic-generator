@@ -488,15 +488,13 @@ public class TestCaseTransformer {
     return contextBuilder.build();
   }
 
-  public FlatteningConfig getSmokeTestFlatteningGroup(
-      MethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
-    for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-      // flatteningGroup.getFlatteningName() may be null here.
-      if (smokeTestConfig.getFlatteningName().equals(flatteningGroup.getFlatteningName())) {
-        return flatteningGroup;
-      }
-    }
-    throw new IllegalArgumentException(
-        "Flattening name in smoke test config did not correspond to any flattened method.");
+  public FlatteningConfig getSmokeTestFlatteningGroup(MethodConfig methodConfig) {
+    // Use the first flattening available for smoke testing.
+    return methodConfig
+        .getFlatteningConfigs()
+        .stream()
+        .findFirst()
+        .orElseThrow(
+            () -> new IllegalArgumentException("No available flattening for smoke test to use."));
   }
 }

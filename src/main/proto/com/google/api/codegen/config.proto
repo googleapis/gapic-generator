@@ -178,13 +178,14 @@ message InterfaceConfigProto {
 
 message SmokeTestConfigProto {
   // The name of the method used in the smoke test.
+  // There must be a flattening defined in that method, and that
+  // flattened method will be used as the one to generate a smoke test on.
   string method = 1;
 
   // A list describing the name and the value of the init fields.
   repeated string init_fields = 2;
 
-  // The name of the flattening config to use.
-  string flattening_group_name = 3;
+  reserved 3;
 }
 
 message CollectionConfigProto {

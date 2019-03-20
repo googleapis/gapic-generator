@@ -290,12 +290,9 @@ require "library"
 
 library_client = Library.new
 formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
-optional_foo = ''
 rating = :GOOD
 book = { rating: rating }
-update_mask = {}
-physical_mask = {}
-response = library_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+response = library_client.update_book(formatted_name, book)
 ```
 
 ### Next Steps
@@ -571,12 +568,9 @@ describe "LibraryServiceSmokeTest v1" do
 
     library_client = Library.new(version: :v1)
     formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
-    optional_foo = ''
     rating = :GOOD
     book = { rating: rating }
-    update_mask = {}
-    physical_mask = {}
-    response = library_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+    response = library_client.update_book(formatted_name, book)
   end
 end
 
@@ -628,12 +622,9 @@ require "pathname"
 #
 # library_client = Library.new
 # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
-# optional_foo = ''
 # rating = :GOOD
 # book = { rating: rating }
-# update_mask = {}
-# physical_mask = {}
-# response = library_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+# response = library_client.update_book(formatted_name, book)
 # ```
 #
 # ### Next Steps
@@ -794,12 +785,9 @@ module Library
   #
   # library_client = Library.new(version: :v1)
   # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
-  # optional_foo = ''
   # rating = :GOOD
   # book = { rating: rating }
-  # update_mask = {}
-  # physical_mask = {}
-  # response = library_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+  # response = library_client.update_book(formatted_name, book)
   # ```
   #
   # ### Next Steps
