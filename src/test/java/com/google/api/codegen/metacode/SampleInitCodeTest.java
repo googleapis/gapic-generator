@@ -15,7 +15,6 @@
 package com.google.api.codegen.metacode;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth8.assertThat;
 
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.util.Name;
@@ -27,6 +26,7 @@ import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.TestConfig;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.setup.StandardSetup;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.Arrays;
@@ -339,7 +339,7 @@ public class SampleInitCodeTest {
 
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
-    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
+    assertThat(listNodeKeys(rootNode))
         .containsExactly("mylist", "myfield", "secondfield", "stringmap", "intmap", "root")
         .inOrder();
   }
@@ -350,9 +350,7 @@ public class SampleInitCodeTest {
 
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
-    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
-        .containsExactly("0", "1", "mylist", "root")
-        .inOrder();
+    assertThat(listNodeKeys(rootNode)).containsExactly("0", "1", "mylist", "root").inOrder();
   }
 
   @Test
@@ -362,7 +360,7 @@ public class SampleInitCodeTest {
 
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
-    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
+    assertThat(listNodeKeys(rootNode))
         .containsExactly("key1", "key2", "stringmap", "123", "456", "intmap", "root")
         .inOrder();
   }
@@ -382,7 +380,8 @@ public class SampleInitCodeTest {
             .build();
     InitCodeNode rootNode = InitCodeNode.createTree(context);
     List<InitCodeNode> initOrder = rootNode.listInInitializationOrder();
-    assertThat(initOrder.stream().map(node -> node.getKey()))
+    assertThat(
+            initOrder.stream().map(InitCodeNode::getKey).collect(ImmutableList.toImmutableList()))
         .containsExactly("formatted_field", "root")
         .inOrder();
   }
@@ -393,7 +392,7 @@ public class SampleInitCodeTest {
 
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
-    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
+    assertThat(listNodeKeys(rootNode))
         .containsExactly("subfield", "subsecondfield", "0", "mylist", "root")
         .inOrder();
   }
@@ -404,9 +403,7 @@ public class SampleInitCodeTest {
 
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
-    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
-        .containsExactly("subfield", "myfield", "root")
-        .inOrder();
+    assertThat(listNodeKeys(rootNode)).containsExactly("subfield", "myfield", "root").inOrder();
   }
 
   @Test
@@ -415,9 +412,7 @@ public class SampleInitCodeTest {
 
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
-    assertThat(rootNode.listInInitializationOrder().stream().map(node -> node.getKey()))
-        .containsExactly("subfield", "0", "mylist", "root")
-        .inOrder();
+    assertThat(listNodeKeys(rootNode)).containsExactly("subfield", "0", "mylist", "root").inOrder();
   }
 
   private static void assertNodeEqual(InitCodeNode a, InitCodeNode b) {
@@ -431,5 +426,13 @@ public class SampleInitCodeTest {
     for (String key : a.getChildren().keySet()) {
       assertNodeEqual(a.getChildren().get(key), b.getChildren().get(key));
     }
+  }
+
+  private List<String> listNodeKeys(InitCodeNode rootNode) {
+    return rootNode
+        .listInInitializationOrder()
+        .stream()
+        .map(InitCodeNode::getKey)
+        .collect(ImmutableList.toImmutableList());
   }
 }
