@@ -1,0 +1,40 @@
+@extends "csharp/common.snip"
+@extends "csharp/common_initcode.snip"
+
+# StaticLangFileView
+@snippet generate(sampleFile)
+  @let sampleClass = sampleFile.classView
+    @let apiMethod = sampleClass.libraryMethod, sample = sampleClass.sample
+  	{@initialComments(sampleFile.fileHeader)}
+    // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+
+    // [START {@sample.regionTag}]
+    // FIXME: import section
+
+    class {@sampleClass.name}
+    {
+      // FIXME: sample function documentation
+      static public void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)})
+      {
+      	// FIXME: instantiate a client
+        // FIXME: construct a request
+        // FIXME: call the API
+        // FIXME: inspect the results
+      }
+
+      static public void Main(String[] args)
+      {
+      	// FIXME: pass in commandline arguments
+      	// FIXME: call the sample function
+      }
+    }
+    @end
+  @end
+@end
+
+
+@private commaSeparatedArgAndTypes(args)
+  @join arg : args on ", "
+    {@arg.typeName} {@arg.identifier}
+  @end
+@end

@@ -14,16 +14,30 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicInterfaceContext;
+import com.google.api.codegen.config.GapicMethodContext;
+import com.google.api.codegen.config.InterfaceContext;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.transformer.ParamWithSimpleDoc;
+import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
+import com.google.api.codegen.util.csharp.CSharpAliasMode;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
 
-  private static final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
+  private static final CSharpCommonTransformer csharpCommonTransformer =
+      new CSharpCommonTransformer();
+  private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.Global;
 
   public CSharpApiMethodTransformer(SampleTransformer sampleTransformer) {
     super(sampleTransformer);
@@ -98,7 +112,11 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
   }
 
   @Override
-  public List<StaticLangApiMethodView> generateApiMethods(GapicInterfaceContext context) {
+  public List<StaticLangApiMethodView> generateApiMethods(InterfaceContext interfaceContext) {
+    Preconditions.checkArgument(
+        interfaceContext instanceof GapicInterfaceContext,
+        "SampleGen is for protobuf-based API" + " only.");
+    GapicInterfaceContext context = (GapicInterfaceContext) interfaceContext;
     List<ParamWithSimpleDoc> pagedMethodAdditionalParams =
         new ImmutableList.Builder<ParamWithSimpleDoc>()
             .addAll(csharpCommonTransformer.pagedMethodAdditionalParams())
@@ -116,12 +134,11 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
-                apiMethodTransformer.generateGrpcStreamingFlattenedMethod(
+                generateGrpcStreamingFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));
           }
         }
-        apiMethods.add(
-            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(requestMethodContext));
+        apiMethods.add(generateGrpcStreamingRequestObjectMethod(requestMethodContext));
       } else if (requestMethodContext.isLongRunningMethodContext()) {
         // Only for protobuf-based APIs.
         GapicMethodContext gapicMethodContext = (GapicMethodContext) requestMethodContext;
@@ -130,27 +147,27 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
-                apiMethodTransformer.generateAsyncOperationFlattenedMethod(
+                generateAsyncOperationFlattenedMethod(
                     methodContext,
                     csharpCommonTransformer.callSettingsParam(),
                     ClientMethodType.AsyncOperationFlattenedCallSettingsMethod,
                     true));
             apiMethods.add(
-                apiMethodTransformer.generateAsyncOperationFlattenedMethod(
+                generateAsyncOperationFlattenedMethod(
                     methodContext,
                     csharpCommonTransformer.cancellationTokenParam(),
                     ClientMethodType.AsyncOperationFlattenedCancellationMethod,
                     true));
             apiMethods.add(
-                apiMethodTransformer.generateOperationFlattenedMethod(
+                generateOperationFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));
           }
         }
         apiMethods.add(
-            apiMethodTransformer.generateAsyncOperationRequestObjectMethod(
+            generateAsyncOperationRequestObjectMethod(
                 requestMethodContext, csharpCommonTransformer.callSettingsParam(), true));
         apiMethods.add(
-            apiMethodTransformer.generateOperationRequestObjectMethod(
+            generateOperationRequestObjectMethod(
                 gapicMethodContext, csharpCommonTransformer.callSettingsParam()));
       } else if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
@@ -158,18 +175,16 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
-                apiMethodTransformer.generatePagedFlattenedAsyncMethod(
-                    methodContext, pagedMethodAdditionalParams));
+                generatePagedFlattenedAsyncMethod(methodContext, pagedMethodAdditionalParams));
             apiMethods.add(
-                apiMethodTransformer.generatePagedFlattenedMethod(
-                    methodContext, pagedMethodAdditionalParams));
+                generatePagedFlattenedMethod(methodContext, pagedMethodAdditionalParams));
           }
         }
         apiMethods.add(
-            apiMethodTransformer.generatePagedRequestObjectAsyncMethod(
+            generatePagedRequestObjectAsyncMethod(
                 requestMethodContext, csharpCommonTransformer.callSettingsParam()));
         apiMethods.add(
-            apiMethodTransformer.generatePagedRequestObjectMethod(
+            generatePagedRequestObjectMethod(
                 requestMethodContext, csharpCommonTransformer.callSettingsParam()));
       } else {
         if (methodConfig.isFlattening()) {
@@ -177,32 +192,32 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
-                apiMethodTransformer.generateFlattenedAsyncMethod(
+                generateFlattenedAsyncMethod(
                     methodContext,
                     csharpCommonTransformer.callSettingsParam(),
                     ClientMethodType.FlattenedAsyncCallSettingsMethod));
             apiMethods.add(
-                apiMethodTransformer.generateFlattenedAsyncMethod(
+                generateFlattenedAsyncMethod(
                     methodContext,
                     csharpCommonTransformer.cancellationTokenParam(),
                     ClientMethodType.FlattenedAsyncCancellationTokenMethod));
             apiMethods.add(
-                apiMethodTransformer.generateFlattenedMethod(
+                generateFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));
           }
         }
         apiMethods.add(
-            apiMethodTransformer.generateRequestObjectAsyncMethod(
+            generateRequestObjectAsyncMethod(
                 requestMethodContext,
                 csharpCommonTransformer.callSettingsParam(),
                 ClientMethodType.AsyncRequestObjectCallSettingsMethod));
         apiMethods.add(
-            apiMethodTransformer.generateRequestObjectAsyncMethod(
+            generateRequestObjectAsyncMethod(
                 requestMethodContext,
                 csharpCommonTransformer.cancellationTokenParam(),
                 ClientMethodType.AsyncRequestObjectCancellationMethod));
         apiMethods.add(
-            apiMethodTransformer.generateRequestObjectMethod(
+            generateRequestObjectMethod(
                 requestMethodContext, csharpCommonTransformer.callSettingsParam()));
       }
     }

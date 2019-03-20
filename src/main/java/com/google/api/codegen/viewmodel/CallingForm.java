@@ -69,14 +69,12 @@ public enum CallingForm {
 
   LongRunningCallable, // used by: java
   LongRunningEventEmitter, // used by: nodejs
-  LongRunningFlattened,
-  LongRunningFlattenedAsync, // used by: java
+  LongRunningFlattened, // used by: csharp
+  LongRunningFlattenedAsync, // used by: csharp, java
   LongRunningPromise, // used by: nodejs py
   LongRunningPromiseAwait, // used by: nodejs
   LongRunningRequest, // used by: csharp php
   LongRunningRequestAsync, // used by: csharp java php ruby
-  LongRunningFlattened, // used by: csharp
-  LongRunningFlattenedAsync, // used by: csharp
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.

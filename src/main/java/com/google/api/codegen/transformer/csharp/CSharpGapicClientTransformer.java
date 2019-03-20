@@ -17,9 +17,7 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceContext;
-import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -39,7 +37,6 @@ import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
-import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
@@ -66,7 +63,6 @@ import com.google.api.codegen.viewmodel.StaticLangApiView;
 import com.google.api.codegen.viewmodel.StaticLangResourceNamesView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 import java.io.File;
 import java.util.ArrayList;
@@ -282,7 +278,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
   private StaticLangApiView generateApiClass(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiView.Builder apiClass = StaticLangApiView.newBuilder();
-    List<StaticLangApiMethodView> methods = generateApiMethods(context);
+    List<StaticLangApiMethodView> methods = apiMethodTransformer.generateApiMethods(context);
 
     apiClass.doc(serviceTransformer.generateServiceDoc(context, null, context.getProductConfig()));
 
@@ -415,118 +411,6 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
       modifyMethods.add(builder.build());
     }
     return modifyMethods;
-  }
-
-  private List<StaticLangApiMethodView> generateApiMethods(GapicInterfaceContext context) {
-    List<ParamWithSimpleDoc> pagedMethodAdditionalParams =
-        new ImmutableList.Builder<ParamWithSimpleDoc>()
-            .addAll(csharpCommonTransformer.pagedMethodAdditionalParams())
-            .addAll(csharpCommonTransformer.callSettingsParam())
-            .build();
-
-    List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
-    for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodContext requestMethodContext = context.asRequestMethodContext(method);
-      if (methodConfig.isGrpcStreaming()) {
-        // Only for protobuf-based APIs.
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
-            apiMethods.add(
-                apiMethodTransformer.generateGrpcStreamingFlattenedMethod(
-                    methodContext, csharpCommonTransformer.callSettingsParam()));
-          }
-        }
-        apiMethods.add(
-            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(requestMethodContext));
-      } else if (requestMethodContext.isLongRunningMethodContext()) {
-        // Only for protobuf-based APIs.
-        GapicMethodContext gapicMethodContext = (GapicMethodContext) requestMethodContext;
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
-            apiMethods.add(
-                apiMethodTransformer.generateAsyncOperationFlattenedMethod(
-                    methodContext,
-                    csharpCommonTransformer.callSettingsParam(),
-                    ClientMethodType.AsyncOperationFlattenedCallSettingsMethod,
-                    true));
-            apiMethods.add(
-                apiMethodTransformer.generateAsyncOperationFlattenedMethod(
-                    methodContext,
-                    csharpCommonTransformer.cancellationTokenParam(),
-                    ClientMethodType.AsyncOperationFlattenedCancellationMethod,
-                    true));
-            apiMethods.add(
-                apiMethodTransformer.generateOperationFlattenedMethod(
-                    methodContext, csharpCommonTransformer.callSettingsParam()));
-          }
-        }
-        apiMethods.add(
-            apiMethodTransformer.generateAsyncOperationRequestObjectMethod(
-                requestMethodContext, csharpCommonTransformer.callSettingsParam(), true));
-        apiMethods.add(
-            apiMethodTransformer.generateOperationRequestObjectMethod(
-                gapicMethodContext, csharpCommonTransformer.callSettingsParam()));
-      } else if (methodConfig.isPageStreaming()) {
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
-            apiMethods.add(
-                apiMethodTransformer.generatePagedFlattenedAsyncMethod(
-                    methodContext, pagedMethodAdditionalParams));
-            apiMethods.add(
-                apiMethodTransformer.generatePagedFlattenedMethod(
-                    methodContext, pagedMethodAdditionalParams));
-          }
-        }
-        apiMethods.add(
-            apiMethodTransformer.generatePagedRequestObjectAsyncMethod(
-                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
-        apiMethods.add(
-            apiMethodTransformer.generatePagedRequestObjectMethod(
-                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
-      } else {
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
-            apiMethods.add(
-                apiMethodTransformer.generateFlattenedAsyncMethod(
-                    methodContext,
-                    csharpCommonTransformer.callSettingsParam(),
-                    ClientMethodType.FlattenedAsyncCallSettingsMethod));
-            apiMethods.add(
-                apiMethodTransformer.generateFlattenedAsyncMethod(
-                    methodContext,
-                    csharpCommonTransformer.cancellationTokenParam(),
-                    ClientMethodType.FlattenedAsyncCancellationTokenMethod));
-            apiMethods.add(
-                apiMethodTransformer.generateFlattenedMethod(
-                    methodContext, csharpCommonTransformer.callSettingsParam()));
-          }
-        }
-        apiMethods.add(
-            apiMethodTransformer.generateRequestObjectAsyncMethod(
-                requestMethodContext,
-                csharpCommonTransformer.callSettingsParam(),
-                ClientMethodType.AsyncRequestObjectCallSettingsMethod));
-        apiMethods.add(
-            apiMethodTransformer.generateRequestObjectAsyncMethod(
-                requestMethodContext,
-                csharpCommonTransformer.cancellationTokenParam(),
-                ClientMethodType.AsyncRequestObjectCancellationMethod));
-        apiMethods.add(
-            apiMethodTransformer.generateRequestObjectMethod(
-                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
-      }
-    }
-
-    return apiMethods;
   }
 
   public SettingsDocView generateSettingsDoc(GapicInterfaceContext context) {

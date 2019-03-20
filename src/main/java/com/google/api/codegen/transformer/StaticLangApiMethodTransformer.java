@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
@@ -66,6 +67,11 @@ public class StaticLangApiMethodTransformer {
 
   public StaticLangApiMethodTransformer() {
     this(SampleTransformer.create(SampleType.IN_CODE));
+  }
+
+  public List<StaticLangApiMethodView> generateApiMethods(InterfaceContext interfaceContext) {
+    throw new UnsupportedOperationException(
+        "unimplemented: StaticLangApiMethodTransformer:generateApiMethods");
   }
 
   public StaticLangApiMethodView generatePagedFlattenedMethod(MethodContext context) {
