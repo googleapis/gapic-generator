@@ -363,7 +363,17 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
     settingsClass.batchingDescriptors(batchingTransformer.generateDescriptorClasses(context));
     // Remove additional retry codes, added due to the change in retry when using proto annotations.
     List<RetryCodesDefinitionView> retryCodes =
-        retryDefinitionsTransformer.generateRetryCodesDefinitions(context);
+        retryDefinitionsTransformer
+            .generateRetryCodesDefinitions(context)
+            .stream()
+            .filter(
+                x ->
+                    context
+                        .getInterfaceConfig()
+                        .getRetryCodesConfig()
+                        .getRetryCodeDefsFromGapicConfig()
+                        .contains(x.key()))
+            .collect(Collectors.toList());
     settingsClass.retryCodesDefinitions(retryCodes);
     settingsClass.retryParamsDefinitions(
         retryDefinitionsTransformer.generateRetryParamsDefinitions(context));

@@ -30,6 +30,7 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,6 +48,7 @@ public class RetryCodesConfig {
   private Map<String, ImmutableList<String>> retryCodesDefinition = new HashMap<>();
   private Map<String, String> methodRetryNames = new HashMap<>();
 
+  private ImmutableSet<String> retryCodeDefsFromGapicConfig;
   private ImmutableMap<String, ImmutableList<String>> finalRetryCodesDefinition;
   private ImmutableMap<String, String> finalMethodRetryNames;
   private boolean error = false;
@@ -64,6 +66,11 @@ public class RetryCodesConfig {
    */
   public ImmutableMap<String, String> getMethodRetryNames() {
     return finalMethodRetryNames;
+  }
+
+  /** The retry code def names from the GAPIC config. */
+  public Set<String> getRetryCodeDefsFromGapicConfig() {
+    return retryCodeDefsFromGapicConfig;
   }
 
   private RetryCodesConfig() {}
@@ -175,6 +182,8 @@ public class RetryCodesConfig {
     if (retryCodesDefFromConfigProto == null) {
       return;
     }
+
+    retryCodeDefsFromGapicConfig = retryCodesDefFromConfigProto.keySet();
 
     Map<String, String> methodRetryNamesFromConfigProto =
         createMethodRetryNamesFromConfigProto(interfaceConfigProto);
