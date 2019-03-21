@@ -19,6 +19,30 @@
   @end
 @end
 
+@snippet initCodeWithDescriptions(initCodeLines)
+  @join line : initCodeLines
+    @if line.descriptions
+
+      {@toComments(line.descriptions)}
+
+    @end
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
+    @case "ReadFileInitLine"
+      {@initLineReadFile(line)}
+    @default
+      {@unhandledCase()}
+    @end
+  @end
+@end
+
 @private initLineReadFile(line)
   {@line.identifier} = File.binread {@renderInitValue(line.fileName)}
 @end

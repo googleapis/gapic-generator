@@ -205,10 +205,13 @@ interfaces:
     resource_name_treatment: NONE
     field_name_patterns:
       name: shelf
+      shelf.name: shelf
     header_request_params:
     - name
     - book.read
   - name: PublishSeries
+    field_name_patterns:
+      shelf.name: shelf
     flattening:
       groups:
       - parameters:
@@ -307,6 +310,32 @@ interfaces:
       parameters:
         defaults:
         - edition=2
+    - id: test_request_object_field_comments
+      title: "request object field comments"
+      description: "Test request object field comments"
+      parameters:
+        defaults:
+        - shelf.name%shelf_id="math"
+        - shelf.theme=Math
+        - shelf.internal_theme=Statistics
+        - series_uuid.series_bytes="xyz3141592654"
+        - edition=123
+        attributes:
+        - parameter: shelf.internal_theme
+          description: "Comment on a primitive field"
+        - parameter: series_uuid.series_bytes
+          read_file: true
+          description: "Comment on a file input field"
+        - parameter: series_uuid
+          description: "Comment on a message"
+        - parameter: shelf.name%shelf_id
+          description: "Comment on a resource name entity"
+        - parameter: shelf.name
+          description: "Comment on a resource name"
+        - parameter: edition
+          description: "A super long long long long long long long long long long long long long long comment that tests word wrapping"
+        - parameter: shelf.theme
+          description: "A super long comment\nwraps words at newline characters\nas well"
     samples:
       in_code:
       - calling_forms: [callable]
@@ -322,6 +351,8 @@ interfaces:
         region_tag: "canonical"
       - calling_forms: callable
         value_sets: ["sample_code_init_fields"]       # implicit, from deprecated field
+      - calling_forms: request
+        value_sets: ["test_request_object_field_comments"]
   - name: GetBook
     flattening:
       groups:
