@@ -4441,6 +4441,84 @@ function samplePublishSeries()
 // [END canonical]
 
 samplePublishSeries();
+============== file: src/V1/samples/publishSeries/PublishSeriesRequestTestRequestObjectFieldComments.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\Book;
+use Google\Example\Library\V1\SeriesUuid;
+use Google\Example\Library\V1\Shelf;
+
+/** Test request object field comments */
+function samplePublishSeries()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+
+    // Comment on a resource name
+    $formattedName = $libraryServiceClient->shelfName('math');
+
+    // A super long comment
+    // wraps words at newline characters
+    // as well
+    $theme = 'Math';
+
+    // Comment on a primitive field
+    $internalTheme = 'Statistics';
+    $shelf = new Shelf();
+    $shelf->setName($formattedName);
+    $shelf->setTheme($theme);
+    $shelf->setInternalTheme($internalTheme);
+    $books = [];
+
+    // Comment on a file input field
+    $fileName = 'xyz3141592654';
+    $seriesBytes = file_get_contents($fileName);
+
+    // Comment on a message
+    $seriesUuid = new SeriesUuid();
+    $seriesUuid->setSeriesBytes($seriesBytes);
+
+    // A super long long long long long long long long long long long long long long comment that tests
+    // word wrapping
+    $edition = 123;
+
+    try {
+        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        printf("%s" . PHP_EOL, print_r($response, true));
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+samplePublishSeries();
 ============== file: src/V1/samples/streamBooks/StreamBooksRequestStreamingServerProg.php ==============
 <?php
 /*

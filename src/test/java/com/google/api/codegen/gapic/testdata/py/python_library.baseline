@@ -5119,8 +5119,6 @@ def sample_publish_series(shelf_name, edition):
     shelf_name = shelf_name.decode('utf-8')
 
   shelf = {'name': shelf_name}
-
-  # TODO: Initialize `books`:
   books = []
   series_string = 'xyz3141592654'
   series_uuid = {'series_string': series_string}
@@ -5195,13 +5193,8 @@ def sample_publish_series():
 
   client = library_v1.LibraryServiceClient()
 
-  # TODO: Initialize `shelf`:
   shelf = {}
-
-  # TODO: Initialize `books`:
   books = []
-
-  # TODO: Initialize `series_uuid`:
   series_uuid = {}
   edition = 2
 
@@ -5210,6 +5203,78 @@ def sample_publish_series():
 
   # [END canonical_core]
 # [END canonical]
+
+def main():
+  sample_publish_series()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_request_test_request_object_field_comments.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+import io
+
+def sample_publish_series():
+  """Test request object field comments"""
+  # [START sample_core]
+
+  client = library_v1.LibraryServiceClient()
+
+
+  # Comment on a resource name
+  name = client.shelf_path('math')
+
+  # A super long comment
+  # wraps words at newline characters
+  # as well
+  theme = 'Math'
+
+  # Comment on a primitive field
+  internal_theme = 'Statistics'
+  shelf = {'name': name, 'theme': theme, 'internal_theme': internal_theme}
+  books = []
+
+  # Comment on a file input field
+  file_name = 'xyz3141592654'
+  with io.open(file_name, 'rb') as f:
+    series_bytes = f.read()
+
+  # Comment on a message
+  series_uuid = {'series_bytes': series_bytes}
+
+  # A super long long long long long long long long long long long long long long
+  # comment that tests word wrapping
+  edition = 123
+
+  response = client.publish_series(shelf, books, series_uuid, edition=edition)
+  print(response)
+
+  # [END sample_core]
+# [END sample]
 
 def main():
   sample_publish_series()

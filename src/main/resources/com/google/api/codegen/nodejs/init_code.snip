@@ -1,3 +1,5 @@
+@extends "nodejs/common.snip"
+
 @snippet initCode(apiMethod, init)
   @if init.argDefaultLines
     @join line : util.pretty(initCodeLines(init.argDefaultLines))
@@ -16,9 +18,7 @@
   @join line : lines
     @if line.descriptions
 
-      @join descriptionLine : line.descriptions
-        // {@descriptionLine}
-      @end
+      {@lineComments(line.descriptions)}
 
     @end
     @switch line.lineType.toString

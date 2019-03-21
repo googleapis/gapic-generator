@@ -86,8 +86,8 @@ public class InitCodeTransformer {
 
   private final ImportSectionTransformer importSectionTransformer;
 
-  // Whether the initialization code should include user-facing comments like TODOs. This should be
-  // false if the initialization code is being used to generate tests, rather than code samples.
+  // Whether the initialization code should include hardcoded user-facing comments like TODOs. This
+  // should only be true when generating incode samples.
   private final boolean generateUserFacingComments;
 
   public InitCodeTransformer() {

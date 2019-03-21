@@ -5156,6 +5156,7 @@ def sample_discuss_book(image_file_name)
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  # image_file_name = "image_file.jpg"
   name = "BASIC"
   file_name = "comment_file"
   comment = File.binread file_name
@@ -5317,6 +5318,7 @@ def sample_get_big_book(shelf)
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  # shelf = "Novel"
   formatted_name = library_client.class.book_path(shelf, "War and Peace")
 
   # Make the long-running operation request
@@ -5397,6 +5399,8 @@ def sample_get_big_book(shelf, big_book_name)
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  # shelf = "Novel"
+  # big_book_name = "War and Peace"
   formatted_name = library_client.class.book_path(shelf, big_book_name)
 
   # Make the long-running operation request
@@ -5653,9 +5657,9 @@ def sample_publish_series(shelf_name, edition)
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  # shelf_name = "Math"
+  # edition = 123
   shelf = { name: shelf_name }
-
-  # TODO: Initialize `books`:
   books = []
   series_string = "xyz3141592654"
   series_uuid = { series_string: series_string }
@@ -5730,14 +5734,8 @@ def sample_publish_series
   # Instantiate a client
   library_client = Library.new version: :v1
 
-
-  # TODO: Initialize `shelf`:
   shelf = {}
-
-  # TODO: Initialize `books`:
   books = []
-
-  # TODO: Initialize `series_uuid`:
   series_uuid = {}
   edition = 2
 
@@ -5747,6 +5745,75 @@ def sample_publish_series
   # [END canonical_core]
 end
 # [END canonical]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_publish_series
+end
+============== file: samples/publish_series_request_test_request_object_field_comments.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
+
+require "library"
+
+# [START sample]
+
+# Test request object field comments
+def sample_publish_series
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+
+  # Comment on a resource name
+  formatted_name = library_client.class.shelf_path("math")
+
+  # A super long comment
+  # wraps words at newline characters
+  # as well
+  theme = "Math"
+
+  # Comment on a primitive field
+  internal_theme = "Statistics"
+  shelf = {
+    name: formatted_name,
+    theme: theme,
+    internal_theme: internal_theme
+  }
+  books = []
+
+  # Comment on a file input field
+  file_name = "xyz3141592654"
+  series_bytes = File.binread file_name
+
+  # Comment on a message
+  series_uuid = { series_bytes: series_bytes }
+
+  # A super long long long long long long long long long long long long long long comment that tests
+  # word wrapping
+  edition = 123
+
+  response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
+  puts response
+
+  # [END sample_core]
+end
+# [END sample]
 
 
 require "optparse"

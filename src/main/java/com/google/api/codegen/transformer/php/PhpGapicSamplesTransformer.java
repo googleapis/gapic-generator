@@ -55,7 +55,8 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
       new DynamicLangApiMethodTransformer(
           new PhpApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
-              .initCodeTransformer(new InitCodeTransformer(new PhpImportSectionTransformer()))
+              .initCodeTransformer(
+                  new InitCodeTransformer(new PhpImportSectionTransformer(), false))
               .sampleType(SampleType.STANDALONE)
               .sampleImportTransformer(
                   new StandardSampleImportTransformer(new PhpImportSectionTransformer()))

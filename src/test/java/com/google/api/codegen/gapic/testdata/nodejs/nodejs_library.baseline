@@ -1224,6 +1224,70 @@ function samplePublishSeries() {
 // tslint:disable-next-line:no-any
 
 samplePublishSeries();
+============== file: src/samples/v1/publish_series_request_test_request_object_field_comments.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test request object field comments */
+function samplePublishSeries() {
+  const client = new library.LibraryServiceClient();
+
+  // Comment on a resource name
+  const formattedName = client.shelfPath('math');
+
+  // A super long comment
+  // wraps words at newline characters
+  // as well
+  const theme = 'Math';
+
+  // Comment on a primitive field
+  const internalTheme = 'Statistics';
+  const shelf = {
+    name: formattedName,
+    theme: theme,
+    internalTheme: internalTheme,
+  };
+  const books = [];
+
+  // Comment on a file input field
+  const fileName = 'xyz3141592654';
+  const seriesBytes = fs.readFileSync(fileName).toString('base64');
+
+  // Comment on a message
+  const seriesUuid = {
+    seriesBytes: seriesBytes,
+  };
+
+  // A super long long long long long long long long long long long long long long comment that tests
+  // word wrapping
+  const edition = 123;
+  const request = {
+    shelf: shelf,
+    books: books,
+    seriesUuid: seriesUuid,
+    edition: edition,
+  };
+  client.publishSeries(request)
+    .then(responses => {
+      const response = responses[0];
+      console.log(response);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+samplePublishSeries();
 ============== file: src/samples/v1/stream_books_request_streaming_server_prog.js ==============
 // DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
 'use strict';
