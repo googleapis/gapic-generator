@@ -55,7 +55,7 @@ public class InitCodeNode {
   private OneofConfig oneofConfig;
   private String varName;
   private SampleParameterConfig sampleParamConfig;
-  private String description;
+  private String description = "";
 
   /*
    * Get the key associated with the node. For InitCodeNode objects that are not a root object, they
@@ -401,6 +401,7 @@ public class InitCodeNode {
   /** Apply {@code sampleParamConfig} to this node. */
   private void resolveSampleParamConfig(
       InitCodeContext context, SampleParameterConfig sampleParamConfig) {
+    setDescription(sampleParamConfig.description());
     if (sampleParamConfig.readFromFile()) {
       setupReadFileNode(context, sampleParamConfig);
     } else if (sampleParamConfig.isSampleArgument()) {

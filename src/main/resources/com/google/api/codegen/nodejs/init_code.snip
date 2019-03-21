@@ -6,9 +6,35 @@
 
 
   @end
-  {@initCodeLines(init.lines)}
+  {@initCodeLinesWithDescriptions(init.lines)}
   @if initializeRequestObject(apiMethod, init)
     {@initializeRequestObject(apiMethod, init)}
+  @end
+@end
+
+@private initCodeLinesWithDescriptions(lines)
+  @join line : lines
+    @if line.descriptions
+
+      @join line : util.pretty(initCodeLines(init.argDefaultLines))
+        // {@line}
+      @end
+
+    @end
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @case "ReadFileInitLine"
+      {@initLineReadFile(line)}
+    @default
+      $unhandledCase: {@line.lineType.toString}$
+    @end
   @end
 @end
 

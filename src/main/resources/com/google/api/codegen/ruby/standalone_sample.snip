@@ -226,7 +226,42 @@
 # Make a copy of init_code.snip because standalone samples prefer different styles
 # in setting up resource names from incode samples.
 @private initCode(initCodeSpec)
-  @join line : initCodeSpec.lines
+  @if initCodeSpec.argDefaultLines
+    @join line : util.pretty(initCodeLines(initCodeSpec.argDefaultLines))
+      @# {@line}
+    @end
+
+
+  @end
+  {@initCodeLinesWithDescriptions(initCodeSpec.lines)}
+@end
+
+@private initCodeLines(lines)
+  @join line : lines
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @case "ReadFileInitLine"
+      {@initLineReadFile(line)}
+    @default
+      $unhandledCase: {@line.lineType.toString}$
+    @end
+  @end
+@end
+
+@private initCodeLinesWithDescriptions(lines)
+  @join line : lines
+    @if line.descriptions
+
+      {@toComments(line.descriptions)}
+
+    @end
     @switch line.lineType.toString
     @case "StructureInitLine"
       {@initLineStructure(line)}

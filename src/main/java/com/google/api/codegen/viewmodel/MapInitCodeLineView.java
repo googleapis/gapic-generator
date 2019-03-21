@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class MapInitCodeLineView implements InitCodeLineView {
@@ -31,6 +32,9 @@ public abstract class MapInitCodeLineView implements InitCodeLineView {
   public abstract String identifier();
 
   public abstract List<MapEntryView> initEntries();
+
+  @Nullable
+  public abstract List<String> descriptions();
 
   public static Builder newBuilder() {
     return new AutoValue_MapInitCodeLineView.Builder();
@@ -47,6 +51,8 @@ public abstract class MapInitCodeLineView implements InitCodeLineView {
     public abstract Builder identifier(String val);
 
     public abstract Builder initEntries(List<MapEntryView> val);
+
+    public abstract Builder descriptions(List<String> val);
 
     public abstract MapInitCodeLineView build();
   }

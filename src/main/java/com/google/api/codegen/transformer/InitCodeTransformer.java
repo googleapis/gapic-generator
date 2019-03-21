@@ -534,7 +534,7 @@ public class InitCodeTransformer {
     surfaceLine.typeName(typeName);
     surfaceLine.typeConstructor(namer.getTypeConstructor(typeName));
     surfaceLine.fieldSettings(getFieldSettings(context, item.getChildren().values()));
-
+    surfaceLine.descriptions(context.getNamer().getDocLines(item.getDescription()));
     return surfaceLine.build();
   }
 
@@ -562,7 +562,7 @@ public class InitCodeTransformer {
     }
     surfaceLine.elementIdentifiers(entries);
     surfaceLine.elements(elements);
-
+    surfaceLine.descriptions(context.getNamer().getDocLines(item.getDescription()));
     return surfaceLine.build();
   }
 
@@ -587,7 +587,7 @@ public class InitCodeTransformer {
       entries.add(mapEntry.build());
     }
     surfaceLine.initEntries(entries);
-
+    surfaceLine.descriptions(context.getNamer().getDocLines(item.getDescription()));
     return surfaceLine.build();
   }
 
@@ -626,6 +626,7 @@ public class InitCodeTransformer {
         .identifier(namer.localVarName(item.getIdentifier()))
         .fileName(SimpleInitValueView.newBuilder().initialValue(value).build())
         .isFirstReadFileView(isFirstReadFileView)
+        .descriptions(namer.getDocLines(item.getDescription()))
         .build();
   }
 
@@ -781,6 +782,7 @@ public class InitCodeTransformer {
     } else {
       surfaceLine.doc(ImmutableList.of());
     }
+    surfaceLine.descriptions(context.getNamer().getDocLines(item.getDescription()));
   }
 
   private ResourceNameInitValueView.Builder createResourceNameInitValueView(

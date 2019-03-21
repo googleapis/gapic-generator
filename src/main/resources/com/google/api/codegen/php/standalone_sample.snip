@@ -308,7 +308,32 @@
 
 
     @end
-    {@initCodeLines(sampleInitCode.lines, apiVariableName)}
+    {@initCodeLinesWithDescriptions(sampleInitCode.lines, apiVariableName)}
+@end
+
+@private initCodeLinesWithDescriptions(lines, apiVariableName)
+    @join line : lines
+        @if line.descriptions
+
+            @join line : util.pretty(line.descriptions)
+              // {@line}
+            @end
+        @end
+        @switch line.lineType
+        @case "StructureInitLine"
+            {@initLineStructure(line)}
+        @case "ListInitLine"
+            {@initLineList(line)}
+        @case "MapInitLine"
+            {@initLineMap(line)}
+        @case "SimpleInitLine"
+            {@initLineSimple(line, apiVariableName)}
+        @case "ReadFileInitLine"
+            {@initLineReadFile(line, apiVariableName)}
+        @default
+            $unhandledCase: {@line.lineType}$
+        @end
+    @end
 @end
 
 @private initCodeLines(lines, apiVariableName)

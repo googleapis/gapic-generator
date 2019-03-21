@@ -8,11 +8,35 @@
 
 
   @end
-  {@initCodeLines(initCodeSpec.lines)}
+  {@initCodeLinesWithDescriptions(initCodeSpec.lines)}
 @end
 
 @private initCodeLines(lines)
   @join line : lines
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @case "ReadFileInitLine"
+      {@initLineReadFile(line)}
+    @default
+      $unhandledCase: {@line.lineType.toString}$
+    @end
+  @end
+@end
+
+@private initCodeLinesWithDescriptions(lines)
+  @join line : lines
+    @if line.descriptions
+
+      {@toComments(line.descriptions)}
+
+    @end
     @switch line.lineType.toString
     @case "StructureInitLine"
       {@initLineStructure(line)}

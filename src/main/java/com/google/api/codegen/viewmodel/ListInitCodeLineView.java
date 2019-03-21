@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ListInitCodeLineView implements InitCodeLineView {
@@ -33,6 +34,9 @@ public abstract class ListInitCodeLineView implements InitCodeLineView {
 
   public abstract List<InitCodeLineView> elements();
 
+  @Nullable
+  public abstract List<String> descriptions();
+
   public static Builder newBuilder() {
     return new AutoValue_ListInitCodeLineView.Builder();
   }
@@ -48,6 +52,8 @@ public abstract class ListInitCodeLineView implements InitCodeLineView {
     public abstract Builder elementIdentifiers(List<String> val);
 
     public abstract Builder elements(List<InitCodeLineView> val);
+
+    public abstract Builder descriptions(List<String> val);
 
     public abstract ListInitCodeLineView build();
   }
