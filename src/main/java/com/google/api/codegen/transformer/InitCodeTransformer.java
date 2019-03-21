@@ -86,8 +86,14 @@ public class InitCodeTransformer {
 
   private final ImportSectionTransformer importSectionTransformer;
 
-  // Whether the initialization code should include hardcoded user-facing comments like TODOs. This
+  // Whether the initialization code should include hardcoded comments like TODOs. This
   // should only be true when generating incode samples.
+  //
+  // This field should be set to false when generating tests because tests do not need to include
+  // user facing comments.
+  //
+  // This field should be set to false when generating standalone samples because comments in
+  // standalone samples are derived from user configurations, not hardcoded.
   private final boolean generateUserFacingComments;
 
   public InitCodeTransformer() {
