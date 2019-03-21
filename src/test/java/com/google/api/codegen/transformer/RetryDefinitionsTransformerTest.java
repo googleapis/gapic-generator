@@ -80,10 +80,7 @@ public class RetryDefinitionsTransformerTest {
                     .setName(RETRY_CODES_NON_IDEMPOTENT_NAME))
             .addMethods(MethodConfigProto.newBuilder().setName(GET_HTTP_METHOD_NAME))
             // Don't set a retry code in config proto for GET_HTTP_METHOD
-            .addMethods(
-                MethodConfigProto.newBuilder()
-                    .setName(NON_IDEMPOTENT_METHOD_NAME)
-                    .setRetryCodesName(RETRY_CODES_NON_IDEMPOTENT_NAME))
+            // Don't set a retry code in config proto for NON_IDEMPOTENT_METHOD_NAME
             .addMethods(
                 MethodConfigProto.newBuilder()
                     .setName(IDEMPOTENT_METHOD_NAME)
@@ -114,12 +111,19 @@ public class RetryDefinitionsTransformerTest {
     String permissionDeniedRetryName = retryCodesMap.get(PERMISSION_DENIED_METHOD_NAME);
     String idempotentRetryName = retryCodesMap.get(IDEMPOTENT_METHOD_NAME);
 
-    // GET_HTTP_METHOD_NAME had to be escaped because it was defined in the config proto retry code
-    // map already.
+    // RETRY_CODES_IDEMPOTENT_NAME name for HTTP-GET method had to be escaped because "idempotent"
+    // was already defined in the config proto retry code map already, and the config proto's
+    // "idempotent" refers to a different set of retry codes compared to the default codes for
+    // HTTP-GET.
     assertThat(getHttpRetryName).isEqualTo("idempotent2");
+
+    // Even though "non_idempotent" already exists in the GAPIC config, we can
+    // reuse the name for this unconfigured method because it has the same set of retry codes as
+    // a non-HTTP-GET method.
     assertThat(nonIdempotentRetryName).isEqualTo(RETRY_CODES_NON_IDEMPOTENT_NAME);
     assertThat(permissionDeniedRetryName)
         .isEqualTo(RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME);
+
     assertThat(idempotentRetryName).isEqualTo(RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME);
 
     // httpGetMethod was an HTTP Get method, so it has two codes by default; config proto didn't
