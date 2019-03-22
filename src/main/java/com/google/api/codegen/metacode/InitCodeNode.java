@@ -403,16 +403,16 @@ public class InitCodeNode {
       InitCodeContext context, SampleParameterConfig sampleParamConfig) {
     if (sampleParamConfig.readFromFile()) {
       setupReadFileNode(context, sampleParamConfig);
-    } else if (sampleParamConfig.isSampleArgument()) {
+      return;
+    }
+    if (sampleParamConfig.isSampleArgument()) {
       Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
       if (!argName.equals(identifier)) {
         identifier =
             identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
       }
-      setDescription(sampleParamConfig.description());
-    } else {
-      setDescription(sampleParamConfig.description());
     }
+    setDescription(sampleParamConfig.description());
   }
 
   /** Apply {@code sampleParamConfig} to a resource path entity. */

@@ -3,20 +3,7 @@
 # Generate argument initialization code for API call
 @snippet initCode(initCodeLines)
   @join line : initCodeLines
-    @switch line.lineType.toString
-    @case "StructureInitLine"
-      {@initLineStructure(line)}
-    @case "ListInitLine"
-      {@initLineList(line)}
-    @case "SimpleInitLine"
-      {@initLineSimple(line)}
-    @case "MapInitLine"
-      {@initLineMap(line)}
-    @case "ReadFileInitLine"
-      {@initLineReadFile(line)}
-    @default
-      {@unhandledCase()}
-    @end
+    {@initCodeLine(line)}
   @end
 @end
 
@@ -27,20 +14,24 @@
       {@toComments(line.descriptions)}
 
     @end
-    @switch line.lineType.toString
-    @case "StructureInitLine"
-      {@initLineStructure(line)}
-    @case "ListInitLine"
-      {@initLineList(line)}
-    @case "SimpleInitLine"
-      {@initLineSimple(line)}
-    @case "MapInitLine"
-      {@initLineMap(line)}
-    @case "ReadFileInitLine"
-      {@initLineReadFile(line)}
-    @default
-      {@unhandledCase()}
-    @end
+    {@initCodeLine(line)}
+  @end
+@end
+
+@private initCodeLine(line)
+  @switch line.lineType.toString
+  @case "StructureInitLine"
+    {@initLineStructure(line)}
+  @case "ListInitLine"
+    {@initLineList(line)}
+  @case "SimpleInitLine"
+    {@initLineSimple(line)}
+  @case "MapInitLine"
+    {@initLineMap(line)}
+  @case "ReadFileInitLine"
+    {@initLineReadFile(line)}
+  @default
+    {@unhandledCase()}
   @end
 @end
 

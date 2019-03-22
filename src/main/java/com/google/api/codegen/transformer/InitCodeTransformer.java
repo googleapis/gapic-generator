@@ -86,15 +86,14 @@ public class InitCodeTransformer {
 
   private final ImportSectionTransformer importSectionTransformer;
 
-  // Whether the initialization code should include hardcoded comments like TODOs. This
-  // should only be true when generating incode samples.
+  // Whether the initialization code should include non-configurable comments like TODOs. This
+  // should only be true when generating in-code samples.
   //
-  // This field should be set to false when generating tests because tests do not need to include
-  // user facing comments.
+  // This field should be set to false when generating tests comments in unit tests are unnecessary.
   //
-  // This field should be set to false when generating standalone samples because comments in
-  // standalone samples are derived from user configurations, not hardcoded.
-  private final boolean generateUserFacingComments;
+  // This field must be set to false when generating standalone samples because comments in
+  // standalone samples should be derived from user configurations, not hard-coded.
+  private final boolean generateStandardComments;
 
   public InitCodeTransformer() {
     this(new StandardImportSectionTransformer(), true);
@@ -104,14 +103,14 @@ public class InitCodeTransformer {
     this(importSectionTransformer, true);
   }
 
-  public InitCodeTransformer(boolean generateUserFacingComments) {
-    this(new StandardImportSectionTransformer(), generateUserFacingComments);
+  public InitCodeTransformer(boolean generateStandardComments) {
+    this(new StandardImportSectionTransformer(), generateStandardComments);
   }
 
   public InitCodeTransformer(
-      ImportSectionTransformer importSectionTransformer, boolean generateUserFacingComments) {
+      ImportSectionTransformer importSectionTransformer, boolean generateStandardComments) {
     this.importSectionTransformer = importSectionTransformer;
-    this.generateUserFacingComments = generateUserFacingComments;
+    this.generateStandardComments = generateStandardComments;
   }
 
   public ImportSectionTransformer getImportSectionTransformer() {
@@ -783,7 +782,7 @@ public class InitCodeTransformer {
     }
     surfaceLine.initValue(initValue);
     surfaceLine.needsLeadingNewline(!isFirstItem);
-    if (generateUserFacingComments) {
+    if (generateStandardComments) {
       surfaceLine.doc(context.getNamer().getDocLines(comment));
     } else {
       surfaceLine.doc(ImmutableList.of());

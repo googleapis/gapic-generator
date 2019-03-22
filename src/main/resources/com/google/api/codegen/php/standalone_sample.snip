@@ -318,39 +318,30 @@
             {@toComments(line.descriptions)}
 
         @end
-        @switch line.lineType
-        @case "StructureInitLine"
-            {@initLineStructure(line)}
-        @case "ListInitLine"
-            {@initLineList(line)}
-        @case "MapInitLine"
-            {@initLineMap(line)}
-        @case "SimpleInitLine"
-            {@initLineSimple(line, apiVariableName)}
-        @case "ReadFileInitLine"
-            {@initLineReadFile(line, apiVariableName)}
-        @default
-            $unhandledCase: {@line.lineType}$
-        @end
+        {@initCodeLine(line, apiVariableName)}
     @end
 @end
 
 @private initCodeLines(lines, apiVariableName)
     @join line : lines
-        @switch line.lineType
-        @case "StructureInitLine"
-            {@initLineStructure(line)}
-        @case "ListInitLine"
-            {@initLineList(line)}
-        @case "MapInitLine"
-            {@initLineMap(line)}
-        @case "SimpleInitLine"
-            {@initLineSimple(line, apiVariableName)}
-        @case "ReadFileInitLine"
-            {@initLineReadFile(line, apiVariableName)}
-        @default
-            $unhandledCase: {@line.lineType}$
-        @end
+        {@initCodeLine(line, apiVariableName)}
+    @end
+@end
+
+@private initCodeLine(line, apiVariableName)
+    @switch line.lineType
+    @case "StructureInitLine"
+        {@initLineStructure(line)}
+    @case "ListInitLine"
+        {@initLineList(line)}
+    @case "MapInitLine"
+        {@initLineMap(line)}
+    @case "SimpleInitLine"
+        {@initLineSimple(line, apiVariableName)}
+    @case "ReadFileInitLine"
+        {@initLineReadFile(line, apiVariableName)}
+    @default
+        $unhandledCase: {@line.lineType}$
     @end
 @end
 
