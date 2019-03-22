@@ -42,6 +42,7 @@ import com.google.api.codegen.transformer.csharp.CSharpGapicClientTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSmokeTestTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicUnitTestTransformer;
+import com.google.api.codegen.transformer.csharp.CSharpStandaloneSampleTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicPackageTransformer;
@@ -183,6 +184,9 @@ public class GapicGeneratorFactory {
           generators.add(
               newCsharpGenerator.apply(
                   CSharpBasicPackageTransformer.forUnitTests(unitTestPathMapper)));
+        }
+        if (devSamples) {
+          generators.add(newCsharpGenerator.apply(new CSharpStandaloneSampleTransformer()));
         }
       }
 
