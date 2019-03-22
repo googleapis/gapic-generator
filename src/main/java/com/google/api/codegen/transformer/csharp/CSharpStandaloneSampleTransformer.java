@@ -44,7 +44,7 @@ import java.util.List;
 public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "csharp/standalone_sample.snip";
-  private static final String CSHARP_SAMPLE_PACKAGE_NAME = "Snippets";
+  private static final String CSHARP_SAMPLE_PACKAGE_NAME = "Samples";
   private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.Global;
   private static final CSharpCommonTransformer csharpCommonTransformer =
       new CSharpCommonTransformer();

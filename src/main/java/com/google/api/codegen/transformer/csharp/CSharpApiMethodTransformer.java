@@ -115,7 +115,7 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
   public List<StaticLangApiMethodView> generateApiMethods(InterfaceContext interfaceContext) {
     Preconditions.checkArgument(
         interfaceContext instanceof GapicInterfaceContext,
-        "SampleGen is for protobuf-based API" + " only.");
+        "Only applicable for protobuf-based API in CSharp.");
     GapicInterfaceContext context = (GapicInterfaceContext) interfaceContext;
     List<ParamWithSimpleDoc> pagedMethodAdditionalParams =
         new ImmutableList.Builder<ParamWithSimpleDoc>()
@@ -128,7 +128,6 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
       MethodConfig methodConfig = context.getMethodConfig(method);
       MethodContext requestMethodContext = context.asRequestMethodContext(method);
       if (methodConfig.isGrpcStreaming()) {
-        // Only for protobuf-based APIs.
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
@@ -140,7 +139,6 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
         }
         apiMethods.add(generateGrpcStreamingRequestObjectMethod(requestMethodContext));
       } else if (requestMethodContext.isLongRunningMethodContext()) {
-        // Only for protobuf-based APIs.
         GapicMethodContext gapicMethodContext = (GapicMethodContext) requestMethodContext;
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
