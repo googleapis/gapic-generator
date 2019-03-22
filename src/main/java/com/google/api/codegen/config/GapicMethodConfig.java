@@ -98,7 +98,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ProtoField pageSizeField = methodModel.getInputField(ProtoPagingParameters.nameForPageSize());
       ProtoField responseTokenField =
           methodModel.getOutputField(ProtoPagingParameters.nameForNextPageToken());
-      if (tokenField != null && responseTokenField != null) {
+      if (tokenField != null && responseTokenField != null && pageSizeField != null) {
         PagingFields pagingFields =
             PagingFields.newBuilder()
                 .setResponseTokenField(responseTokenField)
