@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import static com.google.api.codegen.configgen.mergers.RetryMerger.DEFAULT_RETRY_CODES;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME;
+import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME;
 
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -29,8 +30,10 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,12 +44,11 @@ public class RetryCodesConfig {
 
   public static ImmutableList<String> RETRY_CODES_FOR_HTTP_GET =
       DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME);
-  public static final String HTTP_RETRY_CODE_DEF_NAME = "http_get";
-  public static final String NO_RETRY_CODE_DEF_NAME = "no_retry";
 
   private Map<String, ImmutableList<String>> retryCodesDefinition = new HashMap<>();
   private Map<String, String> methodRetryNames = new HashMap<>();
 
+  private ImmutableSet<String> retryCodeDefsFromGapicConfig;
   private ImmutableMap<String, ImmutableList<String>> finalRetryCodesDefinition;
   private ImmutableMap<String, String> finalMethodRetryNames;
   private boolean error = false;
@@ -64,6 +66,11 @@ public class RetryCodesConfig {
    */
   public ImmutableMap<String, String> getMethodRetryNames() {
     return finalMethodRetryNames;
+  }
+
+  /** The retry code def names from the GAPIC config. */
+  public Set<String> getRetryCodeDefsFromGapicConfig() {
+    return retryCodeDefsFromGapicConfig;
   }
 
   private RetryCodesConfig() {}
@@ -176,6 +183,8 @@ public class RetryCodesConfig {
       return;
     }
 
+    retryCodeDefsFromGapicConfig = retryCodesDefFromConfigProto.keySet();
+
     Map<String, String> methodRetryNamesFromConfigProto =
         createMethodRetryNamesFromConfigProto(interfaceConfigProto);
 
@@ -203,10 +212,29 @@ public class RetryCodesConfig {
 
     // Unite all HTTP GET methods that have no additional retry codes under one retry code name to
     // reduce duplication.
-    String httpGetRetryName = symbolTable.getNewSymbol(HTTP_RETRY_CODE_DEF_NAME);
+    String httpGetRetryName;
+    Set<String> defaultRetryCodesForHttpGet = new HashSet<>(RETRY_CODES_FOR_HTTP_GET);
+    Set<String> existingIdempotentRetryCodes =
+        new HashSet<>(
+            retryCodesDefinition.getOrDefault(RETRY_CODES_IDEMPOTENT_NAME, ImmutableList.of()));
+    if (defaultRetryCodesForHttpGet.equals(existingIdempotentRetryCodes)) {
+      // The GAPIC config defined RETRY_CODES_IDEMPOTENT_NAME to have the same retry codes as
+      // this method would have,
+      // so we can just reuse RETRY_CODES_IDEMPOTENT_NAME.
+      httpGetRetryName = RETRY_CODES_IDEMPOTENT_NAME;
+    } else {
+      httpGetRetryName = symbolTable.getNewSymbol(RETRY_CODES_IDEMPOTENT_NAME);
+    }
 
     // Unite all methods that have no retry codes under one retry code name to reduce duplication.
-    String noRetryName = symbolTable.getNewSymbol(NO_RETRY_CODE_DEF_NAME);
+    String noRetryName;
+    if (retryCodesDefinition
+        .getOrDefault(RETRY_CODES_NON_IDEMPOTENT_NAME, ImmutableList.of())
+        .isEmpty()) {
+      noRetryName = RETRY_CODES_NON_IDEMPOTENT_NAME;
+    } else {
+      noRetryName = symbolTable.getNewSymbol(RETRY_CODES_NON_IDEMPOTENT_NAME);
+    }
 
     // Check proto annotations for retry settings.
     for (Method method : methodsToCreateRetriesFor) {
@@ -218,18 +246,18 @@ public class RetryCodesConfig {
       }
 
       String retryCodesName;
+      ImmutableList<String> retryCodesList;
       if (protoParser.isHttpGetMethod(method)) {
         // It is a common case to have an HTTP GET method with no extra codes to retry on,
         // so let's put them all under the same retry code name.
         retryCodesName = httpGetRetryName;
-        retryCodesDefinition.put(httpGetRetryName, RETRY_CODES_FOR_HTTP_GET);
+        retryCodesList = RETRY_CODES_FOR_HTTP_GET;
       } else {
-        // It is a common case to have a method with no codes to retry on,
-        // so let's put these methods all under the same retry code name.
         retryCodesName = noRetryName;
-        retryCodesDefinition.put(noRetryName, ImmutableList.of());
+        retryCodesList = ImmutableList.of();
       }
 
+      retryCodesDefinition.put(retryCodesName, retryCodesList);
       methodRetryNames.put(method.getSimpleName(), retryCodesName);
     }
   }

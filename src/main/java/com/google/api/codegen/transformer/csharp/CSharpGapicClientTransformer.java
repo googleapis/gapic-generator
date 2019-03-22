@@ -30,7 +30,6 @@ import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.ResourceNameType;
-import com.google.api.codegen.config.RetryCodesConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
@@ -365,8 +364,11 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer<Prot
             .stream()
             .filter(
                 x ->
-                    !x.key().equals(RetryCodesConfig.HTTP_RETRY_CODE_DEF_NAME)
-                        && !x.key().equals(RetryCodesConfig.NO_RETRY_CODE_DEF_NAME))
+                    context
+                        .getInterfaceConfig()
+                        .getRetryCodesConfig()
+                        .getRetryCodeDefsFromGapicConfig()
+                        .contains(x.key()))
             .collect(Collectors.toList());
     settingsClass.retryCodesDefinitions(retryCodes);
     settingsClass.retryParamsDefinitions(
