@@ -77,4 +77,6 @@ public interface InterfaceContext extends TransformationContext {
   ImportTypeTable getImportTypeTable();
 
   String getServiceAddress();
+
+  public boolean isSupported(MethodModel methodModel);
 }

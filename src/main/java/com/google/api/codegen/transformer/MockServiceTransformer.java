@@ -82,7 +82,7 @@ public class MockServiceTransformer {
     List<? extends MethodModel> methods = context.getInterfaceMethods();
     ArrayList<MockGrpcMethodView> mocks = new ArrayList<>(methods.size());
     for (MethodModel method : methods) {
-      if (context.getMethodConfig(method) == null) {
+      if (context.getMethodConfig(method) == null || !context.isSupported(method)) {
         continue;
       }
       MethodContext methodContext = context.asRequestMethodContext(method);
