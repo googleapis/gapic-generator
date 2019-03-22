@@ -1640,7 +1640,7 @@ class LibraryServiceClient(object):
             metadata = []
         metadata = list(metadata)
         try:
-            routing_header = [('name', name), ('book.read', book.read)]
+            routing_header = [('name', name)]
         except AttributeError:
             pass
         else:
@@ -2379,6 +2379,17 @@ class LibraryServiceClient(object):
             name=name,
             alt_book_name=alt_book_name,
         )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name), ('alt_book_name', alt_book_name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
         return self._inner_api_calls['get_book_from_absolutely_anywhere'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def update_book_index(

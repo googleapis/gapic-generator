@@ -783,7 +783,6 @@ class LibraryServiceGapicClient
 
         $requestParams = new RequestParamsHeaderDescriptor([
           'name' => $request->getName(),
-          'book.read' => $request->getBook()->getRead(),
         ]);
         $optionalArgs['headers'] = isset($optionalArgs['headers'])
             ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
@@ -1379,6 +1378,14 @@ class LibraryServiceGapicClient
         if (isset($optionalArgs['altBookName'])) {
             $request->setAltBookName($optionalArgs['altBookName']);
         }
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+          'alt_book_name' => $request->getAltBookName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
 
         return $this->startCall(
             'GetBookFromAbsolutelyAnywhere',

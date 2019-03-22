@@ -11416,7 +11416,7 @@ namespace Google.Example.Library.V1
                 GrpcClient.MergeShelvesAsync, GrpcClient.MergeShelves, effectiveSettings.MergeShelvesSettings);
             _callCreateBook = clientHelper.BuildApiCall<CreateBookRequest, Book>(
                 GrpcClient.CreateBookAsync, GrpcClient.CreateBook, effectiveSettings.CreateBookSettings)
-                .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}&book.read={request.Book.Read}"));
+                .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}"));
             _callPublishSeries = clientHelper.BuildApiCall<PublishSeriesRequest, PublishSeriesResponse>(
                 GrpcClient.PublishSeriesAsync, GrpcClient.PublishSeries, effectiveSettings.PublishSeriesSettings)
                 .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"shelf.name={request.Shelf.Name}"));
@@ -11439,7 +11439,8 @@ namespace Google.Example.Library.V1
             _callGetBookFromAnywhere = clientHelper.BuildApiCall<GetBookFromAnywhereRequest, BookFromAnywhere>(
                 GrpcClient.GetBookFromAnywhereAsync, GrpcClient.GetBookFromAnywhere, effectiveSettings.GetBookFromAnywhereSettings);
             _callGetBookFromAbsolutelyAnywhere = clientHelper.BuildApiCall<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere>(
-                GrpcClient.GetBookFromAbsolutelyAnywhereAsync, GrpcClient.GetBookFromAbsolutelyAnywhere, effectiveSettings.GetBookFromAbsolutelyAnywhereSettings);
+                GrpcClient.GetBookFromAbsolutelyAnywhereAsync, GrpcClient.GetBookFromAbsolutelyAnywhere, effectiveSettings.GetBookFromAbsolutelyAnywhereSettings)
+                .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}&alt_book_name={request.AltBookName}"));
             _callUpdateBookIndex = clientHelper.BuildApiCall<UpdateBookIndexRequest, pbwkt::Empty>(
                 GrpcClient.UpdateBookIndexAsync, GrpcClient.UpdateBookIndex, effectiveSettings.UpdateBookIndexSettings);
             _callStreamShelves = clientHelper.BuildApiCall<StreamShelvesRequest, StreamShelvesResponse>(
