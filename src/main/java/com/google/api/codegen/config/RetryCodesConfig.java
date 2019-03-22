@@ -212,10 +212,30 @@ public class RetryCodesConfig {
 
     // Unite all HTTP GET methods that have no additional retry codes under one retry code name to
     // reduce duplication.
-    String httpGetRetryName = symbolTable.getNewSymbol(RETRY_CODES_IDEMPOTENT_NAME);
+    String httpGetRetryName;
+    if (new HashSet<>(RETRY_CODES_FOR_HTTP_GET)
+        .equals(
+            new HashSet<>(
+                retryCodesDefinition.getOrDefault(
+                    RETRY_CODES_IDEMPOTENT_NAME, ImmutableList.of())))) {
+      // The GAPIC config defined RETRY_CODES_IDEMPOTENT_NAME to have the same retry codes as
+      // this method would have,
+      // so we can just reuse RETRY_CODES_IDEMPOTENT_NAME.
+      httpGetRetryName = RETRY_CODES_IDEMPOTENT_NAME;
+    } else {
+      httpGetRetryName = symbolTable.getNewSymbol(RETRY_CODES_IDEMPOTENT_NAME);
+    }
 
     // Unite all methods that have no retry codes under one retry code name to reduce duplication.
-    String noRetryName = symbolTable.getNewSymbol(RETRY_CODES_NON_IDEMPOTENT_NAME);
+    String noRetryName;
+    if (retryCodesDefinition
+            .getOrDefault(RETRY_CODES_NON_IDEMPOTENT_NAME, ImmutableList.of())
+            .size()
+        == 0) {
+      noRetryName = RETRY_CODES_NON_IDEMPOTENT_NAME;
+    } else {
+      noRetryName = symbolTable.getNewSymbol(RETRY_CODES_NON_IDEMPOTENT_NAME);
+    }
 
     // Check proto annotations for retry settings.
     for (Method method : methodsToCreateRetriesFor) {
@@ -229,34 +249,13 @@ public class RetryCodesConfig {
       String retryCodesName;
       ImmutableList<String> retryCodesList;
       if (protoParser.isHttpGetMethod(method)) {
-        retryCodesList = RETRY_CODES_FOR_HTTP_GET;
         // It is a common case to have an HTTP GET method with no extra codes to retry on,
         // so let's put them all under the same retry code name.
-        if (!new HashSet<>(RETRY_CODES_FOR_HTTP_GET)
-            .equals(
-                new HashSet<>(
-                    retryCodesDefinition.getOrDefault(
-                        RETRY_CODES_IDEMPOTENT_NAME, ImmutableList.of())))) {
-          retryCodesName = httpGetRetryName;
-        } else {
-          // The GAPIC config defined RETRY_CODES_IDEMPOTENT_NAME to have the same retry codes as
-          // this method would have,
-          // so we can just reuse RETRY_CODES_IDEMPOTENT_NAME.
-          retryCodesName = RETRY_CODES_IDEMPOTENT_NAME;
-        }
-
+        retryCodesName = httpGetRetryName;
+        retryCodesList = RETRY_CODES_FOR_HTTP_GET;
       } else {
+        retryCodesName = noRetryName;
         retryCodesList = ImmutableList.of();
-        if (retryCodesDefinition
-                .getOrDefault(RETRY_CODES_NON_IDEMPOTENT_NAME, ImmutableList.of())
-                .size()
-            == 0) {
-          retryCodesName = RETRY_CODES_NON_IDEMPOTENT_NAME;
-        } else {
-          // It is a common case to have a method with no codes to retry on,
-          // so let's put these methods all under the same retry code name.
-          retryCodesName = noRetryName;
-        }
       }
 
       retryCodesDefinition.put(retryCodesName, retryCodesList);
