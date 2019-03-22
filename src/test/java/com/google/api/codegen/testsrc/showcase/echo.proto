@@ -19,10 +19,10 @@ import "google/api/annotations.proto";
 import "google/protobuf/duration.proto";
 import "google/rpc/status.proto";
 
-package google.showcase.v1alpha2;
+package google.showcase.v1alpha3;
 
 option go_package = "github.com/googleapis/gapic-showcase/server/genproto";
-option java_package = "com.google.showcase.v1alpha2";
+option java_package = "com.google.showcase.v1alpha3";
 option java_multiple_files = true;
 
 // option (google.api.metadata) = {
@@ -41,7 +41,7 @@ service Echo {
   // This method simply echos the request. This method is showcases unary rpcs.
   rpc Echo(EchoRequest) returns (EchoResponse) {
     option (google.api.http) = {
-      post: "/v1alpha2/echo:echo"
+      post: "/v1alpha3/echo:echo"
       body: "*"
     };
   }
@@ -50,7 +50,7 @@ service Echo {
   // through the stream. This method showcases server-side streaming rpcs.
   rpc Expand(ExpandRequest) returns (stream EchoResponse) {
     option (google.api.http) = {
-      post: "/v1alpha2/echo:expand"
+      post: "/v1alpha3/echo:expand"
       body: "*"
     };
     // TODO(landrito): change this to be `fields: ["content", "error"]` once
@@ -66,7 +66,7 @@ service Echo {
   // passed to it. This method showcases client-side streaming rpcs.
   rpc Collect(stream EchoRequest) returns (EchoResponse) {
     option (google.api.http) = {
-      post: "/v1alpha2/echo:collect"
+      post: "/v1alpha3/echo:collect"
       body: "*"
     };
   }
@@ -80,7 +80,7 @@ service Echo {
   // This method showcases how a client handles a request timing out.
   rpc Wait(WaitRequest) returns (WaitResponse) {
     option (google.api.http) = {
-      post: "/v1alpha2/echo:wait"
+      post: "/v1alpha3/echo:wait"
       body: "*"
     };
   }
@@ -90,7 +90,7 @@ service Echo {
   // response will include a page token indicating the next page.
   rpc Pagination(PaginationRequest) returns (PaginationResponse) {
     option (google.api.http) = {
-      post: "/v1alpha2/echo:pagination"
+      post: "/v1alpha3/echo:pagination"
       body: "*"
     };
     // TODO(landrito): change this to be `fields: ["max_response"]` once

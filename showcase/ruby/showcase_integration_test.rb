@@ -17,8 +17,8 @@ require "minitest/spec"
 
 require "grpc"
 
-require "google/showcase/v1alpha2/echo_client"
-require "google/showcase/v1alpha2/echo_services_pb"
+require "google/showcase/v1alpha3/echo_client"
+require "google/showcase/v1alpha3/echo_services_pb"
 
 describe Google::Showcase::V1alpha2::EchoClient do
   before(:all) do

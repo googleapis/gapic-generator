@@ -68,7 +68,7 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
     # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
     # https://github.com/googleapis/gapic-generator/issues/2237
     - image: googleapis/nox:0.17.0
-    - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+    - image: gcr.io/gapic-showcase/gapic-showcase:0.0.13
   steps:
     - attach_workspace:
         at: workspace
@@ -124,7 +124,7 @@ anchor_run_ruby: &anchor_run_ruby
   working_directory: /tmp/
   docker:
     - image: circleci/ruby:2.4-node
-    - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+    - image: gcr.io/gapic-showcase/gapic-showcase:0.0.13
   environment:
     LANGUAGE: ruby
     RUBY_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/
@@ -267,7 +267,7 @@ anchor_run_php: &anchor_run_php
     - run:
         name: Prepare to test Showcase.
         command: |
-          echo 'export TEST_API="showcase-v1alpha2"' >> $BASH_ENV
+          echo 'export TEST_API="showcase-v1alpha3"' >> $BASH_ENV
           echo 'export KEY_REQUIRED=false' >> $BASH_ENV
     - run:
         name: Test Showcase Generated Unit Tests.
@@ -303,7 +303,7 @@ jobs:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
     environment:
-      SHOWCASE_VERSION: 0.0.7
+      SHOWCASE_VERSION: 0.0.13
     steps:
       - checkout:
           path: gapic-generator
@@ -318,7 +318,7 @@ jobs:
             curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-${SHOWCASE_VERSION}-protos.tar.gz | tar -C showcase-protos -xz
             TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc/showcase"
             cp ${TEST_SRC}/showcase.yaml showcase-protos/google/showcase/
-            cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos/google/showcase/v1alpha2/
+            cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos/google/showcase/v1alpha3/
             cp ${TEST_SRC}/artman_showcase.yaml showcase-protos/google/showcase/
       # The following showcase protos are used for java showcase tests. The
       # common protos that google-gax depends on does not have the new client
@@ -332,10 +332,10 @@ jobs:
             curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-${SHOWCASE_VERSION}-protos.tar.gz | tar -C showcase-protos-patched -xz
             TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc/showcase"
             cp ${TEST_SRC}/showcase.yaml showcase-protos-patched/google/showcase/
-            cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos-patched/google/showcase/v1alpha2/
+            cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos-patched/google/showcase/v1alpha3/
             cp ${TEST_SRC}/artman_showcase.yaml showcase-protos-patched/google/showcase/
-            cp ${TEST_SRC}/echo.proto showcase-protos-patched/google/showcase/v1alpha2
-            rm showcase-protos-patched/google/showcase/v1alpha2/testing.proto
+            cp ${TEST_SRC}/echo.proto showcase-protos-patched/google/showcase/v1alpha3
+            rm showcase-protos-patched/google/showcase/v1alpha3/testing.proto
 
       - run:
           name: Build and install local toolkit
@@ -537,7 +537,7 @@ jobs:
       <<: *anchor_artman_vars
     docker:
       - image: circleci/openjdk:8-jdk
-      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.13
     steps:
       - attach_workspace:
           at: workspace
@@ -559,9 +559,9 @@ jobs:
           name: Install the generated showcase library
           command: |
             cd workspace/gapic-generator/artman-genfiles/java
-            ./gradlew install -p gapic-google-cloud-showcase-v1alpha2
-            ./gradlew install -p proto-google-showcase-v1alpha2
-            ./gradlew install -p grpc-google-showcase-v1alpha2
+            ./gradlew install -p gapic-google-cloud-showcase-v1alpha3
+            ./gradlew install -p proto-google-showcase-v1alpha3
+            ./gradlew install -p grpc-google-showcase-v1alpha3
       - run:
           name: Run Showcase Integration Tests
           command: |
@@ -611,7 +611,7 @@ jobs:
       <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
-      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.13
   php-7.2-system-test:
     <<: *anchor_run_php
     environment:
@@ -630,7 +630,7 @@ jobs:
       <<: *anchor_artman_vars
     docker:
       - image: circleci/node:8-stretch-browsers
-      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.13
     steps:
       - attach_workspace:
           at: workspace
@@ -640,7 +640,7 @@ jobs:
       - run:
           name: Test Showcase
           command: |
-            cd ${NODEJS_GEN_DIR}/showcase-v1alpha2
+            cd ${NODEJS_GEN_DIR}/showcase-v1alpha3
             npm install
             # The following step must be done since the new api annotations are not
             # in the nodejs proto files repository.
@@ -685,7 +685,7 @@ jobs:
       GOPATH: /tmp/go
     docker:
       - image: circleci/golang:1.10
-      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.13
     steps:
       - attach_workspace:
           at: workspace
@@ -730,7 +730,7 @@ jobs:
           when: always
       - run:
           name: Test Showcase
-          command: go test cloud.google.com/go/showcase/apiv1alpha2
+          command: go test cloud.google.com/go/showcase/apiv1alpha3
           when: always
       - run:
           name: Run Showcase Integration Tests
