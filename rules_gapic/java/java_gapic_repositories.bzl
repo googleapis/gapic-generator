@@ -16,12 +16,17 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def java_gapic_repositories():
-    _gax_java_version = "8c9f9a5a6e90cb6b94f06a23217c2a4dfe214b80"
+#    _gax_java_version = "8c9f9a5a6e90cb6b94f06a23217c2a4dfe214b80"
+#    _maybe(
+#        http_archive,
+#        name = "com_google_api_gax_java",
+#        urls = ["https://github.com/googleapis/gax-java/archive/%s.zip" % _gax_java_version],
+#        strip_prefix = "gax-java-%s" % _gax_java_version,
+#    )
     _maybe(
-        http_archive,
+        native.local_repository,
         name = "com_google_api_gax_java",
-        urls = ["https://github.com/googleapis/gax-java/archive/%s.zip" % _gax_java_version],
-        strip_prefix = "gax-java-%s" % _gax_java_version,
+        path = "/usr/local/google/home/vam/_/projects/github/vam-google/gax-java"
     )
 
 def _maybe(repo_rule, name, strip_repo_prefix = "", **kwargs):

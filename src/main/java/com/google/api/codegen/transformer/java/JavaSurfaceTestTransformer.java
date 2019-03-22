@@ -411,7 +411,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.LocalChannelProvider");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockServiceHelper");
-        typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
+        typeTable.saveNicknameFor("com.google.protobuf.AbstractMessage");
         typeTable.saveNicknameFor("io.grpc.Status");
         typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");
         typeTable.saveNicknameFor("java.util.ArrayList");
@@ -466,7 +466,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
-      typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
+      typeTable.saveNicknameFor("com.google.protobuf.AbstractMessage");
       typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
     }
   }
@@ -477,7 +477,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
     if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
-      typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
+      typeTable.saveNicknameFor("com.google.protobuf.AbstractMessage");
       typeTable.saveNicknameFor("io.grpc.ServerServiceDefinition");
     }
   }
