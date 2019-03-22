@@ -12174,8 +12174,6 @@ import com.google.example.library.v1.LibraryServiceGrpc.LibraryServiceImplBase;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import com.google.protobuf.GeneratedMessageV3;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -12611,21 +12609,6 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
     if (response instanceof FindRelatedBooksResponse) {
       requests.add(request);
       responseObserver.onNext((FindRelatedBooksResponse) response);
-      responseObserver.onCompleted();
-    } else if (response instanceof Exception) {
-      responseObserver.onError((Exception) response);
-    } else {
-      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
-    }
-  }
-
-  @Override
-  public void addTag(AddTagRequest request,
-    StreamObserver<AddTagResponse> responseObserver) {
-    Object response = responses.remove();
-    if (response instanceof AddTagResponse) {
-      requests.add(request);
-      responseObserver.onNext((AddTagResponse) response);
       responseObserver.onCompleted();
     } else if (response instanceof Exception) {
       responseObserver.onError((Exception) response);

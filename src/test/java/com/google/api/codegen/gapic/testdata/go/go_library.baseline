@@ -2177,18 +2177,6 @@ func (s *mockLibraryServer) FindRelatedBooks(ctx context.Context, req *librarypb
     return s.resps[0].(*librarypb.FindRelatedBooksResponse), nil
 }
 
-func (s *mockLibraryServer) AddTag(ctx context.Context, req *taggerpb.AddTagRequest) (*taggerpb.AddTagResponse, error) {
-    md, _ := metadata.FromIncomingContext(ctx)
-    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
-        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
-    }
-    s.reqs = append(s.reqs, req)
-    if s.err != nil {
-        return nil, s.err
-    }
-    return s.resps[0].(*taggerpb.AddTagResponse), nil
-}
-
 func (s *mockLibraryServer) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) (*longrunningpb.Operation, error) {
     md, _ := metadata.FromIncomingContext(ctx)
     if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
