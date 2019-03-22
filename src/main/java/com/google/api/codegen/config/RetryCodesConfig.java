@@ -213,11 +213,11 @@ public class RetryCodesConfig {
     // Unite all HTTP GET methods that have no additional retry codes under one retry code name to
     // reduce duplication.
     String httpGetRetryName;
-    if (new HashSet<>(RETRY_CODES_FOR_HTTP_GET)
-        .equals(
-            new HashSet<>(
-                retryCodesDefinition.getOrDefault(
-                    RETRY_CODES_IDEMPOTENT_NAME, ImmutableList.of())))) {
+    Set<String> defaultRetryCodesForHttpGet = new HashSet<>(RETRY_CODES_FOR_HTTP_GET);
+    Set<String> existingIdempotentRetryCodes =
+        new HashSet<>(
+            retryCodesDefinition.getOrDefault(RETRY_CODES_IDEMPOTENT_NAME, ImmutableList.of()));
+    if (defaultRetryCodesForHttpGet.equals(existingIdempotentRetryCodes)) {
       // The GAPIC config defined RETRY_CODES_IDEMPOTENT_NAME to have the same retry codes as
       // this method would have,
       // so we can just reuse RETRY_CODES_IDEMPOTENT_NAME.
@@ -229,9 +229,8 @@ public class RetryCodesConfig {
     // Unite all methods that have no retry codes under one retry code name to reduce duplication.
     String noRetryName;
     if (retryCodesDefinition
-            .getOrDefault(RETRY_CODES_NON_IDEMPOTENT_NAME, ImmutableList.of())
-            .size()
-        == 0) {
+        .getOrDefault(RETRY_CODES_NON_IDEMPOTENT_NAME, ImmutableList.of())
+        .isEmpty()) {
       noRetryName = RETRY_CODES_NON_IDEMPOTENT_NAME;
     } else {
       noRetryName = symbolTable.getNewSymbol(RETRY_CODES_NON_IDEMPOTENT_NAME);
