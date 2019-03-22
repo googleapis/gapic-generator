@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 /** A ViewModel for standalone samples for static languages. */
 @AutoValue
@@ -24,6 +25,10 @@ public abstract class StaticLangSampleClassView {
 
   /** The client library method illustrated in this sample. */
   public abstract StaticLangApiMethodView libraryMethod();
+
+  @Nullable
+  /** The standalone sample for {@code libraryMethod()} */
+  public abstract MethodSampleView sample();
 
   public static Builder newBuilder() {
     return new AutoValue_StaticLangSampleClassView.Builder();
@@ -37,6 +42,8 @@ public abstract class StaticLangSampleClassView {
     public abstract Builder name(String val);
 
     public abstract Builder libraryMethod(StaticLangApiMethodView val);
+
+    public abstract Builder sample(MethodSampleView val);
 
     public abstract StaticLangSampleClassView build();
   }
