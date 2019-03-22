@@ -2132,70 +2132,6 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        /// <summary>Snippet for AddTagAsync</summary>
-        public async Task AddTagAsync()
-        {
-            // Snippet: AddTagAsync(string,string,CallSettings)
-            // Additional: AddTagAsync(string,string,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            string formattedResource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
-            string tag = "";
-            // Make the request
-            AddTagResponse response = await libraryServiceClient.AddTagAsync(formattedResource, tag);
-            // End snippet
-        }
-
-        /// <summary>Snippet for AddTag</summary>
-        public void AddTag()
-        {
-            // Snippet: AddTag(string,string,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            string formattedResource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
-            string tag = "";
-            // Make the request
-            AddTagResponse response = libraryServiceClient.AddTag(formattedResource, tag);
-            // End snippet
-        }
-
-        /// <summary>Snippet for AddTagAsync</summary>
-        public async Task AddTagAsync_RequestObject()
-        {
-            // Snippet: AddTagAsync(AddTagRequest,CallSettings)
-            // Additional: AddTagAsync(AddTagRequest,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            AddTagRequest request = new AddTagRequest
-            {
-                Resource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
-                Tag = "",
-            };
-            // Make the request
-            AddTagResponse response = await libraryServiceClient.AddTagAsync(request);
-            // End snippet
-        }
-
-        /// <summary>Snippet for AddTag</summary>
-        public void AddTag_RequestObject()
-        {
-            // Snippet: AddTag(AddTagRequest,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            AddTagRequest request = new AddTagRequest
-            {
-                Resource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
-                Tag = "",
-            };
-            // Make the request
-            AddTagResponse response = libraryServiceClient.AddTag(request);
-            // End snippet
-        }
-
         /// <summary>Snippet for AddLabelAsync</summary>
         public async Task AddLabelAsync()
         {
@@ -2890,7 +2826,6 @@ namespace Google.Example.Library.V1.Tests
     using Google.LongRunning;
     using Google.Protobuf;
     using Google.Protobuf.WellKnownTypes;
-    using Google.Tagger.V1;
     using Grpc.Core;
     using Moq;
     using System;
@@ -4761,98 +4696,6 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public void AddTag()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            AddTagRequest expectedRequest = new AddTagRequest
-            {
-                Resource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
-                Tag = "tag114586",
-            };
-            AddTagResponse expectedResponse = new AddTagResponse();
-            mockGrpcClient.Setup(x => x.AddTag(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedResource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
-            string tag = "tag114586";
-            AddTagResponse response = client.AddTag(formattedResource, tag);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task AddTagAsync()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            AddTagRequest expectedRequest = new AddTagRequest
-            {
-                Resource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
-                Tag = "tag114586",
-            };
-            AddTagResponse expectedResponse = new AddTagResponse();
-            mockGrpcClient.Setup(x => x.AddTagAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<AddTagResponse>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedResource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
-            string tag = "tag114586";
-            AddTagResponse response = await client.AddTagAsync(formattedResource, tag);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void AddTag2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            AddTagRequest request = new AddTagRequest
-            {
-                Resource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
-                Tag = "tag114586",
-            };
-            AddTagResponse expectedResponse = new AddTagResponse();
-            mockGrpcClient.Setup(x => x.AddTag(request, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            AddTagResponse response = client.AddTag(request);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task AddTagAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            AddTagRequest request = new AddTagRequest
-            {
-                Resource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
-                Tag = "tag114586",
-            };
-            AddTagResponse expectedResponse = new AddTagResponse();
-            mockGrpcClient.Setup(x => x.AddTagAsync(request, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<AddTagResponse>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            AddTagResponse response = await client.AddTagAsync(request);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
         public void TestOptionalRequiredFlatteningParams()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
@@ -5521,7 +5364,6 @@ namespace Google.Example.Library.V1
             DiscussBookSettings = existing.DiscussBookSettings;
             DiscussBookStreamingSettings = existing.DiscussBookStreamingSettings;
             FindRelatedBooksSettings = existing.FindRelatedBooksSettings;
-            AddTagSettings = existing.AddTagSettings;
             AddLabelSettings = existing.AddLabelSettings;
             GetBigBookSettings = existing.GetBigBookSettings;
             GetBigBookOperationsSettings = existing.GetBigBookOperationsSettings?.Clone();
@@ -6196,35 +6038,6 @@ namespace Google.Example.Library.V1
                 timeoutBackoff: GetDefaultTimeoutBackoff(),
                 totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
                 retryFilter: IdempotentRetryFilter
-            )));
-
-        /// <summary>
-        /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
-        /// <c>LibraryServiceClient.AddTag</c> and <c>LibraryServiceClient.AddTagAsync</c>.
-        /// </summary>
-        /// <remarks>
-        /// The default <c>LibraryServiceClient.AddTag</c> and
-        /// <c>LibraryServiceClient.AddTagAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
-        /// <list type="bullet">
-        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
-        /// <item><description>Retry delay multiplier: 1.2</description></item>
-        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
-        /// <item><description>Initial timeout: 300 milliseconds</description></item>
-        /// <item><description>Timeout multiplier: 1.3</description></item>
-        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
-        /// </list>
-        /// Retry will be attempted on the following response status codes:
-        /// <list>
-        /// <item><description>No status codes</description></item>
-        /// </list>
-        /// Default RPC expiration is 30000 milliseconds.
-        /// </remarks>
-        public gaxgrpc::CallSettings AddTagSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
-            gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
-                retryBackoff: GetDefaultRetryBackoff(),
-                timeoutBackoff: GetDefaultTimeoutBackoff(),
-                totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
-                retryFilter: NonIdempotentRetryFilter
             )));
 
         /// <summary>
@@ -9321,143 +9134,6 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Adds a tag to the book. This RPC is a mixin.
-        /// </summary>
-        /// <param name="resource">
-        /// REQUIRED: The resource which the tag is being added to.
-        /// Resource is usually specified as a path, such as,
-        /// projects/{project}/zones/{zone}/disks/{disk}.
-        /// </param>
-        /// <param name="tag">
-        /// REQUIRED: The tag to add.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<gtv::AddTagResponse> AddTagAsync(
-            string resource,
-            string tag,
-            gaxgrpc::CallSettings callSettings = null) => AddTagAsync(
-                new gtv::AddTagRequest
-                {
-                    Resource = gax::GaxPreconditions.CheckNotNullOrEmpty(resource, nameof(resource)),
-                    Tag = gax::GaxPreconditions.CheckNotNullOrEmpty(tag, nameof(tag)),
-                },
-                callSettings);
-
-        /// <summary>
-        /// Adds a tag to the book. This RPC is a mixin.
-        /// </summary>
-        /// <param name="resource">
-        /// REQUIRED: The resource which the tag is being added to.
-        /// Resource is usually specified as a path, such as,
-        /// projects/{project}/zones/{zone}/disks/{disk}.
-        /// </param>
-        /// <param name="tag">
-        /// REQUIRED: The tag to add.
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="st::CancellationToken"/> to use for this RPC.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<gtv::AddTagResponse> AddTagAsync(
-            string resource,
-            string tag,
-            st::CancellationToken cancellationToken) => AddTagAsync(
-                resource,
-                tag,
-                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
-
-        /// <summary>
-        /// Adds a tag to the book. This RPC is a mixin.
-        /// </summary>
-        /// <param name="resource">
-        /// REQUIRED: The resource which the tag is being added to.
-        /// Resource is usually specified as a path, such as,
-        /// projects/{project}/zones/{zone}/disks/{disk}.
-        /// </param>
-        /// <param name="tag">
-        /// REQUIRED: The tag to add.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// The RPC response.
-        /// </returns>
-        public virtual gtv::AddTagResponse AddTag(
-            string resource,
-            string tag,
-            gaxgrpc::CallSettings callSettings = null) => AddTag(
-                new gtv::AddTagRequest
-                {
-                    Resource = gax::GaxPreconditions.CheckNotNullOrEmpty(resource, nameof(resource)),
-                    Tag = gax::GaxPreconditions.CheckNotNullOrEmpty(tag, nameof(tag)),
-                },
-                callSettings);
-
-        /// <summary>
-        /// Adds a tag to the book. This RPC is a mixin.
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<gtv::AddTagResponse> AddTagAsync(
-            gtv::AddTagRequest request,
-            gaxgrpc::CallSettings callSettings = null)
-        {
-            throw new sys::NotImplementedException();
-        }
-
-        /// <summary>
-        /// Adds a tag to the book. This RPC is a mixin.
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="st::CancellationToken"/> to use for this RPC.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<gtv::AddTagResponse> AddTagAsync(
-            gtv::AddTagRequest request,
-            st::CancellationToken cancellationToken) => AddTagAsync(
-                request,
-                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
-
-        /// <summary>
-        /// Adds a tag to the book. This RPC is a mixin.
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// The RPC response.
-        /// </returns>
-        public virtual gtv::AddTagResponse AddTag(
-            gtv::AddTagRequest request,
-            gaxgrpc::CallSettings callSettings = null)
-        {
-            throw new sys::NotImplementedException();
-        }
-
-        /// <summary>
         /// Adds a label to the entity.
         /// </summary>
         /// <param name="resource">
@@ -11383,7 +11059,6 @@ namespace Google.Example.Library.V1
         private readonly gaxgrpc::ApiServerStreamingCall<StreamBooksRequest, Book> _callStreamBooks;
         private readonly gaxgrpc::ApiBidirectionalStreamingCall<DiscussBookRequest, Comment> _callDiscussBook;
         private readonly gaxgrpc::ApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse> _callFindRelatedBooks;
-        private readonly gaxgrpc::ApiCall<gtv::AddTagRequest, gtv::AddTagResponse> _callAddTag;
         private readonly gaxgrpc::ApiCall<gtv::AddLabelRequest, gtv::AddLabelResponse> _callAddLabel;
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigBook;
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigNothing;
@@ -11450,8 +11125,6 @@ namespace Google.Example.Library.V1
                 GrpcClient.DiscussBook, effectiveSettings.DiscussBookSettings, effectiveSettings.DiscussBookStreamingSettings);
             _callFindRelatedBooks = clientHelper.BuildApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse>(
                 GrpcClient.FindRelatedBooksAsync, GrpcClient.FindRelatedBooks, effectiveSettings.FindRelatedBooksSettings);
-            _callAddTag = clientHelper.BuildApiCall<gtv::AddTagRequest, gtv::AddTagResponse>(
-                GrpcClient.AddTagAsync, GrpcClient.AddTag, effectiveSettings.AddTagSettings);
             _callAddLabel = clientHelper.BuildApiCall<gtv::AddLabelRequest, gtv::AddLabelResponse>(
                 grpcLabelerClient.AddLabelAsync, grpcLabelerClient.AddLabel, effectiveSettings.AddLabelSettings);
             _callGetBigBook = clientHelper.BuildApiCall<GetBookRequest, lro::Operation>(
@@ -11504,8 +11177,6 @@ namespace Google.Example.Library.V1
             Modify_DiscussBookApiCall(ref _callDiscussBook);
             Modify_ApiCall(ref _callFindRelatedBooks);
             Modify_FindRelatedBooksApiCall(ref _callFindRelatedBooks);
-            Modify_ApiCall(ref _callAddTag);
-            Modify_AddTagApiCall(ref _callAddTag);
             Modify_ApiCall(ref _callAddLabel);
             Modify_AddLabelApiCall(ref _callAddLabel);
             Modify_ApiCall(ref _callGetBigBook);
@@ -11555,7 +11226,6 @@ namespace Google.Example.Library.V1
         partial void Modify_StreamBooksApiCall(ref gaxgrpc::ApiServerStreamingCall<StreamBooksRequest, Book> call);
         partial void Modify_DiscussBookApiCall(ref gaxgrpc::ApiBidirectionalStreamingCall<DiscussBookRequest, Comment> call);
         partial void Modify_FindRelatedBooksApiCall(ref gaxgrpc::ApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse> call);
-        partial void Modify_AddTagApiCall(ref gaxgrpc::ApiCall<gtv::AddTagRequest, gtv::AddTagResponse> call);
         partial void Modify_AddLabelApiCall(ref gaxgrpc::ApiCall<gtv::AddLabelRequest, gtv::AddLabelResponse> call);
         partial void Modify_GetBigBookApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_GetBigNothingApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
@@ -11593,7 +11263,6 @@ namespace Google.Example.Library.V1
         partial void Modify_DiscussBookRequestCallSettings(ref gaxgrpc::CallSettings settings);
         partial void Modify_DiscussBookRequestRequest(ref DiscussBookRequest request);
         partial void Modify_FindRelatedBooksRequest(ref FindRelatedBooksRequest request, ref gaxgrpc::CallSettings settings);
-        partial void Modify_AddTagRequest(ref gtv::AddTagRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_AddLabelRequest(ref gtv::AddLabelRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_TestOptionalRequiredFlatteningParamsRequest(ref TestOptionalRequiredFlatteningParamsRequest request, ref gaxgrpc::CallSettings settings);
 
@@ -12515,46 +12184,6 @@ namespace Google.Example.Library.V1
         {
             Modify_FindRelatedBooksRequest(ref request, ref callSettings);
             return new gaxgrpc::GrpcPagedEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, BookName>(_callFindRelatedBooks, request, callSettings);
-        }
-
-        /// <summary>
-        /// Adds a tag to the book. This RPC is a mixin.
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public override stt::Task<gtv::AddTagResponse> AddTagAsync(
-            gtv::AddTagRequest request,
-            gaxgrpc::CallSettings callSettings = null)
-        {
-            Modify_AddTagRequest(ref request, ref callSettings);
-            return _callAddTag.Async(request, callSettings);
-        }
-
-        /// <summary>
-        /// Adds a tag to the book. This RPC is a mixin.
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// The RPC response.
-        /// </returns>
-        public override gtv::AddTagResponse AddTag(
-            gtv::AddTagRequest request,
-            gaxgrpc::CallSettings callSettings = null)
-        {
-            Modify_AddTagRequest(ref request, ref callSettings);
-            return _callAddTag.Sync(request, callSettings);
         }
 
         /// <summary>

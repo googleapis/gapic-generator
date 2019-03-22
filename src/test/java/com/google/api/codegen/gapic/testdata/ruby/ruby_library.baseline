@@ -3102,11 +3102,6 @@ module Library
           defaults["find_related_books"],
           exception_transformer: exception_transformer
         )
-        @add_tag = Google::Gax.create_api_call(
-          @library_service_stub.method(:add_tag),
-          defaults["add_tag"],
-          exception_transformer: exception_transformer
-        )
         @add_label = Google::Gax.create_api_call(
           @labeler_stub.method(:add_label),
           defaults["add_label"],
@@ -4081,45 +4076,6 @@ module Library
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::FindRelatedBooksRequest)
         @find_related_books.call(req, options, &block)
-      end
-
-      # Adds a tag to the book. This RPC is a mixin.
-      #
-      # @param resource [String]
-      #   REQUIRED: The resource which the tag is being added to.
-      #   Resource is usually specified as a path, such as,
-      #   projects/{project}/zones/{zone}/disks/{disk}.
-      # @param tag [String]
-      #   REQUIRED: The tag to add.
-      # @param options [Google::Gax::CallOptions]
-      #   Overrides the default settings for this call, e.g, timeout,
-      #   retries, etc.
-      # @yield [result, operation] Access the result along with the RPC operation
-      # @yieldparam result [Google::Tagger::V1::AddTagResponse]
-      # @yieldparam operation [GRPC::ActiveCall::Operation]
-      # @return [Google::Tagger::V1::AddTagResponse]
-      # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      # @example
-      #   require "library"
-      #
-      #   library_client = Library.new(version: :v1)
-      #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #
-      #   # TODO: Initialize `tag`:
-      #   tag = ''
-      #   response = library_client.add_tag(formatted_resource, tag)
-
-      def add_tag \
-          resource,
-          tag,
-          options: nil,
-          &block
-        req = {
-          resource: resource,
-          tag: tag
-        }.delete_if { |_, v| v.nil? }
-        req = Google::Gax::to_proto(req, Google::Tagger::V1::AddTagRequest)
-        @add_tag.call(req, options, &block)
       end
 
       # Adds a label to the entity.
@@ -7781,83 +7737,6 @@ describe Library::V1::LibraryServiceClient do
           # Call method
           err = assert_raises Google::Gax::GaxError do
             client.find_related_books(names, shelves)
-          end
-
-          # Verify the GaxError wrapped the custom error that was raised.
-          assert_match(custom_error.message, err.message)
-        end
-      end
-    end
-  end
-
-  describe 'add_tag' do
-    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#add_tag."
-
-    it 'invokes add_tag without error' do
-      # Create request parameters
-      formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      tag = ''
-
-      # Create expected grpc response
-      expected_response = {}
-      expected_response = Google::Gax::to_proto(expected_response, Google::Tagger::V1::AddTagResponse)
-
-      # Mock Grpc layer
-      mock_method = proc do |request|
-        assert_instance_of(Google::Tagger::V1::AddTagRequest, request)
-        assert_equal(formatted_resource, request.resource)
-        assert_equal(tag, request.tag)
-        OpenStruct.new(execute: expected_response)
-      end
-      mock_stub = MockGrpcClientStub_v1.new(:add_tag, mock_method)
-
-      # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials_v1.new("add_tag")
-
-      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
-
-          # Call method
-          response = client.add_tag(formatted_resource, tag)
-
-          # Verify the response
-          assert_equal(expected_response, response)
-
-          # Call method with block
-          client.add_tag(formatted_resource, tag) do |response, operation|
-            # Verify the response
-            assert_equal(expected_response, response)
-            refute_nil(operation)
-          end
-        end
-      end
-    end
-
-    it 'invokes add_tag with error' do
-      # Create request parameters
-      formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      tag = ''
-
-      # Mock Grpc layer
-      mock_method = proc do |request|
-        assert_instance_of(Google::Tagger::V1::AddTagRequest, request)
-        assert_equal(formatted_resource, request.resource)
-        assert_equal(tag, request.tag)
-        raise custom_error
-      end
-      mock_stub = MockGrpcClientStub_v1.new(:add_tag, mock_method)
-
-      # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials_v1.new("add_tag")
-
-      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
-
-          # Call method
-          err = assert_raises Google::Gax::GaxError do
-            client.add_tag(formatted_resource, tag)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.

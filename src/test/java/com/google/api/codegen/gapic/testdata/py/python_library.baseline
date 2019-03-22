@@ -2806,67 +2806,6 @@ class LibraryServiceClient(object):
         )
         return iterator
 
-    def add_tag(
-            self,
-            resource,
-            tag,
-            retry=google.api_core.gapic_v1.method.DEFAULT,
-            timeout=google.api_core.gapic_v1.method.DEFAULT,
-            metadata=None):
-        """
-        Adds a tag to the book. This RPC is a mixin.
-
-        Example:
-            >>> from google.cloud.example import library_v1
-            >>>
-            >>> client = library_v1.LibraryServiceClient()
-            >>>
-            >>> resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-            >>>
-            >>> # TODO: Initialize `tag`:
-            >>> tag = ''
-            >>>
-            >>> response = client.add_tag(resource, tag)
-
-        Args:
-            resource (str): REQUIRED: The resource which the tag is being added to.
-                Resource is usually specified as a path, such as,
-                projects/{project}/zones/{zone}/disks/{disk}.
-            tag (str): REQUIRED: The tag to add.
-            retry (Optional[google.api_core.retry.Retry]):  A retry object used
-                to retry requests. If ``None`` is specified, requests will not
-                be retried.
-            timeout (Optional[float]): The amount of time, in seconds, to wait
-                for the request to complete. Note that if ``retry`` is
-                specified, the timeout applies to each individual attempt.
-            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
-                that is provided to the method.
-
-        Returns:
-            A :class:`~google.cloud.example.library_v1.types.AddTagResponse` instance.
-
-        Raises:
-            google.api_core.exceptions.GoogleAPICallError: If the request
-                    failed for any reason.
-            google.api_core.exceptions.RetryError: If the request failed due
-                    to a retryable error and retry attempts failed.
-            ValueError: If the parameters are invalid.
-        """
-        # Wrap the transport method to add retry and timeout logic.
-        if 'add_tag' not in self._inner_api_calls:
-            self._inner_api_calls['add_tag'] = google.api_core.gapic_v1.method.wrap_method(
-                self.transport.add_tag,
-                default_retry=self._method_configs['AddTag'].retry,
-                default_timeout=self._method_configs['AddTag'].timeout,
-                client_info=self._client_info,
-            )
-
-        request = tagger_pb2.AddTagRequest(
-            resource=resource,
-            tag=tag,
-        )
-        return self._inner_api_calls['add_tag'](request, retry=retry, timeout=timeout, metadata=metadata)
-
     def add_label(
             self,
             resource,
@@ -4165,19 +4104,6 @@ class LibraryServiceGrpcTransport(object):
                 deserialized response object.
         """
         return self._stubs['library_service_stub'].FindRelatedBooks
-
-    @property
-    def add_tag(self):
-        """Return the gRPC stub for :meth:`LibraryServiceClient.add_tag`.
-
-        Adds a tag to the book. This RPC is a mixin.
-
-        Returns:
-            Callable: A callable which accepts the appropriate
-                deserialized request object and returns a
-                deserialized response object.
-        """
-        return self._stubs['library_service_stub'].AddTag
 
     @property
     def add_label(self):
@@ -6529,45 +6455,6 @@ class TestLibraryServiceClient(object):
         paged_list_response = client.find_related_books(names, shelves)
         with pytest.raises(CustomException):
             list(paged_list_response)
-
-    def test_add_tag(self):
-        # Setup Expected Response
-        expected_response = {}
-        expected_response = tagger_pb2.AddTagResponse(**expected_response)
-
-        # Mock the API response
-        channel = ChannelStub(responses = [expected_response])
-        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
-        with patch as create_channel:
-            create_channel.return_value = channel
-            client = library_v1.LibraryServiceClient()
-
-        # Setup Request
-        resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        tag = 'tag114586'
-
-        response = client.add_tag(resource, tag)
-        assert expected_response == response
-
-        assert len(channel.requests) == 1
-        expected_request = tagger_pb2.AddTagRequest(resource=resource, tag=tag)
-        actual_request = channel.requests[0][1]
-        assert expected_request == actual_request
-
-    def test_add_tag_exception(self):
-        # Mock the API response
-        channel = ChannelStub(responses = [CustomException()])
-        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
-        with patch as create_channel:
-            create_channel.return_value = channel
-            client = library_v1.LibraryServiceClient()
-
-        # Setup request
-        resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        tag = 'tag114586'
-
-        with pytest.raises(CustomException):
-            client.add_tag(resource, tag)
 
     def test_add_label(self):
         # Setup Expected Response

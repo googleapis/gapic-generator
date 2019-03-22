@@ -2612,8 +2612,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
@@ -5094,82 +5092,6 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Adds a tag to the book. This RPC is a mixin.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-   *   String tag = "";
-   *   AddTagResponse response = libraryClient.addTag(formattedResource, tag);
-   * }
-   * </code></pre>
-   *
-   * @param resource REQUIRED: The resource which the tag is being added to.
-   * Resource is usually specified as a path, such as,
-   * projects/{project}/zones/{zone}/disks/{disk}.
-   * @param tag REQUIRED: The tag to add.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final AddTagResponse addTag(String resource, String tag) {
-    SHELF_BOOK_PATH_TEMPLATE.validate(resource, "addTag");
-    AddTagRequest request =
-        AddTagRequest.newBuilder()
-        .setResource(resource)
-        .setTag(tag)
-        .build();
-    return addTag(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Adds a tag to the book. This RPC is a mixin.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-   *   String tag = "";
-   *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(formattedResource)
-   *     .setTag(tag)
-   *     .build();
-   *   AddTagResponse response = libraryClient.addTag(request);
-   * }
-   * </code></pre>
-   *
-   * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final AddTagResponse addTag(AddTagRequest request) {
-    return addTagCallable().call(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Adds a tag to the book. This RPC is a mixin.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-   *   String tag = "";
-   *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(formattedResource)
-   *     .setTag(tag)
-   *     .build();
-   *   ApiFuture&lt;AddTagResponse&gt; future = libraryClient.addTagCallable().futureCall(request);
-   *   // Do something
-   *   AddTagResponse response = future.get();
-   * }
-   * </code></pre>
-   */
-  public final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable() {
-    return stub.addTagCallable();
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
    * Adds a label to the entity.
    *
    * Sample code:
@@ -6761,8 +6683,6 @@ import com.google.protobuf.Empty;
 import com.google.tagger.v1.LabelerGrpc;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6966,13 +6886,6 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
    */
   public PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).findRelatedBooksSettings();
-  }
-
-  /**
-   * Returns the object with the settings used for calls to addTag.
-   */
-  public UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings() {
-    return ((LibraryServiceStubSettings) getStubSettings()).addTagSettings();
   }
 
   /**
@@ -7302,13 +7215,6 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     }
 
     /**
-     * Returns the builder for the settings used for calls to addTag.
-     */
-    public UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings() {
-      return getStubSettingsBuilder().addTagSettings();
-    }
-
-    /**
      * Returns the builder for the settings used for calls to addLabel.
      */
     /* package-private */ UnaryCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings() {
@@ -7527,8 +7433,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.MethodDescriptor;
 import io.grpc.protobuf.ProtoUtils;
 import java.io.IOException;
@@ -7708,8 +7612,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.MethodDescriptor;
 import io.grpc.protobuf.ProtoUtils;
 import java.io.IOException;
@@ -7897,13 +7799,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setRequestMarshaller(ProtoUtils.marshaller(FindRelatedBooksRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(FindRelatedBooksResponse.getDefaultInstance()))
           .build();
-  private static final MethodDescriptor<AddTagRequest, AddTagResponse> addTagMethodDescriptor =
-      MethodDescriptor.<AddTagRequest, AddTagResponse>newBuilder()
-          .setType(MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName("google.example.library.v1.LibraryService/AddTag")
-          .setRequestMarshaller(ProtoUtils.marshaller(AddTagRequest.getDefaultInstance()))
-          .setResponseMarshaller(ProtoUtils.marshaller(AddTagResponse.getDefaultInstance()))
-          .build();
   private static final MethodDescriptor<AddLabelRequest, AddLabelResponse> addLabelMethodDescriptor =
       MethodDescriptor.<AddLabelRequest, AddLabelResponse>newBuilder()
           .setType(MethodDescriptor.MethodType.UNARY)
@@ -7965,7 +7860,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
-  private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
   private final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
   private final UnaryCallable<GetBookRequest, Operation> getBigBookCallable;
   private final OperationCallable<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationCallable;
@@ -8120,10 +8014,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
         GrpcCallSettings.<FindRelatedBooksRequest, FindRelatedBooksResponse>newBuilder()
             .setMethodDescriptor(findRelatedBooksMethodDescriptor)
             .build();
-    GrpcCallSettings<AddTagRequest, AddTagResponse> addTagTransportSettings =
-        GrpcCallSettings.<AddTagRequest, AddTagResponse>newBuilder()
-            .setMethodDescriptor(addTagMethodDescriptor)
-            .build();
     GrpcCallSettings<AddLabelRequest, AddLabelResponse> addLabelTransportSettings =
         GrpcCallSettings.<AddLabelRequest, AddLabelResponse>newBuilder()
             .setMethodDescriptor(addLabelMethodDescriptor)
@@ -8169,7 +8059,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.babbleAboutBookCallable = callableFactory.createClientStreamingCallable(babbleAboutBookTransportSettings,settings.babbleAboutBookSettings(), clientContext);
     this.findRelatedBooksCallable = callableFactory.createUnaryCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
     this.findRelatedBooksPagedCallable = callableFactory.createPagedCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
-    this.addTagCallable = callableFactory.createUnaryCallable(addTagTransportSettings,settings.addTagSettings(), clientContext);
     this.addLabelCallable = callableFactory.createUnaryCallable(addLabelTransportSettings,settings.addLabelSettings(), clientContext);
     this.getBigBookCallable = callableFactory.createUnaryCallable(getBigBookTransportSettings,settings.getBigBookSettings(), clientContext);
     this.getBigBookOperationCallable = callableFactory.createOperationCallable(
@@ -8296,10 +8185,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
     return findRelatedBooksCallable;
-  }
-
-  public UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable() {
-    return addTagCallable;
   }
 
   @Deprecated
@@ -8457,8 +8342,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Generated;
@@ -8588,10 +8471,6 @@ public abstract class LibraryServiceStub implements BackgroundResource {
 
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
     throw new UnsupportedOperationException("Not implemented: findRelatedBooksCallable()");
-  }
-
-  public UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable() {
-    throw new UnsupportedOperationException("Not implemented: addTagCallable()");
   }
 
   @Deprecated
@@ -8736,8 +8615,6 @@ import com.google.protobuf.Empty;
 import com.google.tagger.v1.LabelerGrpc;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8807,7 +8684,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
   private final StreamingCallSettings<DiscussBookRequest, Empty> babbleAboutBookSettings;
   private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
-  private final UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final UnaryCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
   private final UnaryCallSettings<GetBookRequest, Operation> getBigBookSettings;
   private final OperationCallSettings<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationSettings;
@@ -8984,13 +8860,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   }
 
   /**
-   * Returns the object with the settings used for calls to addTag.
-   */
-  public UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings() {
-    return addTagSettings;
-  }
-
-  /**
    * Returns the object with the settings used for calls to addLabel.
    */
   public UnaryCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings() {
@@ -9143,7 +9012,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     monologAboutBookSettings = settingsBuilder.monologAboutBookSettings().build();
     babbleAboutBookSettings = settingsBuilder.babbleAboutBookSettings().build();
     findRelatedBooksSettings = settingsBuilder.findRelatedBooksSettings().build();
-    addTagSettings = settingsBuilder.addTagSettings().build();
     addLabelSettings = settingsBuilder.addLabelSettings().build();
     getBigBookSettings = settingsBuilder.getBigBookSettings().build();
     getBigBookOperationSettings = settingsBuilder.getBigBookOperationSettings().build();
@@ -9497,7 +9365,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Empty> babbleAboutBookSettings;
     private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
-    private final UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final UnaryCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
     private final UnaryCallSettings.Builder<GetBookRequest, Operation> getBigBookSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationSettings;
@@ -9602,8 +9469,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       findRelatedBooksSettings = PagedCallSettings.newBuilder(
           FIND_RELATED_BOOKS_PAGE_STR_FACT);
 
-      addTagSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
-
       addLabelSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       getBigBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
@@ -9636,7 +9501,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBookFromAbsolutelyAnywhereSettings,
           updateBookIndexSettings,
           findRelatedBooksSettings,
-          addTagSettings,
           addLabelSettings,
           getBigBookSettings,
           getBigNothingSettings,
@@ -9761,10 +9625,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.addTagSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
-          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
-
       builder.addLabelSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -9851,7 +9711,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       monologAboutBookSettings = settings.monologAboutBookSettings.toBuilder();
       babbleAboutBookSettings = settings.babbleAboutBookSettings.toBuilder();
       findRelatedBooksSettings = settings.findRelatedBooksSettings.toBuilder();
-      addTagSettings = settings.addTagSettings.toBuilder();
       addLabelSettings = settings.addLabelSettings.toBuilder();
       getBigBookSettings = settings.getBigBookSettings.toBuilder();
       getBigBookOperationSettings = settings.getBigBookOperationSettings.toBuilder();
@@ -9879,7 +9738,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBookFromAbsolutelyAnywhereSettings,
           updateBookIndexSettings,
           findRelatedBooksSettings,
-          addTagSettings,
           addLabelSettings,
           getBigBookSettings,
           getBigNothingSettings,
@@ -10071,13 +9929,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     }
 
     /**
-     * Returns the builder for the settings used for calls to addTag.
-     */
-    public UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings() {
-      return addTagSettings;
-    }
-
-    /**
      * Returns the builder for the settings used for calls to addLabel.
      */
     public UnaryCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings() {
@@ -10191,8 +10042,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import java.io.IOException;
@@ -11539,48 +11388,6 @@ public class LibraryClientTest {
       List<String> shelves = new ArrayList<>();
 
       client.findRelatedBooks(names, shelves);
-      Assert.fail("No exception raised");
-    } catch (InvalidArgumentException e) {
-      // Expected exception
-    }
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void addTagTest() {
-    AddTagResponse expectedResponse = AddTagResponse.newBuilder().build();
-    mockLibraryService.addResponse(expectedResponse);
-
-    String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-    String tag = "tag114586";
-
-    AddTagResponse actualResponse =
-        client.addTag(formattedResource, tag);
-    Assert.assertEquals(expectedResponse, actualResponse);
-
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
-    Assert.assertEquals(1, actualRequests.size());
-    AddTagRequest actualRequest = (AddTagRequest)actualRequests.get(0);
-
-    Assert.assertEquals(formattedResource, actualRequest.getResource());
-    Assert.assertEquals(tag, actualRequest.getTag());
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void addTagExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockLibraryService.addException(exception);
-
-    try {
-      String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-      String tag = "tag114586";
-
-      client.addTag(formattedResource, tag);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
