@@ -4403,7 +4403,7 @@ class LibraryServiceClient {
     options.otherArgs.headers = options.otherArgs.headers || {};
     options.otherArgs.headers['x-goog-request-params'] =
       gax.routingHeader.fromParams({
-        'name': request.name, 'book.read': request.book.read
+        'name': request.name
       });
 
     return this._innerApiCalls.createBook(request, options, callback);
@@ -5195,6 +5195,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name, 'alt_book_name': request.altBookName
+      });
 
     return this._innerApiCalls.getBookFromAbsolutelyAnywhere(request, options, callback);
   }

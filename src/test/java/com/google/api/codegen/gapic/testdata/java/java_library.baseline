@@ -8034,7 +8034,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
                   public Map<String, String> extract(CreateBookRequest request) {
                     ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
                     params.put("name", String.valueOf(request.getName()));
-                    params.put("book.read", String.valueOf(request.getBook().getRead()));
                     return params.build();
                   }
                 })
@@ -8091,6 +8090,16 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereTransportSettings =
         GrpcCallSettings.<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere>newBuilder()
             .setMethodDescriptor(getBookFromAbsolutelyAnywhereMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookFromAbsolutelyAnywhereRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookFromAbsolutelyAnywhereRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    params.put("alt_book_name", String.valueOf(request.getAltBookName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexTransportSettings =
         GrpcCallSettings.<UpdateBookIndexRequest, Empty>newBuilder()
