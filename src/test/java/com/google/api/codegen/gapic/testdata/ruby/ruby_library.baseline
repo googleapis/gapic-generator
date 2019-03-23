@@ -3006,7 +3006,7 @@ module Library
           defaults["create_book"],
           exception_transformer: exception_transformer,
           params_extractor: proc do |request|
-            {'name' => request.name, 'book.read' => request.book.read}
+            {'name' => request.name}
           end
         )
         @publish_series = Google::Gax.create_api_call(
@@ -3065,7 +3065,10 @@ module Library
         @get_book_from_absolutely_anywhere = Google::Gax.create_api_call(
           @library_service_stub.method(:get_book_from_absolutely_anywhere),
           defaults["get_book_from_absolutely_anywhere"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name, 'alt_book_name' => request.alt_book_name}
+          end
         )
         @update_book_index = Google::Gax.create_api_call(
           @library_service_stub.method(:update_book_index),
@@ -4747,7 +4750,6 @@ end
           "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
-        "no_retry": [],
         "non_idempotent": []
       },
       "retry_params": {
@@ -4886,7 +4888,7 @@ end
         },
         "BabbleAboutBook": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry",
+          "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
         "FindRelatedBooks": {

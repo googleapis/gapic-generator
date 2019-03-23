@@ -291,7 +291,7 @@ func defaultCallOptions() *CallOptions {
         StreamBooks: retry[[2]string{"default", "idempotent"}],
         DiscussBook: retry[[2]string{"default", "non_idempotent"}],
         MonologAboutBook: retry[[2]string{"default", "non_idempotent"}],
-        BabbleAboutBook: retry[[2]string{"default", "no_retry"}],
+        BabbleAboutBook: retry[[2]string{"default", "non_idempotent"}],
         FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
         GetBigBook: retry[[2]string{"default", "non_idempotent"}],
@@ -490,7 +490,7 @@ func (c *LibClient) MergeShelves(ctx context.Context, req *librarypb.MergeShelve
 
 // CreateBook creates a book.
 func (c *LibClient) CreateBook(ctx context.Context, req *librarypb.CreateBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v&%s=%v", "name", req.GetName(), "book.read", req.GetBook().GetRead()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.CreateBook[0:len(c.CallOptions.CreateBook):len(c.CallOptions.CreateBook)], opts...)
     var resp *librarypb.Book
@@ -702,7 +702,8 @@ func (c *LibClient) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetB
 
 // GetBookFromAbsolutelyAnywhere test proper OneOf-Any resource name mapping
 func (c *LibClient) GetBookFromAbsolutelyAnywhere(ctx context.Context, req *librarypb.GetBookFromAbsolutelyAnywhereRequest, opts ...gax.CallOption) (*librarypb.BookFromAnywhere, error) {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v&%s=%v", "name", req.GetName(), "alt_book_name", req.GetAltBookName()))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetBookFromAbsolutelyAnywhere[0:len(c.CallOptions.GetBookFromAbsolutelyAnywhere):len(c.CallOptions.GetBookFromAbsolutelyAnywhere)], opts...)
     var resp *librarypb.BookFromAnywhere
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
