@@ -230,7 +230,6 @@ type CallOptions struct {
     MoveBook []gax.CallOption
     ListStrings []gax.CallOption
     AddComments []gax.CallOption
-    GetBookFromArchive []gax.CallOption
     GetBookFromAnywhere []gax.CallOption
     GetBookFromAbsolutelyAnywhere []gax.CallOption
     UpdateBookIndex []gax.CallOption
@@ -283,7 +282,6 @@ func defaultCallOptions() *CallOptions {
         MoveBook: retry[[2]string{"default", "non_idempotent"}],
         ListStrings: retry[[2]string{"default", "idempotent"}],
         AddComments: retry[[2]string{"default", "non_idempotent"}],
-        GetBookFromArchive: retry[[2]string{"default", "idempotent"}],
         GetBookFromAnywhere: retry[[2]string{"default", "idempotent"}],
         GetBookFromAbsolutelyAnywhere: retry[[2]string{"default", "idempotent"}],
         UpdateBookIndex: retry[[2]string{"default", "idempotent"}],
@@ -675,23 +673,6 @@ func (c *LibClient) AddComments(ctx context.Context, req *librarypb.AddCommentsR
         return err
     }, opts...)
     return err
-}
-
-// GetBookFromArchive gets a book from an archive.
-func (c *LibClient) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest, opts ...gax.CallOption) (*librarypb.BookFromArchive, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
-    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
-    opts = append(c.CallOptions.GetBookFromArchive[0:len(c.CallOptions.GetBookFromArchive):len(c.CallOptions.GetBookFromArchive)], opts...)
-    var resp *librarypb.BookFromArchive
-    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
-        var err error
-        resp, err = c.client.GetBookFromArchive(ctx, req, settings.GRPC...)
-        return err
-    }, opts...)
-    if err != nil {
-        return nil, err
-    }
-    return resp, nil
 }
 
 // GetBookFromAnywhere gets a book from a shelf or archive.
@@ -1505,24 +1486,6 @@ func ExampleClient_AddComments() {
     }
 }
 
-func ExampleClient_GetBookFromArchive() {
-    ctx := context.Background()
-    c, err := library.NewClient(ctx)
-    if err != nil {
-        // TODO: Handle error.
-    }
-
-    req := &librarypb.GetBookFromArchiveRequest{
-        // TODO: Fill request struct fields.
-    }
-    resp, err := c.GetBookFromArchive(ctx, req)
-    if err != nil {
-        // TODO: Handle error.
-    }
-    // TODO: Use resp.
-    _ = resp
-}
-
 func ExampleClient_GetBookFromAnywhere() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
@@ -2032,18 +1995,6 @@ func (s *mockLibraryServer) AddComments(ctx context.Context, req *librarypb.AddC
         return nil, s.err
     }
     return s.resps[0].(*emptypb.Empty), nil
-}
-
-func (s *mockLibraryServer) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.BookFromArchive, error) {
-    md, _ := metadata.FromIncomingContext(ctx)
-    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
-        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
-    }
-    s.reqs = append(s.reqs, req)
-    if s.err != nil {
-        return nil, s.err
-    }
-    return s.resps[0].(*librarypb.BookFromArchive), nil
 }
 
 func (s *mockLibraryServer) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBookFromAnywhereRequest) (*librarypb.BookFromAnywhere, error) {
@@ -3218,71 +3169,6 @@ func TestLibraryServiceAddCommentsError(t *testing.T) {
     } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
-}
-func TestLibraryServiceGetBookFromArchive(t *testing.T) {
-    var name2 string = "name2-1052831874"
-    var author string = "author-1406328437"
-    var title string = "title110371416"
-    var read bool = true
-    var expectedResponse = &librarypb.BookFromArchive{
-        Name: name2,
-        Author: author,
-        Title: title,
-        Read: read,
-    }
-
-    mockLibrary.err = nil
-    mockLibrary.reqs = nil
-
-    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
-
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE_PATH]", "[BOOK_ID]")
-    var request = &librarypb.GetBookFromArchiveRequest{
-        Name: formattedName,
-    }
-
-    c, err := NewClient(context.Background(), clientOpt)
-    if err != nil {
-        t.Fatal(err)
-    }
-
-    resp, err := c.GetBookFromArchive(context.Background(), request)
-
-    if err != nil {
-        t.Fatal(err)
-    }
-
-    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
-        t.Errorf("wrong request %q, want %q", got, want)
-    }
-
-    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
-        t.Errorf("wrong response %q, want %q)", got, want)
-    }
-}
-
-func TestLibraryServiceGetBookFromArchiveError(t *testing.T) {
-    errCode := codes.PermissionDenied
-    mockLibrary.err = gstatus.Error(errCode, "test error")
-
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE_PATH]", "[BOOK_ID]")
-    var request = &librarypb.GetBookFromArchiveRequest{
-        Name: formattedName,
-    }
-
-    c, err := NewClient(context.Background(), clientOpt)
-    if err != nil {
-        t.Fatal(err)
-    }
-
-    resp, err := c.GetBookFromArchive(context.Background(), request)
-
-    if st, ok := gstatus.FromError(err); !ok {
-        t.Errorf("got error %v, expected grpc error", err)
-    } else if c := st.Code(); c != errCode {
-        t.Errorf("got error code %q, want %q", c, errCode)
-    }
-    _ = resp
 }
 func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
     var name2 string = "name2-1052831874"
