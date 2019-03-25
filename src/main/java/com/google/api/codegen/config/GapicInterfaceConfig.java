@@ -265,6 +265,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
     List<T> methodConfigs = new ArrayList<>();
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
+      if (!methodConfigMap.containsKey(methodConfigProto.getName())) {
+        continue;
+      }
       methodConfigs.add(methodConfigMap.get(methodConfigProto.getName()));
     }
     return methodConfigs;
