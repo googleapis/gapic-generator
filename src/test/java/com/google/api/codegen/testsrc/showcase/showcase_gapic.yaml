@@ -135,12 +135,13 @@ interfaces:
     retry_params_name: default
     timeout_millis: 60000
   - name: Wait
-    flattening:
-      groups:
-      - parameters:
-        - response_delay
-    required_fields:
-    - response_delay
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
+    long_running:
+      return_type: google.showcase.v1alpha3.WaitResponse
+      metadata_type: google.showcase.v1alpha3.WaitMetadata
+      initial_poll_delay_millis: 20000
+      poll_delay_multiplier: 1.5
+      max_poll_delay_millis: 45000
+      total_poll_timeout_millis: 86400000
