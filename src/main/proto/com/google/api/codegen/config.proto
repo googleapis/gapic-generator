@@ -63,8 +63,6 @@ option java_package = "com.google.api.codegen";
 //         retry_params_name: default
 //         field_name_patterns:
 //           name: book
-//         header_request_params:
-//           - name
 //       - name: GetBook
 //       ...
 //     ...
@@ -298,10 +296,11 @@ message MethodConfigProto {
   // IAM methods to IamPolicy for Pub/Sub.
   string reroute_to_grpc_interface = 12;
 
+  // TODO: Remove this config once there are no use cases.
   // Specifies the list of the method's input message fields (including nested
   // ones, using the dot notation), which should be url-encoded in
   // "x-goog-request-params" header
-  repeated string header_request_params = 14;
+  repeated string header_request_params = 14; // UNSUPPORTED.
 
   repeated SurfaceTreatmentProto surface_treatments = 20;
 
