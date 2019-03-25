@@ -106,7 +106,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 1000
-    resource_name_treatment: STATIC_TYPES
   - name: GetShelf
     flattening:
       groups:
@@ -156,7 +155,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 4000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
     sample_value_sets:
@@ -185,7 +183,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 5000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
       other_shelf_name: shelf
@@ -233,7 +230,6 @@ interfaces:
           - edition
           - shelf.name
         subresponse_field: book_names
-    resource_name_treatment: STATIC_TYPES
     sample_code_init_fields:
     - series_uuid.series_string=foobar
     sample_value_sets:
@@ -327,7 +323,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 8000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
     sample_value_sets:
@@ -377,7 +372,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
     sample_code_init_fields:
@@ -394,7 +388,6 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     # leaving commented out to test the default
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
   - name: UpdateBook
@@ -415,7 +408,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
   - name: MoveBook
@@ -430,7 +422,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
       other_shelf_name: shelf
@@ -450,7 +441,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: "*"
   - name: AddComments
@@ -493,7 +483,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: archived_book
   - name: GetBookFromAnywhere
@@ -508,7 +497,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book_oneof
       alt_book_name: book
@@ -522,7 +510,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book_oneof
     header_request_params:
@@ -539,7 +526,6 @@ interfaces:
     - name
     - index_name
     - index_map
-    resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
@@ -573,7 +559,6 @@ interfaces:
       - calling_forms: ".*"
         value_sets: ".*"
   - name: StreamBooks
-    resource_name_treatment: STATIC_TYPES
     flattening:
       groups:
       - parameters:
@@ -710,7 +695,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 3000
-    resource_name_treatment: STATIC_TYPES
     sample_code_init_fields:
     - names[0]
     # TODO(michaelbausor): support %-entity notation for list elements
@@ -790,7 +774,6 @@ interfaces:
         - name
     required_fields:
     - name
-    resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -881,7 +864,6 @@ interfaces:
         - name
     required_fields:
     - name
-    resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -1034,7 +1016,6 @@ interfaces:
     - required_repeated_fixed32
     - required_repeated_fixed64
     - required_map
-    resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
