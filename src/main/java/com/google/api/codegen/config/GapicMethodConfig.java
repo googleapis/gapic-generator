@@ -287,28 +287,24 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     ResourceNameTreatment defaultResourceNameTreatment =
         methodConfigProto.getResourceNameTreatment();
-    if (defaultResourceNameTreatment == ResourceNameTreatment.UNSET_TREATMENT
-        && method
-            .getInputMessage()
-            .getFields()
-            .stream()
-            .anyMatch(
-                f ->
-                    !Strings.isNullOrEmpty(protoParser.getResourceReference(f))
-                        || !Strings.isNullOrEmpty(protoParser.getResourceOrSetEntityName(f)))) {
-      String methodInputPackageName =
-          protoParser.getProtoPackage(((ProtoFile) method.getInputMessage().getParent()));
-      if (defaultPackageName.equals(methodInputPackageName)) {
-        defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
-      } else {
-        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
+    if (defaultResourceNameTreatment == ResourceNameTreatment.UNSET_TREATMENT) {
+      if (method
+          .getInputMessage()
+          .getFields()
+          .stream()
+          .anyMatch(
+              f ->
+                  !Strings.isNullOrEmpty(protoParser.getResourceReference(f))
+                      || !Strings.isNullOrEmpty(protoParser.getResourceOrSetEntityName(f)))) {
+        String methodInputPackageName =
+            protoParser.getProtoPackage(((ProtoFile) method.getInputMessage().getParent()));
+        if (defaultPackageName.equals(methodInputPackageName)) {
+          defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
+        } else {
+          defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
+        }
       }
     }
-    if (defaultResourceNameTreatment == null
-        || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
-      defaultResourceNameTreatment = ResourceNameTreatment.NONE;
-    }
-
     return defaultResourceNameTreatment;
   }
 

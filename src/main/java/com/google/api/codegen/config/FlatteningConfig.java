@@ -228,7 +228,7 @@ public abstract class FlatteningConfig {
       }
       if (defaultResourceNameTreatment == null
           || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
-        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
+        // defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
       }
 
       FieldConfig fieldConfig =

@@ -153,8 +153,10 @@ public abstract class FieldConfig {
     }
 
     if (treatment == ResourceNameTreatment.UNSET_TREATMENT) {
-      if (messageFieldResourceNameConfig != null) {
+      if (messageFieldResourceNameConfig != null && messageConfigs.fieldHasResourceName(field)) {
         treatment = ResourceNameTreatment.STATIC_TYPES;
+      } else if (flattenedFieldResourceNameConfig != null) {
+        treatment = ResourceNameTreatment.VALIDATE;
       }
     }
 
