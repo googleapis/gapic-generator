@@ -18,6 +18,23 @@
     @end
 @end
 
+@snippet standaloneSampleInitCode(initCodeSpec)
+    @if initCodeSpec.argDefaultLines
+        @join line : initCodeSpec.argDefaultLines
+          // {@line}
+        @end
+
+
+    @end
+    @if initCodeSpec.lines
+        @join line : initCodeSpec.lines
+            {@initCode(TRUE, line)};
+        @end
+
+    @end
+@end
+
+
 # includeAssignment: Boolean, line: InitCodeLineView
 @private initCode(includeAssignment, line)
     @switch line.lineType.toString

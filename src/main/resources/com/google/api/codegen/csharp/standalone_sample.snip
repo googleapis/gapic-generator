@@ -1,3 +1,4 @@
+@extends "common.snip"
 @extends "csharp/common.snip"
 @extends "csharp/common_initcode.snip"
 
@@ -9,15 +10,29 @@
     // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
 
     // [START {@sample.regionTag}]
-    // FIXME: import section
+    @if sample.sampleImports
+      {@imports(sample.sampleImports)}
 
+    @end
     class {@sampleClass.name}
     {
-      // FIXME: sample function documentation
+      @if not(sample.sampleFunctionDoc.isEmpty)
+        {@processDoc(sample.sampleFunctionDoc)}
+      @end
       public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)})
       {
-      	// FIXME: instantiate a client
-        // FIXME: construct a request
+        @switch sample.callingForm
+        @case "Request"
+          {@requestMethodCallSampleCode(apiMethod, sample)}
+        @case "RequestAsync"
+          {@requestAsyncMethodCallSampleCode(apiMethod, sample)}
+        @case "Flattened"
+          {@flattenedMethodCallSampleCode(apiMethod, sample)}
+        @case "FlattenedAsync"
+          {@flattenedAsyncMethodCallSampleCode(apiMethod, sample)}
+        @default
+          "Paged streaming, grpc streaming and LRO methods not supported yet."
+        @end
         // FIXME: call the API
         // FIXME: inspect the results
       }
@@ -33,9 +48,56 @@
   @end
 @end
 
+@private requestMethodCallSampleCode(apiMethod, sample)
+  {@createClient(apiMethod, FALSE)}
+  {@standaloneSampleInitCode(sample.sampleInitCode)}
+@end
+
+@private requestAsyncMethodCallSampleCode(apiMethod, sample)
+  {@createClient(apiMethod, TRUE)}
+  {@standaloneSampleInitCode(sample.sampleInitCode)}
+@end
+
+@private flattenedMethodCallSampleCode(apiMethod, sample)
+  {@createClient(apiMethod, FALSE)}
+  {@standaloneSampleInitCode(sample.sampleInitCode)}
+@end
+
+@private flattenedAsyncMethodCallSampleCode(apiMethod, sample)
+  {@createClient(apiMethod, TRUE)}
+  {@standaloneSampleInitCode(sample.sampleInitCode)}
+@end
+
+# apiMethod: StaticLangApiMethodView, isAsync: Boolean
+@private createClient(apiMethod, isAsync)
+  @if isAsync
+    {@apiMethod.apiClassName} {@apiMethod.apiVariableName} = await
+      {@apiMethod.apiClassName}.CreateAsync();
+  @else
+    {@apiMethod.apiClassName} {@apiMethod.apiVariableName} =
+      {@apiMethod.apiClassName}.Create();
+  @end
+@end
 
 @private commaSeparatedArgAndTypes(args)
   @join arg : args on ", "
     {@arg.typeName} {@arg.identifier}
+  @end
+@end
+
+# SampleFunctionDocView
+@private processDoc(doc)
+  @if doc.mainDocLines.size
+    /// <summary>
+    @join line : @doc.mainDocLines
+      /// {@line}
+    @end
+    /// </summary>
+  @end
+
+  @join paramDoc : doc.paramDocLines
+    @join line : paramDoc
+      /// {@line}
+    @end
   @end
 @end
