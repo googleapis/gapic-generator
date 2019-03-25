@@ -2984,7 +2984,10 @@ module Library
         @get_shelf = Google::Gax.create_api_call(
           @library_service_stub.method(:get_shelf),
           defaults["get_shelf"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @list_shelves = Google::Gax.create_api_call(
           @library_service_stub.method(:list_shelves),
@@ -2994,19 +2997,25 @@ module Library
         @delete_shelf = Google::Gax.create_api_call(
           @library_service_stub.method(:delete_shelf),
           defaults["delete_shelf"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @merge_shelves = Google::Gax.create_api_call(
           @library_service_stub.method(:merge_shelves),
           defaults["merge_shelves"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @create_book = Google::Gax.create_api_call(
           @library_service_stub.method(:create_book),
           defaults["create_book"],
           exception_transformer: exception_transformer,
           params_extractor: proc do |request|
-            {'name' => request.name, 'book.read' => request.book.read}
+            {'name' => request.name}
           end
         )
         @publish_series = Google::Gax.create_api_call(
@@ -3020,27 +3029,42 @@ module Library
         @get_book = Google::Gax.create_api_call(
           @library_service_stub.method(:get_book),
           defaults["get_book"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @list_books = Google::Gax.create_api_call(
           @library_service_stub.method(:list_books),
           defaults["list_books"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @delete_book = Google::Gax.create_api_call(
           @library_service_stub.method(:delete_book),
           defaults["delete_book"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @update_book = Google::Gax.create_api_call(
           @library_service_stub.method(:update_book),
           defaults["update_book"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @move_book = Google::Gax.create_api_call(
           @library_service_stub.method(:move_book),
           defaults["move_book"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @list_strings = Google::Gax.create_api_call(
           @library_service_stub.method(:list_strings),
@@ -3050,27 +3074,42 @@ module Library
         @add_comments = Google::Gax.create_api_call(
           @library_service_stub.method(:add_comments),
           defaults["add_comments"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @get_book_from_archive = Google::Gax.create_api_call(
           @library_service_stub.method(:get_book_from_archive),
           defaults["get_book_from_archive"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @get_book_from_anywhere = Google::Gax.create_api_call(
           @library_service_stub.method(:get_book_from_anywhere),
           defaults["get_book_from_anywhere"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @get_book_from_absolutely_anywhere = Google::Gax.create_api_call(
           @library_service_stub.method(:get_book_from_absolutely_anywhere),
           defaults["get_book_from_absolutely_anywhere"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name, 'alt_book_name' => request.alt_book_name}
+          end
         )
         @update_book_index = Google::Gax.create_api_call(
           @library_service_stub.method(:update_book_index),
           defaults["update_book_index"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @stream_shelves = Google::Gax.create_api_call(
           @library_service_stub.method(:stream_shelves),
@@ -3105,22 +3144,34 @@ module Library
         @add_tag = Google::Gax.create_api_call(
           @library_service_stub.method(:add_tag),
           defaults["add_tag"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'resource' => request.resource}
+          end
         )
         @add_label = Google::Gax.create_api_call(
           @labeler_stub.method(:add_label),
           defaults["add_label"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'resource' => request.resource}
+          end
         )
         @get_big_book = Google::Gax.create_api_call(
           @library_service_stub.method(:get_big_book),
           defaults["get_big_book"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @get_big_nothing = Google::Gax.create_api_call(
           @library_service_stub.method(:get_big_nothing),
           defaults["get_big_nothing"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @test_optional_required_flattening_params = Google::Gax.create_api_call(
           @library_service_stub.method(:test_optional_required_flattening_params),
