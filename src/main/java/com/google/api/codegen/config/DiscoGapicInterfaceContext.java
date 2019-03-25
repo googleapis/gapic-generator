@@ -190,7 +190,8 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     return getPublicMethods();
   }
 
-  private boolean isSupported(MethodModel method) {
+  @Override
+  public boolean isSupported(MethodModel method) {
     return getInterfaceConfig().getMethodConfig(method).getVisibility()
         != VisibilityConfig.DISABLED;
   }

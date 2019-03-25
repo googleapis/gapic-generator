@@ -25,6 +25,7 @@ import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
 import com.google.api.codegen.util.LicenseHeaderUtil;
@@ -259,7 +260,11 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (!configProto.equals(ConfigProto.getDefaultInstance())) {
       interfaceInputs =
           createInterfaceInputsWithGapicConfig(
-              diagCollector, configProto.getInterfacesList(), protoInterfaces, symbolTable);
+              diagCollector,
+              configProto.getInterfacesList(),
+              protoInterfaces,
+              symbolTable,
+              language);
     } else {
       interfaceInputs = createInterfaceInputsWithoutGapicConfig(protoInterfaces.values());
     }
@@ -455,7 +460,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       DiagCollector diagCollector,
       List<InterfaceConfigProto> interfaceConfigProtosList,
       ImmutableMap<String, Interface> protoInterfaces,
-      SymbolTable symbolTable) {
+      SymbolTable symbolTable,
+      TargetLanguage language) {
 
     // Maps name of interfaces to found interfaces from proto.
     Map<String, Interface> interfaceMap = new LinkedHashMap<>(protoInterfaces);
@@ -493,7 +499,8 @@ public abstract class GapicProductConfig implements ProductConfig {
 
       Map<Method, MethodConfigProto> methodsToGenerate;
       methodsToGenerate =
-          findMethodsToGenerateWithConfigYaml(apiInterface, interfaceConfigProto, diagCollector);
+          findMethodsToGenerateWithConfigYaml(
+              apiInterface, interfaceConfigProto, language, diagCollector);
       if (methodsToGenerate == null) {
         return null;
       }
@@ -563,6 +570,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   private static ImmutableMap<Method, MethodConfigProto> findMethodsToGenerateWithConfigYaml(
       Interface apiInterface,
       InterfaceConfigProto interfaceConfigProto,
+      TargetLanguage targetLanguage,
       DiagCollector diagCollector) {
     ImmutableMap.Builder<Method, MethodConfigProto> methodsToSurface = ImmutableMap.builder();
 
@@ -577,6 +585,17 @@ public abstract class GapicProductConfig implements ProductConfig {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
+        continue;
+      }
+      if (methodConfigProto
+          .getSurfaceTreatmentsList()
+          .stream()
+          .anyMatch(
+              s ->
+                  s.getVisibility().equals(VisibilityProto.DISABLED)
+                      && s.getIncludeLanguagesList()
+                          .stream()
+                          .anyMatch(lang -> lang.equalsIgnoreCase(targetLanguage.name())))) {
         continue;
       }
       methodsToSurface.put(protoMethod, methodConfigProto);
