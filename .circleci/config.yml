@@ -491,6 +491,7 @@ jobs:
       - run:
           name: Patch in pre-release version of google-common-protos
           command: |
+            cd workspace/gapic-generator/artman-genfiles/java
             JAVA_COMMON_PROTOS_VERSION=proto-google-common-protos:1.13.0-pre3
             sed -i 's/proto-google-common-protos:[0-9\.]\+/${JAVA_COMMON_PROTOS_VERSION}/g' \
             proto-google-showcase-v1alpha3/build.gradle
