@@ -486,6 +486,14 @@ jobs:
                 --log-dir=${ARTMAN_REPORTS_DIR} \
                 --languages java \
                 --root-dir=/tmp/workspace/showcase-protos-patched
+      # This step is also required so long as Java's clients rely on a different
+      # version of google-common-protos compared to gapic-generator.
+      - run:
+          name: Patch in pre-release version of google-common-protos
+          command: |
+            JAVA_COMMON_PROTOS_VERSION=proto-google-common-protos:1.13.0-pre3
+            sed -i 's/proto-google-common-protos:[0-9\.]\+/${JAVA_COMMON_PROTOS_VERSION}/g' \
+            proto-google-showcase-v1alpha3/build.gradle
       - store_artifacts:
           path: /tmp/workspace/reports
       - store_artifacts:
