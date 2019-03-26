@@ -66,11 +66,7 @@ class TestEchoClient(object):
     def test_wait(self):
         content = 'hello world'
         response = self.client.wait(
-            response_delay={'nanos': 500 }, success={'content': content})
-        assert content == response.content
-
-    def test_pagination(self):
-        expected = 0
-        for element in self.client.pagination(20, page_size=5):
-            assert element == expected
-            expected = expected + 1
+            ttl={'nanos': 500 },
+            success={'content': content},
+        )
+        assert content == response.result().content
