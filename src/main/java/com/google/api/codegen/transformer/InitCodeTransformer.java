@@ -89,7 +89,8 @@ public class InitCodeTransformer {
   // Whether the initialization code should include non-configurable comments like TODOs. This
   // should only be true when generating in-code samples.
   //
-  // This field should be set to false when generating tests comments in unit tests are unnecessary.
+  // This field should be set to false when generating tests since comments in unit tests are
+  // unnecessary.
   //
   // This field must be set to false when generating standalone samples because comments in
   // standalone samples should be derived from user configurations, not hard-coded.
@@ -912,10 +913,7 @@ public class InitCodeTransformer {
   /** Determines whether a field is required */
   private static boolean isRequired(FieldConfig fieldConfig, MethodContext context) {
     return fieldConfig != null
-        && context
-            .getMethodConfig()
-            .getRequiredFieldConfigs()
-            .stream()
+        && context.getMethodConfig().getRequiredFieldConfigs().stream()
             .anyMatch(
                 fc -> fc.getField().getSimpleName().equals(fieldConfig.getField().getSimpleName()));
   }
