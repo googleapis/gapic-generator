@@ -64,7 +64,7 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
       new DynamicLangApiMethodTransformer(
           new PythonApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
-              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
+              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer, false))
               .sampleType(sampleType)
               .outputTransformer(new OutputTransformer(new PythonSampleOutputImportTransformer()))
               .sampleImportTransformer(
