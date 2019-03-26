@@ -17,12 +17,12 @@ require "minitest/spec"
 
 require "grpc"
 
-require "google/showcase/v1alpha2/echo_client"
+require "google/showcase/v1alpha3/echo_client"
 require "google/showcase/v1alpha3/echo_services_pb"
 
-describe Google::Showcase::V1alpha2::EchoClient do
+describe Google::Showcase::V1alpha3::EchoClient do
   before(:all) do
-    @client = Google::Showcase::V1alpha2::EchoClient.new(
+    @client = Google::Showcase::V1alpha3::EchoClient.new(
       credentials: GRPC::Core::Channel.new(
         "localhost:7469", nil, :this_channel_is_insecure))
   end
