@@ -16,6 +16,8 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.auto.value.AutoValue;
+import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ReadFileInitCodeLineView implements InitCodeLineView {
@@ -29,6 +31,9 @@ public abstract class ReadFileInitCodeLineView implements InitCodeLineView {
 
   public abstract boolean isFirstReadFileView();
 
+  @Nullable
+  public abstract List<String> descriptions();
+
   public static Builder newBuilder() {
     return new AutoValue_ReadFileInitCodeLineView.Builder();
   }
@@ -41,6 +46,8 @@ public abstract class ReadFileInitCodeLineView implements InitCodeLineView {
     public abstract Builder fileName(InitValueView val);
 
     public abstract Builder isFirstReadFileView(boolean val);
+
+    public abstract Builder descriptions(List<String> val);
 
     public abstract ReadFileInitCodeLineView build();
   }
