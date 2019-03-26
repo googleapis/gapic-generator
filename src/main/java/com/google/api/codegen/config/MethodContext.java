@@ -17,6 +17,8 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.viewmodel.CallingForm;
+import java.util.List;
 import javax.annotation.Nullable;
 
 /** The context for transforming a method to a view model object. */
@@ -58,5 +60,10 @@ public interface MethodContext {
   // TODO(andrealin): Move this out when HTTP is implemented in gax.
   String getGrpcContainerTypeName();
 
+  // TODO: Move this to a specific SampleContext.
+  List<CallingForm> getCallingForms();
+
   MethodContext withResourceNamesInSamplesOnly();
+
+  MethodContext withCallingForms(List<CallingForm> callingForms);
 }

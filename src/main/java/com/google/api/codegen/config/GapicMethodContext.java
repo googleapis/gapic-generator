@@ -17,9 +17,12 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
+import java.util.Collections;
+import java.util.List;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
@@ -43,7 +46,8 @@ public abstract class GapicMethodContext implements MethodContext {
         methodConfig,
         surfaceTransformerContext,
         typeTable,
-        new ProtoInterfaceModel(apiInterface));
+        new ProtoInterfaceModel(apiInterface),
+        Collections.singletonList(CallingForm.Generic));
   }
 
   @Override
@@ -130,5 +134,23 @@ public abstract class GapicMethodContext implements MethodContext {
   @Override
   public boolean isLongRunningMethodContext() {
     return getLongRunningConfig() != null;
+  }
+
+  @Override
+  public abstract List<CallingForm> getCallingForms();
+
+  @Override
+  public MethodContext withCallingForms(List<CallingForm> callingForms) {
+    return new AutoValue_GapicMethodContext(
+        getProductConfig(),
+        getNamer(),
+        getFlatteningConfig(),
+        getMethodConfig().getLroConfig(),
+        getFeatureConfig(),
+        getMethodConfig(),
+        getSurfaceInterfaceContext(),
+        getTypeTable(),
+        new ProtoInterfaceModel(getInterfaceModel().getInterface()),
+        callingForms);
   }
 }
