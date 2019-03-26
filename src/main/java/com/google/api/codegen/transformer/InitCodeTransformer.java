@@ -913,7 +913,10 @@ public class InitCodeTransformer {
   /** Determines whether a field is required */
   private static boolean isRequired(FieldConfig fieldConfig, MethodContext context) {
     return fieldConfig != null
-        && context.getMethodConfig().getRequiredFieldConfigs().stream()
+        && context
+            .getMethodConfig()
+            .getRequiredFieldConfigs()
+            .stream()
             .anyMatch(
                 fc -> fc.getField().getSimpleName().equals(fieldConfig.getField().getSimpleName()));
   }
