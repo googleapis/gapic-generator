@@ -208,26 +208,3 @@ func TestWait_timeout(t *testing.T) {
 		t.Errorf("Wait() = %v, want error", resp)
 	}
 }
-
-func TestPagination(t *testing.T) {
-	t.Parallel()
-	str := "foo bar biz baz"
-	expected := strings.Split(str, " ")
-	req := &genprotopb.PagedExpandRequest{Content: str, PageSize: 2}
-	iter := client.PagedExpand(context.Background(), req)
-
-	ndx := 0
-	for {
-		resp, err := iter.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			t.Fatal(err)
-		}
-		if resp.GetContent() != expected[ndx] {
-			t.Errorf("Chat() = %s, want %s", resp.GetContent(), expected[ndx])
-		}
-		ndx++
-	}
-}
