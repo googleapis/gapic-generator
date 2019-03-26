@@ -27,7 +27,6 @@ import (
 	showcase "cloud.google.com/go/showcase/apiv1alpha3"
 	durationpb "github.com/golang/protobuf/ptypes/duration"
 	genprotopb "github.com/googleapis/gapic-showcase/server/genproto"
-	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc"
