@@ -186,6 +186,7 @@ public class PathTemplateTransformer {
         getSingleResourceNameConfigsUsedByInterface(context)) {
       FormatResourceFunctionView.Builder function =
           FormatResourceFunctionView.newBuilder()
+              .resourceName(namer.getResourceTypeName(resourceNameConfig))
               .entityName(resourceNameConfig.getEntityName())
               .name(namer.getFormatFunctionName(interfaceConfig, resourceNameConfig))
               .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
