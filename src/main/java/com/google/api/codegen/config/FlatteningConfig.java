@@ -43,9 +43,6 @@ public abstract class FlatteningConfig {
   // Maps the name of the parameter in this flattening to its FieldConfig.
   public abstract ImmutableMap<String, FieldConfig> getFlattenedFieldConfigs();
 
-  @Nullable
-  public abstract String getFlatteningName();
-
   /**
    * Returns a map of a string representing a list of the fields in a flattening, to the flattening
    * config created from a method in the gapic config.
@@ -250,8 +247,7 @@ public abstract class FlatteningConfig {
       return null;
     }
 
-    return new AutoValue_FlatteningConfig(
-        flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
+    return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build());
   }
 
   /**
@@ -312,7 +308,7 @@ public abstract class FlatteningConfig {
               messageConfigs, resourceNameConfigs, parameterField, resourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }
-    return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build(), null);
+    return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build());
   }
 
   public Iterable<FieldModel> getFlattenedFields() {
@@ -327,7 +323,7 @@ public abstract class FlatteningConfig {
             .collect(
                 ImmutableMap.toImmutableMap(
                     Map.Entry::getKey, e -> e.getValue().withResourceNameInSampleOnly()));
-    return new AutoValue_FlatteningConfig(newFlattenedFieldConfigs, getFlatteningName());
+    return new AutoValue_FlatteningConfig(newFlattenedFieldConfigs);
   }
 
   public static boolean hasAnyRepeatedResourceNameParameter(FlatteningConfig flatteningGroup) {
