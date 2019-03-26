@@ -229,6 +229,7 @@ public class PathTemplateTransformer {
                 .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
                 .pathTemplateGetterName(
                     namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
+                .entityNameTypeName(namer.getResourceTypeName(resourceNameConfig))
                 .entityNameParamName(namer.getEntityNameParamName(resourceNameConfig))
                 .outputResourceId(var);
         functions.add(function.build());
