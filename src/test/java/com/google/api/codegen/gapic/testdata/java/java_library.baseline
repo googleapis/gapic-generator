@@ -2704,8 +2704,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
@@ -5186,82 +5184,6 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Adds a tag to the book. This RPC is a mixin.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-   *   String tag = "";
-   *   AddTagResponse response = libraryClient.addTag(formattedResource, tag);
-   * }
-   * </code></pre>
-   *
-   * @param resource REQUIRED: The resource which the tag is being added to.
-   * Resource is usually specified as a path, such as,
-   * projects/{project}/zones/{zone}/disks/{disk}.
-   * @param tag REQUIRED: The tag to add.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final AddTagResponse addTag(String resource, String tag) {
-    SHELF_BOOK_PATH_TEMPLATE.validate(resource, "addTag");
-    AddTagRequest request =
-        AddTagRequest.newBuilder()
-        .setResource(resource)
-        .setTag(tag)
-        .build();
-    return addTag(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Adds a tag to the book. This RPC is a mixin.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-   *   String tag = "";
-   *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(formattedResource)
-   *     .setTag(tag)
-   *     .build();
-   *   AddTagResponse response = libraryClient.addTag(request);
-   * }
-   * </code></pre>
-   *
-   * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final AddTagResponse addTag(AddTagRequest request) {
-    return addTagCallable().call(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Adds a tag to the book. This RPC is a mixin.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-   *   String tag = "";
-   *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(formattedResource)
-   *     .setTag(tag)
-   *     .build();
-   *   ApiFuture&lt;AddTagResponse&gt; future = libraryClient.addTagCallable().futureCall(request);
-   *   // Do something
-   *   AddTagResponse response = future.get();
-   * }
-   * </code></pre>
-   */
-  public final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable() {
-    return stub.addTagCallable();
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
    * Adds a label to the entity.
    *
    * Sample code:
@@ -6853,8 +6775,6 @@ import com.google.protobuf.Empty;
 import com.google.tagger.v1.LabelerGrpc;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7058,13 +6978,6 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
    */
   public PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).findRelatedBooksSettings();
-  }
-
-  /**
-   * Returns the object with the settings used for calls to addTag.
-   */
-  public UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings() {
-    return ((LibraryServiceStubSettings) getStubSettings()).addTagSettings();
   }
 
   /**
@@ -7394,13 +7307,6 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     }
 
     /**
-     * Returns the builder for the settings used for calls to addTag.
-     */
-    public UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings() {
-      return getStubSettingsBuilder().addTagSettings();
-    }
-
-    /**
      * Returns the builder for the settings used for calls to addLabel.
      */
     /* package-private */ UnaryCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings() {
@@ -7619,8 +7525,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.MethodDescriptor;
 import io.grpc.protobuf.ProtoUtils;
 import java.io.IOException;
@@ -7800,8 +7704,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.MethodDescriptor;
 import io.grpc.protobuf.ProtoUtils;
 import java.io.IOException;
@@ -7989,13 +7891,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setRequestMarshaller(ProtoUtils.marshaller(FindRelatedBooksRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(FindRelatedBooksResponse.getDefaultInstance()))
           .build();
-  private static final MethodDescriptor<AddTagRequest, AddTagResponse> addTagMethodDescriptor =
-      MethodDescriptor.<AddTagRequest, AddTagResponse>newBuilder()
-          .setType(MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName("google.example.library.v1.LibraryService/AddTag")
-          .setRequestMarshaller(ProtoUtils.marshaller(AddTagRequest.getDefaultInstance()))
-          .setResponseMarshaller(ProtoUtils.marshaller(AddTagResponse.getDefaultInstance()))
-          .build();
   private static final MethodDescriptor<AddLabelRequest, AddLabelResponse> addLabelMethodDescriptor =
       MethodDescriptor.<AddLabelRequest, AddLabelResponse>newBuilder()
           .setType(MethodDescriptor.MethodType.UNARY)
@@ -8057,7 +7952,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
-  private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
   private final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
   private final UnaryCallable<GetBookRequest, Operation> getBigBookCallable;
   private final OperationCallable<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationCallable;
@@ -8104,6 +7998,15 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<GetShelfRequest, Shelf> getShelfTransportSettings =
         GrpcCallSettings.<GetShelfRequest, Shelf>newBuilder()
             .setMethodDescriptor(getShelfMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetShelfRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetShelfRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<ListShelvesRequest, ListShelvesResponse> listShelvesTransportSettings =
         GrpcCallSettings.<ListShelvesRequest, ListShelvesResponse>newBuilder()
@@ -8112,10 +8015,28 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<DeleteShelfRequest, Empty> deleteShelfTransportSettings =
         GrpcCallSettings.<DeleteShelfRequest, Empty>newBuilder()
             .setMethodDescriptor(deleteShelfMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<DeleteShelfRequest>() {
+                  @Override
+                  public Map<String, String> extract(DeleteShelfRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<MergeShelvesRequest, Shelf> mergeShelvesTransportSettings =
         GrpcCallSettings.<MergeShelvesRequest, Shelf>newBuilder()
             .setMethodDescriptor(mergeShelvesMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<MergeShelvesRequest>() {
+                  @Override
+                  public Map<String, String> extract(MergeShelvesRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<CreateBookRequest, Book> createBookTransportSettings =
         GrpcCallSettings.<CreateBookRequest, Book>newBuilder()
@@ -8126,7 +8047,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
                   public Map<String, String> extract(CreateBookRequest request) {
                     ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
                     params.put("name", String.valueOf(request.getName()));
-                    params.put("book.read", String.valueOf(request.getBook().getRead()));
                     return params.build();
                   }
                 })
@@ -8147,22 +8067,67 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<GetBookRequest, Book> getBookTransportSettings =
         GrpcCallSettings.<GetBookRequest, Book>newBuilder()
             .setMethodDescriptor(getBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<ListBooksRequest, ListBooksResponse> listBooksTransportSettings =
         GrpcCallSettings.<ListBooksRequest, ListBooksResponse>newBuilder()
             .setMethodDescriptor(listBooksMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<ListBooksRequest>() {
+                  @Override
+                  public Map<String, String> extract(ListBooksRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<DeleteBookRequest, Empty> deleteBookTransportSettings =
         GrpcCallSettings.<DeleteBookRequest, Empty>newBuilder()
             .setMethodDescriptor(deleteBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<DeleteBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(DeleteBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<UpdateBookRequest, Book> updateBookTransportSettings =
         GrpcCallSettings.<UpdateBookRequest, Book>newBuilder()
             .setMethodDescriptor(updateBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<UpdateBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(UpdateBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<MoveBookRequest, Book> moveBookTransportSettings =
         GrpcCallSettings.<MoveBookRequest, Book>newBuilder()
             .setMethodDescriptor(moveBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<MoveBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(MoveBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<ListStringsRequest, ListStringsResponse> listStringsTransportSettings =
         GrpcCallSettings.<ListStringsRequest, ListStringsResponse>newBuilder()
@@ -8171,22 +8136,68 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<AddCommentsRequest, Empty> addCommentsTransportSettings =
         GrpcCallSettings.<AddCommentsRequest, Empty>newBuilder()
             .setMethodDescriptor(addCommentsMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<AddCommentsRequest>() {
+                  @Override
+                  public Map<String, String> extract(AddCommentsRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveTransportSettings =
         GrpcCallSettings.<GetBookFromArchiveRequest, BookFromArchive>newBuilder()
             .setMethodDescriptor(getBookFromArchiveMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookFromArchiveRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookFromArchiveRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereTransportSettings =
         GrpcCallSettings.<GetBookFromAnywhereRequest, BookFromAnywhere>newBuilder()
             .setMethodDescriptor(getBookFromAnywhereMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookFromAnywhereRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookFromAnywhereRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereTransportSettings =
         GrpcCallSettings.<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere>newBuilder()
             .setMethodDescriptor(getBookFromAbsolutelyAnywhereMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookFromAbsolutelyAnywhereRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookFromAbsolutelyAnywhereRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    params.put("alt_book_name", String.valueOf(request.getAltBookName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexTransportSettings =
         GrpcCallSettings.<UpdateBookIndexRequest, Empty>newBuilder()
             .setMethodDescriptor(updateBookIndexMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<UpdateBookIndexRequest>() {
+                  @Override
+                  public Map<String, String> extract(UpdateBookIndexRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesTransportSettings =
         GrpcCallSettings.<StreamShelvesRequest, StreamShelvesResponse>newBuilder()
@@ -8212,21 +8223,44 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
         GrpcCallSettings.<FindRelatedBooksRequest, FindRelatedBooksResponse>newBuilder()
             .setMethodDescriptor(findRelatedBooksMethodDescriptor)
             .build();
-    GrpcCallSettings<AddTagRequest, AddTagResponse> addTagTransportSettings =
-        GrpcCallSettings.<AddTagRequest, AddTagResponse>newBuilder()
-            .setMethodDescriptor(addTagMethodDescriptor)
-            .build();
     GrpcCallSettings<AddLabelRequest, AddLabelResponse> addLabelTransportSettings =
         GrpcCallSettings.<AddLabelRequest, AddLabelResponse>newBuilder()
             .setMethodDescriptor(addLabelMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<AddLabelRequest>() {
+                  @Override
+                  public Map<String, String> extract(AddLabelRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("resource", String.valueOf(request.getResource()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookRequest, Operation> getBigBookTransportSettings =
         GrpcCallSettings.<GetBookRequest, Operation>newBuilder()
             .setMethodDescriptor(getBigBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookRequest, Operation> getBigNothingTransportSettings =
         GrpcCallSettings.<GetBookRequest, Operation>newBuilder()
             .setMethodDescriptor(getBigNothingMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsTransportSettings =
         GrpcCallSettings.<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>newBuilder()
@@ -8261,7 +8295,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.babbleAboutBookCallable = callableFactory.createClientStreamingCallable(babbleAboutBookTransportSettings,settings.babbleAboutBookSettings(), clientContext);
     this.findRelatedBooksCallable = callableFactory.createUnaryCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
     this.findRelatedBooksPagedCallable = callableFactory.createPagedCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
-    this.addTagCallable = callableFactory.createUnaryCallable(addTagTransportSettings,settings.addTagSettings(), clientContext);
     this.addLabelCallable = callableFactory.createUnaryCallable(addLabelTransportSettings,settings.addLabelSettings(), clientContext);
     this.getBigBookCallable = callableFactory.createUnaryCallable(getBigBookTransportSettings,settings.getBigBookSettings(), clientContext);
     this.getBigBookOperationCallable = callableFactory.createOperationCallable(
@@ -8388,10 +8421,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
     return findRelatedBooksCallable;
-  }
-
-  public UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable() {
-    return addTagCallable;
   }
 
   @Deprecated
@@ -8549,8 +8578,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Generated;
@@ -8680,10 +8707,6 @@ public abstract class LibraryServiceStub implements BackgroundResource {
 
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
     throw new UnsupportedOperationException("Not implemented: findRelatedBooksCallable()");
-  }
-
-  public UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable() {
-    throw new UnsupportedOperationException("Not implemented: addTagCallable()");
   }
 
   @Deprecated
@@ -8828,8 +8851,6 @@ import com.google.protobuf.Empty;
 import com.google.tagger.v1.LabelerGrpc;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8899,7 +8920,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
   private final StreamingCallSettings<DiscussBookRequest, Empty> babbleAboutBookSettings;
   private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
-  private final UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final UnaryCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
   private final UnaryCallSettings<GetBookRequest, Operation> getBigBookSettings;
   private final OperationCallSettings<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationSettings;
@@ -9076,13 +9096,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   }
 
   /**
-   * Returns the object with the settings used for calls to addTag.
-   */
-  public UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings() {
-    return addTagSettings;
-  }
-
-  /**
    * Returns the object with the settings used for calls to addLabel.
    */
   public UnaryCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings() {
@@ -9235,7 +9248,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     monologAboutBookSettings = settingsBuilder.monologAboutBookSettings().build();
     babbleAboutBookSettings = settingsBuilder.babbleAboutBookSettings().build();
     findRelatedBooksSettings = settingsBuilder.findRelatedBooksSettings().build();
-    addTagSettings = settingsBuilder.addTagSettings().build();
     addLabelSettings = settingsBuilder.addLabelSettings().build();
     getBigBookSettings = settingsBuilder.getBigBookSettings().build();
     getBigBookOperationSettings = settingsBuilder.getBigBookOperationSettings().build();
@@ -9589,7 +9601,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Empty> babbleAboutBookSettings;
     private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
-    private final UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final UnaryCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
     private final UnaryCallSettings.Builder<GetBookRequest, Operation> getBigBookSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationSettings;
@@ -9604,9 +9615,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       definitions.put(
           "idempotent",
           ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
-          "no_retry",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
       definitions.put(
           "non_idempotent",
           ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
@@ -9694,8 +9702,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       findRelatedBooksSettings = PagedCallSettings.newBuilder(
           FIND_RELATED_BOOKS_PAGE_STR_FACT);
 
-      addTagSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
-
       addLabelSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       getBigBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
@@ -9728,7 +9734,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBookFromAbsolutelyAnywhereSettings,
           updateBookIndexSettings,
           findRelatedBooksSettings,
-          addTagSettings,
           addLabelSettings,
           getBigBookSettings,
           getBigNothingSettings,
@@ -9853,10 +9858,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.addTagSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
-          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
-
       builder.addLabelSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -9943,7 +9944,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       monologAboutBookSettings = settings.monologAboutBookSettings.toBuilder();
       babbleAboutBookSettings = settings.babbleAboutBookSettings.toBuilder();
       findRelatedBooksSettings = settings.findRelatedBooksSettings.toBuilder();
-      addTagSettings = settings.addTagSettings.toBuilder();
       addLabelSettings = settings.addLabelSettings.toBuilder();
       getBigBookSettings = settings.getBigBookSettings.toBuilder();
       getBigBookOperationSettings = settings.getBigBookOperationSettings.toBuilder();
@@ -9971,7 +9971,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBookFromAbsolutelyAnywhereSettings,
           updateBookIndexSettings,
           findRelatedBooksSettings,
-          addTagSettings,
           addLabelSettings,
           getBigBookSettings,
           getBigNothingSettings,
@@ -10163,13 +10162,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     }
 
     /**
-     * Returns the builder for the settings used for calls to addTag.
-     */
-    public UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings() {
-      return addTagSettings;
-    }
-
-    /**
      * Returns the builder for the settings used for calls to addLabel.
      */
     public UnaryCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings() {
@@ -10283,8 +10275,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import java.io.IOException;
@@ -11639,48 +11629,6 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void addTagTest() {
-    AddTagResponse expectedResponse = AddTagResponse.newBuilder().build();
-    mockLibraryService.addResponse(expectedResponse);
-
-    String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-    String tag = "tag114586";
-
-    AddTagResponse actualResponse =
-        client.addTag(formattedResource, tag);
-    Assert.assertEquals(expectedResponse, actualResponse);
-
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
-    Assert.assertEquals(1, actualRequests.size());
-    AddTagRequest actualRequest = (AddTagRequest)actualRequests.get(0);
-
-    Assert.assertEquals(formattedResource, actualRequest.getResource());
-    Assert.assertEquals(tag, actualRequest.getTag());
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void addTagExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockLibraryService.addException(exception);
-
-    try {
-      String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-      String tag = "tag114586";
-
-      client.addTag(formattedResource, tag);
-      Assert.fail("No exception raised");
-    } catch (InvalidArgumentException e) {
-      // Expected exception
-    }
-  }
-
-  @Test
-  @SuppressWarnings("all")
   public void addLabelTest() {
     AddLabelResponse expectedResponse = AddLabelResponse.newBuilder().build();
     mockLabeler.addResponse(expectedResponse);
@@ -12459,8 +12407,6 @@ import com.google.example.library.v1.LibraryServiceGrpc.LibraryServiceImplBase;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import com.google.protobuf.GeneratedMessageV3;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -12896,21 +12842,6 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
     if (response instanceof FindRelatedBooksResponse) {
       requests.add(request);
       responseObserver.onNext((FindRelatedBooksResponse) response);
-      responseObserver.onCompleted();
-    } else if (response instanceof Exception) {
-      responseObserver.onError((Exception) response);
-    } else {
-      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
-    }
-  }
-
-  @Override
-  public void addTag(AddTagRequest request,
-    StreamObserver<AddTagResponse> responseObserver) {
-    Object response = responses.remove();
-    if (response instanceof AddTagResponse) {
-      requests.add(request);
-      responseObserver.onNext((AddTagResponse) response);
       responseObserver.onCompleted();
     } else if (response instanceof Exception) {
       responseObserver.onError((Exception) response);

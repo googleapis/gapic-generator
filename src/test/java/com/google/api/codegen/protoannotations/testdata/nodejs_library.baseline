@@ -2998,23 +2998,6 @@ const Status = {
 
 /**
  * @property {string} resource
- *   REQUIRED: The resource which the tag is being added to.
- *   Resource is usually specified as a path, such as,
- *   projects/{project}/zones/{zone}/disks/{disk}.
- *
- * @property {string} tag
- *   REQUIRED: The tag to add.
- *
- * @typedef AddTagRequest
- * @memberof google.tagger.v1
- * @see [google.tagger.v1.AddTagRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/tagger.proto}
- */
-const AddTagRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * @property {string} resource
  *   REQUIRED: The resource which the label is being added to.
  *   Resource is usually specified as a path, such as,
  *   projects/{project}/zones/{zone}/disks/{disk}.
@@ -3027,17 +3010,6 @@ const AddTagRequest = {
  * @see [google.tagger.v1.AddLabelRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/tagger.proto}
  */
 const AddLabelRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Response message for the `AddTag` method.
- * empty for now
- * @typedef AddTagResponse
- * @memberof google.tagger.v1
- * @see [google.tagger.v1.AddTagResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/tagger.proto}
- */
-const AddTagResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -3403,7 +3375,6 @@ class LibraryServiceClient {
       'discussBook',
       'monologAboutBook',
       'findRelatedBooks',
-      'addTag',
       'getBigBook',
       'getBigNothing',
       'testOptionalRequiredFlatteningParams',
@@ -5025,61 +4996,6 @@ class LibraryServiceClient {
       options
     );
   };
-
-  /**
-   * Adds a tag to the book. This RPC is a mixin.
-   *
-   * @param {Object} request
-   *   The request object that will be sent.
-   * @param {string} request.resource
-   *   REQUIRED: The resource which the tag is being added to.
-   *   Resource is usually specified as a path, such as,
-   *   projects/{project}/zones/{zone}/disks/{disk}.
-   * @param {string} request.tag
-   *   REQUIRED: The tag to add.
-   * @param {Object} [options]
-   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)} [callback]
-   *   The function which will be called with the result of the API call.
-   *
-   *   The second parameter to the callback is an object representing [AddTagResponse]{@link google.tagger.v1.AddTagResponse}.
-   * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing [AddTagResponse]{@link google.tagger.v1.AddTagResponse}.
-   *   The promise has a method named "cancel" which cancels the ongoing API call.
-   *
-   * @example
-   *
-   * const library = require('@google-cloud/library');
-   *
-   * const client = new library.v1.LibraryServiceClient({
-   *   // optional auth parameters.
-   * });
-   *
-   * const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * const tag = '';
-   * const request = {
-   *   resource: formattedResource,
-   *   tag: tag,
-   * };
-   * client.addTag(request)
-   *   .then(responses => {
-   *     const response = responses[0];
-   *     // doThingsWith(response)
-   *   })
-   *   .catch(err => {
-   *     console.error(err);
-   *   });
-   */
-  addTag(request, options, callback) {
-    if (options instanceof Function && callback === undefined) {
-      callback = options;
-      options = {};
-    }
-    options = options || {};
-
-    return this._innerApiCalls.addTag(request, options, callback);
-  }
 
   /**
    * Adds a label to the entity.
