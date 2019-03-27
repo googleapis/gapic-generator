@@ -51,11 +51,11 @@ public enum CallingForm {
   RequestPaged, // used by: csharp java php py ruby
   RequestPagedAll, // used by: csharp php py ruby
   RequestPagedPageSize, // used by: csharp
-  RequestStreamingBidi, // used by: nodejs php py ruby
+  RequestStreamingBidi, // used by: csharp nodejs php py ruby
   RequestStreamingBidiAsync, // used by: php
   RequestStreamingClient, // used by: nodejs php py ruby
   RequestStreamingClientAsync, // used by: php
-  RequestStreamingServer, // used by: nodejs php py ruby
+  RequestStreamingServer, // used by: csharp nodejs php py ruby
 
   Flattened, // used by: csharp, java
   FlattenedPaged, // used by: csharp java
@@ -66,6 +66,7 @@ public enum CallingForm {
   FlattenedAsyncPagedAll, // used by: csharp
   FlattenedAsyncPagedPageSize, // used by: csharp
   FlattenedStreamingBidi, // used by: csharp
+  FlattenedStreamingServer, // used by: csharp
 
   Callable, // used by: java
   CallableList, // used by: java
@@ -78,12 +79,20 @@ public enum CallingForm {
   LongRunningCallable, // used by: java
   LongRunningEventEmitter, // used by: nodejs
   LongRunningFlattened, // used by: csharp
-  LongRunningFlattenedAsync, // used by: csharp java
+  LongRunningFlattenedPollUntilComplete, // used by: csharp
+  LongRunningFlattenedPollLater, // used by: csharp
+  LongRunningFlattenedAsync, // used by: java
+  LongRunningFlattenedAsyncPollUntilComplete, // used by: csharp
+  LongRunningFlattenedAsyncPollLater, // used by: csharp
   LongRunningOperationCallable, // used by: java
   LongRunningPromise, // used by: nodejs py
   LongRunningPromiseAwait, // used by: nodejs
   LongRunningRequest, // used by: csharp php
-  LongRunningRequestAsync, // used by: csharp java php ruby
+  LongRunningRequestPollUntilComplete, // used by: csharp
+  LongRunningRequestPollLater, // used by: csharp
+  LongRunningRequestAsync, // used by: java php ruby
+  LongRunningRequestAsyncPollUntilComplete, // used by: csharp
+  LongRunningRequestAsyncPollLater, // used by: csharp
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.

@@ -94,6 +94,10 @@ public class StaticLangApiMethodTransformer {
             context.getMethodModel(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
         namer.getApiMethodExampleName(context.getInterfaceConfig(), context.getMethodModel()));
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
+    String callerResponseTypeName =
+        namer.getAndSaveCallerPagedResponseTypeName(context, resourceFieldConfig);
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setFlattenedMethodFields(
         context,
@@ -102,7 +106,10 @@ public class StaticLangApiMethodTransformer {
         methodViewBuilder,
         context.getCallingForms());
 
-    return methodViewBuilder.type(ClientMethodType.PagedFlattenedMethod).build();
+    return methodViewBuilder
+        .type(ClientMethodType.PagedFlattenedMethod)
+        .callerResponseTypeName(callerResponseTypeName)
+        .build();
   }
 
   // Used by: CSharp
@@ -116,6 +123,11 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.name(
         namer.getAsyncApiMethodName(methodModel, context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(namer.getAsyncApiMethodExampleName(methodModel));
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
+    String callerResponseTypeName =
+        namer.getAndSaveCallerAsyncPagedResponseTypeName(context, resourceFieldConfig);
+
     setListMethodFields(context, Synchronicity.Async, methodViewBuilder);
     setFlattenedMethodFields(
         context,
@@ -124,7 +136,10 @@ public class StaticLangApiMethodTransformer {
         methodViewBuilder,
         context.getCallingForms());
 
-    return methodViewBuilder.type(ClientMethodType.PagedFlattenedAsyncMethod).build();
+    return methodViewBuilder
+        .type(ClientMethodType.PagedFlattenedAsyncMethod)
+        .callerResponseTypeName(callerResponseTypeName)
+        .build();
   }
 
   // Used by: Java
@@ -138,12 +153,17 @@ public class StaticLangApiMethodTransformer {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
+    String callerResponseTypeName =
+        namer.getAndSaveCallerPagedResponseTypeName(context, resourceFieldConfig);
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(
         namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
         namer.getApiMethodExampleName(context.getInterfaceConfig(), method));
+
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setRequestObjectMethodFields(
         context,
@@ -153,7 +173,10 @@ public class StaticLangApiMethodTransformer {
         methodViewBuilder,
         context.getCallingForms());
 
-    return methodViewBuilder.type(ClientMethodType.PagedRequestObjectMethod).build();
+    return methodViewBuilder
+        .type(ClientMethodType.PagedRequestObjectMethod)
+        .callerResponseTypeName(callerResponseTypeName)
+        .build();
   }
 
   // Used by: CSharp
@@ -163,6 +186,10 @@ public class StaticLangApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
+    String callerResponseTypeName =
+        namer.getAndSaveCallerAsyncPagedResponseTypeName(context, resourceFieldConfig);
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(
         namer.getAsyncApiMethodName(
@@ -177,7 +204,10 @@ public class StaticLangApiMethodTransformer {
         methodViewBuilder,
         context.getCallingForms());
 
-    return methodViewBuilder.type(ClientMethodType.AsyncPagedRequestObjectMethod).build();
+    return methodViewBuilder
+        .type(ClientMethodType.AsyncPagedRequestObjectMethod)
+        .callerResponseTypeName(callerResponseTypeName)
+        .build();
   }
 
   // Used by: Java

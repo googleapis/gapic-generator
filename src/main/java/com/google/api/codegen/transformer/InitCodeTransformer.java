@@ -591,7 +591,6 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  // TODO(hzyi): generate necessary imports
   /**
    * @param isFirstReadFileView Used in Java. We need to reuse local variables "path" and "data" if
    *     we have rendered ReadFileViews before so that we don't declare them twice.

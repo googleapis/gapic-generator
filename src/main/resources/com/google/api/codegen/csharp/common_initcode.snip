@@ -14,21 +14,22 @@
 # initCodeSpec: InitCodeView
 @snippet topLevelInitCode(initCodeSpec)
     @join line : initCodeSpec.topLevelLines
-        {@initCode(TRUE, line)};
+        {@initCode(TRUE, TRUE, line)};
     @end
 @end
 
+# initCodeSpec: InitCodeView
 @snippet standaloneSampleInitCode(initCodeSpec)
     @if initCodeSpec.argDefaultLines
         @join line : initCodeSpec.argDefaultLines
-          // {@line}
+          // {@initCode(TRUE, FALSE, line)}
         @end
 
 
     @end
     @if initCodeSpec.lines
-        @join line : initCodeSpec.lines
-            {@initCode(TRUE, line)};
+        @join line : initCodeSpec.topLevelLines
+            {@initCode(TRUE, TRUE, line)};
         @end
 
     @end
@@ -36,7 +37,14 @@
 
 
 # includeAssignment: Boolean, line: InitCodeLineView
-@private initCode(includeAssignment, line)
+@private initCode(includeAssignment, includeDescription, line)
+    @if includeDescription
+        
+        @join desc : line.descriptions
+            // {@desc}
+        @end
+
+    @end
     @switch line.lineType.toString
     @case "StructureInitLine"
         # line: StructureInitCodeLineView
@@ -48,7 +56,7 @@
 
         {
             @join fieldSetting : line.fieldSettings
-                {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
+                {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, includeDescription, fieldSetting.initCodeLine)},
             @end
         }
     @case "ListInitLine"
@@ -58,7 +66,7 @@
         @end
         {
             @join child : line.elements
-                {@initCode(FALSE, child)},
+                {@initCode(FALSE, includeDescription, child)},
             @end
         }
     @case "MapInitLine"
@@ -69,7 +77,7 @@
         @end
         {
             @join mapEntry : line.initEntries
-                { {@mapEntry.key}, {@initCode(FALSE, mapEntry.value)} },
+                { {@mapEntry.key}, {@initCode(FALSE, includeDescription, mapEntry.value)} },
             @end
         }
     @case "SimpleInitLine"
@@ -77,6 +85,12 @@
             {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue, FALSE)}
         @else
             {@renderInitValue(line.initValue, TRUE)}
+        @end
+    @case "ReadFileInitLine"
+        @if includeAssignment
+            ByteString {@line.identifier} = File.ReadAllBytes({@renderInitValue(line.fileName, FALSE)})
+        @else
+            File.ReadAllBytes({@renderInitValue(line.fileName, TRUE)})
         @end
     @default
         $unhandledCase: {@line.lineType.toString}$

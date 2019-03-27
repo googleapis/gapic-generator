@@ -470,18 +470,16 @@ public class InitCodeNode {
     if (sampleParamConfig.isSampleArgument()) {
       childIdentifier =
           identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
-    } else {
-      childIdentifier = context.symbolTable().getNewSymbol(Name.anyLower(LOCAL_DEFAULT_FILENAME));
+      addChildNodeForSampleParameter(
+          context,
+          FILE_NAME_KEY,
+          ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
+          childIdentifier,
+          initValueConfig);
+      initValueConfig =
+          InitValueConfig.createWithValue(
+              InitValue.createVariable(childIdentifier.toLowerUnderscore()));
     }
-    addChildNodeForSampleParameter(
-        context,
-        FILE_NAME_KEY,
-        ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
-        childIdentifier,
-        initValueConfig);
-    initValueConfig =
-        InitValueConfig.createWithValue(
-            InitValue.createVariable(childIdentifier.toLowerUnderscore()));
   }
 
   private void addChildNodeForSampleParameter(

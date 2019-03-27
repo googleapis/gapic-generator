@@ -135,58 +135,67 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext methodContext =
+                // TODO: replace the empty list with real calling forms.
+                // Turn off generating samples for gRPC streaming methods to prevent
+                // baseline from exploding
                 context
                     .asFlattenedMethodContext(requestMethodContext, flatteningGroup)
-                    .withCallingForms(
-                        Collections.singletonList(CallingForm.FlattenedStreamingBidi));
+                    .withCallingForms(Collections.emptyList());
             apiMethods.add(
                 generateGrpcStreamingFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));
           }
         }
-        requestMethodContext =
-            requestMethodContext.withCallingForms(
-                Collections.singletonList(CallingForm.RequestStreamingBidi));
+        // TODO: replace the empty list with real calling forms.
+        // Turn off generating samples for gRPC streaming methods to prevent
+        // baseline from exploding
+        requestMethodContext = requestMethodContext.withCallingForms(Collections.emptyList());
         apiMethods.add(generateGrpcStreamingRequestObjectMethod(requestMethodContext));
       } else if (requestMethodContext.isLongRunningMethodContext()) {
 
         // LRO methods.
-        GapicMethodContext gapicMethodContext = (GapicMethodContext) requestMethodContext;
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
                 generateAsyncOperationFlattenedMethod(
-                    methodContext.withCallingForms(
-                        Collections.singletonList(CallingForm.LongRunningFlattenedAsync)),
+                    // TODO: replace the empty list with real calling forms.
+                    // Turn off generating samples for LRO methods to prevent
+                    // baseline from exploding
+                    methodContext.withCallingForms(Collections.emptyList()),
                     csharpCommonTransformer.callSettingsParam(),
                     ClientMethodType.AsyncOperationFlattenedCallSettingsMethod,
                     true));
             apiMethods.add(
                 generateAsyncOperationFlattenedMethod(
-                    methodContext.withCallingForms(
-                        Collections.singletonList(CallingForm.LongRunningFlattenedAsync)),
+                    methodContext.withCallingForms(Collections.emptyList()),
                     csharpCommonTransformer.cancellationTokenParam(),
                     ClientMethodType.AsyncOperationFlattenedCancellationMethod,
                     true));
             apiMethods.add(
                 generateOperationFlattenedMethod(
-                    methodContext.withCallingForms(
-                        Collections.singletonList(CallingForm.LongRunningFlattened)),
+                    // TODO: replace the empty list with real calling forms.
+                    // Turn off generating samples for LRO methods to prevent
+                    // baseline from exploding
+                    methodContext.withCallingForms(Collections.emptyList()),
                     csharpCommonTransformer.callSettingsParam()));
           }
         }
         apiMethods.add(
             generateAsyncOperationRequestObjectMethod(
-                requestMethodContext.withCallingForms(
-                    Collections.singletonList(CallingForm.LongRunningRequestAsync)),
+                // TODO: replace the empty list with real calling forms.
+                // Turn off generating samples for LRO methods to prevent
+                // baseline from exploding
+                requestMethodContext.withCallingForms(Collections.emptyList()),
                 csharpCommonTransformer.callSettingsParam(),
                 true));
         apiMethods.add(
             generateOperationRequestObjectMethod(
-                gapicMethodContext.withCallingForms(
-                    Collections.singletonList(CallingForm.LongRunningRequest)),
+                // TODO: replace the empty list with real calling forms.
+                // Turn off generating samples for LRO methods to prevent
+                // baseline from exploding
+                requestMethodContext.withCallingForms(Collections.emptyList()),
                 csharpCommonTransformer.callSettingsParam()));
       } else if (methodConfig.isPageStreaming()) {
 
