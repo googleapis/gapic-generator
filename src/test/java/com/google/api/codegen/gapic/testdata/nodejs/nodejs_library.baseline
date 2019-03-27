@@ -1223,6 +1223,70 @@ function samplePublishSeries() {
 // tslint:disable-next-line:no-any
 
 samplePublishSeries();
+============== file: src/samples/v1/publish_series_request_test_request_object_field_comments.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test request object field comments */
+function samplePublishSeries() {
+  const client = new library.LibraryServiceClient();
+
+  // Comment on a resource name
+  const formattedName = client.shelfPath('math');
+
+  // A super long comment
+  // wraps words at newline characters
+  // as well
+  const theme = 'Math';
+
+  // Comment on a primitive field
+  const internalTheme = 'Statistics';
+  const shelf = {
+    name: formattedName,
+    theme: theme,
+    internalTheme: internalTheme,
+  };
+  const books = [];
+
+  // Comment on a file input field
+  const fileName = 'xyz3141592654';
+  const seriesBytes = fs.readFileSync(fileName).toString('base64');
+
+  // Comment on a message
+  const seriesUuid = {
+    seriesBytes: seriesBytes,
+  };
+
+  // A super long long long long long long long long long long long long long long comment that tests
+  // word wrapping
+  const edition = 123;
+  const request = {
+    shelf: shelf,
+    books: books,
+    seriesUuid: seriesUuid,
+    edition: edition,
+  };
+  client.publishSeries(request)
+    .then(responses => {
+      const response = responses[0];
+      console.log(response);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+samplePublishSeries();
 ============== file: src/samples/v1/stream_books_request_streaming_server_prog.js ==============
 // DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
 'use strict';
@@ -3921,7 +3985,6 @@ class LibraryServiceClient {
       'monologAboutBook',
       'babbleAboutBook',
       'findRelatedBooks',
-      'addTag',
       'getBigBook',
       'getBigNothing',
       'testOptionalRequiredFlatteningParams',
@@ -4117,6 +4180,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.getShelf(request, options, callback);
   }
@@ -4288,6 +4357,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.deleteShelf(request, options, callback);
   }
@@ -4343,6 +4418,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.mergeShelves(request, options, callback);
   }
@@ -4526,6 +4607,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.getBook(request, options, callback);
   }
@@ -4632,6 +4719,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.listBooks(request, options, callback);
   }
@@ -4732,6 +4825,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.deleteBook(request, options, callback);
   }
@@ -4797,6 +4896,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.updateBook(request, options, callback);
   }
@@ -4850,6 +4955,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.moveBook(request, options, callback);
   }
@@ -5045,6 +5156,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.addComments(request, options, callback);
   }
@@ -5091,6 +5208,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.getBookFromArchive(request, options, callback);
   }
@@ -5145,6 +5268,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.getBookFromAnywhere(request, options, callback);
   }
@@ -5250,6 +5379,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.updateBookIndex(request, options, callback);
   }
@@ -5609,61 +5744,6 @@ class LibraryServiceClient {
   };
 
   /**
-   * Adds a tag to the book. This RPC is a mixin.
-   *
-   * @param {Object} request
-   *   The request object that will be sent.
-   * @param {string} request.resource
-   *   REQUIRED: The resource which the tag is being added to.
-   *   Resource is usually specified as a path, such as,
-   *   projects/{project}/zones/{zone}/disks/{disk}.
-   * @param {string} request.tag
-   *   REQUIRED: The tag to add.
-   * @param {Object} [options]
-   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)} [callback]
-   *   The function which will be called with the result of the API call.
-   *
-   *   The second parameter to the callback is an object representing [AddTagResponse]{@link google.tagger.v1.AddTagResponse}.
-   * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing [AddTagResponse]{@link google.tagger.v1.AddTagResponse}.
-   *   The promise has a method named "cancel" which cancels the ongoing API call.
-   *
-   * @example
-   *
-   * const library = require('@google-cloud/library');
-   *
-   * const client = new library.v1.LibraryServiceClient({
-   *   // optional auth parameters.
-   * });
-   *
-   * const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * const tag = '';
-   * const request = {
-   *   resource: formattedResource,
-   *   tag: tag,
-   * };
-   * client.addTag(request)
-   *   .then(responses => {
-   *     const response = responses[0];
-   *     // doThingsWith(response)
-   *   })
-   *   .catch(err => {
-   *     console.error(err);
-   *   });
-   */
-  addTag(request, options, callback) {
-    if (options instanceof Function && callback === undefined) {
-      callback = options;
-      options = {};
-    }
-    options = options || {};
-
-    return this._innerApiCalls.addTag(request, options, callback);
-  }
-
-  /**
    * Adds a label to the entity.
    *
    * @param {Object} request
@@ -5714,6 +5794,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'resource': request.resource
+      });
 
     return this._innerApiCalls.addLabel(request, options, callback);
   }
@@ -5804,6 +5890,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.getBigBook(request, options, callback);
   }
@@ -5894,6 +5986,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.getBigNothing(request, options, callback);
   }
@@ -6477,11 +6575,6 @@ module.exports = LibraryServiceClient;
         "FindRelatedBooks": {
           "timeout_millis": 3000,
           "retry_codes_name": "idempotent",
-          "retry_params_name": "default"
-        },
-        "AddTag": {
-          "timeout_millis": 60000,
-          "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
         "AddLabel": {
@@ -7945,67 +8038,6 @@ describe('LibraryServiceClient', () => {
       );
 
       client.findRelatedBooks(request, (err, response) => {
-        assert(err instanceof Error);
-        assert.strictEqual(err.code, FAKE_STATUS_CODE);
-        assert(typeof response === 'undefined');
-        done();
-      });
-    });
-  });
-
-  describe('addTag', () => {
-    it('invokes addTag without error', done => {
-      const client = new libraryModule.v1.LibraryServiceClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-
-      // Mock request
-      const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      const tag = 'tag114586';
-      const request = {
-        resource: formattedResource,
-        tag: tag,
-      };
-
-      // Mock response
-      const expectedResponse = {};
-
-      // Mock Grpc layer
-      client._innerApiCalls.addTag = mockSimpleGrpcMethod(
-        request,
-        expectedResponse
-      );
-
-      client.addTag(request, (err, response) => {
-        assert.ifError(err);
-        assert.deepStrictEqual(response, expectedResponse);
-        done();
-      });
-    });
-
-    it('invokes addTag with error', done => {
-      const client = new libraryModule.v1.LibraryServiceClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-
-      // Mock request
-      const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      const tag = 'tag114586';
-      const request = {
-        resource: formattedResource,
-        tag: tag,
-      };
-
-      // Mock Grpc layer
-      client._innerApiCalls.addTag = mockSimpleGrpcMethod(
-        request,
-        null,
-        error
-      );
-
-      client.addTag(request, (err, response) => {
         assert(err instanceof Error);
         assert.strictEqual(err.code, FAKE_STATUS_CODE);
         assert(typeof response === 'undefined');

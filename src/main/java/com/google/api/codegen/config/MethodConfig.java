@@ -194,7 +194,7 @@ public abstract class MethodConfig {
               fieldNamePatterns,
               resourceNameConfigs,
               field,
-              null,
+              ResourceNameTreatment.UNSET_TREATMENT,
               defaultResourceNameTreatment));
     }
     return fieldConfigsBuilder.build();
