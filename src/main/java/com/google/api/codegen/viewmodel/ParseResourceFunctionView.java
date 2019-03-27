@@ -26,6 +26,8 @@ public abstract class ParseResourceFunctionView {
 
   public abstract String pathTemplateGetterName();
 
+  public abstract String entityNameTypeName();
+
   public abstract String entityNameParamName();
 
   public abstract String outputResourceId();
@@ -45,6 +47,8 @@ public abstract class ParseResourceFunctionView {
     public abstract Builder pathTemplateGetterName(String val);
 
     public abstract Builder entityNameParamName(String val);
+
+    public abstract Builder entityNameTypeName(String val);
 
     public abstract Builder outputResourceId(String val);
 
