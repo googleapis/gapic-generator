@@ -93,7 +93,7 @@ public abstract class FieldConfig {
       Map<String, String> fieldNamePatterns,
       Map<String, ResourceNameConfig> resourceNameConfigs,
       FieldModel field,
-      @Nullable ResourceNameTreatment treatment,
+      ResourceNameTreatment treatment,
       ResourceNameTreatment defaultResourceNameTreatment) {
     String messageFieldEntityName = null;
     String flattenedFieldEntityName = null;
@@ -107,7 +107,7 @@ public abstract class FieldConfig {
       flattenedFieldEntityName = messageFieldEntityName;
     }
 
-    if (treatment == null || treatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
+    if (treatment == ResourceNameTreatment.UNSET_TREATMENT) {
       // No specific resource name treatment is specified, so we infer the correct treatment from
       // the method-level default and the specified entities.
       if (flattenedFieldEntityName == null) {
@@ -121,6 +121,14 @@ public abstract class FieldConfig {
         getResourceNameConfig(diagCollector, resourceNameConfigs, messageFieldEntityName);
     ResourceNameConfig flattenedFieldResourceNameConfig =
         getResourceNameConfig(diagCollector, resourceNameConfigs, flattenedFieldEntityName);
+
+    if (treatment == ResourceNameTreatment.UNSET_TREATMENT) {
+      if (messageFieldResourceNameConfig != null && messageConfigs.fieldHasResourceName(field)) {
+        treatment = ResourceNameTreatment.STATIC_TYPES;
+      } else if (flattenedFieldResourceNameConfig != null) {
+        treatment = ResourceNameTreatment.VALIDATE;
+      }
+    }
 
     if (messageFieldResourceNameConfig != null
         && !messageFieldResourceNameConfig.equals(flattenedFieldResourceNameConfig)) {
@@ -149,14 +157,6 @@ public abstract class FieldConfig {
                     + "], using flattening config instead of message config.");
         diagCollector.addDiag(warning);
         messageFieldResourceNameConfig = flattenedFieldResourceNameConfig;
-      }
-    }
-
-    if (treatment == ResourceNameTreatment.UNSET_TREATMENT) {
-      if (messageFieldResourceNameConfig != null && messageConfigs.fieldHasResourceName(field)) {
-        treatment = ResourceNameTreatment.STATIC_TYPES;
-      } else if (flattenedFieldResourceNameConfig != null) {
-        treatment = ResourceNameTreatment.VALIDATE;
       }
     }
 

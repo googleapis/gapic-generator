@@ -234,7 +234,9 @@ public abstract class FlatteningConfig {
               methodConfigProto.getFieldNamePatternsMap(),
               resourceNameConfigs,
               parameterField,
-              flatteningGroup.getParameterResourceNameTreatmentMap().get(parameter),
+              flatteningGroup
+                  .getParameterResourceNameTreatmentMap()
+                  .getOrDefault(parameter, ResourceNameTreatment.UNSET_TREATMENT),
               defaultResourceNameTreatment);
       if (fieldConfig == null) {
         missing = true;
