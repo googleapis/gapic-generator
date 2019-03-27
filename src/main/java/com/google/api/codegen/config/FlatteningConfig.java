@@ -223,10 +223,6 @@ public abstract class FlatteningConfig {
       if (!parameterField.mayBeInResourceName()) {
         defaultResourceNameTreatment = ResourceNameTreatment.NONE;
       }
-      if (defaultResourceNameTreatment == null
-          || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
-        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
-      }
 
       FieldConfig fieldConfig =
           FieldConfig.createFieldConfig(
@@ -235,7 +231,9 @@ public abstract class FlatteningConfig {
               methodConfigProto.getFieldNamePatternsMap(),
               resourceNameConfigs,
               parameterField,
-              flatteningGroup.getParameterResourceNameTreatmentMap().get(parameter),
+              flatteningGroup
+                  .getParameterResourceNameTreatmentMap()
+                  .getOrDefault(parameter, ResourceNameTreatment.UNSET_TREATMENT),
               defaultResourceNameTreatment);
       if (fieldConfig == null) {
         missing = true;
