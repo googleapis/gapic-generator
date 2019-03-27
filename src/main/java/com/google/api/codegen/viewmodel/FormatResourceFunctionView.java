@@ -23,6 +23,8 @@ public abstract class FormatResourceFunctionView {
 
   public abstract String name();
 
+  public abstract String resourceName();
+
   public abstract List<ResourceIdParamView> resourceIdParams();
 
   public abstract String pathTemplateName();
@@ -40,6 +42,8 @@ public abstract class FormatResourceFunctionView {
     public abstract Builder entityName(String val);
 
     public abstract Builder name(String val);
+
+    public abstract Builder resourceName(String val);
 
     public abstract Builder resourceIdParams(List<ResourceIdParamView> val);
 
