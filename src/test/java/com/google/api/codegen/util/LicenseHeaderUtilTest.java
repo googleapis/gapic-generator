@@ -47,10 +47,7 @@ public class LicenseHeaderUtilTest {
 
     ConfigProto configProto =
         ConfigProto.newBuilder()
-            .setLicenseHeader(
-                LicenseHeaderProto.newBuilder()
-                    .setCopyrightFile(DEFAULT_COPYRIGHT_FILE)
-                    .setLicenseFile(DEFAULT_LICENSE_FILE))
+            .setLicenseHeader(LicenseHeaderProto.newBuilder().setLicenseFile(DEFAULT_LICENSE_FILE))
             .build();
     explicitHeaderUtil =
         LicenseHeaderUtil.create(
