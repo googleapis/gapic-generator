@@ -19,8 +19,6 @@ import com.google.auto.value.AutoValue;
 /** Represents the configuration for the license header to put on generated files. */
 @AutoValue
 public abstract class LicenseView {
-  /** The file containing the copyright line(s). */
-  public abstract String copyrightFile();
 
   /** The file containing the raw license header without any copyright line(s). */
   public abstract String licenseFile();
@@ -31,7 +29,6 @@ public abstract class LicenseView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder copyrightFile(String val);
 
     public abstract Builder licenseFile(String val);
 

@@ -39,7 +39,6 @@ import java.util.TreeMap;
 /** Generates the config view object using a model and output path. */
 public class DiscoConfigTransformer {
   private static final String CONFIG_TEMPLATE_FILE = "configgen/gapic_config.snip";
-  private static final String CONFIG_DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
   private static final String CONFIG_DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
   private static final String DEFAULT_CONFIG_SCHEMA_VERSION = "1.0.0";
@@ -95,10 +94,7 @@ public class DiscoConfigTransformer {
   }
 
   private LicenseView generateLicense() {
-    return LicenseView.newBuilder()
-        .copyrightFile(CONFIG_DEFAULT_COPYRIGHT_FILE)
-        .licenseFile(CONFIG_DEFAULT_LICENSE_FILE)
-        .build();
+    return LicenseView.newBuilder().licenseFile(CONFIG_DEFAULT_LICENSE_FILE).build();
   }
 
   private List<InterfaceView> generateInterfaces(
