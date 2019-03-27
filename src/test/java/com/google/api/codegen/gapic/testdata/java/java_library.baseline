@@ -2458,6 +2458,98 @@ public class PublishSeriesRequestSecondEdition {
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/PublishSeriesRequestTestRequestObjectFieldComments.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import com.google.protobuf.ByteString;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.PublishSeriesRequest;
+ * import com.google.example.library.v1.PublishSeriesResponse;
+ * import com.google.example.library.v1.SeriesUuid;
+ * import com.google.example.library.v1.Shelf;
+ * import com.google.protobuf.ByteString;
+ * import java.nio.file.Files;
+ * import java.nio.file.Path;
+ * import java.nio.file.Paths;
+ * import java.util.ArrayList;
+ * import java.util.List;
+ */
+public class PublishSeriesRequestTestRequestObjectFieldComments {
+  /** Test request object field comments */
+  public static void samplePublishSeries() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+
+      // Comment on a resource name
+      String formattedName = LibraryClient.formatShelfName("math");
+
+      // A super long comment
+      // wraps words at newline characters
+      // as well
+      String theme = "Math";
+
+      // Comment on a primitive field
+      String internalTheme = "Statistics";
+      Shelf shelf = Shelf.newBuilder()
+        .setName(formattedName)
+        .setTheme(theme)
+        .setInternalTheme(internalTheme)
+        .build();
+      List<Book> books = new ArrayList<>();
+
+      // Comment on a file input field
+      String fileName = "xyz3141592654";
+      Path path = Paths.get(fileName);
+      byte[] data = Files.readAllBytes(path);
+      ByteString seriesBytes = ByteString.copyFrom(data);
+
+      // Comment on a message
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesBytes(seriesBytes)
+        .build();
+
+      // A super long long long long long long long long long long long long long long comment that tests
+      // word wrapping
+      int edition = 123;
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(request);
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/StreamBooksCallableCallableStreamingServerProg.java ==============
 // DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "prog")
 package com.google.example.examples.library.v1;

@@ -55,7 +55,7 @@ public class InitCodeNode {
   private OneofConfig oneofConfig;
   private String varName;
   private SampleParameterConfig sampleParamConfig;
-  private String description;
+  private String description = "";
 
   /*
    * Get the key associated with the node. For InitCodeNode objects that are not a root object, they
@@ -403,13 +403,16 @@ public class InitCodeNode {
       InitCodeContext context, SampleParameterConfig sampleParamConfig) {
     if (sampleParamConfig.readFromFile()) {
       setupReadFileNode(context, sampleParamConfig);
-    } else if (sampleParamConfig.isSampleArgument()) {
+      return;
+    }
+    if (sampleParamConfig.isSampleArgument()) {
       Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
       if (!argName.equals(identifier)) {
         identifier =
             identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
       }
     }
+    setDescription(sampleParamConfig.description());
   }
 
   /** Apply {@code sampleParamConfig} to a resource path entity. */
@@ -429,7 +432,8 @@ public class InitCodeNode {
         ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
         entityIdentifier,
         InitValueConfig.createWithValue(
-            initValueConfig.getResourceNameBindingValues().get(entityName)));
+            initValueConfig.getResourceNameBindingValues().get(entityName)),
+        sampleParamConfig.description());
     initValueConfig =
         initValueConfig.withUpdatedInitialCollectionValue(
             entityName, InitValue.createVariable(entityIdentifier.toLowerUnderscore()));
@@ -478,7 +482,8 @@ public class InitCodeNode {
         FILE_NAME_KEY,
         ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
         childIdentifier,
-        initValueConfig);
+        initValueConfig,
+        sampleParamConfig.description());
     initValueConfig =
         InitValueConfig.createWithValue(
             InitValue.createVariable(childIdentifier.toLowerUnderscore()));
@@ -489,10 +494,12 @@ public class InitCodeNode {
       String key,
       TypeModel type,
       Name identifier,
-      InitValueConfig initValueConfig) {
+      InitValueConfig initValueConfig,
+      String description) {
     InitCodeNode child = new InitCodeNode(key, InitCodeLineType.SimpleInitLine, initValueConfig);
     child.typeRef = type;
     child.identifier = identifier;
+    child.description = description;
     children.put(key, child);
   }
 

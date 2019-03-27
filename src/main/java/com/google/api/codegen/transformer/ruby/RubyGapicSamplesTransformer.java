@@ -59,7 +59,7 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
       new DynamicLangApiMethodTransformer(
           new RubyApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
-              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
+              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer, false))
               .sampleType(sampleType)
               .build());
   private final GapicCodePathMapper pathMapper;
