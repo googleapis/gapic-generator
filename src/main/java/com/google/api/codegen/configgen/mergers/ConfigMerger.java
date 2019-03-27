@@ -27,7 +27,6 @@ import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
 
 /** Merges the gapic config from an ApiModel into a ConfigNode. */
 public class ConfigMerger {
-  private static final String CONFIG_DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
   private static final String CONFIG_DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
   private static final String CONFIG_SCHEMA_VERSION = "1.0.0";
@@ -126,22 +125,16 @@ public class ConfigMerger {
       return;
     }
 
-    FieldConfigNode copyrightFileNode =
-        FieldConfigNode.createStringPair(
-                NodeFinder.getNextLine(licenseHeaderNode),
-                "copyright_file",
-                CONFIG_DEFAULT_COPYRIGHT_FILE)
-            .setComment(new DefaultComment("The file containing the copyright line(s)."));
     FieldConfigNode licenseFileNode =
         FieldConfigNode.createStringPair(
-                NodeFinder.getNextLine(copyrightFileNode),
+                NodeFinder.getNextLine(licenseHeaderNode),
                 "license_file",
                 CONFIG_DEFAULT_LICENSE_FILE)
             .setComment(
                 new DefaultComment(
                     "The file containing the raw license header without any copyright line(s)."));
     licenseHeaderNode
-        .setChild(copyrightFileNode.insertNext(licenseFileNode))
+        .setChild(licenseFileNode)
         .setComment(
             new DefaultComment(
                 "The configuration for the license header to put on generated files."));
