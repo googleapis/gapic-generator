@@ -156,11 +156,10 @@ public class GapicGeneratorApp extends ToolDriverBase {
     }
 
     TargetLanguage language;
-    if (Strings.isNullOrEmpty(options.get(LANGUAGE))) {
+    if (!Strings.isNullOrEmpty(options.get(LANGUAGE))) {
       language = TargetLanguage.fromString(options.get(LANGUAGE).toUpperCase());
     } else {
-      throw new IllegalArgumentException(
-          "Language not set by --language option or by gapic config.");
+      throw new IllegalArgumentException("Language not set by --language option.");
     }
 
     String clientPackage = Strings.emptyToNull(options.get(CLIENT_PACKAGE));
