@@ -304,11 +304,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
         defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
       }
     }
-    if (defaultResourceNameTreatment == null
-        || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
-      defaultResourceNameTreatment = ResourceNameTreatment.NONE;
-    }
-
     return defaultResourceNameTreatment;
   }
 
