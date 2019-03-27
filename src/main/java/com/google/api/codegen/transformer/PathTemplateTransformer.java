@@ -186,6 +186,7 @@ public class PathTemplateTransformer {
         getSingleResourceNameConfigsUsedByInterface(context)) {
       FormatResourceFunctionView.Builder function =
           FormatResourceFunctionView.newBuilder()
+              .resourceName(namer.getResourceTypeName(resourceNameConfig))
               .entityName(resourceNameConfig.getEntityName())
               .name(namer.getFormatFunctionName(interfaceConfig, resourceNameConfig))
               .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
@@ -228,6 +229,7 @@ public class PathTemplateTransformer {
                 .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
                 .pathTemplateGetterName(
                     namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
+                .entityNameTypeName(namer.getResourceTypeName(resourceNameConfig))
                 .entityNameParamName(namer.getEntityNameParamName(resourceNameConfig))
                 .outputResourceId(var);
         functions.add(function.build());
