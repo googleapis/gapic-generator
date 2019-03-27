@@ -73,7 +73,6 @@ public class ConfigMerger {
     ConfigNode languageSettingsNode =
         languageSettingsMerger.mergeLanguageSettings(packageName, configNode, versionNode);
 
-    // mergeLicenseHeader(configNode, languageSettingsNode);
     interfaceMerger.mergeInterfaces(model, configNode);
 
     return configNode;
