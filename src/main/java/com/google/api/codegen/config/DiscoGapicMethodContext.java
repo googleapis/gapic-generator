@@ -141,6 +141,6 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
 
   @Override
   public MethodContext withCallingForms(List<CallingForm> callingForms) {
-    throw new UnsupportedOperationException("SampleGen for discogapic is not supported yet.");
+    return this;
   }
 }

@@ -159,16 +159,14 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             apiMethods.add(
                 generateAsyncOperationFlattenedMethod(
                     methodContext.withCallingForms(
-                        Collections.singletonList(
-                            CallingForm.LongRunningFlattenedAsyncCallSettings)),
+                        Collections.singletonList(CallingForm.LongRunningFlattenedAsync)),
                     csharpCommonTransformer.callSettingsParam(),
                     ClientMethodType.AsyncOperationFlattenedCallSettingsMethod,
                     true));
             apiMethods.add(
                 generateAsyncOperationFlattenedMethod(
                     methodContext.withCallingForms(
-                        Collections.singletonList(
-                            CallingForm.LongRunningFlattenedAsyncCancellationToken)),
+                        Collections.singletonList(CallingForm.LongRunningFlattenedAsync)),
                     csharpCommonTransformer.cancellationTokenParam(),
                     ClientMethodType.AsyncOperationFlattenedCancellationMethod,
                     true));
@@ -241,13 +239,13 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             apiMethods.add(
                 generateFlattenedAsyncMethod(
                     methodContext.withCallingForms(
-                        Collections.singletonList(CallingForm.FlattenedAsyncCallSettings)),
+                        Collections.singletonList(CallingForm.FlattenedAsync)),
                     csharpCommonTransformer.callSettingsParam(),
                     ClientMethodType.FlattenedAsyncCallSettingsMethod));
             apiMethods.add(
                 generateFlattenedAsyncMethod(
                     methodContext.withCallingForms(
-                        Collections.singletonList(CallingForm.FlattenedAsyncCancellationToken)),
+                        Collections.singletonList(CallingForm.FlattenedAsync)),
                     csharpCommonTransformer.cancellationTokenParam(),
                     ClientMethodType.FlattenedAsyncCancellationTokenMethod));
             apiMethods.add(
@@ -260,13 +258,13 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
         apiMethods.add(
             generateRequestObjectAsyncMethod(
                 requestMethodContext.withCallingForms(
-                    Collections.singletonList(CallingForm.RequestAsyncCallSettings)),
+                    Collections.singletonList(CallingForm.RequestAsync)),
                 csharpCommonTransformer.callSettingsParam(),
                 ClientMethodType.AsyncRequestObjectCallSettingsMethod));
         apiMethods.add(
             generateRequestObjectAsyncMethod(
                 requestMethodContext.withCallingForms(
-                    Collections.singletonList(CallingForm.RequestAsyncCancellationToken)),
+                    Collections.singletonList(CallingForm.RequestAsync)),
                 csharpCommonTransformer.cancellationTokenParam(),
                 ClientMethodType.AsyncRequestObjectCancellationMethod));
         apiMethods.add(

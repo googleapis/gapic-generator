@@ -44,14 +44,13 @@ public enum CallingForm {
   // [Method signature type][Request pattern][Response pattern][Idiomatic pattern]
 
   Request, // used by: csharp java nodejs php py ruby
-  RequestAsync,
-  RequestAsyncCallSettings, // used by: csharp
-  RequestAsyncCancellationToken, // used by: csharp
+  RequestAsync, // used by: csharp
   RequestAsyncPaged, // used by: csharp nodejs
   RequestAsyncPagedAll, // used by: csharp nodejs
   RequestAsyncPagedPageSize, // used by: csharp
-  RequestPaged, // used by: java php py ruby
-  RequestPagedAll, // used by: php py ruby
+  RequestPaged, // used by: csharp java php py ruby
+  RequestPagedAll, // used by: csharp php py ruby
+  RequestPagedPageSize, // used by: csharp
   RequestStreamingBidi, // used by: nodejs php py ruby
   RequestStreamingBidiAsync, // used by: php
   RequestStreamingClient, // used by: nodejs php py ruby
@@ -60,11 +59,9 @@ public enum CallingForm {
 
   Flattened, // used by: csharp, java
   FlattenedPaged, // used by: csharp java
-  FlattenedPagedAll, // used by: Java
+  FlattenedPagedAll, // used by: csharp Java
   FlattenedPagedPageSize, // used by: csharp
-  FlattenedAsync,
-  FlattenedAsyncCallSettings, // used by: csharp
-  FlattenedAsyncCancellationToken, // used by: csharp
+  FlattenedAsync, // used by: csharp
   FlattenedAsyncPaged, // used by: csharp
   FlattenedAsyncPagedAll, // used by: csharp
   FlattenedAsyncPagedPageSize, // used by: csharp
@@ -81,9 +78,7 @@ public enum CallingForm {
   LongRunningCallable, // used by: java
   LongRunningEventEmitter, // used by: nodejs
   LongRunningFlattened, // used by: csharp
-  LongRunningFlattenedAsyncCallSettings, // used by: csharp
-  LongRunningFlattenedAsyncCancellationToken, // used by: csharp
-  LongRunningFlattenedAsync, // used by: java
+  LongRunningFlattenedAsync, // used by: csharp java
   LongRunningOperationCallable, // used by: java
   LongRunningPromise, // used by: nodejs py
   LongRunningPromiseAwait, // used by: nodejs

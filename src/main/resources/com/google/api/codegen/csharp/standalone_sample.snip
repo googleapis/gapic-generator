@@ -22,18 +22,63 @@
       public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)})
       {
         @switch sample.callingForm
+        # Unary Methods
         @case "Request"
-          {@requestMethodCallSampleCode(apiMethod, sample)}
+          {@requestMethod(apiMethod, sample)}
         @case "RequestAsync"
-          {@requestAsyncMethodCallSampleCode(apiMethod, sample)}
+          {@requestAsyncMethod(apiMethod, sample)}
         @case "Flattened"
-          {@flattenedMethodCallSampleCode(apiMethod, sample)}
+          {@flattenedMethod(apiMethod, sample)}
         @case "FlattenedAsync"
-          {@flattenedAsyncMethodCallSampleCode(apiMethod, sample)}
+          {@flattenedAsyncMethod(apiMethod, sample)}
+
+        # Pagination
+        @case "RequestPaged"
+          {@requesPagedMethod(apiMethod, sample)}
+        @case "RequestPagedAll"
+          {@requestPagedAllMethod(apiMethod, sample)}
+        @case "RequestPagedPageSize"
+          {@requestPagedPageSizeMethod(apiMethod, sample)}
+        @case "FlattenedPaged"
+          {@flattenedPagedMethod(apiMethod, sample)}
+        @case "FlattenedPagedAll"
+          {@flattenedPagedAllMethod(apiMethod, sample)}
+        @case "FlattenedPagedPageSize"
+          {@flattenedPagedPageSizeMethod(apiMethod, sample)}
+
+        @case "RequestAsyncPaged"
+          {@requestAsyncPagedMethod(apiMethod, sample)}
+        @case "RequestAsyncPagedAll"
+          {@requestAsyncPagedAllMethod(apiMethod, sample)}
+        @case "RequestAsyncPagedPageSize"
+          {@requestAsyncPagedPageSizeMethod(apiMethod, sample)}
+        @case "FlattenedAsyncPaged"
+          {@flattenedAsyncPagedMethod(apiMethod, sample)}
+        @case "FlattenedAsyncPagedAll"
+          {@flattenedAsyncPagedAllMethod(apiMethod, sample)}
+        @case "FlattenedAsyncPagedPagedPageSize"
+          {@flattenedAsyncPagedPageSizeMethod(apiMethod, sample)}
+
+        # LRO
+        @case "LongRunningFlattenedPollUntilComplete"
+          {@longRunningFlattenedMethodPollUntilComplete(apiMethod, sample)}
+        @case "LongRunningFlattenedPollLater"
+          {@longRunningFlattenedMethodPollLater(apiMethod, sample)}
+        @case "LongRunningFlattenedAsycPollUntilComplete"
+          {@longRunningFlattenedAsyncMethodPollUntilComplete(apiMethod, sample)}
+        @case "LongRunningFlattenedAsycPollLater"
+          {@longRunningFlattenedAsyncMethodPollLater(apiMethod, sample)}
+        @case "LongRunningRequestPollUntilComplete"
+          {@longRunningRequestMethodPollUntilComplete(apiMethod, sample)}
+        @case "LongRunningRequestPollLater"
+          {@longRunningRequestMethodPollLater(apiMethod, sample)}
+        @case "LongRunningRequestAsyncPollUntilComplete"
+          {@longRunningRequestAsyncMethodPollUntilComplete(apiMethod, sample)}
+        @case "LongRunningRequestAsyncPollLater"
+          {@longRunningRequestAsyncMethodPollLater(apiMethod, sample)}
         @default
-          "Paged streaming, grpc streaming and LRO methods not supported yet."
+          "grpc streaming not supported yet."
         @end
-        // FIXME: call the API
         // FIXME: inspect the results
       }
 
@@ -48,41 +93,330 @@
   @end
 @end
 
-@private requestMethodCallSampleCode(apiMethod, sample)
-  {@createClient(apiMethod, FALSE)}
-  {@standaloneSampleInitCode(sample.sampleInitCode)}
+# Unary Methods
+@private requestMethod(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+  }
 @end
 
-@private requestAsyncMethodCallSampleCode(apiMethod, sample)
-  {@createClient(apiMethod, TRUE)}
-  {@standaloneSampleInitCode(sample.sampleInitCode)}
+@private requestAsyncMethod(apiMethod, sample)
+  {@asyncSampleFunction(sample)}
+  {
+    {@asyncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+  }
 @end
 
-@private flattenedMethodCallSampleCode(apiMethod, sample)
-  {@createClient(apiMethod, FALSE)}
-  {@standaloneSampleInitCode(sample.sampleInitCode)}
+@private flattenedMethod(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+  }
 @end
 
-@private flattenedAsyncMethodCallSampleCode(apiMethod, sample)
-  {@createClient(apiMethod, TRUE)}
-  {@standaloneSampleInitCode(sample.sampleInitCode)}
+@private flattenedAsyncMethod(apiMethod, sample)
+  {@asyncSampleFunction(sample)}
+  {
+    {@asyncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+  }
 @end
 
-# apiMethod: StaticLangApiMethodView, isAsync: Boolean
-@private createClient(apiMethod, isAsync)
-  @if isAsync
-    {@apiMethod.apiClassName} {@apiMethod.apiVariableName} = await
-      {@apiMethod.apiClassName}.CreateAsync();
-  @else
-    {@apiMethod.apiClassName} {@apiMethod.apiVariableName} =
-      {@apiMethod.apiClassName}.Create();
-  @end
+
+# Pagination
+@private requestPagedMethod(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+    {@paging(apiMethod, sample)}
+  }
+@end
+
+@private requestPagedAllMethod(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+    {@pagingAll(apiMethod, sample)}
+  }
+@end
+
+@private requestPagedPageSizeMethod(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+    {@pagingPageSize(apiMethod, sample)}
+  }
+@end
+
+@private requestAsyncPagedMethod(apiMethod, sample)
+  {@asyncSampleFunction(sample)}
+  {
+    {@asyncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+    {@paging(apiMethod, sample)}
+  }
+@end
+
+@private requestAsyncPagedAllMethod(apiMethod, sample)
+  {@asyncSampleFunction(sample)}
+  {
+    {@asyncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+    {@pagingAll(apiMethod, sample)}
+  }
+@end
+
+@private requestAsyncPagedPageSizeMethod(apiMethod, sample)
+  {@asyncSampleFunction(sample)}
+  {
+    {@asyncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+    {@pagingPageSize(apiMethod, sample)}
+  }
+@end
+
+@private flattenedPagedMethod(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+    {@paging(apiMethod, sample)}  
+  }
+@end
+
+@private flattenedPagedAllMethod(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+    {@pagingAll(apiMethod, sample)}
+  }
+@end
+
+@private flattenedPagedPageSizeMethod(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)} 
+    {@methodCall(apiMethod, sample)}
+    {@pagingPageSize(apiMethod, sample)}
+  }
+@end
+
+@private flattenedAsyncPagedMethod(apiMethod, sample)
+  {@asyncSampleFunction(sample)}
+  {
+    {@asyncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+    {@paging(apiMethod, sample)}
+  }
+@end
+
+@private flattenedAsyncPagedAllMethod(apiMethod, sample)
+  {@asyncSampleFunction(sample)}
+  {
+    {@asyncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@methodCall(apiMethod, sample)}
+    {@pagingAll(apiMethod, sample)}
+  }
+@end
+
+@private flattenedAsyncPagedPageSizeMethod(apiMethod, sample)
+  {@asyncSampleFunction(sample)}
+  {
+    {@asyncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)} 
+    {@methodCall(apiMethod, sample)}
+    {@pagingPageSize(apiMethod, sample)}
+  }
+@end
+
+# LRO
+
+@private longRunningRequestMethodPollUntilComplete(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@pollOperationUntilComplete(apiMethod, sample)}
+  }
+@end
+
+@private longRunningRequestMethodPollLater(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@pollOperationLater(apiMethod, sample)}
+  }
+@end
+
+@private longRunningRequestAsyncMethodPollUntilComplete(apiMethod, sample)
+  {@asyncSampleFunction(sample)}
+  {
+    {@asyncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@pollOperationUntilComplete(apiMethod, sample)}
+  }
+@end
+
+@private longRunningRequestAsyncMethodPollLater(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@pollOperationPollLater(apiMethod, sample)}
+  }
+@end
+
+@private longRunningFlattenedMethodPollUntilComplete(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@pollOperationUntilComplete(apiMethod, sample)}
+  }
+@end
+
+@private longRunningFlattenedMethodPollLater(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@pollOperationLater(apiMethod, sample)}
+  }
+@end
+
+@private longRunningFlattenedAsyncMethodPollUntilComplete(apiMethod, sample)
+  {@asyncSampleFunction(sample)}
+  {
+    {@asyncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@pollOperationUntilComplete(apiMethod, sample)}
+  }
+@end
+
+@private longRunningFlattenedAsyncMethodPollLater(apiMethod, sample)
+  {@syncSampleFunction(sample)}
+  {
+    {@syncClient(apiMethod)}
+    {@standaloneSampleInitCode(sample.sampleInitCode)}
+    {@pollOperationPollLater(apiMethod, sample)}
+  }
 @end
 
 @private commaSeparatedArgAndTypes(args)
   @join arg : args on ", "
     {@arg.typeName} {@arg.identifier}
   @end
+@end
+
+@private syncSampleFunction(sample)
+  public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)})
+@end
+
+@private asyncSampleFunction(sample)
+  public static async Task {@sample.sampleFunctionName}Async({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)})
+@end 
+
+@private syncClient(apiMethod)
+  {@apiMethod.apiClassName} {@apiMethod.apiVariableName} = \
+      {@apiMethod.apiClassName}.Create();
+@end
+
+@private asyncClient(apiMethod)
+  {@apiMethod.apiClassName} {@apiMethod.apiVariableName} = await \
+      {@apiMethod.apiClassName}.CreateAsync();
+@end
+
+@private methodCall(apiMethod, sample)
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+  @else
+    {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+  @end
+@end
+
+@private paging(apiMethod, sample)
+  // Iterate over all response items, lazily performing RPCs as required
+  foreach ({@apiMethod.listMethod.responseTypeName} page in response.asRawResponses())
+  {
+    foreach ({@apiMethod.listMethod.resourceTypeName} item in page)
+    {
+      processResponse
+    }
+  }
+@end
+
+@private pagingAll(apiMethod, sample)
+  // Iterate over pages (of server-defined size), performing one RPC per page
+  foreach ({@apiMethod.listMethod.resourceTypeName} item in response)
+  {
+    processResponse
+  }
+@end
+
+@private pagingPageSize(apiMethod, sample)
+  // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+  int pageSize = 10;
+  Page<{@apiMethod.listMethod.resourceTypeName}> singlePage = response.ReadPage(pageSize);
+  foreach ({@apiMethod.listMethod.resourceTypeName} item in response)
+  {
+    processResponse
+  }
+@end
+
+@private pollOperationUntilCompleteSync(apiMethod, sample)
+  // Poll until the returned long-running operation is complete
+  {@methodCall(apiMethod, sample)}.PollUntilCompleted(){@if(apiMethod.hasReturnValue, ".Result", "")};
+  processResponse
+@end
+
+@private pollOperationUntilCompleteAsync(apiMethod, sample)
+  // Poll until the returned long-running operation is complete
+  {@methodCall(apiMethod, sample)}.PollUntilCompletedAsync(){@if(apiMethod.hasReturnValue, ".Result", "")};
+  processResponse
+@end
+
+@private pollOperationLaterSync(apiMethod, sample)
+  // Get the name of the operation
+  string operationName = response.Name;
+
+  // This name can be stored, then the long-running operation retrieved later by name
+  Not Done Yet
+  processResponse
+@end
+
+@private pollOperationLaterAsync(apiMethod, sample)
+  // Get the name of the operation
+  string operationName = response.Name;
+
+  // This name can be stored, then the long-running operation retrieved later by name
+  Not Done Yet
+  processResponse
 @end
 
 # SampleFunctionDocView
