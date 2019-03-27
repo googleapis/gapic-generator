@@ -205,9 +205,13 @@ interfaces:
     resource_name_treatment: NONE
     field_name_patterns:
       name: shelf
+      shelf.name: shelf
     header_request_params:
     - name
+    - book.read
   - name: PublishSeries
+    field_name_patterns:
+      shelf.name: shelf
     flattening:
       groups:
       - parameters:
@@ -222,8 +226,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 7000
-    header_request_params:
-      - shelf.name
     batching:
       thresholds:
         element_count_threshold: 6
@@ -306,6 +308,35 @@ interfaces:
       parameters:
         defaults:
         - edition=2
+    - id: test_request_object_field_comments
+      title: "request object field comments"
+      description: "Test request object field comments"
+      parameters:
+        defaults:
+        - shelf.name%shelf_id="math"
+        - shelf.theme=Math
+        - shelf.internal_theme=Statistics
+        - series_uuid.series_bytes="xyz3141592654"
+        - edition=123
+        attributes:
+        - parameter: shelf.internal_theme
+          description: "Comment on a primitive field"
+        - parameter: series_uuid.series_bytes
+          read_file: true
+          description: "Comment on a file input field"
+        - parameter: series_uuid
+          description: "Comment on a message"
+          # TODO(hzyi): this comment is currently not generated because resource name 
+          # entities are inline literals. We need to revisit this issue when we start
+          # looking at making inline literals configurable
+        - parameter: shelf.name%shelf_id
+          description: "Comment on a resource name entity"
+        - parameter: shelf.name
+          description: "Comment on a resource name"
+        - parameter: edition
+          description: "A super long long long long long long long long long long long long long long comment that tests word wrapping"
+        - parameter: shelf.theme
+          description: "A super long comment\nwraps words at newline characters\nas well"
     samples:
       in_code:
       - calling_forms: [callable]
@@ -321,6 +352,8 @@ interfaces:
         region_tag: "canonical"
       - calling_forms: callable
         value_sets: ["sample_code_init_fields"]       # implicit, from deprecated field
+      - calling_forms: request
+        value_sets: ["test_request_object_field_comments"]
   - name: GetBook
     flattening:
       groups:
@@ -500,6 +533,10 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: archived_book
+    surface_treatments:
+      - include_languages:
+          - go
+        visibility: DISABLED
   - name: GetBookFromAnywhere
     flattening:
       groups:
@@ -764,6 +801,12 @@ interfaces:
     surface_treatments:
     - include_languages:
       - go
+      - java
+      - php
+      - nodejs
+      - csharp
+      - ruby
+      - python
       visibility: DISABLED
   - name: AddLabel
     flattening:

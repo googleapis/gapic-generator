@@ -126,8 +126,6 @@ use Google\Protobuf\UInt64Value;
 use Google\Protobuf\Value;
 use Google\Tagger\CustomNamespace\V1\AddLabelRequest;
 use Google\Tagger\CustomNamespace\V1\AddLabelResponse;
-use Google\Tagger\CustomNamespace\V1\AddTagRequest;
-use Google\Tagger\CustomNamespace\V1\AddTagResponse;
 use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
 
 /**
@@ -587,6 +585,13 @@ class LibraryServiceGapicClient
             $request->setStringBuilder($optionalArgs['stringBuilder']);
         }
 
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
         return $this->startCall(
             'GetShelf',
             Shelf::class,
@@ -689,6 +694,13 @@ class LibraryServiceGapicClient
         $request = new DeleteShelfRequest();
         $request->setName($name);
 
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
         return $this->startCall(
             'DeleteShelf',
             GPBEmpty::class,
@@ -735,6 +747,13 @@ class LibraryServiceGapicClient
         $request = new MergeShelvesRequest();
         $request->setName($name);
         $request->setOtherShelfName($otherShelfName);
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
 
         return $this->startCall(
             'MergeShelves',
@@ -897,6 +916,13 @@ class LibraryServiceGapicClient
         $request = new GetBookRequest();
         $request->setName($name);
 
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
         return $this->startCall(
             'GetBook',
             Book::class,
@@ -975,6 +1001,13 @@ class LibraryServiceGapicClient
             $request->setFilter($optionalArgs['filter']);
         }
 
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
         return $this->getPagedListResponse(
             'ListBooks',
             $optionalArgs,
@@ -1014,6 +1047,13 @@ class LibraryServiceGapicClient
     {
         $request = new DeleteBookRequest();
         $request->setName($name);
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
 
         return $this->startCall(
             'DeleteBook',
@@ -1075,6 +1115,13 @@ class LibraryServiceGapicClient
             $request->setPhysicalMask($optionalArgs['physicalMask']);
         }
 
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
         return $this->startCall(
             'UpdateBook',
             Book::class,
@@ -1119,6 +1166,13 @@ class LibraryServiceGapicClient
         $request = new MoveBookRequest();
         $request->setName($name);
         $request->setOtherShelfName($otherShelfName);
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
 
         return $this->startCall(
             'MoveBook',
@@ -1243,6 +1297,13 @@ class LibraryServiceGapicClient
         $request->setName($name);
         $request->setComments($comments);
 
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
         return $this->startCall(
             'AddComments',
             GPBEmpty::class,
@@ -1284,6 +1345,13 @@ class LibraryServiceGapicClient
     {
         $request = new GetBookFromArchiveRequest();
         $request->setName($name);
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
 
         return $this->startCall(
             'GetBookFromArchive',
@@ -1330,6 +1398,13 @@ class LibraryServiceGapicClient
         $request = new GetBookFromAnywhereRequest();
         $request->setName($name);
         $request->setAltBookName($altBookName);
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
 
         return $this->startCall(
             'GetBookFromAnywhere',
@@ -1433,6 +1508,13 @@ class LibraryServiceGapicClient
         $request->setName($name);
         $request->setIndexName($indexName);
         $request->setIndexMap($indexMap);
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
 
         return $this->startCall(
             'UpdateBookIndex',
@@ -1779,53 +1861,6 @@ class LibraryServiceGapicClient
     }
 
     /**
-     * Adds a tag to the book. This RPC is a mixin.
-     *
-     * Sample code:
-     * ```
-     * $libraryServiceClient = new LibraryServiceClient();
-     * try {
-     *     $formattedResource = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
-     *     $tag = '';
-     *     $response = $libraryServiceClient->addTag($formattedResource, $tag);
-     * } finally {
-     *     $libraryServiceClient->close();
-     * }
-     * ```
-     *
-     * @param string $resource REQUIRED: The resource which the tag is being added to.
-     * Resource is usually specified as a path, such as,
-     * projects/{project}/zones/{zone}/disks/{disk}.
-     * @param string $tag REQUIRED: The tag to add.
-     * @param array $optionalArgs {
-     *     Optional.
-     *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see Google\ApiCore\RetrySettings} for example usage.
-     * }
-     *
-     * @return \Google\Tagger\CustomNamespace\V1\AddTagResponse
-     *
-     * @throws ApiException if the remote call fails
-     * @experimental
-     */
-    public function addTag($resource, $tag, array $optionalArgs = [])
-    {
-        $request = new AddTagRequest();
-        $request->setResource($resource);
-        $request->setTag($tag);
-
-        return $this->startCall(
-            'AddTag',
-            AddTagResponse::class,
-            $optionalArgs,
-            $request
-        )->wait();
-    }
-
-    /**
      * Adds a label to the entity.
      *
      * Sample code:
@@ -1863,6 +1898,13 @@ class LibraryServiceGapicClient
         $request = new AddLabelRequest();
         $request->setResource($resource);
         $request->setLabel($label);
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'resource' => $request->getResource(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
 
         return $this->startCall(
             'AddLabel',
@@ -1936,6 +1978,13 @@ class LibraryServiceGapicClient
         $request = new GetBookRequest();
         $request->setName($name);
 
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
         return $this->startOperationsCall(
             'GetBigBook',
             $optionalArgs,
@@ -2003,6 +2052,13 @@ class LibraryServiceGapicClient
     {
         $request = new GetBookRequest();
         $request->setName($name);
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'name' => $request->getName(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
 
         return $this->startOperationsCall(
             'GetBigNothing',
@@ -2569,11 +2625,6 @@ class LibraryServiceClient extends LibraryServiceGapicClient
           "retry_codes_name": "idempotent",
           "retry_params_name": "default"
         },
-        "AddTag": {
-          "timeout_millis": 60000,
-          "retry_codes_name": "non_idempotent",
-          "retry_params_name": "default"
-        },
         "AddLabel": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
@@ -2913,18 +2964,6 @@ return [
             'FindRelatedBooks' => [
                 'method' => 'get',
                 'uriTemplate' => '/v1/bookShelves',
-            ],
-            'AddTag' => [
-                'method' => 'post',
-                'uriTemplate' => '/v1/{resource=bookShelves/*/books/*}:addTag',
-                'body' => '*',
-                'placeholders' => [
-                    'resource' => [
-                        'getters' => [
-                            'getResource',
-                        ],
-                    ],
-                ]
             ],
             'GetBigBook' => [
                 'method' => 'get',
@@ -4447,6 +4486,84 @@ function samplePublishSeries()
 // [END canonical]
 
 samplePublishSeries();
+============== file: src/V1/samples/publishSeries/PublishSeriesRequestTestRequestObjectFieldComments.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\Book;
+use Google\Example\Library\V1\SeriesUuid;
+use Google\Example\Library\V1\Shelf;
+
+/** Test request object field comments */
+function samplePublishSeries()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+
+    // Comment on a resource name
+    $formattedName = $libraryServiceClient->shelfName('math');
+
+    // A super long comment
+    // wraps words at newline characters
+    // as well
+    $theme = 'Math';
+
+    // Comment on a primitive field
+    $internalTheme = 'Statistics';
+    $shelf = new Shelf();
+    $shelf->setName($formattedName);
+    $shelf->setTheme($theme);
+    $shelf->setInternalTheme($internalTheme);
+    $books = [];
+
+    // Comment on a file input field
+    $fileName = 'xyz3141592654';
+    $seriesBytes = file_get_contents($fileName);
+
+    // Comment on a message
+    $seriesUuid = new SeriesUuid();
+    $seriesUuid->setSeriesBytes($seriesBytes);
+
+    // A super long long long long long long long long long long long long long long comment that tests
+    // word wrapping
+    $edition = 123;
+
+    try {
+        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        printf("%s" . PHP_EOL, print_r($response, true));
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+samplePublishSeries();
 ============== file: src/V1/samples/streamBooks/StreamBooksRequestStreamingServerProg.php ==============
 <?php
 /*
@@ -4684,8 +4801,6 @@ use Google\Protobuf\GPBEmpty;
 use Google\Rpc\Code;
 use Google\Tagger\CustomNamespace\V1\AddLabelRequest;
 use Google\Tagger\CustomNamespace\V1\AddLabelResponse;
-use Google\Tagger\CustomNamespace\V1\AddTagRequest;
-use Google\Tagger\CustomNamespace\V1\AddTagResponse;
 use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -6550,82 +6665,6 @@ class LibraryServiceClientTest extends GeneratedTest
 
         try {
             $client->findRelatedBooks($names, $shelves);
-            // If the $client method call did not throw, fail the test
-            $this->fail('Expected an ApiException, but no exception was thrown.');
-        } catch (ApiException $ex) {
-            $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
-        }
-
-        // Call popReceivedCalls to ensure the stub is exhausted
-        $transport->popReceivedCalls();
-        $this->assertTrue($transport->isExhausted());
-    }
-
-    /**
-     * @test
-     */
-    public function addTagTest()
-    {
-        $transport = $this->createTransport();
-        $client = $this->createClient(['transport' => $transport]);
-
-        $this->assertTrue($transport->isExhausted());
-
-        // Mock response
-        $expectedResponse = new AddTagResponse();
-        $transport->addResponse($expectedResponse);
-
-        // Mock request
-        $formattedResource = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
-        $tag = 'tag114586';
-
-        $response = $client->addTag($formattedResource, $tag);
-        $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $transport->popReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = $actualRequests[0]->getFuncCall();
-        $actualRequestObject = $actualRequests[0]->getRequestObject();
-        $this->assertSame('/google.example.library.v1.LibraryService/AddTag', $actualFuncCall);
-
-        $actualValue = $actualRequestObject->getResource();
-
-        $this->assertProtobufEquals($formattedResource, $actualValue);
-        $actualValue = $actualRequestObject->getTag();
-
-        $this->assertProtobufEquals($tag, $actualValue);
-
-        $this->assertTrue($transport->isExhausted());
-    }
-
-    /**
-     * @test
-     */
-    public function addTagExceptionTest()
-    {
-        $transport = $this->createTransport();
-        $client = $this->createClient(['transport' => $transport]);
-
-        $this->assertTrue($transport->isExhausted());
-
-        $status = new stdClass();
-        $status->code = Code::DATA_LOSS;
-        $status->details = 'internal error';
-
-        $expectedExceptionMessage = json_encode([
-           'message' => 'internal error',
-           'code' => Code::DATA_LOSS,
-           'status' => 'DATA_LOSS',
-           'details' => [],
-        ], JSON_PRETTY_PRINT);
-        $transport->addResponse(null, $status);
-
-        // Mock request
-        $formattedResource = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
-        $tag = 'tag114586';
-
-        try {
-            $client->addTag($formattedResource, $tag);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
