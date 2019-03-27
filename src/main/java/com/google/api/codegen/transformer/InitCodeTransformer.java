@@ -86,9 +86,15 @@ public class InitCodeTransformer {
 
   private final ImportSectionTransformer importSectionTransformer;
 
-  // Whether the initialization code should include user-facing comments like TODOs. This should be
-  // false if the initialization code is being used to generate tests, rather than code samples.
-  private final boolean generateUserFacingComments;
+  // Whether the initialization code should include non-configurable comments like TODOs. This
+  // should only be true when generating in-code samples.
+  //
+  // This field should be set to false when generating tests since comments in unit tests are
+  // unnecessary.
+  //
+  // This field must be set to false when generating standalone samples because comments in
+  // standalone samples should be derived from user configurations, not hard-coded.
+  private final boolean generateStandardComments;
 
   public InitCodeTransformer() {
     this(new StandardImportSectionTransformer(), true);
@@ -98,14 +104,14 @@ public class InitCodeTransformer {
     this(importSectionTransformer, true);
   }
 
-  public InitCodeTransformer(boolean generateUserFacingComments) {
-    this(new StandardImportSectionTransformer(), generateUserFacingComments);
+  public InitCodeTransformer(boolean generateStandardComments) {
+    this(new StandardImportSectionTransformer(), generateStandardComments);
   }
 
   public InitCodeTransformer(
-      ImportSectionTransformer importSectionTransformer, boolean generateUserFacingComments) {
+      ImportSectionTransformer importSectionTransformer, boolean generateStandardComments) {
     this.importSectionTransformer = importSectionTransformer;
-    this.generateUserFacingComments = generateUserFacingComments;
+    this.generateStandardComments = generateStandardComments;
   }
 
   public ImportSectionTransformer getImportSectionTransformer() {
@@ -534,7 +540,7 @@ public class InitCodeTransformer {
     surfaceLine.typeName(typeName);
     surfaceLine.typeConstructor(namer.getTypeConstructor(typeName));
     surfaceLine.fieldSettings(getFieldSettings(context, item.getChildren().values()));
-
+    surfaceLine.descriptions(context.getNamer().getWrappedDocLines(item.getDescription(), false));
     return surfaceLine.build();
   }
 
@@ -562,7 +568,7 @@ public class InitCodeTransformer {
     }
     surfaceLine.elementIdentifiers(entries);
     surfaceLine.elements(elements);
-
+    surfaceLine.descriptions(context.getNamer().getWrappedDocLines(item.getDescription(), false));
     return surfaceLine.build();
   }
 
@@ -587,7 +593,7 @@ public class InitCodeTransformer {
       entries.add(mapEntry.build());
     }
     surfaceLine.initEntries(entries);
-
+    surfaceLine.descriptions(context.getNamer().getWrappedDocLines(item.getDescription(), false));
     return surfaceLine.build();
   }
 
@@ -626,6 +632,7 @@ public class InitCodeTransformer {
         .identifier(namer.localVarName(item.getIdentifier()))
         .fileName(SimpleInitValueView.newBuilder().initialValue(value).build())
         .isFirstReadFileView(isFirstReadFileView)
+        .descriptions(namer.getWrappedDocLines(item.getDescription(), false))
         .build();
   }
 
@@ -776,11 +783,12 @@ public class InitCodeTransformer {
     }
     surfaceLine.initValue(initValue);
     surfaceLine.needsLeadingNewline(!isFirstItem);
-    if (generateUserFacingComments) {
+    if (generateStandardComments) {
       surfaceLine.doc(context.getNamer().getDocLines(comment));
     } else {
       surfaceLine.doc(ImmutableList.of());
     }
+    surfaceLine.descriptions(context.getNamer().getWrappedDocLines(item.getDescription(), false));
   }
 
   private ResourceNameInitValueView.Builder createResourceNameInitValueView(
