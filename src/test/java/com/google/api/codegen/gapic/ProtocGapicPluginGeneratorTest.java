@@ -60,9 +60,9 @@ public class ProtocGapicPluginGeneratorTest {
 
     // TODO(andrealin): Look into setting these up as baseline files.
     Truth.assertThat(response).isNotNull();
+    Truth.assertThat(response.getError()).isEmpty();
     Truth.assertThat(response.getFileCount()).isEqualTo(15);
     Truth.assertThat(response.getFile(0).getContent()).contains("DecrementerServiceClient");
-    Truth.assertThat(response.getError()).isEmpty();
   }
 
   @Test
