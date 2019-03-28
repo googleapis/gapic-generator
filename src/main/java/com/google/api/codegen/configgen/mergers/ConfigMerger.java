@@ -22,13 +22,10 @@ import com.google.api.codegen.configgen.NodeFinder;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
-import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.configgen.nodes.metadata.FixmeComment;
 
 /** Merges the gapic config from an ApiModel into a ConfigNode. */
 public class ConfigMerger {
-  private static final String CONFIG_DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
-  private static final String CONFIG_DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
   private static final String CONFIG_SCHEMA_VERSION = "1.0.0";
   private static final String CONFIG_COMMENT =
@@ -76,7 +73,6 @@ public class ConfigMerger {
     ConfigNode languageSettingsNode =
         languageSettingsMerger.mergeLanguageSettings(packageName, configNode, versionNode);
 
-    mergeLicenseHeader(configNode, languageSettingsNode);
     interfaceMerger.mergeInterfaces(model, configNode);
 
     return configNode;
@@ -116,34 +112,5 @@ public class ConfigMerger {
         "The specified configuration schema version '%s' is unsupported.",
         version);
     return null;
-  }
-
-  private void mergeLicenseHeader(ConfigNode configNode, ConfigNode prevNode) {
-    FieldConfigNode licenseHeaderNode =
-        MissingFieldTransformer.insert("license_header", configNode, prevNode).generate();
-
-    if (NodeFinder.hasContent(licenseHeaderNode.getChild())) {
-      return;
-    }
-
-    FieldConfigNode copyrightFileNode =
-        FieldConfigNode.createStringPair(
-                NodeFinder.getNextLine(licenseHeaderNode),
-                "copyright_file",
-                CONFIG_DEFAULT_COPYRIGHT_FILE)
-            .setComment(new DefaultComment("The file containing the copyright line(s)."));
-    FieldConfigNode licenseFileNode =
-        FieldConfigNode.createStringPair(
-                NodeFinder.getNextLine(copyrightFileNode),
-                "license_file",
-                CONFIG_DEFAULT_LICENSE_FILE)
-            .setComment(
-                new DefaultComment(
-                    "The file containing the raw license header without any copyright line(s)."));
-    licenseHeaderNode
-        .setChild(copyrightFileNode.insertNext(licenseFileNode))
-        .setComment(
-            new DefaultComment(
-                "The configuration for the license header to put on generated files."));
   }
 }

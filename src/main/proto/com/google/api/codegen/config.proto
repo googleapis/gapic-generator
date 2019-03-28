@@ -70,8 +70,7 @@ message ConfigProto {
   // The settings of generated code in a specific language.
   map<string, LanguageSettingsProto> language_settings = 4;
 
-  // The language of the generated code.
-  string language = 5;
+  reserved 5;
 
   // The configuration for the license header to put on generated files.
   LicenseHeaderProto license_header = 7;
@@ -141,9 +140,10 @@ enum ReleaseLevel {
 
 message LicenseHeaderProto {
   // The file containing the copyright line(s).
-  string copyright_file = 1;
+  string copyright_file = 1; // DEPRECATED. The Google copyright will always be used.
 
   // The file containing the raw license header without any copyright line(s).
+  // OPTIONAL. If value is not given, the Apache 2.0 license will be used.
   string license_file = 2;
 }
 
@@ -477,9 +477,7 @@ message FlatteningGroupProto {
   // parameter must be a field of the request message.
   repeated string parameters = 1;
 
-  // An optional name for the flattening group, which must be unique within
-  // the method config.
-  string flattening_group_name = 2;
+  string flattening_group_name = 2; // DEPRECATED.
 
   // Map flattening parameters listed in parameters field to a resource name
   // treatment. This is used to override the resource_name_treament setting in

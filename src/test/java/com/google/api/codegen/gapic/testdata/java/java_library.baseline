@@ -2818,7 +2818,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a shelf resource.
+   *
+   * @deprecated Use the {@link ShelfName} class instead.
    */
+  @Deprecated
   public static final String formatShelfName(String shelfId) {
     return SHELF_PATH_TEMPLATE.instantiate(
         "shelf_id", shelfId);
@@ -2827,7 +2830,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a shelf_book resource.
+   *
+   * @deprecated Use the {@link ShelfBookName} class instead.
    */
+  @Deprecated
   public static final String formatShelfBookName(String shelfId, String bookId) {
     return SHELF_BOOK_PATH_TEMPLATE.instantiate(
         "shelf_id", shelfId,
@@ -2837,7 +2843,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a return resource.
+   *
+   * @deprecated Use the {@link ReturnName} class instead.
    */
+  @Deprecated
   public static final String formatReturnName(String shelf, String book, String return_) {
     return RETURN_PATH_TEMPLATE.instantiate(
         "shelf", shelf,
@@ -2848,7 +2857,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a project resource.
+   *
+   * @deprecated Use the {@link com.google.cloud.ProjectName} class instead.
    */
+  @Deprecated
   public static final String formatProjectName(String project) {
     return PROJECT_PATH_TEMPLATE.instantiate(
         "project", project);
@@ -2857,7 +2869,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
    */
+  @Deprecated
   public static final String formatArchivedBookName(String archivePath, String bookId) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
         "archive_path", archivePath,
@@ -2867,7 +2882,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the shelf_id from the given fully-qualified path which
    * represents a shelf resource.
+   *
+   * @deprecated Use the {@link ShelfName} class instead.
    */
+  @Deprecated
   public static final String parseShelfIdFromShelfName(String shelfName) {
     return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf_id");
   }
@@ -2875,7 +2893,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the shelf_id from the given fully-qualified path which
    * represents a shelf_book resource.
+   *
+   * @deprecated Use the {@link ShelfBookName} class instead.
    */
+  @Deprecated
   public static final String parseShelfIdFromShelfBookName(String shelfBookName) {
     return SHELF_BOOK_PATH_TEMPLATE.parse(shelfBookName).get("shelf_id");
   }
@@ -2883,7 +2904,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the book_id from the given fully-qualified path which
    * represents a shelf_book resource.
+   *
+   * @deprecated Use the {@link ShelfBookName} class instead.
    */
+  @Deprecated
   public static final String parseBookIdFromShelfBookName(String shelfBookName) {
     return SHELF_BOOK_PATH_TEMPLATE.parse(shelfBookName).get("book_id");
   }
@@ -2891,7 +2915,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the shelf from the given fully-qualified path which
    * represents a return resource.
+   *
+   * @deprecated Use the {@link ReturnName} class instead.
    */
+  @Deprecated
   public static final String parseShelfFromReturnName(String returnName) {
     return RETURN_PATH_TEMPLATE.parse(returnName).get("shelf");
   }
@@ -2899,7 +2926,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the book from the given fully-qualified path which
    * represents a return resource.
+   *
+   * @deprecated Use the {@link ReturnName} class instead.
    */
+  @Deprecated
   public static final String parseBookFromReturnName(String returnName) {
     return RETURN_PATH_TEMPLATE.parse(returnName).get("book");
   }
@@ -2907,7 +2937,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the return from the given fully-qualified path which
    * represents a return resource.
+   *
+   * @deprecated Use the {@link ReturnName} class instead.
    */
+  @Deprecated
   public static final String parseReturnFromReturnName(String returnName) {
     return RETURN_PATH_TEMPLATE.parse(returnName).get("return");
   }
@@ -2915,7 +2948,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the project from the given fully-qualified path which
    * represents a project resource.
+   *
+   * @deprecated Use the {@link com.google.cloud.ProjectName} class instead.
    */
+  @Deprecated
   public static final String parseProjectFromProjectName(String projectName) {
     return PROJECT_PATH_TEMPLATE.parse(projectName).get("project");
   }
@@ -2923,7 +2959,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the archive_path from the given fully-qualified path which
    * represents a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
    */
+  @Deprecated
   public static final String parseArchivePathFromArchivedBookName(String archivedBookName) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive_path");
   }
@@ -2931,7 +2970,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the book_id from the given fully-qualified path which
    * represents a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
    */
+  @Deprecated
   public static final String parseBookIdFromArchivedBookName(String archivedBookName) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book_id");
   }
@@ -3179,10 +3221,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .setOptions(options)
    *     .build();
    *   Shelf response = libraryClient.getShelf(request);
@@ -3203,10 +3245,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .setOptions(options)
    *     .build();
    *   ApiFuture&lt;Shelf&gt; future = libraryClient.getShelfCallable().futureCall(request);
@@ -10254,6 +10296,7 @@ import com.google.example.library.v1.SomeMessage2;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.longrunning.Operation;
+import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
@@ -10263,7 +10306,6 @@ import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.FloatValue;
-import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.ListValue;
@@ -10348,7 +10390,7 @@ public class LibraryClientTest {
         client.createShelf(shelf);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     CreateShelfRequest actualRequest = (CreateShelfRequest)actualRequests.get(0);
 
@@ -10394,7 +10436,7 @@ public class LibraryClientTest {
         client.getShelf(name);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
@@ -10441,7 +10483,7 @@ public class LibraryClientTest {
         client.getShelf(formattedName, message);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
@@ -10491,7 +10533,7 @@ public class LibraryClientTest {
         client.getShelf(formattedName, message, stringBuilder);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
@@ -10542,7 +10584,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getShelvesList().get(0), resources.get(0));
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     ListShelvesRequest actualRequest = (ListShelvesRequest)actualRequests.get(0);
 
@@ -10578,7 +10620,7 @@ public class LibraryClientTest {
 
     client.deleteShelf(name);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     DeleteShelfRequest actualRequest = (DeleteShelfRequest)actualRequests.get(0);
 
@@ -10625,7 +10667,7 @@ public class LibraryClientTest {
         client.mergeShelves(name, otherShelfName);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     MergeShelvesRequest actualRequest = (MergeShelvesRequest)actualRequests.get(0);
 
@@ -10676,7 +10718,7 @@ public class LibraryClientTest {
         client.createBook(formattedName, book);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     CreateBookRequest actualRequest = (CreateBookRequest)actualRequests.get(0);
 
@@ -10727,7 +10769,7 @@ public class LibraryClientTest {
         client.publishSeries(shelf, books, edition, seriesUuid);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     PublishSeriesRequest actualRequest = (PublishSeriesRequest)actualRequests.get(0);
 
@@ -10784,7 +10826,7 @@ public class LibraryClientTest {
         client.getBook(name);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
@@ -10832,7 +10874,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getBooksList().get(0), resources.get(0));
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     ListBooksRequest actualRequest = (ListBooksRequest)actualRequests.get(0);
 
@@ -10871,7 +10913,7 @@ public class LibraryClientTest {
 
     client.deleteBook(name);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     DeleteBookRequest actualRequest = (DeleteBookRequest)actualRequests.get(0);
 
@@ -10920,7 +10962,7 @@ public class LibraryClientTest {
         client.updateBook(name, book);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
@@ -10974,7 +11016,7 @@ public class LibraryClientTest {
         client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
@@ -11031,7 +11073,7 @@ public class LibraryClientTest {
         client.moveBook(name, otherShelfName);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     MoveBookRequest actualRequest = (MoveBookRequest)actualRequests.get(0);
 
@@ -11084,7 +11126,7 @@ public class LibraryClientTest {
     Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
         resourceNames.get(0));
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     ListStringsRequest actualRequest = (ListStringsRequest)actualRequests.get(0);
 
@@ -11134,7 +11176,7 @@ public class LibraryClientTest {
     Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
         resourceNames.get(0));
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     ListStringsRequest actualRequest = (ListStringsRequest)actualRequests.get(0);
 
@@ -11180,7 +11222,7 @@ public class LibraryClientTest {
 
     client.addComments(formattedName, comments);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     AddCommentsRequest actualRequest = (AddCommentsRequest)actualRequests.get(0);
 
@@ -11238,7 +11280,7 @@ public class LibraryClientTest {
         client.getBookFromArchive(name);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromArchiveRequest actualRequest = (GetBookFromArchiveRequest)actualRequests.get(0);
 
@@ -11287,7 +11329,7 @@ public class LibraryClientTest {
         client.getBookFromAnywhere(name, altBookName);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromAnywhereRequest actualRequest = (GetBookFromAnywhereRequest)actualRequests.get(0);
 
@@ -11337,7 +11379,7 @@ public class LibraryClientTest {
         client.getBookFromAbsolutelyAnywhere(name);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromAbsolutelyAnywhereRequest actualRequest = (GetBookFromAbsolutelyAnywhereRequest)actualRequests.get(0);
 
@@ -11378,7 +11420,7 @@ public class LibraryClientTest {
 
     client.updateBookIndex(name, indexName, indexMap);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookIndexRequest actualRequest = (UpdateBookIndexRequest)actualRequests.get(0);
 
@@ -11597,7 +11639,7 @@ public class LibraryClientTest {
     Assert.assertEquals(ShelfBookName.parse(expectedResponse.getNamesList().get(0)),
         resourceNames.get(0));
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     FindRelatedBooksRequest actualRequest = (FindRelatedBooksRequest)actualRequests.get(0);
 
@@ -11640,7 +11682,7 @@ public class LibraryClientTest {
         client.addLabel(formattedResource, label);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLabeler.getRequests();
+    List<AbstractMessage> actualRequests = mockLabeler.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     AddLabelRequest actualRequest = (AddLabelRequest)actualRequests.get(0);
 
@@ -11696,7 +11738,7 @@ public class LibraryClientTest {
         client.getBigBookAsync(name).get();
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
@@ -11744,7 +11786,7 @@ public class LibraryClientTest {
         client.getBigNothingAsync(name).get();
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
@@ -11786,7 +11828,7 @@ public class LibraryClientTest {
         client.testOptionalRequiredFlatteningParams();
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     TestOptionalRequiredFlatteningParamsRequest actualRequest = (TestOptionalRequiredFlatteningParamsRequest)actualRequests.get(0);
 
@@ -11913,7 +11955,7 @@ public class LibraryClientTest {
         client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, formattedRequiredRepeatedResourceName, formattedRequiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, formattedOptionalRepeatedResourceName, formattedOptionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     TestOptionalRequiredFlatteningParamsRequest actualRequest = (TestOptionalRequiredFlatteningParamsRequest)actualRequests.get(0);
 
@@ -12209,7 +12251,7 @@ package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.grpc.testing.MockGrpcService;
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.AbstractMessage;
 import io.grpc.ServerServiceDefinition;
 import java.util.List;
 
@@ -12223,12 +12265,12 @@ public class MockLabeler implements MockGrpcService  {
   }
 
   @Override
-  public List<GeneratedMessageV3> getRequests() {
+  public List<AbstractMessage> getRequests() {
     return serviceImpl.getRequests();
   }
 
   @Override
-  public void addResponse(GeneratedMessageV3 response) {
+  public void addResponse(AbstractMessage response) {
     serviceImpl.addResponse(response);
   }
 
@@ -12267,7 +12309,7 @@ package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.common.collect.Lists;
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.AbstractMessage;
 import com.google.tagger.v1.LabelerGrpc.LabelerImplBase;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
@@ -12280,7 +12322,7 @@ import java.util.Queue;
 @javax.annotation.Generated("by GAPIC")
 @BetaApi
 public class MockLabelerImpl extends LabelerImplBase {
-  private ArrayList<GeneratedMessageV3> requests;
+  private List<AbstractMessage> requests;
   private Queue<Object> responses;
 
   public MockLabelerImpl() {
@@ -12288,15 +12330,15 @@ public class MockLabelerImpl extends LabelerImplBase {
     responses = new LinkedList<>();
   }
 
-  public List<GeneratedMessageV3> getRequests() {
+  public List<AbstractMessage> getRequests() {
     return requests;
   }
 
-  public void addResponse(GeneratedMessageV3 response) {
+  public void addResponse(AbstractMessage response) {
     responses.add(response);
   }
 
-  public void setResponses(List<GeneratedMessageV3> responses) {
+  public void setResponses(List<AbstractMessage> responses) {
     this.responses = new LinkedList<Object>(responses);
   }
 
@@ -12345,7 +12387,7 @@ package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.grpc.testing.MockGrpcService;
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.AbstractMessage;
 import io.grpc.ServerServiceDefinition;
 import java.util.List;
 
@@ -12359,12 +12401,12 @@ public class MockLibraryService implements MockGrpcService  {
   }
 
   @Override
-  public List<GeneratedMessageV3> getRequests() {
+  public List<AbstractMessage> getRequests() {
     return serviceImpl.getRequests();
   }
 
   @Override
-  public void addResponse(GeneratedMessageV3 response) {
+  public void addResponse(AbstractMessage response) {
     serviceImpl.addResponse(response);
   }
 
@@ -12405,8 +12447,8 @@ import com.google.api.core.BetaApi;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.LibraryServiceGrpc.LibraryServiceImplBase;
 import com.google.longrunning.Operation;
+import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Empty;
-import com.google.protobuf.GeneratedMessageV3;
 import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -12416,7 +12458,7 @@ import java.util.Queue;
 @javax.annotation.Generated("by GAPIC")
 @BetaApi
 public class MockLibraryServiceImpl extends LibraryServiceImplBase {
-  private ArrayList<GeneratedMessageV3> requests;
+  private List<AbstractMessage> requests;
   private Queue<Object> responses;
 
   public MockLibraryServiceImpl() {
@@ -12424,15 +12466,15 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
     responses = new LinkedList<>();
   }
 
-  public List<GeneratedMessageV3> getRequests() {
+  public List<AbstractMessage> getRequests() {
     return requests;
   }
 
-  public void addResponse(GeneratedMessageV3 response) {
+  public void addResponse(AbstractMessage response) {
     responses.add(response);
   }
 
-  public void setResponses(List<GeneratedMessageV3> responses) {
+  public void setResponses(List<AbstractMessage> responses) {
     this.responses = new LinkedList<Object>(responses);
   }
 

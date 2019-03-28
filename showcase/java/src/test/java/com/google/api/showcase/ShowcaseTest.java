@@ -138,11 +138,9 @@ public class ShowcaseTest {
     try {
       stream.iterator().forEachRemaining(response -> expansions.add(response.getContent()));
     } catch (Exception ex) {
-      assertThat(ex.getCause()).isInstanceOf(AbortedException.class);
-      AbortedException error = (AbortedException) ex.getCause();
-      assertThat(error.getCause().getMessage()).isEqualTo("ABORTED: yikes");
+      assertThat(ex.getCause().getMessage()).isEqualTo("ABORTED: yikes");
       assertThat(expansions).containsExactly("one", "two", "zee").inOrder();
-      throw error;
+      throw ex;
     }
   }
 

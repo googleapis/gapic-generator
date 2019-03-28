@@ -66,7 +66,7 @@ public class ConfigGenerator extends NodeVisitor {
       if (!isFirst) {
         configBuilder.append(whitespace().trimTrailingFrom(line));
       } else if (line.trim().startsWith("#")) {
-        appendIndent().append(whitespace().trimTrailingFrom(line));
+        configBuilder.append(whitespace().trimTrailingFrom(line));
       } else {
         configBuilder
             .append(Strings.repeat(" ", indent - TAB_WIDTH))
