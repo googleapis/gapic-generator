@@ -220,14 +220,14 @@ service LibraryService {
   // Test bidi-streaming.
   rpc DiscussBook(stream DiscussBookRequest) returns (stream Comment) {
     // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
-    option (google.api.http) = { post: "/v1/{name=bookShelves/*/books/*}:discuss" body: "*" };
+    option (google.api.http) = { post: "/v1/{name=archives/*/books/*}:discuss" body: "*" };
     option (google.api.method_signature) = "name";
   }
 
   // Test client streaming.
   rpc MonologAboutBook(stream DiscussBookRequest) returns (Comment) {
     // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
-    option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:monolog" body: "*" };
+    option (google.api.http) = { get: "/v1/{name=archives/*/books/*}:monolog" body: "*" };
     option (google.api.method_signature) = "name";
   }
 
