@@ -146,12 +146,7 @@ public class DiscoGapicGeneratorApp {
     if (!Strings.isNullOrEmpty(languageStr)) {
       language = TargetLanguage.fromString(languageStr.toUpperCase());
     } else {
-      languageStr = configProto.getLanguage();
-      if (Strings.isNullOrEmpty(languageStr)) {
-        throw new IllegalArgumentException(
-            "Language not set by --language option or by gapic config.");
-      }
-      language = TargetLanguage.fromString(languageStr.toUpperCase());
+      throw new IllegalArgumentException("Language not set by --language option.");
     }
 
     String defaultPackageName =

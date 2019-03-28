@@ -70,8 +70,7 @@ message ConfigProto {
   // The settings of generated code in a specific language.
   map<string, LanguageSettingsProto> language_settings = 4;
 
-  // The language of the generated code.
-  string language = 5;
+  reserved 5;
 
   // The configuration for the license header to put on generated files.
   LicenseHeaderProto license_header = 7;
@@ -144,6 +143,7 @@ message LicenseHeaderProto {
   string copyright_file = 1; // DEPRECATED. The Google copyright will always be used.
 
   // The file containing the raw license header without any copyright line(s).
+  // OPTIONAL. If value is not given, the Apache 2.0 license will be used.
   string license_file = 2;
 }
 
