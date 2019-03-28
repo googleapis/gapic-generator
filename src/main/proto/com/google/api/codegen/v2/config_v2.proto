@@ -8,70 +8,11 @@ option java_multiple_files = true;
 option java_outer_classname = "ConfigProtoDesc";
 option java_package = "com.google.api.codegen.v2";
 
-// `ConfigProto` specifies the configuration of code generation for
-// GAPIC. The user provides it via a YAML file; this message here
-// represents the schema for this file.
-//
-// Example of a YAML configuration:
-//
-//     type: com.google.api.codegen.ConfigProto
-//     generator:
-//       id: java
-//     interfaces:
-//     - name: google.example.library.v1.LibraryService
-//       collections:
-//       - name_pattern: shelves/{shelf}
-//         entity_name: shelf
-//       - name_pattern: shelves/{shelf}/books/{book}
-//         entity_name: book
-//         ...
-//       retry_codes_def:
-//       - name: idempotent
-//         retry_codes:
-//         ...
-//       - name: non_idempotent
-//         retry_codes:
-//       retry_params_def:
-//       - name: default
-//         ...
-//       methods:
-//       - name: PublishBooks
-//         flattening:
-//           groups:
-//           - parameters:
-//             - name
-//           - parameters:
-//             - name
-//             - version
-//         page_streaming:
-//           request:
-//             token_field: page_token
-//           response:
-//             token_field: next_page_token
-//             resources_field: books
-//         batching:
-//           thresholds:
-//             element_count_threshold: 5
-//             request_byte_threshold: 16384
-//           batch_descriptor:
-//             batched_field: pictures
-//             request_discriminator_fields:
-//             - album
-//             - labels
-//             subresponse_field: pic_id
-//         retry_codes_name: idempotent
-//         retry_params_name: default
-//         field_name_patterns:
-//           name: book
-//       - name: GetBook
-//       ...
-//     ...
 message ConfigProto {
   // The settings of generated code in a specific language.
   map<string, LanguageSettingsProto> language_settings = 4;
 
-  // The language of the generated code.
-  string language = 5; // UNSUPPORTED.
+  reserved 5, 20;
 
   // The configuration for the license header to put on generated files.
   LicenseHeaderProto license_header = 7;
@@ -96,12 +37,9 @@ message ConfigProto {
   // [DEPRECATED]
   .google.protobuf.BoolValue enable_string_format_functions_override = 22;
 
-  // A list of message resource name configurations.
-  repeated ResourceNameMessageConfigProto resource_name_generation = 20;
-
   // A required field to specify the version of GAPIC config schema.
   // It is versioned using Semantic Versioning 2.0.0 (semver) and follows the
-  // semver specification. Currently, the only valid value is "1.0.0".
+  // semver specification. Currently, the only valid value is "2.0.0".
   string config_schema_version = 21;
 }
 
@@ -140,8 +78,7 @@ enum ReleaseLevel {
 }
 
 message LicenseHeaderProto {
-  // The file containing the copyright line(s).
-  string copyright_file = 1; // DEPRECATED. The Google copyright will always be used.
+  reserved 1;
 
   // The file containing the raw license header without any copyright line(s).
   string license_file = 2;
@@ -187,14 +124,7 @@ message SmokeTestConfigProto {
 }
 
 message CollectionConfigProto {
-  // A pattern to describe the names of the resources of this
-  // collection, using the platform's conventions for URI patterns. A
-  // generator may use this to generate methods to compose and
-  // decompose such names. The pattern should use named placeholders
-  // as in `shelves/{shelf}/books/{book}`; those will be taken as
-  // hints for the parameter names of the generated methods.  If
-  // empty, no name methods are generated.
-  string name_pattern = 1;
+  reserved 1;
 
   // Name to be used as a basis for generated methods and classes.
   string entity_name = 2;
@@ -235,11 +165,7 @@ message MethodConfigProto {
   // The fully qualified name of the method.
   string name = 1;
 
-  // Specifies the configuration for parameter flattening.
-  FlatteningConfigProto flattening = 2;
-
-  // Specifies the configuration for paging.
-  PageStreamingConfigProto page_streaming = 3;
+  reserved 2, 3, 7, 8, 9, 11, 14, 15;
 
   // Specifies the configuration for gRPC-streaming responses.
   // Note that this is for configuring paged gRPC-streaming responses.
@@ -254,21 +180,8 @@ message MethodConfigProto {
   // The name must be defined in InterfaceConfigProto::retry_params_def.
   string retry_params_name = 5;
 
-  // Specifies the default timeout for a non-retrying call. If the call is
-  // retrying, refer to `retry_params_name` instead.
-  uint64 timeout_millis = 11; // UNSUPPORTED.
-
   // Specifies the configuration for batching.
   BatchingConfigProto batching = 6;
-
-  reserved 7;
-
-  // Fields that are always required for a request to be valid.
-  repeated string required_fields = 8;
-
-  // Maps the field name of the request type to entity_name of CollectionConfigProto.
-  // It is used to specify the string pattern that the field must follow.
-  map<string, string> field_name_patterns = 9;
 
   // Specifies complex structure fields that need to be initialized by the sample code for
   // the sample to be usable.
@@ -296,16 +209,7 @@ message MethodConfigProto {
   // IAM methods to IamPolicy for Pub/Sub.
   string reroute_to_grpc_interface = 12;
 
-  // TODO: Remove this config once there are no use cases.
-  // Specifies the list of the method's input message fields (including nested
-  // ones, using the dot notation), which should be url-encoded in
-  // "x-goog-request-params" header
-  repeated string header_request_params = 14; // UNSUPPORTED.
-
   repeated SurfaceTreatmentProto surface_treatments = 20;
-
-  // Set the resource name treatment for fields
-  ResourceNameTreatment resource_name_treatment = 15;
 
   // Long-running settings.
   LongRunningConfigProto long_running = 30;
@@ -461,30 +365,6 @@ message SampleConfiguration {
   repeated SampleTypeConfiguration api_explorer = 3;
 }
 
-// `FlatteningConfigProto` describes the parameter groups for which a
-// generator should produce method overloads which allow a client to
-// directly pass request message fields as method parameters.  This
-// information may or may not be used, depending on the target
-// language.
-message FlatteningConfigProto {
-  // Specifies a list of flattening groups.
-  repeated FlatteningGroupProto groups = 1;
-}
-
-// `FlatteningGroupProto` represents a list of parameters to be flattened.
-message FlatteningGroupProto {
-  // The list of parameters to include in this flattening group. Each
-  // parameter must be a field of the request message.
-  repeated string parameters = 1;
-
-  string flattening_group_name = 2; // DEPRECATED.
-
-  // Map flattening parameters listed in parameters field to a resource name
-  // treatment. This is used to override the resource_name_treament setting in
-  // MethodConfigProto.
-  map<string, ResourceNameTreatment> parameter_resource_name_treatment = 3;
-}
-
 // The ResourceNameTreatment enum can be used to specify how to treat the
 // resource name formats defined in the field_name_patterns
 // and response_field_name_patterns fields.
@@ -505,22 +385,10 @@ enum ResourceNameTreatment {
 // `PageStreamingConfigProto` describes information for generating a method which
 // transforms a paging list rpc into a stream of resources.
 message PageStreamingConfigProto {
-  // Specifies request information of the list method.
-  PageStreamingRequestProto request = 1;
+  reserved 1;
 
   // Specifies response information of the list method.
   PageStreamingResponseProto response = 2;
-}
-
-// `PageStreamingRequestProto` defines which fields match the paging pattern in
-// the request.
-message PageStreamingRequestProto {
-  // The name of the field in the request containing the page token.
-  string token_field = 1;
-
-  // Optional. The name of the field, if present, specifying the maximum number
-  // of elements to be returned in the response.
-  string page_size_field = 2;
 }
 
 // `PageStreamingResponseProto` defines which fields match the paging pattern in
@@ -623,17 +491,6 @@ message BatchingDescriptorProto {
   string subresponse_field = 3;
 }
 
-// `ResourceNameMessageConfigProto` specifies the fields of a message that
-// support a resource name type.
-message ResourceNameMessageConfigProto {
-  // The simple name of the message.
-  string message_name = 1;
-
-  // A list of field simple names and corresponding entity names, as defined in
-  // the collection configs.
-  map<string, string> field_entity_map = 2;
-}
-
 // SurfaceTreatmentProto describes treatments to the code generation
 // that are expected to be different for each language.
 message SurfaceTreatmentProto {
@@ -658,12 +515,7 @@ enum VisibilityProto {
 // LongRunningProto describes settings to use when generating API methods
 // that use the long-running operation pattern.
 message LongRunningConfigProto {
-  // The fully-qualified type that is returned from an Operation when it is
-  // complete.
-  string return_type = 1;
-
-  // The fully-qualified type of the metadata of an Operation.
-  string metadata_type = 2;
+  reserved 1, 2;
 
   // Whether or not the server implements delete.
   bool implements_delete = 3;
