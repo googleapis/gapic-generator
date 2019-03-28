@@ -59,7 +59,7 @@ public enum CallingForm {
 
   Flattened, // used by: csharp, java
   FlattenedPaged, // used by: csharp java
-  FlattenedPagedAll, // used by: csharp Java
+  FlattenedPagedAll, // used by: csharp
   FlattenedPagedPageSize, // used by: csharp
   FlattenedAsync, // used by: csharp
   FlattenedAsyncPaged, // used by: csharp
@@ -71,7 +71,6 @@ public enum CallingForm {
   Callable, // used by: java
   CallableList, // used by: java
   CallablePaged, // used by: java
-  CallablePagedAll, // used by: java
   CallableStreamingBidi, // used by: java
   CallableStreamingClient, // used by: java
   CallableStreamingServer, // used by: java
@@ -84,7 +83,6 @@ public enum CallingForm {
   LongRunningFlattenedAsync, // used by: java
   LongRunningFlattenedAsyncPollUntilComplete, // used by: csharp
   LongRunningFlattenedAsyncPollLater, // used by: csharp
-  LongRunningOperationCallable, // used by: java
   LongRunningPromise, // used by: nodejs py
   LongRunningPromiseAwait, // used by: nodejs
   LongRunningRequest, // used by: csharp php

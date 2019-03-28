@@ -471,20 +471,28 @@ public class InitCodeNode {
         children.isEmpty(), "Can only configure leaf node to read from file.");
     setLineType(InitCodeLineType.ReadFileInitLine);
     Name childIdentifier;
-    if (sampleParamConfig.isSampleArgument()) {
-      childIdentifier =
-          identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
-      addChildNodeForSampleParameter(
-          context,
-          FILE_NAME_KEY,
-          ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
-          childIdentifier,
-          initValueConfig,
-          sampleParamConfig.description());
-      initValueConfig =
-          InitValueConfig.createWithValue(
-              InitValue.createVariable(childIdentifier.toLowerUnderscore()));
+
+    // A read-from-file node that is not passed in as a parameter. Attaching the description is all
+    // we need to do.
+    if (!sampleParamConfig.isSampleArgument()) {
+      setDescription(sampleParamConfig.description());
+      return;
     }
+
+    // A read-from-file node passed in as a parameter. We add the child node to hold the variable
+    // name and value of the parameter.
+    childIdentifier =
+        identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
+    addChildNodeForSampleParameter(
+        context,
+        FILE_NAME_KEY,
+        ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
+        childIdentifier,
+        initValueConfig,
+        sampleParamConfig.description());
+    initValueConfig =
+        InitValueConfig.createWithValue(
+            InitValue.createVariable(childIdentifier.toLowerUnderscore()));
   }
 
   private void addChildNodeForSampleParameter(

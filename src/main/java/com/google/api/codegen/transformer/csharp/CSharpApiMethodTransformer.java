@@ -135,9 +135,13 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext methodContext =
-                // TODO: replace the empty list with real calling forms.
-                // Turn off generating samples for gRPC streaming methods to prevent
-                // baseline from exploding
+                // TODO: replace the empty list with real calling forms:
+                //
+                // FlattenedStreamingBidi
+                // FlattenedStreamingServer
+                //
+                // Keep an empty list here to turn off generating samples for
+                // gRPC streaming methods for now so that the baseline does not explode
                 context
                     .asFlattenedMethodContext(requestMethodContext, flatteningGroup)
                     .withCallingForms(Collections.emptyList());
@@ -146,9 +150,13 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
                     methodContext, csharpCommonTransformer.callSettingsParam()));
           }
         }
-        // TODO: replace the empty list with real calling forms.
-        // Turn off generating samples for gRPC streaming methods to prevent
-        // baseline from exploding
+        // TODO: replace the empty list with real calling forms:
+        //
+        // RequestStreamingBidi
+        // RequestStreamingServer
+        //
+        // Keep an empty list here to turn off generating samples for
+        // gRPC streaming methods for now so that the baseline does not explode
         requestMethodContext = requestMethodContext.withCallingForms(Collections.emptyList());
         apiMethods.add(generateGrpcStreamingRequestObjectMethod(requestMethodContext));
       } else if (requestMethodContext.isLongRunningMethodContext()) {
@@ -160,9 +168,13 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
                 generateAsyncOperationFlattenedMethod(
-                    // TODO: replace the empty list with real calling forms.
-                    // Turn off generating samples for LRO methods to prevent
-                    // baseline from exploding
+                    // TODO: replace the empty list with real calling forms:
+                    //
+                    // LongRunningFlattenedAsyncPollUntilComplete
+                    // LongRunningFlattenedAsyncPollLater
+                    //
+                    // Keep an empty list here to turn off generating samples for
+                    // LRO methods for now so that the baseline does not explode
                     methodContext.withCallingForms(Collections.emptyList()),
                     csharpCommonTransformer.callSettingsParam(),
                     ClientMethodType.AsyncOperationFlattenedCallSettingsMethod,
@@ -175,26 +187,38 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
                     true));
             apiMethods.add(
                 generateOperationFlattenedMethod(
-                    // TODO: replace the empty list with real calling forms.
-                    // Turn off generating samples for LRO methods to prevent
-                    // baseline from exploding
+                    // TODO: replace the empty list with real calling forms:
+                    //
+                    // LongRunningFlattenedPollUntilComplete
+                    // LongRunningFlattenedPollLater
+                    //
+                    // Keep an empty list here to turn off generating samples for
+                    // LRO methods for now so that the baseline does not explode
                     methodContext.withCallingForms(Collections.emptyList()),
                     csharpCommonTransformer.callSettingsParam()));
           }
         }
         apiMethods.add(
             generateAsyncOperationRequestObjectMethod(
-                // TODO: replace the empty list with real calling forms.
-                // Turn off generating samples for LRO methods to prevent
-                // baseline from exploding
+                // TODO: replace the empty list with real calling forms:
+                //
+                // LongRunningRequestAsyncPollUntilComplete
+                // LongRunningRequestAsyncPollLater
+                //
+                // Keep an empty list here to turn off generating samples for
+                // LRO methods for now so that the baseline does not explode
                 requestMethodContext.withCallingForms(Collections.emptyList()),
                 csharpCommonTransformer.callSettingsParam(),
                 true));
         apiMethods.add(
             generateOperationRequestObjectMethod(
-                // TODO: replace the empty list with real calling forms.
-                // Turn off generating samples for LRO methods to prevent
-                // baseline from exploding
+                // TODO: replace the empty list with real calling forms:
+                //
+                // LongRunningRequestPollUntilComplete
+                // LongRunningRequestPollLater
+                //
+                // Keep an empty list here to turn off generating samples for
+                // LRO methods for now so that the baseline does not explode
                 requestMethodContext.withCallingForms(Collections.emptyList()),
                 csharpCommonTransformer.callSettingsParam()));
       } else if (methodConfig.isPageStreaming()) {
@@ -234,9 +258,9 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             generatePagedRequestObjectMethod(
                 requestMethodContext.withCallingForms(
                     ImmutableList.of(
-                        CallingForm.RequestAsyncPaged,
-                        CallingForm.RequestAsyncPagedAll,
-                        CallingForm.RequestAsyncPagedPageSize)),
+                        CallingForm.RequestPaged,
+                        CallingForm.RequestPagedAll,
+                        CallingForm.RequestPagedPageSize)),
                 csharpCommonTransformer.callSettingsParam()));
       } else {
 
