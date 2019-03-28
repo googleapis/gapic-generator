@@ -339,7 +339,6 @@ public class ResourceNameMessageConfigsTest {
         .when(protoParser)
         .getMethodSignatures(createShelvesMethod);
 
-    String flatteningConfigName = "flatteningGroupName";
     // Gapic config contributes flattenings {["book"]}.
     MethodConfigProto methodConfigProto =
         MethodConfigProto.newBuilder()
@@ -347,9 +346,7 @@ public class ResourceNameMessageConfigsTest {
             .setFlattening(
                 FlatteningConfigProto.newBuilder()
                     .addGroups(
-                        FlatteningGroupProto.newBuilder()
-                            .addAllParameters(Arrays.asList("book"))
-                            .setFlatteningGroupName(flatteningConfigName)))
+                        FlatteningGroupProto.newBuilder().addAllParameters(Arrays.asList("book"))))
             .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
             .build();
     InterfaceConfigProto interfaceConfigProto =
@@ -413,12 +410,14 @@ public class ResourceNameMessageConfigsTest {
     Optional<FlatteningConfig> flatteningConfigFromGapicConfig =
         flatteningConfigs
             .stream()
-            .filter(f -> flatteningConfigName.equals(f.getFlatteningName()))
+            .filter(
+                f ->
+                    f.getFlattenedFieldConfigs().size() == 1
+                        && f.getFlattenedFieldConfigs().containsKey("book"))
             .findAny();
     assertThat(flatteningConfigFromGapicConfig.isPresent()).isTrue();
     Map<String, FieldConfig> paramsFromGapicConfigFlattening =
         flatteningConfigFromGapicConfig.get().getFlattenedFieldConfigs();
-    assertThat(paramsFromGapicConfigFlattening.size()).isEqualTo(1);
     assertThat(paramsFromGapicConfigFlattening.get("book").getField().getSimpleName())
         .isEqualTo("book");
     assertThat(
@@ -471,7 +470,7 @@ public class ResourceNameMessageConfigsTest {
     ResourceNameTreatment noTreatment =
         GapicMethodConfig.defaultResourceNameTreatment(
             noConfig, createShelvesMethod, protoParser, DEFAULT_PACKAGE);
-    assertThat(noTreatment).isEqualTo(ResourceNameTreatment.NONE);
+    assertThat(noTreatment).isEqualTo(ResourceNameTreatment.UNSET_TREATMENT);
 
     MethodConfigProto staticTypesMethodConfig =
         MethodConfigProto.newBuilder()

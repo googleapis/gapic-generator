@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.java;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -44,6 +45,7 @@ import com.google.api.codegen.util.java.JavaCommentReformatter;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.common.base.Joiner;
 import java.io.File;
@@ -114,6 +116,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public boolean shouldImportRequestObjectParamElementType(FieldModel field) {
     return !field.isMap();
+  }
+
+  @Override
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format("@param %s %s", paramName, getCommentReformatter().reformat(text));
   }
 
   @Override
@@ -420,6 +427,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public String getMapKeyAccessorName(TypeModel keyType, String key) {
     return String.format(
         ".get(%s)", getModelTypeFormatter().renderPrimitiveValue((ProtoTypeRef) keyType, key));
+  }
+
+  @Override
+  public List<CallingForm> getCallingForms(MethodContext context) {
+    return CallingForm.getCallingForms(context, TargetLanguage.JAVA);
   }
 
   @Override

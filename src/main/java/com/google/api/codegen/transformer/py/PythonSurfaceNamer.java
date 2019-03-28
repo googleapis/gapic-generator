@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -280,6 +281,16 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format("%s %s", paramName, getCommentReformatter().reformat(text));
+  }
+
+  @Override
+  public List<String> getWrappedDocLines(String text, boolean reformat) {
+    return getWrappedDocLines(text, reformat, 80);
+  }
+
+  @Override
   public List<String> getThrowsDocLines(MethodConfig methodConfig) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
     lines.add(
@@ -538,5 +549,10 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return Name.anyCamel(super.getSampleResponseVarName(context, form))
         .toLowerUnderscore()
         .toString();
+  }
+
+  @Override
+  public List<CallingForm> getCallingForms(MethodContext context) {
+    return CallingForm.getCallingForms(context, TargetLanguage.PYTHON);
   }
 }

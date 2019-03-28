@@ -20,7 +20,6 @@ import com.google.api.codegen.config.DiscoInterfaceModel;
 import com.google.api.codegen.configgen.viewmodel.ConfigView;
 import com.google.api.codegen.configgen.viewmodel.InterfaceView;
 import com.google.api.codegen.configgen.viewmodel.LanguageSettingView;
-import com.google.api.codegen.configgen.viewmodel.LicenseView;
 import com.google.api.codegen.configgen.viewmodel.ResourceNameGenerationView;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicParser;
 import com.google.api.codegen.discovery.Document;
@@ -39,8 +38,6 @@ import java.util.TreeMap;
 /** Generates the config view object using a model and output path. */
 public class DiscoConfigTransformer {
   private static final String CONFIG_TEMPLATE_FILE = "configgen/gapic_config.snip";
-  private static final String CONFIG_DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
-  private static final String CONFIG_DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
   private static final String DEFAULT_CONFIG_SCHEMA_VERSION = "1.0.0";
 
@@ -74,7 +71,6 @@ public class DiscoConfigTransformer {
         .type(CONFIG_PROTO_TYPE)
         .configSchemaVersion(DEFAULT_CONFIG_SCHEMA_VERSION)
         .languageSettings(generateLanguageSettings(model.getDocument()))
-        .license(generateLicense())
         .interfaces(generateInterfaces(model, methodToNamePattern.build(), methodToResourceNames))
         .resourceNameGeneration(
             generateResourceNameGenerations(model.getDocument(), methodToResourceNames))
@@ -92,13 +88,6 @@ public class DiscoConfigTransformer {
     if (periodIndex < 0) periodIndex = model.ownerDomain().length();
     String org = model.ownerDomain().substring(0, periodIndex);
     return String.format("%s.%s.%s", org, model.name(), model.version());
-  }
-
-  private LicenseView generateLicense() {
-    return LicenseView.newBuilder()
-        .copyrightFile(CONFIG_DEFAULT_COPYRIGHT_FILE)
-        .licenseFile(CONFIG_DEFAULT_LICENSE_FILE)
-        .build();
   }
 
   private List<InterfaceView> generateInterfaces(

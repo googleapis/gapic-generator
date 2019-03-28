@@ -1,0 +1,348 @@
+@extends "ruby/common.snip"
+@extends "ruby/response.snip"
+
+@snippet generate(sampleFile)
+  @let apiMethod = sampleFile.libraryMethod
+    @let sample = sampleFile.sample
+      {@license(sampleFile.fileHeader)}
+
+      @# DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+      
+      require "{@apiMethod.initCode.topLevelIndexFileImportName}"
+
+      {@standaloneSample(apiMethod, sample)}
+    @end
+  @end
+@end
+
+@private standaloneSample(apiMethod, sample)
+  @# [START {@sample.regionTag}]
+  
+  @if not(sample.sampleFunctionDoc.isEmpty)
+    {@processSampleFunctionDoc(sample.sampleFunctionDoc)}
+  @end
+  @if sample.sampleInitCode.argDefaultParams.size
+    def {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)})
+  @else
+    def {@sample.sampleFunctionName}
+  @end
+    @# [START {@sample.regionTag}_core]
+    @# Instantiate a client
+    @if apiMethod.hasApiVersion
+      {@apiMethod.apiVariableName} = {@apiMethod.topLevelAliasedApiClassName}.new version: :{@apiMethod.apiVersion.toLowerCase}
+    @else
+      {@apiMethod.apiVariableName} = {@apiMethod.topLevelAliasedApiClassName}.new
+    @end
+
+    # Construct request
+    @if sample.sampleInitCode.lines
+      {@initCode(sample.sampleInitCode)}
+
+    @end
+    @switch sample.callingForm
+    @case "Request"
+      {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)}
+    @case "RequestPaged"
+      {@pagedOptionalArrayMethodSampleCode(apiMethod, sample)}
+    @case "RequestPagedAll"
+      {@pagedAllOptionalArrayMethodSampleCode(apiMethod, sample)}
+    @case "RequestStreamingBidi"
+      {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)}
+    @case "RequestStreamingClient"
+      {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)}
+    @case "RequestStreamingServer"
+      {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)}
+    @case "LongRunningRequestAsync"
+      {@longRunningAsyncMethodSampleCode(apiMethod, sample)}
+    @default
+      $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+    @end
+
+    @# [END {@sample.regionTag}_core]
+  end
+  @# [END {@sample.regionTag}]
+  
+  # Code below processes command-line arguments to execute this code sample.
+
+  require "optparse"
+
+  if $0 == __FILE__
+    @if sample.sampleInitCode.argDefaultParams
+      {@processCliArguments(sample.sampleInitCode.argDefaultParams)}
+
+    @end
+    @if sample.sampleInitCode.argDefaultParams.size
+      {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)})
+    @else
+      {@sample.sampleFunctionName}
+    @end
+  end
+@end
+
+@private processSampleFunctionDoc(doc)
+  @if doc.paramDocLines.isEmpty
+    @if doc.mainDocLines.size.toString == "1"
+      @# {@doc.mainDocLines.get(0)}
+    @end
+  @else
+    @if doc.mainDocLines.size
+      @join line : @doc.mainDocLines
+        {@""} # {@line}
+      @end
+
+      {@""} #
+
+    @end
+    @join paramDoc : doc.paramDocLines
+      @join line : paramDoc
+        {@""} # {@line}
+      @end
+    @end
+  @end
+@end
+
+@private longRunningAsyncMethodSampleCode(apiMethod, sample)
+  @# Make the long-running operation request
+  operation = {@methodCallSampleCode(apiMethod, sample)}
+
+  @# Block until operation complete
+  operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  results = operation.response.results
+  @if sample.outputs
+
+    {@processOutputViews(sample.outputs)}
+  @end
+@end
+
+@private optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)
+  @if apiMethod.hasReturnValue
+    response = {@methodCallSampleCode(apiMethod, sample)}
+    @if sample.outputs
+      {@processOutputViews(sample.outputs)}
+    @end
+  @else
+    {@methodCallSampleCode(apiMethod, sample)}
+    @if sample.outputs
+      
+      {@processOutputViews(sample.outputs)}
+    @end
+  @end
+@end
+
+@private optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)
+  {@methodCallSampleCode(apiMethod, sample)}.each do |element|
+    {@processOutputViews(sample.outputs)}
+  end
+@end
+
+@private optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)
+  requests = [request]
+  @if apiMethod.hasReturnValue
+    response = {@apiMethod.apiVariableName}.{@apiMethod.name}(requests, sample)
+  @else
+    {@apiMethod.apiVariableName}.{@apiMethod.name}(requests)
+  @end
+  @if sample.outputs
+    
+    {@processOutputViews(sample.outputs)}
+  @end
+@end
+
+@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)
+  requests = [request]
+  {@apiMethod.apiVariableName}.{@apiMethod.name}(requests).each do |element|
+    @if sample.outputs
+      {@processOutputViews(sample.outputs)}
+    @end
+  end
+@end
+
+@private pagedAllOptionalArrayMethodSampleCode(apiMethod, sample)
+  @# Iterate over all results.
+  {@methodCallSampleCode(apiMethod, sample)}.each do |element|
+    {@processOutputViews(sample.outputs)}
+  end
+@end
+
+@private pagedOptionalArrayMethodSampleCode(apiMethod, sample)
+  @# Iterate over results one page at a time.
+  {@methodCallSampleCode(apiMethod, sample)}.each_page do |page|
+    @# Process each page at a time.
+    page.each do |element|
+      @if sample.outputs
+        {@processOutputViews(sample.outputs)}
+      @end
+    end
+  end
+@end
+
+@private methodCallSampleCode(apiMethod, sample)
+  @if apiMethod.initCode.fieldSettings
+    {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod.initCode)})
+  @else
+    {@apiMethod.apiVariableName}.{@apiMethod.name}
+  @end
+@end
+
+@private sampleMethodCallArgList(initCode)
+  @join fieldSetting : initCode.requiredFieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+  @if initCode.optionalFieldSettings
+    @if initCode.requiredFieldSettings
+      ,{@" "}
+    @end
+    @join fieldSetting : initCode.optionalFieldSettings on ", "
+      {@fieldSetting.fieldName}: {@fieldSetting.identifier}
+    @end
+  @end
+@end
+
+@private processCliArguments(params)
+
+  @join param : params
+    {@param.identifier} = {@renderInitValue(param.initValue)}
+  @end
+
+  ARGV.options do |opts|
+    @join param: params
+      opts.on("--{@param.identifier}=val") { |val| {@param.identifier} = val }
+    @end
+    opts.parse!
+  end
+
+@end
+
+@private formalArgs(params)
+  @join param : params on ", "
+    {@param.identifier}
+  @end
+@end
+
+# Make a copy of init_code.snip because standalone samples prefer different styles
+# in setting up resource names from incode samples.
+@private initCode(initCodeSpec)
+  @if initCodeSpec.argDefaultLines
+    @join line : util.pretty(initCodeLines(initCodeSpec.argDefaultLines))
+      @# {@line}
+    @end
+
+
+  @end
+  {@initCodeLinesWithDescriptions(initCodeSpec.lines)}
+@end
+
+@private initCodeLines(lines)
+  @join line : lines
+    {@initCodeLine(line)}
+  @end
+@end
+
+@private initCodeLinesWithDescriptions(lines)
+  @join line : lines
+    @if line.descriptions
+
+      {@toComments(line.descriptions)}
+
+    @end
+    {@initCodeLine(line)}
+  @end
+@end
+
+@private initCodeLine(line)
+  @switch line.lineType.toString
+  @case "StructureInitLine"
+    {@initLineStructure(line)}
+  @case "ListInitLine"
+    {@initLineList(line)}
+  @case "MapInitLine"
+    {@initLineMap(line)}
+  @case "SimpleInitLine"
+    {@initLineSimple(line)}
+  @case "ReadFileInitLine"
+    {@initLineReadFile(line)}
+  @default
+    $unhandledCase: {@line.lineType.toString}$
+  @end
+@end
+
+@private initLineReadFile(line)
+  {@line.identifier} = File.binread {@renderInitValue(line.fileName)}
+@end
+
+@private initLineStructure(line)
+  @switch line.fieldSettings.size.toString
+  # Note: This empty case is not actually used in the current implementation;
+  # empty structs are initialized through SimpleInitLines.
+  @case "0"
+    {@line.identifier} = {}
+  @case "1"
+    {@singleLineInitStructure(line)}
+  @case "2"
+    {@singleLineInitStructure(line)}
+  @default
+    {@multiLineInitStructure(line)}
+  @end
+@end
+
+@private singleLineInitStructure(line)
+    {@line.identifier} = { {@structureFieldsList(line.fieldSettings)} }
+@end
+
+@private multiLineInitStructure(line)
+  {@line.identifier} = {
+    {@multilineStructureFieldsList(line.fieldSettings)}
+  }
+@end
+
+@private structureFieldsList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.fieldName}: {@fieldSetting.identifier}
+  @end
+@end
+
+@private multilineStructureFieldsList(fieldSettings)
+  @join fieldSetting : fieldSettings on ",".add(BREAK)
+    {@fieldSetting.fieldName}: {@fieldSetting.identifier}
+  @end
+@end
+
+@private initLineList(line)
+  {@line.identifier} = [{@varList(line.elementIdentifiers)}]
+@end
+
+@private varList(args)
+  @join arg : args on ", "
+    {@arg}
+  @end
+@end
+
+@private initLineMap(line)
+  {@line.identifier} = { {@keyVarList(line.initEntries)} }
+@end
+
+@private keyVarList(mapEntries)
+  @join mapEntry : mapEntries on ", "
+    {@mapEntry.key} => {@mapEntry.valueString}
+  @end
+@end
+
+@private initLineSimple(line)
+  {@line.identifier} = {@renderInitValue(line.initValue)}
+@end
+
+@snippet renderInitValue(initValue)
+  @switch initValue.type
+  @case "SimpleInitValueView"
+    {@initValue.initialValue}
+  @case "FormattedInitValueView"
+    {@initValue.apiVariableName}.class.{@initValue.formatFunctionName}\
+      ({@varList(initValue.formatArgs)})
+  @default
+    $unhandledCase: {@initValue.type}$
+  @end
+@end

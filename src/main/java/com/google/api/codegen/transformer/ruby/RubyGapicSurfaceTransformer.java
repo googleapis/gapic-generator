@@ -19,7 +19,6 @@ import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
@@ -207,13 +206,11 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
   }
 
   private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
-    ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
-    for (MethodModel method : context.getSupportedMethods()) {
-      apiMethods.add(
-          apiMethodTransformer.generateMethod(
-              context.asRequestMethodContext(method), context.getApiModel().hasMultipleServices()));
-    }
-    return apiMethods.build();
+    return apiMethodTransformer
+        .generateApiMethods(context)
+        .stream()
+        .map(view -> (ApiMethodView) view)
+        .collect(ImmutableList.toImmutableList());
   }
 
   private ViewModel generateVersionIndexView(ApiModel model, GapicProductConfig productConfig) {

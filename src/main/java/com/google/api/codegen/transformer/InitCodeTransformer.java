@@ -23,6 +23,7 @@ import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
 import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.FieldStructureParser;
@@ -85,9 +86,15 @@ public class InitCodeTransformer {
 
   private final ImportSectionTransformer importSectionTransformer;
 
-  // Whether the initialization code should include user-facing comments like TODOs. This should be
-  // false if the initialization code is being used to generate tests, rather than code samples.
-  private final boolean generateUserFacingComments;
+  // Whether the initialization code should include non-configurable comments like TODOs. This
+  // should only be true when generating in-code samples.
+  //
+  // This field should be set to false when generating tests since comments in unit tests are
+  // unnecessary.
+  //
+  // This field must be set to false when generating standalone samples because comments in
+  // standalone samples should be derived from user configurations, not hard-coded.
+  private final boolean generateStandardComments;
 
   public InitCodeTransformer() {
     this(new StandardImportSectionTransformer(), true);
@@ -97,14 +104,14 @@ public class InitCodeTransformer {
     this(importSectionTransformer, true);
   }
 
-  public InitCodeTransformer(boolean generateUserFacingComments) {
-    this(new StandardImportSectionTransformer(), generateUserFacingComments);
+  public InitCodeTransformer(boolean generateStandardComments) {
+    this(new StandardImportSectionTransformer(), generateStandardComments);
   }
 
   public InitCodeTransformer(
-      ImportSectionTransformer importSectionTransformer, boolean generateUserFacingComments) {
+      ImportSectionTransformer importSectionTransformer, boolean generateStandardComments) {
     this.importSectionTransformer = importSectionTransformer;
-    this.generateUserFacingComments = generateUserFacingComments;
+    this.generateStandardComments = generateStandardComments;
   }
 
   public ImportSectionTransformer getImportSectionTransformer() {
@@ -130,7 +137,9 @@ public class InitCodeTransformer {
       // Remove the request object for flattened method
       orderedItems.remove(orderedItems.size() - 1);
     }
-    for (InitCodeNode param : sampleFuncParams(root, initCodeContext.sampleArgStrings())) {
+    for (InitCodeNode param :
+        sampleFuncParams(
+            root, initCodeContext.sampleArgStrings(), initCodeContext.sampleParamConfigMap())) {
       List<InitCodeNode> paramInits = param.listInInitializationOrder();
       orderedItems.removeAll(paramInits);
     }
@@ -279,7 +288,8 @@ public class InitCodeTransformer {
         context,
         orderedItems,
         ImmutableList.copyOf(root.getChildren().values()),
-        sampleFuncParams(root, initCodeContext.sampleArgStrings()));
+        sampleFuncParams(
+            root, initCodeContext.sampleArgStrings(), initCodeContext.sampleParamConfigMap()));
   }
 
   private InitCodeView buildInitCodeViewRequestObject(
@@ -289,7 +299,8 @@ public class InitCodeTransformer {
         context,
         root.listInInitializationOrder(),
         ImmutableList.of(root),
-        sampleFuncParams(root, initCodeContext.sampleArgStrings()));
+        sampleFuncParams(
+            root, initCodeContext.sampleArgStrings(), initCodeContext.sampleParamConfigMap()));
   }
 
   /**
@@ -299,8 +310,11 @@ public class InitCodeTransformer {
    * <li>a normal node, returns that node.
    * <li>a ReadFile node, returns the child node of that node.
    * <li>a resource path, returns the child node whose key equals the entity name in the path.
+   *
+   * @param paramConfigMap the sample parameter configurations derived from {@code InitCodeContext}
    */
-  private List<InitCodeNode> sampleFuncParams(InitCodeNode root, List<String> paths) {
+  private List<InitCodeNode> sampleFuncParams(
+      InitCodeNode root, List<String> paths, Map<String, SampleParameterConfig> paramConfigMap) {
     List<InitCodeNode> params = new ArrayList<>();
     for (String path : paths) {
       Scanner scanner = new Scanner(path);
@@ -308,10 +322,15 @@ public class InitCodeTransformer {
       int token = scanner.lastToken();
       if (token == '%') {
         scanner.scan();
-        params.add(node.getChildren().get(scanner.tokenStr()));
+        node = node.getChildren().get(scanner.tokenStr());
+        node.setDescription(paramConfigMap.get(path).description());
+        params.add(node);
       } else if (node.getLineType() == InitCodeLineType.ReadFileInitLine) {
-        params.add(node.getChildren().get(InitCodeNode.FILE_NAME_KEY));
+        node = node.getChildren().get(InitCodeNode.FILE_NAME_KEY);
+        node.setDescription(paramConfigMap.get(path).description());
+        params.add(node);
       } else {
+        node.setDescription(paramConfigMap.get(path).description());
         params.add(node);
       }
     }
@@ -424,6 +443,7 @@ public class InitCodeTransformer {
               .identifier(simpleInitLine.identifier())
               .typeName(simpleInitLine.typeName())
               .cliFlagName(param.getIdentifier().toLowerUnderscore())
+              .description(param.getDescription())
               .build());
 
       // Since we're going to write the inits for the params here,
@@ -520,7 +540,7 @@ public class InitCodeTransformer {
     surfaceLine.typeName(typeName);
     surfaceLine.typeConstructor(namer.getTypeConstructor(typeName));
     surfaceLine.fieldSettings(getFieldSettings(context, item.getChildren().values()));
-
+    surfaceLine.descriptions(context.getNamer().getWrappedDocLines(item.getDescription(), false));
     return surfaceLine.build();
   }
 
@@ -548,7 +568,7 @@ public class InitCodeTransformer {
     }
     surfaceLine.elementIdentifiers(entries);
     surfaceLine.elements(elements);
-
+    surfaceLine.descriptions(context.getNamer().getWrappedDocLines(item.getDescription(), false));
     return surfaceLine.build();
   }
 
@@ -573,7 +593,7 @@ public class InitCodeTransformer {
       entries.add(mapEntry.build());
     }
     surfaceLine.initEntries(entries);
-
+    surfaceLine.descriptions(context.getNamer().getWrappedDocLines(item.getDescription(), false));
     return surfaceLine.build();
   }
 
@@ -589,9 +609,8 @@ public class InitCodeTransformer {
     ImportTypeTable typeTable = context.getTypeTable();
     checkState(
         item.getType().isBytesType(),
-        "Error setting %s to be read from file. "
-            + "Replacing field value with file contents is only allowed for fields of type 'bytes', "
-            + "but the type is %s.",
+        "Error setting %s to be read from file. Replacing field value with file contents is only"
+            + " allowed for fields of type 'bytes', but the type is %s.",
         item.getIdentifier(),
         item.getType());
     typeTable.getAndSaveNicknameFor(item.getType());
@@ -613,6 +632,7 @@ public class InitCodeTransformer {
         .identifier(namer.localVarName(item.getIdentifier()))
         .fileName(SimpleInitValueView.newBuilder().initialValue(value).build())
         .isFirstReadFileView(isFirstReadFileView)
+        .descriptions(namer.getWrappedDocLines(item.getDescription(), false))
         .build();
   }
 
@@ -691,7 +711,8 @@ public class InitCodeTransformer {
       if (context.getFeatureConfig().enableStringFormatFunctions()
           || fieldConfig.getResourceNameConfig() == null) {
         FormattedInitValueView.Builder formattedInitValue = FormattedInitValueView.newBuilder();
-
+        formattedInitValue.apiVariableName(
+            context.getNamer().getApiWrapperVariableName(context.getInterfaceConfig()));
         formattedInitValue.apiWrapperName(
             context.getNamer().getApiWrapperClassName(context.getInterfaceConfig()));
         formattedInitValue.fullyQualifiedApiWrapperName(
@@ -762,11 +783,12 @@ public class InitCodeTransformer {
     }
     surfaceLine.initValue(initValue);
     surfaceLine.needsLeadingNewline(!isFirstItem);
-    if (generateUserFacingComments) {
+    if (generateStandardComments) {
       surfaceLine.doc(context.getNamer().getDocLines(comment));
     } else {
       surfaceLine.doc(ImmutableList.of());
     }
+    surfaceLine.descriptions(context.getNamer().getWrappedDocLines(item.getDescription(), false));
   }
 
   private ResourceNameInitValueView.Builder createResourceNameInitValueView(

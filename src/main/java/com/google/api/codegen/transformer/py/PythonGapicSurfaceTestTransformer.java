@@ -278,8 +278,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     GapicMethodContext methodContext = context.asRequestMethodContext(method);
     FlatteningConfig flatteningGroup =
-        testCaseTransformer.getSmokeTestFlatteningGroup(
-            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
+        testCaseTransformer.getSmokeTestFlatteningGroup(context.getMethodConfig(method));
     GapicMethodContext flattenedMethodContext =
         context.asFlattenedMethodContext(methodContext, flatteningGroup);
     OptionalArrayMethodView apiMethodView =
@@ -309,7 +308,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
   private OptionalArrayMethodView createSmokeTestCaseApiMethodView(GapicMethodContext context) {
     OptionalArrayMethodView initialApiMethodView =
         new DynamicLangApiMethodTransformer(new PythonApiMethodParamTransformer())
-            .generateMethod(context);
+            .generateApiMethod(context);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
 

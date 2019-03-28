@@ -28,8 +28,6 @@ public abstract class SmokeTestConfig {
 
   public abstract List<String> getInitFieldConfigStrings();
 
-  public abstract String getFlatteningName();
-
   public static SmokeTestConfig createSmokeTestConfig(
       InterfaceModel apiInterface,
       SmokeTestConfigProto smokeTestConfigProto,
@@ -43,10 +41,7 @@ public abstract class SmokeTestConfig {
     }
 
     if (testedMethod != null) {
-      return new AutoValue_SmokeTestConfig(
-          testedMethod,
-          smokeTestConfigProto.getInitFieldsList(),
-          smokeTestConfigProto.getFlatteningGroupName());
+      return new AutoValue_SmokeTestConfig(testedMethod, smokeTestConfigProto.getInitFieldsList());
     } else {
       diagCollector.addDiag(
           Diag.error(SimpleLocation.TOPLEVEL, "The configured smoke test method does not exist."));

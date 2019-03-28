@@ -80,7 +80,6 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
       "py/versioned_directory__init__.py.snip";
   private static final String TOP_LEVEL_ENTRY_POINT_FILENAME = "py/top_level_entry_point.snip";
 
-  private static final SampleType sampleType = SampleType.IN_CODE;
   private final PythonImportSectionTransformer importSectionTransformer =
       new PythonImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -89,13 +88,11 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
       new DynamicLangApiMethodTransformer(
           new PythonApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
-              .sampleType(sampleType)
+              .sampleType(SampleType.IN_CODE)
               .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
               .sampleImportTransformer(
                   new StandardSampleImportTransformer(importSectionTransformer))
               .build());
-  private final PythonMethodViewGenerator methodGenerator =
-      new PythonMethodViewGenerator(apiMethodTransformer);
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
@@ -220,7 +217,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private DynamicLangXApiView.Builder generateApiView(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
-    List<OptionalArrayMethodView> methods = methodGenerator.generateApiMethods(context);
+    List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 

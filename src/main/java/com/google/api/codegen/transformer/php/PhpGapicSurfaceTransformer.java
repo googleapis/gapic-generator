@@ -478,7 +478,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     List<ApiMethodView> apiMethods = new ArrayList<>(context.getInterface().getMethods().size());
 
     for (MethodModel method : context.getSupportedMethods()) {
-      apiMethods.add(apiMethodTransformer.generateMethod(context.asRequestMethodContext(method)));
+      apiMethods.add(
+          apiMethodTransformer.generateApiMethod(context.asRequestMethodContext(method)));
     }
 
     return apiMethods;

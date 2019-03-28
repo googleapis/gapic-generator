@@ -29,6 +29,8 @@ public abstract class SampleFunctionParameterView {
   /** We need to keep the cli flag names in the same case (snake_case) across all languages. */
   public abstract String cliFlagName();
 
+  public abstract String description();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleFunctionParameterView.Builder();
   }
@@ -43,6 +45,8 @@ public abstract class SampleFunctionParameterView {
     public abstract Builder initValue(InitValueView val);
 
     public abstract Builder cliFlagName(String val);
+
+    public abstract Builder description(String val);
 
     public abstract SampleFunctionParameterView build();
   }

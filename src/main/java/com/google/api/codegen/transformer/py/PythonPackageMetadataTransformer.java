@@ -309,8 +309,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
       MethodModel method = interfaceConfig.getSmokeTestConfig().getMethod();
       GapicMethodContext methodContext = context.asRequestMethodContext(method);
       FlatteningConfig flatteningGroup =
-          testCaseTransformer.getSmokeTestFlatteningGroup(
-              context.getMethodConfig(method), interfaceConfig.getSmokeTestConfig());
+          testCaseTransformer.getSmokeTestFlatteningGroup(context.getMethodConfig(method));
       GapicMethodContext flattenedMethodContext =
           context.asFlattenedMethodContext(methodContext, flatteningGroup);
       exampleMethods.add(createExampleApiMethodView(flattenedMethodContext));
@@ -319,15 +318,12 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
   }
 
   private OptionalArrayMethodView createExampleApiMethodView(GapicMethodContext context) {
-    PythonMethodViewGenerator methodViewGenerator =
-        new PythonMethodViewGenerator(
-            new DynamicLangApiMethodTransformer(
-                new PythonApiMethodParamTransformer(),
-                SampleTransformer.newBuilder()
-                    .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
-                    .build()));
-
-    return methodViewGenerator.generateOneApiMethod(context);
+    return new DynamicLangApiMethodTransformer(
+            new PythonApiMethodParamTransformer(),
+            SampleTransformer.newBuilder()
+                .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
+                .build())
+        .generateApiMethod(context);
   }
 
   /**

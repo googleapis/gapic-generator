@@ -1,4 +1,4 @@
-/* Copyright 2017 Google LLC
+/* Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,29 +12,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.configgen.viewmodel;
+package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 
-/** Represents the configuration for the license header to put on generated files. */
 @AutoValue
-public abstract class LicenseView {
-  /** The file containing the copyright line(s). */
-  public abstract String copyrightFile();
+public abstract class SampleFunctionDocView {
 
-  /** The file containing the raw license header without any copyright line(s). */
-  public abstract String licenseFile();
+  public abstract ImmutableList<List<String>> paramDocLines();
+
+  /** Description of the sample function. */
+  public abstract ImmutableList<String> mainDocLines();
 
   public static Builder newBuilder() {
-    return new AutoValue_LicenseView.Builder();
+    return new AutoValue_SampleFunctionDocView.Builder();
+  }
+
+  public boolean isEmpty() {
+    return mainDocLines().isEmpty() && paramDocLines().isEmpty();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder copyrightFile(String val);
 
-    public abstract Builder licenseFile(String val);
+    public abstract Builder paramDocLines(ImmutableList<List<String>> val);
 
-    public abstract LicenseView build();
+    public abstract Builder mainDocLines(ImmutableList<String> val);
+
+    public abstract SampleFunctionDocView build();
   }
 }

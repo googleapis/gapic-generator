@@ -27,7 +27,7 @@ language_settings:
   csharp:
     package_name: Google.Example.Library.V1
 license_header:
-  copyright_file: copyright-google.txt
+  copyright_file: copyright-google.txt # Test that the deprecated field is still parseable.
   license_file: license-header-apache-2.0.txt
 collections:
   - name_pattern: shelves/{shelf_id}
@@ -95,7 +95,6 @@ interfaces:
       - name%shelf_id="testShelf-$RANDOM"
       - name%book_id=$PROJECT_ID
       - book . rating=GOOD
-    flattening_group_name: update_book_2
   methods:
   - name: CreateShelf
     flattening:
@@ -107,7 +106,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 1000
-    resource_name_treatment: STATIC_TYPES
   - name: GetShelf
     flattening:
       groups:
@@ -157,9 +155,22 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 4000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
+    sample_value_sets:
+    - id: empty_response_type_with_response_handling
+      title: "Test response handling for methods that return empty"
+      description: "Test response handling for methods that return empty"
+      on_success:
+      - comment: "Shelf deleted"
+      - print: "Shelf deleted."
+    - id: empty_response_type_without_response_handling
+      title: "Test default response handling is turned off for methods that return empty"
+      description: "Test default response handling is turned off for methods that return empty"
+    samples:
+      standalone:
+      - calling_forms: ".*"
+        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
   - name: MergeShelves
     flattening:
       groups:
@@ -172,7 +183,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 5000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
       other_shelf_name: shelf
@@ -192,10 +202,13 @@ interfaces:
     resource_name_treatment: NONE
     field_name_patterns:
       name: shelf
+      shelf.name: shelf
     header_request_params:
     - name
     - book.read
   - name: PublishSeries
+    field_name_patterns:
+      shelf.name: shelf
     flattening:
       groups:
       - parameters:
@@ -210,8 +223,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 7000
-    header_request_params:
-      - shelf.name
     batching:
       thresholds:
         element_count_threshold: 6
@@ -225,7 +236,6 @@ interfaces:
           - edition
           - shelf.name
         subresponse_field: book_names
-    resource_name_treatment: STATIC_TYPES
     sample_code_init_fields:
     - series_uuid.series_string=foobar
     sample_value_sets:
@@ -234,7 +244,7 @@ interfaces:
       # callingFormCheck: pi_version py: Request
     - id: pi_version
       title: "Pi version"
-      description: "Testing calling forms"
+      description: "Testing <@calling forms>"
       parameters:
         defaults:
         - shelf.name=Math
@@ -243,8 +253,10 @@ interfaces:
         attributes:
         - parameter: shelf.name
           sample_argument_name: shelf_name
+          description: "The name of the shelf where books are published to."
         - parameter: edition
           sample_argument_name: edition
+          description: "The edition of the series."
       on_success:
       - comment:
         - "%% %% %% output handling %% %% %% %%"
@@ -292,6 +304,35 @@ interfaces:
       parameters:
         defaults:
         - edition=2
+    - id: test_request_object_field_comments
+      title: "request object field comments"
+      description: "Test request object field comments"
+      parameters:
+        defaults:
+        - shelf.name%shelf_id="math"
+        - shelf.theme=Math
+        - shelf.internal_theme=Statistics
+        - series_uuid.series_bytes="xyz3141592654"
+        - edition=123
+        attributes:
+        - parameter: shelf.internal_theme
+          description: "Comment on a primitive field"
+        - parameter: series_uuid.series_bytes
+          read_file: true
+          description: "Comment on a file input field"
+        - parameter: series_uuid
+          description: "Comment on a message"
+          # TODO(hzyi): this comment is currently not generated because resource name 
+          # entities are inline literals. We need to revisit this issue when we start
+          # looking at making inline literals configurable
+        - parameter: shelf.name%shelf_id
+          description: "Comment on a resource name entity"
+        - parameter: shelf.name
+          description: "Comment on a resource name"
+        - parameter: edition
+          description: "A super long long long long long long long long long long long long long long comment that tests word wrapping"
+        - parameter: shelf.theme
+          description: "A super long comment\nwraps words at newline characters\nas well"
     samples:
       in_code:
       - calling_forms: [callable]
@@ -307,18 +348,18 @@ interfaces:
         region_tag: "canonical"
       - calling_forms: callable
         value_sets: ["sample_code_init_fields"]       # implicit, from deprecated field
+      - calling_forms: request
+        value_sets: ["test_request_object_field_comments"]
   - name: GetBook
     flattening:
       groups:
-      - flattening_group_name: get_book_1
-        parameters:
+      - parameters:
         - name
     required_fields:
       - name
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 8000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
     sample_value_sets:
@@ -368,7 +409,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
     sample_code_init_fields:
@@ -385,18 +425,15 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     # leaving commented out to test the default
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
   - name: UpdateBook
     flattening:
       groups:
-      - flattening_group_name: update_book_1
-        parameters:
+      - parameters:
         - name
         - book
-      - flattening_group_name: update_book_2
-        parameters:
+      - parameters:
         - name
         - optional_foo
         - book
@@ -408,7 +445,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
   - name: MoveBook
@@ -423,7 +459,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
       other_shelf_name: shelf
@@ -443,7 +478,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: "*"
   - name: AddComments
@@ -486,9 +520,12 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: archived_book
+    surface_treatments:
+      - include_languages:
+          - go
+        visibility: DISABLED
   - name: GetBookFromAnywhere
     flattening:
       groups:
@@ -501,7 +538,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book_oneof
       alt_book_name: book
@@ -515,9 +551,11 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
-    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book_oneof
+    header_request_params:
+      - name
+      - alt_book_name
   - name: UpdateBookIndex
     flattening:
       groups:
@@ -529,7 +567,6 @@ interfaces:
     - name
     - index_name
     - index_map
-    resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
@@ -563,7 +600,6 @@ interfaces:
       - calling_forms: ".*"
         value_sets: ".*"
   - name: StreamBooks
-    resource_name_treatment: STATIC_TYPES
     flattening:
       groups:
       - parameters:
@@ -666,6 +702,21 @@ interfaces:
       api_explorer:
       - calling_forms: ".*"
         value_sets: ".*"
+  - name: BabbleAboutBook
+    sample_value_sets:
+    - id: empty_response_type_with_response_handling
+      title: "Test response handling for methods that return empty"
+      description: "Test response handling for methods that return empty"
+      on_success:
+      - comment: "No one replied"
+      - print: "No one replied."
+    - id: empty_response_type_without_response_handling
+      title: "Test default response handling is turned off for methods that return empty"
+      description: "Test default response handling is turned off for methods that return empty"
+    samples:
+      standalone:
+      - calling_forms: ".*"
+        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
   - name: FindRelatedBooks
     flattening:
       groups:
@@ -685,7 +736,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 3000
-    resource_name_treatment: STATIC_TYPES
     sample_code_init_fields:
     - names[0]
     # TODO(michaelbausor): support %-entity notation for list elements
@@ -735,6 +785,12 @@ interfaces:
     surface_treatments:
     - include_languages:
       - go
+      - java
+      - php
+      - nodejs
+      - csharp
+      - ruby
+      - python
       visibility: DISABLED
   - name: AddLabel
     flattening:
@@ -765,7 +821,6 @@ interfaces:
         - name
     required_fields:
     - name
-    resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -840,8 +895,10 @@ interfaces:
         attributes:
         - parameter: name%shelf_id
           sample_argument_name: shelf
+          description: "Test word wrapping for long lines. This is a long comment. The name of the shelf to retrieve the big book from."
         - parameter: name%book_id
           sample_argument_name: big_book_name
+          description: "The name of the book."
     samples:
       standalone:
       - calling_forms: ".*"
@@ -854,7 +911,6 @@ interfaces:
         - name
     required_fields:
     - name
-    resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -868,6 +924,20 @@ interfaces:
       poll_delay_multiplier: 1.3
       max_poll_delay_millis: 60000
       total_poll_timeout_millis: 600000
+    sample_value_sets:
+    - id: empty_response_type_with_response_handling
+      title: "Test response handling for methods that return empty"
+      description: "Test response handling for methods that return empty"
+      on_success:
+      - comment: "Got nothing"
+      - print: "Got nothing."
+    - id: empty_response_type_without_response_handling
+      title: "Test default response handling is turned off for methods that return empty"
+      description: "Test default response handling is turned off for methods that return empty"
+    samples:
+      standalone:
+      - calling_forms: ".*"
+        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
   - name: TestOptionalRequiredFlatteningParams
     flattening:
       groups:
@@ -993,7 +1063,6 @@ interfaces:
     - required_repeated_fixed32
     - required_repeated_fixed64
     - required_map
-    resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:

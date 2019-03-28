@@ -64,14 +64,12 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
       new DynamicLangApiMethodTransformer(
           new PythonApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
-              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer))
+              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer, false))
               .sampleType(sampleType)
               .outputTransformer(new OutputTransformer(new PythonSampleOutputImportTransformer()))
               .sampleImportTransformer(
                   new StandardSampleImportTransformer(importSectionTransformer))
               .build());
-  private final PythonMethodViewGenerator methodGenerator =
-      new PythonMethodViewGenerator(apiMethodTransformer);
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
 
@@ -155,7 +153,7 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
     SurfaceNamer namer = context.getNamer();
     SampleFileRegistry generatedSamples = new SampleFileRegistry();
 
-    List<OptionalArrayMethodView> allmethods = methodGenerator.generateApiMethods(context);
+    List<OptionalArrayMethodView> allmethods = apiMethodTransformer.generateApiMethods(context);
 
     DynamicLangSampleView.Builder sampleClassBuilder = DynamicLangSampleView.newBuilder();
     for (OptionalArrayMethodView method : allmethods) {

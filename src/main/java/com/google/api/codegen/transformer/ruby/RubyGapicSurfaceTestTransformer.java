@@ -246,8 +246,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
     TestCaseTransformer testCaseTransformer =
         new TestCaseTransformer(valueProducer, packageHasMultipleServices);
     FlatteningConfig flatteningGroup =
-        testCaseTransformer.getSmokeTestFlatteningGroup(
-            methodContext.getMethodConfig(), context.getInterfaceConfig().getSmokeTestConfig());
+        testCaseTransformer.getSmokeTestFlatteningGroup(methodContext.getMethodConfig());
     GapicMethodContext flattenedMethodContext =
         context.asFlattenedMethodContext(methodContext, flatteningGroup);
 
@@ -281,7 +280,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer<P
       GapicMethodContext context, boolean packageHasMultipleServices) {
     OptionalArrayMethodView initialApiMethodView =
         new DynamicLangApiMethodTransformer(new RubyApiMethodParamTransformer())
-            .generateMethod(context, packageHasMultipleServices);
+            .generateApiMethod(context);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
     TestCaseTransformer testCaseTransformer =

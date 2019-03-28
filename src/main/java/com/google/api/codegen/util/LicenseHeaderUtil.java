@@ -78,13 +78,7 @@ public class LicenseHeaderUtil {
   }
 
   public ImmutableList<String> loadCopyrightLines() {
-    String filepath;
-    if (licenseHeader == null || Strings.isNullOrEmpty(licenseHeader.getCopyrightFile())) {
-      filepath = DEFAULT_COPYRIGHT_FILE;
-    } else {
-      filepath = licenseHeader.getCopyrightFile();
-    }
-    return getResourceLines(filepath);
+    return getResourceLines(DEFAULT_COPYRIGHT_FILE);
   }
 
   private ImmutableList<String> getResourceLines(String resourceFileName) {

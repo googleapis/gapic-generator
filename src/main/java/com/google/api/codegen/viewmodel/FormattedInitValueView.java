@@ -19,6 +19,8 @@ import java.util.List;
 
 @AutoValue
 public abstract class FormattedInitValueView implements InitValueView {
+  public abstract String apiVariableName();
+
   public abstract String apiWrapperName();
 
   public abstract String fullyQualifiedApiWrapperName();
@@ -39,6 +41,8 @@ public abstract class FormattedInitValueView implements InitValueView {
 
   @AutoValue.Builder
   public abstract static class Builder {
+    public abstract Builder apiVariableName(String val);
+
     public abstract Builder apiWrapperName(String val);
 
     public abstract Builder fullyQualifiedApiWrapperName(String val);

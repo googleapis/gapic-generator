@@ -17,8 +17,8 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.OutputSpec;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodContext;
-import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
@@ -67,8 +67,13 @@ public class OutputTransformer {
     return this.importTransformer;
   }
 
-  static List<OutputSpec> defaultOutputSpecs(MethodModel method) {
-    if (method.isOutputTypeEmpty()) {
+  static List<OutputSpec> defaultOutputSpecs(MethodContext methodContext) {
+    if (methodContext.getMethodModel().isOutputTypeEmpty()) {
+      return Collections.emptyList();
+    }
+    // We also need to check for LROs whose return values are empty
+    LongRunningConfig lroConfig = methodContext.getLongRunningConfig();
+    if (lroConfig != null && lroConfig.getReturnType().isEmptyType()) {
       return Collections.emptyList();
     }
     return Collections.singletonList(

@@ -120,6 +120,359 @@ clean {
   delete 'all-jars'
 }
 
+============== file: samples/src/main/java/com/google/example/examples/library/v1/BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.gax.rpc.ApiStreamObserver;
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.gax.rpc.ApiStreamObserver;
+ * import com.google.example.library.v1.DiscussBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ */
+public class BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithResponseHandling {
+  /** Test response handling for methods that return empty */
+  public static void sampleBabbleAboutBook() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ApiStreamObserver<Void> responseObserver =
+          new ApiStreamObserver<Void>() {
+            @Override
+            public void onNext(Void response) {
+              // No one replied
+              System.out.println("No one replied.");
+            }
+
+            @Override
+            public void onError(Throwable t) {
+              // Add error-handling
+            }
+
+            @Override
+            public void onCompleted() {
+              // Do something when complete.
+            }
+          };
+      ApiStreamObserver<DiscussBookRequest> requestObserver =
+          libraryClient.babbleAboutBookCallable().clientStreamingCall(responseObserver);
+
+      DiscussBookRequest request = DiscussBookRequest.newBuilder().build();
+      requestObserver.onNext(request);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleBabbleAboutBook();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.gax.rpc.ApiStreamObserver;
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.gax.rpc.ApiStreamObserver;
+ * import com.google.example.library.v1.DiscussBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ */
+public class BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithoutResponseHandling {
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleBabbleAboutBook() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ApiStreamObserver<Void> responseObserver =
+          new ApiStreamObserver<Void>() {
+            @Override
+            public void onNext(Void response) {}
+
+            @Override
+            public void onError(Throwable t) {
+              // Add error-handling
+            }
+
+            @Override
+            public void onCompleted() {
+              // Do something when complete.
+            }
+          };
+      ApiStreamObserver<DiscussBookRequest> requestObserver =
+          libraryClient.babbleAboutBookCallable().clientStreamingCall(responseObserver);
+
+      DiscussBookRequest request = DiscussBookRequest.newBuilder().build();
+      requestObserver.onNext(request);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleBabbleAboutBook();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfCallableCallableEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.core.ApiFuture;
+ * import com.google.example.library.v1.DeleteShelfRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfName;
+ */
+public class DeleteShelfCallableCallableEmptyResponseTypeWithResponseHandling {
+  /** Test response handling for methods that return empty */
+  public static void sampleDeleteShelf() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Void> future = libraryClient.deleteShelfCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+      // Shelf deleted
+      System.out.println("Shelf deleted.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfCallableCallableEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.core.ApiFuture;
+ * import com.google.example.library.v1.DeleteShelfRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfName;
+ */
+public class DeleteShelfCallableCallableEmptyResponseTypeWithoutResponseHandling {
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleDeleteShelf() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Void> future = libraryClient.deleteShelfCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Flattened",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfName;
+ */
+public class DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling {
+  /** Test response handling for methods that return empty */
+  public static void sampleDeleteShelf() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      libraryClient.deleteShelf(name.toString());
+      // Shelf deleted
+      System.out.println("Shelf deleted.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Flattened",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfName;
+ */
+public class DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling {
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleDeleteShelf() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      libraryClient.deleteShelf(name.toString());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfRequestEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.DeleteShelfRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfName;
+ */
+public class DeleteShelfRequestEmptyResponseTypeWithResponseHandling {
+  /** Test response handling for methods that return empty */
+  public static void sampleDeleteShelf() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      libraryClient.deleteShelf(request);
+      // Shelf deleted
+      System.out.println("Shelf deleted.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.DeleteShelfRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfName;
+ */
+public class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling {
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleDeleteShelf() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      libraryClient.deleteShelf(request);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/DiscussBookCallableCallableStreamingBidiProg.java ==============
 // DO NOT EDIT! This is a generated sample ("CallableStreamingBidi",  "prog")
 package com.google.example.examples.library.v1;
@@ -151,6 +504,7 @@ import java.nio.file.Paths;
  * import java.nio.file.Paths;
  */
 public class DiscussBookCallableCallableStreamingBidiProg {
+  /** Testing calling forms */
   public static void sampleDiscussBook(String imageFileName) {
     // [START turing_prog_callable_streaming_bidi_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -227,6 +581,7 @@ import java.util.List;
  * import java.util.List;
  */
 public class FindRelatedBooksCallableCallableListOdyssey {
+  /** Testing calling forms */
   public static void sampleFindRelatedBooks() {
     // [START sample_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -287,6 +642,7 @@ import java.util.List;
  * import java.util.List;
  */
 public class FindRelatedBooksFlattenedPagedOdyssey {
+  /** Testing calling forms */
   public static void sampleFindRelatedBooks() {
     // [START sample_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -342,6 +698,7 @@ import java.util.List;
  * import java.util.List;
  */
 public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
+  /** Testing calling forms */
   public static void sampleFindRelatedBooks() {
     // [START sample_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -397,6 +754,7 @@ import java.util.List;
  * import java.util.List;
  */
 public class FindRelatedBooksRequestPagedOdyssey {
+  /** Testing calling forms */
   public static void sampleFindRelatedBooks() {
     // [START sample_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -450,6 +808,7 @@ import java.util.Map;
  * import java.util.Map;
  */
 public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
+  /** Testing calling forms */
   public static void sampleGetBigBook(String shelf) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -520,6 +879,13 @@ import com.google.example.library.v1.ShelfBookName;
  * import com.google.example.library.v1.ShelfBookName;
  */
 public class GetBigBookAsyncLongRunningFlattenedAsyncWap2 {
+  /**
+   * Testing resource name overlap
+   *
+   * @param shelf Test word wrapping for long lines. This is a long comment. The name of the shelf to
+   * retrieve the big book from.
+   * @param bigBookName The name of the book.
+   */
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -586,6 +952,7 @@ import java.util.Map;
  * import java.util.Map;
  */
 public class GetBigBookAsyncLongRunningRequestAsyncWap {
+  /** Testing calling forms */
   public static void sampleGetBigBook(String shelf) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -661,6 +1028,13 @@ import com.google.example.library.v1.ShelfBookName;
  * import com.google.example.library.v1.ShelfBookName;
  */
 public class GetBigBookAsyncLongRunningRequestAsyncWap2 {
+  /**
+   * Testing resource name overlap
+   *
+   * @param shelf Test word wrapping for long lines. This is a long comment. The name of the shelf to
+   * retrieve the big book from.
+   * @param bigBookName The name of the book.
+   */
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -732,6 +1106,7 @@ import java.util.Map;
  * import java.util.Map;
  */
 public class GetBigBookCallableCallableWap {
+  /** Testing calling forms */
   public static void sampleGetBigBook(String shelf) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -813,6 +1188,13 @@ import com.google.longrunning.Operation;
  * import com.google.longrunning.Operation;
  */
 public class GetBigBookCallableCallableWap2 {
+  /**
+   * Testing resource name overlap
+   *
+   * @param shelf Test word wrapping for long lines. This is a long comment. The name of the shelf to
+   * retrieve the big book from.
+   * @param bigBookName The name of the book.
+   */
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -890,6 +1272,7 @@ import java.util.Map;
  * import java.util.Map;
  */
 public class GetBigBookOperationCallableLongRunningCallableWap {
+  /** Testing calling forms */
   public static void sampleGetBigBook(String shelf) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -973,6 +1356,13 @@ import com.google.example.library.v1.ShelfBookName;
  * import com.google.example.library.v1.ShelfBookName;
  */
 public class GetBigBookOperationCallableLongRunningCallableWap2 {
+  /**
+   * Testing resource name overlap
+   *
+   * @param shelf Test word wrapping for long lines. This is a long comment. The name of the shelf to
+   * retrieve the big book from.
+   * @param bigBookName The name of the book.
+   */
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -1019,6 +1409,361 @@ public class GetBigBookOperationCallableLongRunningCallableWap2 {
 // FIXME: Insert here clean-up code.
 
 // [END hopper]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.Empty;
+ */
+public class GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithResponseHandling {
+  /** Test response handling for methods that return empty */
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      libraryClient.getBigNothingAsync(name.toString()).get();
+      // Got nothing
+      System.out.println("Got nothing.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.Empty;
+ */
+public class GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithoutResponseHandling {
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      libraryClient.getBigNothingAsync(name.toString()).get();
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.Empty;
+ */
+public class GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithResponseHandling {
+  /** Test response handling for methods that return empty */
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      libraryClient.getBigNothingAsync(request).get();
+      // Got nothing
+      System.out.println("Got nothing.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.Empty;
+ */
+public class GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithoutResponseHandling {
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      libraryClient.getBigNothingAsync(request).get();
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingCallableCallableEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.longrunning.Operation;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.core.ApiFuture;
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.longrunning.Operation;
+ */
+public class GetBigNothingCallableCallableEmptyResponseTypeWithResponseHandling {
+  /** Test response handling for methods that return empty */
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Operation> future = libraryClient.getBigNothingCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+      // Got nothing
+      System.out.println("Got nothing.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingCallableCallableEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("Callable",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.longrunning.Operation;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.core.ApiFuture;
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.longrunning.Operation;
+ */
+public class GetBigNothingCallableCallableEmptyResponseTypeWithoutResponseHandling {
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Operation> future = libraryClient.getBigNothingCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "empty_response_type_with_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.GetBigBookMetadata;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.gax.longrunning.OperationFuture;
+ * import com.google.example.library.v1.GetBigBookMetadata;
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.Empty;
+ */
+public class GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithResponseHandling {
+  /** Test response handling for methods that return empty */
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingOperationCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+      // Got nothing
+      System.out.println("Got nothing.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithoutResponseHandling.java ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "empty_response_type_without_response_handling")
+package com.google.example.examples.library.v1;
+
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.GetBigBookMetadata;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.gax.longrunning.OperationFuture;
+ * import com.google.example.library.v1.GetBigBookMetadata;
+ * import com.google.example.library.v1.GetBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ShelfBookName;
+ * import com.google.protobuf.Empty;
+ */
+public class GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithoutResponseHandling {
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleGetBigNothing() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingOperationCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBookCallableCallableTestOnSuccessMap.java ==============
 // DO NOT EDIT! This is a generated sample ("Callable",  "test_on_success_map")
 package com.google.example.examples.library.v1;
@@ -1174,6 +1919,7 @@ import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.LibraryClient;
  */
 public class MonologAboutBookCallableCallableStreamingClientProg {
+  /** Testing calling forms */
   public static void sampleMonologAboutBook() {
     // [START sample_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -1248,6 +1994,12 @@ import java.util.List;
  * import java.util.List;
  */
 public class PublishSeriesCallableCallablePiVersion {
+  /**
+   * Testing &lt;{@literal @}calling forms&gt;
+   *
+   * @param shelfName The name of the shelf where books are published to.
+   * @param edition The edition of the series.
+   */
   public static void samplePublishSeries(String shelfName, int edition) {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -1355,6 +2107,7 @@ import java.util.List;
  * import java.util.List;
  */
 public class PublishSeriesCallableCallableSecondEdition {
+  /** Testing calling forms */
   public static void samplePublishSeries() {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -1416,6 +2169,12 @@ import java.util.List;
  * import java.util.List;
  */
 public class PublishSeriesFlattenedPiVersion {
+  /**
+   * Testing &lt;{@literal @}calling forms&gt;
+   *
+   * @param shelfName The name of the shelf where books are published to.
+   * @param edition The edition of the series.
+   */
   public static void samplePublishSeries(String shelfName, int edition) {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -1509,6 +2268,7 @@ import java.util.List;
  * import java.util.List;
  */
 public class PublishSeriesFlattenedSecondEdition {
+  /** Testing calling forms */
   public static void samplePublishSeries() {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -1562,6 +2322,12 @@ import java.util.List;
  * import java.util.List;
  */
 public class PublishSeriesRequestPiVersion {
+  /**
+   * Testing &lt;{@literal @}calling forms&gt;
+   *
+   * @param shelfName The name of the shelf where books are published to.
+   * @param edition The edition of the series.
+   */
   public static void samplePublishSeries(String shelfName, int edition) {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -1663,6 +2429,7 @@ import java.util.List;
  * import java.util.List;
  */
 public class PublishSeriesRequestSecondEdition {
+  /** Testing calling forms */
   public static void samplePublishSeries() {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -1691,6 +2458,98 @@ public class PublishSeriesRequestSecondEdition {
 // FIXME: Insert here clean-up code.
 
 // [END canonical]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/PublishSeriesRequestTestRequestObjectFieldComments.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import com.google.protobuf.ByteString;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.PublishSeriesRequest;
+ * import com.google.example.library.v1.PublishSeriesResponse;
+ * import com.google.example.library.v1.SeriesUuid;
+ * import com.google.example.library.v1.Shelf;
+ * import com.google.protobuf.ByteString;
+ * import java.nio.file.Files;
+ * import java.nio.file.Path;
+ * import java.nio.file.Paths;
+ * import java.util.ArrayList;
+ * import java.util.List;
+ */
+public class PublishSeriesRequestTestRequestObjectFieldComments {
+  /** Test request object field comments */
+  public static void samplePublishSeries() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+
+      // Comment on a resource name
+      String formattedName = LibraryClient.formatShelfName("math");
+
+      // A super long comment
+      // wraps words at newline characters
+      // as well
+      String theme = "Math";
+
+      // Comment on a primitive field
+      String internalTheme = "Statistics";
+      Shelf shelf = Shelf.newBuilder()
+        .setName(formattedName)
+        .setTheme(theme)
+        .setInternalTheme(internalTheme)
+        .build();
+      List<Book> books = new ArrayList<>();
+
+      // Comment on a file input field
+      String fileName = "xyz3141592654";
+      Path path = Paths.get(fileName);
+      byte[] data = Files.readAllBytes(path);
+      ByteString seriesBytes = ByteString.copyFrom(data);
+
+      // Comment on a message
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesBytes(seriesBytes)
+        .build();
+
+      // A super long long long long long long long long long long long long long long comment that tests
+      // word wrapping
+      int edition = 123;
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(request);
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/StreamBooksCallableCallableStreamingServerProg.java ==============
 // DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "prog")
 package com.google.example.examples.library.v1;
@@ -1710,6 +2569,7 @@ import com.google.example.library.v1.StreamBooksRequest;
  * import com.google.example.library.v1.StreamBooksRequest;
  */
 public class StreamBooksCallableCallableStreamingServerProg {
+  /** Testing calling forms */
   public static void sampleStreamBooks() {
     // [START babbage_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -1754,6 +2614,7 @@ import com.google.example.library.v1.StreamShelvesResponse;
  * import com.google.example.library.v1.StreamShelvesResponse;
  */
 public class StreamShelvesCallableCallableStreamingServerEmpty {
+  /** Testing calling forms */
   public static void sampleStreamShelves() {
     // [START sample_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
@@ -1843,8 +2704,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
@@ -1959,7 +2818,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a shelf resource.
+   *
+   * @deprecated Use the {@link ShelfName} class instead.
    */
+  @Deprecated
   public static final String formatShelfName(String shelfId) {
     return SHELF_PATH_TEMPLATE.instantiate(
         "shelf_id", shelfId);
@@ -1968,7 +2830,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a shelf_book resource.
+   *
+   * @deprecated Use the {@link ShelfBookName} class instead.
    */
+  @Deprecated
   public static final String formatShelfBookName(String shelfId, String bookId) {
     return SHELF_BOOK_PATH_TEMPLATE.instantiate(
         "shelf_id", shelfId,
@@ -1978,7 +2843,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a return resource.
+   *
+   * @deprecated Use the {@link ReturnName} class instead.
    */
+  @Deprecated
   public static final String formatReturnName(String shelf, String book, String return_) {
     return RETURN_PATH_TEMPLATE.instantiate(
         "shelf", shelf,
@@ -1989,7 +2857,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a project resource.
+   *
+   * @deprecated Use the {@link com.google.cloud.ProjectName} class instead.
    */
+  @Deprecated
   public static final String formatProjectName(String project) {
     return PROJECT_PATH_TEMPLATE.instantiate(
         "project", project);
@@ -1998,7 +2869,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
    */
+  @Deprecated
   public static final String formatArchivedBookName(String archivePath, String bookId) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
         "archive_path", archivePath,
@@ -2008,7 +2882,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the shelf_id from the given fully-qualified path which
    * represents a shelf resource.
+   *
+   * @deprecated Use the {@link ShelfName} class instead.
    */
+  @Deprecated
   public static final String parseShelfIdFromShelfName(String shelfName) {
     return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf_id");
   }
@@ -2016,7 +2893,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the shelf_id from the given fully-qualified path which
    * represents a shelf_book resource.
+   *
+   * @deprecated Use the {@link ShelfBookName} class instead.
    */
+  @Deprecated
   public static final String parseShelfIdFromShelfBookName(String shelfBookName) {
     return SHELF_BOOK_PATH_TEMPLATE.parse(shelfBookName).get("shelf_id");
   }
@@ -2024,7 +2904,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the book_id from the given fully-qualified path which
    * represents a shelf_book resource.
+   *
+   * @deprecated Use the {@link ShelfBookName} class instead.
    */
+  @Deprecated
   public static final String parseBookIdFromShelfBookName(String shelfBookName) {
     return SHELF_BOOK_PATH_TEMPLATE.parse(shelfBookName).get("book_id");
   }
@@ -2032,7 +2915,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the shelf from the given fully-qualified path which
    * represents a return resource.
+   *
+   * @deprecated Use the {@link ReturnName} class instead.
    */
+  @Deprecated
   public static final String parseShelfFromReturnName(String returnName) {
     return RETURN_PATH_TEMPLATE.parse(returnName).get("shelf");
   }
@@ -2040,7 +2926,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the book from the given fully-qualified path which
    * represents a return resource.
+   *
+   * @deprecated Use the {@link ReturnName} class instead.
    */
+  @Deprecated
   public static final String parseBookFromReturnName(String returnName) {
     return RETURN_PATH_TEMPLATE.parse(returnName).get("book");
   }
@@ -2048,7 +2937,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the return from the given fully-qualified path which
    * represents a return resource.
+   *
+   * @deprecated Use the {@link ReturnName} class instead.
    */
+  @Deprecated
   public static final String parseReturnFromReturnName(String returnName) {
     return RETURN_PATH_TEMPLATE.parse(returnName).get("return");
   }
@@ -2056,7 +2948,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the project from the given fully-qualified path which
    * represents a project resource.
+   *
+   * @deprecated Use the {@link com.google.cloud.ProjectName} class instead.
    */
+  @Deprecated
   public static final String parseProjectFromProjectName(String projectName) {
     return PROJECT_PATH_TEMPLATE.parse(projectName).get("project");
   }
@@ -2064,7 +2959,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the archive_path from the given fully-qualified path which
    * represents a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
    */
+  @Deprecated
   public static final String parseArchivePathFromArchivedBookName(String archivedBookName) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive_path");
   }
@@ -2072,7 +2970,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the book_id from the given fully-qualified path which
    * represents a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
    */
+  @Deprecated
   public static final String parseBookIdFromArchivedBookName(String archivedBookName) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book_id");
   }
@@ -2320,10 +3221,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .setOptions(options)
    *     .build();
    *   Shelf response = libraryClient.getShelf(request);
@@ -2344,10 +3245,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .setOptions(options)
    *     .build();
    *   ApiFuture&lt;Shelf&gt; future = libraryClient.getShelfCallable().futureCall(request);
@@ -4172,6 +5073,43 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
+   * Test samplegen response handling when a client streaming method returns Empty.
+   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ApiStreamObserver&lt;Void&gt; responseObserver =
+   *       new ApiStreamObserver&lt;Void&gt;() {
+   *         {@literal @}Override
+   *         public void onNext(Void response) {
+   *           // Do something when receive a response
+   *         }
+   *
+   *         {@literal @}Override
+   *         public void onError(Throwable t) {
+   *           // Add error-handling
+   *         }
+   *
+   *         {@literal @}Override
+   *         public void onCompleted() {
+   *           // Do something when complete.
+   *         }
+   *       };
+   *   ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
+   *       libraryClient.babbleAboutBookCallable().clientStreamingCall(responseObserver);
+   *
+   *   DiscussBookRequest request = DiscussBookRequest.newBuilder().build();
+   *   requestObserver.onNext(request);
+   * }
+   * </code></pre>
+   */
+  public final ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable() {
+    return stub.babbleAboutBookCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
    *
    *
    * Sample code:
@@ -4284,82 +5222,6 @@ public class LibraryClient implements BackgroundResource {
    */
   public final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
     return stub.findRelatedBooksCallable();
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Adds a tag to the book. This RPC is a mixin.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-   *   String tag = "";
-   *   AddTagResponse response = libraryClient.addTag(formattedResource, tag);
-   * }
-   * </code></pre>
-   *
-   * @param resource REQUIRED: The resource which the tag is being added to.
-   * Resource is usually specified as a path, such as,
-   * projects/{project}/zones/{zone}/disks/{disk}.
-   * @param tag REQUIRED: The tag to add.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final AddTagResponse addTag(String resource, String tag) {
-    SHELF_BOOK_PATH_TEMPLATE.validate(resource, "addTag");
-    AddTagRequest request =
-        AddTagRequest.newBuilder()
-        .setResource(resource)
-        .setTag(tag)
-        .build();
-    return addTag(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Adds a tag to the book. This RPC is a mixin.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-   *   String tag = "";
-   *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(formattedResource)
-   *     .setTag(tag)
-   *     .build();
-   *   AddTagResponse response = libraryClient.addTag(request);
-   * }
-   * </code></pre>
-   *
-   * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final AddTagResponse addTag(AddTagRequest request) {
-    return addTagCallable().call(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Adds a tag to the book. This RPC is a mixin.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-   *   String tag = "";
-   *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(formattedResource)
-   *     .setTag(tag)
-   *     .build();
-   *   ApiFuture&lt;AddTagResponse&gt; future = libraryClient.addTagCallable().futureCall(request);
-   *   // Do something
-   *   AddTagResponse response = future.get();
-   * }
-   * </code></pre>
-   */
-  public final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable() {
-    return stub.addTagCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -5432,6 +6294,43 @@ public class LibraryClient implements BackgroundResource {
     return stub.testOptionalRequiredFlatteningParamsCallable();
   }
 
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * This method is not exposed in the GAPIC config. It should be generated.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   GetBookRequest request = GetBookRequest.newBuilder().build();
+   *   Book response = libraryClient.privateGetBook(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book privateGetBook(GetBookRequest request) {
+    return privateGetBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * This method is not exposed in the GAPIC config. It should be generated.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   GetBookRequest request = GetBookRequest.newBuilder().build();
+   *   ApiFuture&lt;Book&gt; future = libraryClient.privateGetBookCallable().futureCall(request);
+   *   // Do something
+   *   Book response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<GetBookRequest, Book> privateGetBookCallable() {
+    return stub.privateGetBookCallable();
+  }
+
   @Override
   public final void close() {
     stub.close();
@@ -5955,8 +6854,6 @@ import com.google.protobuf.Empty;
 import com.google.tagger.v1.LabelerGrpc;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6149,17 +7046,17 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   }
 
   /**
+   * Returns the object with the settings used for calls to babbleAboutBook.
+   */
+  public StreamingCallSettings<DiscussBookRequest, Empty> babbleAboutBookSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).babbleAboutBookSettings();
+  }
+
+  /**
    * Returns the object with the settings used for calls to findRelatedBooks.
    */
   public PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).findRelatedBooksSettings();
-  }
-
-  /**
-   * Returns the object with the settings used for calls to addTag.
-   */
-  public UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings() {
-    return ((LibraryServiceStubSettings) getStubSettings()).addTagSettings();
   }
 
   /**
@@ -6204,6 +7101,13 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
    */
   public UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).testOptionalRequiredFlatteningParamsSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to privateGetBook.
+   */
+  public UnaryCallSettings<GetBookRequest, Book> privateGetBookSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).privateGetBookSettings();
   }
 
 
@@ -6475,17 +7379,17 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     }
 
     /**
+     * Returns the builder for the settings used for calls to babbleAboutBook.
+     */
+    public StreamingCallSettings.Builder<DiscussBookRequest, Empty> babbleAboutBookSettings() {
+      return getStubSettingsBuilder().babbleAboutBookSettings();
+    }
+
+    /**
      * Returns the builder for the settings used for calls to findRelatedBooks.
      */
     public PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
       return getStubSettingsBuilder().findRelatedBooksSettings();
-    }
-
-    /**
-     * Returns the builder for the settings used for calls to addTag.
-     */
-    public UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings() {
-      return getStubSettingsBuilder().addTagSettings();
     }
 
     /**
@@ -6530,6 +7434,13 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
      */
     public UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
       return getStubSettingsBuilder().testOptionalRequiredFlatteningParamsSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to privateGetBook.
+     */
+    public UnaryCallSettings.Builder<GetBookRequest, Book> privateGetBookSettings() {
+      return getStubSettingsBuilder().privateGetBookSettings();
     }
 
     @Override
@@ -6707,8 +7618,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.MethodDescriptor;
 import io.grpc.protobuf.ProtoUtils;
 import java.io.IOException;
@@ -6888,8 +7797,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.MethodDescriptor;
 import io.grpc.protobuf.ProtoUtils;
 import java.io.IOException;
@@ -7063,19 +7970,19 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setRequestMarshaller(ProtoUtils.marshaller(DiscussBookRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(Comment.getDefaultInstance()))
           .build();
+  private static final MethodDescriptor<DiscussBookRequest, Empty> babbleAboutBookMethodDescriptor =
+      MethodDescriptor.<DiscussBookRequest, Empty>newBuilder()
+          .setType(MethodDescriptor.MethodType.CLIENT_STREAMING)
+          .setFullMethodName("google.example.library.v1.LibraryService/BabbleAboutBook")
+          .setRequestMarshaller(ProtoUtils.marshaller(DiscussBookRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))
+          .build();
   private static final MethodDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksMethodDescriptor =
       MethodDescriptor.<FindRelatedBooksRequest, FindRelatedBooksResponse>newBuilder()
           .setType(MethodDescriptor.MethodType.UNARY)
           .setFullMethodName("google.example.library.v1.LibraryService/FindRelatedBooks")
           .setRequestMarshaller(ProtoUtils.marshaller(FindRelatedBooksRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(FindRelatedBooksResponse.getDefaultInstance()))
-          .build();
-  private static final MethodDescriptor<AddTagRequest, AddTagResponse> addTagMethodDescriptor =
-      MethodDescriptor.<AddTagRequest, AddTagResponse>newBuilder()
-          .setType(MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName("google.example.library.v1.LibraryService/AddTag")
-          .setRequestMarshaller(ProtoUtils.marshaller(AddTagRequest.getDefaultInstance()))
-          .setResponseMarshaller(ProtoUtils.marshaller(AddTagResponse.getDefaultInstance()))
           .build();
   private static final MethodDescriptor<AddLabelRequest, AddLabelResponse> addLabelMethodDescriptor =
       MethodDescriptor.<AddLabelRequest, AddLabelResponse>newBuilder()
@@ -7104,6 +8011,13 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setFullMethodName("google.example.library.v1.LibraryService/TestOptionalRequiredFlatteningParams")
           .setRequestMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsResponse.getDefaultInstance()))
+          .build();
+  private static final MethodDescriptor<GetBookRequest, Book> privateGetBookMethodDescriptor =
+      MethodDescriptor.<GetBookRequest, Book>newBuilder()
+          .setType(MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName("google.example.library.v1.LibraryService/PrivateGetBook")
+          .setRequestMarshaller(ProtoUtils.marshaller(GetBookRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(Book.getDefaultInstance()))
           .build();
 
 
@@ -7135,15 +8049,16 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final ServerStreamingCallable<StreamBooksRequest, Book> streamBooksCallable;
   private final BidiStreamingCallable<DiscussBookRequest, Comment> discussBookCallable;
   private final ClientStreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable;
+  private final ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
-  private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
   private final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
   private final UnaryCallable<GetBookRequest, Operation> getBigBookCallable;
   private final OperationCallable<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationCallable;
   private final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable;
   private final OperationCallable<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationCallable;
   private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
+  private final UnaryCallable<GetBookRequest, Book> privateGetBookCallable;
 
   private final GrpcStubCallableFactory callableFactory;
 
@@ -7184,6 +8099,15 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<GetShelfRequest, Shelf> getShelfTransportSettings =
         GrpcCallSettings.<GetShelfRequest, Shelf>newBuilder()
             .setMethodDescriptor(getShelfMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetShelfRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetShelfRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<ListShelvesRequest, ListShelvesResponse> listShelvesTransportSettings =
         GrpcCallSettings.<ListShelvesRequest, ListShelvesResponse>newBuilder()
@@ -7192,10 +8116,28 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<DeleteShelfRequest, Empty> deleteShelfTransportSettings =
         GrpcCallSettings.<DeleteShelfRequest, Empty>newBuilder()
             .setMethodDescriptor(deleteShelfMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<DeleteShelfRequest>() {
+                  @Override
+                  public Map<String, String> extract(DeleteShelfRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<MergeShelvesRequest, Shelf> mergeShelvesTransportSettings =
         GrpcCallSettings.<MergeShelvesRequest, Shelf>newBuilder()
             .setMethodDescriptor(mergeShelvesMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<MergeShelvesRequest>() {
+                  @Override
+                  public Map<String, String> extract(MergeShelvesRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<CreateBookRequest, Book> createBookTransportSettings =
         GrpcCallSettings.<CreateBookRequest, Book>newBuilder()
@@ -7206,7 +8148,6 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
                   public Map<String, String> extract(CreateBookRequest request) {
                     ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
                     params.put("name", String.valueOf(request.getName()));
-                    params.put("book.read", String.valueOf(request.getBook().getRead()));
                     return params.build();
                   }
                 })
@@ -7227,22 +8168,67 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<GetBookRequest, Book> getBookTransportSettings =
         GrpcCallSettings.<GetBookRequest, Book>newBuilder()
             .setMethodDescriptor(getBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<ListBooksRequest, ListBooksResponse> listBooksTransportSettings =
         GrpcCallSettings.<ListBooksRequest, ListBooksResponse>newBuilder()
             .setMethodDescriptor(listBooksMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<ListBooksRequest>() {
+                  @Override
+                  public Map<String, String> extract(ListBooksRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<DeleteBookRequest, Empty> deleteBookTransportSettings =
         GrpcCallSettings.<DeleteBookRequest, Empty>newBuilder()
             .setMethodDescriptor(deleteBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<DeleteBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(DeleteBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<UpdateBookRequest, Book> updateBookTransportSettings =
         GrpcCallSettings.<UpdateBookRequest, Book>newBuilder()
             .setMethodDescriptor(updateBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<UpdateBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(UpdateBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<MoveBookRequest, Book> moveBookTransportSettings =
         GrpcCallSettings.<MoveBookRequest, Book>newBuilder()
             .setMethodDescriptor(moveBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<MoveBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(MoveBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<ListStringsRequest, ListStringsResponse> listStringsTransportSettings =
         GrpcCallSettings.<ListStringsRequest, ListStringsResponse>newBuilder()
@@ -7251,22 +8237,68 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<AddCommentsRequest, Empty> addCommentsTransportSettings =
         GrpcCallSettings.<AddCommentsRequest, Empty>newBuilder()
             .setMethodDescriptor(addCommentsMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<AddCommentsRequest>() {
+                  @Override
+                  public Map<String, String> extract(AddCommentsRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveTransportSettings =
         GrpcCallSettings.<GetBookFromArchiveRequest, BookFromArchive>newBuilder()
             .setMethodDescriptor(getBookFromArchiveMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookFromArchiveRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookFromArchiveRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereTransportSettings =
         GrpcCallSettings.<GetBookFromAnywhereRequest, BookFromAnywhere>newBuilder()
             .setMethodDescriptor(getBookFromAnywhereMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookFromAnywhereRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookFromAnywhereRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereTransportSettings =
         GrpcCallSettings.<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere>newBuilder()
             .setMethodDescriptor(getBookFromAbsolutelyAnywhereMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookFromAbsolutelyAnywhereRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookFromAbsolutelyAnywhereRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    params.put("alt_book_name", String.valueOf(request.getAltBookName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexTransportSettings =
         GrpcCallSettings.<UpdateBookIndexRequest, Empty>newBuilder()
             .setMethodDescriptor(updateBookIndexMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<UpdateBookIndexRequest>() {
+                  @Override
+                  public Map<String, String> extract(UpdateBookIndexRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesTransportSettings =
         GrpcCallSettings.<StreamShelvesRequest, StreamShelvesResponse>newBuilder()
@@ -7284,29 +8316,69 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
         GrpcCallSettings.<DiscussBookRequest, Comment>newBuilder()
             .setMethodDescriptor(monologAboutBookMethodDescriptor)
             .build();
+    GrpcCallSettings<DiscussBookRequest, Empty> babbleAboutBookTransportSettings =
+        GrpcCallSettings.<DiscussBookRequest, Empty>newBuilder()
+            .setMethodDescriptor(babbleAboutBookMethodDescriptor)
+            .build();
     GrpcCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksTransportSettings =
         GrpcCallSettings.<FindRelatedBooksRequest, FindRelatedBooksResponse>newBuilder()
             .setMethodDescriptor(findRelatedBooksMethodDescriptor)
             .build();
-    GrpcCallSettings<AddTagRequest, AddTagResponse> addTagTransportSettings =
-        GrpcCallSettings.<AddTagRequest, AddTagResponse>newBuilder()
-            .setMethodDescriptor(addTagMethodDescriptor)
-            .build();
     GrpcCallSettings<AddLabelRequest, AddLabelResponse> addLabelTransportSettings =
         GrpcCallSettings.<AddLabelRequest, AddLabelResponse>newBuilder()
             .setMethodDescriptor(addLabelMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<AddLabelRequest>() {
+                  @Override
+                  public Map<String, String> extract(AddLabelRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("resource", String.valueOf(request.getResource()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookRequest, Operation> getBigBookTransportSettings =
         GrpcCallSettings.<GetBookRequest, Operation>newBuilder()
             .setMethodDescriptor(getBigBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<GetBookRequest, Operation> getBigNothingTransportSettings =
         GrpcCallSettings.<GetBookRequest, Operation>newBuilder()
             .setMethodDescriptor(getBigNothingMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsTransportSettings =
         GrpcCallSettings.<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>newBuilder()
             .setMethodDescriptor(testOptionalRequiredFlatteningParamsMethodDescriptor)
+            .build();
+    GrpcCallSettings<GetBookRequest, Book> privateGetBookTransportSettings =
+        GrpcCallSettings.<GetBookRequest, Book>newBuilder()
+            .setMethodDescriptor(privateGetBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
 
     this.createShelfCallable = callableFactory.createUnaryCallable(createShelfTransportSettings,settings.createShelfSettings(), clientContext);
@@ -7334,9 +8406,9 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.streamBooksCallable = callableFactory.createServerStreamingCallable(streamBooksTransportSettings,settings.streamBooksSettings(), clientContext);
     this.discussBookCallable = callableFactory.createBidiStreamingCallable(discussBookTransportSettings,settings.discussBookSettings(), clientContext);
     this.monologAboutBookCallable = callableFactory.createClientStreamingCallable(monologAboutBookTransportSettings,settings.monologAboutBookSettings(), clientContext);
+    this.babbleAboutBookCallable = callableFactory.createClientStreamingCallable(babbleAboutBookTransportSettings,settings.babbleAboutBookSettings(), clientContext);
     this.findRelatedBooksCallable = callableFactory.createUnaryCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
     this.findRelatedBooksPagedCallable = callableFactory.createPagedCallable(findRelatedBooksTransportSettings,settings.findRelatedBooksSettings(), clientContext);
-    this.addTagCallable = callableFactory.createUnaryCallable(addTagTransportSettings,settings.addTagSettings(), clientContext);
     this.addLabelCallable = callableFactory.createUnaryCallable(addLabelTransportSettings,settings.addLabelSettings(), clientContext);
     this.getBigBookCallable = callableFactory.createUnaryCallable(getBigBookTransportSettings,settings.getBigBookSettings(), clientContext);
     this.getBigBookOperationCallable = callableFactory.createOperationCallable(
@@ -7345,6 +8417,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.getBigNothingOperationCallable = callableFactory.createOperationCallable(
         getBigNothingTransportSettings,settings.getBigNothingOperationSettings(), clientContext, this.operationsStub);
     this.testOptionalRequiredFlatteningParamsCallable = callableFactory.createUnaryCallable(testOptionalRequiredFlatteningParamsTransportSettings,settings.testOptionalRequiredFlatteningParamsSettings(), clientContext);
+    this.privateGetBookCallable = callableFactory.createUnaryCallable(privateGetBookTransportSettings,settings.privateGetBookSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
@@ -7453,16 +8526,16 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     return monologAboutBookCallable;
   }
 
+  public ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable() {
+    return babbleAboutBookCallable;
+  }
+
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
     return findRelatedBooksPagedCallable;
   }
 
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
     return findRelatedBooksCallable;
-  }
-
-  public UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable() {
-    return addTagCallable;
   }
 
   @Deprecated
@@ -7490,6 +8563,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable() {
     return testOptionalRequiredFlatteningParamsCallable;
+  }
+
+  public UnaryCallable<GetBookRequest, Book> privateGetBookCallable() {
+    return privateGetBookCallable;
   }
 
   @Override
@@ -7620,8 +8697,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Generated;
@@ -7741,16 +8816,16 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: monologAboutBookCallable()");
   }
 
+  public ClientStreamingCallable<DiscussBookRequest, Empty> babbleAboutBookCallable() {
+    throw new UnsupportedOperationException("Not implemented: babbleAboutBookCallable()");
+  }
+
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
     throw new UnsupportedOperationException("Not implemented: findRelatedBooksPagedCallable()");
   }
 
   public UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
     throw new UnsupportedOperationException("Not implemented: findRelatedBooksCallable()");
-  }
-
-  public UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable() {
-    throw new UnsupportedOperationException("Not implemented: addTagCallable()");
   }
 
   @Deprecated
@@ -7778,6 +8853,10 @@ public abstract class LibraryServiceStub implements BackgroundResource {
 
   public UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable() {
     throw new UnsupportedOperationException("Not implemented: testOptionalRequiredFlatteningParamsCallable()");
+  }
+
+  public UnaryCallable<GetBookRequest, Book> privateGetBookCallable() {
+    throw new UnsupportedOperationException("Not implemented: privateGetBookCallable()");
   }
 
   @Override
@@ -7895,8 +8974,6 @@ import com.google.protobuf.Empty;
 import com.google.tagger.v1.LabelerGrpc;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7964,14 +9041,15 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final ServerStreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
+  private final StreamingCallSettings<DiscussBookRequest, Empty> babbleAboutBookSettings;
   private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
-  private final UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final UnaryCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
   private final UnaryCallSettings<GetBookRequest, Operation> getBigBookSettings;
   private final OperationCallSettings<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationSettings;
   private final UnaryCallSettings<GetBookRequest, Operation> getBigNothingSettings;
   private final OperationCallSettings<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
   private final UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
+  private final UnaryCallSettings<GetBookRequest, Book> privateGetBookSettings;
 
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -8128,17 +9206,17 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   }
 
   /**
+   * Returns the object with the settings used for calls to babbleAboutBook.
+   */
+  public StreamingCallSettings<DiscussBookRequest, Empty> babbleAboutBookSettings() {
+    return babbleAboutBookSettings;
+  }
+
+  /**
    * Returns the object with the settings used for calls to findRelatedBooks.
    */
   public PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
     return findRelatedBooksSettings;
-  }
-
-  /**
-   * Returns the object with the settings used for calls to addTag.
-   */
-  public UnaryCallSettings<AddTagRequest, AddTagResponse> addTagSettings() {
-    return addTagSettings;
   }
 
   /**
@@ -8183,6 +9261,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
    */
   public UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
     return testOptionalRequiredFlatteningParamsSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to privateGetBook.
+   */
+  public UnaryCallSettings<GetBookRequest, Book> privateGetBookSettings() {
+    return privateGetBookSettings;
   }
 
 
@@ -8292,14 +9377,15 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     streamBooksSettings = settingsBuilder.streamBooksSettings().build();
     discussBookSettings = settingsBuilder.discussBookSettings().build();
     monologAboutBookSettings = settingsBuilder.monologAboutBookSettings().build();
+    babbleAboutBookSettings = settingsBuilder.babbleAboutBookSettings().build();
     findRelatedBooksSettings = settingsBuilder.findRelatedBooksSettings().build();
-    addTagSettings = settingsBuilder.addTagSettings().build();
     addLabelSettings = settingsBuilder.addLabelSettings().build();
     getBigBookSettings = settingsBuilder.getBigBookSettings().build();
     getBigBookOperationSettings = settingsBuilder.getBigBookOperationSettings().build();
     getBigNothingSettings = settingsBuilder.getBigNothingSettings().build();
     getBigNothingOperationSettings = settingsBuilder.getBigNothingOperationSettings().build();
     testOptionalRequiredFlatteningParamsSettings = settingsBuilder.testOptionalRequiredFlatteningParamsSettings().build();
+    privateGetBookSettings = settingsBuilder.privateGetBookSettings().build();
   }
 
   private static final PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
@@ -8645,14 +9731,15 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final ServerStreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings;
+    private final StreamingCallSettings.Builder<DiscussBookRequest, Empty> babbleAboutBookSettings;
     private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
-    private final UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final UnaryCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
     private final UnaryCallSettings.Builder<GetBookRequest, Operation> getBigBookSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationSettings;
     private final UnaryCallSettings.Builder<GetBookRequest, Operation> getBigNothingSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
     private final UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
+    private final UnaryCallSettings.Builder<GetBookRequest, Book> privateGetBookSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -8743,10 +9830,10 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       monologAboutBookSettings = StreamingCallSettings.newBuilder();
 
+      babbleAboutBookSettings = StreamingCallSettings.newBuilder();
+
       findRelatedBooksSettings = PagedCallSettings.newBuilder(
           FIND_RELATED_BOOKS_PAGE_STR_FACT);
-
-      addTagSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       addLabelSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
@@ -8759,6 +9846,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       getBigNothingOperationSettings = OperationCallSettings.newBuilder();
 
       testOptionalRequiredFlatteningParamsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      privateGetBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           createShelfSettings,
@@ -8780,11 +9869,11 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBookFromAbsolutelyAnywhereSettings,
           updateBookIndexSettings,
           findRelatedBooksSettings,
-          addTagSettings,
           addLabelSettings,
           getBigBookSettings,
           getBigNothingSettings,
-          testOptionalRequiredFlatteningParamsSettings
+          testOptionalRequiredFlatteningParamsSettings,
+          privateGetBookSettings
       );
 
       initDefaults(this);
@@ -8905,10 +9994,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.addTagSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
-          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
-
       builder.addLabelSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -8923,6 +10008,10 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       builder.testOptionalRequiredFlatteningParamsSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.privateGetBookSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
       builder
           .getBigBookOperationSettings()
@@ -8993,14 +10082,15 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       streamBooksSettings = settings.streamBooksSettings.toBuilder();
       discussBookSettings = settings.discussBookSettings.toBuilder();
       monologAboutBookSettings = settings.monologAboutBookSettings.toBuilder();
+      babbleAboutBookSettings = settings.babbleAboutBookSettings.toBuilder();
       findRelatedBooksSettings = settings.findRelatedBooksSettings.toBuilder();
-      addTagSettings = settings.addTagSettings.toBuilder();
       addLabelSettings = settings.addLabelSettings.toBuilder();
       getBigBookSettings = settings.getBigBookSettings.toBuilder();
       getBigBookOperationSettings = settings.getBigBookOperationSettings.toBuilder();
       getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
       getBigNothingOperationSettings = settings.getBigNothingOperationSettings.toBuilder();
       testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
+      privateGetBookSettings = settings.privateGetBookSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           createShelfSettings,
@@ -9022,11 +10112,11 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBookFromAbsolutelyAnywhereSettings,
           updateBookIndexSettings,
           findRelatedBooksSettings,
-          addTagSettings,
           addLabelSettings,
           getBigBookSettings,
           getBigNothingSettings,
-          testOptionalRequiredFlatteningParamsSettings
+          testOptionalRequiredFlatteningParamsSettings,
+          privateGetBookSettings
       );
     }
 
@@ -9200,17 +10290,17 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     }
 
     /**
+     * Returns the builder for the settings used for calls to babbleAboutBook.
+     */
+    public StreamingCallSettings.Builder<DiscussBookRequest, Empty> babbleAboutBookSettings() {
+      return babbleAboutBookSettings;
+    }
+
+    /**
      * Returns the builder for the settings used for calls to findRelatedBooks.
      */
     public PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
       return findRelatedBooksSettings;
-    }
-
-    /**
-     * Returns the builder for the settings used for calls to addTag.
-     */
-    public UnaryCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings() {
-      return addTagSettings;
     }
 
     /**
@@ -9255,6 +10345,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
      */
     public UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
       return testOptionalRequiredFlatteningParamsSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to privateGetBook.
+     */
+    public UnaryCallSettings.Builder<GetBookRequest, Book> privateGetBookSettings() {
+      return privateGetBookSettings;
     }
 
     @Override
@@ -9306,6 +10403,7 @@ import com.google.example.library.v1.SomeMessage2;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.longrunning.Operation;
+import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
@@ -9315,7 +10413,6 @@ import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.FloatValue;
-import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.ListValue;
@@ -9327,8 +10424,6 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import java.io.IOException;
@@ -9402,7 +10497,7 @@ public class LibraryClientTest {
         client.createShelf(shelf);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     CreateShelfRequest actualRequest = (CreateShelfRequest)actualRequests.get(0);
 
@@ -9448,7 +10543,7 @@ public class LibraryClientTest {
         client.getShelf(name);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
@@ -9495,7 +10590,7 @@ public class LibraryClientTest {
         client.getShelf(formattedName, message);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
@@ -9545,7 +10640,7 @@ public class LibraryClientTest {
         client.getShelf(formattedName, message, stringBuilder);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
@@ -9596,7 +10691,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getShelvesList().get(0), resources.get(0));
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     ListShelvesRequest actualRequest = (ListShelvesRequest)actualRequests.get(0);
 
@@ -9632,7 +10727,7 @@ public class LibraryClientTest {
 
     client.deleteShelf(name);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     DeleteShelfRequest actualRequest = (DeleteShelfRequest)actualRequests.get(0);
 
@@ -9679,7 +10774,7 @@ public class LibraryClientTest {
         client.mergeShelves(name, otherShelfName);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     MergeShelvesRequest actualRequest = (MergeShelvesRequest)actualRequests.get(0);
 
@@ -9730,7 +10825,7 @@ public class LibraryClientTest {
         client.createBook(formattedName, book);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     CreateBookRequest actualRequest = (CreateBookRequest)actualRequests.get(0);
 
@@ -9781,7 +10876,7 @@ public class LibraryClientTest {
         client.publishSeries(shelf, books, edition, seriesUuid);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     PublishSeriesRequest actualRequest = (PublishSeriesRequest)actualRequests.get(0);
 
@@ -9838,7 +10933,7 @@ public class LibraryClientTest {
         client.getBook(name);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
@@ -9886,7 +10981,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getBooksList().get(0), resources.get(0));
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     ListBooksRequest actualRequest = (ListBooksRequest)actualRequests.get(0);
 
@@ -9925,7 +11020,7 @@ public class LibraryClientTest {
 
     client.deleteBook(name);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     DeleteBookRequest actualRequest = (DeleteBookRequest)actualRequests.get(0);
 
@@ -9974,7 +11069,7 @@ public class LibraryClientTest {
         client.updateBook(name, book);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
@@ -10028,7 +11123,7 @@ public class LibraryClientTest {
         client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
@@ -10085,7 +11180,7 @@ public class LibraryClientTest {
         client.moveBook(name, otherShelfName);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     MoveBookRequest actualRequest = (MoveBookRequest)actualRequests.get(0);
 
@@ -10138,7 +11233,7 @@ public class LibraryClientTest {
     Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
         resourceNames.get(0));
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     ListStringsRequest actualRequest = (ListStringsRequest)actualRequests.get(0);
 
@@ -10188,7 +11283,7 @@ public class LibraryClientTest {
     Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
         resourceNames.get(0));
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     ListStringsRequest actualRequest = (ListStringsRequest)actualRequests.get(0);
 
@@ -10234,7 +11329,7 @@ public class LibraryClientTest {
 
     client.addComments(formattedName, comments);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     AddCommentsRequest actualRequest = (AddCommentsRequest)actualRequests.get(0);
 
@@ -10292,7 +11387,7 @@ public class LibraryClientTest {
         client.getBookFromArchive(name);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromArchiveRequest actualRequest = (GetBookFromArchiveRequest)actualRequests.get(0);
 
@@ -10341,7 +11436,7 @@ public class LibraryClientTest {
         client.getBookFromAnywhere(name, altBookName);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromAnywhereRequest actualRequest = (GetBookFromAnywhereRequest)actualRequests.get(0);
 
@@ -10391,7 +11486,7 @@ public class LibraryClientTest {
         client.getBookFromAbsolutelyAnywhere(name);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromAbsolutelyAnywhereRequest actualRequest = (GetBookFromAbsolutelyAnywhereRequest)actualRequests.get(0);
 
@@ -10432,7 +11527,7 @@ public class LibraryClientTest {
 
     client.updateBookIndex(name, indexName, indexMap);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookIndexRequest actualRequest = (UpdateBookIndexRequest)actualRequests.get(0);
 
@@ -10651,7 +11746,7 @@ public class LibraryClientTest {
     Assert.assertEquals(ShelfBookName.parse(expectedResponse.getNamesList().get(0)),
         resourceNames.get(0));
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     FindRelatedBooksRequest actualRequest = (FindRelatedBooksRequest)actualRequests.get(0);
 
@@ -10683,48 +11778,6 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void addTagTest() {
-    AddTagResponse expectedResponse = AddTagResponse.newBuilder().build();
-    mockLibraryService.addResponse(expectedResponse);
-
-    String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-    String tag = "tag114586";
-
-    AddTagResponse actualResponse =
-        client.addTag(formattedResource, tag);
-    Assert.assertEquals(expectedResponse, actualResponse);
-
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
-    Assert.assertEquals(1, actualRequests.size());
-    AddTagRequest actualRequest = (AddTagRequest)actualRequests.get(0);
-
-    Assert.assertEquals(formattedResource, actualRequest.getResource());
-    Assert.assertEquals(tag, actualRequest.getTag());
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void addTagExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockLibraryService.addException(exception);
-
-    try {
-      String formattedResource = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-      String tag = "tag114586";
-
-      client.addTag(formattedResource, tag);
-      Assert.fail("No exception raised");
-    } catch (InvalidArgumentException e) {
-      // Expected exception
-    }
-  }
-
-  @Test
-  @SuppressWarnings("all")
   public void addLabelTest() {
     AddLabelResponse expectedResponse = AddLabelResponse.newBuilder().build();
     mockLabeler.addResponse(expectedResponse);
@@ -10736,7 +11789,7 @@ public class LibraryClientTest {
         client.addLabel(formattedResource, label);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLabeler.getRequests();
+    List<AbstractMessage> actualRequests = mockLabeler.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     AddLabelRequest actualRequest = (AddLabelRequest)actualRequests.get(0);
 
@@ -10792,7 +11845,7 @@ public class LibraryClientTest {
         client.getBigBookAsync(name).get();
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
@@ -10840,7 +11893,7 @@ public class LibraryClientTest {
         client.getBigNothingAsync(name).get();
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
@@ -10882,7 +11935,7 @@ public class LibraryClientTest {
         client.testOptionalRequiredFlatteningParams();
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     TestOptionalRequiredFlatteningParamsRequest actualRequest = (TestOptionalRequiredFlatteningParamsRequest)actualRequests.get(0);
 
@@ -11009,7 +12062,7 @@ public class LibraryClientTest {
         client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, formattedRequiredRepeatedResourceName, formattedRequiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, formattedOptionalRepeatedResourceName, formattedOptionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     TestOptionalRequiredFlatteningParamsRequest actualRequest = (TestOptionalRequiredFlatteningParamsRequest)actualRequests.get(0);
 
@@ -11236,7 +12289,6 @@ package com.google.example.library.v1;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.Book;
-import com.google.protobuf.FieldMask;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -11268,15 +12320,12 @@ public class LibrarySmokeTest {
   public static void executeNoCatch(String projectId) throws Exception {
     try (LibraryClient client = LibraryClient.create()) {
       ShelfBookName name = ShelfBookName.of("testShelf-" + System.currentTimeMillis(), projectId);
-      String optionalFoo = "";
       Book.Rating rating = Book.Rating.GOOD;
       Book book = Book.newBuilder()
         .setRating(rating)
         .build();
-      FieldMask updateMask = FieldMask.newBuilder().build();
-      com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
 
-      Book response = client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
+      Book response = client.updateBook(name, book);
     }
   }
 
@@ -11309,7 +12358,7 @@ package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.grpc.testing.MockGrpcService;
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.AbstractMessage;
 import io.grpc.ServerServiceDefinition;
 import java.util.List;
 
@@ -11323,12 +12372,12 @@ public class MockLabeler implements MockGrpcService  {
   }
 
   @Override
-  public List<GeneratedMessageV3> getRequests() {
+  public List<AbstractMessage> getRequests() {
     return serviceImpl.getRequests();
   }
 
   @Override
-  public void addResponse(GeneratedMessageV3 response) {
+  public void addResponse(AbstractMessage response) {
     serviceImpl.addResponse(response);
   }
 
@@ -11367,7 +12416,7 @@ package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.common.collect.Lists;
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.AbstractMessage;
 import com.google.tagger.v1.LabelerGrpc.LabelerImplBase;
 import com.google.tagger.v1.TaggerProto.AddLabelRequest;
 import com.google.tagger.v1.TaggerProto.AddLabelResponse;
@@ -11380,7 +12429,7 @@ import java.util.Queue;
 @javax.annotation.Generated("by GAPIC")
 @BetaApi
 public class MockLabelerImpl extends LabelerImplBase {
-  private ArrayList<GeneratedMessageV3> requests;
+  private List<AbstractMessage> requests;
   private Queue<Object> responses;
 
   public MockLabelerImpl() {
@@ -11388,15 +12437,15 @@ public class MockLabelerImpl extends LabelerImplBase {
     responses = new LinkedList<>();
   }
 
-  public List<GeneratedMessageV3> getRequests() {
+  public List<AbstractMessage> getRequests() {
     return requests;
   }
 
-  public void addResponse(GeneratedMessageV3 response) {
+  public void addResponse(AbstractMessage response) {
     responses.add(response);
   }
 
-  public void setResponses(List<GeneratedMessageV3> responses) {
+  public void setResponses(List<AbstractMessage> responses) {
     this.responses = new LinkedList<Object>(responses);
   }
 
@@ -11445,7 +12494,7 @@ package com.google.example.library.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.grpc.testing.MockGrpcService;
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.AbstractMessage;
 import io.grpc.ServerServiceDefinition;
 import java.util.List;
 
@@ -11459,12 +12508,12 @@ public class MockLibraryService implements MockGrpcService  {
   }
 
   @Override
-  public List<GeneratedMessageV3> getRequests() {
+  public List<AbstractMessage> getRequests() {
     return serviceImpl.getRequests();
   }
 
   @Override
-  public void addResponse(GeneratedMessageV3 response) {
+  public void addResponse(AbstractMessage response) {
     serviceImpl.addResponse(response);
   }
 
@@ -11505,10 +12554,8 @@ import com.google.api.core.BetaApi;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.LibraryServiceGrpc.LibraryServiceImplBase;
 import com.google.longrunning.Operation;
+import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Empty;
-import com.google.protobuf.GeneratedMessageV3;
-import com.google.tagger.v1.TaggerProto.AddTagRequest;
-import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -11518,7 +12565,7 @@ import java.util.Queue;
 @javax.annotation.Generated("by GAPIC")
 @BetaApi
 public class MockLibraryServiceImpl extends LibraryServiceImplBase {
-  private ArrayList<GeneratedMessageV3> requests;
+  private List<AbstractMessage> requests;
   private Queue<Object> responses;
 
   public MockLibraryServiceImpl() {
@@ -11526,15 +12573,15 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
     responses = new LinkedList<>();
   }
 
-  public List<GeneratedMessageV3> getRequests() {
+  public List<AbstractMessage> getRequests() {
     return requests;
   }
 
-  public void addResponse(GeneratedMessageV3 response) {
+  public void addResponse(AbstractMessage response) {
     responses.add(response);
   }
 
-  public void setResponses(List<GeneratedMessageV3> responses) {
+  public void setResponses(List<AbstractMessage> responses) {
     this.responses = new LinkedList<Object>(responses);
   }
 
@@ -11908,27 +12955,42 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   }
 
   @Override
+  public StreamObserver<DiscussBookRequest> babbleAboutBook(
+      final StreamObserver<Empty> responseObserver) {
+    final Object response = responses.remove();
+    StreamObserver<DiscussBookRequest> requestObserver =
+        new StreamObserver<DiscussBookRequest>() {
+      @Override
+      public void onNext(DiscussBookRequest value) {
+        if (response instanceof Empty) {
+          responseObserver.onNext((Empty) response);
+        } else if (response instanceof Exception) {
+          responseObserver.onError((Exception) response);
+        } else {
+          responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+        }
+      }
+
+      @Override
+      public void onError(Throwable t) {
+        responseObserver.onError(t);
+      }
+
+      @Override
+      public void onCompleted() {
+        responseObserver.onCompleted();
+      }
+    };
+    return requestObserver;
+  }
+
+  @Override
   public void findRelatedBooks(FindRelatedBooksRequest request,
     StreamObserver<FindRelatedBooksResponse> responseObserver) {
     Object response = responses.remove();
     if (response instanceof FindRelatedBooksResponse) {
       requests.add(request);
       responseObserver.onNext((FindRelatedBooksResponse) response);
-      responseObserver.onCompleted();
-    } else if (response instanceof Exception) {
-      responseObserver.onError((Exception) response);
-    } else {
-      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
-    }
-  }
-
-  @Override
-  public void addTag(AddTagRequest request,
-    StreamObserver<AddTagResponse> responseObserver) {
-    Object response = responses.remove();
-    if (response instanceof AddTagResponse) {
-      requests.add(request);
-      responseObserver.onNext((AddTagResponse) response);
       responseObserver.onCompleted();
     } else if (response instanceof Exception) {
       responseObserver.onError((Exception) response);
@@ -11974,6 +13036,21 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
     if (response instanceof TestOptionalRequiredFlatteningParamsResponse) {
       requests.add(request);
       responseObserver.onNext((TestOptionalRequiredFlatteningParamsResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public void privateGetBook(GetBookRequest request,
+    StreamObserver<Book> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof Book) {
+      requests.add(request);
+      responseObserver.onNext((Book) response);
       responseObserver.onCompleted();
     } else if (response instanceof Exception) {
       responseObserver.onError((Exception) response);

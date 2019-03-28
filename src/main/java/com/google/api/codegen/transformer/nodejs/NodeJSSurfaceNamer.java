@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -244,6 +245,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAsyncApiMethodName(MethodModel method, VisibilityConfig visibility) {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
+  }
+
+  @Override
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format(
+        "@param %s {%s} %s", paramName, paramTypeName, getCommentReformatter().reformat(text));
   }
 
   /** Return JSDoc callback comment and return type comment for the given method. */
@@ -619,5 +626,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       default:
         throw new IllegalArgumentException("illegal calling form for Node.js: " + form);
     }
+  }
+
+  @Override
+  public List<CallingForm> getCallingForms(MethodContext context) {
+    return CallingForm.getCallingForms(context, TargetLanguage.NODEJS);
   }
 }

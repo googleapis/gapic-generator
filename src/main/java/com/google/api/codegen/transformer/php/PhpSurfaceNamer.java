@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.php;
 
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
@@ -35,6 +36,7 @@ import com.google.api.codegen.util.php.PhpCommentReformatter;
 import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import java.io.File;
@@ -272,6 +274,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     return Joiner.on(". ").join(stringParts);
   }
 
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format(
+        "@param %s $%s %s", paramTypeName, paramName, getCommentReformatter().reformat(text));
+  }
+
   @Override
   public String getApiSampleFileName(String className) {
     return className + ".php";
@@ -310,5 +317,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       return String.format("%s::name(%s)", getAndSaveTypeName(typeTable, type), arg);
     }
     throw new IllegalArgumentException("Unhandled type: " + type.getTypeName());
+  }
+
+  @Override
+  public List<CallingForm> getCallingForms(MethodContext context) {
+    return CallingForm.getCallingForms(context, TargetLanguage.PHP);
   }
 }

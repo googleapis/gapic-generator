@@ -41,6 +41,9 @@ public abstract class SampleParameterConfig {
     return !sampleArgumentName().isEmpty();
   }
 
+  /** The description of the parameter. */
+  public abstract String description();
+
   /**
    * If not empty, the parameter will be an argument passed to the sample function. Returns the name
    * of the argument.
@@ -59,6 +62,8 @@ public abstract class SampleParameterConfig {
     public abstract Builder readFromFile(boolean val);
 
     public abstract Builder sampleArgumentName(String val);
+
+    public abstract Builder description(String val);
 
     public abstract SampleParameterConfig build();
   }
