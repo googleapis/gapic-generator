@@ -135,11 +135,15 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   }
 
   @Override
+  // TODO(hzyi): This is SampleGen specific. Move everything specific to samples
+  // to a separate SampleContext.
   public List<CallingForm> getCallingForms() {
     return Collections.singletonList(CallingForm.Generic);
   }
 
   @Override
+  // TODO(hzyi): This is SampleGen specific. Move everything specific to samples
+  // to a separate SampleContext.
   public MethodContext withCallingForms(List<CallingForm> callingForms) {
     return this;
   }

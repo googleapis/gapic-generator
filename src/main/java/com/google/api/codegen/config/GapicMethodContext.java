@@ -139,9 +139,13 @@ public abstract class GapicMethodContext implements MethodContext {
   }
 
   @Override
+  // TODO(hzyi): This is SampleGen specific. Move everything specific to samples
+  // to a separate SampleContext.
   public abstract List<CallingForm> getCallingForms();
 
   @Override
+  // TODO(hzyi): This is SampleGen specific. Move everything specific to samples
+  // to a separate SampleContext.
   public MethodContext withCallingForms(List<CallingForm> callingForms) {
     return new AutoValue_GapicMethodContext(
         getProductConfig(),
