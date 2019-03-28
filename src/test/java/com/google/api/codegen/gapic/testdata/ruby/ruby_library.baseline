@@ -3170,6 +3170,14 @@ module Library
           defaults["test_optional_required_flattening_params"],
           exception_transformer: exception_transformer
         )
+        @private_get_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:private_get_book),
+          defaults["private_get_book"],
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
+        )
       end
 
       # Service calls
@@ -4738,6 +4746,35 @@ module Library
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest)
         @test_optional_required_flattening_params.call(req, options, &block)
       end
+
+      # This method is not exposed in the GAPIC config. It should be generated.
+      #
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::Book]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @return [Google::Example::Library::V1::Book]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   library_client = Library.new(version: :v1)
+      #   response = library_client.private_get_book
+
+      def private_get_book \
+          name: nil,
+          options: nil,
+          &block
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookRequest)
+        @private_get_book.call(req, options, &block)
+      end
     end
   end
 end
@@ -4915,6 +4952,11 @@ end
         "TestOptionalRequiredFlatteningParams": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "PrivateGetBook": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "idempotent",
           "retry_params_name": "default"
         }
       }
@@ -8437,6 +8479,78 @@ describe Library::V1::LibraryServiceClient do
               required_repeated_fixed64,
               required_map
             )
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'private_get_book' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#private_get_book."
+
+    it 'invokes private_get_book without error' do
+      # Create expected grpc response
+      name = "name3373707"
+      author = "author-1406328437"
+      title = "title110371416"
+      read = true
+      expected_response = {
+        name: name,
+        author: author,
+        title: title,
+        read: read
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        OpenStruct.new(execute: expected_response)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:private_get_book, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("private_get_book")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
+
+          # Call method
+          response = client.private_get_book
+
+          # Verify the response
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.private_get_book do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes private_get_book with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:private_get_book, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("private_get_book")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.private_get_book
           end
 
           # Verify the GaxError wrapped the custom error that was raised.

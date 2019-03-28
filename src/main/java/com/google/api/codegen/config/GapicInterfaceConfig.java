@@ -145,7 +145,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
             Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
         return null;
       }
-      methodConfigs = createMethodConfigs(methodConfigsMap, interfaceConfigProto);
+      methodConfigs = ImmutableList.copyOf(methodConfigsMap.values());
     } else {
       methodConfigsMap = ImmutableMap.of();
       methodConfigs = ImmutableList.of();
@@ -254,23 +254,6 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     } else {
       return ImmutableMap.copyOf(methodConfigMapBuilder);
     }
-  }
-
-  /** Return a list of configs for method in the order given by the GAPIC interface config. */
-  static <T> List<T> createMethodConfigs(
-      ImmutableMap<String, T> methodConfigMap, InterfaceConfigProto interfaceConfigProto) {
-    if (interfaceConfigProto.equals(InterfaceConfigProto.getDefaultInstance())) {
-      // InterfaceConfigProto was not given, so just return the order in methodConfigMap.
-      return methodConfigMap.values().asList();
-    }
-    List<T> methodConfigs = new ArrayList<>();
-    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      if (!methodConfigMap.containsKey(methodConfigProto.getName())) {
-        continue;
-      }
-      methodConfigs.add(methodConfigMap.get(methodConfigProto.getName()));
-    }
-    return methodConfigs;
   }
 
   /** Returns the GapicMethodConfig for the given method. */
