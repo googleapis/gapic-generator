@@ -471,7 +471,7 @@ public class ResourceNameMessageConfigsTest {
     ResourceNameTreatment noTreatment =
         GapicMethodConfig.defaultResourceNameTreatment(
             noConfig, createShelvesMethod, protoParser, DEFAULT_PACKAGE);
-    assertThat(noTreatment).isEqualTo(ResourceNameTreatment.NONE);
+    assertThat(noTreatment).isEqualTo(ResourceNameTreatment.UNSET_TREATMENT);
 
     MethodConfigProto staticTypesMethodConfig =
         MethodConfigProto.newBuilder()

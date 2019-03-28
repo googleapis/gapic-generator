@@ -2818,7 +2818,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a shelf resource.
+   *
+   * @deprecated Use the {@link ShelfName} class instead.
    */
+  @Deprecated
   public static final String formatShelfName(String shelfId) {
     return SHELF_PATH_TEMPLATE.instantiate(
         "shelf_id", shelfId);
@@ -2827,7 +2830,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a shelf_book resource.
+   *
+   * @deprecated Use the {@link ShelfBookName} class instead.
    */
+  @Deprecated
   public static final String formatShelfBookName(String shelfId, String bookId) {
     return SHELF_BOOK_PATH_TEMPLATE.instantiate(
         "shelf_id", shelfId,
@@ -2837,7 +2843,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a return resource.
+   *
+   * @deprecated Use the {@link ReturnName} class instead.
    */
+  @Deprecated
   public static final String formatReturnName(String shelf, String book, String return_) {
     return RETURN_PATH_TEMPLATE.instantiate(
         "shelf", shelf,
@@ -2848,7 +2857,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a project resource.
+   *
+   * @deprecated Use the {@link com.google.cloud.ProjectName} class instead.
    */
+  @Deprecated
   public static final String formatProjectName(String project) {
     return PROJECT_PATH_TEMPLATE.instantiate(
         "project", project);
@@ -2857,7 +2869,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
    */
+  @Deprecated
   public static final String formatArchivedBookName(String archivePath, String bookId) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
         "archive_path", archivePath,
@@ -2867,7 +2882,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the shelf_id from the given fully-qualified path which
    * represents a shelf resource.
+   *
+   * @deprecated Use the {@link ShelfName} class instead.
    */
+  @Deprecated
   public static final String parseShelfIdFromShelfName(String shelfName) {
     return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf_id");
   }
@@ -2875,7 +2893,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the shelf_id from the given fully-qualified path which
    * represents a shelf_book resource.
+   *
+   * @deprecated Use the {@link ShelfBookName} class instead.
    */
+  @Deprecated
   public static final String parseShelfIdFromShelfBookName(String shelfBookName) {
     return SHELF_BOOK_PATH_TEMPLATE.parse(shelfBookName).get("shelf_id");
   }
@@ -2883,7 +2904,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the book_id from the given fully-qualified path which
    * represents a shelf_book resource.
+   *
+   * @deprecated Use the {@link ShelfBookName} class instead.
    */
+  @Deprecated
   public static final String parseBookIdFromShelfBookName(String shelfBookName) {
     return SHELF_BOOK_PATH_TEMPLATE.parse(shelfBookName).get("book_id");
   }
@@ -2891,7 +2915,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the shelf from the given fully-qualified path which
    * represents a return resource.
+   *
+   * @deprecated Use the {@link ReturnName} class instead.
    */
+  @Deprecated
   public static final String parseShelfFromReturnName(String returnName) {
     return RETURN_PATH_TEMPLATE.parse(returnName).get("shelf");
   }
@@ -2899,7 +2926,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the book from the given fully-qualified path which
    * represents a return resource.
+   *
+   * @deprecated Use the {@link ReturnName} class instead.
    */
+  @Deprecated
   public static final String parseBookFromReturnName(String returnName) {
     return RETURN_PATH_TEMPLATE.parse(returnName).get("book");
   }
@@ -2907,7 +2937,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the return from the given fully-qualified path which
    * represents a return resource.
+   *
+   * @deprecated Use the {@link ReturnName} class instead.
    */
+  @Deprecated
   public static final String parseReturnFromReturnName(String returnName) {
     return RETURN_PATH_TEMPLATE.parse(returnName).get("return");
   }
@@ -2915,7 +2948,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the project from the given fully-qualified path which
    * represents a project resource.
+   *
+   * @deprecated Use the {@link com.google.cloud.ProjectName} class instead.
    */
+  @Deprecated
   public static final String parseProjectFromProjectName(String projectName) {
     return PROJECT_PATH_TEMPLATE.parse(projectName).get("project");
   }
@@ -2923,7 +2959,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the archive_path from the given fully-qualified path which
    * represents a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
    */
+  @Deprecated
   public static final String parseArchivePathFromArchivedBookName(String archivedBookName) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive_path");
   }
@@ -2931,7 +2970,10 @@ public class LibraryClient implements BackgroundResource {
   /**
    * Parses the book_id from the given fully-qualified path which
    * represents a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
    */
+  @Deprecated
   public static final String parseBookIdFromArchivedBookName(String archivedBookName) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book_id");
   }
@@ -3179,10 +3221,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .setOptions(options)
    *     .build();
    *   Shelf response = libraryClient.getShelf(request);
@@ -3203,10 +3245,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = LibraryClient.formatShelfName("[SHELF_ID]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .setOptions(options)
    *     .build();
    *   ApiFuture&lt;Shelf&gt; future = libraryClient.getShelfCallable().futureCall(request);
