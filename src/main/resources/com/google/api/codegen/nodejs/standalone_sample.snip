@@ -113,7 +113,10 @@
 @private processCliArguments(sample)
   const argv = require(`yargs`)
     @join param : sample.sampleInitCode.argDefaultParams
-      .default('{@param.cliFlagName}', {@renderInitValue(param.initValue)})
+      .option('{@param.cliFlagName}', {
+        default: {@renderInitValue(param.initValue)},
+        {@param.typeName}: true
+      })
     @end
     .argv;
 @end
