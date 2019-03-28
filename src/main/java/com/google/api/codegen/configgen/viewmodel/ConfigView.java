@@ -38,9 +38,6 @@ public abstract class ConfigView implements ViewModel {
   /** The settings of generated code in a specific language. */
   public abstract List<LanguageSettingView> languageSettings();
 
-  /** The configuration for the license header to put on generated files. */
-  public abstract LicenseView license();
-
   /** The API interface configurations. */
   public abstract List<InterfaceView> interfaces();
 
@@ -68,8 +65,6 @@ public abstract class ConfigView implements ViewModel {
     public abstract Builder configSchemaVersion(String val);
 
     public abstract Builder languageSettings(List<LanguageSettingView> val);
-
-    public abstract Builder license(LicenseView val);
 
     public abstract Builder interfaces(List<InterfaceView> val);
 
