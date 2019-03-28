@@ -94,7 +94,6 @@
                 @default
                     Unrecognized callingForm: {@sample.callingForm}
                 @end
-                // FIXME: inspect the results
             }
 
             // [END {@sample.regionTag}]
@@ -270,7 +269,7 @@
                         while (await responseStream.MoveNext())
                         {
                                 {@apiMethod.serviceResponseTypeName} response = responseStream.Current;
-                                process response
+                                // FIXME: inspect the results
                         }
                         // The response stream has completed
                 });
@@ -309,7 +308,7 @@
         while (await responseStream.MoveNext())
         {
                 {@snippetMethod.method.serviceResponseTypeName} response = responseStream.Current;
-                // Do something with streamed response
+                // FIXME: inspect the results
         }
         // The response stream has completed
     }
@@ -355,7 +354,7 @@
     {
         foreach ({@apiMethod.listMethod.resourceTypeName} item in page)
         {
-            // FIXME: processResponse
+            // FIXME: inspect the results
         }
     }
 @end
@@ -364,7 +363,7 @@
     // Iterate over pages (of server-defined size), performing one RPC per page
     foreach ({@apiMethod.listMethod.resourceTypeName} item in response)
     {
-        // FIXME: processResponse
+        // FIXME: inspect the results
     }
 @end
 
@@ -374,7 +373,7 @@
     Page<{@apiMethod.listMethod.resourceTypeName}> singlePage = response.ReadPage(pageSize);
     foreach ({@apiMethod.listMethod.resourceTypeName} item in response)
     {
-        // FIXME: processResponse
+        // FIXME: inspect the results
     }
     // Store the pageToken, for when the next page is required.
     string nextPageToken = singlePage.NextPageToken;
@@ -386,7 +385,7 @@
     {
         foreach ({@apiMethod.listMethod.resourceTypeName} item in page)
         {
-            // FIXME: processResponse
+            // FIXME: inspect the results
         }
     });
 @end
@@ -395,7 +394,7 @@
     // Iterate over pages (of server-defined size), performing one RPC per page
     await response.ForEachAsync(({@apiMethod.listMethod.resourceTypeName} item) =>
     {
-        // FIXME: processResponse
+        // FIXME: inspect the results
     });
 @end
 
@@ -405,7 +404,7 @@
     Page<{@apiMethod.listMethod.resourceTypeName}> singlePage = await response.ReadPageAsync(pageSize);
     foreach ({@apiMethod.listMethod.resourceTypeName} item in response)
     {
-        // FIXME: processResponse
+        // FIXME: inspect the results
     }
     // Store the pageToken, for when the next page is required.
     string nextPageToken = singlePage.NextPageToken;
@@ -414,13 +413,13 @@
 @private pollOperationUntilCompleteSync(apiMethod, sample)
     // Poll until the returned long-running operation is complete
     {@methodCall(apiMethod, sample)}.PollUntilCompleted(){@if(apiMethod.hasReturnValue, ".Result", "")};
-    processResponse
+    // FIXME: inspect the results
 @end
 
 @private pollOperationUntilCompleteAsync(apiMethod, sample)
     // Poll until the returned long-running operation is complete
     {@methodCall(apiMethod, sample)}.PollUntilCompletedAsync(){@if(apiMethod.hasReturnValue, ".Result", "")};
-    processResponse
+    // FIXME: inspect the results
 @end
 
 @private pollOperationLaterSync(apiMethod, sample)
@@ -428,8 +427,8 @@
     string operationName = response.Name;
 
     // This name can be stored, then the long-running operation retrieved later by name
-    Not Done Yet
-    processResponse
+    // FIXME: process LRO result
+    // FIXME: inspect the results
 @end
 
 @private pollOperationLaterAsync(apiMethod, sample)
@@ -437,8 +436,8 @@
     string operationName = response.Name;
 
     // This name can be stored, then the long-running operation retrieved later by name
-    Not Done Yet
-    processResponse
+    // FIXME: process LRO result
+    // FIXME: inspect the results
 @end
 
 # SampleFunctionDocView

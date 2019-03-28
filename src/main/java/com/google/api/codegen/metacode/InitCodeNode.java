@@ -480,7 +480,7 @@ public class InitCodeNode {
           ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
           childIdentifier,
           initValueConfig,
-           sampleParamConfig.description());
+          sampleParamConfig.description());
       initValueConfig =
           InitValueConfig.createWithValue(
               InitValue.createVariable(childIdentifier.toLowerUnderscore()));

@@ -14,7 +14,7 @@
 # initCodeSpec: InitCodeView
 @snippet topLevelInitCode(initCodeSpec)
     @join line : initCodeSpec.topLevelLines
-        {@initCode(TRUE, TRUE, line)};
+        {@initCode(TRUE, line)};
     @end
 @end
 
@@ -22,14 +22,14 @@
 @snippet standaloneSampleInitCode(initCodeSpec)
     @if initCodeSpec.argDefaultLines
         @join line : initCodeSpec.argDefaultLines
-          // {@initCode(TRUE, FALSE, line)}
+          // {@initCode(TRUE, line)}
         @end
 
 
     @end
     @if initCodeSpec.lines
         @join line : initCodeSpec.topLevelLines
-            {@initCode(TRUE, TRUE, line)};
+            {@initCode(TRUE, line)};
         @end
 
     @end
@@ -37,14 +37,7 @@
 
 
 # includeAssignment: Boolean, line: InitCodeLineView
-@private initCode(includeAssignment, includeDescription, line)
-    @if includeDescription
-        
-        @join desc : line.descriptions
-            // {@desc}
-        @end
-
-    @end
+@private initCode(includeAssignment, line)   
     @switch line.lineType.toString
     @case "StructureInitLine"
         # line: StructureInitCodeLineView
@@ -56,7 +49,7 @@
 
         {
             @join fieldSetting : line.fieldSettings
-                {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, includeDescription, fieldSetting.initCodeLine)},
+                {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
             @end
         }
     @case "ListInitLine"
@@ -66,7 +59,7 @@
         @end
         {
             @join child : line.elements
-                {@initCode(FALSE, includeDescription, child)},
+                {@initCode(FALSE, child)},
             @end
         }
     @case "MapInitLine"
@@ -77,7 +70,7 @@
         @end
         {
             @join mapEntry : line.initEntries
-                { {@mapEntry.key}, {@initCode(FALSE, includeDescription, mapEntry.value)} },
+                { {@mapEntry.key}, {@initCode(FALSE, mapEntry.value)} },
             @end
         }
     @case "SimpleInitLine"

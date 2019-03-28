@@ -71,9 +71,7 @@ public class JavaMethodViewGenerator {
             MethodContext flattenedMethodContext =
                 context
                     .asFlattenedMethodContext(requestMethodContext, flatteningGroup)
-                    .withCallingForms(
-                        ImmutableList.of(
-                            CallingForm.FlattenedPaged, CallingForm.FlattenedPagedAll));
+                    .withCallingForms(ImmutableList.of(CallingForm.FlattenedPaged));
             if (!FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
@@ -85,8 +83,7 @@ public class JavaMethodViewGenerator {
             }
           }
         }
-        requestMethodContext.withCallingForms(
-            ImmutableList.of(CallingForm.RequestPaged, CallingForm.RequestPagedAll));
+        requestMethodContext.withCallingForms(ImmutableList.of(CallingForm.RequestPaged));
         apiMethods.add(
             clientMethodTransformer.generatePagedRequestObjectMethod(requestMethodContext));
         apiMethods.add(clientMethodTransformer.generatePagedCallableMethod(requestMethodContext));
@@ -151,11 +148,11 @@ public class JavaMethodViewGenerator {
         apiMethods.add(
             clientMethodTransformer.generateOperationCallableMethod(
                 requestMethodContext.withCallingForms(
-                    Collections.singletonList(CallingForm.LongRunningOperationCallable))));
+                    Collections.singletonList(CallingForm.LongRunningCallable))));
         apiMethods.add(
             clientMethodTransformer.generateCallableMethod(
                 requestMethodContext.withCallingForms(
-                    Collections.singletonList(CallingForm.LongRunningCallable))));
+                    Collections.singletonList(CallingForm.Callable))));
       } else {
 
         // Unary Methods.
