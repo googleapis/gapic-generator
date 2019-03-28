@@ -47,7 +47,7 @@ public abstract class GapicMethodContext implements MethodContext {
         surfaceTransformerContext,
         typeTable,
         new ProtoInterfaceModel(apiInterface),
-        Collections.singletonList(CallingForm.Generic));
+        Collections.emptyList());
   }
 
   @Override
@@ -118,17 +118,19 @@ public abstract class GapicMethodContext implements MethodContext {
 
   @Override
   public MethodContext withResourceNamesInSamplesOnly() {
-    return create(
-        getSurfaceInterfaceContext(),
-        getInterfaceModel().getInterface(),
+    return new AutoValue_GapicMethodContext(
         getProductConfig(),
-        getTypeTable(),
         getNamer(),
-        getMethodConfig(),
         getFlatteningConfig() == null
             ? null
             : getFlatteningConfig().withResourceNamesInSamplesOnly(),
-        getFeatureConfig());
+        getMethodConfig().getLroConfig(),
+        getFeatureConfig(),
+        getMethodConfig(),
+        getSurfaceInterfaceContext(),
+        getTypeTable(),
+        new ProtoInterfaceModel(getInterfaceModel().getInterface()),
+        getCallingForms());
   }
 
   @Override
