@@ -83,10 +83,13 @@ public class JavaMethodViewGenerator {
             }
           }
         }
-        requestMethodContext.withCallingForms(ImmutableList.of(CallingForm.RequestPaged));
         apiMethods.add(
-            clientMethodTransformer.generatePagedRequestObjectMethod(requestMethodContext));
-        apiMethods.add(clientMethodTransformer.generatePagedCallableMethod(requestMethodContext));
+            clientMethodTransformer.generatePagedRequestObjectMethod(
+                requestMethodContext.withCallingForms(ImmutableList.of(CallingForm.RequestPaged))));
+        apiMethods.add(
+            clientMethodTransformer.generatePagedCallableMethod(
+                requestMethodContext.withCallingForms(
+                    ImmutableList.of(CallingForm.CallablePaged))));
 
         apiMethods.add(
             clientMethodTransformer.generateUnpagedListCallableMethod(
