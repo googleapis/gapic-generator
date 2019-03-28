@@ -51,13 +51,13 @@ public enum CallingForm {
   RequestPaged, // used by: csharp java php py ruby
   RequestPagedAll, // used by: csharp php py ruby
   RequestPagedPageSize, // used by: csharp
-  RequestStreamingBidi, // used by: csharp nodejs php py ruby
+  RequestStreamingBidi, // used by: nodejs php py ruby
   RequestStreamingBidiAsync, // used by: php
   RequestStreamingClient, // used by: nodejs php py ruby
   RequestStreamingClientAsync, // used by: php
-  RequestStreamingServer, // used by: csharp nodejs php py ruby
+  RequestStreamingServer, // used by: nodejs php py ruby
 
-  Flattened, // used by: csharp, java
+  Flattened, // used by: csharp java
   FlattenedPaged, // used by: csharp java
   FlattenedPagedAll, // used by: csharp
   FlattenedPagedPageSize, // used by: csharp
@@ -65,8 +65,6 @@ public enum CallingForm {
   FlattenedAsyncPaged, // used by: csharp
   FlattenedAsyncPagedAll, // used by: csharp
   FlattenedAsyncPagedPageSize, // used by: csharp
-  FlattenedStreamingBidi, // used by: csharp
-  FlattenedStreamingServer, // used by: csharp
 
   Callable, // used by: java
   CallableList, // used by: java
@@ -77,20 +75,29 @@ public enum CallingForm {
 
   LongRunningCallable, // used by: java
   LongRunningEventEmitter, // used by: nodejs
-  LongRunningFlattened, // used by: csharp
-  LongRunningFlattenedPollUntilComplete, // used by: csharp
-  LongRunningFlattenedPollLater, // used by: csharp
+  LongRunningFlattened,
   LongRunningFlattenedAsync, // used by: java
-  LongRunningFlattenedAsyncPollUntilComplete, // used by: csharp
-  LongRunningFlattenedAsyncPollLater, // used by: csharp
   LongRunningPromise, // used by: nodejs py
   LongRunningPromiseAwait, // used by: nodejs
-  LongRunningRequest, // used by: csharp php
-  LongRunningRequestPollUntilComplete, // used by: csharp
-  LongRunningRequestPollLater, // used by: csharp
+  LongRunningRequest, // used by: php
   LongRunningRequestAsync, // used by: java php ruby
-  LongRunningRequestAsyncPollUntilComplete, // used by: csharp
-  LongRunningRequestAsyncPollLater, // used by: csharp
+
+  // TODO: the following calling forms should be added for csharp. They are
+  // currently removed to turn off generating samples in these calling forms
+  // so that baseline do not explode
+  // Flattened,
+  // RequestStreamingBidi,
+  // RequestStreamingServer,
+  // FlattenedStreamingBidi,
+  // FlattenedStreamingServer,
+  // LongRunningFlattenedPollUntilComplete,
+  // LongRunningFlattenedPollLater,
+  // LongRunningFlattenedAsyncPollUntilComplete,
+  // LongRunningFlattenedAsyncPollLater,
+  // LongRunningRequestPollUntilComplete,
+  // LongRunningRequestPollLater,
+  // LongRunningRequestAsyncPollUntilComplete,
+  // LongRunningRequestAsyncPollLater,
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.
