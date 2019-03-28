@@ -30,6 +30,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -87,8 +88,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
               resourceNameConfigs,
               retryCodesConfig,
               retrySettingsDefinition.keySet());
-      methodConfigs =
-          GapicInterfaceConfig.createMethodConfigs(methodConfigMap, interfaceConfigProto);
+      methodConfigs = orderMethodConfigs(methodConfigMap, interfaceConfigProto);
     }
 
     // TODO(andrealin)  Make non-null smokeTestConfig.
@@ -166,6 +166,20 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           methodConfigMap,
           singleResourceNames);
     }
+  }
+
+  /**
+   * Return an ordered list of configs for method in the order given by the GAPIC interface config.
+   * This is the order defined in the GAPIC config.
+   */
+  private static List<DiscoGapicMethodConfig> orderMethodConfigs(
+      ImmutableMap<String, DiscoGapicMethodConfig> methodConfigMap,
+      InterfaceConfigProto interfaceConfigProto) {
+    List<DiscoGapicMethodConfig> methodConfigs = new ArrayList<>();
+    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
+      methodConfigs.add(methodConfigMap.get(methodConfigProto.getName()));
+    }
+    return methodConfigs;
   }
 
   @Override

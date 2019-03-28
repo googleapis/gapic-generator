@@ -51,12 +51,14 @@ import com.google.protobuf.DescriptorProtos;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
@@ -254,8 +256,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableMap<String, Interface> protoInterfaces =
         getInterfacesFromProtoFile(diagCollector, sourceProtos, symbolTable);
 
-    // Collect the interfaces (clients) and methods that we will generate on the surface.
-    // Not all methods defined in the protofiles will be generated on the surface.
     ImmutableList<GapicInterfaceInput> interfaceInputs;
     if (!configProto.equals(ConfigProto.getDefaultInstance())) {
       interfaceInputs =
@@ -572,7 +572,11 @@ public abstract class GapicProductConfig implements ProductConfig {
       InterfaceConfigProto interfaceConfigProto,
       TargetLanguage targetLanguage,
       DiagCollector diagCollector) {
-    ImmutableMap.Builder<Method, MethodConfigProto> methodsToSurface = ImmutableMap.builder();
+
+    LinkedHashMap<Method, MethodConfigProto> methodMap = new LinkedHashMap<>();
+
+    // Exclude these proto methods that are marked as DISABLE in the GAPIC config.
+    Set<Method> gapicDisabledMethods = new HashSet<>();
 
     // Get the set of methods defined by the GAPIC config. Only these methods will be generated.
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
@@ -596,16 +600,23 @@ public abstract class GapicProductConfig implements ProductConfig {
                       && s.getIncludeLanguagesList()
                           .stream()
                           .anyMatch(lang -> lang.equalsIgnoreCase(targetLanguage.name())))) {
+        gapicDisabledMethods.add(protoMethod);
         continue;
       }
-      methodsToSurface.put(protoMethod, methodConfigProto);
+      methodMap.put(protoMethod, methodConfigProto);
+    }
+
+    // Add the proto methods that do not have GAPIC configurations.
+    for (Method method : apiInterface.getMethods()) {
+      if (methodMap.containsKey(method) || gapicDisabledMethods.contains(method)) continue;
+      methodMap.put(method, MethodConfigProto.getDefaultInstance());
     }
 
     if (diagCollector.getErrorCount() > 0) {
       return null;
     }
 
-    return methodsToSurface.build();
+    return ImmutableMap.copyOf(methodMap);
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(

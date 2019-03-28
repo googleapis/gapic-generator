@@ -3657,6 +3657,68 @@ class LibraryServiceClient(object):
         )
         return self._inner_api_calls['test_optional_required_flattening_params'](request, retry=retry, timeout=timeout, metadata=metadata)
 
+    def private_get_book(
+            self,
+            name=None,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+        This method is not exposed in the GAPIC config. It should be generated.
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> response = client.private_get_book()
+
+        Args:
+            name (str): The name of the book to retrieve.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Returns:
+            A :class:`~google.cloud.example.library_v1.types.Book` instance.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'private_get_book' not in self._inner_api_calls:
+            self._inner_api_calls['private_get_book'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.private_get_book,
+                default_retry=self._method_configs['PrivateGetBook'].retry,
+                default_timeout=self._method_configs['PrivateGetBook'].timeout,
+                client_info=self._client_info,
+            )
+
+        request = library_pb2.GetBookRequest(
+            name=name,
+        )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
+        return self._inner_api_calls['private_get_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+
 ============== file: google/cloud/example/library_v1/gapic/library_service_client_config.py ==============
 config = {
   "interfaces": {
@@ -3830,6 +3892,11 @@ config = {
         "TestOptionalRequiredFlatteningParams": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "PrivateGetBook": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "idempotent",
           "retry_params_name": "default"
         }
       }
@@ -4326,6 +4393,19 @@ class LibraryServiceGrpcTransport(object):
                 deserialized response object.
         """
         return self._stubs['library_service_stub'].TestOptionalRequiredFlatteningParams
+
+    @property
+    def private_get_book(self):
+        """Return the gRPC stub for :meth:`LibraryServiceClient.private_get_book`.
+
+        This method is not exposed in the GAPIC config. It should be generated.
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['library_service_stub'].PrivateGetBook
 ============== file: google/cloud/example/library_v1/types.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -6918,4 +6998,39 @@ class TestLibraryServiceClient(object):
 
         with pytest.raises(CustomException):
             client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
+
+    def test_private_get_book(self):
+        # Setup Expected Response
+        name = 'name3373707'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = {'name': name, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        response = client.private_get_book()
+        assert expected_response == response
+
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.GetBookRequest()
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_private_get_book_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        with pytest.raises(CustomException):
+            client.private_get_book()
 

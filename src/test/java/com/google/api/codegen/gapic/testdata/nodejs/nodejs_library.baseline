@@ -4023,6 +4023,7 @@ class LibraryServiceClient {
       'getBigBook',
       'getBigNothing',
       'testOptionalRequiredFlatteningParams',
+      'privateGetBook',
     ];
     for (const methodName of libraryServiceStubMethods) {
       this._innerApiCalls[methodName] = gax.createApiCall(
@@ -6264,6 +6265,58 @@ class LibraryServiceClient {
     return this._innerApiCalls.testOptionalRequiredFlatteningParams(request, options, callback);
   }
 
+  /**
+   * This method is not exposed in the GAPIC config. It should be generated.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} [request.name]
+   *   The name of the book to retrieve.
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [Book]{@link google.example.library.v1.Book}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.LibraryServiceClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.privateGetBook({})
+   *   .then(responses => {
+   *     const response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
+   */
+  privateGetBook(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
+
+    return this._innerApiCalls.privateGetBook(request, options, callback);
+  }
+
   // --------------------
   // -- Path templates --
   // --------------------
@@ -6630,6 +6683,11 @@ module.exports = LibraryServiceClient;
         "TestOptionalRequiredFlatteningParams": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "PrivateGetBook": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "idempotent",
           "retry_params_name": "default"
         }
       }
@@ -8446,6 +8504,66 @@ describe('LibraryServiceClient', () => {
       );
 
       client.testOptionalRequiredFlatteningParams(request, (err, response) => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
+        done();
+      });
+    });
+  });
+
+  describe('privateGetBook', () => {
+    it('invokes privateGetBook without error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock response
+      const name = 'name3373707';
+      const author = 'author-1406328437';
+      const title = 'title110371416';
+      const read = true;
+      const expectedResponse = {
+        name: name,
+        author: author,
+        title: title,
+        read: read,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.privateGetBook = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
+
+      client.privateGetBook(request, (err, response) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes privateGetBook with error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.privateGetBook = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.privateGetBook(request, (err, response) => {
         assert(err instanceof Error);
         assert.strictEqual(err.code, FAKE_STATUS_CODE);
         assert(typeof response === 'undefined');
