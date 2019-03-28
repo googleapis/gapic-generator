@@ -5008,7 +5008,6 @@ public class LibraryClient implements BackgroundResource {
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Test bidi-streaming.
-   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
    * Sample code:
    * <pre><code>
@@ -5034,7 +5033,6 @@ public class LibraryClient implements BackgroundResource {
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Test client streaming.
-   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
    * Sample code:
    * <pre><code>
@@ -8311,10 +8309,28 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<DiscussBookRequest, Comment> discussBookTransportSettings =
         GrpcCallSettings.<DiscussBookRequest, Comment>newBuilder()
             .setMethodDescriptor(discussBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<DiscussBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(DiscussBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<DiscussBookRequest, Comment> monologAboutBookTransportSettings =
         GrpcCallSettings.<DiscussBookRequest, Comment>newBuilder()
             .setMethodDescriptor(monologAboutBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<DiscussBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(DiscussBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<DiscussBookRequest, Empty> babbleAboutBookTransportSettings =
         GrpcCallSettings.<DiscussBookRequest, Empty>newBuilder()

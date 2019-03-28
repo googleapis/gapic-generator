@@ -759,7 +759,6 @@ func (c *LibClient) StreamBooks(ctx context.Context, req *librarypb.StreamBooksR
 }
 
 // DiscussBook test bidi-streaming.
-// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *LibClient) DiscussBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_DiscussBookClient, error) {
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.DiscussBook[0:len(c.CallOptions.DiscussBook):len(c.CallOptions.DiscussBook)], opts...)
@@ -776,7 +775,6 @@ func (c *LibClient) DiscussBook(ctx context.Context, opts ...gax.CallOption) (li
 }
 
 // MonologAboutBook test client streaming.
-// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *LibClient) MonologAboutBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_MonologAboutBookClient, error) {
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.MonologAboutBook[0:len(c.CallOptions.MonologAboutBook):len(c.CallOptions.MonologAboutBook)], opts...)

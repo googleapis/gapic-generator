@@ -1826,6 +1826,10 @@ const ListShelvesResponse = {
 
 /**
  * Request message for LibraryService.StreamShelves.
+ *
+ * @property {string} name
+ *   The name of the shelf to stream.
+ *
  * @typedef StreamShelvesRequest
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.StreamShelvesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
@@ -5431,8 +5435,10 @@ class LibraryServiceClient {
    * Test server streaming
    * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
-   * @param {Object} [request]
+   * @param {Object} request
    *   The request object that will be sent.
+   * @param {string} [request.name]
+   *   The name of the shelf to stream.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -5454,9 +5460,7 @@ class LibraryServiceClient {
    */
   streamShelves(request, options) {
     options = options || {};
-    if (request === undefined) {
-      request = {};
-    }
+
     return this._innerApiCalls.streamShelves(request, options);
   }
 
@@ -5495,7 +5499,6 @@ class LibraryServiceClient {
 
   /**
    * Test bidi-streaming.
-   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -5525,13 +5528,18 @@ class LibraryServiceClient {
    */
   discussBook(options) {
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.discussBook(options);
   }
 
   /**
    * Test client streaming.
-   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -5571,6 +5579,12 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.monologAboutBook(null, options, callback);
   }
