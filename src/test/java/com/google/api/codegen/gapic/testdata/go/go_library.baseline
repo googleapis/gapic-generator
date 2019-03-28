@@ -286,10 +286,10 @@ func defaultCallOptions() *CallOptions {
         GetBookFromAnywhere: retry[[2]string{"default", "idempotent"}],
         GetBookFromAbsolutelyAnywhere: retry[[2]string{"default", "idempotent"}],
         UpdateBookIndex: retry[[2]string{"default", "idempotent"}],
-        StreamShelves: retry[[2]string{"default", "idempotent"}],
+        StreamShelves: retry[[2]string{"default", "non_idempotent"}],
         StreamBooks: retry[[2]string{"default", "idempotent"}],
         DiscussBook: retry[[2]string{"default", "non_idempotent"}],
-        MonologAboutBook: retry[[2]string{"default", "non_idempotent"}],
+        MonologAboutBook: retry[[2]string{"default", "idempotent"}],
         BabbleAboutBook: retry[[2]string{"default", "non_idempotent"}],
         FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
@@ -3431,7 +3431,10 @@ func TestLibraryServiceStreamShelves(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var request *librarypb.StreamShelvesRequest = &librarypb.StreamShelvesRequest{}
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.StreamShelvesRequest{
+        Name: formattedName,
+    }
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -3461,7 +3464,10 @@ func TestLibraryServiceStreamShelvesError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var request *librarypb.StreamShelvesRequest = &librarypb.StreamShelvesRequest{}
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.StreamShelvesRequest{
+        Name: formattedName,
+    }
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -3567,9 +3573,9 @@ func TestLibraryServiceDiscussBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var name string = "name3373707"
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DiscussBookRequest{
-        Name: name,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -3606,9 +3612,9 @@ func TestLibraryServiceDiscussBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var name string = "name3373707"
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DiscussBookRequest{
-        Name: name,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -3648,9 +3654,9 @@ func TestLibraryServiceMonologAboutBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var name string = "name3373707"
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DiscussBookRequest{
-        Name: name,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -3684,9 +3690,9 @@ func TestLibraryServiceMonologAboutBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var name string = "name3373707"
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DiscussBookRequest{
-        Name: name,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)

@@ -512,7 +512,7 @@ public class DiscussBookCallableCallableStreamingBidiProg {
           libraryClient.discussBookCallable().call();
 
       // String imageFileName = "image_file.jpg";
-      String name = "BASIC";
+      String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
       String fileName = "comment_file";
       Path path = Paths.get(fileName);
       byte[] data = Files.readAllBytes(path);
@@ -524,7 +524,7 @@ public class DiscussBookCallableCallableStreamingBidiProg {
       data = Files.readAllBytes(path);
       ByteString image = ByteString.copyFrom(data);
       DiscussBookRequest request = DiscussBookRequest.newBuilder()
-        .setName(name)
+        .setName(formattedName)
         .setComment(comment2)
         .setImage(image)
         .build();
@@ -1943,9 +1943,9 @@ public class MonologAboutBookCallableCallableStreamingClientProg {
       ApiStreamObserver<DiscussBookRequest> requestObserver =
           libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
 
-      String name = "BASIC";
+      String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
       DiscussBookRequest request = DiscussBookRequest.newBuilder()
-        .setName(name)
+        .setName(formattedName)
         .build();
       requestObserver.onNext(request);
     } catch (Exception exception) {
@@ -2618,7 +2618,10 @@ public class StreamShelvesCallableCallableStreamingServerEmpty {
   public static void sampleStreamShelves() {
     // [START sample_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+      String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
+      StreamShelvesRequest request = StreamShelvesRequest.newBuilder()
+        .setName(formattedName)
+        .build();
 
       ServerStream<StreamShelvesResponse> stream = libraryClient.streamShelvesCallable().call(request);
       for (StreamShelvesResponse responseItem : stream) {
@@ -4968,7 +4971,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+   *   String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   StreamShelvesRequest request = StreamShelvesRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
    *
    *   ServerStream&lt;StreamShelvesResponse&gt; stream = libraryClient.streamShelvesCallable().call(request);
    *   for (StreamShelvesResponse response : stream) {
@@ -5015,9 +5021,9 @@ public class LibraryClient implements BackgroundResource {
    *   BidiStream&lt;DiscussBookRequest, Comment&gt; bidiStream =
    *       libraryClient.discussBookCallable().call();
    *
-   *   String name = "";
+   *   String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(formattedName)
    *     .build();
    *   bidiStream.send(request);
    *   for (Comment response : bidiStream) {
@@ -5057,9 +5063,9 @@ public class LibraryClient implements BackgroundResource {
    *   ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
    *       libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
    *
-   *   String name = "";
+   *   String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(formattedName)
    *     .build();
    *   requestObserver.onNext(request);
    * }
@@ -9999,7 +10005,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.streamShelvesSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.streamBooksSettings()
@@ -11585,7 +11591,10 @@ public class LibraryClientTest {
       .addAllShelves(shelves)
       .build();
     mockLibraryService.addResponse(expectedResponse);
-    StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+    String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
+    StreamShelvesRequest request = StreamShelvesRequest.newBuilder()
+      .setName(formattedName)
+      .build();
 
     MockStreamObserver<StreamShelvesResponse> responseObserver = new MockStreamObserver<>();
 
@@ -11603,7 +11612,10 @@ public class LibraryClientTest {
   public void streamShelvesExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
-    StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+    String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
+    StreamShelvesRequest request = StreamShelvesRequest.newBuilder()
+      .setName(formattedName)
+      .build();
 
     MockStreamObserver<StreamShelvesResponse> responseObserver = new MockStreamObserver<>();
 
@@ -11687,9 +11699,9 @@ public class LibraryClientTest {
       .setComment(comment)
       .build();
     mockLibraryService.addResponse(expectedResponse);
-    String name = "name3373707";
+    String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
     DiscussBookRequest request = DiscussBookRequest.newBuilder()
-      .setName(name)
+      .setName(formattedName)
       .build();
 
     MockStreamObserver<Comment> responseObserver = new MockStreamObserver<>();
@@ -11712,9 +11724,9 @@ public class LibraryClientTest {
   public void discussBookExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
-    String name = "name3373707";
+    String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
     DiscussBookRequest request = DiscussBookRequest.newBuilder()
-      .setName(name)
+      .setName(formattedName)
       .build();
 
     MockStreamObserver<Comment> responseObserver = new MockStreamObserver<>();
