@@ -1170,7 +1170,10 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   StreamShelvesRequest request = StreamShelvesRequest.newBuilder()
+   *     .setName(name.toString())
+   *     .build();
    *
    *   ServerStream&lt;StreamShelvesResponse&gt; stream = libraryServiceClient.streamShelvesCallable().call(request);
    *   for (StreamShelvesResponse response : stream) {
@@ -1210,7 +1213,6 @@ public class LibraryServiceClient implements BackgroundResource {
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Test bidi-streaming.
-   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
    * Sample code:
    * <pre><code>
@@ -1218,9 +1220,9 @@ public class LibraryServiceClient implements BackgroundResource {
    *   BidiStream&lt;DiscussBookRequest, Comment&gt; bidiStream =
    *       libraryServiceClient.discussBookCallable().call();
    *
-   *   String name = "";
+   *   BookOneOfName name = DeletedBookName.of();
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(name.toString())
    *     .build();
    *   bidiStream.send(request);
    *   for (Comment response : bidiStream) {
@@ -1236,7 +1238,6 @@ public class LibraryServiceClient implements BackgroundResource {
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Test client streaming.
-   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
    * Sample code:
    * <pre><code>
@@ -1261,9 +1262,9 @@ public class LibraryServiceClient implements BackgroundResource {
    *   ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
    *       libraryServiceClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
    *
-   *   String name = "";
+   *   BookOneOfName name = DeletedBookName.of();
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(name.toString())
    *     .build();
    *   requestObserver.onNext(request);
    * }
@@ -1301,9 +1302,9 @@ public class LibraryServiceClient implements BackgroundResource {
    *   ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
    *       libraryServiceClient.babbleAboutBookCallable().clientStreamingCall(responseObserver);
    *
-   *   String name = "";
+   *   BookOneOfName name = DeletedBookName.of();
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(name.toString())
    *     .build();
    *   requestObserver.onNext(request);
    * }
@@ -3570,10 +3571,28 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     GrpcCallSettings<DiscussBookRequest, Comment> discussBookTransportSettings =
         GrpcCallSettings.<DiscussBookRequest, Comment>newBuilder()
             .setMethodDescriptor(discussBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<DiscussBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(DiscussBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<DiscussBookRequest, Comment> monologAboutBookTransportSettings =
         GrpcCallSettings.<DiscussBookRequest, Comment>newBuilder()
             .setMethodDescriptor(monologAboutBookMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<DiscussBookRequest>() {
+                  @Override
+                  public Map<String, String> extract(DiscussBookRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("name", String.valueOf(request.getName()));
+                    return params.build();
+                  }
+                })
             .build();
     GrpcCallSettings<DiscussBookRequest, Empty> babbleAboutBookTransportSettings =
         GrpcCallSettings.<DiscussBookRequest, Empty>newBuilder()
@@ -5466,7 +5485,10 @@ public class LibraryServiceClientTest {
   public void streamShelvesTest() throws Exception {
     StreamShelvesResponse expectedResponse = StreamShelvesResponse.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
-    StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+    ShelfName name = ShelfName.of("[SHELF_ID]");
+    StreamShelvesRequest request = StreamShelvesRequest.newBuilder()
+      .setName(name.toString())
+      .build();
 
     MockStreamObserver<StreamShelvesResponse> responseObserver = new MockStreamObserver<>();
 
@@ -5484,7 +5506,10 @@ public class LibraryServiceClientTest {
   public void streamShelvesExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
-    StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+    ShelfName name = ShelfName.of("[SHELF_ID]");
+    StreamShelvesRequest request = StreamShelvesRequest.newBuilder()
+      .setName(name.toString())
+      .build();
 
     MockStreamObserver<StreamShelvesResponse> responseObserver = new MockStreamObserver<>();
 
@@ -5568,9 +5593,9 @@ public class LibraryServiceClientTest {
       .setComment(comment)
       .build();
     mockLibraryService.addResponse(expectedResponse);
-    String name = "name3373707";
+    BookOneOfName name = DeletedBookName.of();
     DiscussBookRequest request = DiscussBookRequest.newBuilder()
-      .setName(name)
+      .setName(name.toString())
       .build();
 
     MockStreamObserver<Comment> responseObserver = new MockStreamObserver<>();
@@ -5593,9 +5618,9 @@ public class LibraryServiceClientTest {
   public void discussBookExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
-    String name = "name3373707";
+    BookOneOfName name = DeletedBookName.of();
     DiscussBookRequest request = DiscussBookRequest.newBuilder()
-      .setName(name)
+      .setName(name.toString())
       .build();
 
     MockStreamObserver<Comment> responseObserver = new MockStreamObserver<>();

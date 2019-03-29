@@ -2129,6 +2129,9 @@ module Google
         class ListShelvesResponse; end
 
         # Request message for LibraryService.StreamShelves.
+        # @!attribute [rw] name
+        #   @return [String]
+        #     The name of the shelf to stream.
         class StreamShelvesRequest; end
 
         # Response message for LibraryService.StreamShelves.
@@ -3124,12 +3127,18 @@ module Library
         @discuss_book = Google::Gax.create_api_call(
           @library_service_stub.method(:discuss_book),
           defaults["discuss_book"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @monolog_about_book = Google::Gax.create_api_call(
           @library_service_stub.method(:monolog_about_book),
           defaults["monolog_about_book"],
-          exception_transformer: exception_transformer
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'name' => request.name}
+          end
         )
         @babble_about_book = Google::Gax.create_api_call(
           @library_service_stub.method(:babble_about_book),
@@ -3918,6 +3927,8 @@ module Library
       # Test server streaming
       # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
       #
+      # @param name [String]
+      #   The name of the shelf to stream.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -3929,12 +3940,18 @@ module Library
       #   require "library"
       #
       #   library_client = Library.new(version: :v1)
-      #   library_client.stream_shelves.each do |element|
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   library_client.stream_shelves(formatted_name).each do |element|
       #     # Process element.
       #   end
 
-      def stream_shelves options: nil
-        req = Google::Example::Library::V1::StreamShelvesRequest.new
+      def stream_shelves \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::StreamShelvesRequest)
         @stream_shelves.call(req, options)
       end
 
@@ -3972,7 +3989,6 @@ module Library
       end
 
       # Test bidi-streaming.
-      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
       #
       # @param reqs [Enumerable<Google::Example::Library::V1::DiscussBookRequest>]
       #   The input requests.
@@ -3993,10 +4009,8 @@ module Library
       #   require "library"
       #
       #   library_client = Library.new(version: :v1)
-      #
-      #   # TODO: Initialize `name`:
-      #   name = ''
-      #   request = { name: name }
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   request = { name: formatted_name }
       #   requests = [request]
       #   library_client.discuss_book(requests).each do |element|
       #     # Process element.
@@ -4010,7 +4024,6 @@ module Library
       end
 
       # Test client streaming.
-      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
       #
       # @param reqs [Enumerable<Google::Example::Library::V1::DiscussBookRequest>]
       #   The input requests.
@@ -4029,10 +4042,8 @@ module Library
       #   require "library"
       #
       #   library_client = Library.new(version: :v1)
-      #
-      #   # TODO: Initialize `name`:
-      #   name = ''
-      #   request = { name: name }
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   request = { name: formatted_name }
       #   requests = [request]
       #   response = library_client.monolog_about_book(requests)
 
@@ -4906,7 +4917,7 @@ end
         },
         "StreamShelves": {
           "timeout_millis": 30000,
-          "retry_codes_name": "idempotent",
+          "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
         "StreamBooks": {
@@ -4921,7 +4932,7 @@ end
         },
         "MonologAboutBook": {
           "timeout_millis": 30000,
-          "retry_codes_name": "non_idempotent",
+          "retry_codes_name": "idempotent",
           "retry_params_name": "default"
         },
         "BabbleAboutBook": {
@@ -5197,13 +5208,13 @@ def sample_discuss_book(image_file_name)
   library_client = Library.new version: :v1
 
   # image_file_name = "image_file.jpg"
-  name = "BASIC"
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
   file_name = "comment_file"
   comment = File.binread file_name
   comment_2 = { comment: comment }
   image = File.binread image_file_name
   request = {
-    name: name,
+    name: formatted_name,
     comment: comment_2,
     image: image
   }
@@ -5649,8 +5660,8 @@ def sample_monolog_about_book
   # Instantiate a client
   library_client = Library.new version: :v1
 
-  name = "BASIC"
-  request = { name: name }
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  request = { name: formatted_name }
 
   requests = [request]
   response = library_client.monolog_about_book(requests, sample)
@@ -5931,7 +5942,9 @@ def sample_stream_shelves
   # Instantiate a client
   library_client = Library.new version: :v1
 
-  library_client.stream_shelves.each do |element|
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+  library_client.stream_shelves(formatted_name).each do |element|
     puts element
   end
 
@@ -7484,6 +7497,9 @@ describe Library::V1::LibraryServiceClient do
     custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#stream_shelves."
 
     it 'invokes stream_shelves without error' do
+      # Create request parameters
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
       # Create expected grpc response
       shelves_element = {}
       shelves = [shelves_element]
@@ -7491,7 +7507,9 @@ describe Library::V1::LibraryServiceClient do
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::StreamShelvesResponse)
 
       # Mock Grpc layer
-      mock_method = proc do
+      mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::StreamShelvesRequest, request)
+        assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: [expected_response])
       end
       mock_stub = MockGrpcClientStub_v1.new(:stream_shelves, mock_method)
@@ -7504,7 +7522,7 @@ describe Library::V1::LibraryServiceClient do
           client = Library.new(version: :v1)
 
           # Call method
-          response = client.stream_shelves
+          response = client.stream_shelves(formatted_name)
 
           # Verify the response
           assert_equal(1, response.count)
@@ -7514,8 +7532,13 @@ describe Library::V1::LibraryServiceClient do
     end
 
     it 'invokes stream_shelves with error' do
+      # Create request parameters
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
       # Mock Grpc layer
-      mock_method = proc do
+      mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::StreamShelvesRequest, request)
+        assert_equal(formatted_name, request.name)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:stream_shelves, mock_method)
@@ -7529,7 +7552,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
-            client.stream_shelves
+            client.stream_shelves(formatted_name)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
@@ -7620,8 +7643,8 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes discuss_book without error' do
       # Create request parameters
-      name = ''
-      request = { name: name }
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      request = { name: formatted_name }
 
       # Create expected grpc response
       user_name = "userName339340927"
@@ -7633,7 +7656,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |requests|
         request = requests.first
         assert_instance_of(Google::Example::Library::V1::DiscussBookRequest, request)
-        assert_equal(name, request.name)
+        assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: [expected_response])
       end
       mock_stub = MockGrpcClientStub_v1.new(:discuss_book, mock_method)
@@ -7657,14 +7680,14 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes discuss_book with error' do
       # Create request parameters
-      name = ''
-      request = { name: name }
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      request = { name: formatted_name }
 
       # Mock Grpc layer
       mock_method = proc do |requests|
         request = requests.first
         assert_instance_of(Google::Example::Library::V1::DiscussBookRequest, request)
-        assert_equal(name, request.name)
+        assert_equal(formatted_name, request.name)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:discuss_book, mock_method)
@@ -7693,8 +7716,8 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes monolog_about_book without error' do
       # Create request parameters
-      name = ''
-      request = { name: name }
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      request = { name: formatted_name }
 
       # Create expected grpc response
       user_name = "userName339340927"
@@ -7706,7 +7729,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |requests|
         request = requests.first
         assert_instance_of(Google::Example::Library::V1::DiscussBookRequest, request)
-        assert_equal(name, request.name)
+        assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub_v1.new(:monolog_about_book, mock_method)
@@ -7729,14 +7752,14 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes monolog_about_book with error' do
       # Create request parameters
-      name = ''
-      request = { name: name }
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      request = { name: formatted_name }
 
       # Mock Grpc layer
       mock_method = proc do |requests|
         request = requests.first
         assert_instance_of(Google::Example::Library::V1::DiscussBookRequest, request)
-        assert_equal(name, request.name)
+        assert_equal(formatted_name, request.name)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:monolog_about_book, mock_method)

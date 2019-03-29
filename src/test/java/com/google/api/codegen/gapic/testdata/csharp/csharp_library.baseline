@@ -1850,7 +1850,10 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument
-            StreamShelvesRequest request = new StreamShelvesRequest();
+            StreamShelvesRequest request = new StreamShelvesRequest
+            {
+                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+            };
             // Make the request, returning a streaming response
             LibraryServiceClient.StreamShelvesStream streamingResponse = libraryServiceClient.StreamShelves(request);
 
@@ -1921,7 +1924,7 @@ namespace Google.Example.Library.V1.Snippets
                 // Initialize a request
                 DiscussBookRequest request = new DiscussBookRequest
                 {
-                    Name = "",
+                    Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
                 };
                 // Stream a request to the server
                 await duplexStream.WriteAsync(request);
@@ -9026,6 +9029,28 @@ namespace Google.Example.Library.V1
         /// Test server streaming
         /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
         /// </summary>
+        /// <param name="name">
+        /// The name of the shelf to stream.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The server stream.
+        /// </returns>
+        public virtual StreamShelvesStream StreamShelves(
+            string name,
+            gaxgrpc::CallSettings callSettings = null) => StreamShelves(
+                new StreamShelvesRequest
+                {
+                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                },
+                callSettings);
+
+        /// <summary>
+        /// Test server streaming
+        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+        /// </summary>
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.
         /// </param>
@@ -9100,7 +9125,6 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Test bidi-streaming.
-        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
         /// </summary>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -12245,7 +12269,6 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Test bidi-streaming.
-        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
         /// </summary>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -15441,6 +15464,45 @@ namespace Google.Example.Library.V1
    }
 
    // [END lovelace]
+   public static void Main(String[] args)
+   {
+   	// FIXME: pass in commandline arguments
+   	// FIXME: call the sample function
+   }
+ }
+============== file: Samples/StreamShelvesFlattenedEmpty.cs ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Generated code. DO NOT EDIT!
+ // DO NOT EDIT! This is a generated sample ("Flattened",  "empty")
+
+ // [START sample]
+ // FIXME: import section
+
+ class StreamShelvesFlattenedEmpty
+ {
+   // FIXME: sample function documentation
+   public static void SampleStreamShelves()
+   {
+   	// FIXME: instantiate a client
+     // FIXME: construct a request
+     // FIXME: call the API
+     // FIXME: inspect the results
+   }
+
+   // [END sample]
    public static void Main(String[] args)
    {
    	// FIXME: pass in commandline arguments
