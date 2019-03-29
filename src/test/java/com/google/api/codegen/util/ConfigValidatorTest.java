@@ -35,7 +35,7 @@ public class ConfigValidatorTest {
   @Test(expected = IllegalStateException.class)
   public void testProtoIsNotConfigNextVersion() {
     ConfigProto smallProto = validV2Proto.toBuilder().setConfigSchemaVersion("1.0.0").build();
-    validator.checkIsNextVersionConfig(smallProto);
+    validator.validateV2Config(smallProto);
   }
 
   @Test(expected = IllegalStateException.class)
@@ -56,11 +56,11 @@ public class ConfigValidatorTest {
                                     .build()))
                     .build())
             .build();
-    validator.checkIsNextVersionConfig(smallProto);
+    validator.validateV2Config(smallProto);
   }
 
   @Test
   public void testProtoIsValid() {
-    validator.checkIsNextVersionConfig(validV2Proto);
+    validator.validateV2Config(validV2Proto);
   }
 }

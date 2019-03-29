@@ -30,7 +30,7 @@ public class ConfigVersionValidator {
    * Throw {@link IllegalStateException} iff the given input contains fields unknown to the {@link
    * com.google.api.codegen.v2.ConfigProto} schema.
    */
-  public void checkIsNextVersionConfig(@Nonnull com.google.api.codegen.ConfigProto configV1Proto)
+  public void validateV2Config(@Nonnull com.google.api.codegen.ConfigProto configV1Proto)
       throws IllegalStateException {
     if (!configV1Proto.getConfigSchemaVersion().startsWith(CONFIG_V2_MAJOR_VERSION + ".")
         && !configV1Proto.getConfigSchemaVersion().equals(CONFIG_V2_MAJOR_VERSION)) {
