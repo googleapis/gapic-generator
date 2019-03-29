@@ -237,8 +237,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
               .isEmptyOperation(lroConfig.getReturnType().isEmptyType())
               .isEmptyMetadata(lroConfig.getMetadataType().isEmptyType())
               .metadataTypeName(context.getImportTypeTable().getFullNameFor(metadataType))
-              .implementsCancel(true)
-              .implementsDelete(true)
               .initialPollDelay(lroConfig.getInitialPollDelay().toMillis())
               .pollDelayMultiplier(lroConfig.getPollDelayMultiplier())
               .maxPollDelay(lroConfig.getMaxPollDelay().toMillis())
