@@ -220,14 +220,14 @@ service LibraryService {
   // Test bidi-streaming.
   rpc DiscussBook(stream DiscussBookRequest) returns (stream Comment) {
     // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
-
+    option (google.api.http) = { post: "/v1/{name=archives/*/books/*}:discuss" body: "*" };
     option (google.api.method_signature) = "name";
   }
 
   // Test client streaming.
   rpc MonologAboutBook(stream DiscussBookRequest) returns (Comment) {
     // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
-
+    option (google.api.http) = { get: "/v1/{name=archives/*/books/*}:monolog" body: "*" };
     option (google.api.method_signature) = "name";
   }
 
@@ -581,6 +581,10 @@ message ListShelvesResponse {
 
 // Request message for LibraryService.StreamShelves.
 message StreamShelvesRequest {
+  // The name of the shelf to stream.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = "google.example.library.v1.Shelf"];
 }
 
 // Response message for LibraryService.StreamShelves.
@@ -854,7 +858,8 @@ message DiscussBookRequest {
   // of the stream and this is not specified, the name in the previous
   // message will be reused.
   string name = 1 [
-    (google.api.field_behavior) = REQUIRED];
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = "google.example.library.v1.Book"];
 
   // The new comment.
   Comment comment = 2;

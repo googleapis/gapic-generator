@@ -34,7 +34,10 @@ public class HeaderRequestParamTransformer {
     GapicMethodConfig methodConfig = (GapicMethodConfig) context.getMethodConfig();
     Method method = methodConfig.getMethod();
     SurfaceNamer namer = context.getNamer();
-    if (method.getInputType() == null || !method.getInputType().isMessage()) {
+    if (method.getInputType() == null
+        || !method.getInputType().isMessage()
+        // Request header parameters not supported for methods that stream requests.
+        || method.getRequestStreaming()) {
       return ImmutableList.of();
     }
     ImmutableList.Builder<HeaderRequestParamView> headerRequestParams = ImmutableList.builder();

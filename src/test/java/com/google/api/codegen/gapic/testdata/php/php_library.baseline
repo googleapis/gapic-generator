@@ -1532,8 +1532,9 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     // Read all responses until the stream is complete
-     *     $stream = $libraryServiceClient->streamShelves();
+     *     $stream = $libraryServiceClient->streamShelves($formattedName);
      *     foreach ($stream->readAll() as $element) {
      *         // doSomethingWith($element);
      *     }
@@ -1542,6 +1543,7 @@ class LibraryServiceGapicClient
      * }
      * ```
      *
+     * @param string $name The name of the shelf to stream.
      * @param array $optionalArgs {
      *     Optional.
      *     @type int $timeoutMillis
@@ -1553,9 +1555,10 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function streamShelves(array $optionalArgs = [])
+    public function streamShelves($name, array $optionalArgs = [])
     {
         $request = new StreamShelvesRequest();
+        $request->setName($name);
 
         return $this->startCall(
             'StreamShelves',
@@ -1613,15 +1616,14 @@ class LibraryServiceGapicClient
 
     /**
      * Test bidi-streaming.
-     * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
      *
      * Sample code:
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $name = '';
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $request = new DiscussBookRequest();
-     *     $request->setName($name);
+     *     $request->setName($formattedName);
      *     // Write all requests to the server, then read all responses until the
      *     // stream is complete
      *     $requests = [$request];
@@ -1680,15 +1682,14 @@ class LibraryServiceGapicClient
 
     /**
      * Test client streaming.
-     * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
      *
      * Sample code:
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $name = '';
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $request = new DiscussBookRequest();
-     *     $request->setName($name);
+     *     $request->setName($formattedName);
      *     // Write data to server and wait for a response
      *     $requests = [$request];
      *     $stream = $libraryServiceClient->monologAboutBook();
@@ -3425,14 +3426,14 @@ function sampleDiscussBook($imageFileName)
     $libraryServiceClient = new LibraryServiceClient();
 
     // $imageFileName = 'image_file.jpg';
-    $name = 'BASIC';
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
     $fileName = 'comment_file';
     $comment = file_get_contents($fileName);
     $comment2 = new Comment();
     $comment2->setComment($comment);
     $image = file_get_contents($imageFileName);
     $request = new DiscussBookRequest();
-    $request->setName($name);
+    $request->setName($formattedName);
     $request->setComment($comment2);
     $request->setImage($image);
 
@@ -3513,14 +3514,14 @@ function sampleDiscussBook($imageFileName)
     $libraryServiceClient = new LibraryServiceClient();
 
     // $imageFileName = 'image_file.jpg';
-    $name = 'BASIC';
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
     $fileName = 'comment_file';
     $comment = file_get_contents($fileName);
     $comment2 = new Comment();
     $comment2->setComment($comment);
     $image = file_get_contents($imageFileName);
     $request = new DiscussBookRequest();
-    $request->setName($name);
+    $request->setName($formattedName);
     $request->setComment($comment2);
     $request->setImage($image);
 
@@ -4325,9 +4326,9 @@ function sampleMonologAboutBook()
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    $name = 'BASIC';
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
     $request = new DiscussBookRequest();
-    $request->setName($name);
+    $request->setName($formattedName);
 
     try {
         // Write data as it becomes available, then wait for a response
@@ -4382,9 +4383,9 @@ function sampleMonologAboutBook()
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    $name = 'BASIC';
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
     $request = new DiscussBookRequest();
-    $request->setName($name);
+    $request->setName($formattedName);
 
     try {
         // Write data to server and wait for a response
@@ -4716,9 +4717,11 @@ function sampleStreamShelves()
 
     $libraryServiceClient = new LibraryServiceClient();
 
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+
     try {
         // Read all responses until the stream is complete
-        $stream = $libraryServiceClient->streamShelves();
+        $stream = $libraryServiceClient->streamShelves($formattedName);
         foreach ($stream->readAll() as $responseItem) {
             printf("%s" . PHP_EOL, print_r($responseItem, true));
         }
@@ -6360,9 +6363,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse3);
 
         // Mock request
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
-
-        $serverStream = $client->streamShelves();
+        $serverStream = $client->streamShelves($formattedName);
         $this->assertInstanceOf(ServerStream::class, $serverStream);
 
         $responses = iterator_to_array($serverStream->readAll());
@@ -6379,6 +6382,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/StreamShelves', $actualFuncCall);
 
+        $actualValue = $actualRequestObject->getName();
+
+        $this->assertProtobufEquals($formattedName, $actualValue);
 
         $this->assertTrue($transport->isExhausted());
     }
@@ -6407,9 +6413,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         // Mock request
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
 
-
-        $serverStream = $client->streamShelves();
+        $serverStream = $client->streamShelves($formattedName);
         $results = $serverStream->readAll();
 
         try {
@@ -6569,15 +6575,15 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse3);
 
         // Mock request
-        $name = 'name3373707';
+        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $request = new DiscussBookRequest();
-        $request->setName($name);
-        $name2 = 'name2-1052831874';
+        $request->setName($formattedName);
+        $formattedName2 = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $request2 = new DiscussBookRequest();
-        $request2->setName($name2);
-        $name3 = 'name3-1052831873';
+        $request2->setName($formattedName2);
+        $formattedName3 = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $request3 = new DiscussBookRequest();
-        $request3->setName($name3);
+        $request3->setName($formattedName3);
 
         $bidi = $client->discussBook();
         $this->assertInstanceOf(BidiStream::class, $bidi);
