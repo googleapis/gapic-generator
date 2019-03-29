@@ -488,13 +488,19 @@ jobs:
                 --root-dir=/tmp/workspace/showcase-protos-patched
       # This step is also required so long as Java's clients rely on a different
       # version of google-common-protos compared to gapic-generator.
+      # We also have to downgrade gax to 1.37.0 so that gax's common-protos-java
+      # doesn't override 1.13.0-pre3, which contains the necessary ResourceSet.
       - run:
           name: Patch in pre-release version of google-common-protos
           command: |
             cd workspace/gapic-generator/artman-genfiles/java
             JAVA_COMMON_PROTOS_VERSION=proto-google-common-protos:1.13.0-pre3
+            GAX_VERSION=1.37.0
             sed -i "s/proto-google-common-protos:[0-9\.]\+/${JAVA_COMMON_PROTOS_VERSION}/g" \
                 proto-google-showcase-v1alpha3/build.gradle
+            cd gapic-google-cloud-showcase-v1alpha3
+            sed -i "s/gax:[0-9\.]\+/gax:${GAX_VERSION}/g" build.gradle
+            sed -i "s/gax-grpc:[0-9\.]\+/gax-grpc:${GAX_VERSION}/g" build.gradle
       - store_artifacts:
           path: /tmp/workspace/reports
       - store_artifacts:
