@@ -760,8 +760,7 @@ func (c *LibClient) StreamBooks(ctx context.Context, req *librarypb.StreamBooksR
 
 // DiscussBook test bidi-streaming.
 func (c *LibClient) DiscussBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_DiscussBookClient, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
-    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.DiscussBook[0:len(c.CallOptions.DiscussBook):len(c.CallOptions.DiscussBook)], opts...)
     var resp librarypb.LibraryService_DiscussBookClient
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -777,8 +776,7 @@ func (c *LibClient) DiscussBook(ctx context.Context, opts ...gax.CallOption) (li
 
 // MonologAboutBook test client streaming.
 func (c *LibClient) MonologAboutBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_MonologAboutBookClient, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
-    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.MonologAboutBook[0:len(c.CallOptions.MonologAboutBook):len(c.CallOptions.MonologAboutBook)], opts...)
     var resp librarypb.LibraryService_MonologAboutBookClient
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
