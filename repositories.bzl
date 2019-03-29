@@ -31,6 +31,8 @@ def com_google_api_codegen_repositories():
     # version, while Bazel will depend on Bazel workspaces). The versions are shared in the
     # properties file.
 
+    _protobuf_version = PROPERTIES["version.com_google_protobuf"]
+
     _maybe(
         http_archive,
         name = "com_google_protobuf",
