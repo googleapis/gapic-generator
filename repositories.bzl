@@ -31,14 +31,6 @@ def com_google_api_codegen_repositories():
     # version, while Bazel will depend on Bazel workspaces). The versions are shared in the
     # properties file.
 
-    # A temporary hack, to fix incompatibility of protobuf 3.6.1 with new Bazel versions.
-    # We have to do it, because version 3.6.1.3 exists only as a Bazel workspace, but not as
-    # a maven artifact.
-    # Remove once upgraded to 3.7.0
-    _protobuf_version = PROPERTIES["version.com_google_protobuf"]
-    if _protobuf_version == "3.6.1":
-        _protobuf_version = "3.6.1.3"
-
     _maybe(
         http_archive,
         name = "com_google_protobuf",
