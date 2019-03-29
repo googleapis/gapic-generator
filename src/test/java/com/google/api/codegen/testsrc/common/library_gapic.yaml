@@ -579,9 +579,17 @@ interfaces:
     grpc_streaming:
       response:
         resources_field: shelves
-    retry_codes_name: idempotent
+    retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 30000
+    field_name_patterns:
+      name: book
+    flattening:
+      groups:
+        - parameters:
+            - name
+    required_fields:
+      - name
     sample_value_sets:
       # callingFormCheck: empty java: CallableStreamingServer
       # callingFormCheck: empty nodejs: RequestStreamingServer
@@ -642,6 +650,8 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 30000
+    field_name_patterns:
+      name: book
     sample_value_sets:
       # callingFormCheck: prog java: CallableStreamingBidi
       # callingFormCheck: prog nodejs: RequestStreamingBidi
@@ -675,8 +685,10 @@ interfaces:
     # required_fields makes a difference on sample code.
     required_fields:
     - name
-    retry_codes_name: non_idempotent
+    retry_codes_name: idempotent
     retry_params_name: default
+    field_name_patterns:
+      name: book
     timeout_millis: 30000
     sample_value_sets:
       # callingFormCheck: prog java: CallableStreamingClient
