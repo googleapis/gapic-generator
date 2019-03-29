@@ -21,7 +21,7 @@ import com.google.protobuf.util.JsonFormat.Printer;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
 import javax.annotation.Nonnull;
 
-public class ConfigNextVersionValidator {
+public class ConfigVersionValidator {
 
   public static String CONFIG_V2_MAJOR_VERSION = "2";
   public static String CONFIG_V2_VERSION = CONFIG_V2_MAJOR_VERSION + ".0.0"; // "2.0.0"

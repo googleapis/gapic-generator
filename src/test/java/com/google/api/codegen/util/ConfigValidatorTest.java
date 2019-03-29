@@ -30,7 +30,7 @@ public class ConfigValidatorTest {
           .setEnableStringFormatFunctionsOverride(BoolValue.of(true))
           .build();
 
-  private static final ConfigNextVersionValidator validator = new ConfigNextVersionValidator();
+  private static final ConfigVersionValidator validator = new ConfigVersionValidator();
 
   @Test(expected = IllegalStateException.class)
   public void testProtoIsNotConfigNextVersion() {
