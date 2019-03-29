@@ -32,8 +32,6 @@ import org.threeten.bp.Duration;
 public abstract class LongRunningConfig {
 
   // Default values for LongRunningConfig fields.
-  static final boolean LRO_IMPLEMENTS_CANCEL = true;
-  static final boolean LRO_IMPLEMENTS_DELETE = true;
   static final int LRO_INITIAL_POLL_DELAY_MILLIS = 500;
   static final double LRO_POLL_DELAY_MULTIPLIER = 1.5;
   static final int LRO_MAX_POLL_DELAY_MILLIS = 5000;
@@ -44,12 +42,6 @@ public abstract class LongRunningConfig {
 
   /** Returns the message type for the metadata field of an operation. */
   public abstract TypeModel getMetadataType();
-
-  /** Reports whether or not the service implements delete. */
-  public abstract boolean implementsDelete();
-
-  /** Reports whether or not the service implements cancel. */
-  public abstract boolean implementsCancel();
 
   /** Returns initial delay after which first poll request will be made. */
   public abstract Duration getInitialPollDelay();
@@ -168,8 +160,6 @@ public abstract class LongRunningConfig {
     return new AutoValue_LongRunningConfig(
         ProtoTypeRef.create(returnType),
         ProtoTypeRef.create(metadataType),
-        LRO_IMPLEMENTS_CANCEL,
-        LRO_IMPLEMENTS_DELETE,
         initialPollDelay,
         LRO_POLL_DELAY_MULTIPLIER,
         maxPollDelay,
@@ -260,8 +250,6 @@ public abstract class LongRunningConfig {
     return new AutoValue_LongRunningConfig(
         ProtoTypeRef.create(returnType),
         ProtoTypeRef.create(metadataType),
-        longRunningConfigProto.getImplementsDelete(),
-        longRunningConfigProto.getImplementsCancel(),
         initialPollDelay,
         pollDelayMultiplier,
         maxPollDelay,
