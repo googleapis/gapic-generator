@@ -2587,6 +2587,7 @@ class LibraryServiceClient(object):
 
     def stream_shelves(
             self,
+            name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -2599,11 +2600,14 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> for element in client.stream_shelves():
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>>
+            >>> for element in client.stream_shelves(name):
             ...     # process element
             ...     pass
 
         Args:
+            name (str): The name of the shelf to stream.
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will not
                 be retried.
@@ -2621,6 +2625,7 @@ class LibraryServiceClient(object):
                     failed for any reason.
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
         if 'stream_shelves' not in self._inner_api_calls:
@@ -2631,7 +2636,9 @@ class LibraryServiceClient(object):
                 client_info=self._client_info,
             )
 
-        request = library_pb2.StreamShelvesRequest()
+        request = library_pb2.StreamShelvesRequest(
+            name=name,
+        )
         return self._inner_api_calls['stream_shelves'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def stream_books(
@@ -2699,7 +2706,6 @@ class LibraryServiceClient(object):
             metadata=None):
         """
         Test bidi-streaming.
-        gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
         EXPERIMENTAL: This method interface might change in the future.
 
@@ -2708,8 +2714,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> # TODO: Initialize `name`:
-            >>> name = ''
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>> request = {'name': name}
             >>>
             >>> requests = [request]
@@ -2758,7 +2763,6 @@ class LibraryServiceClient(object):
             metadata=None):
         """
         Test client streaming.
-        gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
         EXPERIMENTAL: This method interface might change in the future.
 
@@ -2767,8 +2771,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> # TODO: Initialize `name`:
-            >>> name = ''
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>> request = {'name': name}
             >>>
             >>> requests = [request]
@@ -3657,6 +3660,68 @@ class LibraryServiceClient(object):
         )
         return self._inner_api_calls['test_optional_required_flattening_params'](request, retry=retry, timeout=timeout, metadata=metadata)
 
+    def private_get_book(
+            self,
+            name=None,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+        This method is not exposed in the GAPIC config. It should be generated.
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> response = client.private_get_book()
+
+        Args:
+            name (str): The name of the book to retrieve.
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will not
+                be retried.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Returns:
+            A :class:`~google.cloud.example.library_v1.types.Book` instance.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'private_get_book' not in self._inner_api_calls:
+            self._inner_api_calls['private_get_book'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.private_get_book,
+                default_retry=self._method_configs['PrivateGetBook'].retry,
+                default_timeout=self._method_configs['PrivateGetBook'].timeout,
+                client_info=self._client_info,
+            )
+
+        request = library_pb2.GetBookRequest(
+            name=name,
+        )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('name', name)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
+        return self._inner_api_calls['private_get_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+
 ============== file: google/cloud/example/library_v1/gapic/library_service_client_config.py ==============
 config = {
   "interfaces": {
@@ -3784,7 +3849,7 @@ config = {
         },
         "StreamShelves": {
           "timeout_millis": 30000,
-          "retry_codes_name": "idempotent",
+          "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
         "StreamBooks": {
@@ -3799,7 +3864,7 @@ config = {
         },
         "MonologAboutBook": {
           "timeout_millis": 30000,
-          "retry_codes_name": "non_idempotent",
+          "retry_codes_name": "idempotent",
           "retry_params_name": "default"
         },
         "BabbleAboutBook": {
@@ -3830,6 +3895,11 @@ config = {
         "TestOptionalRequiredFlatteningParams": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "PrivateGetBook": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "idempotent",
           "retry_params_name": "default"
         }
       }
@@ -4226,7 +4296,6 @@ class LibraryServiceGrpcTransport(object):
         """Return the gRPC stub for :meth:`LibraryServiceClient.discuss_book`.
 
         Test bidi-streaming.
-        gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
         Returns:
             Callable: A callable which accepts the appropriate
@@ -4240,7 +4309,6 @@ class LibraryServiceGrpcTransport(object):
         """Return the gRPC stub for :meth:`LibraryServiceClient.monolog_about_book`.
 
         Test client streaming.
-        gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
         Returns:
             Callable: A callable which accepts the appropriate
@@ -4326,6 +4394,19 @@ class LibraryServiceGrpcTransport(object):
                 deserialized response object.
         """
         return self._stubs['library_service_stub'].TestOptionalRequiredFlatteningParams
+
+    @property
+    def private_get_book(self):
+        """Return the gRPC stub for :meth:`LibraryServiceClient.private_get_book`.
+
+        This method is not exposed in the GAPIC config. It should be generated.
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['library_service_stub'].PrivateGetBook
 ============== file: google/cloud/example/library_v1/types.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -4716,7 +4797,7 @@ def sample_discuss_book(image_file_name):
 
   if isinstance(image_file_name, six.binary_type):
     image_file_name = image_file_name.decode('utf-8')
-  name = 'BASIC'
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
   file_name = 'comment_file'
   with io.open(file_name, 'rb') as f:
     comment = f.read()
@@ -5184,7 +5265,7 @@ def sample_monolog_about_book():
 
   client = library_v1.LibraryServiceClient()
 
-  name = 'BASIC'
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
   request = {'name': name}
 
   requests = [request]
@@ -5490,7 +5571,9 @@ def sample_stream_shelves():
 
   client = library_v1.LibraryServiceClient()
 
-  for response_item in client.stream_shelves():
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+  for response_item in client.stream_shelves(name):
     print(response_item)
 
   # [END sample_core]
@@ -6445,13 +6528,16 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
 
-        response = client.stream_shelves()
+        # Setup Request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        response = client.stream_shelves(name)
         resources = list(response)
         assert len(resources) == 1
         assert expected_response == resources[0]
 
         assert len(channel.requests) == 1
-        expected_request = library_pb2.StreamShelvesRequest()
+        expected_request = library_pb2.StreamShelvesRequest(name=name)
         actual_request = channel.requests[0][1]
         assert expected_request == actual_request
 
@@ -6463,8 +6549,11 @@ class TestLibraryServiceClient(object):
             create_channel.return_value = channel
             client = library_v1.LibraryServiceClient()
 
+        # Setup request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
         with pytest.raises(CustomException):
-            client.stream_shelves()
+            client.stream_shelves(name)
 
     def test_stream_books(self):
         # Setup Expected Response
@@ -6525,7 +6614,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = 'name3373707'
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         request = {'name': name}
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
@@ -6550,7 +6639,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = 'name3373707'
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         request = {'name': name}
 
         request = library_pb2.DiscussBookRequest(**request)
@@ -6574,7 +6663,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = 'name3373707'
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         request = {'name': name}
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
@@ -6597,7 +6686,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = 'name3373707'
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         request = {'name': name}
 
         request = library_pb2.DiscussBookRequest(**request)
@@ -6920,4 +7009,39 @@ class TestLibraryServiceClient(object):
 
         with pytest.raises(CustomException):
             client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
+
+    def test_private_get_book(self):
+        # Setup Expected Response
+        name = 'name3373707'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = {'name': name, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        response = client.private_get_book()
+        assert expected_response == response
+
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.GetBookRequest()
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_private_get_book_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        with pytest.raises(CustomException):
+            client.private_get_book()
 

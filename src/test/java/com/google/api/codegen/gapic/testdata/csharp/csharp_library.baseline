@@ -1850,7 +1850,10 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument
-            StreamShelvesRequest request = new StreamShelvesRequest();
+            StreamShelvesRequest request = new StreamShelvesRequest
+            {
+                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+            };
             // Make the request, returning a streaming response
             LibraryServiceClient.StreamShelvesStream streamingResponse = libraryServiceClient.StreamShelves(request);
 
@@ -1921,7 +1924,7 @@ namespace Google.Example.Library.V1.Snippets
                 // Initialize a request
                 DiscussBookRequest request = new DiscussBookRequest
                 {
-                    Name = "",
+                    Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
                 };
                 // Stream a request to the server
                 await duplexStream.WriteAsync(request);
@@ -2772,6 +2775,33 @@ namespace Google.Example.Library.V1.Snippets
             };
             // Make the request
             TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.TestOptionalRequiredFlatteningParams(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for PrivateGetBookAsync</summary>
+        public async Task PrivateGetBookAsync_RequestObject()
+        {
+            // Snippet: PrivateGetBookAsync(GetBookRequest,CallSettings)
+            // Additional: PrivateGetBookAsync(GetBookRequest,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            GetBookRequest request = new GetBookRequest();
+            // Make the request
+            Book response = await libraryServiceClient.PrivateGetBookAsync(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for PrivateGetBook</summary>
+        public void PrivateGetBook_RequestObject()
+        {
+            // Snippet: PrivateGetBook(GetBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            GetBookRequest request = new GetBookRequest();
+            // Make the request
+            Book response = libraryServiceClient.PrivateGetBook(request);
             // End snippet
         }
 
@@ -5231,6 +5261,54 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.VerifyAll();
         }
 
+        [Fact]
+        public void PrivateGetBook()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            GetBookRequest request = new GetBookRequest();
+            Book expectedResponse = new Book
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                Author = "author-1406328437",
+                Title = "title110371416",
+                Read = true,
+            };
+            mockGrpcClient.Setup(x => x.PrivateGetBook(request, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            Book response = client.PrivateGetBook(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task PrivateGetBookAsync()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            GetBookRequest request = new GetBookRequest();
+            Book expectedResponse = new Book
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                Author = "author-1406328437",
+                Title = "title110371416",
+                Read = true,
+            };
+            mockGrpcClient.Setup(x => x.PrivateGetBookAsync(request, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            Book response = await client.PrivateGetBookAsync(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
     }
 }
 
@@ -5370,6 +5448,7 @@ namespace Google.Example.Library.V1
             GetBigNothingSettings = existing.GetBigNothingSettings;
             GetBigNothingOperationsSettings = existing.GetBigNothingOperationsSettings?.Clone();
             TestOptionalRequiredFlatteningParamsSettings = existing.TestOptionalRequiredFlatteningParamsSettings;
+            PrivateGetBookSettings = existing.PrivateGetBookSettings;
             OnCopy(existing);
         }
 
@@ -6196,6 +6275,36 @@ namespace Google.Example.Library.V1
                 timeoutBackoff: GetDefaultTimeoutBackoff(),
                 totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
                 retryFilter: NonIdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>LibraryServiceClient.PrivateGetBook</c> and <c>LibraryServiceClient.PrivateGetBookAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>LibraryServiceClient.PrivateGetBook</c> and
+        /// <c>LibraryServiceClient.PrivateGetBookAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="grpccore::StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="grpccore::StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public gaxgrpc::CallSettings PrivateGetBookSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
+            gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
             )));
 
         /// <summary>
@@ -8920,6 +9029,28 @@ namespace Google.Example.Library.V1
         /// Test server streaming
         /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
         /// </summary>
+        /// <param name="name">
+        /// The name of the shelf to stream.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The server stream.
+        /// </returns>
+        public virtual StreamShelvesStream StreamShelves(
+            string name,
+            gaxgrpc::CallSettings callSettings = null) => StreamShelves(
+                new StreamShelvesRequest
+                {
+                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                },
+                callSettings);
+
+        /// <summary>
+        /// Test server streaming
+        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+        /// </summary>
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.
         /// </param>
@@ -8994,7 +9125,6 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Test bidi-streaming.
-        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
         /// </summary>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -11030,6 +11160,62 @@ namespace Google.Example.Library.V1
             throw new sys::NotImplementedException();
         }
 
+        /// <summary>
+        /// This method is not exposed in the GAPIC config. It should be generated.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<Book> PrivateGetBookAsync(
+            GetBookRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
+        /// This method is not exposed in the GAPIC config. It should be generated.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<Book> PrivateGetBookAsync(
+            GetBookRequest request,
+            st::CancellationToken cancellationToken) => PrivateGetBookAsync(
+                request,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// This method is not exposed in the GAPIC config. It should be generated.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual Book PrivateGetBook(
+            GetBookRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
     }
 
     /// <summary>
@@ -11063,6 +11249,7 @@ namespace Google.Example.Library.V1
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigBook;
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigNothing;
         private readonly gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> _callTestOptionalRequiredFlatteningParams;
+        private readonly gaxgrpc::ApiCall<GetBookRequest, Book> _callPrivateGetBook;
 
         /// <summary>
         /// Constructs a client wrapper for the LibraryService service, with the specified gRPC client and settings.
@@ -11149,6 +11336,9 @@ namespace Google.Example.Library.V1
                 .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}"));
             _callTestOptionalRequiredFlatteningParams = clientHelper.BuildApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>(
                 GrpcClient.TestOptionalRequiredFlatteningParamsAsync, GrpcClient.TestOptionalRequiredFlatteningParams, effectiveSettings.TestOptionalRequiredFlatteningParamsSettings);
+            _callPrivateGetBook = clientHelper.BuildApiCall<GetBookRequest, Book>(
+                GrpcClient.PrivateGetBookAsync, GrpcClient.PrivateGetBook, effectiveSettings.PrivateGetBookSettings)
+                .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}"));
             Modify_ApiCall(ref _callCreateShelf);
             Modify_CreateShelfApiCall(ref _callCreateShelf);
             Modify_ApiCall(ref _callGetShelf);
@@ -11201,6 +11391,8 @@ namespace Google.Example.Library.V1
             Modify_GetBigNothingApiCall(ref _callGetBigNothing);
             Modify_ApiCall(ref _callTestOptionalRequiredFlatteningParams);
             Modify_TestOptionalRequiredFlatteningParamsApiCall(ref _callTestOptionalRequiredFlatteningParams);
+            Modify_ApiCall(ref _callPrivateGetBook);
+            Modify_PrivateGetBookApiCall(ref _callPrivateGetBook);
             OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
 
@@ -11246,6 +11438,7 @@ namespace Google.Example.Library.V1
         partial void Modify_GetBigBookApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_GetBigNothingApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_TestOptionalRequiredFlatteningParamsApiCall(ref gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> call);
+        partial void Modify_PrivateGetBookApiCall(ref gaxgrpc::ApiCall<GetBookRequest, Book> call);
         partial void OnConstruction(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings effectiveSettings, gaxgrpc::ClientHelper clientHelper);
 
         /// <summary>
@@ -12076,7 +12269,6 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Test bidi-streaming.
-        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
         /// </summary>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -12374,6 +12566,46 @@ namespace Google.Example.Library.V1
         {
             Modify_TestOptionalRequiredFlatteningParamsRequest(ref request, ref callSettings);
             return _callTestOptionalRequiredFlatteningParams.Sync(request, callSettings);
+        }
+
+        /// <summary>
+        /// This method is not exposed in the GAPIC config. It should be generated.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override stt::Task<Book> PrivateGetBookAsync(
+            GetBookRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_GetBookRequest(ref request, ref callSettings);
+            return _callPrivateGetBook.Async(request, callSettings);
+        }
+
+        /// <summary>
+        /// This method is not exposed in the GAPIC config. It should be generated.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override Book PrivateGetBook(
+            GetBookRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_GetBookRequest(ref request, ref callSettings);
+            return _callPrivateGetBook.Sync(request, callSettings);
         }
 
     }
@@ -15232,6 +15464,45 @@ namespace Google.Example.Library.V1
    }
 
    // [END lovelace]
+   public static void Main(String[] args)
+   {
+   	// FIXME: pass in commandline arguments
+   	// FIXME: call the sample function
+   }
+ }
+============== file: Samples/StreamShelvesFlattenedEmpty.cs ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Generated code. DO NOT EDIT!
+ // DO NOT EDIT! This is a generated sample ("Flattened",  "empty")
+
+ // [START sample]
+ // FIXME: import section
+
+ class StreamShelvesFlattenedEmpty
+ {
+   // FIXME: sample function documentation
+   public static void SampleStreamShelves()
+   {
+   	// FIXME: instantiate a client
+     // FIXME: construct a request
+     // FIXME: call the API
+     // FIXME: inspect the results
+   }
+
+   // [END sample]
    public static void Main(String[] args)
    {
    	// FIXME: pass in commandline arguments

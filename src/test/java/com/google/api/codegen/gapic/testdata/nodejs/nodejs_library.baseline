@@ -362,7 +362,7 @@ function sampleDiscussBook(imageFileName) {
     console.log(response);
   });
   // const imageFileName = 'image_file.jpg';
-  const name = 'BASIC';
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
   const fileName = 'comment_file';
   const comment = fs.readFileSync(fileName).toString('base64');
   const comment2 = {
@@ -370,7 +370,7 @@ function sampleDiscussBook(imageFileName) {
   };
   const image = fs.readFileSync(imageFileName).toString('base64');
   const request = {
-    name: name,
+    name: formattedName,
     comment: comment2,
     image: image,
   };
@@ -1129,9 +1129,9 @@ function sampleMonologAboutBook() {
     }
     console.log(`The stage of the comment is: ${response.stage}`);
   });
-  const name = 'BASIC';
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
   const request = {
-    name: name,
+    name: formattedName,
   };
   // Write request objects.
   stream.write(request);
@@ -1360,8 +1360,8 @@ const library = require('@google-cloud/library').v1;
 /** Testing calling forms */
 function sampleStreamShelves() {
   const client = new library.LibraryServiceClient();
-
-    client.streamShelves({}).on('data', response => {
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+    client.streamShelves({name: formattedName}).on('data', response => {
       console.log(response);
     });
 }
@@ -1826,6 +1826,10 @@ const ListShelvesResponse = {
 
 /**
  * Request message for LibraryService.StreamShelves.
+ *
+ * @property {string} name
+ *   The name of the shelf to stream.
+ *
  * @typedef StreamShelvesRequest
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.StreamShelvesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
@@ -4020,6 +4024,7 @@ class LibraryServiceClient {
       'getBigBook',
       'getBigNothing',
       'testOptionalRequiredFlatteningParams',
+      'privateGetBook',
     ];
     for (const methodName of libraryServiceStubMethods) {
       this._innerApiCalls[methodName] = gax.createApiCall(
@@ -5425,8 +5430,10 @@ class LibraryServiceClient {
    * Test server streaming
    * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
-   * @param {Object} [request]
+   * @param {Object} request
    *   The request object that will be sent.
+   * @param {string} request.name
+   *   The name of the shelf to stream.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -5441,16 +5448,14 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   *
-   * client.streamShelves({}).on('data', response => {
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * client.streamShelves({name: formattedName}).on('data', response => {
    *   // doThingsWith(response)
    * });
    */
   streamShelves(request, options) {
     options = options || {};
-    if (request === undefined) {
-      request = {};
-    }
+
     return this._innerApiCalls.streamShelves(request, options);
   }
 
@@ -5489,7 +5494,6 @@ class LibraryServiceClient {
 
   /**
    * Test bidi-streaming.
-   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -5510,9 +5514,9 @@ class LibraryServiceClient {
    * const stream = client.discussBook().on('data', response => {
    *   // doThingsWith(response)
    * });
-   * const name = '';
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * const request = {
-   *   name: name,
+   *   name: formattedName,
    * };
    * // Write request objects.
    * stream.write(request);
@@ -5525,7 +5529,6 @@ class LibraryServiceClient {
 
   /**
    * Test client streaming.
-   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -5552,9 +5555,9 @@ class LibraryServiceClient {
    *   }
    *   // doThingsWith(response)
    * });
-   * const name = '';
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * const request = {
-   *   name: name,
+   *   name: formattedName,
    * };
    * // Write request objects.
    * stream.write(request);
@@ -6261,6 +6264,58 @@ class LibraryServiceClient {
     return this._innerApiCalls.testOptionalRequiredFlatteningParams(request, options, callback);
   }
 
+  /**
+   * This method is not exposed in the GAPIC config. It should be generated.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} [request.name]
+   *   The name of the book to retrieve.
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [Book]{@link google.example.library.v1.Book}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.LibraryServiceClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.privateGetBook({})
+   *   .then(responses => {
+   *     const response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
+   */
+  privateGetBook(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
+
+    return this._innerApiCalls.privateGetBook(request, options, callback);
+  }
+
   // --------------------
   // -- Path templates --
   // --------------------
@@ -6581,7 +6636,7 @@ module.exports = LibraryServiceClient;
         },
         "StreamShelves": {
           "timeout_millis": 30000,
-          "retry_codes_name": "idempotent",
+          "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
         "StreamBooks": {
@@ -6596,7 +6651,7 @@ module.exports = LibraryServiceClient;
         },
         "MonologAboutBook": {
           "timeout_millis": 30000,
-          "retry_codes_name": "non_idempotent",
+          "retry_codes_name": "idempotent",
           "retry_params_name": "default"
         },
         "BabbleAboutBook": {
@@ -6627,6 +6682,11 @@ module.exports = LibraryServiceClient;
         "TestOptionalRequiredFlatteningParams": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "PrivateGetBook": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "idempotent",
           "retry_params_name": "default"
         }
       }
@@ -7829,7 +7889,10 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const request = {};
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
+        name: formattedName,
+      };
 
       // Mock response
       const shelvesElement = {};
@@ -7860,7 +7923,10 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const request = {};
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const request = {
+        name: formattedName,
+      };
 
       // Mock Grpc layer
       client._innerApiCalls.streamShelves = mockServerStreamingGrpcMethod(request, null, error);
@@ -7956,9 +8022,9 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const name = 'name3373707';
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       const request = {
-        name: name,
+        name: formattedName,
       };
 
       // Mock response
@@ -7989,9 +8055,9 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const name = 'name3373707';
+      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       const request = {
-        name: name,
+        name: formattedName,
       };
 
       // Mock Grpc layer
@@ -8443,6 +8509,66 @@ describe('LibraryServiceClient', () => {
       );
 
       client.testOptionalRequiredFlatteningParams(request, (err, response) => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
+        done();
+      });
+    });
+  });
+
+  describe('privateGetBook', () => {
+    it('invokes privateGetBook without error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock response
+      const name = 'name3373707';
+      const author = 'author-1406328437';
+      const title = 'title110371416';
+      const read = true;
+      const expectedResponse = {
+        name: name,
+        author: author,
+        title: title,
+        read: read,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.privateGetBook = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
+
+      client.privateGetBook(request, (err, response) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes privateGetBook with error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.privateGetBook = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.privateGetBook(request, (err, response) => {
         assert(err instanceof Error);
         assert.strictEqual(err.code, FAKE_STATUS_CODE);
         assert(typeof response === 'undefined');
