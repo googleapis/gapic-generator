@@ -32,10 +32,6 @@ public abstract class LongRunningOperationDetailView {
 
   public abstract String metadataTypeName();
 
-  public abstract boolean implementsDelete();
-
-  public abstract boolean implementsCancel();
-
   public abstract String methodName();
 
   @Nullable
@@ -66,10 +62,6 @@ public abstract class LongRunningOperationDetailView {
     public abstract Builder isEmptyMetadata(boolean val);
 
     public abstract Builder metadataTypeName(String val);
-
-    public abstract Builder implementsDelete(boolean val);
-
-    public abstract Builder implementsCancel(boolean val);
 
     public abstract Builder methodName(String val);
 

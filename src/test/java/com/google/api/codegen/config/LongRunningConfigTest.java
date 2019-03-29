@@ -70,8 +70,6 @@ public class LongRunningConfigTest {
   private static final LongRunningConfigProto lroConfigProtoWithPollSettings =
       baseLroConfigProto
           .toBuilder()
-          .setImplementsCancel(TEST_IMPLEMENTS_CANCEL)
-          .setImplementsDelete(TEST_IMPLEMENTS_DELETE)
           .setInitialPollDelayMillis(TEST_INITIAL_POLL_DELAY)
           .setPollDelayMultiplier(TEST_POLL_DELAY_MULTIPLIER)
           .setMaxPollDelayMillis(TEST_MAX_POLL_DELAY)
@@ -130,10 +128,6 @@ public class LongRunningConfigTest {
         .isEqualTo(LongRunningConfig.LRO_POLL_DELAY_MULTIPLIER);
     assertThat(longRunningConfig.getTotalPollTimeout().toMillis())
         .isEqualTo(LongRunningConfig.LRO_TOTAL_POLL_TIMEOUT_MILLS);
-    assertThat(longRunningConfig.implementsCancel())
-        .isEqualTo(LongRunningConfig.LRO_IMPLEMENTS_CANCEL);
-    assertThat(longRunningConfig.implementsDelete())
-        .isEqualTo(LongRunningConfig.LRO_IMPLEMENTS_DELETE);
   }
 
   @Test
@@ -161,8 +155,6 @@ public class LongRunningConfigTest {
     assertThat(longRunningConfig.getPollDelayMultiplier()).isEqualTo(TEST_POLL_DELAY_MULTIPLIER);
     assertThat(longRunningConfig.getTotalPollTimeout().toMillis())
         .isEqualTo(TEST_TOTAL_POLL_TIMEOUT);
-    assertThat(longRunningConfig.implementsCancel()).isEqualTo(TEST_IMPLEMENTS_CANCEL);
-    assertThat(longRunningConfig.implementsDelete()).isEqualTo(TEST_IMPLEMENTS_DELETE);
   }
 
   @Test
@@ -191,10 +183,6 @@ public class LongRunningConfigTest {
         .isEqualTo(LongRunningConfig.LRO_POLL_DELAY_MULTIPLIER);
     assertThat(longRunningConfig.getTotalPollTimeout().toMillis())
         .isEqualTo(LongRunningConfig.LRO_TOTAL_POLL_TIMEOUT_MILLS);
-    assertThat(longRunningConfig.implementsCancel())
-        .isEqualTo(LongRunningConfig.LRO_IMPLEMENTS_CANCEL);
-    assertThat(longRunningConfig.implementsDelete())
-        .isEqualTo(LongRunningConfig.LRO_IMPLEMENTS_DELETE);
   }
 
   @Test
@@ -229,8 +217,6 @@ public class LongRunningConfigTest {
     assertThat(longRunningConfig.getPollDelayMultiplier()).isEqualTo(TEST_POLL_DELAY_MULTIPLIER);
     assertThat(longRunningConfig.getTotalPollTimeout().toMillis())
         .isEqualTo(TEST_TOTAL_POLL_TIMEOUT);
-    assertThat(longRunningConfig.implementsCancel()).isEqualTo(TEST_IMPLEMENTS_CANCEL);
-    assertThat(longRunningConfig.implementsDelete()).isEqualTo(TEST_IMPLEMENTS_DELETE);
   }
 
   @Test
