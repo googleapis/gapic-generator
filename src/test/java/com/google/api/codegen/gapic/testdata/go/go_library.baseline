@@ -760,8 +760,7 @@ func (c *LibClient) StreamBooks(ctx context.Context, req *librarypb.StreamBooksR
 
 // DiscussBook test bidi-streaming.
 func (c *LibClient) DiscussBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_DiscussBookClient, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
-    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.DiscussBook[0:len(c.CallOptions.DiscussBook):len(c.CallOptions.DiscussBook)], opts...)
     var resp librarypb.LibraryService_DiscussBookClient
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -777,8 +776,7 @@ func (c *LibClient) DiscussBook(ctx context.Context, opts ...gax.CallOption) (li
 
 // MonologAboutBook test client streaming.
 func (c *LibClient) MonologAboutBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_MonologAboutBookClient, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
-    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.MonologAboutBook[0:len(c.CallOptions.MonologAboutBook):len(c.CallOptions.MonologAboutBook)], opts...)
     var resp librarypb.LibraryService_MonologAboutBookClient
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -1131,15 +1129,6 @@ func (op *GetBigBookOperation) Name() string {
     return op.lro.Name()
 }
 
-// Cancel starts asynchronous cancellation on a long-running operation.
-// The server makes a best effort to cancel the operation, but success is not guaranteed.
-// Clients can use Poll or other methods to check whether the cancellation succeeded or whether the operation
-// completed despite cancellation. On successful cancellation, the operation is not deleted;
-// instead, op.Poll returns an error with code Canceled.
-func (op *GetBigBookOperation) Cancel(ctx context.Context, opts ...gax.CallOption) error {
-    return op.lro.Cancel(ctx, opts...)
-}
-
 // GetBigNothingOperation manages a long-running operation from GetBigNothing.
 type GetBigNothingOperation struct {
     lro *longrunning.Operation
@@ -1196,13 +1185,6 @@ func (op *GetBigNothingOperation) Name() string {
     return op.lro.Name()
 }
 
-
-// Delete deletes a long-running operation.
-// This method indicates that the client is no longer interested in the operation result.
-// It does not cancel the operation.
-func (op *GetBigNothingOperation) Delete(ctx context.Context, opts ...gax.CallOption) error {
-    return op.lro.Delete(ctx, opts...)
-}
 ============== file: cloud.google.com/go/library/apiv1/library_client_example_test.go ==============
 // Copyright 2019 Google LLC
 //
