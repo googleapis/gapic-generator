@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.config.TypeModel;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import javax.annotation.Nullable;
@@ -26,14 +25,18 @@ public interface OutputView {
     DEFINE,
     ARRAY_LOOP,
     MAP_LOOP,
-    PRINT
+    PRINT,
+    WRITE_FILE
   }
 
   Kind kind();
 
   @AutoValue
   abstract class DefineView implements OutputView {
-    public abstract String variableType(); // TODO: Replace with appropriate type type
+
+    public abstract ImmutableList<String> modifiers();
+
+    public abstract String variableTypeName();
 
     public abstract String variableName();
 
@@ -49,7 +52,10 @@ public interface OutputView {
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder variableType(String val);
+
+      public abstract Builder modifiers(ImmutableList<String> val);
+
+      public abstract Builder variableTypeName(String val);
 
       public abstract Builder variableName(String val);
 
@@ -81,7 +87,7 @@ public interface OutputView {
 
   @AutoValue
   abstract class ArrayLoopView implements OutputView {
-    public abstract String variableType(); // TODO: Replace with appropriate type type
+    public abstract String variableType();
 
     public abstract String variableName();
 
@@ -156,9 +162,9 @@ public interface OutputView {
   @AutoValue
   abstract class PrintView implements OutputView {
 
-    public abstract String format();
-
-    public abstract ImmutableList<PrintArgView> args();
+    // The first one is always the format
+    // The later ones are args
+    public ImmutableList<String> pieces();
 
     public Kind kind() {
       return Kind.PRINT;
@@ -170,33 +176,29 @@ public interface OutputView {
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder format(String val);
-
-      public abstract Builder args(ImmutableList<PrintArgView> val);
+      public abstract Builder pieces(ImmutableList<String> val);
 
       public abstract PrintView build();
     }
   }
 
   @AutoValue
-  abstract class PrintArgView {
+  abstract class WriteFileView implements OutputView {
+    public ImmutableList<String> fileNamePieces();
 
-    public abstract String formattedName();
+    public VariableView contents();
 
-    @Nullable
-    public abstract TypeModel type();
-
-    public static Builder newBuilder() {
-      return new AutoValue_OutputView_PrintArgView.Builder();
+    public Kind kind() {
+      return Kind.WRITE_FILE;
     }
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder formattedName(String val);
+      public abstract Builder fileNamePieces(ImmutableList<String> val);
 
-      public abstract Builder type(TypeModel val);
+      public abstract Builder contents(VariableView val);
 
-      public abstract PrintArgView build();
+      public abstract WriteFileView build();
     }
   }
 
@@ -207,9 +209,6 @@ public interface OutputView {
 
     public abstract ImmutableList<String> accessors();
 
-    @Nullable
-    public abstract TypeModel type();
-
     public static Builder newBuilder() {
       return new AutoValue_OutputView_VariableView.Builder();
     }
@@ -219,8 +218,6 @@ public interface OutputView {
       public abstract Builder variable(String val);
 
       public abstract Builder accessors(ImmutableList<String> val);
-
-      public abstract Builder type(TypeModel val);
 
       public abstract VariableView build();
     }
