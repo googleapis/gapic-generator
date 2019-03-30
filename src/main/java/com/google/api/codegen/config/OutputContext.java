@@ -56,6 +56,8 @@ public abstract class OutputContext {
     @Nullable ScopeTable parent;
     Set<Variable, VariableType> definedVariables;
     
+    // Track the view where the variable is defined.
+    Set<Variable, OutputView> views;
   }
 
   public class VariableTypeConfig {
@@ -80,6 +82,8 @@ public abstract class OutputContext {
 
 
   ImmutableList<Variable> stringFormattedVariables();
+
+  boolean hasMultipleWriteFiles();
 
   ScopeTable scopeTable();
 }
