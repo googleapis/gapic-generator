@@ -354,21 +354,17 @@
 @end
 
 @private processDefineView(view)
-  {@view.variableType} {@view.variableName} = {@variableField(view.reference)};
+  {@view.variableTypeName} {@view.variableName} = {@variableField(view.reference)};
 @end
 
 @private processPrintView(view)
-  @if not(view.args.size)
-    System.out.println("{@view.format}");
+  @if view.formattedString.args.isEmpty
+    System.out.println("{@view.formattedString.format}");
   @else
-    @if view.format == ""
-      System.out.println({@view.args.get(0).formattedName});
+    @if view.formattedString.format == "%s"
+      System.out.println({@view.formattedString.args.get(0)});
     @else
-      @if view.format == "%s"
-        System.out.println({@view.args.get(0).formattedName});
-      @else
-        System.out.printf("{@view.format}\n", {@commaSeparatedFields(view.args)});
-      @end
+      System.out.printf("{@view.formattedString.format}\n", {@commaSeparatedFields(view.formattedString.args)});
     @end
   @end
 @end
@@ -405,7 +401,7 @@
 
 @private commaSeparatedFields(args)
   @join arg : args on ", "
-    {@arg.formattedName}
+    {@arg}
   @end
 @end
 

@@ -94,12 +94,11 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
   protected void addOutputImports(MethodContext context, OutputContext outputContext) {
     ImportTypeTable typeTable = context.getTypeTable();
     OutputTransformer.ScopeTable scopeTable = outputContext.scopeTable();
-    for (String variable : scopeTable.allSymbols()) {
-      TypeModel type = scopeTable.getTypeModel(variable);
-      if (type != null) {
-        typeTable.getAndSaveNicknameFor(type);
-      } else {
+    for (TypeModel type : scopeTable.allTypes()) {
+      if (type == null) {
         saveResourceTypeName(context);
+      } else {
+        typeTable.getAndSaveNicknameFor(type);
       }
     }
     if (outputContext.hasMaps()) {

@@ -159,9 +159,7 @@ public interface OutputView {
   @AutoValue
   abstract class PrintView implements OutputView {
 
-    // The first one is always the format
-    // The later ones are args
-    public abstract ImmutableList<String> pieces();
+    public abstract StringFormatView formattedString();
 
     public Kind kind() {
       return Kind.PRINT;
@@ -173,7 +171,7 @@ public interface OutputView {
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder pieces(ImmutableList<String> val);
+      public abstract Builder formattedString(StringFormatView val);
 
       public abstract PrintView build();
     }
@@ -181,7 +179,7 @@ public interface OutputView {
 
   @AutoValue
   abstract class WriteFileView implements OutputView {
-    public abstract ImmutableList<String> fileNamePieces();
+    public abstract StringFormatView fileName();
 
     public abstract VariableView contents();
 
@@ -195,11 +193,31 @@ public interface OutputView {
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder fileNamePieces(ImmutableList<String> val);
+      public abstract Builder fileName(StringFormatView val);
 
       public abstract Builder contents(VariableView val);
 
       public abstract WriteFileView build();
+    }
+  }
+
+  @AutoValue
+  abstract class StringFormatView {
+    public abstract ImmutableList<String> args();
+
+    public abstract String format();
+
+    public static Builder newBuilder() {
+      return new AutoValue_OutputView_StringFormatView.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+      public abstract Builder args(ImmutableList<String> val);
+
+      public abstract Builder format(String val);
+
+      public abstract StringFormatView build();
     }
   }
 

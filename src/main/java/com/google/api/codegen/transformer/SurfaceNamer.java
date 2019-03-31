@@ -1598,7 +1598,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * <p>For languages that prefer using placeholders in the format string, the returned list will be
    * a format string followed by all the arguments to replace the placeholders.
    */
-  public List<String> getPrintSpecs(String spec, List<String> args) {
+  public ImmutableList<String> getPrintSpecs(String spec, List<String> args) {
     StringBuilder sb = new StringBuilder();
     int p = 0;
     while (true) {

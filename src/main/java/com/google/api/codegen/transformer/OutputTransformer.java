@@ -28,7 +28,6 @@ import com.google.api.codegen.viewmodel.OutputView;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -123,9 +122,9 @@ public class OutputTransformer {
         "%s:%s: print spec cannot be empty",
         context.getMethodModel().getSimpleName(),
         valueSet.getId());
-    ImmutableList<String> pieces =
-        stringFormattedVaraibles(context, outputContext, config, valueSet, form);
-    return OutputView.PrintView.newBuilder().pieces(pieces).build();
+    OutputView.StringFormatView formattedString =
+        stringFormatView(context, outputContext, config, valueSet, form);
+    return OutputView.PrintView.newBuilder().formattedString(formattedString).build();
   }
 
   private OutputView.WriteFileView writeFileView(
@@ -135,25 +134,22 @@ public class OutputTransformer {
       OutputContext outputContext,
       CallingForm form) {
     outputContext.writeFileSpecs().add(config);
-    ImmutableList<String> fileNamePieces =
-        stringFormattedVaraibles(context, outputContext, config.getFileNameList(), valueSet, form);
+    OutputView.StringFormatView fileName =
+        stringFormatView(context, outputContext, config.getFileNameList(), valueSet, form);
     OutputView.VariableView contents =
         accessor(
             new Scanner(config.getContent()), context, valueSet, outputContext.scopeTable(), form);
-    return OutputView.WriteFileView.newBuilder()
-        .fileNamePieces(fileNamePieces)
-        .contents(contents)
-        .build();
+    return OutputView.WriteFileView.newBuilder().fileName(fileName).contents(contents).build();
   }
 
-  private ImmutableList<String> stringFormattedVaraibles(
+  private OutputView.StringFormatView stringFormatView(
       MethodContext context,
       OutputContext outputContext,
       List<String> configs,
       SampleValueSet valueSet,
       CallingForm form) {
     String format = configs.get(0);
-    ImmutableList.Builder<String> variables = ImmutableList.builder();
+    ImmutableList.Builder<String> builder = ImmutableList.builder();
     for (String path : configs.subList(1, configs.size())) {
       OutputView.VariableView variable =
           accessor(new Scanner(path), context, valueSet, outputContext.scopeTable(), form);
@@ -167,10 +163,13 @@ public class OutputTransformer {
           context
               .getNamer()
               .getFormattedPrintArgName(type, variable.variable(), variable.accessors());
-      variables.add(formattedArg);
+      builder.add(formattedArg);
     }
-    return ImmutableList.<String>builder()
-        .addAll(context.getNamer().getPrintSpecs(format, variables.build()))
+    ImmutableList<String> args = builder.build();
+    ImmutableList<String> formattedFormatAndArgs = context.getNamer().getPrintSpecs(format, args);
+    return OutputView.StringFormatView.newBuilder()
+        .format(formattedFormatAndArgs.get(0))
+        .args(formattedFormatAndArgs.subList(1, formattedFormatAndArgs.size()))
         .build();
   }
 
@@ -233,6 +232,7 @@ public class OutputTransformer {
       SampleValueSet valueSet,
       OutputContext outputContext,
       CallingForm form) {
+    outputContext.mapSpecs().add(loop);
     ScopeTable scope = outputContext.scopeTable();
     String key = loop.getKey();
     String value = loop.getValue();
@@ -592,18 +592,30 @@ public class OutputTransformer {
   // TODO(hzyi): factor it out to a top-level class
   public static class ScopeTable {
     private final Set<String> sample;
+    // Store all types used in the sample scope. Java and C# need to know this
+    // to correctly import those types. This is basically doing what `ImportTypeTable`
+    // does, when we factor `ScopeTable` out to a top-level class we should consider
+    // reusing `ImportTypeTable` as well.
+    // We still use null to represent resource names since `SampleImportTransformer`
+    // knows how to import the correct resource name types for all cases we need now.
+    // Consider making a wrapper type that can refer to either a `TypeModel` and
+    // `ResourceNameConfig` to make the code cleaner.
+    private final Set<TypeModel> allTypes;
+
     @Nullable private final ScopeTable parent;
     private final Map<String, TypeModel> types = new HashMap<>();
     private final Map<String, String> typeNames = new HashMap<>();
 
     public ScopeTable() {
       sample = new HashSet<>();
+      allTypes = new HashSet<>();
       parent = null;
     }
 
     ScopeTable(ScopeTable parent) {
       Preconditions.checkNotNull(parent);
       sample = parent.sample;
+      allTypes = parent.allTypes;
       this.parent = parent;
     }
 
@@ -647,6 +659,7 @@ public class OutputTransformer {
       if (!sample.add(name)) {
         return false;
       }
+      allTypes.add(type);
       typeNames.put(name, typeName);
       if (type != null) {
         types.put(name, type);
@@ -654,8 +667,10 @@ public class OutputTransformer {
       return true;
     }
 
-    public Set<String> allSymbols() {
-      return ImmutableSet.<String>builder().addAll(sample).build();
+    public Set<TypeModel> allTypes() {
+      Set<TypeModel> types = new HashSet<>(); // ImmutableSet does not allow null elements
+      types.addAll(allTypes);
+      return types;
     }
 
     public ScopeTable newChild() {

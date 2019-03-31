@@ -36,7 +36,12 @@ public abstract class OutputContext {
    */
   public abstract List<OutputSpec.WriteFileStatement> writeFileSpecs();
 
-  public abstract boolean hasMaps();
+  /** In Java, `java.util.Map` needs to be imported if there are map specs. */
+  public abstract List<OutputSpec.LoopStatement> mapSpecs();
+
+  public boolean hasMaps() {
+    return !mapSpecs().isEmpty();
+  }
 
   public boolean hasMultipleWriteFiles() {
     return writeFileSpecs().size() > 1;
@@ -48,16 +53,14 @@ public abstract class OutputContext {
 
   public static OutputContext create() {
     return new AutoValue_OutputContext(
-        new OutputTransformer.ScopeTable(), new ArrayList<>(), new ArrayList<>(), false);
+        new OutputTransformer.ScopeTable(),
+        new ArrayList<>(),
+        new ArrayList<>(),
+        new ArrayList<>());
   }
 
   public OutputContext createWithNewChildScope() {
     return new AutoValue_OutputContext(
-        scopeTable().newChild(), stringFormattedVariableTypes(), writeFileSpecs(), hasMaps());
-  }
-
-  public OutputContext createWithMaps() {
-    return new AutoValue_OutputContext(
-        scopeTable(), stringFormattedVariableTypes(), writeFileSpecs(), true);
+        scopeTable().newChild(), stringFormattedVariableTypes(), writeFileSpecs(), mapSpecs());
   }
 }
