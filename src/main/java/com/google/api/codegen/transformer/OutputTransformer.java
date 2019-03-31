@@ -19,6 +19,7 @@ import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodContext;
+import com.google.api.codegen.config.OutputContext;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
@@ -29,12 +30,12 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 public class OutputTransformer {
@@ -82,20 +83,18 @@ public class OutputTransformer {
 
   ImmutableList<OutputView> toViews(
       List<OutputSpec> configs, MethodContext context, SampleValueSet valueSet, CallingForm form) {
-    ScopeTable localVars = new ScopeTable();
+    OutputContext outputContext = OutputContext.create();
     return configs
         .stream()
-        .map(s -> toView(s, context, valueSet, localVars, form))
+        .map(s -> toView(s, context, valueSet, outputContext, form))
         .collect(ImmutableList.toImmutableList());
   }
-
-  
 
   private OutputView toView(
       OutputSpec config,
       MethodContext context,
       SampleValueSet valueSet,
-      ScopeTable localVars,
+      OutputContext outputContext,
       CallingForm form) {
     Runnable once =
         new Runnable() {
@@ -115,15 +114,15 @@ public class OutputTransformer {
     OutputView view = null;
     if (config.hasLoop()) {
       once.run();
-      view = loopView(config.getLoop(), context, valueSet, localVars, form);
+      view = loopView(config.getLoop(), context, valueSet, outputContext, form);
     }
     if (config.getPrintCount() > 0) {
       once.run();
-      view = printView(config.getPrintList(), context, valueSet, localVars, form);
+      view = printView(config.getPrintList(), context, valueSet, outputContext, form);
     }
     if (!config.getDefine().isEmpty()) {
       once.run();
-      view = defineView(new Scanner(config.getDefine()), context, valueSet, localVars, form);
+      view = defineView(new Scanner(config.getDefine()), context, valueSet, outputContext, form);
     }
     if (config.getCommentCount() > 0) {
       once.run();
@@ -141,41 +140,59 @@ public class OutputTransformer {
       List<String> config,
       MethodContext context,
       SampleValueSet valueSet,
-      ScopeTable localVars,
+      OutputContext outputContext,
       CallingForm form) {
     Preconditions.checkArgument(
         !config.isEmpty(),
         "%s:%s: print spec cannot be empty",
         context.getMethodModel().getSimpleName(),
         valueSet.getId());
-    String format = config.get(0);
-    ImmutableList.Builder<OutputView.PrintArgView> argsBuilder = ImmutableList.builder();
-    for (String path : config.subList(1, config.size())) {
+    ImmutableList<String> pieces = stringFormattedVaraibles(context, outputContext, config, valueSet, form);
+    return OutputView.PrintView.newBuilder().pieces(pieces).build();
+  }
+
+  private OutputView.WriteFileView writeFileView(
+      OutputSpec.WriteFileStatement config,
+      MethodContext context,
+      SampleValueSet valueSet,
+      OutputContext outputContext,
+      CallingForm form) {
+    outputContext.writeFileSpecs().add(config);
+    ImmutableList<String> fileNamePieces =
+        stringFormattedVaraibles(context, outputContext, config.getFileNameList(), valueSet, form);
+    OutputView.VariableView contents =
+        accessor(
+            new Scanner(config.getContent()), context, valueSet, outputContext.scopeTable(), form);
+    return OutputView.WriteFileView.newBuilder().fileNamePieces(fileNamePieces).contents(contents).build();
+  }
+
+  private ImmutableList<String> stringFormattedVaraibles(
+      MethodContext context, OutputContext outputContext, List<String> configs, SampleValueSet valueSet, CallingForm form) {
+    String format = configs.get(0);
+    ImmutableList.Builder<String> variables = ImmutableList.builder();
+    for (String path : configs.subList(1, configs.size())) {
       OutputView.VariableView variable =
-          accessor(new Scanner(path), context, valueSet, localVars, form);
+          accessor(new Scanner(path), context, valueSet, outputContext.scopeTable(), form);
       TypeModel type = variable.type();
+      // TODO: resource names are left out. We don't need to do anything for
+      // resource names, but should include them as well for completeness
+      if (type != null) {
+        outputContext.stringFormattedVariableTypes().add(type);
+      }
       String formattedArg =
           context
               .getNamer()
               .getFormattedPrintArgName(type, variable.variable(), variable.accessors());
-      OutputView.PrintArgView arg =
-          OutputView.PrintArgView.newBuilder().type(type).formattedName(formattedArg).build();
-      argsBuilder.add(arg);
+      variables.add(formattedArg);
     }
-    ImmutableList<OutputView.PrintArgView> args = argsBuilder.build();
-    List<String> specs =
-        context
-            .getNamer()
-            .getPrintSpecs(
-                format, args.stream().map(arg -> arg.formattedName()).collect(Collectors.toList()));
-    return OutputView.PrintView.newBuilder().format(specs.get(0)).args(args).build();
+    return ImmutableList.<String>builder().addAll(context.getNamer().getPrintSpecs(format, variables.build())).build();
   }
 
   private OutputView loopView(
       OutputSpec.LoopStatement loop,
       MethodContext context,
       SampleValueSet valueSet,
-      ScopeTable localVars,
+      OutputContext outputContext,
       CallingForm form) {
     if (!loop.getCollection().isEmpty() && loop.getMap().isEmpty()) {
       Preconditions.checkArgument(
@@ -184,7 +201,7 @@ public class OutputTransformer {
       Preconditions.checkArgument(
           loop.getKey().isEmpty() && loop.getValue().isEmpty(),
           "Bad format: neither `key` nor `value` can be specified if `collection` is specified.");
-      return arrayLoopView(loop, context, valueSet, localVars, form);
+      return arrayLoopView(loop, context, valueSet, outputContext.createWithNewChildScope(), form);
     } else if (!loop.getMap().isEmpty() && loop.getCollection().isEmpty()) {
       Preconditions.checkArgument(
           loop.getVariable().isEmpty(),
@@ -192,7 +209,7 @@ public class OutputTransformer {
       Preconditions.checkArgument(
           !loop.getKey().isEmpty() || !loop.getValue().isEmpty(),
           "Bad format: at least one of `key` and `value` must be specified if `collection` is specified.");
-      return mapLoopView(loop, context, valueSet, localVars, form);
+      return mapLoopView(loop, context, valueSet, outputContext.createWithNewChildScope(), form);
     } else {
       throw new IllegalArgumentException(
           "Bad format: exactly one of `map` and `collection` should be specified in `loop`.");
@@ -203,9 +220,9 @@ public class OutputTransformer {
       OutputSpec.LoopStatement loop,
       MethodContext context,
       SampleValueSet valueSet,
-      ScopeTable localVars,
+      OutputContext outputContext,
       CallingForm form) {
-    ScopeTable scope = localVars.newChild();
+    ScopeTable scope = outputContext.scopeTable();
     String loopVariable = loop.getVariable();
     assertIdentifierNotUsed(
         loopVariable, context.getMethodModel().getSimpleName(), valueSet.getId(), context, form);
@@ -219,7 +236,7 @@ public class OutputTransformer {
         .body(
             loop.getBodyList()
                 .stream()
-                .map(body -> toView(body, context, valueSet, scope, form))
+                .map(body -> toView(body, context, valueSet, outputContext, form))
                 .collect(ImmutableList.toImmutableList()))
         .build();
   }
@@ -228,9 +245,9 @@ public class OutputTransformer {
       OutputSpec.LoopStatement loop,
       MethodContext context,
       SampleValueSet valueSet,
-      ScopeTable localVars,
+      OutputContext outputContext,
       CallingForm form) {
-    ScopeTable scope = localVars.newChild();
+    ScopeTable scope = outputContext.scopeTable();
     String key = loop.getKey();
     String value = loop.getValue();
 
@@ -260,7 +277,7 @@ public class OutputTransformer {
         .body(
             loop.getBodyList()
                 .stream()
-                .map(body -> toView(body, context, valueSet, scope, form))
+                .map(body -> toView(body, context, valueSet, outputContext, form))
                 .collect(ImmutableList.toImmutableList()))
         .build();
   }
@@ -269,7 +286,7 @@ public class OutputTransformer {
       Scanner definition,
       MethodContext context,
       SampleValueSet valueSet,
-      ScopeTable localVars,
+      OutputContext outputContext,
       CallingForm form) {
     Preconditions.checkArgument(
         definition.scan() == Scanner.IDENT,
@@ -287,9 +304,9 @@ public class OutputTransformer {
         valueSet.getId(),
         definition.input());
     OutputView.VariableView reference =
-        accessorNewVariable(definition, context, valueSet, localVars, identifier, false, form);
+        accessorNewVariable(definition, context, valueSet, outputContext.scopeTable(), identifier, false, form);
     return OutputView.DefineView.newBuilder()
-        .variableType(localVars.getTypeName(identifier))
+        .variableTypeName(outputContext.scopeTable().getTypeName(identifier))
         .variableName(context.getNamer().localVarName(Name.from(identifier)))
         .reference(reference)
         .build();
@@ -585,14 +602,14 @@ public class OutputTransformer {
    * block-scoped in many static languages, and we should error if the spec uses a variable not in
    * the nested blocks currently in scope.
    */
-  @VisibleForTesting
-  static class ScopeTable {
+  // TODO(hzyi): factor it out to a top-level class
+  public static class ScopeTable {
     private final Set<String> sample;
     @Nullable private final ScopeTable parent;
     private final Map<String, TypeModel> types = new HashMap<>();
     private final Map<String, String> typeNames = new HashMap<>();
 
-    ScopeTable() {
+    public ScopeTable() {
       sample = new HashSet<>();
       parent = null;
     }
@@ -650,7 +667,7 @@ public class OutputTransformer {
       return true;
     }
 
-    private ScopeTable newChild() {
+    public ScopeTable newChild() {
       return new ScopeTable(this);
     }
   }

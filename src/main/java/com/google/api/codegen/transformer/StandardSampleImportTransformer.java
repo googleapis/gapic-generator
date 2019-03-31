@@ -30,15 +30,15 @@ public class StandardSampleImportTransformer implements SampleImportTransformer 
     this.importSectionTransformer = importSectionTransformer;
   }
 
-  public void addSampleBodyImports(MethodContext context, CallingForm form) {
+  protected void addSampleBodyImports(MethodContext context, CallingForm form) {
     // default behavior: no types used in the sample body need to be imported
   }
 
-  public void addOutputImports(MethodContext context, List<OutputView> views) {
+  protected void addOutputImports(MethodContext context, OutputContext outputContext) {
     // default behavior: no types used in the output part of a sample need to be imported
   }
 
-  public void addInitCodeImports(
+  protected void addInitCodeImports(
       MethodContext context, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes) {
     // by default, copy over all types from initCodeTypeTable
     initCodeTypeTable
@@ -50,5 +50,17 @@ public class StandardSampleImportTransformer implements SampleImportTransformer 
   public ImportSectionView generateImportSection(MethodContext context) {
     return importSectionTransformer.generateImportSection(
         context, Collections.<InitCodeNode>emptyList());
+  }
+
+  public ImportSectionView generateImportSection(
+      MethodContext context,
+      CallingForm form,
+      OutputContext outputContext,
+      ImportTypeTable initCodeTypeTable,
+      Iterable<InitCodeNode> nodes) {
+    addInitCodeImports(context, initCodeTypeTable, nodes);
+    addOutputImports(context, outputContext);
+    addSampleBodyImports(context, form);
+    return generateImportSection(context);
   }
 }

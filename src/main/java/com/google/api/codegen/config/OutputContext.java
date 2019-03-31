@@ -14,76 +14,38 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.transformer.OutputTransformer;
+import com.google.api.codegen.OutputSpec;
+import com.google.auto.value.AutoValue;
+import java.util.ArrayList;
+import java.util.List;
+
 @AutoValue
 public abstract class OutputContext {
 
-  // Experimenting Feature
+  public abstract OutputTransformer.ScopeTable scopeTable();
 
-  // We need to keep track of what we've done to variables to generate (or not generate) certain
-  // code (e.g., imports, variable modifiers like `const`). So far this information has been
-  // entangled inside `OutputView`, which makes both rendering `OutputView` and accessing this
-  // information more and more hard. Let's try to split them up.
-  //
-  enum Status {
-    // The variable is defined.
-    // We need to know this for Java, C# and Node.js.
-    // For Java and C#, variables cannot be redefined in the same scope. Variables that have been
-    // defined can only be assigned values of the same type. Types of variables defined also
-    // needs to be imported.
-    //
-    // For Node.js, variables defined with modifier `const` cannot be reassigned.
-    DEFINED,
+  /**
+   * In Python, the enum module should be imported to use helper functions in it to format an enum
+   * type.
+   */
+  public abstract List<TypeModel> stringFormattedVariableTypes();
 
-    // The the variable is defined previously, but reassigned to a different value.
-    // We need to know this for Java, C# and Node.js
-    //
-    // For Java and C#, we need to check the variable is assigned value of the same
-    // type, and make sure to not render the type again to avoid redeclaration.
-    //
-    // For Node.js, we need to change the modifier of this variable from `const` to `var`.
-    REASSIGNED,
+  /**
+   * In Node.js, `writeFile` should be defined as `var` instead of `const` if used multiple times.
+   */
+  public abstract List<OutputSpec.WriteFileStatement> writeFileSpecs();
 
-    // Whether a string formatting function has been called on this variable.
-    // It does not feel good to put it here but so far it's all we need.
-    // Python and PHP need to know this to correctly import the helper class or module
-    // for protobuf enum types.
-    STRING_FORMATTED
+  public boolean hasMultipleWriteFiles() {
+    return writeFileSpecs().size() > 1;
   }
 
-  class ScopeTable {
-
-    ScopeTable output;
-    @Nullable ScopeTable parent;
-    Set<Variable, VariableType> definedVariables;
-    
-    // Track the view where the variable is defined.
-    Set<Variable, OutputView> views;
+  public static OutputContext create() {
+    return new AutoValue_OutputContext(new OutputTransformer.ScopeTable(), new ArrayList<>(), new ArrayList<>());
   }
 
-  public class VariableTypeConfig {
-
-    boolean isProtoType();
-
-    TypeModel typeModel();
-
-    boolean isResourceName();
-
-    ResourceNameConfig resourceNameConfig();
+  public OutputContext createWithNewChildScope() {
+    return new AutoValue_OutputContext(
+        scopeTable().newChild(),stringFormattedVariableTypes(), writeFileSpecs());
   }
-
-  public class Variable {
-
-    String name;
-
-    ImmutableList<String> accessors;
-
-    VariableTypeConfig type;
-  }
-
-
-  ImmutableList<Variable> stringFormattedVariables();
-
-  boolean hasMultipleWriteFiles();
-
-  ScopeTable scopeTable();
 }

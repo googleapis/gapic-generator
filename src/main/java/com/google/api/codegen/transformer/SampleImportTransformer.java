@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.OutputContext;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.viewmodel.CallingForm;
@@ -32,7 +33,7 @@ public interface SampleImportTransformer {
    * handling does something with the object returned by RPC call, and is usually right above the
    * closed region tag.
    */
-  void addOutputImports(MethodContext context, List<OutputView> views);
+  void addOutputImports(MethodContext context, OutputContext outputContext);
 
   /**
    * Adds all the types to import referenced in the initCode part of sample. The initCode is
@@ -43,4 +44,6 @@ public interface SampleImportTransformer {
       MethodContext context, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes);
 
   ImportSectionView generateImportSection(MethodContext context);
+
+  ImportSectionView generateImportSection(MethodContext context, CallingForm form, OutputContext outputContext, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes);
 }

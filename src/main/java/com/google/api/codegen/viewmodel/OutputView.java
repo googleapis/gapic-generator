@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.config.TypeModel;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import javax.annotation.Nullable;
@@ -34,8 +35,6 @@ public interface OutputView {
   @AutoValue
   abstract class DefineView implements OutputView {
 
-    public abstract ImmutableList<String> modifiers();
-
     public abstract String variableTypeName();
 
     public abstract String variableName();
@@ -52,8 +51,6 @@ public interface OutputView {
 
     @AutoValue.Builder
     public abstract static class Builder {
-
-      public abstract Builder modifiers(ImmutableList<String> val);
 
       public abstract Builder variableTypeName(String val);
 
@@ -164,7 +161,7 @@ public interface OutputView {
 
     // The first one is always the format
     // The later ones are args
-    public ImmutableList<String> pieces();
+    public abstract ImmutableList<String> pieces();
 
     public Kind kind() {
       return Kind.PRINT;
@@ -184,12 +181,16 @@ public interface OutputView {
 
   @AutoValue
   abstract class WriteFileView implements OutputView {
-    public ImmutableList<String> fileNamePieces();
+    public abstract ImmutableList<String> fileNamePieces();
 
-    public VariableView contents();
+    public abstract VariableView contents();
 
     public Kind kind() {
       return Kind.WRITE_FILE;
+    }
+
+    public static Builder newBuilder() {
+      return new AutoValue_OutputView_WriteFileView.Builder();
     }
 
     @AutoValue.Builder
@@ -209,6 +210,8 @@ public interface OutputView {
 
     public abstract ImmutableList<String> accessors();
 
+    public abstract TypeModel type();
+
     public static Builder newBuilder() {
       return new AutoValue_OutputView_VariableView.Builder();
     }
@@ -216,6 +219,9 @@ public interface OutputView {
     @AutoValue.Builder
     public abstract static class Builder {
       public abstract Builder variable(String val);
+
+      @Nullable
+      public abstract Builder type(TypeModel val);
 
       public abstract Builder accessors(ImmutableList<String> val);
 
