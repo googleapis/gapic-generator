@@ -24,13 +24,12 @@ import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.viewmodel.CallingForm;
-import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,34 +38,8 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 public class OutputTransformer {
+
   private static final String RESPONSE_PLACEHOLDER = "$resp";
-
-  private final OutputImportTransformer importTransformer;
-
-  public OutputTransformer() {
-    this.importTransformer = new OutputImportTransformer() {};
-  }
-
-  public OutputTransformer(OutputImportTransformer importTransformer) {
-    this.importTransformer = importTransformer;
-  }
-
-  /**
-   * Tranformer that takes the a list of {@code OutputView(s)} and generate imports needed by the
-   * output part. The returned list of {@code ImportFileView(s)} will be passed to {@code
-   * MethodSampleView}.
-   */
-  public static interface OutputImportTransformer {
-
-    public default ImmutableList<ImportFileView> generateOutputImports(
-        MethodContext context, List<OutputView> outputViews) {
-      return ImmutableList.<ImportFileView>of();
-    }
-  }
-
-  public OutputImportTransformer getOutputImportTransformer() {
-    return this.importTransformer;
-  }
 
   static List<OutputSpec> defaultOutputSpecs(MethodContext methodContext) {
     if (methodContext.getMethodModel().isOutputTypeEmpty()) {
@@ -82,8 +55,11 @@ public class OutputTransformer {
   }
 
   ImmutableList<OutputView> toViews(
-      List<OutputSpec> configs, MethodContext context, SampleValueSet valueSet, CallingForm form) {
-    OutputContext outputContext = OutputContext.create();
+      List<OutputSpec> configs,
+      MethodContext context,
+      SampleValueSet valueSet,
+      CallingForm form,
+      OutputContext outputContext) {
     return configs
         .stream()
         .map(s -> toView(s, context, valueSet, outputContext, form))
@@ -147,7 +123,8 @@ public class OutputTransformer {
         "%s:%s: print spec cannot be empty",
         context.getMethodModel().getSimpleName(),
         valueSet.getId());
-    ImmutableList<String> pieces = stringFormattedVaraibles(context, outputContext, config, valueSet, form);
+    ImmutableList<String> pieces =
+        stringFormattedVaraibles(context, outputContext, config, valueSet, form);
     return OutputView.PrintView.newBuilder().pieces(pieces).build();
   }
 
@@ -163,11 +140,18 @@ public class OutputTransformer {
     OutputView.VariableView contents =
         accessor(
             new Scanner(config.getContent()), context, valueSet, outputContext.scopeTable(), form);
-    return OutputView.WriteFileView.newBuilder().fileNamePieces(fileNamePieces).contents(contents).build();
+    return OutputView.WriteFileView.newBuilder()
+        .fileNamePieces(fileNamePieces)
+        .contents(contents)
+        .build();
   }
 
   private ImmutableList<String> stringFormattedVaraibles(
-      MethodContext context, OutputContext outputContext, List<String> configs, SampleValueSet valueSet, CallingForm form) {
+      MethodContext context,
+      OutputContext outputContext,
+      List<String> configs,
+      SampleValueSet valueSet,
+      CallingForm form) {
     String format = configs.get(0);
     ImmutableList.Builder<String> variables = ImmutableList.builder();
     for (String path : configs.subList(1, configs.size())) {
@@ -185,7 +169,9 @@ public class OutputTransformer {
               .getFormattedPrintArgName(type, variable.variable(), variable.accessors());
       variables.add(formattedArg);
     }
-    return ImmutableList.<String>builder().addAll(context.getNamer().getPrintSpecs(format, variables.build())).build();
+    return ImmutableList.<String>builder()
+        .addAll(context.getNamer().getPrintSpecs(format, variables.build()))
+        .build();
   }
 
   private OutputView loopView(
@@ -304,7 +290,8 @@ public class OutputTransformer {
         valueSet.getId(),
         definition.input());
     OutputView.VariableView reference =
-        accessorNewVariable(definition, context, valueSet, outputContext.scopeTable(), identifier, false, form);
+        accessorNewVariable(
+            definition, context, valueSet, outputContext.scopeTable(), identifier, false, form);
     return OutputView.DefineView.newBuilder()
         .variableTypeName(outputContext.scopeTable().getTypeName(identifier))
         .variableName(context.getNamer().localVarName(Name.from(identifier)))
@@ -621,7 +608,7 @@ public class OutputTransformer {
     }
 
     /** Gets the type of the variable. Returns null if the variable is not found. */
-    TypeModel getTypeModel(String name) {
+    public TypeModel getTypeModel(String name) {
       ScopeTable table = this;
       while (table != null) {
         TypeModel type = table.types.get(name);
@@ -637,7 +624,7 @@ public class OutputTransformer {
      * Gets the type name of the variable. Returns null if the variable is not found. This is mostly
      * used for resource name since they do not have a {@code TypeModel}.
      */
-    String getTypeName(String name) {
+    public String getTypeName(String name) {
       ScopeTable table = this;
       while (table != null) {
         String typeName = table.typeNames.get(name);
@@ -665,6 +652,10 @@ public class OutputTransformer {
         types.put(name, type);
       }
       return true;
+    }
+
+    public Set<String> allSymbols() {
+      return ImmutableSet.<String>builder().addAll(sample).build();
     }
 
     public ScopeTable newChild() {

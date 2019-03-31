@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.transformer.OutputTransformer;
 import com.google.api.codegen.OutputSpec;
+import com.google.api.codegen.transformer.OutputTransformer;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,16 +36,28 @@ public abstract class OutputContext {
    */
   public abstract List<OutputSpec.WriteFileStatement> writeFileSpecs();
 
+  public abstract boolean hasMaps();
+
   public boolean hasMultipleWriteFiles() {
     return writeFileSpecs().size() > 1;
   }
 
+  public boolean hasWriteFiles() {
+    return !writeFileSpecs().isEmpty();
+  }
+
   public static OutputContext create() {
-    return new AutoValue_OutputContext(new OutputTransformer.ScopeTable(), new ArrayList<>(), new ArrayList<>());
+    return new AutoValue_OutputContext(
+        new OutputTransformer.ScopeTable(), new ArrayList<>(), new ArrayList<>(), false);
   }
 
   public OutputContext createWithNewChildScope() {
     return new AutoValue_OutputContext(
-        scopeTable().newChild(),stringFormattedVariableTypes(), writeFileSpecs());
+        scopeTable().newChild(), stringFormattedVariableTypes(), writeFileSpecs(), hasMaps());
+  }
+
+  public OutputContext createWithMaps() {
+    return new AutoValue_OutputContext(
+        scopeTable(), stringFormattedVariableTypes(), writeFileSpecs(), true);
   }
 }

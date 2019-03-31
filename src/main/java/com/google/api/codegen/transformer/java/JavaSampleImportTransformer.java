@@ -17,15 +17,15 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.OutputContext;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.OutputTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StandardSampleImportTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.viewmodel.CallingForm;
-import com.google.api.codegen.viewmodel.OutputView;
-import java.util.List;
 
 public class JavaSampleImportTransformer extends StandardSampleImportTransformer {
 
@@ -40,7 +40,7 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
   }
 
   @Override
-  public void addSampleBodyImports(MethodContext context, CallingForm form) {
+  protected void addSampleBodyImports(MethodContext context, CallingForm form) {
     ImportTypeTable typeTable = context.getTypeTable();
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
@@ -91,45 +91,27 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
   }
 
   @Override
-  public void addOutputImports(MethodContext context, List<OutputView> views) {
+  protected void addOutputImports(MethodContext context, OutputContext outputContext) {
     ImportTypeTable typeTable = context.getTypeTable();
-    for (OutputView view : views) {
-      switch (view.kind()) {
-        case DEFINE:
-          TypeModel type = ((OutputView.DefineView) view).reference().type();
-          if (type != null) {
-            typeTable.getAndSaveNicknameFor(type);
-          } else {
-            saveResourceTypeName(context);
-          }
-          break;
-        case ARRAY_LOOP:
-          OutputView.ArrayLoopView arrayLoopView = (OutputView.ArrayLoopView) view;
-          type = arrayLoopView.collection().type();
-          if (type != null) {
-            typeTable.getAndSaveNicknameFor(type.makeOptional());
-          } else {
-            saveResourceTypeName(context);
-          }
-          addOutputImports(context, arrayLoopView.body());
-          break;
-        case MAP_LOOP:
-          OutputView.MapLoopView mapLoopView = (OutputView.MapLoopView) view;
-          typeTable.getAndSaveNicknameFor(mapLoopView.map().type().getMapKeyType());
-          typeTable.getAndSaveNicknameFor(mapLoopView.map().type().getMapValueType());
-          typeTable.saveNicknameFor("java.util.Map");
-          addOutputImports(context, mapLoopView.body());
-          break;
-        case COMMENT:
-        case PRINT:
-          break; // fall through
-        default:
-          throw new IllegalArgumentException("unrecognized output view kind: " + view.kind());
+    OutputTransformer.ScopeTable scopeTable = outputContext.scopeTable();
+    for (String variable : scopeTable.allSymbols()) {
+      TypeModel type = scopeTable.getTypeModel(variable);
+      if (type != null) {
+        typeTable.getAndSaveNicknameFor(type);
+      } else {
+        saveResourceTypeName(context);
       }
+    }
+    if (outputContext.hasMaps()) {
+      typeTable.getAndSaveNicknameFor("java.util.Map");
+    }
+    if (outputContext.hasWriteFiles()) {
+      typeTable.getAndSaveNicknameFor("java.io.FileOutputStream");
     }
   }
 
-  public void addInitCodeImports(
+  @Override
+  protected void addInitCodeImports(
       MethodContext context, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes) {
     super.addInitCodeImports(context, initCodeTypeTable, nodes);
     ImportTypeTable typeTable = context.getTypeTable();

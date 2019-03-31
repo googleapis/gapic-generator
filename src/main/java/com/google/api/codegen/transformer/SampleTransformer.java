@@ -21,6 +21,7 @@ import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
+import com.google.api.codegen.config.OutputContext;
 import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.SampleSpec.ValueSetAndTags;
@@ -241,20 +242,21 @@ public abstract class SampleTransformer {
     if (outputs.isEmpty()) {
       outputs = OutputTransformer.defaultOutputSpecs(methodContext);
     }
+    OutputContext outputContext = OutputContext.create();
     ImmutableList<OutputView> outputViews =
-        outputTransformer().toViews(outputs, methodContext, valueSet, form);
-    sampleImportTransformer().addSampleBodyImports(methodContext, form);
-    sampleImportTransformer().addOutputImports(methodContext, outputViews);
-    sampleImportTransformer()
-        .addInitCodeImports(
-            methodContext,
-            methodContext.getTypeTable(),
-            initCodeTransformer()
-                .getInitCodeNodes(
-                    methodContext,
-                    initCodeContext.cloneWithEmptySymbolTable())); // to avoid symbol collision
+        outputTransformer().toViews(outputs, methodContext, valueSet, form, outputContext);
     ImportSectionView sampleImportSectionView =
-        sampleImportTransformer().generateImportSection(methodContext);
+        sampleImportTransformer()
+            .generateImportSection(
+                methodContext,
+                form,
+                outputContext,
+                methodContext.getTypeTable(),
+                initCodeTransformer()
+                    .getInitCodeNodes(
+                        methodContext,
+                        initCodeContext
+                            .cloneWithEmptySymbolTable())); // to avoid symbol collision);
     SampleFunctionDocView sampleFunctionDocView =
         SampleFunctionDocView.newBuilder()
             .paramDocLines(paramDocLines(methodContext, initCodeView))
@@ -272,11 +274,6 @@ public abstract class SampleTransformer {
         .valueSet(SampleValueSetView.of(valueSet))
         .sampleInitCode(initCodeView)
         .outputs(outputViews)
-        .outputImports(
-            // TODO(hzyi): remove outputImports once we implement PythonSampleImportTransformer
-            outputTransformer()
-                .getOutputImportTransformer()
-                .generateOutputImports(methodContext, outputViews))
         .sampleImports(sampleImportSectionView)
         .regionTag(
             regionTagFromSpec(

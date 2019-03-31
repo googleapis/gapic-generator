@@ -14,36 +14,19 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.OutputContext;
 import com.google.api.codegen.config.MethodContext;
+import com.google.api.codegen.config.OutputContext;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ImportSectionView;
-import com.google.api.codegen.viewmodel.OutputView;
-import java.util.List;
 
 /** Generates an ImportSection for standalone samples. */
 public interface SampleImportTransformer {
 
-  /** Adds all the types to import referenced in the rpc call part of a sample. */
-  void addSampleBodyImports(MethodContext context, CallingForm form);
-
-  /**
-   * Adds all the types to import referenced in the output handling part of a sample. The output
-   * handling does something with the object returned by RPC call, and is usually right above the
-   * closed region tag.
-   */
-  void addOutputImports(MethodContext context, OutputContext outputContext);
-
-  /**
-   * Adds all the types to import referenced in the initCode part of sample. The initCode is
-   * responsible for setting up the rpc call request object and/or parameters, and is usually right
-   * below the open region tag.
-   */
-  void addInitCodeImports(
-      MethodContext context, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes);
-
-  ImportSectionView generateImportSection(MethodContext context);
-
-  ImportSectionView generateImportSection(MethodContext context, CallingForm form, OutputContext outputContext, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes);
+  ImportSectionView generateImportSection(
+      MethodContext context,
+      CallingForm form,
+      OutputContext outputContext,
+      ImportTypeTable initCodeTypeTable,
+      Iterable<InitCodeNode> nodes);
 }

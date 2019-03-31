@@ -210,6 +210,7 @@ public interface OutputView {
 
     public abstract ImmutableList<String> accessors();
 
+    @Nullable
     public abstract TypeModel type();
 
     public static Builder newBuilder() {
@@ -220,7 +221,6 @@ public interface OutputView {
     public abstract static class Builder {
       public abstract Builder variable(String val);
 
-      @Nullable
       public abstract Builder type(TypeModel val);
 
       public abstract Builder accessors(ImmutableList<String> val);
