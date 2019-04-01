@@ -287,10 +287,8 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableList<String> licenseLines;
     String configSchemaVersion = null;
 
+    LicenseHeaderUtil licenseHeaderUtil = new LicenseHeaderUtil();
     try {
-      LicenseHeaderUtil licenseHeaderUtil =
-          LicenseHeaderUtil.create(
-              configProto, settings, model.getDiagReporter().getDiagCollector());
       copyrightLines = licenseHeaderUtil.loadCopyrightLines();
       licenseLines = licenseHeaderUtil.loadLicenseLines();
     } catch (Exception e) {
@@ -367,11 +365,10 @@ public abstract class GapicProductConfig implements ProductConfig {
         createDiscoGapicInterfaceConfigMap(
             model, configProto, settings, messageConfigs, resourceNameConfigs, language);
 
+    LicenseHeaderUtil licenseHeaderUtil = new LicenseHeaderUtil();
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
     try {
-      LicenseHeaderUtil licenseHeaderUtil =
-          LicenseHeaderUtil.create(configProto, settings, model.getDiagCollector());
       copyrightLines = licenseHeaderUtil.loadCopyrightLines();
       licenseLines = licenseHeaderUtil.loadLicenseLines();
     } catch (Exception e) {
