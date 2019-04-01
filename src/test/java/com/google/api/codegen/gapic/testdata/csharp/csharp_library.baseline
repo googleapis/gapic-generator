@@ -224,60 +224,60 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for GetShelfAsync</summary>
         public async Task GetShelfAsync2()
         {
-            // Snippet: GetShelfAsync(string,SomeMessage,CallSettings)
-            // Additional: GetShelfAsync(string,SomeMessage,CancellationToken)
+            // Snippet: GetShelfAsync(ShelfName,SomeMessage,CallSettings)
+            // Additional: GetShelfAsync(ShelfName,SomeMessage,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             // Make the request
-            Shelf response = await libraryServiceClient.GetShelfAsync(formattedName, message);
+            Shelf response = await libraryServiceClient.GetShelfAsync(name, message);
             // End snippet
         }
 
         /// <summary>Snippet for GetShelf</summary>
         public void GetShelf2()
         {
-            // Snippet: GetShelf(string,SomeMessage,CallSettings)
+            // Snippet: GetShelf(ShelfName,SomeMessage,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             // Make the request
-            Shelf response = libraryServiceClient.GetShelf(formattedName, message);
+            Shelf response = libraryServiceClient.GetShelf(name, message);
             // End snippet
         }
 
         /// <summary>Snippet for GetShelfAsync</summary>
         public async Task GetShelfAsync3()
         {
-            // Snippet: GetShelfAsync(string,SomeMessage,StringBuilder,CallSettings)
-            // Additional: GetShelfAsync(string,SomeMessage,StringBuilder,CancellationToken)
+            // Snippet: GetShelfAsync(ShelfName,SomeMessage,StringBuilder,CallSettings)
+            // Additional: GetShelfAsync(ShelfName,SomeMessage,StringBuilder,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             StringBuilder stringBuilder = new StringBuilder();
             // Make the request
-            Shelf response = await libraryServiceClient.GetShelfAsync(formattedName, message, stringBuilder);
+            Shelf response = await libraryServiceClient.GetShelfAsync(name, message, stringBuilder);
             // End snippet
         }
 
         /// <summary>Snippet for GetShelf</summary>
         public void GetShelf3()
         {
-            // Snippet: GetShelf(string,SomeMessage,StringBuilder,CallSettings)
+            // Snippet: GetShelf(ShelfName,SomeMessage,StringBuilder,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             StringBuilder stringBuilder = new StringBuilder();
             // Make the request
-            Shelf response = libraryServiceClient.GetShelf(formattedName, message, stringBuilder);
+            Shelf response = libraryServiceClient.GetShelf(name, message, stringBuilder);
             // End snippet
         }
 
@@ -615,29 +615,29 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for CreateBookAsync</summary>
         public async Task CreateBookAsync()
         {
-            // Snippet: CreateBookAsync(string,Book,CallSettings)
-            // Additional: CreateBookAsync(string,Book,CancellationToken)
+            // Snippet: CreateBookAsync(ShelfName,Book,CallSettings)
+            // Additional: CreateBookAsync(ShelfName,Book,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             Book book = new Book();
             // Make the request
-            Book response = await libraryServiceClient.CreateBookAsync(formattedName, book);
+            Book response = await libraryServiceClient.CreateBookAsync(name, book);
             // End snippet
         }
 
         /// <summary>Snippet for CreateBook</summary>
         public void CreateBook()
         {
-            // Snippet: CreateBook(string,Book,CallSettings)
+            // Snippet: CreateBook(ShelfName,Book,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             Book book = new Book();
             // Make the request
-            Book response = libraryServiceClient.CreateBook(formattedName, book);
+            Book response = libraryServiceClient.CreateBook(name, book);
             // End snippet
         }
 
@@ -651,7 +651,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             CreateBookRequest request = new CreateBookRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Book = new Book(),
             };
             // Make the request
@@ -668,7 +668,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             CreateBookRequest request = new CreateBookRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Book = new Book(),
             };
             // Make the request
@@ -3039,7 +3039,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Message = new SomeMessage(),
             };
             Shelf expectedResponse = new Shelf
@@ -3051,9 +3051,9 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetShelf(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
-            Shelf response = client.GetShelf(formattedName, message);
+            Shelf response = client.GetShelf(name, message);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3068,7 +3068,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Message = new SomeMessage(),
             };
             Shelf expectedResponse = new Shelf
@@ -3080,9 +3080,9 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetShelfAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Shelf>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
-            Shelf response = await client.GetShelfAsync(formattedName, message);
+            Shelf response = await client.GetShelfAsync(name, message);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3097,7 +3097,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Message = new SomeMessage(),
                 StringBuilder = new StringBuilder(),
             };
@@ -3110,10 +3110,10 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetShelf(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             StringBuilder stringBuilder = new StringBuilder();
-            Shelf response = client.GetShelf(formattedName, message, stringBuilder);
+            Shelf response = client.GetShelf(name, message, stringBuilder);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3128,7 +3128,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Message = new SomeMessage(),
                 StringBuilder = new StringBuilder(),
             };
@@ -3141,10 +3141,10 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetShelfAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Shelf>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             StringBuilder stringBuilder = new StringBuilder();
-            Shelf response = await client.GetShelfAsync(formattedName, message, stringBuilder);
+            Shelf response = await client.GetShelfAsync(name, message, stringBuilder);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3407,7 +3407,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             CreateBookRequest expectedRequest = new CreateBookRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
@@ -3420,9 +3420,9 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.CreateBook(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             Book book = new Book();
-            Book response = client.CreateBook(formattedName, book);
+            Book response = client.CreateBook(name, book);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3437,7 +3437,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             CreateBookRequest expectedRequest = new CreateBookRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
@@ -3450,9 +3450,9 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.CreateBookAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             Book book = new Book();
-            Book response = await client.CreateBookAsync(formattedName, book);
+            Book response = await client.CreateBookAsync(name, book);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3467,7 +3467,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             CreateBookRequest request = new CreateBookRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
@@ -3495,7 +3495,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             CreateBookRequest request = new CreateBookRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
@@ -6668,12 +6668,12 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<Shelf> GetShelfAsync(
-            string name,
+            ShelfName name,
             SomeMessage message,
             gaxgrpc::CallSettings callSettings = null) => GetShelfAsync(
                 new GetShelfRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Message = message, // Optional
                 },
                 callSettings);
@@ -6694,7 +6694,7 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<Shelf> GetShelfAsync(
-            string name,
+            ShelfName name,
             SomeMessage message,
             st::CancellationToken cancellationToken) => GetShelfAsync(
                 name,
@@ -6717,12 +6717,12 @@ namespace Google.Example.Library.V1
         /// The RPC response.
         /// </returns>
         public virtual Shelf GetShelf(
-            string name,
+            ShelfName name,
             SomeMessage message,
             gaxgrpc::CallSettings callSettings = null) => GetShelf(
                 new GetShelfRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Message = message, // Optional
                 },
                 callSettings);
@@ -6746,13 +6746,13 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<Shelf> GetShelfAsync(
-            string name,
+            ShelfName name,
             SomeMessage message,
             StringBuilder stringBuilder,
             gaxgrpc::CallSettings callSettings = null) => GetShelfAsync(
                 new GetShelfRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Message = message, // Optional
                     StringBuilder = stringBuilder, // Optional
                 },
@@ -6777,7 +6777,7 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<Shelf> GetShelfAsync(
-            string name,
+            ShelfName name,
             SomeMessage message,
             StringBuilder stringBuilder,
             st::CancellationToken cancellationToken) => GetShelfAsync(
@@ -6805,13 +6805,13 @@ namespace Google.Example.Library.V1
         /// The RPC response.
         /// </returns>
         public virtual Shelf GetShelf(
-            string name,
+            ShelfName name,
             SomeMessage message,
             StringBuilder stringBuilder,
             gaxgrpc::CallSettings callSettings = null) => GetShelf(
                 new GetShelfRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Message = message, // Optional
                     StringBuilder = stringBuilder, // Optional
                 },
@@ -7236,12 +7236,12 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<Book> CreateBookAsync(
-            string name,
+            ShelfName name,
             Book book,
             gaxgrpc::CallSettings callSettings = null) => CreateBookAsync(
                 new CreateBookRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Book = gax::GaxPreconditions.CheckNotNull(book, nameof(book)),
                 },
                 callSettings);
@@ -7262,7 +7262,7 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<Book> CreateBookAsync(
-            string name,
+            ShelfName name,
             Book book,
             st::CancellationToken cancellationToken) => CreateBookAsync(
                 name,
@@ -7285,12 +7285,12 @@ namespace Google.Example.Library.V1
         /// The RPC response.
         /// </returns>
         public virtual Book CreateBook(
-            string name,
+            ShelfName name,
             Book book,
             gaxgrpc::CallSettings callSettings = null) => CreateBook(
                 new CreateBookRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Book = gax::GaxPreconditions.CheckNotNull(book, nameof(book)),
                 },
                 callSettings);
