@@ -13,6 +13,8 @@
         {@processMapLoopView(view)}
       @case "PRINT"
         {@processPrintView(view)}
+      @case "WRITE_FILE"
+        {@processWriteFileView(view)}
       @default
         $unhandledResponseForm: {@view}
     @end
@@ -28,13 +30,13 @@
 @end
 
 @private processPrintView(view)
-  @if view.args.size == 0
-    puts "{@view.format}"
+  @if view.formattedString.args.size == 0
+    puts "{@view.formattedString.format}"
   @else
-    @if view.format == "%s"
-      puts {@view.args.get(0).formattedName}
+    @if view.formattedString.format == "%s"
+      puts {@view.formattedString.args.get(0)}
     @else
-      puts "{@view.format}"
+      puts "{@view.formattedString.format}"
     @end
   @end
 @end
@@ -66,6 +68,34 @@
     {@processOutputViews(view.body)}
   end
 
+@end
+
+@private processWriteFileView(view)
+  @if view.contents.type.isBytesType
+    File.open("{@formattedFileName(view.fileName)}", "wb") do |file|
+      file.write({@variableField({@view.contents})})
+    end
+
+  @else
+    @if view.contents.type.isStringType
+      File.write "{@formattedFileName(view.fileName)}" {@variableField({@view.contents})}
+
+    @else
+      $unhandled type: {@view.contents.type}
+    @end
+  @end
+@end
+
+@private formattedFileName(fileName)
+  @if fileName.args.isEmpty
+    "{@fileName.format}"
+  @else
+    @if fileName.format == "%s"
+      {@fileName.args.get(0).to_s}
+    @else
+      {@fileName.format}
+    @end
+  @end
 @end
 
 @private variableField(arg)

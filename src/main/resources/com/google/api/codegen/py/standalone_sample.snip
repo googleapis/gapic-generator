@@ -24,16 +24,15 @@
 
   @# [START {@sample.regionTag}]
 
-  {@importList(sample.sampleInitCode.importSection.appImports)}
-  @if sample.outputImports.size
-    {@importList(sample.outputImports)}
+  @if sample.sampleImports.appImports.size
+    {@importList(sample.sampleImports.appImports)}
   @end
   @let convertTextCode = convertText(sample)
     @if convertTextCode
       import six
 
-    @end
 
+    @end
     def {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}):
       @if not(sample.sampleFunctionDoc.isEmpty)
         {@processDoc(sample.sampleFunctionDoc)}
@@ -257,6 +256,8 @@
         {@processMapLoopView(view)}
       @case "PRINT"
         {@processPrintView(view)}
+      @case "WRITE_FILE"
+        {@processWriteFileView(view)}
       @default
         $unhandledResponseForm: {@view}
     @end
@@ -265,13 +266,13 @@
 
 @private processPrintView(view)
   # Since numeric comparison seems to not work, we use explicit zero tests
-  @if not(view.args.size)
-    print('{@view.format}')
+  @if not(view.formattedString.args.size)
+    print('{@view.formattedString.format}')
   @else
-    @if view.format == "{}"
-      print({@view.args.get(0).formattedName})
+    @if view.formattedString.format == "{}"
+      print({@view.formattedString.args.get(0)})
     @else
-      print('{@view.format}'.format({@commaSeparatedFields(view.args)}))
+      print('{@view.formattedString.format}'.format({@commaSeparatedFields(view.formattedString.args)}))
     @end
   @end
 @end
@@ -311,10 +312,37 @@
   {@view.variableName} = {@variableField(view.reference)}
 @end
 
+@private processWriteFileView(view)
+  @if view.contents.type.isBytesType
+    with open('{@formattedFileName(view.fileName)}', 'wb') as out:
+      out.write({@variableField(view.contents)})
+  @else
+    @if view.contents.type.isStringType
+      with open('{@formattedFileName(view.fileName)}', 'w') as out:
+        out.write({@variableField(view.contents)})
+    @else
+      $unhandled type: {@view.contents.type}
+    @end
+  @end
+@end
+
+
+@private formattedFileName(view)
+  @if view.args.isEmpty
+    'view.format'
+  @else
+    @if view.format == "{}"
+      str(view.get(0))
+    @else
+      {@view.format}.format({@commaSeparatedFields(view.args)})
+    @end
+  @end
+@end
+
 
 @private commaSeparatedFields(args)
   @join arg : args on ", "
-    {@arg.formattedName}
+    {@arg}
   @end
 @end
 

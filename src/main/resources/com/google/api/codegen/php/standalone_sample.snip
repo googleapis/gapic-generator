@@ -437,7 +437,7 @@
 @end
 
 @private processPrintView(view)
-    @if not(view.args.size)
+    @if not(view.formattedString.args.size)
         printf("{@view.format}" . PHP_EOL);
     @else
         printf("{@view.format}" . PHP_EOL, {@commaSeparatedFields(view.args)});
@@ -480,6 +480,17 @@
     {@variable(view.variableName)} = {@variableField(view.reference)};
 @end
 
+@private processWriteFileView(view)
+    file_put_contents({@stringFormattedFileName(view.fileName)}, {@variableFields(view.contents)});
+@end
+
+@private stringFormattedFileName(fileName)
+    @if fileName.args.isEmpty
+        '{@fileName.format}'
+    @else
+        sprintf({@fileName.format}, {@commaSeparatedFields(fileName.args)})
+    @end
+@end
 
 @private commaSeparatedFields(args)
     @join arg : args on ", "

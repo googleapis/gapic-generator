@@ -104,8 +104,12 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
     if (outputContext.hasMaps()) {
       typeTable.getAndSaveNicknameFor("java.util.Map");
     }
-    if (outputContext.hasWriteFiles()) {
+    if (outputContext.hasBytesFileOutput()) {
       typeTable.getAndSaveNicknameFor("java.io.FileOutputStream");
+      typeTable.getAndSaveNicknameFor("java.io.OutputStream");
+    }
+    if (outputContext.hasStringFileOutput()) {
+      typeTable.getAndSaveNicknameFor("java.io.FileWriter");
     }
   }
 

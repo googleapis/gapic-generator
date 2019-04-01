@@ -16,12 +16,20 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.OutputSpec;
 import com.google.api.codegen.transformer.OutputTransformer;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @AutoValue
 public abstract class OutputContext {
+
+  private static final TypeModel BYTES_TYPE =
+      ProtoTypeRef.create(TypeRef.fromPrimitiveName("bytes"));
+  private static final TypeModel STRING_TYPE =
+      ProtoTypeRef.create(TypeRef.fromPrimitiveName("string"));
 
   public abstract OutputTransformer.ScopeTable scopeTable();
 
@@ -32,9 +40,14 @@ public abstract class OutputContext {
   public abstract List<TypeModel> stringFormattedVariableTypes();
 
   /**
-   * In Node.js, `writeFile` should be defined as `var` instead of `const` if used multiple times.
+   * In Java, `java.io.OutputStream` and `java.io.FileOutputStream` need to be imported if writing a
+   * bytes field to a local file. `java.io.FileWriter` needs to be imported if writing a string
+   * field to a local file.
+   *
+   * <p>In Node.js, `writeFile` should be defined as `var` instead of `const` if used multiple
+   * times.
    */
-  public abstract List<OutputSpec.WriteFileStatement> writeFileSpecs();
+  public abstract Set<TypeModel> fileOutputTypes();
 
   /** In Java, `java.util.Map` needs to be imported if there are map specs. */
   public abstract List<OutputSpec.LoopStatement> mapSpecs();
@@ -43,24 +56,21 @@ public abstract class OutputContext {
     return !mapSpecs().isEmpty();
   }
 
-  public boolean hasMultipleWriteFiles() {
-    return writeFileSpecs().size() > 1;
+  public boolean hasBytesFileOutput() {
+    return fileOutputTypes().contains(BYTES_TYPE);
   }
 
-  public boolean hasWriteFiles() {
-    return !writeFileSpecs().isEmpty();
+  public boolean hasStringFileOutput() {
+    return fileOutputTypes().contains(STRING_TYPE);
   }
 
   public static OutputContext create() {
     return new AutoValue_OutputContext(
-        new OutputTransformer.ScopeTable(),
-        new ArrayList<>(),
-        new ArrayList<>(),
-        new ArrayList<>());
+        new OutputTransformer.ScopeTable(), new ArrayList<>(), new HashSet<>(), new ArrayList<>());
   }
 
   public OutputContext createWithNewChildScope() {
     return new AutoValue_OutputContext(
-        scopeTable().newChild(), stringFormattedVariableTypes(), writeFileSpecs(), mapSpecs());
+        scopeTable().newChild(), stringFormattedVariableTypes(), fileOutputTypes(), mapSpecs());
   }
 }

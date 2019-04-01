@@ -402,27 +402,37 @@
 @end
 
 @private processWriteFileView(view)
-  try (OutputStream out = new FileOutputStream({@formattedFileName(view.fileName)})) {
-    @if view.contents.type.isStringType
-      out.write({@variableField(view.contents)});
+  @if view.contents.type.isStringType
+    try (FileWriter writer = new FileWriter({@formattedFileName(view.fileName)})) {
+      writer.write({@variableField(view.contents)});
+    }
+  @else
+    @if view.contents.type.isBytesType
+      try (OutputStream out = new FileOutputStream({@formattedFileName(view.fileName)})) {
+        @if view.contents.type.isStringType
+          out.write({@variableField(view.contents)});
+        @else
+          @if view.contents.type.isBytesType
+            out.write({@variableField(view.contents)}.toBytesArray());
+          @else
+            $unhandled type: {@view.contents.type}
+          @end
+        @end
+      }
     @else
-      @if view.contents.type.isBytesType
-        out.write(@variableField(view.contents).toBytesArray());
-      @else
-        $unhandled type: {@view.contents.type}
-      @end
+      $unhandled type: {@view.contents.type}
     @end
-  }
+  @end
 @end
 
 @private formattedFileName(fileName)
   @if fileName.args.isEmpty
-    {@fileName.format}
+    "{@fileName.format}"
   @else
     @if fileName.format == "%s"
       {@fileName.args.get(0)}.toString()
     @else
-      String.format({@fileName.format}, {@commaSeparatedFields(fileName.args)})
+      String.format("{@fileName.format}", {@commaSeparatedFields(fileName.args)})
     @end
   @end
 @end

@@ -137,12 +137,16 @@ public class OutputTransformer {
       SampleValueSet valueSet,
       OutputContext outputContext,
       CallingForm form) {
-    outputContext.writeFileSpecs().add(config);
     OutputView.StringFormatView fileName =
         stringFormatView(context, outputContext, config.getFileNameList(), valueSet, form);
     OutputView.VariableView contents =
         accessor(
             new Scanner(config.getContent()), context, valueSet, outputContext.scopeTable(), form);
+    Preconditions.checkArgument(
+        contents.type().isStringType() || contents.type().isBytesType(),
+        "Output to file: expected string or bytes, found %s",
+        contents.type().getTypeName());
+    outputContext.fileOutputTypes().add(contents.type());
     return OutputView.WriteFileView.newBuilder().fileName(fileName).contents(contents).build();
   }
 
