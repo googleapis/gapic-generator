@@ -26,7 +26,7 @@ import java.io.InputStreamReader;
 
 public class LicenseHeaderUtil {
   @VisibleForTesting static final String DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
-  static final String DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
+  @VisibleForTesting static final String DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
 
   public LicenseHeaderUtil() {}
 
