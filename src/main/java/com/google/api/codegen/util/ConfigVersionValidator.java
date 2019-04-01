@@ -40,7 +40,6 @@ public class ConfigVersionValidator {
     }
 
     try {
-
       // Serialize and deserialize the Config v1 proto under the Config v2 schema to remove fields
       // unknown to Config v2 schema.
       Parser<com.google.api.codegen.v2.ConfigProto> parser =
@@ -52,7 +51,7 @@ public class ConfigVersionValidator {
       if (!Arrays.equals(configV2.toByteArray(), configV1Proto.toByteArray())) {
         throw new IllegalStateException(
             String.format(
-                "Unknown fields in to ConfigProto v2 in configProto: %s",
+                "Unknown fields to ConfigProto v2 in configProto: %s",
                 configV1Proto.toString()));
       }
     } catch (InvalidProtocolBufferException e) {
