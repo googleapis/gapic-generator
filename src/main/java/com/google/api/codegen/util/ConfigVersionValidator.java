@@ -14,11 +14,10 @@
  */
 package com.google.api.codegen.util;
 
+import com.google.protobuf.DiscardUnknownFieldsParser;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
-import com.google.protobuf.util.JsonFormat.Parser;
-import com.google.protobuf.util.JsonFormat.Printer;
-import com.google.protobuf.util.JsonFormat.TypeRegistry;
+import com.google.protobuf.Parser;
+import java.util.Arrays;
 import javax.annotation.Nonnull;
 
 public class ConfigVersionValidator {
@@ -41,32 +40,16 @@ public class ConfigVersionValidator {
     }
 
     try {
-      // Serializing utils for Config V2.
-      TypeRegistry typeRegistryV2 =
-          JsonFormat.TypeRegistry.newBuilder()
-              .add(com.google.api.codegen.v2.ConfigProto.getDescriptor())
-              .build();
-      Parser parserV2 = JsonFormat.parser().usingTypeRegistry(typeRegistryV2);
-      Printer printerV2 = JsonFormat.printer().usingTypeRegistry(typeRegistryV2);
 
       // Serialize and deserialize the Config v1 proto under the Config v2 schema to remove fields
       // unknown to Config v2 schema.
-      com.google.api.codegen.v2.ConfigProto.Builder v2ProtoBuilder =
-          com.google.api.codegen.v2.ConfigProto.newBuilder();
-      parserV2.merge(printerV2.print(configV1Proto), v2ProtoBuilder);
-
-      // Serializing utils for Config V2.
-      TypeRegistry typeRegistryV1 =
-          JsonFormat.TypeRegistry.newBuilder()
-              .add(com.google.api.codegen.ConfigProto.getDescriptor())
-              .build();
-      Printer printerV1 = JsonFormat.printer().usingTypeRegistry(typeRegistryV1);
-
-      String v1String = printerV2.print(v2ProtoBuilder.build());
-      String v2String = printerV1.print(configV1Proto);
+      Parser<com.google.api.codegen.v2.ConfigProto> parser =
+          DiscardUnknownFieldsParser.wrap(com.google.api.codegen.v2.ConfigProto.parser());
+      com.google.api.codegen.v2.ConfigProto configV2 =
+          parser.parseFrom(configV1Proto.toByteString());
 
       // Compare the v1-serialized and v2-serialized strings of the same config proto object.
-      if (!v1String.equals(v2String)) {
+      if (!Arrays.equals(configV2.toByteArray(), configV1Proto.toByteArray())) {
         throw new IllegalStateException(
             String.format(
                 "Unknown fields in to ConfigProto v2 in configProto: %s",
