@@ -51,8 +51,7 @@ public class ConfigVersionValidator {
       if (!Arrays.equals(configV2.toByteArray(), configV1Proto.toByteArray())) {
         throw new IllegalStateException(
             String.format(
-                "Unknown fields to ConfigProto v2 in configProto: %s",
-                configV1Proto.toString()));
+                "Unknown fields to ConfigProto v2 in configProto: %s", configV1Proto.toString()));
       }
     } catch (InvalidProtocolBufferException e) {
       throw new IllegalStateException(e);
