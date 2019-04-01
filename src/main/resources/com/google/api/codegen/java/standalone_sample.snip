@@ -343,6 +343,8 @@
         {@processMapLoopView(view)}
       @case "PRINT"
         {@processPrintView(view)}
+      @case "WRITE_FILE"
+        {@processWriteFileView(view)}
       @default
         $unhandledResponseForm: {@view}
     @end
@@ -397,6 +399,32 @@
     {@processOutputViews(@view.body)}
   }
 
+@end
+
+@private processWriteFileView(view)
+  try (OutputStream out = new FileOutputStream({@formattedFileName(view.fileName)})) {
+    @if view.contents.type.isStringType
+      out.write({@variableField(view.contents)});
+    @else
+      @if view.contents.type.isBytesType
+        out.write(@variableField(view.contents).toBytesArray());
+      @else
+        $unhandled type: {@view.contents.type}
+      @end
+    @end
+  }
+@end
+
+@private formattedFileName(fileName)
+  @if fileName.args.isEmpty
+    {@fileName.format}
+  @else
+    @if fileName.format == "%s"
+      {@fileName.args.get(0)}.toString()
+    @else
+      String.format({@fileName.format}, {@commaSeparatedFields(fileName.args)})
+    @end
+  @end
 @end
 
 @private commaSeparatedFields(args)

@@ -103,6 +103,10 @@ public class OutputTransformer {
       once.run();
       view = commentView(config.getCommentList(), context);
     }
+    if (config.hasWriteFile()) {
+      once.run();
+      view = writeFileView(config.getWriteFile(), context, valueSet, outputContext, form);
+    }
 
     return Preconditions.checkNotNull(
         view,
