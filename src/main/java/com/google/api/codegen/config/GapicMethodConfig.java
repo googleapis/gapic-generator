@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import static com.google.api.codegen.configgen.transformer.RetryTransformer.DEFAULT_MAX_RETRY_DELAY;
 
 import com.google.api.codegen.BatchingConfigProto;
+import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.ReleaseLevel;
@@ -134,14 +135,20 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    ImmutableList<FlatteningConfig> flattening =
-        FlatteningConfig.createFlatteningConfigs(
-            diagCollector,
-            messageConfigs,
-            resourceNameConfigs,
-            methodConfigProto,
-            methodModel,
-            protoParser);
+    ImmutableList<FlatteningConfig> flattening = null;
+    if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
+      flattening =
+          FlatteningConfig.createFlatteningConfigs(
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              methodModel,
+              protoParser);
+      if (flattening == null) {
+        error = true;
+      }
+    }
 
     BatchingConfig batching = null;
     if (!BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
