@@ -916,6 +916,11 @@ public abstract class GapicProductConfig implements ProductConfig {
         createFixedResourceNameConfigs(
             diagCollector, configProto.getFixedResourceNameValuesList(), file));
 
+    if (diagCollector.getErrorCount() > 0) {
+      ToolUtil.reportDiags(diagCollector, true);
+      throw new RuntimeException();
+    }
+
     singleResourceNamesBuilder.putAll(singleResourceNameConfigsMap);
   }
 
