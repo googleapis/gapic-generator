@@ -422,6 +422,59 @@ public class ProtoParser {
     return String.format("%s.%s", resource.getSymbol(), getProtoPackage(file));
   }
 
+  // TODO(andrealin): Unit test this.
+  public ImmutableMap<String, String> getFieldNamePatterns(Method method) {
+    // Only look two levels deep in the request object, so fields of fields of the request object.
+    return ImmutableMap.copyOf(getFieldNamePatterns(method.getInputMessage(), 2));
+  }
+
+  private Map<String, String> getFieldNamePatterns(MessageType messageType, int depth) {
+    // TODO(andrealin): allow package names in values.
+    LinkedHashMap<String, String> builder = new LinkedHashMap<>();
+    for (Field field : messageType.getFields()) {
+      String fieldName = field.getSimpleName();
+
+      if (field.getType().isMessage() && depth > 0) {
+        Map<String, String> children =
+            getFieldNamePatterns(field.getType().getMessageType(), depth - 1);
+        for (Map.Entry<String, String> child : children.entrySet()) {
+          // Dot-separate the nested fields, e.g. "shelf.name"
+          builder.put(String.format("%s.%s", fieldName, child.getKey()), child.getValue());
+        }
+      }
+
+      String reference = getResourceReference(field);
+      if (!Strings.isNullOrEmpty(reference)) {
+        builder.put(fieldName, getSimpleName(reference));
+        continue;
+      }
+
+      Resource resource = getResource(field);
+      if (resource != null) {
+        String resourceName = resource.getSymbol();
+        if (Strings.isNullOrEmpty(resourceName)) {
+          resourceName = field.getParent().getSimpleName();
+        }
+        builder.put(fieldName, getSimpleName(resourceName));
+        continue;
+      }
+
+      ResourceSet resourceSet = getResourceSet(field);
+      if (resourceSet != null) {
+        builder.put(fieldName, getSimpleName(resourceSet.getSymbol()));
+      }
+    }
+
+    return builder;
+  }
+
+  private static String getSimpleName(String resourceFullName) {
+    if (resourceFullName.contains(".")) {
+      return resourceFullName.substring(resourceFullName.lastIndexOf(".") + 1);
+    }
+    return resourceFullName;
+  }
+
   /** Register all extensions needed to process API protofiles. */
   public static void registerAllExtensions(ExtensionRegistry extensionRegistry) {
     OperationsProto.registerAllExtensions(extensionRegistry);

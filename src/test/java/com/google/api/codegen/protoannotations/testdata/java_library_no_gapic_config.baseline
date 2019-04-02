@@ -1533,7 +1533,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
    *     .setName(name.toString())
@@ -1557,7 +1557,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
    *     .setName(name.toString())
@@ -1897,7 +1897,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
@@ -1921,7 +1921,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
@@ -1992,7 +1992,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2014,7 +2014,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2197,7 +2197,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *   BidiStream&lt;DiscussBookRequest, Comment&gt; bidiStream =
    *       libraryServiceClient.discussBookCallable().call();
    *
-   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2239,7 +2239,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *   ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
    *       libraryServiceClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
    *
-   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2279,7 +2279,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *   ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
    *       libraryServiceClient.babbleAboutBookCallable().clientStreamingCall(responseObserver);
    *
-   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2298,9 +2298,9 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   List&lt;String&gt; names = new ArrayList&lt;&gt;();
-   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
-   *   for (BookName element : libraryServiceClient.findRelatedBooks(names, shelves).iterateAllAsBookName()) {
+   *   List&lt;String&gt; formattedNames = new ArrayList&lt;&gt;();
+   *   List&lt;String&gt; formattedShelves = new ArrayList&lt;&gt;();
+   *   for (BookName element : libraryServiceClient.findRelatedBooks(formattedNames, formattedShelves).iterateAllAsBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2410,10 +2410,10 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String resource = "";
+   *   String formattedResource = BookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(resource)
+   *     .setResource(formattedResource)
    *     .setTag(tag)
    *     .build();
    *   AddTagResponse response = libraryServiceClient.addTag(request);
@@ -2434,10 +2434,10 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String resource = "";
+   *   String formattedResource = BookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(resource)
+   *     .setResource(formattedResource)
    *     .setTag(tag)
    *     .build();
    *   ApiFuture&lt;AddTagResponse&gt; future = libraryServiceClient.addTagCallable().futureCall(request);
@@ -2699,7 +2699,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *   ByteString requiredSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
    *   BookName requiredSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   BookOneOfName requiredSingularResourceNameOneof = DeletedBookName.of();
+   *   BookName requiredSingularResourceNameOneof = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ProjectName requiredSingularResourceNameCommon = ProjectName.of("[PROJECT]");
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
@@ -2777,7 +2777,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *   ByteString requiredSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
    *   BookName requiredSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   BookOneOfName requiredSingularResourceNameOneof = DeletedBookName.of();
+   *   BookName requiredSingularResourceNameOneof = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ProjectName requiredSingularResourceNameCommon = ProjectName.of("[PROJECT]");
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
@@ -7609,7 +7609,7 @@ public class LibraryServiceClientTest {
       .setComment(comment)
       .build();
     mockLibraryService.addResponse(expectedResponse);
-    BookOneOfName name = DeletedBookName.of();
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     DiscussBookRequest request = DiscussBookRequest.newBuilder()
       .setName(name.toString())
       .build();
@@ -7634,7 +7634,7 @@ public class LibraryServiceClientTest {
   public void discussBookExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
-    BookOneOfName name = DeletedBookName.of();
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     DiscussBookRequest request = DiscussBookRequest.newBuilder()
       .setName(name.toString())
       .build();
@@ -7670,10 +7670,10 @@ public class LibraryServiceClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    List<String> names = new ArrayList<>();
-    List<String> shelves = new ArrayList<>();
+    List<String> formattedNames = new ArrayList<>();
+    List<String> formattedShelves = new ArrayList<>();
 
-    FindRelatedBooksPagedResponse pagedListResponse = client.findRelatedBooks(names, shelves);
+    FindRelatedBooksPagedResponse pagedListResponse = client.findRelatedBooks(formattedNames, formattedShelves);
 
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
@@ -7687,8 +7687,8 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     FindRelatedBooksRequest actualRequest = (FindRelatedBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(names, actualRequest.getNamesList());
-    Assert.assertEquals(shelves, actualRequest.getShelvesList());
+    Assert.assertEquals(formattedNames, actualRequest.getNamesList());
+    Assert.assertEquals(formattedShelves, actualRequest.getShelvesList());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -7702,10 +7702,10 @@ public class LibraryServiceClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      List<String> names = new ArrayList<>();
-      List<String> shelves = new ArrayList<>();
+      List<String> formattedNames = new ArrayList<>();
+      List<String> formattedShelves = new ArrayList<>();
 
-      client.findRelatedBooks(names, shelves);
+      client.findRelatedBooks(formattedNames, formattedShelves);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
