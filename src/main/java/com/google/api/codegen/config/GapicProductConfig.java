@@ -30,8 +30,6 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
-import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
@@ -896,24 +894,21 @@ public abstract class GapicProductConfig implements ProductConfig {
     LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap =
         new LinkedHashMap<>();
     for (CollectionConfigProto collectionConfigProto : allCollectionConfigProtos) {
-      PathTemplate pathTemplate = PathTemplate.create(collectionConfigProto.getNamePattern());
-      try {
-        pathTemplate.instantiate(new HashMap<>());
-      } catch (ValidationException e) {
-        // This must be a single resource name, because it has binding vars in the path pattern.
+      if (FixedResourceNameConfig.isFixedResourceNameConfig(
+          collectionConfigProto.getNamePattern())) {
+        // Else, this is a fixed resource name, because it has no binding vars in the pattern.
+        FixedResourceNameConfig fixedResourceNameConfig =
+            FixedResourceNameConfig.createFixedResourceNameConfig(
+                diagCollector,
+                collectionConfigProto.getEntityName(),
+                collectionConfigProto.getNamePattern(),
+                file);
+        fixedResourceNamesBuilder.put(
+            fixedResourceNameConfig.getEntityId(), fixedResourceNameConfig);
+      } else {
         createSingleResourceNameConfig(
             diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file, language);
-        continue;
       }
-
-      // Else, this is a fixed resource name, because it has no binding vars in the pattern.
-      FixedResourceNameConfig fixedResourceNameConfig =
-          FixedResourceNameConfig.createFixedResourceNameConfig(
-              diagCollector,
-              collectionConfigProto.getEntityName(),
-              collectionConfigProto.getNamePattern(),
-              file);
-      fixedResourceNamesBuilder.put(fixedResourceNameConfig.getEntityId(), fixedResourceNameConfig);
     }
 
     // TODO(andrealin): Remove this once all fixed resource names are removed.

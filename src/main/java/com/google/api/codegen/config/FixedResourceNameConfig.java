@@ -61,4 +61,12 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
 
     return new AutoValue_FixedResourceNameConfig(entityName, entityName, fixedValue, file);
   }
+
+  /**
+   * Returns if the pathPattern is a fixed name resource. This primitively returns true iff the
+   * pathPattern contains a '{' char.
+   */
+  public static boolean isFixedResourceNameConfig(String pathPattern) {
+    return !pathPattern.contains("{");
+  }
 }
