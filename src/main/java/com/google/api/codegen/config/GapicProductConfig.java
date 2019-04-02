@@ -992,7 +992,10 @@ public abstract class GapicProductConfig implements ProductConfig {
     for (FixedResourceNameValueProto fixedConfigProto : fixedConfigProtos) {
       FixedResourceNameConfig fixedConfig =
           FixedResourceNameConfig.createFixedResourceNameConfig(
-              diagCollector, fixedConfigProto, file);
+              diagCollector,
+              fixedConfigProto.getEntityName(),
+              fixedConfigProto.getFixedValue(),
+              file);
       if (fixedConfig == null) {
         continue;
       }
