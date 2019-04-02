@@ -121,12 +121,14 @@ import com.google.example.library.v1.stub.LibraryServiceStubSettings;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
 import com.google.tagger.v1.TaggerProto.AddTagRequest;
 import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Generated;
 
@@ -154,10 +156,7 @@ import javax.annotation.Generated;
  * <code>
  * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
  *   Shelf shelf = Shelf.newBuilder().build();
- *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
- *     .setShelf(shelf)
- *     .build();
- *   Shelf response = libraryServiceClient.createShelf(request);
+ *   Shelf response = libraryServiceClient.createShelf(shelf);
  * }
  * </code>
  * </pre>
@@ -292,6 +291,31 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
+   *   Shelf response = libraryServiceClient.createShelf(shelf);
+   * }
+   * </code></pre>
+   *
+   * @param shelf The shelf to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf createShelf(Shelf shelf) {
+
+    CreateShelfRequest request =
+        CreateShelfRequest.newBuilder()
+        .setShelf(shelf)
+        .build();
+    return createShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a shelf, and returns the new Shelf.
+   * RPC method comment may include special characters: &lt;&gt;&amp;"`'{@literal @}.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   Shelf shelf = Shelf.newBuilder().build();
    *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
    *     .setShelf(shelf)
    *     .build();
@@ -326,6 +350,168 @@ public class LibraryServiceClient implements BackgroundResource {
    */
   public final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable() {
     return stub.createShelfCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   Shelf response = libraryServiceClient.getShelf(name);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(ShelfName name) {
+
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   Shelf response = libraryServiceClient.getShelf(name.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(String name) {
+
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   SomeMessage message = SomeMessage.newBuilder().build();
+   *   Shelf response = libraryServiceClient.getShelf(name, message);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to retrieve.
+   * @param message Field to verify that message-type query parameter gets flattened.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(ShelfName name, SomeMessage message) {
+
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setMessage(message)
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   SomeMessage message = SomeMessage.newBuilder().build();
+   *   Shelf response = libraryServiceClient.getShelf(name.toString(), message);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to retrieve.
+   * @param message Field to verify that message-type query parameter gets flattened.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(String name, SomeMessage message) {
+
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name)
+        .setMessage(message)
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   SomeMessage message = SomeMessage.newBuilder().build();
+   *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
+   *   Shelf response = libraryServiceClient.getShelf(name, message, stringBuilder);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to retrieve.
+   * @param message Field to verify that message-type query parameter gets flattened.
+   * @param stringBuilder
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(ShelfName name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
+
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setMessage(message)
+        .setStringBuilder(stringBuilder)
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   SomeMessage message = SomeMessage.newBuilder().build();
+   *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
+   *   Shelf response = libraryServiceClient.getShelf(name.toString(), message, stringBuilder);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to retrieve.
+   * @param message Field to verify that message-type query parameter gets flattened.
+   * @param stringBuilder
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
+
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name)
+        .setMessage(message)
+        .setStringBuilder(stringBuilder)
+        .build();
+    return getShelf(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -420,6 +606,54 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   libraryServiceClient.deleteShelf(name);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteShelf(ShelfName name) {
+
+    DeleteShelfRequest request =
+        DeleteShelfRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .build();
+    deleteShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   libraryServiceClient.deleteShelf(name.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteShelf(String name) {
+
+    DeleteShelfRequest request =
+        DeleteShelfRequest.newBuilder()
+        .setName(name)
+        .build();
+    deleteShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -453,6 +687,64 @@ public class LibraryServiceClient implements BackgroundResource {
    */
   public final UnaryCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
     return stub.deleteShelfCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Merges two shelves by adding all books from the shelf named
+   * `other_shelf_name` to shelf `name`, and deletes
+   * `other_shelf_name`. Returns the updated shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
+   *   Shelf response = libraryServiceClient.mergeShelves(name, otherShelfName);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf we're adding books to.
+   * @param otherShelfName The name of the shelf we're removing books from and deleting.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf mergeShelves(ShelfName name, ShelfName otherShelfName) {
+
+    MergeShelvesRequest request =
+        MergeShelvesRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setOtherShelfName(otherShelfName == null ? null : otherShelfName.toString())
+        .build();
+    return mergeShelves(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Merges two shelves by adding all books from the shelf named
+   * `other_shelf_name` to shelf `name`, and deletes
+   * `other_shelf_name`. Returns the updated shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
+   *   Shelf response = libraryServiceClient.mergeShelves(name.toString(), otherShelfName.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf we're adding books to.
+   * @param otherShelfName The name of the shelf we're removing books from and deleting.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Shelf mergeShelves(String name, String otherShelfName) {
+
+    MergeShelvesRequest request =
+        MergeShelvesRequest.newBuilder()
+        .setName(name)
+        .setOtherShelfName(otherShelfName)
+        .build();
+    return mergeShelves(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -515,6 +807,60 @@ public class LibraryServiceClient implements BackgroundResource {
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   Book book = Book.newBuilder().build();
+   *   Book response = libraryServiceClient.createBook(name, book);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf in which the book is created.
+   * @param book The book to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book createBook(ShelfName name, Book book) {
+
+    CreateBookRequest request =
+        CreateBookRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setBook(book)
+        .build();
+    return createBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   Book book = Book.newBuilder().build();
+   *   Book response = libraryServiceClient.createBook(name.toString(), book);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf in which the book is created.
+   * @param book The book to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book createBook(String name, Book book) {
+
+    CreateBookRequest request =
+        CreateBookRequest.newBuilder()
+        .setName(name)
+        .setBook(book)
+        .build();
+    return createBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .setBook(book)
@@ -551,6 +897,39 @@ public class LibraryServiceClient implements BackgroundResource {
    */
   public final UnaryCallable<CreateBookRequest, Book> createBookCallable() {
     return stub.createBookCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a series of books.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   int edition = 0;
+   *   SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+   *   PublishSeriesResponse response = libraryServiceClient.publishSeries(shelf, books, edition, seriesUuid);
+   * }
+   * </code></pre>
+   *
+   * @param shelf The shelf in which the series is created.
+   * @param books The books to publish in the series.
+   * @param edition The edition of the series
+   * @param seriesUuid Uniquely identifies the series to the publishing house.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition, SeriesUuid seriesUuid) {
+
+    PublishSeriesRequest request =
+        PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setEdition(edition)
+        .setSeriesUuid(seriesUuid)
+        .build();
+    return publishSeries(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -612,6 +991,54 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   Book response = libraryServiceClient.getBook(name);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book getBook(BookName name) {
+
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .build();
+    return getBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   Book response = libraryServiceClient.getBook(name.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book getBook(String name) {
+
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -645,6 +1072,62 @@ public class LibraryServiceClient implements BackgroundResource {
    */
   public final UnaryCallable<GetBookRequest, Book> getBookCallable() {
     return stub.getBookCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists books in a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   String filter = "";
+   *   for (Book element : libraryServiceClient.listBooks(name, filter).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf whose books we'd like to list.
+   * @param filter To test python built-in wrapping.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListBooksPagedResponse listBooks(ShelfName name, String filter) {
+    ListBooksRequest request =
+        ListBooksRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setFilter(filter)
+        .build();
+    return listBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists books in a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
+   *   String filter = "";
+   *   for (Book element : libraryServiceClient.listBooks(name.toString(), filter).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf whose books we'd like to list.
+   * @param filter To test python built-in wrapping.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListBooksPagedResponse listBooks(String name, String filter) {
+    ListBooksRequest request =
+        ListBooksRequest.newBuilder()
+        .setName(name)
+        .setFilter(filter)
+        .build();
+    return listBooks(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -733,6 +1216,54 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   libraryServiceClient.deleteBook(name);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteBook(BookName name) {
+
+    DeleteBookRequest request =
+        DeleteBookRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .build();
+    deleteBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   libraryServiceClient.deleteBook(name.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteBook(String name) {
+
+    DeleteBookRequest request =
+        DeleteBookRequest.newBuilder()
+        .setName(name)
+        .build();
+    deleteBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -766,6 +1297,132 @@ public class LibraryServiceClient implements BackgroundResource {
    */
   public final UnaryCallable<DeleteBookRequest, Empty> deleteBookCallable() {
     return stub.deleteBookCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   Book book = Book.newBuilder().build();
+   *   Book response = libraryServiceClient.updateBook(name, book);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to update.
+   * @param book The book to update with.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book updateBook(BookName name, Book book) {
+
+    UpdateBookRequest request =
+        UpdateBookRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setBook(book)
+        .build();
+    return updateBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   Book book = Book.newBuilder().build();
+   *   Book response = libraryServiceClient.updateBook(name.toString(), book);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to update.
+   * @param book The book to update with.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book updateBook(String name, Book book) {
+
+    UpdateBookRequest request =
+        UpdateBookRequest.newBuilder()
+        .setName(name)
+        .setBook(book)
+        .build();
+    return updateBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   String optionalFoo = "";
+   *   Book book = Book.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
+   *   Book response = libraryServiceClient.updateBook(name, optionalFoo, book, updateMask, physicalMask);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to update.
+   * @param optionalFoo An optional foo.
+   * @param book The book to update with.
+   * @param updateMask A field mask to apply, rendered as an HTTP parameter.
+   * @param physicalMask To test Python import clash resolution.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book updateBook(BookName name, String optionalFoo, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
+
+    UpdateBookRequest request =
+        UpdateBookRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setOptionalFoo(optionalFoo)
+        .setBook(book)
+        .setUpdateMask(updateMask)
+        .setPhysicalMask(physicalMask)
+        .build();
+    return updateBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   String optionalFoo = "";
+   *   Book book = Book.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
+   *   Book response = libraryServiceClient.updateBook(name.toString(), optionalFoo, book, updateMask, physicalMask);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to update.
+   * @param optionalFoo An optional foo.
+   * @param book The book to update with.
+   * @param updateMask A field mask to apply, rendered as an HTTP parameter.
+   * @param physicalMask To test Python import clash resolution.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book updateBook(String name, String optionalFoo, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
+
+    UpdateBookRequest request =
+        UpdateBookRequest.newBuilder()
+        .setName(name)
+        .setOptionalFoo(optionalFoo)
+        .setBook(book)
+        .setUpdateMask(updateMask)
+        .setPhysicalMask(physicalMask)
+        .build();
+    return updateBook(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -813,6 +1470,60 @@ public class LibraryServiceClient implements BackgroundResource {
    */
   public final UnaryCallable<UpdateBookRequest, Book> updateBookCallable() {
     return stub.updateBookCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Moves a book to another shelf, and returns the new book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookOneOfName name = DeletedBookName.of();
+   *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
+   *   Book response = libraryServiceClient.moveBook(name, otherShelfName);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to move.
+   * @param otherShelfName The name of the destination shelf.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book moveBook(BookOneOfName name, ShelfName otherShelfName) {
+
+    MoveBookRequest request =
+        MoveBookRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setOtherShelfName(otherShelfName == null ? null : otherShelfName.toString())
+        .build();
+    return moveBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Moves a book to another shelf, and returns the new book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookOneOfName name = DeletedBookName.of();
+   *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
+   *   Book response = libraryServiceClient.moveBook(name.toString(), otherShelfName.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to move.
+   * @param otherShelfName The name of the destination shelf.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Book moveBook(String name, String otherShelfName) {
+
+    MoveBookRequest request =
+        MoveBookRequest.newBuilder()
+        .setName(name)
+        .setOtherShelfName(otherShelfName)
+        .build();
+    return moveBook(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -940,6 +1651,60 @@ public class LibraryServiceClient implements BackgroundResource {
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;Comment&gt; comments = new ArrayList&lt;&gt;();
+   *   libraryServiceClient.addComments(name, comments);
+   * }
+   * </code></pre>
+   *
+   * @param name
+   * @param comments
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void addComments(BookName name, List<Comment> comments) {
+
+    AddCommentsRequest request =
+        AddCommentsRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .addAllComments(comments)
+        .build();
+    addComments(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds comments to a book
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;Comment&gt; comments = new ArrayList&lt;&gt;();
+   *   libraryServiceClient.addComments(name.toString(), comments);
+   * }
+   * </code></pre>
+   *
+   * @param name
+   * @param comments
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void addComments(String name, List<Comment> comments) {
+
+    AddCommentsRequest request =
+        AddCommentsRequest.newBuilder()
+        .setName(name)
+        .addAllComments(comments)
+        .build();
+    addComments(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds comments to a book
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;Comment&gt; comments = new ArrayList&lt;&gt;();
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
    *     .setName(name.toString())
    *     .addAllComments(comments)
@@ -986,6 +1751,54 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
+   *   BookFromArchive response = libraryServiceClient.getBookFromArchive(name);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final BookFromArchive getBookFromArchive(ArchivedBookName name) {
+
+    GetBookFromArchiveRequest request =
+        GetBookFromArchiveRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .build();
+    return getBookFromArchive(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book from an archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
+   *   BookFromArchive response = libraryServiceClient.getBookFromArchive(name.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final BookFromArchive getBookFromArchive(String name) {
+
+    GetBookFromArchiveRequest request =
+        GetBookFromArchiveRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getBookFromArchive(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book from an archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -1019,6 +1832,62 @@ public class LibraryServiceClient implements BackgroundResource {
    */
   public final UnaryCallable<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveCallable() {
     return stub.getBookFromArchiveCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book from a shelf or archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookFromAnywhere response = libraryServiceClient.getBookFromAnywhere(name, altBookName);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @param altBookName An alternate book name, used to test restricting flattened field to a
+   * single resource name type in a oneof.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final BookFromAnywhere getBookFromAnywhere(BookOneOfName name, BookName altBookName) {
+
+    GetBookFromAnywhereRequest request =
+        GetBookFromAnywhereRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setAltBookName(altBookName == null ? null : altBookName.toString())
+        .build();
+    return getBookFromAnywhere(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book from a shelf or archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   BookFromAnywhere response = libraryServiceClient.getBookFromAnywhere(name.toString(), altBookName.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @param altBookName An alternate book name, used to test restricting flattened field to a
+   * single resource name type in a oneof.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final BookFromAnywhere getBookFromAnywhere(String name, String altBookName) {
+
+    GetBookFromAnywhereRequest request =
+        GetBookFromAnywhereRequest.newBuilder()
+        .setName(name)
+        .setAltBookName(altBookName)
+        .build();
+    return getBookFromAnywhere(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1076,6 +1945,54 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   BookOneOfName name = DeletedBookName.of();
+   *   BookFromAnywhere response = libraryServiceClient.getBookFromAbsolutelyAnywhere(name);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final BookFromAnywhere getBookFromAbsolutelyAnywhere(BookOneOfName name) {
+
+    GetBookFromAbsolutelyAnywhereRequest request =
+        GetBookFromAbsolutelyAnywhereRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .build();
+    return getBookFromAbsolutelyAnywhere(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test proper OneOf-Any resource name mapping
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookOneOfName name = DeletedBookName.of();
+   *   BookFromAnywhere response = libraryServiceClient.getBookFromAbsolutelyAnywhere(name.toString());
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final BookFromAnywhere getBookFromAbsolutelyAnywhere(String name) {
+
+    GetBookFromAbsolutelyAnywhereRequest request =
+        GetBookFromAbsolutelyAnywhereRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getBookFromAbsolutelyAnywhere(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test proper OneOf-Any resource name mapping
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookOneOfName name = DeletedBookName.of();
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -1109,6 +2026,66 @@ public class LibraryServiceClient implements BackgroundResource {
    */
   public final UnaryCallable<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereCallable() {
     return stub.getBookFromAbsolutelyAnywhereCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates the index of a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   String indexName = "";
+   *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
+   *   libraryServiceClient.updateBookIndex(name, indexName, indexMap);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to update.
+   * @param indexName The name of the index for the book
+   * @param indexMap The index to update the book with
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void updateBookIndex(BookName name, String indexName, Map<String, String> indexMap) {
+
+    UpdateBookIndexRequest request =
+        UpdateBookIndexRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .setIndexName(indexName)
+        .putAllIndexMap(indexMap)
+        .build();
+    updateBookIndex(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates the index of a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   String indexName = "";
+   *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
+   *   libraryServiceClient.updateBookIndex(name.toString(), indexName, indexMap);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to update.
+   * @param indexName The name of the index for the book
+   * @param indexMap The index to update the book with
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void updateBookIndex(String name, String indexName, Map<String, String> indexMap) {
+
+    UpdateBookIndexRequest request =
+        UpdateBookIndexRequest.newBuilder()
+        .setName(name)
+        .setIndexName(indexName)
+        .putAllIndexMap(indexMap)
+        .build();
+    updateBookIndex(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1321,6 +2298,34 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   List&lt;String&gt; names = new ArrayList&lt;&gt;();
+   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
+   *   for (BookName element : libraryServiceClient.findRelatedBooks(names, shelves).iterateAllAsBookName()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param names
+   * @param shelves
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final FindRelatedBooksPagedResponse findRelatedBooks(List<String> names, List<String> shelves) {
+    FindRelatedBooksRequest request =
+        FindRelatedBooksRequest.newBuilder()
+        .addAllNames(names)
+        .addAllShelves(shelves)
+        .build();
+    return findRelatedBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   List&lt;BookName&gt; names = new ArrayList&lt;&gt;();
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
@@ -1453,6 +2458,56 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   Book response = libraryServiceClient.getBigBookAsync(name).get();
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<Book, GetBigBookMetadata> getBigBookAsync(BookName name) {
+
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .build();
+    return getBigBookAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test long-running operations
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   Book response = libraryServiceClient.getBigBookAsync(name.toString()).get();
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<Book, GetBigBookMetadata> getBigBookAsync(String name) {
+
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getBigBookAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test long-running operations
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -1509,6 +2564,56 @@ public class LibraryServiceClient implements BackgroundResource {
    */
   public final UnaryCallable<GetBookRequest, Operation> getBigBookCallable() {
     return stub.getBigBookCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test long-running operations with empty return type.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   libraryServiceClient.getBigNothingAsync(name).get();
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<Empty, GetBigBookMetadata> getBigNothingAsync(BookName name) {
+
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .build();
+    return getBigNothingAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test long-running operations with empty return type.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   libraryServiceClient.getBigNothingAsync(name.toString()).get();
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<Empty, GetBigBookMetadata> getBigNothingAsync(String name) {
+
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getBigNothingAsync(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -2807,10 +3912,7 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
  * <code>
  * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
  *   Shelf shelf = Shelf.newBuilder().build();
- *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
- *     .setShelf(shelf)
- *     .build();
- *   Shelf response = libraryServiceClient.createShelf(request);
+ *   Shelf response = libraryServiceClient.createShelf(shelf);
  * }
  * </code>
  * </pre>
@@ -2859,10 +3961,12 @@ import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.BookName;
+import com.google.example.library.v1.BookOneOfName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
@@ -2891,7 +3995,10 @@ import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfName;
+import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
@@ -2903,6 +4010,7 @@ import com.google.longrunning.Operation;
 import com.google.longrunning.stub.GrpcOperationsStub;
 import com.google.longrunning.stub.OperationsStub;
 import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
 import com.google.tagger.v1.TaggerProto.AddTagRequest;
 import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.MethodDescriptor;
@@ -3013,10 +4121,12 @@ import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.BookName;
+import com.google.example.library.v1.BookOneOfName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
@@ -3045,7 +4155,10 @@ import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfName;
+import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
@@ -3056,6 +4169,7 @@ import com.google.example.library.v1.UpdateBookRequest;
 import com.google.longrunning.Operation;
 import com.google.longrunning.stub.GrpcOperationsStub;
 import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
 import com.google.tagger.v1.TaggerProto.AddTagRequest;
 import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.MethodDescriptor;
@@ -3881,10 +4995,12 @@ import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.BookName;
+import com.google.example.library.v1.BookOneOfName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
@@ -3912,7 +5028,10 @@ import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfName;
+import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
@@ -3923,8 +5042,11 @@ import com.google.example.library.v1.UpdateBookRequest;
 import com.google.longrunning.Operation;
 import com.google.longrunning.stub.OperationsStub;
 import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
 import com.google.tagger.v1.TaggerProto.AddTagRequest;
 import com.google.tagger.v1.TaggerProto.AddTagResponse;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
@@ -5409,15 +6531,22 @@ import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.common.collect.Lists;
+import static com.google.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
+import com.google.longrunning.Operation;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
@@ -5460,6 +6589,911 @@ public class LibraryServiceClientTest {
   @After
   public void tearDown() throws Exception {
     client.close();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void createShelfTest() {
+    ShelfName name = ShelfName.of("[SHELF_ID]");
+    String theme = "theme110327241";
+    String internalTheme = "internalTheme792518087";
+    Shelf expectedResponse = Shelf.newBuilder()
+      .setName(name.toString())
+      .setTheme(theme)
+      .setInternalTheme(internalTheme)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    Shelf shelf = Shelf.newBuilder().build();
+
+    Shelf actualResponse =
+        client.createShelf(shelf);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    CreateShelfRequest actualRequest = (CreateShelfRequest)actualRequests.get(0);
+
+    Assert.assertEquals(shelf, actualRequest.getShelf());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void createShelfExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      Shelf shelf = Shelf.newBuilder().build();
+
+      client.createShelf(shelf);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getShelfTest() {
+    ShelfName name2 = ShelfName.of("[SHELF_ID]");
+    String theme = "theme110327241";
+    String internalTheme = "internalTheme792518087";
+    Shelf expectedResponse = Shelf.newBuilder()
+      .setName(name2.toString())
+      .setTheme(theme)
+      .setInternalTheme(internalTheme)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ShelfName name = ShelfName.of("[SHELF_ID]");
+
+    Shelf actualResponse =
+        client.getShelf(name);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getShelfExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+
+      client.getShelf(name);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getShelfTest2() {
+    ShelfName name2 = ShelfName.of("[SHELF_ID]");
+    String theme = "theme110327241";
+    String internalTheme = "internalTheme792518087";
+    Shelf expectedResponse = Shelf.newBuilder()
+      .setName(name2.toString())
+      .setTheme(theme)
+      .setInternalTheme(internalTheme)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ShelfName name = ShelfName.of("[SHELF_ID]");
+    SomeMessage message = SomeMessage.newBuilder().build();
+
+    Shelf actualResponse =
+        client.getShelf(name, message);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
+    Assert.assertEquals(message, actualRequest.getMessage());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getShelfExceptionTest2() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      SomeMessage message = SomeMessage.newBuilder().build();
+
+      client.getShelf(name, message);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getShelfTest3() {
+    ShelfName name2 = ShelfName.of("[SHELF_ID]");
+    String theme = "theme110327241";
+    String internalTheme = "internalTheme792518087";
+    Shelf expectedResponse = Shelf.newBuilder()
+      .setName(name2.toString())
+      .setTheme(theme)
+      .setInternalTheme(internalTheme)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ShelfName name = ShelfName.of("[SHELF_ID]");
+    SomeMessage message = SomeMessage.newBuilder().build();
+    com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
+
+    Shelf actualResponse =
+        client.getShelf(name, message, stringBuilder);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
+    Assert.assertEquals(message, actualRequest.getMessage());
+    Assert.assertEquals(stringBuilder, actualRequest.getStringBuilder());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getShelfExceptionTest3() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      SomeMessage message = SomeMessage.newBuilder().build();
+      com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
+
+      client.getShelf(name, message, stringBuilder);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteShelfTest() {
+    Empty expectedResponse = Empty.newBuilder().build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ShelfName name = ShelfName.of("[SHELF_ID]");
+
+    client.deleteShelf(name);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    DeleteShelfRequest actualRequest = (DeleteShelfRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteShelfExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+
+      client.deleteShelf(name);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void mergeShelvesTest() {
+    ShelfName name2 = ShelfName.of("[SHELF_ID]");
+    String theme = "theme110327241";
+    String internalTheme = "internalTheme792518087";
+    Shelf expectedResponse = Shelf.newBuilder()
+      .setName(name2.toString())
+      .setTheme(theme)
+      .setInternalTheme(internalTheme)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ShelfName name = ShelfName.of("[SHELF_ID]");
+    ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
+
+    Shelf actualResponse =
+        client.mergeShelves(name, otherShelfName);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    MergeShelvesRequest actualRequest = (MergeShelvesRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
+    Assert.assertEquals(otherShelfName, ShelfName.parse(actualRequest.getOtherShelfName()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void mergeShelvesExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
+
+      client.mergeShelves(name, otherShelfName);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void createBookTest() {
+    BookOneOfName name2 = DeletedBookName.of();
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    Book expectedResponse = Book.newBuilder()
+      .setName(name2.toString())
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ShelfName name = ShelfName.of("[SHELF_ID]");
+    Book book = Book.newBuilder().build();
+
+    Book actualResponse =
+        client.createBook(name, book);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    CreateBookRequest actualRequest = (CreateBookRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
+    Assert.assertEquals(book, actualRequest.getBook());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void createBookExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      Book book = Book.newBuilder().build();
+
+      client.createBook(name, book);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void publishSeriesTest() {
+    PublishSeriesResponse expectedResponse = PublishSeriesResponse.newBuilder().build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    Shelf shelf = Shelf.newBuilder().build();
+    List<Book> books = new ArrayList<>();
+    int edition = 1887963714;
+    SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+
+    PublishSeriesResponse actualResponse =
+        client.publishSeries(shelf, books, edition, seriesUuid);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    PublishSeriesRequest actualRequest = (PublishSeriesRequest)actualRequests.get(0);
+
+    Assert.assertEquals(shelf, actualRequest.getShelf());
+    Assert.assertEquals(books, actualRequest.getBooksList());
+    Assert.assertEquals(edition, actualRequest.getEdition());
+    Assert.assertEquals(seriesUuid, actualRequest.getSeriesUuid());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void publishSeriesExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      int edition = 1887963714;
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+
+      client.publishSeries(shelf, books, edition, seriesUuid);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBookTest() {
+    BookOneOfName name2 = DeletedBookName.of();
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    Book expectedResponse = Book.newBuilder()
+      .setName(name2.toString())
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+
+    Book actualResponse =
+        client.getBook(name);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBookExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+
+      client.getBook(name);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void listBooksTest() {
+    String nextPageToken = "";
+    Book booksElement = Book.newBuilder().build();
+    List<Book> books = Arrays.asList(booksElement);
+    ListBooksResponse expectedResponse = ListBooksResponse.newBuilder()
+      .setNextPageToken(nextPageToken)
+      .addAllBooks(books)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ShelfName name = ShelfName.of("[SHELF_ID]");
+    String filter = "filter-1274492040";
+
+    ListBooksPagedResponse pagedListResponse = client.listBooks(name, filter);
+
+    List<Book> resources = Lists.newArrayList(pagedListResponse.iterateAll());
+    Assert.assertEquals(1, resources.size());
+    Assert.assertEquals(expectedResponse.getBooksList().get(0), resources.get(0));
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    ListBooksRequest actualRequest = (ListBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, ShelfName.parse(actualRequest.getName()));
+    Assert.assertEquals(filter, actualRequest.getFilter());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void listBooksExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      String filter = "filter-1274492040";
+
+      client.listBooks(name, filter);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteBookTest() {
+    Empty expectedResponse = Empty.newBuilder().build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+
+    client.deleteBook(name);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    DeleteBookRequest actualRequest = (DeleteBookRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteBookExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+
+      client.deleteBook(name);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void updateBookTest() {
+    BookOneOfName name2 = DeletedBookName.of();
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    Book expectedResponse = Book.newBuilder()
+      .setName(name2.toString())
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    Book book = Book.newBuilder().build();
+
+    Book actualResponse =
+        client.updateBook(name, book);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(book, actualRequest.getBook());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void updateBookExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      Book book = Book.newBuilder().build();
+
+      client.updateBook(name, book);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void updateBookTest2() {
+    BookOneOfName name2 = DeletedBookName.of();
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    Book expectedResponse = Book.newBuilder()
+      .setName(name2.toString())
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    String optionalFoo = "optionalFoo1822578535";
+    Book book = Book.newBuilder().build();
+    FieldMask updateMask = FieldMask.newBuilder().build();
+    com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
+
+    Book actualResponse =
+        client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(optionalFoo, actualRequest.getOptionalFoo());
+    Assert.assertEquals(book, actualRequest.getBook());
+    Assert.assertEquals(updateMask, actualRequest.getUpdateMask());
+    Assert.assertEquals(physicalMask, actualRequest.getPhysicalMask());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void updateBookExceptionTest2() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      String optionalFoo = "optionalFoo1822578535";
+      Book book = Book.newBuilder().build();
+      FieldMask updateMask = FieldMask.newBuilder().build();
+      com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
+
+      client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void moveBookTest() {
+    BookOneOfName name2 = DeletedBookName.of();
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    Book expectedResponse = Book.newBuilder()
+      .setName(name2.toString())
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    BookOneOfName name = DeletedBookName.of();
+    ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
+
+    Book actualResponse =
+        client.moveBook(name, otherShelfName);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    MoveBookRequest actualRequest = (MoveBookRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, BookOneOfNames.parse(actualRequest.getName()));
+    Assert.assertEquals(otherShelfName, ShelfName.parse(actualRequest.getOtherShelfName()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void moveBookExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookOneOfName name = DeletedBookName.of();
+      ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
+
+      client.moveBook(name, otherShelfName);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void addCommentsTest() {
+    Empty expectedResponse = Empty.newBuilder().build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    List<Comment> comments = new ArrayList<>();
+
+    client.addComments(name, comments);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    AddCommentsRequest actualRequest = (AddCommentsRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(comments, actualRequest.getCommentsList());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void addCommentsExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<Comment> comments = new ArrayList<>();
+
+      client.addComments(name, comments);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBookFromArchiveTest() {
+    ArchivedBookName name2 = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    BookFromArchive expectedResponse = BookFromArchive.newBuilder()
+      .setName(name2.toString())
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ArchivedBookName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
+
+    BookFromArchive actualResponse =
+        client.getBookFromArchive(name);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetBookFromArchiveRequest actualRequest = (GetBookFromArchiveRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, ArchivedBookName.parse(actualRequest.getName()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBookFromArchiveExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ArchivedBookName name = ArchivedBookName.of("[ARCHIVE_PATH]", "[BOOK_ID]");
+
+      client.getBookFromArchive(name);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBookFromAnywhereTest() {
+    String name2 = "name2-1052831874";
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    BookFromAnywhere expectedResponse = BookFromAnywhere.newBuilder()
+      .setName(name2)
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    BookOneOfName name = DeletedBookName.of();
+    BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+
+    BookFromAnywhere actualResponse =
+        client.getBookFromAnywhere(name, altBookName);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetBookFromAnywhereRequest actualRequest = (GetBookFromAnywhereRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, BookOneOfNames.parse(actualRequest.getName()));
+    Assert.assertEquals(altBookName, BookName.parse(actualRequest.getAltBookName()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBookFromAnywhereExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookOneOfName name = DeletedBookName.of();
+      BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+
+      client.getBookFromAnywhere(name, altBookName);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBookFromAbsolutelyAnywhereTest() {
+    String name2 = "name2-1052831874";
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    BookFromAnywhere expectedResponse = BookFromAnywhere.newBuilder()
+      .setName(name2)
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    BookOneOfName name = DeletedBookName.of();
+
+    BookFromAnywhere actualResponse =
+        client.getBookFromAbsolutelyAnywhere(name);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetBookFromAbsolutelyAnywhereRequest actualRequest = (GetBookFromAbsolutelyAnywhereRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, BookOneOfNames.parse(actualRequest.getName()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBookFromAbsolutelyAnywhereExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookOneOfName name = DeletedBookName.of();
+
+      client.getBookFromAbsolutelyAnywhere(name);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void updateBookIndexTest() {
+    Empty expectedResponse = Empty.newBuilder().build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    String indexName = "indexName746962392";
+    Map<String, String> indexMap = new HashMap<>();
+
+    client.updateBookIndex(name, indexName, indexMap);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    UpdateBookIndexRequest actualRequest = (UpdateBookIndexRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(indexName, actualRequest.getIndexName());
+    Assert.assertEquals(indexMap, actualRequest.getIndexMapMap());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void updateBookIndexExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+      String indexName = "indexName746962392";
+      Map<String, String> indexMap = new HashMap<>();
+
+      client.updateBookIndex(name, indexName, indexMap);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
   }
 
   @Test
@@ -5623,6 +7657,165 @@ public class LibraryServiceClientTest {
       Assert.assertEquals(StatusCode.Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
     }
   }
+
+  @Test
+  @SuppressWarnings("all")
+  public void findRelatedBooksTest() {
+    String nextPageToken = "";
+    BookName namesElement = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+    List<BookName> names2 = Arrays.asList(namesElement);
+    FindRelatedBooksResponse expectedResponse = FindRelatedBooksResponse.newBuilder()
+      .setNextPageToken(nextPageToken)
+      .addAllNames(BookName.toStringList(names2))
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    List<String> names = new ArrayList<>();
+    List<String> shelves = new ArrayList<>();
+
+    FindRelatedBooksPagedResponse pagedListResponse = client.findRelatedBooks(names, shelves);
+
+    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
+    Assert.assertEquals(1, resources.size());
+    Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
+    List<BookName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsBookName());
+    Assert.assertEquals(1, resourceNames.size());
+    Assert.assertEquals(BookName.parse(expectedResponse.getNamesList().get(0)),
+        resourceNames.get(0));
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    FindRelatedBooksRequest actualRequest = (FindRelatedBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(names, actualRequest.getNamesList());
+    Assert.assertEquals(shelves, actualRequest.getShelvesList());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void findRelatedBooksExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      List<String> names = new ArrayList<>();
+      List<String> shelves = new ArrayList<>();
+
+      client.findRelatedBooks(names, shelves);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBigBookTest() throws Exception {
+    BookOneOfName name2 = DeletedBookName.of();
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    Book expectedResponse = Book.newBuilder()
+      .setName(name2.toString())
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("getBigBookTest")
+            .setDone(true)
+            .setResponse(Any.pack(expectedResponse))
+            .build();
+    mockLibraryService.addResponse(resultOperation);
+
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+
+    Book actualResponse =
+        client.getBigBookAsync(name).get();
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBigBookExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+
+      client.getBigBookAsync(name).get();
+      Assert.fail("No exception raised");
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(StatusCode.Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
+    }
+  }
+
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBigNothingTest() throws Exception {
+    Empty expectedResponse = Empty.newBuilder().build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("getBigNothingTest")
+            .setDone(true)
+            .setResponse(Any.pack(expectedResponse))
+            .build();
+    mockLibraryService.addResponse(resultOperation);
+
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+
+    Empty actualResponse =
+        client.getBigNothingAsync(name).get();
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBigNothingExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
+
+      client.getBigNothingAsync(name).get();
+      Assert.fail("No exception raised");
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(StatusCode.Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
+    }
+  }
+
 
 }
 ============== file: src/test/java/com/google/example/library/v1/MockLibraryService.java ==============
