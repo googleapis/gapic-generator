@@ -67,6 +67,6 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
    * pathPattern contains a '{' char.
    */
   public static boolean isFixedResourceNameConfig(String pathPattern) {
-    return !pathPattern.contains("{");
+    return !(pathPattern.contains("{") || pathPattern.contains("*"));
   }
 }
