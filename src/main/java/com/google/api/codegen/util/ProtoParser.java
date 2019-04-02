@@ -422,14 +422,12 @@ public class ProtoParser {
     return String.format("%s.%s", resource.getSymbol(), getProtoPackage(file));
   }
 
-  // TODO(andrealin): Unit test this.
   public ImmutableMap<String, String> getFieldNamePatterns(Method method) {
     // Only look two levels deep in the request object, so fields of fields of the request object.
     return ImmutableMap.copyOf(getFieldNamePatterns(method.getInputMessage(), 2));
   }
 
   private Map<String, String> getFieldNamePatterns(MessageType messageType, int depth) {
-    // TODO(andrealin): allow package names in values.
     LinkedHashMap<String, String> builder = new LinkedHashMap<>();
     for (Field field : messageType.getFields()) {
       String fieldName = field.getSimpleName();
