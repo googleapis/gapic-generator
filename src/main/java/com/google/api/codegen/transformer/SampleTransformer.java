@@ -274,6 +274,7 @@ public abstract class SampleTransformer {
         .valueSet(SampleValueSetView.of(valueSet))
         .sampleInitCode(initCodeView)
         .outputs(outputViews)
+        .hasMultipleFileOutputs(outputContext.hasMultipleFileOutputs())
         .sampleImports(sampleImportSectionView)
         .regionTag(
             regionTagFromSpec(

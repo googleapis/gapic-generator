@@ -19,9 +19,7 @@ import com.google.api.codegen.transformer.OutputTransformer;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @AutoValue
 public abstract class OutputContext {
@@ -47,7 +45,7 @@ public abstract class OutputContext {
    * <p>In Node.js, `writeFile` should be defined as `var` instead of `const` if used multiple
    * times.
    */
-  public abstract Set<TypeModel> fileOutputTypes();
+  public abstract List<TypeModel> fileOutputTypes();
 
   /** In Java, `java.util.Map` needs to be imported if there are map specs. */
   public abstract List<OutputSpec.LoopStatement> mapSpecs();
@@ -64,9 +62,16 @@ public abstract class OutputContext {
     return fileOutputTypes().contains(STRING_TYPE);
   }
 
+  public boolean hasMultipleFileOutputs() {
+    return fileOutputTypes().size() > 1;
+  }
+
   public static OutputContext create() {
     return new AutoValue_OutputContext(
-        new OutputTransformer.ScopeTable(), new ArrayList<>(), new HashSet<>(), new ArrayList<>());
+        new OutputTransformer.ScopeTable(),
+        new ArrayList<>(),
+        new ArrayList<>(),
+        new ArrayList<>());
   }
 
   public OutputContext createWithNewChildScope() {

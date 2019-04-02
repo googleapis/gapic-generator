@@ -44,6 +44,9 @@ public abstract class MethodSampleView {
 
   public abstract ImportSectionView sampleImports();
 
+  /** Whether the output has multiple write-to-file statements. */
+  public abstract boolean hasMultipleFileOutputs();
+
   public static Builder newBuilder() {
     return new AutoValue_MethodSampleView.Builder();
   }
@@ -65,6 +68,8 @@ public abstract class MethodSampleView {
     public abstract Builder sampleImports(ImportSectionView val);
 
     public abstract Builder sampleFunctionDoc(SampleFunctionDocView val);
+
+    public abstract Builder hasMultipleFileOutputs(boolean hasMultipleFileOutputs);
 
     public abstract MethodSampleView build();
   }

@@ -363,13 +363,13 @@
 @end
 
 @private processPrintView(view)
-  @if view.args.size == 0
-    console.log({@view.format});
+  @if view.formattedString.args.size == 0
+    console.log('{@view.formattedString.format}');
   @else
     @if view.format == "%s"
-      console.log({@view.args.get(0).formattedName});
+      console.log({@view.formattedString.args.get(0)});
     @else
-      console.log(`{@view.format}`);
+      console.log(`{@view.formattedString.format}`);
     @end
   @end
 @end
@@ -400,6 +400,10 @@
   @end
     {@processOutputViews(view.body)}
   }
+
+@end
+
+private processWriteFileView(view)
 
 @end
 
