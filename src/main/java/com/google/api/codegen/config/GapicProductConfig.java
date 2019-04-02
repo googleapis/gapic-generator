@@ -19,6 +19,7 @@ import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -915,6 +916,11 @@ public abstract class GapicProductConfig implements ProductConfig {
       fixedResourceNamesBuilder.put(fixedResourceNameConfig.getEntityId(), fixedResourceNameConfig);
     }
 
+    // TODO(andrealin): Remove this once all fixed resource names are removed.
+    fixedResourceNamesBuilder.putAll(
+        createFixedResourceNameConfigs(
+            diagCollector, configProto.getFixedResourceNameValuesList(), file));
+
     singleResourceNamesBuilder.putAll(singleResourceNameConfigsMap);
   }
 
@@ -974,6 +980,25 @@ public abstract class GapicProductConfig implements ProductConfig {
           StringUtils.prependIfMissing(fullyQualifiedName, protoParser.getProtoPackage(file) + ".");
       singleResourceNameConfigsMap.put(fullyQualifiedName, singleResourceNameConfig);
     }
+  }
+
+  // TODO(andrealin): Remove this once existing fixed resource names are removed.
+  private static ImmutableMap<String, FixedResourceNameConfig> createFixedResourceNameConfigs(
+      DiagCollector diagCollector,
+      Iterable<FixedResourceNameValueProto> fixedConfigProtos,
+      @Nullable ProtoFile file) {
+    ImmutableMap.Builder<String, FixedResourceNameConfig> fixedConfigBuilder =
+        ImmutableMap.builder();
+    for (FixedResourceNameValueProto fixedConfigProto : fixedConfigProtos) {
+      FixedResourceNameConfig fixedConfig =
+          FixedResourceNameConfig.createFixedResourceNameConfig(
+              diagCollector, fixedConfigProto, file);
+      if (fixedConfig == null) {
+        continue;
+      }
+      fixedConfigBuilder.put(fixedConfig.getEntityId(), fixedConfig);
+    }
+    return fixedConfigBuilder.build();
   }
 
   private static ImmutableMap<String, ResourceNameOneofConfig> createResourceNameOneofConfigs(
