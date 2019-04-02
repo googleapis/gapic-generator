@@ -423,27 +423,44 @@ public class ProtoParser {
   }
 
   public ImmutableMap<String, String> getFieldNamePatterns(Method method) {
+    ImmutableMap.Builder<String, String> resultCollector = ImmutableMap.builder();
     // Only look two levels deep in the request object, so fields of fields of the request object.
-    return ImmutableMap.copyOf(getFieldNamePatterns(method.getInputMessage(), 2));
+    int depth = 2;
+    getFieldNamePatterns(method.getInputMessage(), resultCollector, "", depth);
+    return resultCollector.build();
   }
 
-  private Map<String, String> getFieldNamePatterns(MessageType messageType, int depth) {
-    LinkedHashMap<String, String> builder = new LinkedHashMap<>();
+  /**
+   * Recursively populates the given map builder with field name patterns, up to a given depth.
+   *
+   * <p>A field name pattern entry maps a field name String, which can be a dot-separated nested
+   * field such as "shelf.name", to the String name of the resource/resourceSet/resource-reference
+   * entity that is represented by that field.
+   *
+   * <p>Note: this method does not check for circular references.
+   *
+   * @param messageType the starting messageType from which to parse fields for resource names
+   * @param resultCollector collects the resulting field name patterns
+   * @param fieldNamePrefix a nested field is prefixed by the parents' names, dot-separated
+   * @param depth number of levels deep in which to parse the messageType; must be positive int
+   */
+  private void getFieldNamePatterns(
+      MessageType messageType,
+      ImmutableMap.Builder<String, String> resultCollector,
+      String fieldNamePrefix,
+      int depth) {
+    if (depth < 1) throw new IllegalStateException("depth must be positive");
     for (Field field : messageType.getFields()) {
-      String fieldName = field.getSimpleName();
+      String fieldNameKey = fieldNamePrefix + field.getSimpleName();
 
-      if (field.getType().isMessage() && depth > 0) {
-        Map<String, String> children =
-            getFieldNamePatterns(field.getType().getMessageType(), depth - 1);
-        for (Map.Entry<String, String> child : children.entrySet()) {
-          // Dot-separate the nested fields, e.g. "shelf.name"
-          builder.put(String.format("%s.%s", fieldName, child.getKey()), child.getValue());
-        }
+      if (field.getType().isMessage() && depth > 1) {
+        getFieldNamePatterns(
+            field.getType().getMessageType(), resultCollector, fieldNameKey + ".", depth - 1);
       }
 
       String reference = getResourceReference(field);
       if (!Strings.isNullOrEmpty(reference)) {
-        builder.put(fieldName, getSimpleName(reference));
+        resultCollector.put(fieldNameKey, getSimpleName(reference));
         continue;
       }
 
@@ -453,17 +470,15 @@ public class ProtoParser {
         if (Strings.isNullOrEmpty(resourceName)) {
           resourceName = field.getParent().getSimpleName();
         }
-        builder.put(fieldName, getSimpleName(resourceName));
+        resultCollector.put(fieldNameKey, getSimpleName(resourceName));
         continue;
       }
 
       ResourceSet resourceSet = getResourceSet(field);
       if (resourceSet != null) {
-        builder.put(fieldName, getSimpleName(resourceSet.getSymbol()));
+        resultCollector.put(fieldNameKey, getSimpleName(resourceSet.getSymbol()));
       }
     }
-
-    return builder;
   }
 
   private static String getSimpleName(String resourceFullName) {
