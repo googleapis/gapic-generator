@@ -172,7 +172,7 @@
             // operation succeeded and returns no value
         @else
             $response = $operationResponse->getResult();
-            @if sample.outputs
+            @if sample.output
                 {@processResponse(sample)}
             @end
         @end
@@ -197,7 +197,7 @@
             // operation succeeded and returns no value
         @else
             $response = $newOperationResponse->getResult();
-            @if sample.outputs
+            @if sample.output
                 {@processResponse(sample)}
             @end
         @end
@@ -215,7 +215,7 @@
         {@methodCallSampleCode(apiMethod)};
 
     @end
-    @if sample.outputs
+    @if sample.output
         {@processResponse(sample)}
     @end
 @end
@@ -243,7 +243,7 @@
     $requests = [$request];
     $stream = {@methodCallSampleCode(apiMethod)};
     $response = $stream->writeAllAndReadResponse($requests);
-    @if sample.outputs
+    @if sample.output
         {@processResponse(sample)}
     @end
 @end
@@ -256,7 +256,7 @@
         $stream->write($request);
     }
     $response = $stream->readResponse();
-    @if sample.outputs
+    @if sample.output
         {@processResponse(sample)}
     @end
 @end
@@ -414,11 +414,11 @@
 @end
 
 @private processResponse(sample)
-    {@processOutputViews(sample.outputs)}
+    {@processOutputViews(sample.output)}
 @end
 
-@private processOutputViews(outputViews)
-    @join view : outputViews on BREAK
+@private processOutputViews(outputView)
+    @join view : outputView.statements on BREAK
         @switch view.kind
         @case "COMMENT"
             {@processCommentView(view)}
@@ -430,6 +430,8 @@
             {@processMapLoopView(view)}
         @case "PRINT"
             {@processPrintView(view)}
+        @case "WRITE_FILE"
+            {@processWriteFileView(view)}
         @default
             $unhandledResponseForm: {@view}
         @end
@@ -438,9 +440,9 @@
 
 @private processPrintView(view)
     @if not(view.formattedString.args.size)
-        printf("{@view.format}" . PHP_EOL);
+        printf("{@view.formattedString.format}" . PHP_EOL);
     @else
-        printf("{@view.format}" . PHP_EOL, {@commaSeparatedFields(view.args)});
+        printf("{@view.formattedString.format}" . PHP_EOL, {@commaSeparatedFields(view.formattedString.args)});
     @end
 @end
 
@@ -481,14 +483,14 @@
 @end
 
 @private processWriteFileView(view)
-    file_put_contents({@stringFormattedFileName(view.fileName)}, {@variableFields(view.contents)});
+    file_put_contents({@stringFormattedFileName(view.fileName)}, {@variableField(view.contents)});
 @end
 
 @private stringFormattedFileName(fileName)
     @if fileName.args.isEmpty
         '{@fileName.format}'
     @else
-        sprintf({@fileName.format}, {@commaSeparatedFields(fileName.args)})
+        sprintf('{@fileName.format}', {@commaSeparatedFields(fileName.args)})
     @end
 @end
 
@@ -497,7 +499,7 @@
         # FIXME(hzyi): print enums directly will just get us an int
         # Fix this by creating a mapping between enums and meaningful display names
         # until https://github.com/protocolbuffers/protobuf/pull/4534 is merged
-        {@arg.formattedName}
+        {@arg}
     @end
 @end
 
