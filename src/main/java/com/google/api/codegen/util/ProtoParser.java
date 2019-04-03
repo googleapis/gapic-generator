@@ -33,7 +33,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -181,21 +180,6 @@ public class ProtoParser {
           return resourceSet.getSymbol();
         }
       }
-
-      // If not in Resources or ResourceSets, fall back to looking in messageTypes.
-      TypeRef resourceType = field.getModel().getSymbolTable().lookupType(resourceName);
-      if (resourceType != null) {
-        // Look for the Resource or ResourceSet field in the target message.
-        MessageType messageType = resourceType.getMessageType();
-        for (Field resourceField : messageType.getFields()) {
-          String entityName = getResourceOrSetEntityName(resourceField);
-          if (!Strings.isNullOrEmpty(entityName)) {
-            return entityName;
-          }
-        }
-      }
-
-      return resourceType.getMessageType().getSimpleName();
     }
 
     return null;
@@ -234,7 +218,8 @@ public class ProtoParser {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationInfo);
   }
 
-  /* Return a Map of Resources to their containing Protofile.
+  /* Return a Map of Resources to their containing Protofile. Includes Resources
+   * defined inside MessageTypes.
    * The name map keys are package-qualified names of Resources. */
   public Map<Resource, ProtoFile> getResourceDefs(
       List<ProtoFile> protoFile, DiagCollector diagCollector) {
@@ -247,7 +232,8 @@ public class ProtoParser {
         (resource, baseNameToSet) -> resource.toBuilder().setSymbol(baseNameToSet).build());
   }
 
-  /* Return a Map of ResourceSets to their containing Protofile.
+  /* Return a Map of ResourceSets to their containing Protofile. Includes ResourceSets
+   * defined inside MessageTypes.
    * The name map keys are package-qualified names of ResourceSets. */
   public Map<ResourceSet, ProtoFile> getResourceSetDefs(
       List<ProtoFile> protoFile, DiagCollector diagCollector) {
@@ -260,7 +246,8 @@ public class ProtoParser {
         (resourceSet, baseNameToSet) -> resourceSet.toBuilder().setSymbol(baseNameToSet).build());
   }
 
-  /* Return a Map of Resource or ResourceSet elements to their containing ProtoFile. */
+  /* Return a Map of Resource or ResourceSet elements to their containing ProtoFile.
+   * Includes Resource[Sets] defined inside MessageTypes. */
   private <T> Map<T, ProtoFile> getResourceOrSetDefs(
       List<ProtoFile> protoFiles,
       DiagCollector diagCollector,
