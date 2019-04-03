@@ -286,10 +286,10 @@ func defaultCallOptions() *CallOptions {
         GetBookFromAnywhere: retry[[2]string{"default", "idempotent"}],
         GetBookFromAbsolutelyAnywhere: retry[[2]string{"default", "idempotent"}],
         UpdateBookIndex: retry[[2]string{"default", "idempotent"}],
-        StreamShelves: retry[[2]string{"default", "idempotent"}],
+        StreamShelves: retry[[2]string{"default", "non_idempotent"}],
         StreamBooks: retry[[2]string{"default", "idempotent"}],
         DiscussBook: retry[[2]string{"default", "non_idempotent"}],
-        MonologAboutBook: retry[[2]string{"default", "non_idempotent"}],
+        MonologAboutBook: retry[[2]string{"default", "idempotent"}],
         BabbleAboutBook: retry[[2]string{"default", "non_idempotent"}],
         FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
@@ -759,7 +759,6 @@ func (c *LibClient) StreamBooks(ctx context.Context, req *librarypb.StreamBooksR
 }
 
 // DiscussBook test bidi-streaming.
-// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *LibClient) DiscussBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_DiscussBookClient, error) {
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.DiscussBook[0:len(c.CallOptions.DiscussBook):len(c.CallOptions.DiscussBook)], opts...)
@@ -776,7 +775,6 @@ func (c *LibClient) DiscussBook(ctx context.Context, opts ...gax.CallOption) (li
 }
 
 // MonologAboutBook test client streaming.
-// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *LibClient) MonologAboutBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_MonologAboutBookClient, error) {
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.MonologAboutBook[0:len(c.CallOptions.MonologAboutBook):len(c.CallOptions.MonologAboutBook)], opts...)
@@ -1131,15 +1129,6 @@ func (op *GetBigBookOperation) Name() string {
     return op.lro.Name()
 }
 
-// Cancel starts asynchronous cancellation on a long-running operation.
-// The server makes a best effort to cancel the operation, but success is not guaranteed.
-// Clients can use Poll or other methods to check whether the cancellation succeeded or whether the operation
-// completed despite cancellation. On successful cancellation, the operation is not deleted;
-// instead, op.Poll returns an error with code Canceled.
-func (op *GetBigBookOperation) Cancel(ctx context.Context, opts ...gax.CallOption) error {
-    return op.lro.Cancel(ctx, opts...)
-}
-
 // GetBigNothingOperation manages a long-running operation from GetBigNothing.
 type GetBigNothingOperation struct {
     lro *longrunning.Operation
@@ -1196,13 +1185,6 @@ func (op *GetBigNothingOperation) Name() string {
     return op.lro.Name()
 }
 
-
-// Delete deletes a long-running operation.
-// This method indicates that the client is no longer interested in the operation result.
-// It does not cancel the operation.
-func (op *GetBigNothingOperation) Delete(ctx context.Context, opts ...gax.CallOption) error {
-    return op.lro.Delete(ctx, opts...)
-}
 ============== file: cloud.google.com/go/library/apiv1/library_client_example_test.go ==============
 // Copyright 2019 Google LLC
 //
@@ -3431,7 +3413,10 @@ func TestLibraryServiceStreamShelves(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var request *librarypb.StreamShelvesRequest = &librarypb.StreamShelvesRequest{}
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.StreamShelvesRequest{
+        Name: formattedName,
+    }
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -3461,7 +3446,10 @@ func TestLibraryServiceStreamShelvesError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var request *librarypb.StreamShelvesRequest = &librarypb.StreamShelvesRequest{}
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.StreamShelvesRequest{
+        Name: formattedName,
+    }
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -3567,9 +3555,9 @@ func TestLibraryServiceDiscussBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var name string = "name3373707"
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DiscussBookRequest{
-        Name: name,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -3606,9 +3594,9 @@ func TestLibraryServiceDiscussBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var name string = "name3373707"
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DiscussBookRequest{
-        Name: name,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -3648,9 +3636,9 @@ func TestLibraryServiceMonologAboutBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var name string = "name3373707"
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DiscussBookRequest{
-        Name: name,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -3684,9 +3672,9 @@ func TestLibraryServiceMonologAboutBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var name string = "name3373707"
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DiscussBookRequest{
-        Name: name,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)

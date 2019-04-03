@@ -41,8 +41,6 @@ public class LongRunningTransformer {
         .isEmptyOperation(lroConfig.getReturnType().isEmptyType())
         .isEmptyMetadata(lroConfig.getMetadataType().isEmptyType())
         .metadataTypeName(metadataTypeName)
-        .implementsDelete(lroConfig.implementsDelete())
-        .implementsCancel(lroConfig.implementsCancel())
         .initialPollDelay(lroConfig.getInitialPollDelay().toMillis())
         .pollDelayMultiplier(lroConfig.getPollDelayMultiplier())
         .maxPollDelay(lroConfig.getMaxPollDelay().toMillis())

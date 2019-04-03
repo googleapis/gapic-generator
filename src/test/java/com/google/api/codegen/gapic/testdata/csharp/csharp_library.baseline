@@ -224,60 +224,60 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for GetShelfAsync</summary>
         public async Task GetShelfAsync2()
         {
-            // Snippet: GetShelfAsync(string,SomeMessage,CallSettings)
-            // Additional: GetShelfAsync(string,SomeMessage,CancellationToken)
+            // Snippet: GetShelfAsync(ShelfName,SomeMessage,CallSettings)
+            // Additional: GetShelfAsync(ShelfName,SomeMessage,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             // Make the request
-            Shelf response = await libraryServiceClient.GetShelfAsync(formattedName, message);
+            Shelf response = await libraryServiceClient.GetShelfAsync(name, message);
             // End snippet
         }
 
         /// <summary>Snippet for GetShelf</summary>
         public void GetShelf2()
         {
-            // Snippet: GetShelf(string,SomeMessage,CallSettings)
+            // Snippet: GetShelf(ShelfName,SomeMessage,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             // Make the request
-            Shelf response = libraryServiceClient.GetShelf(formattedName, message);
+            Shelf response = libraryServiceClient.GetShelf(name, message);
             // End snippet
         }
 
         /// <summary>Snippet for GetShelfAsync</summary>
         public async Task GetShelfAsync3()
         {
-            // Snippet: GetShelfAsync(string,SomeMessage,StringBuilder,CallSettings)
-            // Additional: GetShelfAsync(string,SomeMessage,StringBuilder,CancellationToken)
+            // Snippet: GetShelfAsync(ShelfName,SomeMessage,StringBuilder,CallSettings)
+            // Additional: GetShelfAsync(ShelfName,SomeMessage,StringBuilder,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             StringBuilder stringBuilder = new StringBuilder();
             // Make the request
-            Shelf response = await libraryServiceClient.GetShelfAsync(formattedName, message, stringBuilder);
+            Shelf response = await libraryServiceClient.GetShelfAsync(name, message, stringBuilder);
             // End snippet
         }
 
         /// <summary>Snippet for GetShelf</summary>
         public void GetShelf3()
         {
-            // Snippet: GetShelf(string,SomeMessage,StringBuilder,CallSettings)
+            // Snippet: GetShelf(ShelfName,SomeMessage,StringBuilder,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             StringBuilder stringBuilder = new StringBuilder();
             // Make the request
-            Shelf response = libraryServiceClient.GetShelf(formattedName, message, stringBuilder);
+            Shelf response = libraryServiceClient.GetShelf(name, message, stringBuilder);
             // End snippet
         }
 
@@ -615,29 +615,29 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for CreateBookAsync</summary>
         public async Task CreateBookAsync()
         {
-            // Snippet: CreateBookAsync(string,Book,CallSettings)
-            // Additional: CreateBookAsync(string,Book,CancellationToken)
+            // Snippet: CreateBookAsync(ShelfName,Book,CallSettings)
+            // Additional: CreateBookAsync(ShelfName,Book,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             Book book = new Book();
             // Make the request
-            Book response = await libraryServiceClient.CreateBookAsync(formattedName, book);
+            Book response = await libraryServiceClient.CreateBookAsync(name, book);
             // End snippet
         }
 
         /// <summary>Snippet for CreateBook</summary>
         public void CreateBook()
         {
-            // Snippet: CreateBook(string,Book,CallSettings)
+            // Snippet: CreateBook(ShelfName,Book,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             Book book = new Book();
             // Make the request
-            Book response = libraryServiceClient.CreateBook(formattedName, book);
+            Book response = libraryServiceClient.CreateBook(name, book);
             // End snippet
         }
 
@@ -651,7 +651,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             CreateBookRequest request = new CreateBookRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Book = new Book(),
             };
             // Make the request
@@ -668,7 +668,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             CreateBookRequest request = new CreateBookRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Book = new Book(),
             };
             // Make the request
@@ -1850,7 +1850,10 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument
-            StreamShelvesRequest request = new StreamShelvesRequest();
+            StreamShelvesRequest request = new StreamShelvesRequest
+            {
+                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+            };
             // Make the request, returning a streaming response
             LibraryServiceClient.StreamShelvesStream streamingResponse = libraryServiceClient.StreamShelves(request);
 
@@ -1921,7 +1924,7 @@ namespace Google.Example.Library.V1.Snippets
                 // Initialize a request
                 DiscussBookRequest request = new DiscussBookRequest
                 {
-                    Name = "",
+                    Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
                 };
                 // Stream a request to the server
                 await duplexStream.WriteAsync(request);
@@ -3036,7 +3039,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Message = new SomeMessage(),
             };
             Shelf expectedResponse = new Shelf
@@ -3048,9 +3051,9 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetShelf(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
-            Shelf response = client.GetShelf(formattedName, message);
+            Shelf response = client.GetShelf(name, message);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3065,7 +3068,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Message = new SomeMessage(),
             };
             Shelf expectedResponse = new Shelf
@@ -3077,9 +3080,9 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetShelfAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Shelf>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
-            Shelf response = await client.GetShelfAsync(formattedName, message);
+            Shelf response = await client.GetShelfAsync(name, message);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3094,7 +3097,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Message = new SomeMessage(),
                 StringBuilder = new StringBuilder(),
             };
@@ -3107,10 +3110,10 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetShelf(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             StringBuilder stringBuilder = new StringBuilder();
-            Shelf response = client.GetShelf(formattedName, message, stringBuilder);
+            Shelf response = client.GetShelf(name, message, stringBuilder);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3125,7 +3128,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Message = new SomeMessage(),
                 StringBuilder = new StringBuilder(),
             };
@@ -3138,10 +3141,10 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetShelfAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Shelf>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             StringBuilder stringBuilder = new StringBuilder();
-            Shelf response = await client.GetShelfAsync(formattedName, message, stringBuilder);
+            Shelf response = await client.GetShelfAsync(name, message, stringBuilder);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3404,7 +3407,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             CreateBookRequest expectedRequest = new CreateBookRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
@@ -3417,9 +3420,9 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.CreateBook(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             Book book = new Book();
-            Book response = client.CreateBook(formattedName, book);
+            Book response = client.CreateBook(name, book);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3434,7 +3437,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             CreateBookRequest expectedRequest = new CreateBookRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
@@ -3447,9 +3450,9 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.CreateBookAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new ShelfName("[SHELF_ID]").ToString();
+            ShelfName name = new ShelfName("[SHELF_ID]");
             Book book = new Book();
-            Book response = await client.CreateBookAsync(formattedName, book);
+            Book response = await client.CreateBookAsync(name, book);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -3464,7 +3467,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             CreateBookRequest request = new CreateBookRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
@@ -3492,7 +3495,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             CreateBookRequest request = new CreateBookRequest
             {
-                Name = new ShelfName("[SHELF_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
@@ -6665,12 +6668,12 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<Shelf> GetShelfAsync(
-            string name,
+            ShelfName name,
             SomeMessage message,
             gaxgrpc::CallSettings callSettings = null) => GetShelfAsync(
                 new GetShelfRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Message = message, // Optional
                 },
                 callSettings);
@@ -6691,7 +6694,7 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<Shelf> GetShelfAsync(
-            string name,
+            ShelfName name,
             SomeMessage message,
             st::CancellationToken cancellationToken) => GetShelfAsync(
                 name,
@@ -6714,12 +6717,12 @@ namespace Google.Example.Library.V1
         /// The RPC response.
         /// </returns>
         public virtual Shelf GetShelf(
-            string name,
+            ShelfName name,
             SomeMessage message,
             gaxgrpc::CallSettings callSettings = null) => GetShelf(
                 new GetShelfRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Message = message, // Optional
                 },
                 callSettings);
@@ -6743,13 +6746,13 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<Shelf> GetShelfAsync(
-            string name,
+            ShelfName name,
             SomeMessage message,
             StringBuilder stringBuilder,
             gaxgrpc::CallSettings callSettings = null) => GetShelfAsync(
                 new GetShelfRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Message = message, // Optional
                     StringBuilder = stringBuilder, // Optional
                 },
@@ -6774,7 +6777,7 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<Shelf> GetShelfAsync(
-            string name,
+            ShelfName name,
             SomeMessage message,
             StringBuilder stringBuilder,
             st::CancellationToken cancellationToken) => GetShelfAsync(
@@ -6802,13 +6805,13 @@ namespace Google.Example.Library.V1
         /// The RPC response.
         /// </returns>
         public virtual Shelf GetShelf(
-            string name,
+            ShelfName name,
             SomeMessage message,
             StringBuilder stringBuilder,
             gaxgrpc::CallSettings callSettings = null) => GetShelf(
                 new GetShelfRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Message = message, // Optional
                     StringBuilder = stringBuilder, // Optional
                 },
@@ -7233,12 +7236,12 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<Book> CreateBookAsync(
-            string name,
+            ShelfName name,
             Book book,
             gaxgrpc::CallSettings callSettings = null) => CreateBookAsync(
                 new CreateBookRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Book = gax::GaxPreconditions.CheckNotNull(book, nameof(book)),
                 },
                 callSettings);
@@ -7259,7 +7262,7 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<Book> CreateBookAsync(
-            string name,
+            ShelfName name,
             Book book,
             st::CancellationToken cancellationToken) => CreateBookAsync(
                 name,
@@ -7282,12 +7285,12 @@ namespace Google.Example.Library.V1
         /// The RPC response.
         /// </returns>
         public virtual Book CreateBook(
-            string name,
+            ShelfName name,
             Book book,
             gaxgrpc::CallSettings callSettings = null) => CreateBook(
                 new CreateBookRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Book = gax::GaxPreconditions.CheckNotNull(book, nameof(book)),
                 },
                 callSettings);
@@ -9026,6 +9029,28 @@ namespace Google.Example.Library.V1
         /// Test server streaming
         /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
         /// </summary>
+        /// <param name="name">
+        /// The name of the shelf to stream.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The server stream.
+        /// </returns>
+        public virtual StreamShelvesStream StreamShelves(
+            string name,
+            gaxgrpc::CallSettings callSettings = null) => StreamShelves(
+                new StreamShelvesRequest
+                {
+                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                },
+                callSettings);
+
+        /// <summary>
+        /// Test server streaming
+        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+        /// </summary>
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.
         /// </param>
@@ -9100,7 +9125,6 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Test bidi-streaming.
-        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
         /// </summary>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -12245,7 +12269,6 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Test bidi-streaming.
-        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
         /// </summary>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -13793,6 +13816,7 @@ namespace Google.Example.Library.V1
 // FIXME: import everything this sample needs
 class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithResponseHandling
 {
+    // [START sample_core]
    /// <summary>
    /// Test response handling for methods that return empty
    /// </summary>
@@ -13805,6 +13829,7 @@ class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithResponseHandling
            libraryServiceClient.DeleteShelfAsync(name);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -13837,6 +13862,7 @@ class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithResponseHandling
 // FIXME: import everything this sample needs
 class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithoutResponseHandling
 {
+    // [START sample_core]
    /// <summary>
    /// Test default response handling is turned off for methods that return empty
    /// </summary>
@@ -13849,6 +13875,7 @@ class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithoutResponseHandling
            libraryServiceClient.DeleteShelfAsync(name);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -13881,6 +13908,7 @@ class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithoutResponseHandling
 // FIXME: import everything this sample needs
 class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithResponseHandling
 {
+    // [START sample_core]
    /// <summary>
    /// Test response handling for methods that return empty
    /// </summary>
@@ -13896,6 +13924,7 @@ class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithResponseHandling
            libraryServiceClient.DeleteShelfAsync(request);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -13928,6 +13957,7 @@ class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithResponseHandling
 // FIXME: import everything this sample needs
 class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithoutResponseHandling
 {
+    // [START sample_core]
    /// <summary>
    /// Test default response handling is turned off for methods that return empty
    /// </summary>
@@ -13943,6 +13973,7 @@ class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithoutResponseHandling
            libraryServiceClient.DeleteShelfAsync(request);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -13975,6 +14006,7 @@ class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithoutResponseHandling
 // FIXME: import everything this sample needs
 class DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling
 {
+    // [START sample_core]
    /// <summary>
    /// Test response handling for methods that return empty
    /// </summary>
@@ -13987,6 +14019,7 @@ class DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling
            libraryServiceClient.DeleteShelf(name);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14019,6 +14052,7 @@ class DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling
 // FIXME: import everything this sample needs
 class DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling
 {
+    // [START sample_core]
    /// <summary>
    /// Test default response handling is turned off for methods that return empty
    /// </summary>
@@ -14031,6 +14065,7 @@ class DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling
            libraryServiceClient.DeleteShelf(name);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14063,6 +14098,7 @@ class DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling
 // FIXME: import everything this sample needs
 class DeleteShelfRequestEmptyResponseTypeWithResponseHandling
 {
+    // [START sample_core]
    /// <summary>
    /// Test response handling for methods that return empty
    /// </summary>
@@ -14078,6 +14114,7 @@ class DeleteShelfRequestEmptyResponseTypeWithResponseHandling
            libraryServiceClient.DeleteShelf(request);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14110,6 +14147,7 @@ class DeleteShelfRequestEmptyResponseTypeWithResponseHandling
 // FIXME: import everything this sample needs
 class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling
 {
+    // [START sample_core]
    /// <summary>
    /// Test default response handling is turned off for methods that return empty
    /// </summary>
@@ -14125,6 +14163,7 @@ class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling
            libraryServiceClient.DeleteShelf(request);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14157,6 +14196,7 @@ class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling
 // FIXME: import everything this sample needs
 class FindRelatedBooksAsyncFlattenedAsyncPagedAllOdyssey
 {
+    // [START sample_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -14180,6 +14220,7 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedAllOdyssey
                // FIXME: inspect the results
            }
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14212,6 +14253,7 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedAllOdyssey
 // FIXME: import everything this sample needs
 class FindRelatedBooksAsyncFlattenedAsyncPagedOdyssey
 {
+    // [START sample_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -14238,6 +14280,7 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedOdyssey
                }
            }
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14270,6 +14313,7 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedOdyssey
 // FIXME: import everything this sample needs
 class FindRelatedBooksAsyncFlattenedAsyncPagedPageSizeOdyssey
 {
+    // [START sample_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -14297,6 +14341,7 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedPageSizeOdyssey
            // Store the pageToken, for when the next page is required.
            string nextPageToken = singlePage.NextPageToken;
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14329,6 +14374,7 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedPageSizeOdyssey
 // FIXME: import everything this sample needs
 class FindRelatedBooksAsyncRequestAsyncPagedAllOdyssey
 {
+    // [START sample_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -14353,6 +14399,7 @@ class FindRelatedBooksAsyncRequestAsyncPagedAllOdyssey
                // FIXME: inspect the results
            }
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14385,6 +14432,7 @@ class FindRelatedBooksAsyncRequestAsyncPagedAllOdyssey
 // FIXME: import everything this sample needs
 class FindRelatedBooksAsyncRequestAsyncPagedOdyssey
 {
+    // [START sample_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -14412,6 +14460,7 @@ class FindRelatedBooksAsyncRequestAsyncPagedOdyssey
                }
            }
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14444,6 +14493,7 @@ class FindRelatedBooksAsyncRequestAsyncPagedOdyssey
 // FIXME: import everything this sample needs
 class FindRelatedBooksAsyncRequestAsyncPagedPageSizeOdyssey
 {
+    // [START sample_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -14472,6 +14522,7 @@ class FindRelatedBooksAsyncRequestAsyncPagedPageSizeOdyssey
            // Store the pageToken, for when the next page is required.
            string nextPageToken = singlePage.NextPageToken;
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14504,6 +14555,7 @@ class FindRelatedBooksAsyncRequestAsyncPagedPageSizeOdyssey
 // FIXME: import everything this sample needs
 class FindRelatedBooksFlattenedPagedAllOdyssey
 {
+    // [START sample_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -14527,6 +14579,7 @@ class FindRelatedBooksFlattenedPagedAllOdyssey
                // FIXME: inspect the results
            }
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14559,6 +14612,7 @@ class FindRelatedBooksFlattenedPagedAllOdyssey
 // FIXME: import everything this sample needs
 class FindRelatedBooksFlattenedPagedOdyssey
 {
+    // [START sample_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -14586,6 +14640,7 @@ class FindRelatedBooksFlattenedPagedOdyssey
            }
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14618,6 +14673,7 @@ class FindRelatedBooksFlattenedPagedOdyssey
 // FIXME: import everything this sample needs
 class FindRelatedBooksFlattenedPagedPageSizeOdyssey
 {
+    // [START sample_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -14645,6 +14701,7 @@ class FindRelatedBooksFlattenedPagedPageSizeOdyssey
            // Store the pageToken, for when the next page is required.
            string nextPageToken = singlePage.NextPageToken;
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14677,6 +14734,7 @@ class FindRelatedBooksFlattenedPagedPageSizeOdyssey
 // FIXME: import everything this sample needs
 class FindRelatedBooksRequestPagedAllOdyssey
 {
+    // [START sample_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -14701,6 +14759,7 @@ class FindRelatedBooksRequestPagedAllOdyssey
                // FIXME: inspect the results
            }
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14733,6 +14792,7 @@ class FindRelatedBooksRequestPagedAllOdyssey
 // FIXME: import everything this sample needs
 class FindRelatedBooksRequestPagedOdyssey
 {
+    // [START sample_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -14761,6 +14821,7 @@ class FindRelatedBooksRequestPagedOdyssey
            }
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14793,6 +14854,7 @@ class FindRelatedBooksRequestPagedOdyssey
 // FIXME: import everything this sample needs
 class FindRelatedBooksRequestPagedPageSizeOdyssey
 {
+    // [START sample_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -14821,6 +14883,7 @@ class FindRelatedBooksRequestPagedPageSizeOdyssey
            // Store the pageToken, for when the next page is required.
            string nextPageToken = singlePage.NextPageToken;
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14853,6 +14916,7 @@ class FindRelatedBooksRequestPagedPageSizeOdyssey
 // FIXME: import everything this sample needs
 class GetBookAsyncFlattenedAsyncTestOnSuccessMap
 {
+    // [START sample_core]
    public static void SampleGetBook()
    {
        public static async Task SampleGetBookAsync()
@@ -14862,6 +14926,7 @@ class GetBookAsyncFlattenedAsyncTestOnSuccessMap
            stt::Task<Book> response = libraryServiceClient.GetBookAsync(name);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14894,6 +14959,7 @@ class GetBookAsyncFlattenedAsyncTestOnSuccessMap
 // FIXME: import everything this sample needs
 class GetBookAsyncRequestAsyncTestOnSuccessMap
 {
+    // [START sample_core]
    public static void SampleGetBook()
    {
        public static async Task SampleGetBookAsync()
@@ -14906,6 +14972,7 @@ class GetBookAsyncRequestAsyncTestOnSuccessMap
            stt::Task<Book> response = libraryServiceClient.GetBookAsync(request);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14938,6 +15005,7 @@ class GetBookAsyncRequestAsyncTestOnSuccessMap
 // FIXME: import everything this sample needs
 class GetBookFlattenedTestOnSuccessMap
 {
+    // [START sample_core]
    public static void SampleGetBook()
    {
        public static void SampleGetBook()
@@ -14947,6 +15015,7 @@ class GetBookFlattenedTestOnSuccessMap
            Book response = libraryServiceClient.GetBook(name);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -14979,6 +15048,7 @@ class GetBookFlattenedTestOnSuccessMap
 // FIXME: import everything this sample needs
 class GetBookRequestTestOnSuccessMap
 {
+    // [START sample_core]
    public static void SampleGetBook()
    {
        public static void SampleGetBook()
@@ -14991,6 +15061,7 @@ class GetBookRequestTestOnSuccessMap
            Book response = libraryServiceClient.GetBook(request);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
@@ -15023,6 +15094,7 @@ class GetBookRequestTestOnSuccessMap
 // FIXME: import everything this sample needs
 class PublishSeriesAsyncFlattenedAsyncPiVersion
 {
+    // [START canonical_core]
    /// <summary>
    /// Testing &lt;@calling forms&gt;
    /// </summary>
@@ -15048,6 +15120,7 @@ class PublishSeriesAsyncFlattenedAsyncPiVersion
            stt::Task<PublishSeriesResponse> response = libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid);
            // FIXME: inspect the results
        }
+       // [END canonical_core]
    }
 
    // [END canonical]
@@ -15080,6 +15153,7 @@ class PublishSeriesAsyncFlattenedAsyncPiVersion
 // FIXME: import everything this sample needs
 class PublishSeriesAsyncFlattenedAsyncSecondEdition
 {
+    // [START canonical_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -15095,6 +15169,7 @@ class PublishSeriesAsyncFlattenedAsyncSecondEdition
            stt::Task<PublishSeriesResponse> response = libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid);
            // FIXME: inspect the results
        }
+       // [END canonical_core]
    }
 
    // [END canonical]
@@ -15127,6 +15202,7 @@ class PublishSeriesAsyncFlattenedAsyncSecondEdition
 // FIXME: import everything this sample needs
 class PublishSeriesAsyncRequestAsyncPiVersion
 {
+    // [START canonical_core]
    /// <summary>
    /// Testing &lt;@calling forms&gt;
    /// </summary>
@@ -15155,6 +15231,7 @@ class PublishSeriesAsyncRequestAsyncPiVersion
            stt::Task<PublishSeriesResponse> response = libraryServiceClient.PublishSeriesAsync(request);
            // FIXME: inspect the results
        }
+       // [END canonical_core]
    }
 
    // [END canonical]
@@ -15187,6 +15264,7 @@ class PublishSeriesAsyncRequestAsyncPiVersion
 // FIXME: import everything this sample needs
 class PublishSeriesAsyncRequestAsyncSecondEdition
 {
+    // [START canonical_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -15205,6 +15283,7 @@ class PublishSeriesAsyncRequestAsyncSecondEdition
            stt::Task<PublishSeriesResponse> response = libraryServiceClient.PublishSeriesAsync(request);
            // FIXME: inspect the results
        }
+       // [END canonical_core]
    }
 
    // [END canonical]
@@ -15237,6 +15316,7 @@ class PublishSeriesAsyncRequestAsyncSecondEdition
 // FIXME: import everything this sample needs
 class PublishSeriesFlattenedPiVersion
 {
+    // [START canonical_core]
    /// <summary>
    /// Testing &lt;@calling forms&gt;
    /// </summary>
@@ -15262,6 +15342,7 @@ class PublishSeriesFlattenedPiVersion
            PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid);
            // FIXME: inspect the results
        }
+       // [END canonical_core]
    }
 
    // [END canonical]
@@ -15294,6 +15375,7 @@ class PublishSeriesFlattenedPiVersion
 // FIXME: import everything this sample needs
 class PublishSeriesFlattenedSecondEdition
 {
+    // [START canonical_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -15309,6 +15391,7 @@ class PublishSeriesFlattenedSecondEdition
            PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid);
            // FIXME: inspect the results
        }
+       // [END canonical_core]
    }
 
    // [END canonical]
@@ -15341,6 +15424,7 @@ class PublishSeriesFlattenedSecondEdition
 // FIXME: import everything this sample needs
 class PublishSeriesRequestPiVersion
 {
+    // [START canonical_core]
    /// <summary>
    /// Testing &lt;@calling forms&gt;
    /// </summary>
@@ -15369,6 +15453,7 @@ class PublishSeriesRequestPiVersion
            PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
            // FIXME: inspect the results
        }
+       // [END canonical_core]
    }
 
    // [END canonical]
@@ -15401,6 +15486,7 @@ class PublishSeriesRequestPiVersion
 // FIXME: import everything this sample needs
 class PublishSeriesRequestSecondEdition
 {
+    // [START canonical_core]
    /// <summary>
    /// Testing calling forms
    /// </summary>
@@ -15419,6 +15505,7 @@ class PublishSeriesRequestSecondEdition
            PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
            // FIXME: inspect the results
        }
+       // [END canonical_core]
    }
 
    // [END canonical]
@@ -15451,6 +15538,7 @@ class PublishSeriesRequestSecondEdition
 // FIXME: import everything this sample needs
 class PublishSeriesRequestTestRequestObjectFieldComments
 {
+    // [START sample_core]
    /// <summary>
    /// Test request object field comments
    /// </summary>
@@ -15477,6 +15565,7 @@ class PublishSeriesRequestTestRequestObjectFieldComments
            PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
            // FIXME: inspect the results
        }
+       // [END sample_core]
    }
 
    // [END sample]
