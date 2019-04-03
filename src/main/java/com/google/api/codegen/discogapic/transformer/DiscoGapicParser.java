@@ -161,6 +161,6 @@ public class DiscoGapicParser {
 
   /** Returns the name for a ResourceName for the resource of the given method. */
   public static Name getResourceNameName(ResourceNameConfig resourceNameConfig) {
-    return Name.anyCamelOrUnderscore(resourceNameConfig.getEntityName()).join("name");
+    return Name.anyCamel(resourceNameConfig.getEntityName()).join("name");
   }
 }
