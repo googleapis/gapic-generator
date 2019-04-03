@@ -82,7 +82,7 @@ public class StaticLangApiMethodTransformer {
     return generatePagedFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
   }
 
-  // Used by: CSharp
+  // Used by: CSharp (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generatePagedFlattenedMethod(
       MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
     SurfaceNamer namer = context.getNamer();
@@ -147,7 +147,7 @@ public class StaticLangApiMethodTransformer {
     return generatePagedRequestObjectMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
   }
 
-  // Used by: CSharp
+  // Used by: CSharp (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generatePagedRequestObjectMethod(
       MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
     MethodModel method = context.getMethodModel();
@@ -300,7 +300,7 @@ public class StaticLangApiMethodTransformer {
     return generateFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
   }
 
-  // used by: csharp
+  // Used by: CSharp (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generateFlattenedMethod(
       MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
     MethodModel method = context.getMethodModel();
@@ -324,10 +324,12 @@ public class StaticLangApiMethodTransformer {
     return methodViewBuilder.type(ClientMethodType.FlattenedMethod).build();
   }
 
+  // Used by: Java
   public StaticLangApiMethodView generateRequestObjectMethod(MethodContext context) {
     return generateRequestObjectMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
   }
 
+  // Used by: C# (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generateRequestObjectMethod(
       MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
     MethodModel method = context.getMethodModel();
@@ -510,7 +512,7 @@ public class StaticLangApiMethodTransformer {
         false);
   }
 
-  // Used by CSharp.
+  // Used by CSharp (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generateAsyncOperationFlattenedMethod(
       MethodContext context,
       List<ParamWithSimpleDoc> additionalParams,
@@ -548,7 +550,7 @@ public class StaticLangApiMethodTransformer {
         context, Collections.<ParamWithSimpleDoc>emptyList(), false);
   }
 
-  // Used by: CSharp
+  // Used by: CSharp (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generateAsyncOperationRequestObjectMethod(
       MethodContext context,
       List<ParamWithSimpleDoc> additionalParams,

@@ -65,5 +65,9 @@ public interface MethodContext {
 
   MethodContext withResourceNamesInSamplesOnly();
 
+  /**
+   * Creates a new MethodContext with given callingForms, and other fields same as this
+   * MethodContext.
+   */
   MethodContext withCallingForms(List<CallingForm> callingForms);
 }
