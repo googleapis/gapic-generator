@@ -18,6 +18,7 @@ import com.google.api.Resource;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionLanguageOverridesProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.util.Name;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
@@ -42,7 +43,11 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       CollectionConfigProto collectionConfigProto,
       @Nullable ProtoFile file,
       TargetLanguage language) {
+
+    SingleResourceNameConfig.Builder builder = newBuilder();
     String namePattern = collectionConfigProto.getNamePattern();
+    String entityId = collectionConfigProto.getEntityName();
+
     PathTemplate nameTemplate;
     try {
       nameTemplate = PathTemplate.create(namePattern);
@@ -50,25 +55,15 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
       return null;
     }
-    String entityId = collectionConfigProto.getEntityName();
-    String entityName = entityId;
-    String commonResourceName = null;
-    if (language != null) {
-      String languageStr = language.toString().toLowerCase();
-      for (CollectionLanguageOverridesProto override :
-          collectionConfigProto.getLanguageOverridesList()) {
-        if (languageStr.equals(override.getLanguage())) {
-          if (!Strings.isNullOrEmpty(override.getEntityName())) {
-            entityName = override.getEntityName();
-          }
-          if (!Strings.isNullOrEmpty(override.getCommonResourceName())) {
-            commonResourceName = override.getCommonResourceName();
-          }
-        }
-      }
-    }
-    return new AutoValue_SingleResourceNameConfig(
-        namePattern, nameTemplate, entityId, entityName, commonResourceName, file);
+
+    builder.setNamePattern(namePattern);
+    builder.setNameTemplate(nameTemplate);
+    builder.setEntityId(entityId);
+    builder.setEntityName(toLowerUnderscore(entityId));
+    builder.setAssignedProtoFile(file);
+    builder.withLanguageOverrides(collectionConfigProto, language);
+
+    return builder.build();
   }
 
   /**
@@ -85,8 +80,22 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       return null;
     }
 
-    return new AutoValue_SingleResourceNameConfig(
-        pathTemplate, nameTemplate, resource.getSymbol(), resource.getSymbol(), null, file);
+    return newBuilder()
+        .setNamePattern(pathTemplate)
+        .setNameTemplate(nameTemplate)
+        .setAssignedProtoFile(file)
+        .setEntityId(resource.getSymbol())
+        .setEntityName(toLowerUnderscore(resource.getSymbol()))
+        .setCommonResourceName(null)
+        .build();
+  }
+
+  private static String toLowerUnderscore(String original) {
+    if (original.contains("_")) {
+      return original;
+    } else {
+      return Name.anyCamel(original).toLowerUnderscore();
+    }
   }
 
   /** Returns the name pattern for the resource name config. */
@@ -99,7 +108,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   @Override
   public abstract String getEntityId();
 
-  /** Returns the name used as a basis for generating methods. */
+  /** Returns the name used as a basis for generating methods. Will be in lower-underscore */
   @Override
   public abstract String getEntityName();
 
@@ -114,5 +123,45 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   @Override
   public ResourceNameType getResourceNameType() {
     return ResourceNameType.SINGLE;
+  }
+
+  public static SingleResourceNameConfig.Builder newBuilder() {
+    return new AutoValue_SingleResourceNameConfig.Builder();
+  }
+
+  public abstract Builder toBuilder();
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder setNamePattern(String val);
+
+    public abstract Builder setNameTemplate(PathTemplate val);
+
+    public abstract Builder setEntityId(String val);
+
+    public abstract Builder setEntityName(String val);
+
+    public abstract Builder setCommonResourceName(String val);
+
+    public abstract Builder setAssignedProtoFile(ProtoFile val);
+
+    public Builder withLanguageOverrides(
+        CollectionConfigProto collectionConfigProto, TargetLanguage language) {
+      String languageStr = language.toString().toLowerCase();
+      for (CollectionLanguageOverridesProto override :
+          collectionConfigProto.getLanguageOverridesList()) {
+        if (languageStr.equals(override.getLanguage())) {
+          if (!Strings.isNullOrEmpty(override.getEntityName())) {
+            this.setEntityName(toLowerUnderscore(override.getEntityName()));
+          }
+          if (!Strings.isNullOrEmpty(override.getCommonResourceName())) {
+            this.setCommonResourceName(override.getCommonResourceName());
+          }
+        }
+      }
+      return this;
+    }
+
+    public abstract SingleResourceNameConfig build();
   }
 }

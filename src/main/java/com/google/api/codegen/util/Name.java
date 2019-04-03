@@ -90,6 +90,28 @@ public class Name {
   }
 
   /**
+   * Creates a Name from a sequence of underscore-separated OR camelCased strings..
+   *
+   * @throws IllegalArgumentException if any of the strings contain any characters that are not
+   *     lower case or underscores.
+   */
+  public static Name anyCamelOrUnderscore(String... pieces) {
+    boolean isCamel = false;
+    for (String piece : pieces) {
+      if (isCamel(piece, CheckCase.NO_CHECK)) {
+        isCamel = true;
+        break;
+      }
+    }
+
+    if (isCamel) {
+      return anyCamel(pieces);
+    } else {
+      return from(pieces);
+    }
+  }
+
+  /**
    * Creates a Name from a sequence of camel strings.
    *
    * @throws IllegalArgumentException if any of the strings do not follow the camel format.

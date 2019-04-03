@@ -86,10 +86,7 @@ public class ResourceNameMessageConfigsTest {
           protoFile,
           Resource.newBuilder().setSymbol("Book").setPattern(PROTO_BOOK_PATH).build(),
           protoFile,
-          Resource.newBuilder()
-              .setSymbol("archived_book")
-              .setPattern("archives/{archive}/books/{book}")
-              .build(),
+          Resource.newBuilder().setSymbol("archived_book").setPattern(ARCHIVED_BOOK_PATH).build(),
           protoFile);
 
   private static final Map<ResourceSet, ProtoFile> allResourceSetDefs = ImmutableMap.of();
@@ -285,7 +282,8 @@ public class ResourceNameMessageConfigsTest {
 
     // Both Protofile and GAPIC config have definitions for archived_book.
     assertThat(diagCollector.getDiags().get(0).getMessage())
-        .contains("archived_book from protofile clashes with a Resource");
+        .contains(
+            "Overriding Resource[Set] entity archived_book from protofile with a Resource[Set] of the same name from the GAPIC config.");
     assertThat(
             ((SingleResourceNameConfig) resourceNameConfigs.get("archived_book")).getNamePattern())
         .isEqualTo(ARCHIVED_BOOK_PATH);
@@ -400,7 +398,7 @@ public class ResourceNameMessageConfigsTest {
     assertThat(warningDiags).isNotEmpty();
     assertThat(warningDiags.get(0).getMessage())
         .contains(
-            "Resource[Set] entity archived_book from protofile clashes with a Resource[Set] of the same name from the GAPIC config. Using the GAPIC config entity.");
+            "Overriding Resource[Set] entity archived_book from protofile with a Resource[Set] of the same name from the GAPIC config.");
 
     assertThat(flatteningConfigs).isNotNull();
     assertThat(flatteningConfigs.size()).isEqualTo(3);

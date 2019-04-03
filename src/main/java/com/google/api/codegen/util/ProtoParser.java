@@ -166,18 +166,6 @@ public class ProtoParser {
     String resourceName = getResourceReference(field);
     if (!Strings.isNullOrEmpty(resourceName)) {
 
-      TypeRef resourceType = field.getModel().getSymbolTable().lookupType(resourceName);
-      if (resourceType != null) {
-        // Look for the Resource or ResourceSet field in the target message.
-        MessageType messageType = resourceType.getMessageType();
-        for (Field resourceField : messageType.getFields()) {
-          String entityName = getResourceOrSetEntityName(resourceField);
-          if (!Strings.isNullOrEmpty(entityName)) {
-            return entityName;
-          }
-        }
-      }
-
       // Look in the given Resource and ResourceSet collections.
       for (Resource resource : allResources.keySet()) {
         ProtoFile protoFile = allResources.get(resource);
@@ -191,6 +179,19 @@ public class ProtoParser {
         if (getResourceSetFullName(resourceSet, protoFile).equals(resourceName)
             || field.getFile().equals(protoFile) && resourceSet.getSymbol().equals(resourceName)) {
           return resourceSet.getSymbol();
+        }
+      }
+
+      // If not in Resources or ResourceSets, fall back to looking in messageTypes.
+      TypeRef resourceType = field.getModel().getSymbolTable().lookupType(resourceName);
+      if (resourceType != null) {
+        // Look for the Resource or ResourceSet field in the target message.
+        MessageType messageType = resourceType.getMessageType();
+        for (Field resourceField : messageType.getFields()) {
+          String entityName = getResourceOrSetEntityName(resourceField);
+          if (!Strings.isNullOrEmpty(entityName)) {
+            return entityName;
+          }
         }
       }
 
@@ -415,11 +416,11 @@ public class ProtoParser {
   }
 
   private String getResourceFullName(Resource resource, ProtoFile file) {
-    return String.format("%s.%s", resource.getSymbol(), getProtoPackage(file));
+    return String.format("%s.%s", getProtoPackage(file), resource.getSymbol());
   }
 
   private String getResourceSetFullName(ResourceSet resource, ProtoFile file) {
-    return String.format("%s.%s", resource.getSymbol(), getProtoPackage(file));
+    return String.format("%s.%s", getProtoPackage(file), resource.getSymbol());
   }
 
   public ImmutableMap<String, String> getFieldNamePatterns(Method method) {
