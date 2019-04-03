@@ -48,6 +48,7 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -287,10 +288,8 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableList<String> licenseLines;
     String configSchemaVersion = null;
 
+    LicenseHeaderUtil licenseHeaderUtil = new LicenseHeaderUtil();
     try {
-      LicenseHeaderUtil licenseHeaderUtil =
-          LicenseHeaderUtil.create(
-              configProto, settings, model.getDiagReporter().getDiagCollector());
       copyrightLines = licenseHeaderUtil.loadCopyrightLines();
       licenseLines = licenseHeaderUtil.loadLicenseLines();
     } catch (Exception e) {
@@ -367,11 +366,10 @@ public abstract class GapicProductConfig implements ProductConfig {
         createDiscoGapicInterfaceConfigMap(
             model, configProto, settings, messageConfigs, resourceNameConfigs, language);
 
+    LicenseHeaderUtil licenseHeaderUtil = new LicenseHeaderUtil();
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
     try {
-      LicenseHeaderUtil licenseHeaderUtil =
-          LicenseHeaderUtil.create(configProto, settings, model.getDiagCollector());
       copyrightLines = licenseHeaderUtil.loadCopyrightLines();
       licenseLines = licenseHeaderUtil.loadLicenseLines();
     } catch (Exception e) {
@@ -716,11 +714,39 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (protoFiles != null) {
       file = protoFiles.get(0);
     }
-    ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigsFromGapicConfig =
-        createSingleResourceNameConfigs(diagCollector, configProto, protoFiles, language);
-    ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs =
+
+    List<CollectionConfigProto> allCollectionConfigProtos =
+        new ArrayList<>(configProto.getCollectionsList());
+    configProto
+        .getInterfacesList()
+        .stream()
+        .forEach(i -> allCollectionConfigProtos.addAll(i.getCollectionsList()));
+    LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameProtos =
+        new LinkedHashMap<>();
+    LinkedHashMap<String, FixedResourceNameConfig> fixedResourceNameProtos = new LinkedHashMap<>();
+    for (CollectionConfigProto c : allCollectionConfigProtos) {
+      if (FixedResourceNameConfig.isFixedResourceNameConfig(c.getNamePattern())) {
+        createFixedResourceNameConfig(diagCollector, c, fixedResourceNameProtos, file);
+      } else {
+        createSingleResourceNameConfig(diagCollector, c, singleResourceNameProtos, file, language);
+      }
+    }
+
+    if (diagCollector.getErrorCount() > 0) {
+      ToolUtil.reportDiags(diagCollector, true);
+      throw new RuntimeException();
+    }
+
+    // TODO(andrealin): Remove this once all fixed resource names are removed.
+    fixedResourceNameProtos.putAll(
         createFixedResourceNameConfigs(
-            diagCollector, configProto.getFixedResourceNameValuesList(), file);
+            diagCollector, configProto.getFixedResourceNameValuesList(), file));
+
+    ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigsFromGapicConfig =
+        ImmutableMap.copyOf(singleResourceNameProtos);
+    ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs =
+        ImmutableMap.copyOf(fixedResourceNameProtos);
+
     ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigsFromGapicConfig =
         createResourceNameOneofConfigs(
             diagCollector,
@@ -863,33 +889,33 @@ public abstract class GapicProductConfig implements ProductConfig {
     return ImmutableMap.copyOf(mergedResourceNameConfigs);
   }
 
-  private static ImmutableMap<String, SingleResourceNameConfig> createSingleResourceNameConfigs(
+  private static void createFixedResourceNameConfig(
       DiagCollector diagCollector,
-      ConfigProto configProto,
-      @Nullable List<ProtoFile> sourceProtos,
-      TargetLanguage language) {
-    ProtoFile file = null;
-    if (sourceProtos != null) {
-      file = sourceProtos.get(0);
+      CollectionConfigProto fixedCollectionConfigProto,
+      LinkedHashMap<String, FixedResourceNameConfig> fixedResourceNameConfigsMap,
+      @Nullable ProtoFile file) {
+    FixedResourceNameConfig fixedResourceNameConfig =
+        FixedResourceNameConfig.createFixedResourceNameConfig(
+            diagCollector,
+            fixedCollectionConfigProto.getEntityName(),
+            fixedCollectionConfigProto.getNamePattern(),
+            file);
+    if (fixedResourceNameConfig == null) {
+      return;
     }
-    LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap =
-        new LinkedHashMap<>();
-    for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
-      createSingleResourceNameConfig(
-          diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file, language);
-    }
-    for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
-      for (CollectionConfigProto collectionConfigProto :
-          interfaceConfigProto.getCollectionsList()) {
-        createSingleResourceNameConfig(
-            diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file, language);
+    if (fixedResourceNameConfigsMap.containsKey(fixedResourceNameConfig.getEntityId())) {
+      FixedResourceNameConfig otherConfig =
+          fixedResourceNameConfigsMap.get(fixedResourceNameConfig.getEntityId());
+      if (!fixedResourceNameConfig.getFixedValue().equals(otherConfig.getFixedValue())) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Inconsistent collection configs across interfaces. Entity name: "
+                    + fixedResourceNameConfig.getEntityId()));
       }
-    }
-
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
     } else {
-      return ImmutableMap.copyOf(singleResourceNameConfigsMap);
+      fixedResourceNameConfigsMap.put(
+          fixedResourceNameConfig.getEntityId(), fixedResourceNameConfig);
     }
   }
 
@@ -951,6 +977,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
   }
 
+  // TODO(andrealin): Remove this once existing fixed resource names are removed.
   private static ImmutableMap<String, FixedResourceNameConfig> createFixedResourceNameConfigs(
       DiagCollector diagCollector,
       Iterable<FixedResourceNameValueProto> fixedConfigProtos,
@@ -960,7 +987,10 @@ public abstract class GapicProductConfig implements ProductConfig {
     for (FixedResourceNameValueProto fixedConfigProto : fixedConfigProtos) {
       FixedResourceNameConfig fixedConfig =
           FixedResourceNameConfig.createFixedResourceNameConfig(
-              diagCollector, fixedConfigProto, file);
+              diagCollector,
+              fixedConfigProto.getEntityName(),
+              fixedConfigProto.getFixedValue(),
+              file);
       if (fixedConfig == null) {
         continue;
       }
