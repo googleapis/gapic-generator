@@ -99,6 +99,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   }
 
   /** Returns the name pattern for the resource name config. */
+  @Nullable
   public abstract String getNamePattern();
 
   /** Returns the name template for the resource name config. */
@@ -145,6 +146,8 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
 
     public abstract Builder setAssignedProtoFile(ProtoFile val);
 
+    // Overwrite the entity name and common resource name fields if there are applicable
+    // language-specific overrides.
     public Builder withLanguageOverrides(
         CollectionConfigProto collectionConfigProto, TargetLanguage language) {
       String languageStr = language.toString().toLowerCase();
