@@ -3222,10 +3222,10 @@ module Library
 
       # Gets a shelf.
       #
-      # @param options_ [String]
-      #   To test 'options' parameter name conflict.
       # @param name [String]
       #   The name of the shelf to retrieve.
+      # @param options_ [String]
+      #   To test 'options' parameter name conflict.
       # @param message [Google::Example::Library::V1::SomeMessage | Hash]
       #   Field to verify that message-type query parameter gets flattened.
       #   A hash of the same form as `Google::Example::Library::V1::SomeMessage`
@@ -3245,21 +3245,22 @@ module Library
       #   require "library"
       #
       #   library_client = Library.new(version: :v1)
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #
       #   # TODO: Initialize `options_`:
       #   options_ = ''
-      #   response = library_client.get_shelf(options_)
+      #   response = library_client.get_shelf(formatted_name, options_)
 
       def get_shelf \
+          name,
           options_,
-          name: nil,
           message: nil,
           string_builder: nil,
           options: nil,
           &block
         req = {
-          options: options_,
           name: name,
+          options: options_,
           message: message,
           string_builder: string_builder
         }.delete_if { |_, v| v.nil? }
@@ -3412,10 +3413,6 @@ module Library
 
       # Creates a series of books.
       #
-      # @param shelf [Google::Example::Library::V1::Shelf | Hash]
-      #   The shelf in which the series is created.
-      #   A hash of the same form as `Google::Example::Library::V1::Shelf`
-      #   can also be provided.
       # @param books [Array<Google::Example::Library::V1::Book | Hash>]
       #   The books to publish in the series.
       #   A hash of the same form as `Google::Example::Library::V1::Book`
@@ -3423,6 +3420,10 @@ module Library
       # @param series_uuid [Google::Example::Library::V1::SeriesUuid | Hash]
       #   Uniquely identifies the series to the publishing house.
       #   A hash of the same form as `Google::Example::Library::V1::SeriesUuid`
+      #   can also be provided.
+      # @param shelf [Google::Example::Library::V1::Shelf | Hash]
+      #   The shelf in which the series is created.
+      #   A hash of the same form as `Google::Example::Library::V1::Shelf`
       #   can also be provided.
       # @param edition [Integer]
       #   The edition of the series
@@ -3441,27 +3442,24 @@ module Library
       #
       #   library_client = Library.new(version: :v1)
       #
-      #   # TODO: Initialize `shelf`:
-      #   shelf = {}
-      #
       #   # TODO: Initialize `books`:
       #   books = []
       #   series_string = "foobar"
       #   series_uuid = { series_string: series_string }
-      #   response = library_client.publish_series(shelf, books, series_uuid)
+      #   response = library_client.publish_series(books, series_uuid)
 
       def publish_series \
-          shelf,
           books,
           series_uuid,
+          shelf: nil,
           edition: nil,
           review_copy: nil,
           options: nil,
           &block
         req = {
-          shelf: shelf,
           books: books,
           series_uuid: series_uuid,
+          shelf: shelf,
           edition: edition,
           review_copy: review_copy
         }.delete_if { |_, v| v.nil? }
@@ -5703,12 +5701,12 @@ def sample_publish_series(shelf_name, edition)
 
   # shelf_name = "Math"
   # edition = 123
-  shelf = { name: shelf_name }
   books = []
   series_string = "xyz3141592654"
   series_uuid = { series_string: series_string }
+  shelf = { name: shelf_name }
 
-  response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
+  response = library_client.publish_series(books, series_uuid, shelf: shelf, edition: edition)
   # % % % output handling % % % %
   # four_score_and_seven_years ago
   #
@@ -5778,12 +5776,11 @@ def sample_publish_series
   # Instantiate a client
   library_client = Library.new version: :v1
 
-  shelf = {}
   books = []
   series_uuid = {}
   edition = 2
 
-  response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
+  response = library_client.publish_series(books, series_uuid, shelf: shelf, edition: edition)
   puts response
 
   # [END canonical_core]
@@ -5823,6 +5820,14 @@ def sample_publish_series
   # Instantiate a client
   library_client = Library.new version: :v1
 
+  books = []
+
+  # Comment on a file input field
+  file_name = "xyz3141592654"
+  series_bytes = File.binread file_name
+
+  # Comment on a message
+  series_uuid = { series_bytes: series_bytes }
 
   # Comment on a resource name
   formatted_name = library_client.class.shelf_path("math")
@@ -5839,20 +5844,12 @@ def sample_publish_series
     theme: theme,
     internal_theme: internal_theme
   }
-  books = []
-
-  # Comment on a file input field
-  file_name = "xyz3141592654"
-  series_bytes = File.binread file_name
-
-  # Comment on a message
-  series_uuid = { series_bytes: series_bytes }
 
   # A super long long long long long long long long long long long long long long comment that tests
   # word wrapping
   edition = 123
 
-  response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
+  response = library_client.publish_series(books, series_uuid, shelf: shelf, edition: edition)
   puts response
 
   # [END sample_core]
@@ -6108,14 +6105,15 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_shelf without error' do
       # Create request parameters
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       options_ = ''
 
       # Create expected grpc response
-      name = "name3373707"
+      name_2 = "name2-1052831874"
       theme = "theme110327241"
       internal_theme = "internalTheme792518087"
       expected_response = {
-        name: name,
+        name: name_2,
         theme: theme,
         internal_theme: internal_theme
       }
@@ -6124,6 +6122,7 @@ describe Library::V1::LibraryServiceClient do
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetShelfRequest, request)
+        assert_equal(formatted_name, request.name)
         assert_equal(options_, request.options)
         OpenStruct.new(execute: expected_response)
       end
@@ -6137,13 +6136,13 @@ describe Library::V1::LibraryServiceClient do
           client = Library.new(version: :v1)
 
           # Call method
-          response = client.get_shelf(options_)
+          response = client.get_shelf(formatted_name, options_)
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.get_shelf(options_) do |response, operation|
+          client.get_shelf(formatted_name, options_) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -6154,11 +6153,13 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_shelf with error' do
       # Create request parameters
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       options_ = ''
 
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetShelfRequest, request)
+        assert_equal(formatted_name, request.name)
         assert_equal(options_, request.options)
         raise custom_error
       end
@@ -6173,7 +6174,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
-            client.get_shelf(options_)
+            client.get_shelf(formatted_name, options_)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
@@ -6489,7 +6490,6 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes publish_series without error' do
       # Create request parameters
-      shelf = {}
       books = []
       series_string = "foobar"
       series_uuid = { series_string: series_string }
@@ -6503,7 +6503,6 @@ describe Library::V1::LibraryServiceClient do
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::PublishSeriesRequest, request)
-        assert_equal(Google::Gax::to_proto(shelf, Google::Example::Library::V1::Shelf), request.shelf)
         books = books.map do |req|
           Google::Gax::to_proto(req, Google::Example::Library::V1::Book)
         end
@@ -6521,21 +6520,13 @@ describe Library::V1::LibraryServiceClient do
           client = Library.new(version: :v1)
 
           # Call method
-          response = client.publish_series(
-            shelf,
-            books,
-            series_uuid
-          )
+          response = client.publish_series(books, series_uuid)
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.publish_series(
-            shelf,
-            books,
-            series_uuid
-          ) do |response, operation|
+          client.publish_series(books, series_uuid) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -6546,7 +6537,6 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes publish_series with error' do
       # Create request parameters
-      shelf = {}
       books = []
       series_string = "foobar"
       series_uuid = { series_string: series_string }
@@ -6554,7 +6544,6 @@ describe Library::V1::LibraryServiceClient do
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::PublishSeriesRequest, request)
-        assert_equal(Google::Gax::to_proto(shelf, Google::Example::Library::V1::Shelf), request.shelf)
         books = books.map do |req|
           Google::Gax::to_proto(req, Google::Example::Library::V1::Book)
         end
@@ -6573,11 +6562,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
-            client.publish_series(
-              shelf,
-              books,
-              series_uuid
-            )
+            client.publish_series(books, series_uuid)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.

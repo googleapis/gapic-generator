@@ -546,18 +546,18 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $options = '';
-     *     $response = $libraryServiceClient->getShelf($options);
+     *     $response = $libraryServiceClient->getShelf($formattedName, $options);
      * } finally {
      *     $libraryServiceClient->close();
      * }
      * ```
      *
+     * @param string $name The name of the shelf to retrieve.
      * @param string $options To test 'options' parameter name conflict.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type string $name
-     *          The name of the shelf to retrieve.
      *     @type SomeMessage $message
      *          Field to verify that message-type query parameter gets flattened.
      *     @type StringBuilder $stringBuilder
@@ -573,13 +573,11 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getShelf($options, array $optionalArgs = [])
+    public function getShelf($name, $options, array $optionalArgs = [])
     {
         $request = new GetShelfRequest();
+        $request->setName($name);
         $request->setOptions($options);
-        if (isset($optionalArgs['name'])) {
-            $request->setName($optionalArgs['name']);
-        }
         if (isset($optionalArgs['message'])) {
             $request->setMessage($optionalArgs['message']);
         }
@@ -824,22 +822,22 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $shelf = new Shelf();
      *     $books = [];
      *     $seriesString = 'foobar';
      *     $seriesUuid = new SeriesUuid();
      *     $seriesUuid->setSeriesString($seriesString);
-     *     $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
+     *     $response = $libraryServiceClient->publishSeries($books, $seriesUuid);
      * } finally {
      *     $libraryServiceClient->close();
      * }
      * ```
      *
-     * @param Shelf $shelf The shelf in which the series is created.
      * @param Book[] $books The books to publish in the series.
      * @param SeriesUuid $seriesUuid Uniquely identifies the series to the publishing house.
      * @param array $optionalArgs {
      *     Optional.
+     *     @type Shelf $shelf
+     *          The shelf in which the series is created.
      *     @type int $edition
      *          The edition of the series
      *     @type bool $reviewCopy
@@ -856,12 +854,14 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function publishSeries($shelf, $books, $seriesUuid, array $optionalArgs = [])
+    public function publishSeries($books, $seriesUuid, array $optionalArgs = [])
     {
         $request = new PublishSeriesRequest();
-        $request->setShelf($shelf);
         $request->setBooks($books);
         $request->setSeriesUuid($seriesUuid);
+        if (isset($optionalArgs['shelf'])) {
+            $request->setShelf($optionalArgs['shelf']);
+        }
         if (isset($optionalArgs['edition'])) {
             $request->setEdition($optionalArgs['edition']);
         }
@@ -4448,15 +4448,15 @@ function samplePublishSeries($shelfName, $edition)
 
     // $shelfName = 'Math';
     // $edition = 123;
-    $shelf = new Shelf();
-    $shelf->setName($shelfName);
     $books = [];
     $seriesString = 'xyz3141592654';
     $seriesUuid = new SeriesUuid();
     $seriesUuid->setSeriesString($seriesString);
+    $shelf = new Shelf();
+    $shelf->setName($shelfName);
 
     try {
-        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        $response = $libraryServiceClient->publishSeries($books, $seriesUuid, ['shelf' => $shelf, 'edition' => $edition]);
         // % % % output handling % % % %
         // fourScoreAndSevenYears ago
         //
@@ -4530,7 +4530,6 @@ require __DIR__ . '/../../../../vendor/autoload.php';
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\SeriesUuid;
-use Google\Example\Library\V1\Shelf;
 
 /** Testing calling forms */
 function samplePublishSeries()
@@ -4539,13 +4538,12 @@ function samplePublishSeries()
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    $shelf = new Shelf();
     $books = [];
     $seriesUuid = new SeriesUuid();
     $edition = 2;
 
     try {
-        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        $response = $libraryServiceClient->publishSeries($books, $seriesUuid, ['shelf' => $shelf, 'edition' => $edition]);
         printf("%s" . PHP_EOL, print_r($response, true));
     } finally {
         $libraryServiceClient->close();
@@ -4593,6 +4591,15 @@ function samplePublishSeries()
 
     $libraryServiceClient = new LibraryServiceClient();
 
+    $books = [];
+
+    // Comment on a file input field
+    $fileName = 'xyz3141592654';
+    $seriesBytes = file_get_contents($fileName);
+
+    // Comment on a message
+    $seriesUuid = new SeriesUuid();
+    $seriesUuid->setSeriesBytes($seriesBytes);
 
     // Comment on a resource name
     $formattedName = $libraryServiceClient->shelfName('math');
@@ -4608,22 +4615,13 @@ function samplePublishSeries()
     $shelf->setName($formattedName);
     $shelf->setTheme($theme);
     $shelf->setInternalTheme($internalTheme);
-    $books = [];
-
-    // Comment on a file input field
-    $fileName = 'xyz3141592654';
-    $seriesBytes = file_get_contents($fileName);
-
-    // Comment on a message
-    $seriesUuid = new SeriesUuid();
-    $seriesUuid->setSeriesBytes($seriesBytes);
 
     // A super long long long long long long long long long long long long long long comment that tests
     // word wrapping
     $edition = 123;
 
     try {
-        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        $response = $libraryServiceClient->publishSeries($books, $seriesUuid, ['shelf' => $shelf, 'edition' => $edition]);
         printf("%s" . PHP_EOL, print_r($response, true));
     } finally {
         $libraryServiceClient->close();
@@ -4991,19 +4989,20 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         // Mock response
-        $name = 'name3373707';
+        $name2 = 'name2-1052831874';
         $theme = 'theme110327241';
         $internalTheme = 'internalTheme792518087';
         $expectedResponse = new Shelf();
-        $expectedResponse->setName($name);
+        $expectedResponse->setName($name2);
         $expectedResponse->setTheme($theme);
         $expectedResponse->setInternalTheme($internalTheme);
         $transport->addResponse($expectedResponse);
 
         // Mock request
+        $formattedName = $client->shelfName('[SHELF_ID]');
         $options = 'options-1249474914';
 
-        $response = $client->getShelf($options);
+        $response = $client->getShelf($formattedName, $options);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -5011,6 +5010,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetShelf', $actualFuncCall);
 
+        $actualValue = $actualRequestObject->getName();
+
+        $this->assertProtobufEquals($formattedName, $actualValue);
         $actualValue = $actualRequestObject->getOptions();
 
         $this->assertProtobufEquals($options, $actualValue);
@@ -5041,10 +5043,11 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
+        $formattedName = $client->shelfName('[SHELF_ID]');
         $options = 'options-1249474914';
 
         try {
-            $client->getShelf($options);
+            $client->getShelf($formattedName, $options);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
@@ -5381,13 +5384,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $shelf = new Shelf();
         $books = [];
         $seriesString = 'foobar';
         $seriesUuid = new SeriesUuid();
         $seriesUuid->setSeriesString($seriesString);
 
-        $response = $client->publishSeries($shelf, $books, $seriesUuid);
+        $response = $client->publishSeries($books, $seriesUuid);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -5395,9 +5397,6 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/PublishSeries', $actualFuncCall);
 
-        $actualValue = $actualRequestObject->getShelf();
-
-        $this->assertProtobufEquals($shelf, $actualValue);
         $actualValue = $actualRequestObject->getBooks();
 
         $this->assertProtobufEquals($books, $actualValue);
@@ -5431,14 +5430,13 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $shelf = new Shelf();
         $books = [];
         $seriesString = 'foobar';
         $seriesUuid = new SeriesUuid();
         $seriesUuid->setSeriesString($seriesString);
 
         try {
-            $client->publishSeries($shelf, $books, $seriesUuid);
+            $client->publishSeries($books, $seriesUuid);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

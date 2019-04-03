@@ -2334,11 +2334,11 @@ func TestLibraryServiceCreateShelfError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceGetShelf(t *testing.T) {
-    var name string = "name3373707"
+    var name2 string = "name2-1052831874"
     var theme string = "theme110327241"
     var internalTheme string = "internalTheme792518087"
     var expectedResponse = &librarypb.Shelf{
-        Name: name,
+        Name: name2,
         Theme: theme,
         InternalTheme: internalTheme,
     }
@@ -2348,8 +2348,10 @@ func TestLibraryServiceGetShelf(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
     var options string = "options-1249474914"
     var request = &librarypb.GetShelfRequest{
+        Name: formattedName,
         Options: options,
     }
 
@@ -2377,8 +2379,10 @@ func TestLibraryServiceGetShelfError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
     var options string = "options-1249474914"
     var request = &librarypb.GetShelfRequest{
+        Name: formattedName,
         Options: options,
     }
 
@@ -2662,7 +2666,6 @@ func TestLibraryServicePublishSeries(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
     var seriesString string = "foobar"
     var seriesUuid = &librarypb.SeriesUuid{
@@ -2671,7 +2674,6 @@ func TestLibraryServicePublishSeries(t *testing.T) {
         },
     }
     var request = &librarypb.PublishSeriesRequest{
-        Shelf: shelf,
         Books: books,
         SeriesUuid: seriesUuid,
     }
@@ -2700,7 +2702,6 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
     var seriesString string = "foobar"
     var seriesUuid = &librarypb.SeriesUuid{
@@ -2709,7 +2710,6 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
         },
     }
     var request = &librarypb.PublishSeriesRequest{
-        Shelf: shelf,
         Books: books,
         SeriesUuid: seriesUuid,
     }

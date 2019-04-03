@@ -1162,18 +1162,18 @@ function samplePublishSeries(shelfName, edition) {
   const client = new library.LibraryServiceClient();
   // const shelfName = 'Math';
   // const edition = 123;
-  const shelf = {
-    name: shelfName,
-  };
   const books = [];
   const seriesString = 'xyz3141592654';
   const seriesUuid = {
     seriesString: seriesString,
   };
+  const shelf = {
+    name: shelfName,
+  };
   const request = {
-    shelf: shelf,
     books: books,
     seriesUuid: seriesUuid,
+    shelf: shelf,
     edition: edition,
   };
   client.publishSeries(request)
@@ -1234,12 +1234,10 @@ const library = require('@google-cloud/library').v1;
 /** Testing calling forms */
 function samplePublishSeries() {
   const client = new library.LibraryServiceClient();
-  const shelf = {};
   const books = [];
   const seriesUuid = {};
   const edition = 2;
   const request = {
-    shelf: shelf,
     books: books,
     seriesUuid: seriesUuid,
     edition: edition,
@@ -1272,6 +1270,16 @@ const library = require('@google-cloud/library').v1;
 /** Test request object field comments */
 function samplePublishSeries() {
   const client = new library.LibraryServiceClient();
+  const books = [];
+
+  // Comment on a file input field
+  const fileName = 'xyz3141592654';
+  const seriesBytes = fs.readFileSync(fileName).toString('base64');
+
+  // Comment on a message
+  const seriesUuid = {
+    seriesBytes: seriesBytes,
+  };
 
   // Comment on a resource name
   const formattedName = client.shelfPath('math');
@@ -1288,24 +1296,14 @@ function samplePublishSeries() {
     theme: theme,
     internalTheme: internalTheme,
   };
-  const books = [];
-
-  // Comment on a file input field
-  const fileName = 'xyz3141592654';
-  const seriesBytes = fs.readFileSync(fileName).toString('base64');
-
-  // Comment on a message
-  const seriesUuid = {
-    seriesBytes: seriesBytes,
-  };
 
   // A super long long long long long long long long long long long long long long comment that tests
   // word wrapping
   const edition = 123;
   const request = {
-    shelf: shelf,
     books: books,
     seriesUuid: seriesUuid,
+    shelf: shelf,
     edition: edition,
   };
   client.publishSeries(request)
@@ -4172,10 +4170,10 @@ class LibraryServiceClient {
    *
    * @param {Object} request
    *   The request object that will be sent.
+   * @param {string} request.name
+   *   The name of the shelf to retrieve.
    * @param {string} request.options
    *   To test 'options' parameter name conflict.
-   * @param {string} [request.name]
-   *   The name of the shelf to retrieve.
    * @param {Object} [request.message]
    *   Field to verify that message-type query parameter gets flattened.
    *
@@ -4201,8 +4199,13 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
+   * const formattedName = client.shelfPath('[SHELF_ID]');
    * const options = '';
-   * client.getShelf({options: options})
+   * const request = {
+   *   name: formattedName,
+   *   options: options,
+   * };
+   * client.getShelf(request)
    *   .then(responses => {
    *     const response = responses[0];
    *     // doThingsWith(response)
@@ -4531,10 +4534,6 @@ class LibraryServiceClient {
    *
    * @param {Object} request
    *   The request object that will be sent.
-   * @param {Object} request.shelf
-   *   The shelf in which the series is created.
-   *
-   *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
    * @param {Object[]} request.books
    *   The books to publish in the series.
    *
@@ -4543,6 +4542,10 @@ class LibraryServiceClient {
    *   Uniquely identifies the series to the publishing house.
    *
    *   This object should have the same structure as [SeriesUuid]{@link google.example.library.v1.SeriesUuid}
+   * @param {Object} [request.shelf]
+   *   The shelf in which the series is created.
+   *
+   *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
    * @param {number} [request.edition]
    *   The edition of the series
    * @param {boolean} [request.reviewCopy]
@@ -4566,14 +4569,12 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const shelf = {};
    * const books = [];
    * const seriesString = 'foobar';
    * const seriesUuid = {
    *   seriesString: seriesString,
    * };
    * const request = {
-   *   shelf: shelf,
    *   books: books,
    *   seriesUuid: seriesUuid,
    * };
@@ -6793,17 +6794,19 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
+      const formattedName = client.shelfPath('[SHELF_ID]');
       const options = 'options-1249474914';
       const request = {
+        name: formattedName,
         options: options,
       };
 
       // Mock response
-      const name = 'name3373707';
+      const name2 = 'name2-1052831874';
       const theme = 'theme110327241';
       const internalTheme = 'internalTheme792518087';
       const expectedResponse = {
-        name: name,
+        name: name2,
         theme: theme,
         internalTheme: internalTheme,
       };
@@ -6828,8 +6831,10 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
+      const formattedName = client.shelfPath('[SHELF_ID]');
       const options = 'options-1249474914';
       const request = {
+        name: formattedName,
         options: options,
       };
 
@@ -7101,14 +7106,12 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const shelf = {};
       const books = [];
       const seriesString = 'foobar';
       const seriesUuid = {
         seriesString: seriesString,
       };
       const request = {
-        shelf: shelf,
         books: books,
         seriesUuid: seriesUuid,
       };
@@ -7140,14 +7143,12 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const shelf = {};
       const books = [];
       const seriesString = 'foobar';
       const seriesUuid = {
         seriesString: seriesString,
       };
       const request = {
-        shelf: shelf,
         books: books,
         seriesUuid: seriesUuid,
       };

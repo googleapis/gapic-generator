@@ -2005,18 +2005,18 @@ public class PublishSeriesCallableCallablePiVersion {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       // String shelfName = "Math";
       // int edition = 123;
-      Shelf shelf = Shelf.newBuilder()
-        .setName(shelfName)
-        .build();
       List<Book> books = new ArrayList<>();
       String seriesString = "xyz3141592654";
       SeriesUuid seriesUuid = SeriesUuid.newBuilder()
         .setSeriesString(seriesString)
         .build();
+      Shelf shelf = Shelf.newBuilder()
+        .setName(shelfName)
+        .build();
       PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-        .setShelf(shelf)
         .addAllBooks(books)
         .setSeriesUuid(seriesUuid)
+        .setShelf(shelf)
         .setEdition(edition)
         .build();
       ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
@@ -2088,7 +2088,6 @@ import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
-import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -2102,7 +2101,6 @@ import java.util.List;
  * import com.google.example.library.v1.PublishSeriesRequest;
  * import com.google.example.library.v1.PublishSeriesResponse;
  * import com.google.example.library.v1.SeriesUuid;
- * import com.google.example.library.v1.Shelf;
  * import java.util.ArrayList;
  * import java.util.List;
  */
@@ -2111,12 +2109,10 @@ public class PublishSeriesCallableCallableSecondEdition {
   public static void samplePublishSeries() {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      Shelf shelf = Shelf.newBuilder().build();
       List<Book> books = new ArrayList<>();
       SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
       int edition = 2;
       PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-        .setShelf(shelf)
         .addAllBooks(books)
         .setSeriesUuid(seriesUuid)
         .setEdition(edition)
@@ -2333,18 +2329,18 @@ public class PublishSeriesRequestPiVersion {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       // String shelfName = "Math";
       // int edition = 123;
-      Shelf shelf = Shelf.newBuilder()
-        .setName(shelfName)
-        .build();
       List<Book> books = new ArrayList<>();
       String seriesString = "xyz3141592654";
       SeriesUuid seriesUuid = SeriesUuid.newBuilder()
         .setSeriesString(seriesString)
         .build();
+      Shelf shelf = Shelf.newBuilder()
+        .setName(shelfName)
+        .build();
       PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-        .setShelf(shelf)
         .addAllBooks(books)
         .setSeriesUuid(seriesUuid)
+        .setShelf(shelf)
         .setEdition(edition)
         .build();
       PublishSeriesResponse response = libraryClient.publishSeries(request);
@@ -2411,7 +2407,6 @@ import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
-import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -2424,7 +2419,6 @@ import java.util.List;
  * import com.google.example.library.v1.PublishSeriesRequest;
  * import com.google.example.library.v1.PublishSeriesResponse;
  * import com.google.example.library.v1.SeriesUuid;
- * import com.google.example.library.v1.Shelf;
  * import java.util.ArrayList;
  * import java.util.List;
  */
@@ -2433,12 +2427,10 @@ public class PublishSeriesRequestSecondEdition {
   public static void samplePublishSeries() {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      Shelf shelf = Shelf.newBuilder().build();
       List<Book> books = new ArrayList<>();
       SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
       int edition = 2;
       PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-        .setShelf(shelf)
         .addAllBooks(books)
         .setSeriesUuid(seriesUuid)
         .setEdition(edition)
@@ -2497,6 +2489,18 @@ public class PublishSeriesRequestTestRequestObjectFieldComments {
   public static void samplePublishSeries() {
     // [START sample_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
+      List<Book> books = new ArrayList<>();
+
+      // Comment on a file input field
+      String fileName = "xyz3141592654";
+      Path path = Paths.get(fileName);
+      byte[] data = Files.readAllBytes(path);
+      ByteString seriesBytes = ByteString.copyFrom(data);
+
+      // Comment on a message
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesBytes(seriesBytes)
+        .build();
 
       // Comment on a resource name
       String formattedName = LibraryClient.formatShelfName("math");
@@ -2513,26 +2517,14 @@ public class PublishSeriesRequestTestRequestObjectFieldComments {
         .setTheme(theme)
         .setInternalTheme(internalTheme)
         .build();
-      List<Book> books = new ArrayList<>();
-
-      // Comment on a file input field
-      String fileName = "xyz3141592654";
-      Path path = Paths.get(fileName);
-      byte[] data = Files.readAllBytes(path);
-      ByteString seriesBytes = ByteString.copyFrom(data);
-
-      // Comment on a message
-      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
-        .setSeriesBytes(seriesBytes)
-        .build();
 
       // A super long long long long long long long long long long long long long long comment that tests
       // word wrapping
       int edition = 123;
       PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-        .setShelf(shelf)
         .addAllBooks(books)
         .setSeriesUuid(seriesUuid)
+        .setShelf(shelf)
         .setEdition(edition)
         .build();
       PublishSeriesResponse response = libraryClient.publishSeries(request);
@@ -3281,8 +3273,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
+   *     .setName(name.toString())
    *     .setOptions(options)
    *     .build();
    *   Shelf response = libraryClient.getShelf(request);
@@ -3303,8 +3297,10 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
+   *     .setName(name.toString())
    *     .setOptions(options)
    *     .build();
    *   ApiFuture&lt;Shelf&gt; future = libraryClient.getShelfCallable().futureCall(request);
@@ -3753,14 +3749,12 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   String seriesString = "foobar";
    *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
    *     .setSeriesString(seriesString)
    *     .build();
    *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-   *     .setShelf(shelf)
    *     .addAllBooks(books)
    *     .setSeriesUuid(seriesUuid)
    *     .build();
@@ -3782,14 +3776,12 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   String seriesString = "foobar";
    *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
    *     .setSeriesString(seriesString)
    *     .build();
    *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
-   *     .setShelf(shelf)
    *     .addAllBooks(books)
    *     .setSeriesUuid(seriesUuid)
    *     .build();
