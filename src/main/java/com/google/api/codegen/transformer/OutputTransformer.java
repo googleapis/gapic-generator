@@ -141,7 +141,7 @@ public class OutputTransformer {
         stringFormatView(context, outputContext, config.getFileNameList(), valueSet, form);
     OutputView.VariableView contents =
         accessor(
-            new Scanner(config.getContent()), context, valueSet, outputContext.scopeTable(), form);
+            new Scanner(config.getContents()), context, valueSet, outputContext.scopeTable(), form);
     Preconditions.checkArgument(
         contents.type().isStringType() || contents.type().isBytesType(),
         "Output to file: expected string or bytes, found %s",
@@ -178,7 +178,8 @@ public class OutputTransformer {
       builder.add(formattedArg);
     }
     ImmutableList<String> args = builder.build();
-    ImmutableList<String> formattedFormatAndArgs = context.getNamer().getPrintSpecs(format, args);
+    ImmutableList<String> formattedFormatAndArgs =
+        context.getNamer().getInterpolatedFormatAndArgs(format, args);
     return OutputView.StringFormatView.newBuilder()
         .format(formattedFormatAndArgs.get(0))
         .args(formattedFormatAndArgs.subList(1, formattedFormatAndArgs.size()))

@@ -21,6 +21,11 @@ import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import java.util.Collections;
 
+/**
+ * An implementation of SampleImportTransformer. Subclasses of this class can choose to override
+ * `addSampleBodyImports`, `addOutputImports` and `addInitCodeImports` to save language-specific
+ * types to the type table. Currently used by Java.
+ */
 public class StandardSampleImportTransformer implements SampleImportTransformer {
 
   private final ImportSectionTransformer importSectionTransformer;
@@ -66,6 +71,7 @@ public class StandardSampleImportTransformer implements SampleImportTransformer 
         context, Collections.<InitCodeNode>emptyList());
   }
 
+  @Override
   public ImportSectionView generateImportSection(
       MethodContext context,
       CallingForm form,

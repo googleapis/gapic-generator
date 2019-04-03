@@ -469,7 +469,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public ImmutableList<String> getPrintSpecs(String spec, List<String> args) {
+  public ImmutableList<String> getInterpolatedFormatAndArgs(String spec, List<String> args) {
     spec =
         spec.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("\"", "\\\"");
     if (args.isEmpty()) {

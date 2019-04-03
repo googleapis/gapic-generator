@@ -84,6 +84,7 @@ public interface OutputView {
 
   @AutoValue
   abstract class ArrayLoopView implements OutputView {
+    // TODO: change this to `variableTypeName` for consistency.
     public abstract String variableType();
 
     public abstract String variableName();
@@ -183,6 +184,11 @@ public interface OutputView {
 
     public abstract VariableView contents();
 
+    /**
+     * Used in Node.js. Node.js needs to define `const writeFile` or `var writeFile` if used for the
+     * first time. `writerFile` can be reused if defined through `var writeFile` when there are
+     * multiple write-to-file statements.
+     */
     public abstract boolean isFirst();
 
     public Kind kind() {
