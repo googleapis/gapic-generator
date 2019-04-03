@@ -314,11 +314,11 @@
 
 @private processWriteFileView(view)
   @if view.contents.type.isBytesType
-    with open('{@formattedFileName(view.fileName)}', 'wb') as out:
+    with open({@formattedFileName(view.fileName)}, 'wb') as out:
       out.write({@variableField(view.contents)})
   @else
     @if view.contents.type.isStringType
-      with open('{@formattedFileName(view.fileName)}', 'w') as out:
+      with open({@formattedFileName(view.fileName)}, 'w') as out:
         out.write({@variableField(view.contents)})
     @else
       $unhandled type: {@view.contents.type}
@@ -329,12 +329,12 @@
 
 @private formattedFileName(view)
   @if view.args.isEmpty
-    'view.format'
+    '{@view.format}'
   @else
     @if view.format == "{}"
       str(view.get(0))
     @else
-      {@view.format}.format({@commaSeparatedFields(view.args)})
+      '{@view.format}'.format({@commaSeparatedFields(view.args)})
     @end
   @end
 @end

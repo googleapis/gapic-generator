@@ -183,6 +183,8 @@ public interface OutputView {
 
     public abstract VariableView contents();
 
+    public abstract boolean isFirst();
+
     public Kind kind() {
       return Kind.WRITE_FILE;
     }
@@ -196,6 +198,8 @@ public interface OutputView {
       public abstract Builder fileName(StringFormatView val);
 
       public abstract Builder contents(VariableView val);
+
+      public abstract Builder isFirst(boolean val);
 
       public abstract WriteFileView build();
     }

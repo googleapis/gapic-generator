@@ -78,7 +78,7 @@
 
   @else
     @if view.contents.type.isStringType
-      File.write "{@formattedFileName(view.fileName)}" {@variableField({@view.contents})}
+      File.write "{@formattedFileName(view.fileName)}", {@variableField({@view.contents})}
 
     @else
       $unhandled type: {@view.contents.type}
@@ -88,7 +88,7 @@
 
 @private formattedFileName(fileName)
   @if fileName.args.isEmpty
-    "{@fileName.format}"
+    {@fileName.format}
   @else
     @if fileName.format == "%s"
       {@fileName.args.get(0).to_s}

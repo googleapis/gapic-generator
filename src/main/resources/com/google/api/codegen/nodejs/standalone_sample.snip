@@ -35,18 +35,17 @@
 
   @if apiMethod.hasApiVersion
     const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}').{@apiMethod.apiVersion};
-
   @else
     const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
-
   @end
+  {@importList(sample.sampleImports.appImports)}
+
   @if not(sample.sampleFunctionDoc.isEmpty)
     {@processDoc(sample.sampleFunctionDoc)}
   @end
-  @switch sample.callingForm
-  @case "LongRunningPromiseAwait"
+  @if sample.isAsyncMethod
     async function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
-  @default
+  @else
     function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
   @end
     const client = new {@apiMethod.localPackageName}.{@apiMethod.apiClassName}();
@@ -107,7 +106,7 @@
 @end
 
 @private processResponse(sample)
-    {@processOutputViews(sample.outputs)}
+    {@processOutputViews(sample.outputs, sample.hasMultipleFileOutputs, sample.isAsyncMethod)}
 @end
 
 @private processCliArguments(sample)
@@ -335,7 +334,7 @@
     stream.write(request);
 @end
 
-@private processOutputViews(outputViews)
+@private processOutputViews(outputViews, hasMultipleFileOutputs, isAsyncMethod)
   @join view : outputViews on BREAK
     @switch view.kind
       @case "COMMENT"
@@ -343,11 +342,13 @@
       @case "DEFINE"
         {@processDefineView(view)}
       @case "ARRAY_LOOP"
-        {@processArrayLoopView(view)}
+        {@processArrayLoopView(view, hasMultipleFileOutputs, isAsyncMethod)}
       @case "MAP_LOOP"
-        {@processMapLoopView(view)}
+        {@processMapLoopView(view, hasMultipleFileOutputs, isAsyncMethod)}
       @case "PRINT"
         {@processPrintView(view)}
+      @case "WRITE_FILE"
+        {@processWriteFileView(view, hasMultipleFileOutputs, isAsyncMethod)}
       @default
         $unhandledResponseForm: {@view}
     @end
@@ -366,7 +367,7 @@
   @if view.formattedString.args.size == 0
     console.log('{@view.formattedString.format}');
   @else
-    @if view.format == "%s"
+    @if view.formattedString.format == "%s"
       console.log({@view.formattedString.args.get(0)});
     @else
       console.log(`{@view.formattedString.format}`);
@@ -374,13 +375,13 @@
   @end
 @end
 
-@private processArrayLoopView(view)
+@private processArrayLoopView(view, hasMultipleFileOutputs, isAsyncMethod)
   for (const {@view.variableName} of {@variableField(view.collection)}) {
-    {@processOutputViews(view.body)}
+    {@processOutputViews(view.body, hasMultipleFileOutputs, isAsyncMethod)}
   }
 @end
 
-@private processMapLoopView(view)
+@private processMapLoopView(view, hasMultipleFileOutputs, isAsyncMethod)
   @if and(@view.keyVariableName, @view.valueVariableName)
     for (const [{@view.keyVariableName}, {@view.valueVariableName}] of Object.entries({@variableField(view.map)})) {
 
@@ -398,13 +399,37 @@
       @end
     @end
   @end
-    {@processOutputViews(view.body)}
+    {@processOutputViews(view.body, hasMultipleFileOutputs, isAsyncMethod)}
   }
 
 @end
 
-private processWriteFileView(view)
+@private processWriteFileView(view, hasMultipleFileOutputs, isAsyncMethod)
+  @if and(hasMultipleFileOutputs, view.isFirst)
+    var writeFile = util.promisify(fs.writeFile);
+  @else
+    @if view.isFirst
+      const writeFile = util.promisify(fs.writeFile);
+    @end
+  @end
 
+  @if view.contents.type.isBytesType
+    {@if(isAsyncMethod, "await ", "")}writeFile({@stringFormattedFileName(view.fileName)}, {@variableField(view.contents)}, 'binary');
+  @else
+    @if view.contents.type.isStringType
+      {@if(isAsyncMethod, "await ", "")}writeFile({@stringFormattedFileName(view.fileName)}, {@variableField(view.contents)});
+    @else
+      $unhandled type: {@view.contents.type}
+    @end
+  @end
+@end
+
+@private stringFormattedFileName(fileName)
+  @if fileName.args.isEmpty
+    '{@fileName.format}'
+  @else
+    `{@fileName.format}`
+  @end
 @end
 
 @private variableField(arg)

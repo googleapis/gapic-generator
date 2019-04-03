@@ -11,3 +11,19 @@
     // {@comment}
   @end
 @end
+
+@snippet importList(fileImports)
+	@join import : fileImports
+		@if import.moduleName
+			const {@import.moduleName} = require('{@import.moduleName}');
+		@end
+	@end
+@end
+
+@snippet if(c, t, f)
+  @if c
+    {@t}
+  @else
+    {@f}
+  @end
+@end

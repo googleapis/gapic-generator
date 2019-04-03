@@ -604,7 +604,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     }
     Object[] formattedArgs =
         args.stream().map(a -> String.format("${%s}", a)).toArray(Object[]::new);
-    return ImmutableList.of(String.format(spec, formattedArgs));
+    return ImmutableList.<String>builder()
+        .add(String.format(spec, formattedArgs))
+        .addAll(args)
+        .build();
   }
 
   @Override

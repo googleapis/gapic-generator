@@ -275,6 +275,8 @@ public abstract class SampleTransformer {
         .sampleInitCode(initCodeView)
         .outputs(outputViews)
         .hasMultipleFileOutputs(outputContext.hasMultipleFileOutputs())
+        .isAsyncMethod(
+            form == CallingForm.LongRunningPromiseAwait) // Currently sed by Node.js only.
         .sampleImports(sampleImportSectionView)
         .regionTag(
             regionTagFromSpec(

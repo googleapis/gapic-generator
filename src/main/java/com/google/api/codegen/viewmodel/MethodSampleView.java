@@ -47,6 +47,9 @@ public abstract class MethodSampleView {
   /** Whether the output has multiple write-to-file statements. */
   public abstract boolean hasMultipleFileOutputs();
 
+  /** Node.js needs this. Can potentially be extended to C# as well. */
+  public abstract boolean isAsyncMethod();
+
   public static Builder newBuilder() {
     return new AutoValue_MethodSampleView.Builder();
   }
@@ -70,6 +73,8 @@ public abstract class MethodSampleView {
     public abstract Builder sampleFunctionDoc(SampleFunctionDocView val);
 
     public abstract Builder hasMultipleFileOutputs(boolean hasMultipleFileOutputs);
+
+    public abstract Builder isAsyncMethod(boolean val);
 
     public abstract MethodSampleView build();
   }

@@ -147,7 +147,11 @@ public class OutputTransformer {
         "Output to file: expected string or bytes, found %s",
         contents.type().getTypeName());
     outputContext.fileOutputTypes().add(contents.type());
-    return OutputView.WriteFileView.newBuilder().fileName(fileName).contents(contents).build();
+    return OutputView.WriteFileView.newBuilder()
+        .fileName(fileName)
+        .contents(contents)
+        .isFirst(!outputContext.hasMultipleFileOutputs())
+        .build();
   }
 
   private OutputView.StringFormatView stringFormatView(
@@ -201,7 +205,8 @@ public class OutputTransformer {
           "Bad format: `variable` can't be specified if `map` is specified.");
       Preconditions.checkArgument(
           !loop.getKey().isEmpty() || !loop.getValue().isEmpty(),
-          "Bad format: at least one of `key` and `value` must be specified if `collection` is specified.");
+          "Bad format: at least one of `key` and `value` must be specified if `collection` is"
+              + " specified.");
       return mapLoopView(loop, context, valueSet, outputContext.createWithNewChildScope(), form);
     } else {
       throw new IllegalArgumentException(
@@ -578,7 +583,8 @@ public class OutputTransformer {
       CallingForm form) {
     Preconditions.checkArgument(
         !context.getNamer().getSampleUsedVarNames(context, form).contains(identifier),
-        "%s: %s cannot define variable \"%s\": it is used by the sample template for calling form \"%s\".",
+        "%s: %s cannot define variable \"%s\": it is used by the sample template for calling form"
+            + " \"%s\".",
         methodName,
         valueSetId,
         identifier,

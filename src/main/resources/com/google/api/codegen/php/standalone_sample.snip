@@ -172,7 +172,7 @@
             // operation succeeded and returns no value
         @else
             $response = $operationResponse->getResult();
-            @if sample.output
+            @if sample.outputs
                 {@processResponse(sample)}
             @end
         @end
@@ -197,7 +197,7 @@
             // operation succeeded and returns no value
         @else
             $response = $newOperationResponse->getResult();
-            @if sample.output
+            @if sample.outputs
                 {@processResponse(sample)}
             @end
         @end
@@ -215,7 +215,7 @@
         {@methodCallSampleCode(apiMethod)};
 
     @end
-    @if sample.output
+    @if sample.outputs
         {@processResponse(sample)}
     @end
 @end
@@ -243,7 +243,7 @@
     $requests = [$request];
     $stream = {@methodCallSampleCode(apiMethod)};
     $response = $stream->writeAllAndReadResponse($requests);
-    @if sample.output
+    @if sample.outputs
         {@processResponse(sample)}
     @end
 @end
@@ -256,7 +256,7 @@
         $stream->write($request);
     }
     $response = $stream->readResponse();
-    @if sample.output
+    @if sample.outputs
         {@processResponse(sample)}
     @end
 @end
@@ -414,11 +414,11 @@
 @end
 
 @private processResponse(sample)
-    {@processOutputViews(sample.output)}
+    {@processOutputViews(sample.outputs)}
 @end
 
-@private processOutputViews(outputView)
-    @join view : outputView.statements on BREAK
+@private processOutputViews(outputViews)
+    @join view : outputViews on BREAK
         @switch view.kind
         @case "COMMENT"
             {@processCommentView(view)}

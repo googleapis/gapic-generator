@@ -54,6 +54,10 @@ public abstract class OutputContext {
     return !mapSpecs().isEmpty();
   }
 
+  public boolean hasFileOutput() {
+    return !fileOutputTypes().isEmpty();
+  }
+
   public boolean hasBytesFileOutput() {
     return fileOutputTypes().contains(BYTES_TYPE);
   }

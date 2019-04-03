@@ -60,6 +60,7 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<Pro
           new NodeJSApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
               .initCodeTransformer(new InitCodeTransformer(importSectionTransformer, false))
+              .sampleImportTransformer(new NodeJSSampleImportTransformer())
               .sampleType(SampleType.STANDALONE)
               .build());
   private final NodeJSMethodViewGenerator methodGenerator =
