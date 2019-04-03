@@ -1330,8 +1330,8 @@ class LibraryServiceClient(object):
 
     def get_shelf(
             self,
-            name,
             options_,
+            name=None,
             message=None,
             string_builder=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
@@ -1345,16 +1345,14 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.shelf_path('[SHELF_ID]')
-            >>>
             >>> # TODO: Initialize `options_`:
             >>> options_ = ''
             >>>
-            >>> response = client.get_shelf(name, options_)
+            >>> response = client.get_shelf(options_)
 
         Args:
-            name (str): The name of the shelf to retrieve.
             options_ (str): To test 'options' parameter name conflict.
+            name (str): The name of the shelf to retrieve.
             message (Union[dict, ~google.cloud.example.library_v1.types.SomeMessage]): Field to verify that message-type query parameter gets flattened.
 
                 If a dict is provided, it must be of the same form as the protobuf
@@ -1391,8 +1389,8 @@ class LibraryServiceClient(object):
             )
 
         request = library_pb2.GetShelfRequest(
-            name=name,
             options=options_,
+            name=name,
             message=message,
             string_builder=string_builder,
         )
@@ -5832,10 +5830,10 @@ class TestLibraryServiceClient(object):
 
     def test_get_shelf(self):
         # Setup Expected Response
-        name_2 = 'name2-1052831874'
+        name = 'name3373707'
         theme = 'theme110327241'
         internal_theme = 'internalTheme792518087'
-        expected_response = {'name': name_2, 'theme': theme, 'internal_theme': internal_theme}
+        expected_response = {'name': name, 'theme': theme, 'internal_theme': internal_theme}
         expected_response = library_pb2.Shelf(**expected_response)
 
         # Mock the API response
@@ -5846,14 +5844,13 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.shelf_path('[SHELF_ID]')
         options_ = 'options-1249474914'
 
-        response = client.get_shelf(name, options_)
+        response = client.get_shelf(options_)
         assert expected_response == response
 
         assert len(channel.requests) == 1
-        expected_request = library_pb2.GetShelfRequest(name=name, options=options_)
+        expected_request = library_pb2.GetShelfRequest(options=options_)
         actual_request = channel.requests[0][1]
         assert expected_request == actual_request
 
@@ -5866,11 +5863,10 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.shelf_path('[SHELF_ID]')
         options_ = 'options-1249474914'
 
         with pytest.raises(CustomException):
-            client.get_shelf(name, options_)
+            client.get_shelf(options_)
 
     def test_list_shelves(self):
         # Setup Expected Response

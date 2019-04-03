@@ -546,18 +546,18 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     $options = '';
-     *     $response = $libraryServiceClient->getShelf($formattedName, $options);
+     *     $response = $libraryServiceClient->getShelf($options);
      * } finally {
      *     $libraryServiceClient->close();
      * }
      * ```
      *
-     * @param string $name The name of the shelf to retrieve.
      * @param string $options To test 'options' parameter name conflict.
      * @param array $optionalArgs {
      *     Optional.
+     *     @type string $name
+     *          The name of the shelf to retrieve.
      *     @type SomeMessage $message
      *          Field to verify that message-type query parameter gets flattened.
      *     @type StringBuilder $stringBuilder
@@ -573,11 +573,13 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getShelf($name, $options, array $optionalArgs = [])
+    public function getShelf($options, array $optionalArgs = [])
     {
         $request = new GetShelfRequest();
-        $request->setName($name);
         $request->setOptions($options);
+        if (isset($optionalArgs['name'])) {
+            $request->setName($optionalArgs['name']);
+        }
         if (isset($optionalArgs['message'])) {
             $request->setMessage($optionalArgs['message']);
         }
@@ -4989,20 +4991,19 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         // Mock response
-        $name2 = 'name2-1052831874';
+        $name = 'name3373707';
         $theme = 'theme110327241';
         $internalTheme = 'internalTheme792518087';
         $expectedResponse = new Shelf();
-        $expectedResponse->setName($name2);
+        $expectedResponse->setName($name);
         $expectedResponse->setTheme($theme);
         $expectedResponse->setInternalTheme($internalTheme);
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
         $options = 'options-1249474914';
 
-        $response = $client->getShelf($formattedName, $options);
+        $response = $client->getShelf($options);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -5010,9 +5011,6 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetShelf', $actualFuncCall);
 
-        $actualValue = $actualRequestObject->getName();
-
-        $this->assertProtobufEquals($formattedName, $actualValue);
         $actualValue = $actualRequestObject->getOptions();
 
         $this->assertProtobufEquals($options, $actualValue);
@@ -5043,11 +5041,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
         $options = 'options-1249474914';
 
         try {
-            $client->getShelf($formattedName, $options);
+            $client->getShelf($options);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

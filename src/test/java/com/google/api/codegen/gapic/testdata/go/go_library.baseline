@@ -2334,11 +2334,11 @@ func TestLibraryServiceCreateShelfError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceGetShelf(t *testing.T) {
-    var name2 string = "name2-1052831874"
+    var name string = "name3373707"
     var theme string = "theme110327241"
     var internalTheme string = "internalTheme792518087"
     var expectedResponse = &librarypb.Shelf{
-        Name: name2,
+        Name: name,
         Theme: theme,
         InternalTheme: internalTheme,
     }
@@ -2348,10 +2348,8 @@ func TestLibraryServiceGetShelf(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
     var options string = "options-1249474914"
     var request = &librarypb.GetShelfRequest{
-        Name: formattedName,
         Options: options,
     }
 
@@ -2379,10 +2377,8 @@ func TestLibraryServiceGetShelfError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
     var options string = "options-1249474914"
     var request = &librarypb.GetShelfRequest{
-        Name: formattedName,
         Options: options,
     }
 

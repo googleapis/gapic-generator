@@ -4172,10 +4172,10 @@ class LibraryServiceClient {
    *
    * @param {Object} request
    *   The request object that will be sent.
-   * @param {string} request.name
-   *   The name of the shelf to retrieve.
    * @param {string} request.options
    *   To test 'options' parameter name conflict.
+   * @param {string} [request.name]
+   *   The name of the shelf to retrieve.
    * @param {Object} [request.message]
    *   Field to verify that message-type query parameter gets flattened.
    *
@@ -4201,13 +4201,8 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.shelfPath('[SHELF_ID]');
    * const options = '';
-   * const request = {
-   *   name: formattedName,
-   *   options: options,
-   * };
-   * client.getShelf(request)
+   * client.getShelf({options: options})
    *   .then(responses => {
    *     const response = responses[0];
    *     // doThingsWith(response)
@@ -6798,19 +6793,17 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.shelfPath('[SHELF_ID]');
       const options = 'options-1249474914';
       const request = {
-        name: formattedName,
         options: options,
       };
 
       // Mock response
-      const name2 = 'name2-1052831874';
+      const name = 'name3373707';
       const theme = 'theme110327241';
       const internalTheme = 'internalTheme792518087';
       const expectedResponse = {
-        name: name2,
+        name: name,
         theme: theme,
         internalTheme: internalTheme,
       };
@@ -6835,10 +6828,8 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.shelfPath('[SHELF_ID]');
       const options = 'options-1249474914';
       const request = {
-        name: formattedName,
         options: options,
       };
 

@@ -3222,10 +3222,10 @@ module Library
 
       # Gets a shelf.
       #
-      # @param name [String]
-      #   The name of the shelf to retrieve.
       # @param options_ [String]
       #   To test 'options' parameter name conflict.
+      # @param name [String]
+      #   The name of the shelf to retrieve.
       # @param message [Google::Example::Library::V1::SomeMessage | Hash]
       #   Field to verify that message-type query parameter gets flattened.
       #   A hash of the same form as `Google::Example::Library::V1::SomeMessage`
@@ -3245,22 +3245,21 @@ module Library
       #   require "library"
       #
       #   library_client = Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #
       #   # TODO: Initialize `options_`:
       #   options_ = ''
-      #   response = library_client.get_shelf(formatted_name, options_)
+      #   response = library_client.get_shelf(options_)
 
       def get_shelf \
-          name,
           options_,
+          name: nil,
           message: nil,
           string_builder: nil,
           options: nil,
           &block
         req = {
-          name: name,
           options: options_,
+          name: name,
           message: message,
           string_builder: string_builder
         }.delete_if { |_, v| v.nil? }
@@ -6109,15 +6108,14 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_shelf without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       options_ = ''
 
       # Create expected grpc response
-      name_2 = "name2-1052831874"
+      name = "name3373707"
       theme = "theme110327241"
       internal_theme = "internalTheme792518087"
       expected_response = {
-        name: name_2,
+        name: name,
         theme: theme,
         internal_theme: internal_theme
       }
@@ -6126,7 +6124,6 @@ describe Library::V1::LibraryServiceClient do
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetShelfRequest, request)
-        assert_equal(formatted_name, request.name)
         assert_equal(options_, request.options)
         OpenStruct.new(execute: expected_response)
       end
@@ -6140,13 +6137,13 @@ describe Library::V1::LibraryServiceClient do
           client = Library.new(version: :v1)
 
           # Call method
-          response = client.get_shelf(formatted_name, options_)
+          response = client.get_shelf(options_)
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.get_shelf(formatted_name, options_) do |response, operation|
+          client.get_shelf(options_) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -6157,13 +6154,11 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_shelf with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       options_ = ''
 
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetShelfRequest, request)
-        assert_equal(formatted_name, request.name)
         assert_equal(options_, request.options)
         raise custom_error
       end
@@ -6178,7 +6173,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
-            client.get_shelf(formatted_name, options_)
+            client.get_shelf(options_)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
