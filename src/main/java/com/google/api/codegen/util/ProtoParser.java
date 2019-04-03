@@ -425,8 +425,7 @@ public class ProtoParser {
   public ImmutableMap<String, String> getFieldNamePatterns(Method method) {
     ImmutableMap.Builder<String, String> resultCollector = ImmutableMap.builder();
     // Only look two levels deep in the request object, so fields of fields of the request object.
-    int depth = 2;
-    getFieldNamePatterns(method.getInputMessage(), resultCollector, "", depth);
+    getFieldNamePatterns(method.getInputMessage(), resultCollector, "", 2);
     return resultCollector.build();
   }
 
