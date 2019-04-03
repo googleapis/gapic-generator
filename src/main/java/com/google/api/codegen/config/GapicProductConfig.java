@@ -726,23 +726,38 @@ public abstract class GapicProductConfig implements ProductConfig {
       file = protoFiles.get(0);
     }
 
-    ImmutableMap.Builder<String, SingleResourceNameConfig>
-        fullyQualifiedSingleResourceNameConfigsFromProtoFileBuilder = ImmutableMap.builder();
-    ImmutableMap.Builder<String, FixedResourceNameConfig>
-        fullyQualifiedFixedNameConfigsFromProtoFileBuilder = ImmutableMap.builder();
+    // Maps of fully qualified Resource names to derived configs.
+    LinkedHashMap<String, SingleResourceNameConfig>
+        fullyQualifiedSingleResourcesFromProtoFileBuilder = new LinkedHashMap<>();
+    LinkedHashMap<String, FixedResourceNameConfig>
+        fullyQualifiedFixedResourcesFromProtoFileBuilder = new LinkedHashMap<>();
+    // Create the SingleResourceNameConfigs.
+    for (Resource resource : resourceDefs.keySet()) {
+      String resourcePath = resource.getPattern();
+      ProtoFile protoFile = resourceDefs.get(resource);
+      if (FixedResourceNameConfig.isFixedResourceNameConfig(resourcePath)) {
+        createFixedResourceNameConfigFromProtoFile(
+            diagCollector,
+            resource,
+            protoFile,
+            protoParser,
+            fullyQualifiedFixedResourcesFromProtoFileBuilder);
+      } else {
+        createSingleResourceNameConfigFromProtoFile(
+            diagCollector,
+            resource,
+            protoFile,
+            protoParser,
+            fullyQualifiedSingleResourcesFromProtoFileBuilder);
+      }
+    }
 
-    createSingleAndFixedResourceNameConfigsFromProtoFile(
-        diagCollector,
-        resourceDefs,
-        fullyQualifiedSingleResourceNameConfigsFromProtoFileBuilder,
-        fullyQualifiedFixedNameConfigsFromProtoFileBuilder,
-        protoParser);
     ImmutableMap<String, SingleResourceNameConfig>
         fullyQualifiedSingleResourceNameConfigsFromProtoFile =
-            fullyQualifiedSingleResourceNameConfigsFromProtoFileBuilder.build();
+            ImmutableMap.copyOf(fullyQualifiedSingleResourcesFromProtoFileBuilder);
     ImmutableMap<String, FixedResourceNameConfig>
         fullyQualifiedFixedResourceNameConfigsFromProtoFile =
-            fullyQualifiedFixedNameConfigsFromProtoFileBuilder.build();
+            ImmutableMap.copyOf(fullyQualifiedFixedResourcesFromProtoFileBuilder);
 
     ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigsFromProtoFile =
         createResourceNameOneofConfigsFromProtoFile(
@@ -850,38 +865,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     resourceNameConfigs.putAll(finalFixedResourceNameConfigs);
     resourceNameConfigs.putAll(finalResourceOneofNameConfigs);
     return resourceNameConfigs.build();
-  }
-
-  // TODO(andrealin): Separate out the fixed and single resource defs before this.
-  // Return map of fully qualified SingleResourceNameConfig name to its derived config.
-  private static void createSingleAndFixedResourceNameConfigsFromProtoFile(
-      DiagCollector diagCollector,
-      Map<Resource, ProtoFile> resourceDefs,
-      ImmutableMap.Builder<String, SingleResourceNameConfig> singleResourceNameConfigBuilder,
-      ImmutableMap.Builder<String, FixedResourceNameConfig> fixedResourceNameConfigBuilder,
-      ProtoParser protoParser) {
-
-    // Maps of fully qualified Resource names to derived configs.
-    LinkedHashMap<String, SingleResourceNameConfig> fullyQualifiedSingleResources =
-        new LinkedHashMap<>();
-    LinkedHashMap<String, FixedResourceNameConfig> fullyQualifiedFixedResources =
-        new LinkedHashMap<>();
-    // Create the SingleResourceNameConfigs.
-    for (Resource resource : resourceDefs.keySet()) {
-      String resourcePath = resource.getPattern();
-      ProtoFile protoFile = resourceDefs.get(resource);
-      if (FixedResourceNameConfig.isFixedResourceNameConfig(resourcePath)) {
-        // TODO(andrealin): create the fixed resource name config
-        createFixedResourceNameConfigFromProtoFile(
-            diagCollector, resource, protoFile, protoParser, fullyQualifiedFixedResources);
-      } else {
-        createSingleResourceNameConfigFromProtoFile(
-            diagCollector, resource, protoFile, protoParser, fullyQualifiedSingleResources);
-      }
-    }
-
-    singleResourceNameConfigBuilder.putAll(fullyQualifiedSingleResources);
-    fixedResourceNameConfigBuilder.putAll(fullyQualifiedFixedResources);
   }
 
   // Return map of fully qualified ResourceNameOneofConfig name to its derived config.
