@@ -28,7 +28,7 @@ language_settings:
     package_name: Google.Example.Library.V1
 license_header:
   copyright_file: copyright-google.txt # Test that the deprecated field is still parseable.
-  license_file: license-header-apache-2.0.txt
+  license_file: license-header-apache-2.0.txt # Test that the deprecated field is still parseable.
 collections:
   - name_pattern: shelves/{shelf_id}
     entity_name: shelf
@@ -111,19 +111,13 @@ interfaces:
       groups:
       - parameters:
         - name
-        parameter_resource_name_treatment:
-          name: STATIC_TYPES
       - parameters:
         - name
         - message
-        parameter_resource_name_treatment:
-          name: VALIDATE
       - parameters:
         - name
         - message
         - string_builder
-        parameter_resource_name_treatment:
-          name: NONE
     required_fields:
       - name
       - options
@@ -198,8 +192,6 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 6000
-    # Test resource_name_treatment set to NONE with field_name_patterns
-    resource_name_treatment: NONE
     field_name_patterns:
       name: shelf
       shelf.name: shelf
@@ -502,8 +494,6 @@ interfaces:
         batched_field: comments
         discriminator_fields:
           - name
-    # Test resource_name_treatment unset, so using default
-    # resource_name_treatment: VALIDATE
     field_name_patterns:
       name: book
     sample_code_init_fields:
@@ -788,7 +778,6 @@ interfaces:
     required_fields:
     - resource
     - tag
-    resource_name_treatment: VALIDATE
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -813,7 +802,6 @@ interfaces:
     required_fields:
     - resource
     - label
-    resource_name_treatment: VALIDATE
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -841,7 +829,6 @@ interfaces:
     long_running:
       return_type: google.example.library.v1.Book
       metadata_type: google.example.library.v1.GetBigBookMetadata
-      implements_cancel: true
       initial_poll_delay_millis: 3000
       poll_delay_multiplier: 1.3
       max_poll_delay_millis: 30000
@@ -931,7 +918,6 @@ interfaces:
     long_running:
       return_type: google.protobuf.Empty
       metadata_type: google.example.library.v1.GetBigBookMetadata
-      implements_delete: true
       initial_poll_delay_millis: 3000
       poll_delay_multiplier: 1.3
       max_poll_delay_millis: 60000

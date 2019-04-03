@@ -407,25 +407,6 @@
         return op.lro.Name()
     }
 
-    @if lro.implementsCancel
-        // Cancel starts asynchronous cancellation on a long-running operation.
-        // The server makes a best effort to cancel the operation, but success is not guaranteed.
-        // Clients can use Poll or other methods to check whether the cancellation succeeded or whether the operation
-        // completed despite cancellation. On successful cancellation, the operation is not deleted;
-        // instead, op.Poll returns an error with code Canceled.
-        func (op *{@lro.clientReturnTypeName}) Cancel(ctx context.Context, opts ...gax.CallOption) error {
-            return op.lro.Cancel(ctx, opts...)
-        }
-    @end
-
-    @if lro.implementsDelete
-        // Delete deletes a long-running operation.
-        // This method indicates that the client is no longer interested in the operation result.
-        // It does not cancel the operation.
-        func (op *{@lro.clientReturnTypeName}) Delete(ctx context.Context, opts ...gax.CallOption) error {
-            return op.lro.Delete(ctx, opts...)
-        }
-    @end
 @end
 
 @private pollMetadataDoc(lro)

@@ -73,7 +73,7 @@ message ConfigProto {
   reserved 5;
 
   // The configuration for the license header to put on generated files.
-  LicenseHeaderProto license_header = 7;
+  LicenseHeaderProto license_header = 7; // DEPRECATED
 
   // A list of API interface configurations.
   repeated InterfaceConfigProto interfaces = 10;
@@ -119,7 +119,7 @@ message LanguageSettingsProto {
   map<string, string> interface_names = 4;
 
   // Overrides ConfigProto::license_header.
-  LicenseHeaderProto license_header_override = 5;
+  LicenseHeaderProto license_header_override = 5; // DEPRECATED.
 
   // The release level of the client in the language
   ReleaseLevel release_level = 6;
@@ -138,13 +138,13 @@ enum ReleaseLevel {
   DEPRECATED = 4;
 }
 
+// DEPRECATED.
 message LicenseHeaderProto {
   // The file containing the copyright line(s).
   string copyright_file = 1; // DEPRECATED. The Google copyright will always be used.
 
   // The file containing the raw license header without any copyright line(s).
-  // OPTIONAL. If value is not given, the Apache 2.0 license will be used.
-  string license_file = 2;
+  string license_file = 2; // DEPRECATED. The Apache 2.0 license will always be used.
 }
 
 message InterfaceConfigProto {
@@ -666,10 +666,10 @@ message LongRunningConfigProto {
   string metadata_type = 2;
 
   // Whether or not the server implements delete.
-  bool implements_delete = 3;
+  bool implements_delete = 3; // DEPRECATED.
 
   // Whether or not the server implements cancel.
-  bool implements_cancel = 4;
+  bool implements_cancel = 4; // DEPRECATED.
 
   // Initial delay after which first poll request will be made.
   uint64 initial_poll_delay_millis = 5;
