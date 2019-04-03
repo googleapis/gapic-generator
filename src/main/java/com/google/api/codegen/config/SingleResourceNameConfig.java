@@ -43,11 +43,9 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       CollectionConfigProto collectionConfigProto,
       @Nullable ProtoFile file,
       TargetLanguage language) {
-
     SingleResourceNameConfig.Builder builder = newBuilder();
     String namePattern = collectionConfigProto.getNamePattern();
     String entityId = collectionConfigProto.getEntityName();
-
     PathTemplate nameTemplate;
     try {
       nameTemplate = PathTemplate.create(namePattern);
@@ -59,9 +57,26 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     builder.setNamePattern(namePattern);
     builder.setNameTemplate(nameTemplate);
     builder.setEntityId(entityId);
-    builder.setEntityName(toLowerUnderscore(entityId));
     builder.setAssignedProtoFile(file);
-    builder.withLanguageOverrides(collectionConfigProto, language);
+
+    String entityName = entityId;
+    String commonResourceName = null;
+    if (language != null) {
+      String languageStr = language.toString().toLowerCase();
+      for (CollectionLanguageOverridesProto override :
+          collectionConfigProto.getLanguageOverridesList()) {
+        if (languageStr.equals(override.getLanguage())) {
+          if (!Strings.isNullOrEmpty(override.getEntityName())) {
+            entityName = override.getEntityName();
+          }
+          if (!Strings.isNullOrEmpty(override.getCommonResourceName())) {
+            commonResourceName = override.getCommonResourceName();
+          }
+        }
+      }
+    }
+    builder.setCommonResourceName(commonResourceName);
+    builder.setEntityName(entityName);
 
     return builder.build();
   }
@@ -109,7 +124,10 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   @Override
   public abstract String getEntityId();
 
-  /** Returns the name used as a basis for generating methods. Will be in lower-underscore */
+  /**
+   * Returns the name used as a basis for generating methods. Will be in lower-underscore
+   * TODO(andrealin): make this return a Name object.
+   */
   @Override
   public abstract String getEntityName();
 
@@ -145,25 +163,6 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     public abstract Builder setCommonResourceName(String val);
 
     public abstract Builder setAssignedProtoFile(ProtoFile val);
-
-    // Overwrite the entity name and common resource name fields if there are applicable
-    // language-specific overrides.
-    public Builder withLanguageOverrides(
-        CollectionConfigProto collectionConfigProto, TargetLanguage language) {
-      String languageStr = language.toString().toLowerCase();
-      for (CollectionLanguageOverridesProto override :
-          collectionConfigProto.getLanguageOverridesList()) {
-        if (languageStr.equals(override.getLanguage())) {
-          if (!Strings.isNullOrEmpty(override.getEntityName())) {
-            this.setEntityName(toLowerUnderscore(override.getEntityName()));
-          }
-          if (!Strings.isNullOrEmpty(override.getCommonResourceName())) {
-            this.setCommonResourceName(override.getCommonResourceName());
-          }
-        }
-      }
-      return this;
-    }
 
     public abstract SingleResourceNameConfig build();
   }
