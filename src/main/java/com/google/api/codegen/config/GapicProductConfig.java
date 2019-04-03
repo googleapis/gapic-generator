@@ -731,7 +731,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         fullyQualifiedSingleResourcesFromProtoFileBuilder = new LinkedHashMap<>();
     LinkedHashMap<String, FixedResourceNameConfig>
         fullyQualifiedFixedResourcesFromProtoFileBuilder = new LinkedHashMap<>();
-    // Create the SingleResourceNameConfigs.
+    // Create the Single- and Fixed- ResourceNameConfigs
     for (Resource resource : resourceDefs.keySet()) {
       String resourcePath = resource.getPattern();
       ProtoFile protoFile = resourceDefs.get(resource);
