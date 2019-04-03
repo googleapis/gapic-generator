@@ -22,7 +22,6 @@ import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
-import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.InterfaceConfigProto;
@@ -124,10 +123,10 @@ public class ResourceNameMessageConfigsTest {
                 CollectionConfigProto.newBuilder()
                     .setNamePattern(ARCHIVED_BOOK_PATH)
                     .setEntityName("archived_book"))
-            .addFixedResourceNameValues(
-                FixedResourceNameValueProto.newBuilder()
+            .addCollections(
+                CollectionConfigProto.newBuilder()
                     .setEntityName("deleted_book")
-                    .setFixedValue("_deleted-book_"))
+                    .setNamePattern("_deleted-book_"))
             .addInterfaces(
                 InterfaceConfigProto.newBuilder()
                     .addCollections(

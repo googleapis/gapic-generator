@@ -176,8 +176,12 @@ public abstract class GapicMethodConfig extends MethodConfig {
       error = true;
     }
 
-    ImmutableMap<String, String> fieldNamePatterns =
-        ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+    ImmutableMap<String, String> fieldNamePatterns;
+    if (protoParser.isProtoAnnotationsEnabled()) {
+      fieldNamePatterns = protoParser.getFieldNamePatterns(method);
+    } else {
+      fieldNamePatterns = ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+    }
 
     ResourceNameTreatment defaultResourceNameTreatment =
         defaultResourceNameTreatment(methodConfigProto, method, protoParser, defaultPackageName);
