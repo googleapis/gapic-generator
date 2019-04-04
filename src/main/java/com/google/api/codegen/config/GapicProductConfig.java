@@ -28,6 +28,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
+import com.google.api.codegen.util.ConfigVersionValidator;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -160,6 +161,22 @@ public abstract class GapicProductConfig implements ProductConfig {
       @Nullable String clientPackage,
       TargetLanguage language) {
 
+    String configSchemaVersion = null;
+    if (configProto != null && Strings.isNullOrEmpty(configProto.getConfigSchemaVersion())) {
+      if (!configProto.equals(ConfigProto.getDefaultInstance())) {
+        configSchemaVersion = configProto.getConfigSchemaVersion();
+        if (Strings.isNullOrEmpty(configSchemaVersion)) {
+          model
+              .getDiagReporter()
+              .getDiagCollector()
+              .addDiag(
+                  Diag.error(
+                      SimpleLocation.TOPLEVEL,
+                      "config_schema_version field is required in GAPIC yaml."));
+        }
+      }
+    }
+
     final String defaultPackage;
     SymbolTable symbolTable = model.getSymbolTable();
 
@@ -205,6 +222,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       // By default, enable proto annotations parsing when no GAPIC config is given.
       protoParser = new ProtoParser(true);
       configProto = ConfigProto.getDefaultInstance();
+    } else if (new ConfigVersionValidator().isV2Config(configProto)) {
+      protoParser = new ProtoParser(true);
     } else {
       protoParser = new ProtoParser(false);
     }
@@ -284,9 +303,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             language,
             protoParser);
 
-    ImmutableList<String> copyrightLines;
-    ImmutableList<String> licenseLines;
-    String configSchemaVersion = null;
+    ImmutableList<String> copyrightLines = null;
+    ImmutableList<String> licenseLines = null;
 
     LicenseHeaderUtil licenseHeaderUtil = new LicenseHeaderUtil();
     try {
@@ -297,21 +315,6 @@ public abstract class GapicProductConfig implements ProductConfig {
           .getDiagReporter()
           .getDiagCollector()
           .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
-      e.printStackTrace(System.err);
-      throw new RuntimeException(e);
-    }
-
-    if (!configProto.equals(ConfigProto.getDefaultInstance())) {
-      configSchemaVersion = configProto.getConfigSchemaVersion();
-      if (Strings.isNullOrEmpty(configSchemaVersion)) {
-        model
-            .getDiagReporter()
-            .getDiagCollector()
-            .addDiag(
-                Diag.error(
-                    SimpleLocation.TOPLEVEL,
-                    "config_schema_version field is required in GAPIC yaml."));
-      }
     }
 
     Boolean enableStringFormatFunctionsOverride = null;
@@ -733,8 +736,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     if (diagCollector.getErrorCount() > 0) {
-      ToolUtil.reportDiags(diagCollector, true);
-      throw new RuntimeException();
+      return null;
     }
 
     // TODO(andrealin): Remove this once all fixed resource names are removed.
@@ -755,7 +757,6 @@ public abstract class GapicProductConfig implements ProductConfig {
             fixedResourceNameConfigs,
             file);
     if (diagCollector.getErrorCount() > 0) {
-      ToolUtil.reportDiags(diagCollector, true);
       return null;
     }
 
@@ -822,7 +823,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     if (diagCollector.getErrorCount() > 0) {
-      ToolUtil.reportDiags(diagCollector, true);
       return null;
     }
     return ImmutableMap.copyOf(fullyQualifiedSingleResources);
