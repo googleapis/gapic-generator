@@ -38,7 +38,6 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
-import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
@@ -714,8 +713,8 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   /**
-   * Create all the ResourceNameOneofConfig from the protofile and GAPIC config, and let the GAPIC
-   * config resourceNames override the protofile resourceNames in event of clashes.
+   * Create all the ResourceNameOneofConfig from the protofile and GAPIC config. Apply the GAPIC
+   * config resourceNames' language-specific overrides.
    */
   @VisibleForTesting
   @Nullable
@@ -853,13 +852,13 @@ public abstract class GapicProductConfig implements ProductConfig {
    * Create all the ResourceNameOneofConfig from the protofile and GAPIC config, and let the GAPIC
    * config resourceNames override the protofile resourceNames in event of clashes.
    */
-  @VisibleForTesting
   @Nullable
-  static ImmutableMap<String, ResourceNameConfig> createResourceNameConfigsForGapicConfigOnly(
-      DiagCollector diagCollector,
-      ConfigProto configProto,
-      @Nullable List<ProtoFile> protoFiles,
-      TargetLanguage language) {
+  private static ImmutableMap<String, ResourceNameConfig>
+      createResourceNameConfigsForGapicConfigOnly(
+          DiagCollector diagCollector,
+          ConfigProto configProto,
+          @Nullable List<ProtoFile> protoFiles,
+          TargetLanguage language) {
     ProtoFile file = null;
     if (protoFiles != null) {
       file = protoFiles.get(0);
@@ -989,7 +988,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     if (diagCollector.getErrorCount() > 0) {
-      ToolUtil.reportDiags(diagCollector, true);
       return null;
     }
 
