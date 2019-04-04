@@ -2587,6 +2587,7 @@ class LibraryServiceClient(object):
 
     def stream_shelves(
             self,
+            name,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -2599,11 +2600,14 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> for element in client.stream_shelves():
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>>
+            >>> for element in client.stream_shelves(name):
             ...     # process element
             ...     pass
 
         Args:
+            name (str): The name of the shelf to stream.
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will not
                 be retried.
@@ -2621,6 +2625,7 @@ class LibraryServiceClient(object):
                     failed for any reason.
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
         if 'stream_shelves' not in self._inner_api_calls:
@@ -2631,7 +2636,9 @@ class LibraryServiceClient(object):
                 client_info=self._client_info,
             )
 
-        request = library_pb2.StreamShelvesRequest()
+        request = library_pb2.StreamShelvesRequest(
+            name=name,
+        )
         return self._inner_api_calls['stream_shelves'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def stream_books(
@@ -2699,7 +2706,6 @@ class LibraryServiceClient(object):
             metadata=None):
         """
         Test bidi-streaming.
-        gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
         EXPERIMENTAL: This method interface might change in the future.
 
@@ -2708,8 +2714,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> # TODO: Initialize `name`:
-            >>> name = ''
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>> request = {'name': name}
             >>>
             >>> requests = [request]
@@ -2758,7 +2763,6 @@ class LibraryServiceClient(object):
             metadata=None):
         """
         Test client streaming.
-        gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
         EXPERIMENTAL: This method interface might change in the future.
 
@@ -2767,8 +2771,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> # TODO: Initialize `name`:
-            >>> name = ''
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>> request = {'name': name}
             >>>
             >>> requests = [request]
@@ -3846,7 +3849,7 @@ config = {
         },
         "StreamShelves": {
           "timeout_millis": 30000,
-          "retry_codes_name": "idempotent",
+          "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
         "StreamBooks": {
@@ -3861,7 +3864,7 @@ config = {
         },
         "MonologAboutBook": {
           "timeout_millis": 30000,
-          "retry_codes_name": "non_idempotent",
+          "retry_codes_name": "idempotent",
           "retry_params_name": "default"
         },
         "BabbleAboutBook": {
@@ -4293,7 +4296,6 @@ class LibraryServiceGrpcTransport(object):
         """Return the gRPC stub for :meth:`LibraryServiceClient.discuss_book`.
 
         Test bidi-streaming.
-        gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
         Returns:
             Callable: A callable which accepts the appropriate
@@ -4307,7 +4309,6 @@ class LibraryServiceGrpcTransport(object):
         """Return the gRPC stub for :meth:`LibraryServiceClient.monolog_about_book`.
 
         Test client streaming.
-        gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
         Returns:
             Callable: A callable which accepts the appropriate
@@ -4796,7 +4797,7 @@ def sample_discuss_book(image_file_name):
 
   if isinstance(image_file_name, six.binary_type):
     image_file_name = image_file_name.decode('utf-8')
-  name = 'BASIC'
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
   file_name = 'comment_file'
   with io.open(file_name, 'rb') as f:
     comment = f.read()
@@ -5264,7 +5265,7 @@ def sample_monolog_about_book():
 
   client = library_v1.LibraryServiceClient()
 
-  name = 'BASIC'
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
   request = {'name': name}
 
   requests = [request]
@@ -5570,7 +5571,9 @@ def sample_stream_shelves():
 
   client = library_v1.LibraryServiceClient()
 
-  for response_item in client.stream_shelves():
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+  for response_item in client.stream_shelves(name):
     print(response_item)
 
   # [END sample_core]
@@ -6525,13 +6528,16 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
 
-        response = client.stream_shelves()
+        # Setup Request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        response = client.stream_shelves(name)
         resources = list(response)
         assert len(resources) == 1
         assert expected_response == resources[0]
 
         assert len(channel.requests) == 1
-        expected_request = library_pb2.StreamShelvesRequest()
+        expected_request = library_pb2.StreamShelvesRequest(name=name)
         actual_request = channel.requests[0][1]
         assert expected_request == actual_request
 
@@ -6543,8 +6549,11 @@ class TestLibraryServiceClient(object):
             create_channel.return_value = channel
             client = library_v1.LibraryServiceClient()
 
+        # Setup request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
         with pytest.raises(CustomException):
-            client.stream_shelves()
+            client.stream_shelves(name)
 
     def test_stream_books(self):
         # Setup Expected Response
@@ -6605,7 +6614,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = 'name3373707'
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         request = {'name': name}
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
@@ -6630,7 +6639,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = 'name3373707'
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         request = {'name': name}
 
         request = library_pb2.DiscussBookRequest(**request)
@@ -6654,7 +6663,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = 'name3373707'
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         request = {'name': name}
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
@@ -6677,7 +6686,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = 'name3373707'
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         request = {'name': name}
 
         request = library_pb2.DiscussBookRequest(**request)
