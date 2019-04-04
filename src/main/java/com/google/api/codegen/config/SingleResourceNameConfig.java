@@ -103,7 +103,6 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
         .setAssignedProtoFile(file)
         .setEntityId(resource.getSymbol())
         .setEntityName(ResourceNameMessageConfig.entityNameToName(resource.getSymbol()))
-        .setCommonResourceName(null)
         .build();
   }
 
