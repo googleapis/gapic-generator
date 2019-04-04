@@ -1479,7 +1479,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
    *   Book response = libraryServiceClient.moveBook(name, otherShelfName);
    * }
@@ -1489,7 +1489,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * @param otherShelfName The name of the destination shelf.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final Book moveBook(BookOneOfName name, ShelfName otherShelfName) {
+  public final Book moveBook(BookName name, ShelfName otherShelfName) {
 
     MoveBookRequest request =
         MoveBookRequest.newBuilder()
@@ -1506,7 +1506,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookOneOfName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
    *   Book response = libraryServiceClient.moveBook(name.toString(), otherShelfName.toString());
    * }
@@ -1842,7 +1842,6 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   BookOneOfName name = DeletedBookName.of();
-<<<<<<< HEAD
    *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookFromAnywhere response = libraryServiceClient.getBookFromAnywhere(name, altBookName);
    * }
@@ -1898,9 +1897,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-=======
->>>>>>> master
+   *   BookOneOfName name = DeletedBookName.of();
    *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
@@ -1948,7 +1945,6 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   BookOneOfName name = DeletedBookName.of();
-<<<<<<< HEAD
    *   BookFromAnywhere response = libraryServiceClient.getBookFromAbsolutelyAnywhere(name);
    * }
    * </code></pre>
@@ -1996,9 +1992,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-=======
->>>>>>> master
+   *   BookOneOfName name = DeletedBookName.of();
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -7236,7 +7230,7 @@ public class LibraryServiceClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookOneOfName name = DeletedBookName.of();
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
 
     Book actualResponse =
@@ -7247,7 +7241,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     MoveBookRequest actualRequest = (MoveBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookOneOfNames.parse(actualRequest.getName()));
+    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
     Assert.assertEquals(otherShelfName, ShelfName.parse(actualRequest.getOtherShelfName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -7262,7 +7256,7 @@ public class LibraryServiceClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookOneOfName name = DeletedBookName.of();
+      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
       ShelfName otherShelfName = ShelfName.of("[SHELF_ID]");
 
       client.moveBook(name, otherShelfName);
