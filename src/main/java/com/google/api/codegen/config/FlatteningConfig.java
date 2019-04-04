@@ -145,9 +145,6 @@ public abstract class FlatteningConfig {
     List<List<String>> methodSignatures =
         protoParser.getMethodSignatures(methodModel.getProtoMethod());
     for (List<String> signature : methodSignatures) {
-      if (signature.isEmpty()) {
-        break;
-      }
       FlatteningConfig groupConfig =
           FlatteningConfig.createFlatteningFromProtoFile(
               diagCollector,
