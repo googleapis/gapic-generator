@@ -77,8 +77,6 @@ public abstract class ResourceNameMessageConfig {
     return new AutoValue_ResourceNameMessageConfig(message.getFullName(), fieldEntityMap);
   }
 
-  // Proto annotations use UpperCamelCase for resource names,
-  // and GAPIC config uses lower_snake_case, so we have to support both formats.
   static String getFullyQualifiedMessageName(String defaultPackage, String messageName) {
     if (messageName.contains(".")) {
       return messageName;
@@ -87,7 +85,9 @@ public abstract class ResourceNameMessageConfig {
     }
   }
 
-  public static Name entityNameToName(String original) {
+  // Proto annotations use UpperCamelCase for resource names,
+  // and GAPIC config uses lower_snake_case, so we have to support both formats.
+  static Name entityNameToName(String original) {
     if (original.contains("_")) {
       return Name.from(original);
     } else {
