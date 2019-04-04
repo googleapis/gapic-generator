@@ -1014,7 +1014,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       if (oneofConfig == null) {
         continue;
       }
-      oneofConfigBuilder.put(oneofConfig.getEntityName(), oneofConfig);
+      oneofConfigBuilder.put(oneofConfig.getEntityId(), oneofConfig);
     }
     return oneofConfigBuilder.build();
   }

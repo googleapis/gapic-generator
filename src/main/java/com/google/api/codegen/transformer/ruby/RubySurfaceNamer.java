@@ -94,13 +94,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getFormatFunctionName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
+    return staticFunctionName(resourceNameConfig.getEntityName().join("path"));
   }
 
   @Override
   public String getParseFunctionName(String var, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(
-        Name.from("match", var, "from", resourceNameConfig.getEntityName(), "name"));
+        Name.from("match", var, "from").join(resourceNameConfig.getEntityName()).join("name"));
   }
 
   @Override
