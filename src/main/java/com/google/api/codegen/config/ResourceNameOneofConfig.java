@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionOneofProto;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -35,7 +36,7 @@ import javax.annotation.Nullable;
 public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
 
   @Override
-  public abstract String getEntityName();
+  public abstract Name getEntityName();
 
   public abstract List<ResourceNameConfig> getResourceNameConfigs();
 
@@ -98,7 +99,8 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       return null;
     }
 
-    return new AutoValue_ResourceNameOneofConfig(oneofName, oneofName, configList, file);
+    return new AutoValue_ResourceNameOneofConfig(
+        oneofName, ResourceNameMessageConfig.entityNameToName(oneofName), configList, file);
   }
 
   @Nullable
@@ -162,7 +164,8 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       }
     }
 
-    return new AutoValue_ResourceNameOneofConfig(oneOfName, oneOfName, configList, file);
+    return new AutoValue_ResourceNameOneofConfig(
+        oneOfName, ResourceNameMessageConfig.entityNameToName(oneOfName), configList, file);
   }
 
   @Override

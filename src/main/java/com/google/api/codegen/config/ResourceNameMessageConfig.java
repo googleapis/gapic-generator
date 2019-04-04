@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
@@ -76,11 +77,21 @@ public abstract class ResourceNameMessageConfig {
     return new AutoValue_ResourceNameMessageConfig(message.getFullName(), fieldEntityMap);
   }
 
+  // Proto annotations use UpperCamelCase for resource names,
+  // and GAPIC config uses lower_snake_case, so we have to support both formats.
   static String getFullyQualifiedMessageName(String defaultPackage, String messageName) {
     if (messageName.contains(".")) {
       return messageName;
     } else {
       return defaultPackage + "." + messageName;
+    }
+  }
+
+  public static Name entityNameToName(String original) {
+    if (original.contains("_")) {
+      return Name.from(original);
+    } else {
+      return Name.anyCamel(original);
     }
   }
 
