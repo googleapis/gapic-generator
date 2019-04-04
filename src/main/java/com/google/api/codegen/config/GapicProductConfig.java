@@ -766,6 +766,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         createResourceNameOneofConfigsFromProtoFile(
             diagCollector,
             fullyQualifiedSingleResourceNameConfigsFromProtoFile,
+            fixedResourceNameConfigs,
             resourceSetDefs,
             protoParser);
 
@@ -833,6 +834,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       createResourceNameOneofConfigsFromProtoFile(
           DiagCollector diagCollector,
           ImmutableMap<String, SingleResourceNameConfig> fullyQualifiedSingleResourcesFromProtoFile,
+          ImmutableMap<String, FixedResourceNameConfig> fullyQualifiedFixedResourcesFromProtoFile,
           Map<ResourceSet, ProtoFile> resourceSetDefs,
           ProtoParser protoParser) {
 
@@ -850,6 +852,7 @@ public abstract class GapicProductConfig implements ProductConfig {
               resourceSet,
               resourceSetName,
               fullyQualifiedSingleResourcesFromProtoFile,
+              fullyQualifiedFixedResourcesFromProtoFile,
               protoParser,
               protoFile);
       if (resourceNameOneofConfig == null) {
@@ -1014,7 +1017,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       if (oneofConfig == null) {
         continue;
       }
-      oneofConfigBuilder.put(oneofConfig.getEntityName(), oneofConfig);
+      oneofConfigBuilder.put(oneofConfig.getEntityId(), oneofConfig);
     }
     return oneofConfigBuilder.build();
   }
