@@ -2,7 +2,7 @@
 @snippet renderFileHeader(fileHeader)
     {@initialComments(fileHeader)}
 
-    {@imports(fileHeader)}
+    {@imports(fileHeader.importSection)}
 @end
 
 @snippet initialComments(fileHeader)
@@ -18,10 +18,10 @@
     // Generated code. DO NOT EDIT!
 @end
 
-#fileHeader: FileHeaderView
-@snippet imports(fileHeader)
+#importSection: ImportSectionView
+@snippet imports(importSection)
     # fileImport: ImportFileView
-    @join fileImport : fileHeader.importSection.appImports
+    @join fileImport : importSection.appImports
         # import: ImportTypeView
         @join import : fileImport.types
             @if import.nickname
