@@ -734,9 +734,9 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     // Maps of fully qualified Resource names to derived configs.
     LinkedHashMap<String, SingleResourceNameConfig>
-        fullyQualifiedSingleResourcesFromProtoFileBuilder = new LinkedHashMap<>();
+        fullyQualifiedSingleResourcesFromProtoFileCollector = new LinkedHashMap<>();
     LinkedHashMap<String, FixedResourceNameConfig>
-        fullyQualifiedFixedResourcesFromProtoFileBuilder = new LinkedHashMap<>();
+        fullyQualifiedFixedResourcesFromProtoFileCollector = new LinkedHashMap<>();
     // Create the Single- and Fixed- ResourceNameConfigs
     for (Resource resource : resourceDefs.keySet()) {
       String resourcePath = resource.getPattern();
@@ -747,23 +747,23 @@ public abstract class GapicProductConfig implements ProductConfig {
             resource,
             protoFile,
             protoParser,
-            fullyQualifiedFixedResourcesFromProtoFileBuilder);
+            fullyQualifiedFixedResourcesFromProtoFileCollector);
       } else {
         createSingleResourceNameConfigFromProtoFile(
             diagCollector,
             resource,
             protoFile,
             protoParser,
-            fullyQualifiedSingleResourcesFromProtoFileBuilder);
+            fullyQualifiedSingleResourcesFromProtoFileCollector);
       }
     }
 
     ImmutableMap<String, SingleResourceNameConfig>
         fullyQualifiedSingleResourceNameConfigsFromProtoFile =
-            ImmutableMap.copyOf(fullyQualifiedSingleResourcesFromProtoFileBuilder);
+            ImmutableMap.copyOf(fullyQualifiedSingleResourcesFromProtoFileCollector);
     ImmutableMap<String, FixedResourceNameConfig>
         fullyQualifiedFixedResourceNameConfigsFromProtoFile =
-            ImmutableMap.copyOf(fullyQualifiedFixedResourcesFromProtoFileBuilder);
+            ImmutableMap.copyOf(fullyQualifiedFixedResourcesFromProtoFileCollector);
 
     ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigsFromProtoFile =
         createResourceNameOneofConfigsFromProtoFile(
