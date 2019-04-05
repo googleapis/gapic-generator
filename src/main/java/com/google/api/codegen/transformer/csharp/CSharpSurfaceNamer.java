@@ -248,7 +248,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPathTemplateName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "template"));
+    return inittedConstantName(resourceNameConfig.getEntityName().join("template"));
   }
 
   @Override

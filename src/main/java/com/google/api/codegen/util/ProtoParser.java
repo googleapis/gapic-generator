@@ -33,7 +33,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -166,18 +165,6 @@ public class ProtoParser {
     String resourceName = getResourceReference(field);
     if (!Strings.isNullOrEmpty(resourceName)) {
 
-      TypeRef resourceType = field.getModel().getSymbolTable().lookupType(resourceName);
-      if (resourceType != null) {
-        // Look for the Resource or ResourceSet field in the target message.
-        MessageType messageType = resourceType.getMessageType();
-        for (Field resourceField : messageType.getFields()) {
-          String entityName = getResourceOrSetEntityName(resourceField);
-          if (!Strings.isNullOrEmpty(entityName)) {
-            return entityName;
-          }
-        }
-      }
-
       // Look in the given Resource and ResourceSet collections.
       for (Resource resource : allResources.keySet()) {
         ProtoFile protoFile = allResources.get(resource);
@@ -193,8 +180,6 @@ public class ProtoParser {
           return resourceSet.getSymbol();
         }
       }
-
-      return resourceType.getMessageType().getSimpleName();
     }
 
     return null;
@@ -233,7 +218,8 @@ public class ProtoParser {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationInfo);
   }
 
-  /* Return a Map of Resources to their containing Protofile.
+  /* Return a Map of Resources to their containing Protofile. Includes Resources
+   * defined inside MessageTypes.
    * The name map keys are package-qualified names of Resources. */
   public Map<Resource, ProtoFile> getResourceDefs(
       List<ProtoFile> protoFile, DiagCollector diagCollector) {
@@ -246,7 +232,8 @@ public class ProtoParser {
         (resource, baseNameToSet) -> resource.toBuilder().setSymbol(baseNameToSet).build());
   }
 
-  /* Return a Map of ResourceSets to their containing Protofile.
+  /* Return a Map of ResourceSets to their containing Protofile. Includes ResourceSets
+   * defined inside MessageTypes.
    * The name map keys are package-qualified names of ResourceSets. */
   public Map<ResourceSet, ProtoFile> getResourceSetDefs(
       List<ProtoFile> protoFile, DiagCollector diagCollector) {
@@ -259,7 +246,8 @@ public class ProtoParser {
         (resourceSet, baseNameToSet) -> resourceSet.toBuilder().setSymbol(baseNameToSet).build());
   }
 
-  /* Return a Map of Resource or ResourceSet elements to their containing ProtoFile. */
+  /* Return a Map of Resource or ResourceSet elements to their containing ProtoFile.
+   * Includes Resource[Sets] defined inside MessageTypes. */
   private <T> Map<T, ProtoFile> getResourceOrSetDefs(
       List<ProtoFile> protoFiles,
       DiagCollector diagCollector,
@@ -415,11 +403,76 @@ public class ProtoParser {
   }
 
   private String getResourceFullName(Resource resource, ProtoFile file) {
-    return String.format("%s.%s", resource.getSymbol(), getProtoPackage(file));
+    return String.format("%s.%s", getProtoPackage(file), resource.getSymbol());
   }
 
   private String getResourceSetFullName(ResourceSet resource, ProtoFile file) {
-    return String.format("%s.%s", resource.getSymbol(), getProtoPackage(file));
+    return String.format("%s.%s", getProtoPackage(file), resource.getSymbol());
+  }
+
+  public ImmutableMap<String, String> getFieldNamePatterns(Method method) {
+    ImmutableMap.Builder<String, String> resultCollector = ImmutableMap.builder();
+    // Only look two levels deep in the request object, so fields of fields of the request object.
+    getFieldNamePatterns(method.getInputMessage(), resultCollector, "", 2);
+    return resultCollector.build();
+  }
+
+  /**
+   * Recursively populates the given map builder with field name patterns, up to a given depth.
+   *
+   * <p>A field name pattern entry maps a field name String, which can be a dot-separated nested
+   * field such as "shelf.name", to the String name of the resource/resourceSet/resource-reference
+   * entity that is represented by that field.
+   *
+   * <p>Note: this method does not check for circular references.
+   *
+   * @param messageType the starting messageType from which to parse fields for resource names
+   * @param resultCollector collects the resulting field name patterns
+   * @param fieldNamePrefix a nested field is prefixed by the parents' names, dot-separated
+   * @param depth number of levels deep in which to parse the messageType; must be positive int
+   */
+  private void getFieldNamePatterns(
+      MessageType messageType,
+      ImmutableMap.Builder<String, String> resultCollector,
+      String fieldNamePrefix,
+      int depth) {
+    if (depth < 1) throw new IllegalStateException("depth must be positive");
+    for (Field field : messageType.getFields()) {
+      String fieldNameKey = fieldNamePrefix + field.getSimpleName();
+
+      if (field.getType().isMessage() && depth > 1) {
+        getFieldNamePatterns(
+            field.getType().getMessageType(), resultCollector, fieldNameKey + ".", depth - 1);
+      }
+
+      String reference = getResourceReference(field);
+      if (!Strings.isNullOrEmpty(reference)) {
+        resultCollector.put(fieldNameKey, getSimpleName(reference));
+        continue;
+      }
+
+      Resource resource = getResource(field);
+      if (resource != null) {
+        String resourceName = resource.getSymbol();
+        if (Strings.isNullOrEmpty(resourceName)) {
+          resourceName = field.getParent().getSimpleName();
+        }
+        resultCollector.put(fieldNameKey, getSimpleName(resourceName));
+        continue;
+      }
+
+      ResourceSet resourceSet = getResourceSet(field);
+      if (resourceSet != null) {
+        resultCollector.put(fieldNameKey, getSimpleName(resourceSet.getSymbol()));
+      }
+    }
+  }
+
+  private static String getSimpleName(String resourceFullName) {
+    if (resourceFullName.contains(".")) {
+      return resourceFullName.substring(resourceFullName.lastIndexOf(".") + 1);
+    }
+    return resourceFullName;
   }
 
   /** Register all extensions needed to process API protofiles. */
