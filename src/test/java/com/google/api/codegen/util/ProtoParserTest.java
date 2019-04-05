@@ -164,7 +164,7 @@ public class ProtoParserTest {
   public void testGetAllResourceDefs() {
     // resourceDefs has already been computed in the setUp() method.
 
-    assertThat(resourceDefs).hasSize(4);
+    assertThat(resourceDefs).hasSize(5);
     assertThat(resourceDefs)
         .containsEntry(
             Resource.newBuilder().setSymbol("Shelf").setPattern("shelves/{shelf_id}").build(),
@@ -185,6 +185,13 @@ public class ProtoParserTest {
             Resource.newBuilder()
                 .setSymbol("ArchivedBook")
                 .setPattern("archives/{archive_path}/books/{book_id=**}")
+                .build(),
+            libraryProtoFile);
+    assertThat(resourceDefs)
+        .containsEntry(
+            Resource.newBuilder()
+                .setSymbol("Return")
+                .setPattern("shelves/{shelf}/books/{book}/returns/{return}")
                 .build(),
             libraryProtoFile);
   }
