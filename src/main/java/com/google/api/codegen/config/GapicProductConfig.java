@@ -934,11 +934,9 @@ public abstract class GapicProductConfig implements ProductConfig {
           && FixedResourceNameConfig.isFixedResourceNameConfig(c.getNamePattern())) {
         FixedResourceNameConfig fixedResourceNameConfig =
             FixedResourceNameConfig.createFixedResourceNameConfig(
-                diagCollector,
-                c.getEntityName(),
-                c.getNamePattern(),
-                protoFile);
-        insertFixedResourceNameConfig(diagCollector, fixedResourceNameConfig, "", fixedResourceNameConfigMap);
+                diagCollector, c.getEntityName(), c.getNamePattern(), protoFile);
+        insertFixedResourceNameConfig(
+            diagCollector, fixedResourceNameConfig, "", fixedResourceNameConfigMap);
       }
     }
 
@@ -1129,8 +1127,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     } else {
       String fullyQualifiedName = fixedResourceNameConfig.getEntityId();
-      fullyQualifiedName =
-          StringUtils.prependIfMissing(fullyQualifiedName, prefix);
+      fullyQualifiedName = StringUtils.prependIfMissing(fullyQualifiedName, prefix);
       fixedResourceNameConfigsMap.put(fullyQualifiedName, fixedResourceNameConfig);
     }
   }
