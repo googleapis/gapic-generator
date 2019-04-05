@@ -17,9 +17,12 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
+import java.util.Collections;
+import java.util.List;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
@@ -43,7 +46,8 @@ public abstract class GapicMethodContext implements MethodContext {
         methodConfig,
         surfaceTransformerContext,
         typeTable,
-        new ProtoInterfaceModel(apiInterface));
+        new ProtoInterfaceModel(apiInterface),
+        Collections.emptyList());
   }
 
   @Override
@@ -114,21 +118,45 @@ public abstract class GapicMethodContext implements MethodContext {
 
   @Override
   public MethodContext withResourceNamesInSamplesOnly() {
-    return create(
-        getSurfaceInterfaceContext(),
-        getInterfaceModel().getInterface(),
+    return new AutoValue_GapicMethodContext(
         getProductConfig(),
-        getTypeTable(),
         getNamer(),
-        getMethodConfig(),
         getFlatteningConfig() == null
             ? null
             : getFlatteningConfig().withResourceNamesInSamplesOnly(),
-        getFeatureConfig());
+        getMethodConfig().getLroConfig(),
+        getFeatureConfig(),
+        getMethodConfig(),
+        getSurfaceInterfaceContext(),
+        getTypeTable(),
+        new ProtoInterfaceModel(getInterfaceModel().getInterface()),
+        getCallingForms());
   }
 
   @Override
   public boolean isLongRunningMethodContext() {
     return getLongRunningConfig() != null;
+  }
+
+  @Override
+  // TODO(hzyi): This is SampleGen specific. Move everything specific to samples
+  // to a separate SampleContext.
+  public abstract List<CallingForm> getCallingForms();
+
+  @Override
+  // TODO(hzyi): This is SampleGen specific. Move everything specific to samples
+  // to a separate SampleContext.
+  public MethodContext withCallingForms(List<CallingForm> callingForms) {
+    return new AutoValue_GapicMethodContext(
+        getProductConfig(),
+        getNamer(),
+        getFlatteningConfig(),
+        getMethodConfig().getLroConfig(),
+        getFeatureConfig(),
+        getMethodConfig(),
+        getSurfaceInterfaceContext(),
+        getTypeTable(),
+        new ProtoInterfaceModel(getInterfaceModel().getInterface()),
+        callingForms);
   }
 }

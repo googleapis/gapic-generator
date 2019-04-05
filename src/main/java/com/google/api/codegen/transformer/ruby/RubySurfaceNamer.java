@@ -485,7 +485,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
+  public String getFormattedPrintArgName(
+      ImportTypeTable typeTable, TypeModel type, String variable, List<String> accessors) {
     if (accessors.isEmpty()) {
       return variable;
     }
