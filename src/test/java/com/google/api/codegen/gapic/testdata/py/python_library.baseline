@@ -1411,6 +1411,7 @@ class LibraryServiceClient(object):
 
     def list_shelves(
             self,
+            page_token=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -1422,21 +1423,13 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> # Iterate over all results
-            >>> for element in client.list_shelves():
-            ...     # process element
-            ...     pass
-            >>>
-            >>>
-            >>> # Alternatively:
-            >>>
-            >>> # Iterate over results one page at a time
-            >>> for page in client.list_shelves().pages:
-            ...     for element in page:
-            ...         # process element
-            ...         pass
+            >>> response = client.list_shelves()
 
         Args:
+            page_token (str): A token identifying a page of results the server should return.
+                Typically, this is the value of
+                [ListShelvesResponse.next_page_token][google.example.library.v1.ListShelvesResponse.next_page_token]
+                returned from the previous call to `ListShelves` method.
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will not
                 be retried.
@@ -1447,16 +1440,14 @@ class LibraryServiceClient(object):
                 that is provided to the method.
 
         Returns:
-            A :class:`~google.gax.PageIterator` instance. By default, this
-            is an iterable of :class:`~google.cloud.example.library_v1.types.Shelf` instances.
-            This object can also be configured to iterate over the pages
-            of the response through the `options` parameter.
+            A :class:`~google.cloud.example.library_v1.types.ListShelvesResponse` instance.
 
         Raises:
             google.api_core.exceptions.GoogleAPICallError: If the request
                     failed for any reason.
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
         if 'list_shelves' not in self._inner_api_calls:
@@ -1467,16 +1458,10 @@ class LibraryServiceClient(object):
                 client_info=self._client_info,
             )
 
-        request = library_pb2.ListShelvesRequest()
-        iterator = google.api_core.page_iterator.GRPCIterator(
-            client=None,
-            method=functools.partial(self._inner_api_calls['list_shelves'], retry=retry, timeout=timeout, metadata=metadata),
-            request=request,
-            items_field='shelves',
-            request_token_field='page_token',
-            response_token_field='next_page_token',
+        request = library_pb2.ListShelvesRequest(
+            page_token=page_token,
         )
-        return iterator
+        return self._inner_api_calls['list_shelves'](request, retry=retry, timeout=timeout, metadata=metadata)
 
     def delete_shelf(
             self,
@@ -2600,7 +2585,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> name = client.shelf_path('[SHELF_ID]')
             >>>
             >>> for element in client.stream_shelves(name):
             ...     # process element
@@ -3312,15 +3297,9 @@ class LibraryServiceClient(object):
             >>>
             >>> # TODO: Initialize `required_singular_message`:
             >>> required_singular_message = {}
-            >>>
-            >>> # TODO: Initialize `required_singular_resource_name`:
-            >>> required_singular_resource_name = ''
-            >>>
-            >>> # TODO: Initialize `required_singular_resource_name_oneof`:
-            >>> required_singular_resource_name_oneof = ''
-            >>>
-            >>> # TODO: Initialize `required_singular_resource_name_common`:
-            >>> required_singular_resource_name_common = ''
+            >>> required_singular_resource_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> required_singular_resource_name_oneof = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> required_singular_resource_name_common = client.project_path('[PROJECT]')
             >>>
             >>> # TODO: Initialize `required_singular_fixed32`:
             >>> required_singular_fixed32 = 0
@@ -3660,9 +3639,9 @@ class LibraryServiceClient(object):
         )
         return self._inner_api_calls['test_optional_required_flattening_params'](request, retry=retry, timeout=timeout, metadata=metadata)
 
-    def private_get_book(
+    def private_list_shelves(
             self,
-            name=None,
+            page_token=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -3674,10 +3653,13 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> response = client.private_get_book()
+            >>> response = client.private_list_shelves()
 
         Args:
-            name (str): The name of the book to retrieve.
+            page_token (str): A token identifying a page of results the server should return.
+                Typically, this is the value of
+                [ListShelvesResponse.next_page_token][google.example.library.v1.ListShelvesResponse.next_page_token]
+                returned from the previous call to `ListShelves` method.
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will not
                 be retried.
@@ -3698,29 +3680,18 @@ class LibraryServiceClient(object):
             ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
-        if 'private_get_book' not in self._inner_api_calls:
-            self._inner_api_calls['private_get_book'] = google.api_core.gapic_v1.method.wrap_method(
-                self.transport.private_get_book,
-                default_retry=self._method_configs['PrivateGetBook'].retry,
-                default_timeout=self._method_configs['PrivateGetBook'].timeout,
+        if 'private_list_shelves' not in self._inner_api_calls:
+            self._inner_api_calls['private_list_shelves'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.private_list_shelves,
+                default_retry=self._method_configs['PrivateListShelves'].retry,
+                default_timeout=self._method_configs['PrivateListShelves'].timeout,
                 client_info=self._client_info,
             )
 
-        request = library_pb2.GetBookRequest(
-            name=name,
+        request = library_pb2.ListShelvesRequest(
+            page_token=page_token,
         )
-        if metadata is None:
-            metadata = []
-        metadata = list(metadata)
-        try:
-            routing_header = [('name', name)]
-        except AttributeError:
-            pass
-        else:
-            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
-            metadata.append(routing_metadata)
-
-        return self._inner_api_calls['private_get_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return self._inner_api_calls['private_list_shelves'](request, retry=retry, timeout=timeout, metadata=metadata)
 
 ============== file: google/cloud/example/library_v1/gapic/library_service_client_config.py ==============
 config = {
@@ -3897,7 +3868,7 @@ config = {
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
-        "PrivateGetBook": {
+        "PrivateListShelves": {
           "timeout_millis": 60000,
           "retry_codes_name": "idempotent",
           "retry_params_name": "default"
@@ -4396,8 +4367,8 @@ class LibraryServiceGrpcTransport(object):
         return self._stubs['library_service_stub'].TestOptionalRequiredFlatteningParams
 
     @property
-    def private_get_book(self):
-        """Return the gRPC stub for :meth:`LibraryServiceClient.private_get_book`.
+    def private_list_shelves(self):
+        """Return the gRPC stub for :meth:`LibraryServiceClient.private_list_shelves`.
 
         This method is not exposed in the GAPIC config. It should be generated.
 
@@ -4406,7 +4377,7 @@ class LibraryServiceGrpcTransport(object):
                 deserialized request object and returns a
                 deserialized response object.
         """
-        return self._stubs['library_service_stub'].PrivateGetBook
+        return self._stubs['library_service_stub'].PrivateListShelves
 ============== file: google/cloud/example/library_v1/types.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -5569,7 +5540,7 @@ def sample_stream_shelves():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  name = client.shelf_path('[SHELF_ID]')
 
   for response_item in client.stream_shelves(name):
     print(response_item)
@@ -5872,10 +5843,8 @@ class TestLibraryServiceClient(object):
 
     def test_list_shelves(self):
         # Setup Expected Response
-        next_page_token = ''
-        shelves_element = {}
-        shelves = [shelves_element]
-        expected_response = {'next_page_token': next_page_token, 'shelves': shelves}
+        next_page_token = 'nextPageToken-1530815211'
+        expected_response = {'next_page_token': next_page_token}
         expected_response = library_pb2.ListShelvesResponse(**expected_response)
 
         # Mock the API response
@@ -5885,11 +5854,8 @@ class TestLibraryServiceClient(object):
             create_channel.return_value = channel
             client = library_v1.LibraryServiceClient()
 
-        paged_list_response = client.list_shelves()
-        resources = list(paged_list_response)
-        assert len(resources) == 1
-
-        assert expected_response.shelves[0] == resources[0]
+        response = client.list_shelves()
+        assert expected_response == response
 
         assert len(channel.requests) == 1
         expected_request = library_pb2.ListShelvesRequest()
@@ -5897,15 +5863,15 @@ class TestLibraryServiceClient(object):
         assert expected_request == actual_request
 
     def test_list_shelves_exception(self):
+        # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
         patch = mock.patch('google.api_core.grpc_helpers.create_channel')
         with patch as create_channel:
             create_channel.return_value = channel
             client = library_v1.LibraryServiceClient()
 
-        paged_list_response = client.list_shelves()
         with pytest.raises(CustomException):
-            list(paged_list_response)
+            client.list_shelves()
 
     def test_delete_shelf(self):
         channel = ChannelStub()
@@ -6527,7 +6493,7 @@ class TestLibraryServiceClient(object):
 
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.shelf_path('[SHELF_ID]')
 
         response = client.stream_shelves(name)
         resources = list(response)
@@ -6548,7 +6514,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.shelf_path('[SHELF_ID]')
 
         with pytest.raises(CustomException):
             client.stream_shelves(name)
@@ -6937,9 +6903,9 @@ class TestLibraryServiceClient(object):
         required_singular_string = 'requiredSingularString-1949894503'
         required_singular_bytes = b'-29'
         required_singular_message = {}
-        required_singular_resource_name = 'requiredSingularResourceName-1701575020'
-        required_singular_resource_name_oneof = 'requiredSingularResourceNameOneof-25303726'
-        required_singular_resource_name_common = 'requiredSingularResourceNameCommon-1126805002'
+        required_singular_resource_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        required_singular_resource_name_oneof = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        required_singular_resource_name_common = client.project_path('[PROJECT]')
         required_singular_fixed32 = 720656715
         required_singular_fixed64 = 720656810
         required_repeated_int32 = []
@@ -6984,9 +6950,9 @@ class TestLibraryServiceClient(object):
         required_singular_string = 'requiredSingularString-1949894503'
         required_singular_bytes = b'-29'
         required_singular_message = {}
-        required_singular_resource_name = 'requiredSingularResourceName-1701575020'
-        required_singular_resource_name_oneof = 'requiredSingularResourceNameOneof-25303726'
-        required_singular_resource_name_common = 'requiredSingularResourceNameCommon-1126805002'
+        required_singular_resource_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        required_singular_resource_name_oneof = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        required_singular_resource_name_common = client.project_path('[PROJECT]')
         required_singular_fixed32 = 720656715
         required_singular_fixed64 = 720656810
         required_repeated_int32 = []
@@ -7008,7 +6974,7 @@ class TestLibraryServiceClient(object):
         with pytest.raises(CustomException):
             client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
-    def test_private_get_book(self):
+    def test_private_list_shelves(self):
         # Setup Expected Response
         name = 'name3373707'
         author = 'author-1406328437'
@@ -7024,15 +6990,15 @@ class TestLibraryServiceClient(object):
             create_channel.return_value = channel
             client = library_v1.LibraryServiceClient()
 
-        response = client.private_get_book()
+        response = client.private_list_shelves()
         assert expected_response == response
 
         assert len(channel.requests) == 1
-        expected_request = library_pb2.GetBookRequest()
+        expected_request = library_pb2.ListShelvesRequest()
         actual_request = channel.requests[0][1]
         assert expected_request == actual_request
 
-    def test_private_get_book_exception(self):
+    def test_private_list_shelves_exception(self):
         # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
         patch = mock.patch('google.api_core.grpc_helpers.create_channel')
@@ -7041,5 +7007,5 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         with pytest.raises(CustomException):
-            client.private_get_book()
+            client.private_list_shelves()
 

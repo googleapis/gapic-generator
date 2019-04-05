@@ -45,6 +45,13 @@ option (google.api.resource_definition) = {
 };
 
 option (google.api.resource_definition) = {
+  // To test the case that entity name / variable which happens to be
+  // a language keyword. See: https://github.com/googleapis/toolkit/issues/618
+  symbol: "Return"
+  pattern : "shelves/{shelf}/books/{book}/returns/{return}"
+};
+
+option (google.api.resource_definition) = {
   symbol: "ArchivedBook"
   pattern : "archives/{archive_path}/books/{book_id=**}"
 };
@@ -80,7 +87,7 @@ service LibraryService {
   // Gets a shelf.
   rpc GetShelf(GetShelfRequest) returns (Shelf) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*}" };
-    option (google.api.method_signature) =  "name";
+    option (google.api.method_signature) = "name";
     option (google.api.method_signature) = "name,message";
     option (google.api.method_signature) = "name,message,string_builder";
   }
@@ -368,8 +375,8 @@ service LibraryService {
   }
 
   // This method is not exposed in the GAPIC config. It should be generated.
-  rpc PrivateGetBook(GetBookRequest) returns (Book)  {
-    option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}" };
+  rpc PrivateListShelves(ListShelvesRequest) returns (Book)  {
+    option (google.api.http) = { get: "/v1/bookShelves" };
   }
 }
 
@@ -383,13 +390,13 @@ message Book {
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_set) = {
       symbol: "BookOneOf"
+      resource_references: ["ArchivedBook", "Book"];
       resources: [
         {
           symbol: "DeletedBook"
           pattern : "_deleted-book_"
         }
       ]
-      resource_references: ["ArchivedBook", "Book"];
     }
   ];
 

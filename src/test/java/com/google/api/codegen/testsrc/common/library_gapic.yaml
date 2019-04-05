@@ -129,12 +129,6 @@ interfaces:
     flattening:
       groups:
       - parameters: []
-    page_streaming:
-      request:
-        token_field: page_token
-      response:
-        token_field: next_page_token
-        resources_field: shelves
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 3000
@@ -572,7 +566,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 30000
     field_name_patterns:
-      name: book
+      name: shelf
     flattening:
       groups:
         - parameters:
@@ -704,6 +698,8 @@ interfaces:
       - calling_forms: ".*"
         value_sets: ".*"
   - name: BabbleAboutBook
+    field_name_patterns:
+      name: book
     sample_value_sets:
     - id: empty_response_type_with_response_handling
       title: "Test response handling for methods that return empty"
@@ -1063,12 +1059,15 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
+      required_singular_resource_name: book
+      required_singular_resource_name_oneof: book
+      required_singular_resource_name_common: project
       required_repeated_resource_name: book
       required_repeated_resource_name_oneof: book_oneof
       optional_repeated_resource_name: book
       optional_repeated_resource_name_oneof: book_oneof
     timeout_millis: 60000
-  # Intentionally leave out PrivateGetBook method from GAPIC config.
+  # Intentionally leave out PrivateListShelves method from GAPIC config.
 resource_name_generation:
 - message_name: Book
   field_entity_map:
@@ -1128,6 +1127,9 @@ resource_name_generation:
 - message_name: GetBookFromAbsolutelyAnywhereRequest
   field_entity_map:
     name: "*"
+- message_name: DiscussBookRequest
+  field_entity_map:
+    name: book
 - message_name: UpdateBookIndexRequest
   field_entity_map:
     name: book
@@ -1136,6 +1138,9 @@ resource_name_generation:
     names: book
     shelves: shelf
 - message_name: FindRelatedBooksResponse
+  field_entity_map:
+    names: book
+- message_name: BabbleAboutBookRequest
   field_entity_map:
     names: book
 - message_name: TestOptionalRequiredFlatteningParamsRequest
