@@ -33,6 +33,7 @@ import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
+import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -167,6 +168,7 @@ public class GapicGeneratorApp extends ToolDriverBase {
     GapicProductConfig productConfig =
         GapicProductConfig.create(model, configProto, protoPackage, clientPackage, language);
     if (productConfig == null) {
+      ToolUtil.reportDiags(model.getDiagReporter().getDiagCollector(), true);
       return;
     }
 

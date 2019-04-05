@@ -56,7 +56,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 /**
  * A SurfaceNamer provides language-specific names for specific components of a view for a surface.
@@ -879,28 +878,20 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
-    String entityName = resourceNameConfig.getEntityName();
+    Name entityName = resourceNameConfig.getEntityName();
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
-    // Proto annotations use UpperCamelCase for resource names,
-    // and GAPIC config uses lower_snake_case, so we have to support both formats.
-    Function<String, Name> formatNameFunc;
-    if (entityName.length() > 0 && Character.isUpperCase(entityName.charAt(0))) {
-      formatNameFunc = Name::upperCamel;
-    } else {
-      formatNameFunc = Name::anyLower;
-    }
     switch (resourceNameType) {
       case ANY:
         return getAnyResourceTypeName();
       case FIXED:
-        return Name.anyLower(entityName).join("name_fixed");
+        return entityName.join("name_fixed");
       case ONEOF:
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
         // with a collection config.
-        entityName = StringUtil.removeSuffix(entityName, "_oneof");
-        return formatNameFunc.apply(entityName).join("name_oneof");
+        entityName = Name.from(StringUtil.removeSuffix(entityName.toLowerUnderscore(), "_oneof"));
+        return entityName.join("name_oneof");
       case SINGLE:
-        return formatNameFunc.apply(entityName).join("name");
+        return entityName.join("name");
       case NONE:
       default:
         throw new UnsupportedOperationException("unexpected entity name type");
@@ -1212,25 +1203,26 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getPathTemplateName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
+    return inittedConstantName(resourceNameConfig.getEntityName().join("path").join("template"));
   }
 
   /** The name of a getter function to get a particular path template for the given collection. */
   public String getPathTemplateNameGetter(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(
-        Name.from("get", resourceNameConfig.getEntityName(), "name", "template"));
+        Name.from("get").join(resourceNameConfig.getEntityName()).join("name").join("template"));
   }
 
   /** The name of the path template resource, in human format. */
   public String getPathTemplateResourcePhraseName(SingleResourceNameConfig resourceNameConfig) {
-    return Name.from(resourceNameConfig.getEntityName()).toPhrase();
+    return resourceNameConfig.getEntityName().toPhrase();
   }
 
   /** The function name to format the entity for the given collection. */
   public String getFormatFunctionName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return staticFunctionName(Name.anyLower("format", resourceNameConfig.getEntityName(), "name"));
+    return staticFunctionName(
+        Name.from("format").join(resourceNameConfig.getEntityName()).join("name"));
   }
 
   /**
@@ -1239,17 +1231,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getParseFunctionName(String var, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(
-        Name.from("parse", var, "from", resourceNameConfig.getEntityName(), "name"));
+        Name.from("parse", var, "from").join(resourceNameConfig.getEntityName()).join("name"));
   }
 
   /** The entity name for the given collection. */
   public String getEntityName(SingleResourceNameConfig resourceNameConfig) {
-    return localVarName(Name.from(resourceNameConfig.getEntityName()));
+    return localVarName(resourceNameConfig.getEntityName());
   }
 
   /** The parameter name for the entity for the given collection config. */
   public String getEntityNameParamName(SingleResourceNameConfig resourceNameConfig) {
-    return localVarName(Name.from(resourceNameConfig.getEntityName(), "name"));
+    return localVarName(resourceNameConfig.getEntityName().join("name"));
   }
 
   /////////////////////////////////////// Page Streaming ////////////////////////////////////////
@@ -1630,7 +1622,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** Returns the formatted expression to nicely print a field of a variable. */
-  public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
+  public String getFormattedPrintArgName(
+      ImportTypeTable typeTable, TypeModel type, String variable, List<String> accessors) {
     if (accessors.isEmpty()) {
       return variable;
     }
