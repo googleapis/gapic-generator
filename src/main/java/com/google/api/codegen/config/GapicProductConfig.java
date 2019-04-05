@@ -742,9 +742,12 @@ public abstract class GapicProductConfig implements ProductConfig {
       String resourcePath = resource.getPattern();
       ProtoFile protoFile = resourceDefs.get(resource);
       if (FixedResourceNameConfig.isFixedResourceNameConfig(resourcePath)) {
-        createFixedResourceNameConfigFromProtoFile(
+        FixedResourceNameConfig fixedResourceNameConfig =
+            FixedResourceNameConfig.createFixedResourceNameConfig(
+                diagCollector, resource.getSymbol(), resource.getPattern(), file);
+        insertFixedResourceNameConfig(
             diagCollector,
-            resource,
+            fixedResourceNameConfig,
             protoFile,
             protoParser,
             fullyQualifiedFixedResourcesFromProtoFileCollector);
@@ -1134,15 +1137,12 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   // Construct a new FixedResourceNameConfig from the given Resource, and add the newly
   // created config as a value to the map param, keyed on the package-qualified entity_id.
-  private static void createFixedResourceNameConfigFromProtoFile(
+  private static void insertFixedResourceNameConfig(
       DiagCollector diagCollector,
-      Resource resource,
+      FixedResourceNameConfig fixedResourceNameConfig,
       ProtoFile file,
       ProtoParser protoParser,
       Map<String, FixedResourceNameConfig> fixedResourceNameConfigsMap) {
-    FixedResourceNameConfig fixedResourceNameConfig =
-        FixedResourceNameConfig.createFixedResourceNameConfig(
-            diagCollector, resource.getSymbol(), resource.getPattern(), file);
     if (fixedResourceNameConfigsMap.containsKey(fixedResourceNameConfig.getEntityId())) {
       FixedResourceNameConfig otherConfig =
           fixedResourceNameConfigsMap.get(fixedResourceNameConfig.getEntityId());
