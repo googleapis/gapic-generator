@@ -17,7 +17,10 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.auto.value.AutoValue;
+import java.util.Collections;
+import java.util.List;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
@@ -129,5 +132,19 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   @Override
   public boolean isLongRunningMethodContext() {
     return getLongRunningConfig() != null;
+  }
+
+  @Override
+  // TODO(hzyi): This is SampleGen specific. Move everything specific to samples
+  // to a separate SampleContext.
+  public List<CallingForm> getCallingForms() {
+    return Collections.singletonList(CallingForm.Generic);
+  }
+
+  @Override
+  // TODO(hzyi): This is SampleGen specific. Move everything specific to samples
+  // to a separate SampleContext.
+  public MethodContext withCallingForms(List<CallingForm> callingForms) {
+    return this;
   }
 }

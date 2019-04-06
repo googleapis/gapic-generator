@@ -1622,7 +1622,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** Returns the formatted expression to nicely print a field of a variable. */
-  public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
+  public String getFormattedPrintArgName(
+      ImportTypeTable typeTable, TypeModel type, String variable, List<String> accessors) {
     if (accessors.isEmpty()) {
       return variable;
     }
