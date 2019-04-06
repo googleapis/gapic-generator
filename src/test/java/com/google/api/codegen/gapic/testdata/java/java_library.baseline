@@ -4521,7 +4521,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -4531,7 +4531,42 @@ public class LibraryClient implements BackgroundResource {
    *     .setAlignment(alignment)
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
-   *   libraryClient.addComments(formattedName, comments);
+   *   libraryClient.addComments(name, comments);
+   * }
+   * </code></pre>
+   *
+   * @param name
+   * @param comments
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void addComments(ShelfBookName name, List<Comment> comments) {
+
+    AddCommentsRequest request =
+        AddCommentsRequest.newBuilder()
+        .setName(name == null ? null : name.toString())
+        .addAllComments(comments)
+        .build();
+    addComments(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds comments to a book
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+   *   ByteString comment = ByteString.copyFromUtf8("");
+   *   Comment.Stage stage = Comment.Stage.UNSET;
+   *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
+   *   Comment commentsElement = Comment.newBuilder()
+   *     .setComment(comment)
+   *     .setStage(stage)
+   *     .setAlignment(alignment)
+   *     .build();
+   *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
+   *   libraryClient.addComments(name.toString(), comments);
    * }
    * </code></pre>
    *
@@ -4540,7 +4575,7 @@ public class LibraryClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void addComments(String name, List<Comment> comments) {
-    SHELF_BOOK_PATH_TEMPLATE.validate(name, "addComments");
+
     AddCommentsRequest request =
         AddCommentsRequest.newBuilder()
         .setName(name)
@@ -4556,7 +4591,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -4567,7 +4602,7 @@ public class LibraryClient implements BackgroundResource {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .addAllComments(comments)
    *     .build();
    *   libraryClient.addComments(request);
@@ -4588,7 +4623,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -4599,7 +4634,7 @@ public class LibraryClient implements BackgroundResource {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name.toString())
    *     .addAllComments(comments)
    *     .build();
    *   ApiFuture&lt;Void&gt; future = libraryClient.addCommentsCallable().futureCall(request);
@@ -11208,7 +11243,7 @@ public class LibraryClientTest {
     Empty expectedResponse = Empty.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
+    ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
     ByteString comment = ByteString.copyFromUtf8("95");
     Comment.Stage stage = Comment.Stage.UNSET;
     SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -11219,13 +11254,13 @@ public class LibraryClientTest {
       .build();
     List<Comment> comments = Arrays.asList(commentsElement);
 
-    client.addComments(formattedName, comments);
+    client.addComments(name, comments);
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     AddCommentsRequest actualRequest = (AddCommentsRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, ShelfBookName.parse(actualRequest.getName()));
     Assert.assertEquals(comments, actualRequest.getCommentsList());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -11240,7 +11275,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       ByteString comment = ByteString.copyFromUtf8("95");
       Comment.Stage stage = Comment.Stage.UNSET;
       SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -11251,7 +11286,7 @@ public class LibraryClientTest {
         .build();
       List<Comment> comments = Arrays.asList(commentsElement);
 
-      client.addComments(formattedName, comments);
+      client.addComments(name, comments);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception

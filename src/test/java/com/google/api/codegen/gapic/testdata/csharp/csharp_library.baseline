@@ -1368,12 +1368,12 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for AddCommentsAsync</summary>
         public async Task AddCommentsAsync()
         {
-            // Snippet: AddCommentsAsync(string,IEnumerable<Comment>,CallSettings)
-            // Additional: AddCommentsAsync(string,IEnumerable<Comment>,CancellationToken)
+            // Snippet: AddCommentsAsync(BookName,IEnumerable<Comment>,CallSettings)
+            // Additional: AddCommentsAsync(BookName,IEnumerable<Comment>,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -1384,18 +1384,18 @@ namespace Google.Example.Library.V1.Snippets
                 },
             };
             // Make the request
-            await libraryServiceClient.AddCommentsAsync(formattedName, comments);
+            await libraryServiceClient.AddCommentsAsync(name, comments);
             // End snippet
         }
 
         /// <summary>Snippet for AddComments</summary>
         public void AddComments()
         {
-            // Snippet: AddComments(string,IEnumerable<Comment>,CallSettings)
+            // Snippet: AddComments(BookName,IEnumerable<Comment>,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -1406,7 +1406,7 @@ namespace Google.Example.Library.V1.Snippets
                 },
             };
             // Make the request
-            libraryServiceClient.AddComments(formattedName, comments);
+            libraryServiceClient.AddComments(name, comments);
             // End snippet
         }
 
@@ -1420,7 +1420,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             AddCommentsRequest request = new AddCommentsRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 Comments = {
                                new Comment
                                {
@@ -1444,7 +1444,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             AddCommentsRequest request = new AddCommentsRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 Comments = {
                                new Comment
                                {
@@ -4123,7 +4123,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest expectedRequest = new AddCommentsRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 Comments = {
                                new Comment
                                {
@@ -4137,7 +4137,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.AddComments(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -4147,7 +4147,7 @@ namespace Google.Example.Library.V1.Tests
                     Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
                 },
             };
-            client.AddComments(formattedName, comments);
+            client.AddComments(name, comments);
             mockGrpcClient.VerifyAll();
         }
 
@@ -4161,7 +4161,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest expectedRequest = new AddCommentsRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 Comments = {
                                new Comment
                                {
@@ -4175,7 +4175,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.AddCommentsAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -4185,7 +4185,7 @@ namespace Google.Example.Library.V1.Tests
                     Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
                 },
             };
-            await client.AddCommentsAsync(formattedName, comments);
+            await client.AddCommentsAsync(name, comments);
             mockGrpcClient.VerifyAll();
         }
 
@@ -4199,7 +4199,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest request = new AddCommentsRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 Comments = {
                                new Comment
                                {
@@ -4227,7 +4227,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest request = new AddCommentsRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 Comments = {
                                new Comment
                                {
@@ -8381,12 +8381,12 @@ namespace Google.Example.Library.V1
         /// A Task that completes when the RPC has completed.
         /// </returns>
         public virtual stt::Task AddCommentsAsync(
-            string name,
+            BookName name,
             scg::IEnumerable<Comment> comments,
             gaxgrpc::CallSettings callSettings = null) => AddCommentsAsync(
                 new AddCommentsRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    BookName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Comments = { gax::GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
                 },
                 callSettings);
@@ -8407,7 +8407,7 @@ namespace Google.Example.Library.V1
         /// A Task that completes when the RPC has completed.
         /// </returns>
         public virtual stt::Task AddCommentsAsync(
-            string name,
+            BookName name,
             scg::IEnumerable<Comment> comments,
             st::CancellationToken cancellationToken) => AddCommentsAsync(
                 name,
@@ -8427,12 +8427,12 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         public virtual void AddComments(
-            string name,
+            BookName name,
             scg::IEnumerable<Comment> comments,
             gaxgrpc::CallSettings callSettings = null) => AddComments(
                 new AddCommentsRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    BookName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Comments = { gax::GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
                 },
                 callSettings);
@@ -13348,6 +13348,19 @@ namespace Google.Example.Library.V1
         public static bool operator !=(ShelfName a, ShelfName b) => !(a == b);
     }
 
+
+    public partial class AddCommentsRequest
+    {
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.BookName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.BookName BookName
+        {
+            get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.BookName.Parse(Name); }
+            set { Name = value != null ? value.ToString() : ""; }
+        }
+
+    }
 
     public partial class Book
     {
