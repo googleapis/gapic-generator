@@ -47,6 +47,7 @@ public class ProtoParserTest {
   private static Model model;
   private static TestDataLocator testDataLocator;
   private static ProtoFile libraryProtoFile;
+  private static ProtoFile bookFromAnywhereProtoFile;
   private static Field shelfNameField;
   private static Interface libraryService;
   private static Method deleteShelfMethod;
@@ -76,6 +77,14 @@ public class ProtoParserTest {
             .getFiles()
             .stream()
             .filter(f -> f.getSimpleName().equals("library.proto"))
+            .findFirst()
+            .get();
+
+    bookFromAnywhereProtoFile =
+        model
+            .getFiles()
+            .stream()
+            .filter(f -> f.getSimpleName().equals("book_from_anywhere.proto"))
             .findFirst()
             .get();
 
@@ -222,6 +231,25 @@ public class ProtoParserTest {
             .findFirst()
             .get();
     assertThat(protoParser.getResourceReferenceName(nameField, resourceDefs, resourceSetDefs))
+        .isEqualTo("BookOneof");
+
+    MessageType bookFromAnywhere =
+        bookFromAnywhereProtoFile
+            .getMessages()
+            .stream()
+            .filter(m -> m.getSimpleName().equals("BookFromAnywhere"))
+            .findFirst()
+            .get();
+    Field bookFromAnywhereNameField =
+        bookFromAnywhere
+            .getFields()
+            .stream()
+            .filter(f -> f.getSimpleName().equals("name"))
+            .findFirst()
+            .get();
+    assertThat(
+            protoParser.getResourceReferenceName(
+                bookFromAnywhereNameField, resourceDefs, resourceSetDefs))
         .isEqualTo("BookOneof");
 
     Field altBookNameField =
