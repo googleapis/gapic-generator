@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.Resource;
 import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionOneofProto;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -35,7 +36,7 @@ import javax.annotation.Nullable;
 public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
 
   @Override
-  public abstract String getEntityName();
+  public abstract Name getEntityName();
 
   public abstract List<ResourceNameConfig> getResourceNameConfigs();
 
@@ -98,7 +99,8 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       return null;
     }
 
-    return new AutoValue_ResourceNameOneofConfig(oneofName, oneofName, configList, file);
+    return new AutoValue_ResourceNameOneofConfig(
+        oneofName, ResourceNameMessageConfig.entityNameToName(oneofName), configList, file);
   }
 
   @Nullable
@@ -107,10 +109,12 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       ResourceSet resourceSet,
       String oneOfName,
       ImmutableMap<String, SingleResourceNameConfig> fileLevelSingleResourceNameConfigs,
+      ImmutableMap<String, FixedResourceNameConfig> fileLevelFixedResourceNameConfigs,
       ProtoParser protoParser,
       ProtoFile file) {
 
-    if (fileLevelSingleResourceNameConfigs.containsKey(oneOfName)) {
+    if (fileLevelSingleResourceNameConfigs.containsKey(oneOfName)
+        || fileLevelFixedResourceNameConfigs.containsKey(oneOfName)) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -144,25 +148,31 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       if (!qualifiedRef.contains(".")) {
         qualifiedRef = protoParser.getProtoPackage(file) + "." + resourceRef;
       }
-      SingleResourceNameConfig reference = fileLevelSingleResourceNameConfigs.get(qualifiedRef);
-      if (reference == null) {
-        ResourceNameConfig resourceNameConfig = fileLevelSingleResourceNameConfigs.get(resourceRef);
-        if (resourceNameConfig == null) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "name \""
-                      + resourceRef
-                      + "\" in ResourceSet \""
-                      + oneOfName
-                      + "\" not found in collection configs"));
-          return null;
-        }
-        configList.add(resourceNameConfig);
+      ResourceNameConfig resourceNameConfig;
+      if (fileLevelSingleResourceNameConfigs.containsKey(qualifiedRef)) {
+        resourceNameConfig = fileLevelSingleResourceNameConfigs.get(qualifiedRef);
+      } else if (fileLevelSingleResourceNameConfigs.containsKey(resourceRef)) {
+        resourceNameConfig = fileLevelSingleResourceNameConfigs.get(resourceRef);
+      } else if (fileLevelFixedResourceNameConfigs.containsKey(qualifiedRef)) {
+        resourceNameConfig = fileLevelFixedResourceNameConfigs.get(qualifiedRef);
+      } else if (fileLevelFixedResourceNameConfigs.containsKey(resourceRef)) {
+        resourceNameConfig = fileLevelFixedResourceNameConfigs.get(resourceRef);
+      } else {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "name \""
+                    + resourceRef
+                    + "\" in ResourceSet \""
+                    + oneOfName
+                    + "\" not found in collection configs"));
+        return null;
       }
+      configList.add(resourceNameConfig);
     }
 
-    return new AutoValue_ResourceNameOneofConfig(oneOfName, oneOfName, configList, file);
+    return new AutoValue_ResourceNameOneofConfig(
+        oneOfName, ResourceNameMessageConfig.entityNameToName(oneOfName), configList, file);
   }
 
   @Override

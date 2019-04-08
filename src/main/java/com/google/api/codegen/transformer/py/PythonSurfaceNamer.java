@@ -248,19 +248,19 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   public String getPathTemplateName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return "_"
-        + inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
+        + inittedConstantName(resourceNameConfig.getEntityName().join("path").join("template"));
   }
 
   @Override
   public String getFormatFunctionName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
+    return staticFunctionName(resourceNameConfig.getEntityName().join("path"));
   }
 
   @Override
   public String getParseFunctionName(String var, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(
-        Name.from("match", var, "from", resourceNameConfig.getEntityName(), "name"));
+        Name.from("match", var, "from").join(resourceNameConfig.getEntityName()).join("name"));
   }
 
   @Override
@@ -504,7 +504,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
    * descriptive string, such as `enums.message_type.enum_type(var.foo.bar).name()`. Otherwise,
    * returns the argument as it is.
    */
-  public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
+  public String getFormattedPrintArgName(
+      ImportTypeTable typeTable, TypeModel type, String variable, List<String> accessors) {
     String arg = variable + String.join("", accessors);
     // We print the argument as it is if it's not an enum type
     if (!(type instanceof ProtoTypeRef) || !((ProtoTypeRef) type).isEnum()) {

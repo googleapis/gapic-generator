@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.ProtoFile;
 import javax.annotation.Nullable;
 
@@ -42,12 +43,12 @@ public class AnyResourceNameConfig implements ResourceNameConfig {
 
   @Override
   public String getEntityId() {
-    return getEntityName();
+    return ENTITY_NAME;
   }
 
   @Override
-  public String getEntityName() {
-    return ENTITY_NAME;
+  public Name getEntityName() {
+    return Name.from(ENTITY_NAME);
   }
 
   @Override

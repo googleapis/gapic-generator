@@ -32,6 +32,7 @@ public abstract class StaticLangApiMethodView
 
   public abstract String apiVariableName();
 
+  @Nullable
   public abstract InitCodeView initCode(); // to be deprecated
 
   public abstract ApiMethodDocView doc();
@@ -98,6 +99,9 @@ public abstract class StaticLangApiMethodView
 
   @Nullable
   public abstract List<MethodSampleView> samples();
+
+  @Nullable
+  public abstract String callerResponseTypeName();
 
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiMethodView.Builder();
@@ -168,6 +172,8 @@ public abstract class StaticLangApiMethodView
     public abstract Builder serviceConstructorName(String val);
 
     public abstract Builder samples(List<MethodSampleView> samples);
+
+    public abstract Builder callerResponseTypeName(String val);
 
     public abstract StaticLangApiMethodView build();
   }

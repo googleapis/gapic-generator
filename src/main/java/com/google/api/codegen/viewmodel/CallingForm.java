@@ -43,22 +43,28 @@ public enum CallingForm {
   //
   // [Method signature type][Request pattern][Response pattern][Idiomatic pattern]
 
-  Request, // used by: java nodejs php py ruby
-  RequestAsync,
-  RequestAsyncPaged, // used by: nodejs
-  RequestAsyncPagedAll, // used by: nodejs
-  RequestPaged, // used by: java php py ruby
-  RequestPagedAll, // used by: php py ruby
+  Request, // used by: csharp java nodejs php py ruby
+  RequestAsync, // used by: csharp
+  RequestAsyncPaged, // used by: csharp nodejs
+  RequestAsyncPagedAll, // used by: csharp nodejs
+  RequestAsyncPagedPageSize, // used by: csharp
+  RequestPaged, // used by: csharp java php py ruby
+  RequestPagedAll, // used by: csharp php py ruby
+  RequestPagedPageSize, // used by: csharp
   RequestStreamingBidi, // used by: nodejs php py ruby
   RequestStreamingBidiAsync, // used by: php
   RequestStreamingClient, // used by: nodejs php py ruby
   RequestStreamingClientAsync, // used by: php
   RequestStreamingServer, // used by: nodejs php py ruby
 
-  Flattened, // used by: java
-  FlattenedPaged, // used by: java
-  FlattenedAsync,
-  FlattenedAsyncPaged,
+  Flattened, // used by: csharp java
+  FlattenedPaged, // used by: csharp java
+  FlattenedPagedAll, // used by: csharp
+  FlattenedPagedPageSize, // used by: csharp
+  FlattenedAsync, // used by: csharp
+  FlattenedAsyncPaged, // used by: csharp
+  FlattenedAsyncPagedAll, // used by: csharp
+  FlattenedAsyncPagedPageSize, // used by: csharp
 
   Callable, // used by: java
   CallableList, // used by: java
@@ -75,6 +81,23 @@ public enum CallingForm {
   LongRunningPromiseAwait, // used by: nodejs
   LongRunningRequest, // used by: php
   LongRunningRequestAsync, // used by: java php ruby
+
+  // TODO: the following calling forms should be added for csharp. They are
+  // currently removed to turn off generating samples in these calling forms
+  // so that baseline do not explode
+  // Flattened,
+  // RequestStreamingBidi,
+  // RequestStreamingServer,
+  // FlattenedStreamingBidi,
+  // FlattenedStreamingServer,
+  // LongRunningFlattenedPollUntilComplete,
+  // LongRunningFlattenedPollLater,
+  // LongRunningFlattenedAsyncPollUntilComplete,
+  // LongRunningFlattenedAsyncPollLater,
+  // LongRunningRequestPollUntilComplete,
+  // LongRunningRequestPollLater,
+  // LongRunningRequestAsyncPollUntilComplete,
+  // LongRunningRequestAsyncPollLater,
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.
@@ -174,7 +197,6 @@ public enum CallingForm {
 
   public static List<CallingForm> getCallingForms(
       MethodContext methodContext, TargetLanguage lang) {
-    Preconditions.checkArgument(lang != TargetLanguage.CSHARP, "CSharp is not supported for now.");
     Preconditions.checkArgument(lang != TargetLanguage.GO, "Go is not supported for now.");
     return CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
   }

@@ -22,7 +22,6 @@ import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
-import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.InterfaceConfigProto;
@@ -76,7 +75,9 @@ public class ResourceNameMessageConfigsTest {
   private static final String DEFAULT_PACKAGE = "library";
   private static final String GAPIC_SHELF_PATH = "shelves/{shelf_id}";
   private static final String GAPIC_BOOK_PATH = "shelves/{shelf_id}/books/{book_id}";
-  private static final String ARCHIVED_BOOK_PATH = "archives/{archive_path}/books/{book_id=**}";
+  private static final String PROTO_ARCHIVED_BOOK_PATH =
+      "archives/{archive_path}/books/{book_id=**}";
+  private static final String GAPIC_ARCHIVED_BOOK_PATH = "archives/{archive}/books/{book}";
   private static final String PROTO_SHELF_PATH = "shelves/{shelf}";
   private static final String PROTO_BOOK_PATH = "bookShelves/{book}";
   private static final String CREATE_SHELF_METHOD_NAME = "CreateShelf";
@@ -89,7 +90,7 @@ public class ResourceNameMessageConfigsTest {
           protoFile,
           Resource.newBuilder()
               .setSymbol("archived_book")
-              .setPattern("archives/{archive}/books/{book}")
+              .setPattern(PROTO_ARCHIVED_BOOK_PATH)
               .build(),
           protoFile);
 
@@ -122,12 +123,12 @@ public class ResourceNameMessageConfigsTest {
                     .setEntityName("shelf"))
             .addCollections(
                 CollectionConfigProto.newBuilder()
-                    .setNamePattern(ARCHIVED_BOOK_PATH)
+                    .setNamePattern(GAPIC_ARCHIVED_BOOK_PATH)
                     .setEntityName("archived_book"))
-            .addFixedResourceNameValues(
-                FixedResourceNameValueProto.newBuilder()
+            .addCollections(
+                CollectionConfigProto.newBuilder()
                     .setEntityName("deleted_book")
-                    .setFixedValue("_deleted-book_"))
+                    .setNamePattern("_deleted-book_"))
             .addInterfaces(
                 InterfaceConfigProto.newBuilder()
                     .addCollections(
@@ -269,31 +270,24 @@ public class ResourceNameMessageConfigsTest {
     DiagCollector diagCollector = new BoundedDiagCollector();
 
     Map<String, ResourceNameConfig> resourceNameConfigs =
-        GapicProductConfig.createResourceNameConfigs(
+        GapicProductConfig.createResourceNameConfigsWithProtoFileAndGapicConfig(
             diagCollector,
             configProto,
-            sourceProtoFiles,
+            protoFile,
             TargetLanguage.CSHARP,
             allResourceDefs,
             allResourceSetDefs,
             protoParser);
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
-    assertThat(resourceNameConfigs.size()).isEqualTo(7);
+    assertThat(resourceNameConfigs.size()).isEqualTo(5);
 
     assertThat(((SingleResourceNameConfig) resourceNameConfigs.get("Book")).getNamePattern())
         .isEqualTo(PROTO_BOOK_PATH);
 
-    // Both Protofile and GAPIC config have definitions for archived_book.
-    assertThat(diagCollector.getDiags().get(0).getMessage())
-        .contains("archived_book from protofile clashes with a Resource");
     assertThat(
             ((SingleResourceNameConfig) resourceNameConfigs.get("archived_book")).getNamePattern())
-        .isEqualTo(ARCHIVED_BOOK_PATH);
-    assertThat(((SingleResourceNameConfig) resourceNameConfigs.get("book")).getNamePattern())
-        .isEqualTo(GAPIC_BOOK_PATH);
-    assertThat(((SingleResourceNameConfig) resourceNameConfigs.get("shelf")).getNamePattern())
-        .isEqualTo(GAPIC_SHELF_PATH);
+        .isEqualTo(PROTO_ARCHIVED_BOOK_PATH);
     assertThat(
             ((ResourceNameOneofConfig) resourceNameConfigs.get("book_oneof"))
                 .getResourceNameConfigs())
@@ -302,10 +296,6 @@ public class ResourceNameMessageConfigsTest {
         .isEqualTo("_deleted-book_");
     assertThat(((SingleResourceNameConfig) resourceNameConfigs.get("Shelf")).getNamePattern())
         .isEqualTo(PROTO_SHELF_PATH);
-
-    // Use GAPIC_BOOK_PATH from gapic config.
-    assertThat(((SingleResourceNameConfig) resourceNameConfigs.get("book")).getNamePattern())
-        .isEqualTo(GAPIC_BOOK_PATH);
 
     // "Book" is the name from the unnamed Resource in the Book message type.
     SingleResourceNameConfig bookResourcenameConfigFromProtoFile =
@@ -352,31 +342,31 @@ public class ResourceNameMessageConfigsTest {
     InterfaceConfigProto interfaceConfigProto =
         configProto.toBuilder().getInterfaces(0).toBuilder().addMethods(methodConfigProto).build();
 
-    configProto =
+    ConfigProto extraConfigProto =
         configProto
             .toBuilder()
             .setInterfaces(0, interfaceConfigProto)
             .addResourceNameGeneration(
                 ResourceNameMessageConfigProto.newBuilder()
                     .setMessageName("CreateShelvesRequest")
-                    .putFieldEntityMap("name", "shelf")
-                    .putFieldEntityMap("book", "book"))
+                    .putFieldEntityMap("name", "Shelf")
+                    .putFieldEntityMap("book", "Book"))
             .build();
 
     DiagCollector diagCollector = new BoundedDiagCollector();
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             sourceProtoFiles,
-            configProto,
+            extraConfigProto,
             DEFAULT_PACKAGE,
             allResourceDefs,
             allResourceSetDefs,
             protoParser);
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        GapicProductConfig.createResourceNameConfigs(
+        GapicProductConfig.createResourceNameConfigsWithProtoFileAndGapicConfig(
             diagCollector,
-            configProto,
-            sourceProtoFiles,
+            extraConfigProto,
+            protoFile,
             TargetLanguage.CSHARP,
             allResourceDefs,
             allResourceSetDefs,
@@ -398,10 +388,6 @@ public class ResourceNameMessageConfigsTest {
             .stream()
             .filter(d -> d.getKind().equals(Kind.WARNING))
             .collect(Collectors.toList());
-    assertThat(warningDiags).isNotEmpty();
-    assertThat(warningDiags.get(0).getMessage())
-        .contains(
-            "Resource[Set] entity archived_book from protofile clashes with a Resource[Set] of the same name from the GAPIC config. Using the GAPIC config entity.");
 
     assertThat(flatteningConfigs).isNotNull();
     assertThat(flatteningConfigs.size()).isEqualTo(3);
@@ -438,7 +424,7 @@ public class ResourceNameMessageConfigsTest {
     FieldConfig nameConfig = shelfFlattening.getFlattenedFieldConfigs().get("name");
     assertThat(nameConfig.getResourceNameTreatment()).isEqualTo(ResourceNameTreatment.STATIC_TYPES);
     assertThat(((SingleResourceNameConfig) nameConfig.getResourceNameConfig()).getNamePattern())
-        .isEqualTo(GAPIC_SHELF_PATH);
+        .isEqualTo(PROTO_SHELF_PATH);
 
     FlatteningConfig shelfAndBookFlattening = flatteningConfigs.get(1);
     assertThat(Iterables.size(shelfAndBookFlattening.getFlattenedFields())).isEqualTo(2);
@@ -446,15 +432,15 @@ public class ResourceNameMessageConfigsTest {
     FieldConfig nameConfig2 = shelfAndBookFlattening.getFlattenedFieldConfigs().get("name");
     assertThat(nameConfig2.getResourceNameTreatment())
         .isEqualTo(ResourceNameTreatment.STATIC_TYPES);
-    // Use GAPIC_SHELF_PATH over PROTO_SHELF_PATH.
+    // Use PROTO_SHELF_PATH over GAPIC_SHELF_PATH.
     assertThat(((SingleResourceNameConfig) nameConfig2.getResourceNameConfig()).getNamePattern())
-        .isEqualTo(GAPIC_SHELF_PATH);
+        .isEqualTo(PROTO_SHELF_PATH);
 
     FieldConfig bookConfig = shelfAndBookFlattening.getFlattenedFieldConfigs().get("book");
     assertThat(bookConfig.getResourceNameTreatment()).isEqualTo(ResourceNameTreatment.STATIC_TYPES);
-    // Use the resource name path from GAPIC config.
+    // Use the resource name path from proto file.
     assertThat(((SingleResourceNameConfig) bookConfig.getResourceNameConfig()).getNamePattern())
-        .isEqualTo(GAPIC_BOOK_PATH);
+        .isEqualTo(PROTO_BOOK_PATH);
     assertThat(((ProtoTypeRef) bookConfig.getField().getType()).getProtoType().getMessageType())
         .isEqualTo(bookType);
   }

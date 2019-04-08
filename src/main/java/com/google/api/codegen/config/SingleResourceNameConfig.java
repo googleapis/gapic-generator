@@ -18,6 +18,7 @@ import com.google.api.Resource;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionLanguageOverridesProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.util.Name;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.pathtemplate.ValidationException;
 import com.google.api.tools.framework.model.Diag;
@@ -42,15 +43,24 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       CollectionConfigProto collectionConfigProto,
       @Nullable ProtoFile file,
       TargetLanguage language) {
+    SingleResourceNameConfig.Builder builder = newBuilder();
     String namePattern = collectionConfigProto.getNamePattern();
-    PathTemplate nameTemplate;
-    try {
-      nameTemplate = PathTemplate.create(namePattern);
-    } catch (ValidationException e) {
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
-      return null;
-    }
     String entityId = collectionConfigProto.getEntityName();
+    PathTemplate nameTemplate = null;
+    if (!Strings.isNullOrEmpty(namePattern)) {
+      try {
+        nameTemplate = PathTemplate.create(namePattern);
+      } catch (ValidationException e) {
+        diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
+        return null;
+      }
+    }
+
+    builder.setNamePattern(namePattern);
+    builder.setNameTemplate(nameTemplate);
+    builder.setEntityId(entityId);
+    builder.setAssignedProtoFile(file);
+
     String entityName = entityId;
     String commonResourceName = null;
     if (language != null) {
@@ -67,8 +77,10 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
         }
       }
     }
-    return new AutoValue_SingleResourceNameConfig(
-        namePattern, nameTemplate, entityId, entityName, commonResourceName, file);
+    builder.setCommonResourceName(commonResourceName);
+    builder.setEntityName(ResourceNameMessageConfig.entityNameToName(entityName));
+
+    return builder.build();
   }
 
   /**
@@ -85,13 +97,19 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       return null;
     }
 
-    return new AutoValue_SingleResourceNameConfig(
-        pathTemplate, nameTemplate, resource.getSymbol(), resource.getSymbol(), null, file);
+    return newBuilder()
+        .setNamePattern(pathTemplate)
+        .setNameTemplate(nameTemplate)
+        .setAssignedProtoFile(file)
+        .setEntityId(resource.getSymbol())
+        .setEntityName(ResourceNameMessageConfig.entityNameToName(resource.getSymbol()))
+        .build();
   }
 
   /** Returns the name pattern for the resource name config. */
   public abstract String getNamePattern();
 
+  @Nullable
   /** Returns the name template for the resource name config. */
   public abstract PathTemplate getNameTemplate();
 
@@ -101,7 +119,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
 
   /** Returns the name used as a basis for generating methods. */
   @Override
-  public abstract String getEntityName();
+  public abstract Name getEntityName();
 
   @Override
   @Nullable
@@ -114,5 +132,28 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   @Override
   public ResourceNameType getResourceNameType() {
     return ResourceNameType.SINGLE;
+  }
+
+  public static SingleResourceNameConfig.Builder newBuilder() {
+    return new AutoValue_SingleResourceNameConfig.Builder();
+  }
+
+  public abstract Builder toBuilder();
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder setNamePattern(String val);
+
+    public abstract Builder setNameTemplate(PathTemplate val);
+
+    public abstract Builder setEntityId(String val);
+
+    public abstract Builder setEntityName(Name val);
+
+    public abstract Builder setCommonResourceName(String val);
+
+    public abstract Builder setAssignedProtoFile(ProtoFile val);
+
+    public abstract SingleResourceNameConfig build();
   }
 }

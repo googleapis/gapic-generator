@@ -18,6 +18,24 @@
     @end
 @end
 
+# initCodeSpec: InitCodeView
+@snippet standaloneSampleInitCode(initCodeSpec)
+    @if initCodeSpec.argDefaultLines
+        @join line : initCodeSpec.argDefaultLines
+          // {@initCode(TRUE, line)}
+        @end
+
+
+    @end
+    @if initCodeSpec.lines
+        @join line : initCodeSpec.topLevelLines
+            {@initCode(TRUE, line)};
+        @end
+
+    @end
+@end
+
+
 # includeAssignment: Boolean, line: InitCodeLineView
 @private initCode(includeAssignment, line)
     @switch line.lineType.toString
@@ -60,6 +78,12 @@
             {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue, FALSE)}
         @else
             {@renderInitValue(line.initValue, TRUE)}
+        @end
+    @case "ReadFileInitLine"
+        @if includeAssignment
+            ByteString {@line.identifier} = File.ReadAllBytes({@renderInitValue(line.fileName, FALSE)})
+        @else
+            File.ReadAllBytes({@renderInitValue(line.fileName, TRUE)})
         @end
     @default
         $unhandledCase: {@line.lineType.toString}$
