@@ -55,7 +55,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.StringUtils;
 
 // Utils for parsing possibly-annotated protobuf API IDL.
 public class ProtoParser {
@@ -165,8 +164,11 @@ public class ProtoParser {
       Map<ResourceSet, ProtoFile> allResourceSets) {
     String resourceName = getResourceReference(field);
     if (!Strings.isNullOrEmpty(resourceName)) {
-      String fullyQualifiedResourceName =
-          StringUtils.prependIfMissing(resourceName, getProtoPackage(field.getFile()) + ".");
+      String fullyQualifiedResourceName = resourceName;
+      if (!resourceName.contains(".")) {
+        fullyQualifiedResourceName =
+            String.format("%s.%s", getProtoPackage(field.getFile()), resourceName);
+      }
 
       // Look in the given Resource and ResourceSet collections.
       for (Resource resource : allResources.keySet()) {
