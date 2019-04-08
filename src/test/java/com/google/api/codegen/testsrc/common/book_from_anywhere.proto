@@ -10,12 +10,15 @@ option java_multiple_files = true;
 option java_outer_classname = "BookFromAnywhereProto";
 option java_package = "com.google.example.library.v1";
 
+import "google/api/resource.proto";
+
 // A single book in the archives or library.
 message BookFromAnywhere {
   // The resource name of the book.
   // Book names have the form `bookShelves/{shelf_id}/books/{book_id}` or
   // `archives/{archive_id}/books/{book_id}`.
-  string name = 1;
+  string name = 1 [
+    (google.api.resource_reference) = "google.example.library.v1.BookOneof"];
 
   // The name of the book author.
   string author = 2;
