@@ -1058,7 +1058,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     SingleResourceNameConfig singleResourceNameConfig =
         SingleResourceNameConfig.createSingleResourceName(
             diagCollector, collectionConfigProto, file, language);
-    createSingleResourceNameConfig(
+    insertSingleResourceNameConfig(
         diagCollector, singleResourceNameConfig, "", singleResourceNameConfigsMap);
   }
 
@@ -1073,7 +1073,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     SingleResourceNameConfig singleResourceNameConfig =
         SingleResourceNameConfig.createSingleResourceName(
             resource, resource.getPattern(), file, diagCollector);
-    createSingleResourceNameConfig(
+    insertSingleResourceNameConfig(
         diagCollector,
         singleResourceNameConfig,
         protoParser.getProtoPackage(file) + ".",
@@ -1083,7 +1083,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   // Construct a new SingleResourceNameConfig from the given SingleResourceNameConfig,
   // and add the newly created config as a value to the map param,
   // keyed on the entity_id.
-  private static void createSingleResourceNameConfig(
+  private static void insertSingleResourceNameConfig(
       DiagCollector diagCollector,
       SingleResourceNameConfig singleResourceNameConfig,
       String prefixForMap,
