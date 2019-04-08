@@ -667,44 +667,7 @@ public class InitCodeTransformer {
                     namer.getAndSaveElementResourceTypeName(context.getTypeTable(), fieldConfig))
                 .build();
       } else {
-        SingleResourceNameConfig singleResourceNameConfig;
-        switch (fieldConfig.getResourceNameType()) {
-          case ANY:
-            // TODO(michaelbausor): handle case where there are no other resource names at all...
-            singleResourceNameConfig =
-                Iterables.get(context.getProductConfig().getSingleResourceNameConfigs(), 0);
-            FieldConfig anyResourceNameFieldConfig =
-                fieldConfig.withResourceNameConfig(singleResourceNameConfig);
-            initValue =
-                createResourceNameInitValueView(context, anyResourceNameFieldConfig, item).build();
-            break;
-          case FIXED:
-            throw new UnsupportedOperationException("entity name invalid");
-          case ONEOF:
-            ResourceNameOneofConfig oneofConfig =
-                (ResourceNameOneofConfig) fieldConfig.getResourceNameConfig();
-            singleResourceNameConfig = Iterables.get(oneofConfig.getSingleResourceNameConfigs(), 0);
-            FieldConfig singleResourceNameFieldConfig =
-                fieldConfig.withResourceNameConfig(singleResourceNameConfig);
-            ResourceNameInitValueView initView =
-                createResourceNameInitValueView(context, singleResourceNameFieldConfig, item)
-                    .build();
-            initValue =
-                ResourceNameOneofInitValueView.newBuilder()
-                    .resourceOneofTypeName(
-                        namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig))
-                    .specificResourceNameView(initView)
-                    .build();
-            break;
-          case SINGLE:
-            initValue = createResourceNameInitValueView(context, fieldConfig, item).build();
-            break;
-          case NONE:
-            // Fall-through
-          default:
-            throw new UnsupportedOperationException(
-                "unexpected entity name type '" + fieldConfig.getResourceNameType() + "'");
-        }
+        initValue = createInitValueView(context, fieldConfig, namer, typeTable, item, false);
       }
     } else if (initValueConfig.hasFormattingConfig() && !item.getType().isRepeated()) {
       if (context.getFeatureConfig().enableStringFormatFunctions()
@@ -740,10 +703,7 @@ public class InitCodeTransformer {
 
         initValue = formattedInitValue.build();
       } else {
-        initValue =
-            createResourceNameInitValueView(context, fieldConfig, item)
-                .convertToString(true)
-                .build();
+        initValue = createInitValueView(context, fieldConfig, namer, typeTable, item, true);
       }
     } else {
       SimpleInitValueView.Builder simpleInitValue = SimpleInitValueView.newBuilder();
@@ -788,6 +748,52 @@ public class InitCodeTransformer {
       surfaceLine.doc(ImmutableList.of());
     }
     surfaceLine.descriptions(context.getNamer().getWrappedDocLines(item.getDescription(), false));
+  }
+
+  private InitValueView createInitValueView(
+      MethodContext context,
+      FieldConfig fieldConfig,
+      SurfaceNamer namer,
+      ImportTypeTable typeTable,
+      InitCodeNode item,
+      boolean convertToString) {
+    SingleResourceNameConfig singleResourceNameConfig;
+    switch (fieldConfig.getResourceNameType()) {
+      case ANY:
+        // TODO(michaelbausor): handle case where there are no other resource names at all...
+        singleResourceNameConfig =
+            Iterables.get(context.getProductConfig().getSingleResourceNameConfigs(), 0);
+        FieldConfig anyResourceNameFieldConfig =
+            fieldConfig.withResourceNameConfig(singleResourceNameConfig);
+        return createResourceNameInitValueView(context, anyResourceNameFieldConfig, item)
+            .convertToString(convertToString)
+            .build();
+      case FIXED:
+        throw new UnsupportedOperationException("entity name invalid");
+      case ONEOF:
+        ResourceNameOneofConfig oneofConfig =
+            (ResourceNameOneofConfig) fieldConfig.getResourceNameConfig();
+        singleResourceNameConfig = Iterables.get(oneofConfig.getSingleResourceNameConfigs(), 0);
+        FieldConfig singleResourceNameFieldConfig =
+            fieldConfig.withResourceNameConfig(singleResourceNameConfig);
+        ResourceNameInitValueView initView =
+            createResourceNameInitValueView(context, singleResourceNameFieldConfig, item)
+                .convertToString(convertToString)
+                .build();
+        return ResourceNameOneofInitValueView.newBuilder()
+            .resourceOneofTypeName(namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig))
+            .specificResourceNameView(initView)
+            .build();
+      case SINGLE:
+        return createResourceNameInitValueView(context, fieldConfig, item)
+            .convertToString(convertToString)
+            .build();
+      case NONE:
+        // Fall-through
+      default:
+        throw new UnsupportedOperationException(
+            "unexpected entity name type '" + fieldConfig.getResourceNameType() + "'");
+    }
   }
 
   private ResourceNameInitValueView.Builder createResourceNameInitValueView(

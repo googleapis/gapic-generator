@@ -382,14 +382,14 @@ message Book {
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_set) = {
-      symbol: "BookOneOf"
+      symbol: "BookOneof"
+      resource_references: ["Book", "ArchivedBook"];
       resources: [
         {
           symbol: "DeletedBook"
           pattern : "_deleted-book_"
         }
       ]
-      resource_references: ["ArchivedBook", "Book"];
     }
   ];
 
@@ -816,7 +816,7 @@ message GetBookFromAnywhereRequest {
   // The name of the book to retrieve.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = "google.example.library.v1.BookOneOf"];
+    (google.api.resource_reference) = "google.example.library.v1.BookOneof"];
 
   // An alternate book name, used to test restricting flattened field to a
   // single resource name type in a oneof.
@@ -830,7 +830,7 @@ message GetBookFromAbsolutelyAnywhereRequest {
   // The name of the book to retrieve.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = "BookOneOf"];
+    (google.api.resource_reference) = "BookOneof"];
 
   // An alternate book name, used to test proper processing of placeholders
   // within additional bindings.
@@ -940,7 +940,7 @@ message TestOptionalRequiredFlatteningParamsRequest {
   repeated string required_repeated_resource_name = 30 [(google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = "Book"];
   repeated string required_repeated_resource_name_oneof = 31 [(google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = "BookOneOf"];
+    (google.api.resource_reference) = "BookOneof"];
   repeated string required_repeated_resource_name_common = 34 [(google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = "Project"
   ];
@@ -962,7 +962,7 @@ message TestOptionalRequiredFlatteningParamsRequest {
     (google.api.resource_reference) = "Book"
   ];
   string optional_singular_resource_name_oneof = 61 [
-    (google.api.resource_reference) = "google.example.library.v1.Book"
+    (google.api.resource_reference) = "google.example.library.v1.BookOneof"
     // Test that we can reference Resource Name One Of by its name.
   ];
   string optional_singular_resource_name_common = 64 [

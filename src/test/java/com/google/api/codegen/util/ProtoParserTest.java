@@ -152,7 +152,7 @@ public class ProtoParserTest {
         book.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
     ResourceSet bookResourceSet = protoParser.getResourceSet(bookNameField);
     assertThat(bookResourceSet).isNotNull();
-    assertThat(bookResourceSet.getSymbol()).isEqualTo("BookOneOf");
+    assertThat(bookResourceSet.getSymbol()).isEqualTo("BookOneof");
     assertThat(bookResourceSet.getResourcesCount()).isEqualTo(1);
     assertThat(bookResourceSet.getResources(0))
         .isEqualTo(
@@ -196,11 +196,11 @@ public class ProtoParserTest {
     assertThat(resourceSetDefs)
         .containsEntry(
             ResourceSet.newBuilder()
-                .setSymbol("BookOneOf")
+                .setSymbol("BookOneof")
+                .addResourceReferences("Book")
+                .addResourceReferences("ArchivedBook")
                 .addResources(
                     Resource.newBuilder().setSymbol("DeletedBook").setPattern("_deleted-book_"))
-                .addResourceReferences("ArchivedBook")
-                .addResourceReferences("Book")
                 .build(),
             libraryProtoFile);
   }
@@ -222,7 +222,7 @@ public class ProtoParserTest {
             .findFirst()
             .get();
     assertThat(protoParser.getResourceReferenceName(nameField, resourceDefs, resourceSetDefs))
-        .isEqualTo("BookOneOf");
+        .isEqualTo("BookOneof");
 
     Field altBookNameField =
         getBookFromAnywhereRequest
@@ -356,6 +356,6 @@ public class ProtoParserTest {
     Map<String, String> fieldNamePatterns = protoParser.getFieldNamePatterns(publishMethod);
     assertThat(fieldNamePatterns.size()).isEqualTo(2);
     assertThat(fieldNamePatterns.get("shelf.name")).isEqualTo("Shelf");
-    assertThat(fieldNamePatterns.get("books.name")).isEqualTo("BookOneOf");
+    assertThat(fieldNamePatterns.get("books.name")).isEqualTo("BookOneof");
   }
 }
