@@ -178,7 +178,7 @@ public abstract class LongRunningConfig {
     }
 
     double pollDelayMultiplier = longRunningConfigProto.getPollDelayMultiplier();
-    if (pollDelayMultiplier <= 1.0) {
+    if (pollDelayMultiplier < 1.0) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
