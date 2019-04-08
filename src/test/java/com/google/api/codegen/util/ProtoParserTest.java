@@ -232,7 +232,7 @@ public class ProtoParserTest {
             .findFirst()
             .get();
     assertThat(
-        protoParser.getResourceReferenceName(altBookNameField, resourceDefs, resourceSetDefs))
+            protoParser.getResourceReferenceName(altBookNameField, resourceDefs, resourceSetDefs))
         .isEqualTo("Book");
   }
 

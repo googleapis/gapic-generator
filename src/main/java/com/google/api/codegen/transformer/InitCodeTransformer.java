@@ -919,17 +919,17 @@ public class InitCodeTransformer {
   private static boolean isRequired(FieldConfig fieldConfig, MethodContext context) {
     return fieldConfig != null
         && context
-        .getMethodConfig()
-        .getRequiredFieldConfigs()
-        .stream()
-        .anyMatch(
-            fc -> fc.getField().getSimpleName().equals(fieldConfig.getField().getSimpleName()));
+            .getMethodConfig()
+            .getRequiredFieldConfigs()
+            .stream()
+            .anyMatch(
+                fc -> fc.getField().getSimpleName().equals(fieldConfig.getField().getSimpleName()));
   }
 
   private static String getVariableName(MethodContext context, InitCodeNode item) {
     if (!context
-        .getFeatureConfig()
-        .useResourceNameFormatOptionInSample(context, item.getFieldConfig())
+            .getFeatureConfig()
+            .useResourceNameFormatOptionInSample(context, item.getFieldConfig())
         && item.getInitValueConfig().hasFormattingConfig()) {
       return context.getNamer().getFormattedVariableName(item.getIdentifier());
     }
