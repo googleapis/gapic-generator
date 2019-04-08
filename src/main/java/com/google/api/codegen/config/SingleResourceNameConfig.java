@@ -109,6 +109,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   /** Returns the name pattern for the resource name config. */
   public abstract String getNamePattern();
 
+  @Nullable
   /** Returns the name template for the resource name config. */
   public abstract PathTemplate getNameTemplate();
 
