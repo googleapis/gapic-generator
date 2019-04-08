@@ -164,19 +164,25 @@ public class ProtoParser {
       Map<ResourceSet, ProtoFile> allResourceSets) {
     String resourceName = getResourceReference(field);
     if (!Strings.isNullOrEmpty(resourceName)) {
-
+      String fullyQualifiedResourceName = resourceName;
+      if (!resourceName.contains(".")) {
+        fullyQualifiedResourceName =
+            String.format("%s.%s", getProtoPackage(field.getFile()), resourceName);
+      }
       // Look in the given Resource and ResourceSet collections.
       for (Resource resource : allResources.keySet()) {
         ProtoFile protoFile = allResources.get(resource);
-        if (getResourceFullName(resource, protoFile).equals(resourceName)
-            || field.getFile().equals(protoFile) && resource.getSymbol().equals(resourceName)) {
+        if (getResourceFullName(resource, protoFile).equals(fullyQualifiedResourceName)
+            || field.getFile().equals(protoFile)
+                && resource.getSymbol().equals(fullyQualifiedResourceName)) {
           return resource.getSymbol();
         }
       }
       for (ResourceSet resourceSet : allResourceSets.keySet()) {
         ProtoFile protoFile = allResourceSets.get(resourceSet);
-        if (getResourceSetFullName(resourceSet, protoFile).equals(resourceName)
-            || field.getFile().equals(protoFile) && resourceSet.getSymbol().equals(resourceName)) {
+        if (getResourceSetFullName(resourceSet, protoFile).equals(fullyQualifiedResourceName)
+            || field.getFile().equals(protoFile)
+                && resourceSet.getSymbol().equals(fullyQualifiedResourceName)) {
           return resourceSet.getSymbol();
         }
       }
