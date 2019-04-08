@@ -169,6 +169,7 @@ public class ProtoParser {
         fullyQualifiedResourceName =
             String.format("%s.%s", getProtoPackage(field.getFile()), resourceName);
       }
+
       // Look in the given Resource and ResourceSet collections.
       for (Resource resource : allResources.keySet()) {
         ProtoFile protoFile = allResources.get(resource);
