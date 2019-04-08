@@ -273,7 +273,7 @@ public class ResourceNameMessageConfigsTest {
         GapicProductConfig.createResourceNameConfigsWithProtoFileAndGapicConfig(
             diagCollector,
             configProto,
-            sourceProtoFiles,
+            protoFile,
             TargetLanguage.CSHARP,
             allResourceDefs,
             allResourceSetDefs,
@@ -366,7 +366,7 @@ public class ResourceNameMessageConfigsTest {
         GapicProductConfig.createResourceNameConfigsWithProtoFileAndGapicConfig(
             diagCollector,
             extraConfigProto,
-            sourceProtoFiles,
+            protoFile,
             TargetLanguage.CSHARP,
             allResourceDefs,
             allResourceSetDefs,

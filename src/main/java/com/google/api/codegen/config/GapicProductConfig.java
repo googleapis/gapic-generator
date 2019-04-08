@@ -232,12 +232,13 @@ public abstract class GapicProductConfig implements ProductConfig {
             sourceProtos, configProto, defaultPackage, resourceDefs, resourceSetDefs, protoParser);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs;
+    ProtoFile packageProtoFile = sourceProtos.isEmpty() ? null : sourceProtos.get(0);
     if (protoParser.isProtoAnnotationsEnabled()) {
       resourceNameConfigs =
           createResourceNameConfigsWithProtoFileAndGapicConfig(
               diagCollector,
               configProto,
-              sourceProtos,
+              packageProtoFile,
               language,
               resourceDefs,
               resourceSetDefs,
@@ -245,7 +246,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     } else {
       resourceNameConfigs =
           createResourceNameConfigsForGapicConfigOnly(
-              diagCollector, configProto, sourceProtos, language);
+              diagCollector, configProto, packageProtoFile, language);
     }
 
     if (resourceNameConfigs == null) {
@@ -722,15 +723,11 @@ public abstract class GapicProductConfig implements ProductConfig {
       createResourceNameConfigsWithProtoFileAndGapicConfig(
           DiagCollector diagCollector,
           ConfigProto configProto,
-          @Nullable List<ProtoFile> protoFiles,
+          @Nullable ProtoFile sampleProtoFile,
           TargetLanguage language,
           Map<Resource, ProtoFile> resourceDefs,
           Map<ResourceSet, ProtoFile> resourceSetDefs,
           ProtoParser protoParser) {
-    ProtoFile file = null;
-    if (protoFiles != null) {
-      file = protoFiles.get(0);
-    }
 
     // Maps of fully qualified Resource names to derived configs.
     LinkedHashMap<String, SingleResourceNameConfig>
@@ -744,11 +741,11 @@ public abstract class GapicProductConfig implements ProductConfig {
       if (FixedResourceNameConfig.isFixedResourceNameConfig(resourcePath)) {
         FixedResourceNameConfig fixedResourceNameConfig =
             FixedResourceNameConfig.createFixedResourceNameConfig(
-                diagCollector, resource.getSymbol(), resource.getPattern(), file);
+                diagCollector, resource.getSymbol(), resource.getPattern(), protoFile);
         insertFixedResourceNameConfig(
             diagCollector,
             fixedResourceNameConfig,
-            protoParser.getProtoPackage(file) + ".",
+            protoParser.getProtoPackage(protoFile) + ".",
             fullyQualifiedFixedResourcesFromProtoFileCollector);
       } else {
         createSingleResourceNameConfigFromProtoFile(
@@ -803,13 +800,13 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigsFromGapicConfig =
         createSingleResourceNamesFromGapicConfigOnly(
-            diagCollector, allCollectionConfigProtos, file, language);
+            diagCollector, allCollectionConfigProtos, sampleProtoFile, language);
     ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigsFromGapicConfig =
         createFixedResourceNamesFromGapicConfigOnly(
             diagCollector,
             allCollectionConfigProtos,
             configProto.getFixedResourceNameValuesList(),
-            file);
+            sampleProtoFile);
 
     // Combine the ResourceNameConfigs from the GAPIC and protofile.
     Map<String, SingleResourceNameConfig> finalSingleResourceNameConfigs =
@@ -824,7 +821,7 @@ public abstract class GapicProductConfig implements ProductConfig {
             configProto.getCollectionOneofsList(),
             singleResourceNameConfigsFromGapicConfig,
             fixedResourceNameConfigsFromGapicConfig,
-            file);
+            sampleProtoFile);
     if (diagCollector.getErrorCount() > 0) {
       return null;
     }
@@ -859,12 +856,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       createResourceNameConfigsForGapicConfigOnly(
           DiagCollector diagCollector,
           ConfigProto configProto,
-          @Nullable List<ProtoFile> protoFiles,
+          @Nullable ProtoFile file,
           TargetLanguage language) {
-    ProtoFile file = null;
-    if (protoFiles != null) {
-      file = protoFiles.get(0);
-    }
 
     List<CollectionConfigProto> allCollectionConfigProtos =
         new ArrayList<>(configProto.getCollectionsList());
