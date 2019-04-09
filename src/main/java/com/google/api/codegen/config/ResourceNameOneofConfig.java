@@ -30,6 +30,7 @@ import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.StringUtils;
 
 /** ResourceNameOneofConfig represents the configuration for a oneof set of resource names. */
 @AutoValue
@@ -108,13 +109,13 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       DiagCollector diagCollector,
       ResourceSet resourceSet,
       String oneOfName,
-      ImmutableMap<String, SingleResourceNameConfig> fileLevelSingleResourceNameConfigs,
-      ImmutableMap<String, FixedResourceNameConfig> fileLevelFixedResourceNameConfigs,
+      ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
+      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs,
       ProtoParser protoParser,
       ProtoFile file) {
 
-    if (fileLevelSingleResourceNameConfigs.containsKey(oneOfName)
-        || fileLevelFixedResourceNameConfigs.containsKey(oneOfName)) {
+    if (singleResourceNameConfigs.containsKey(oneOfName)
+        || fixedResourceNameConfigs.containsKey(oneOfName)) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -129,34 +130,46 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     List<String> resourceReferences = resourceSet.getResourceReferencesList();
 
     for (Resource resource : resourceDefs) {
-      SingleResourceNameConfig singleResourceNameConfig =
-          SingleResourceNameConfig.createSingleResourceName(
-              resource, resource.getPattern(), file, diagCollector);
-      configList.add(singleResourceNameConfig);
-    }
-    for (String resourceRef : resourceReferences) {
-      if (Strings.isNullOrEmpty(resourceRef)) {
+      if (Strings.isNullOrEmpty(resource.getSymbol())) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "name is required for Resources in a ResourceSet,"
-                    + " but ResourceSet %s has at least one Resource without a name.",
-                oneOfName));
-        return null;
+                String.format(
+                    "google.api.Resource with pattern \"%s\" "
+                        + "and nested inside ResourceSet \"%s\" was not given a symbol",
+                    resource.getPattern(), resourceSet.getSymbol())));
+        continue;
       }
-      String qualifiedRef = resourceRef;
-      if (!qualifiedRef.contains(".")) {
-        qualifiedRef = protoParser.getProtoPackage(file) + "." + resourceRef;
+
+      SingleResourceNameConfig singleResourceNameConfig =
+          singleResourceNameConfigs.get(resource.getSymbol());
+      if (singleResourceNameConfig != null) {
+        configList.add(singleResourceNameConfig);
+        continue;
       }
+
+      FixedResourceNameConfig fixedResourceNameConfig =
+          fixedResourceNameConfigs.get(resource.getSymbol());
+      if (fixedResourceNameConfig != null) {
+        configList.add(fixedResourceNameConfig);
+        continue;
+      }
+
+      // This shouldn't happen because the resource config maps were
+      // previously constructed from Resource objects.
+      throw new IllegalStateException(
+          String.format(
+              "Failed to create a ResourceNameConfig for the protofile-defined Resource %s.",
+              resource.getSymbol()));
+    }
+    for (String resourceRef : resourceReferences) {
+      String resourceName =
+          StringUtils.removeStart(resourceRef, protoParser.getProtoPackage(file) + ".");
       ResourceNameConfig resourceNameConfig;
-      if (fileLevelSingleResourceNameConfigs.containsKey(qualifiedRef)) {
-        resourceNameConfig = fileLevelSingleResourceNameConfigs.get(qualifiedRef);
-      } else if (fileLevelSingleResourceNameConfigs.containsKey(resourceRef)) {
-        resourceNameConfig = fileLevelSingleResourceNameConfigs.get(resourceRef);
-      } else if (fileLevelFixedResourceNameConfigs.containsKey(qualifiedRef)) {
-        resourceNameConfig = fileLevelFixedResourceNameConfigs.get(qualifiedRef);
-      } else if (fileLevelFixedResourceNameConfigs.containsKey(resourceRef)) {
-        resourceNameConfig = fileLevelFixedResourceNameConfigs.get(resourceRef);
+      if (singleResourceNameConfigs.containsKey(resourceName)) {
+        resourceNameConfig = singleResourceNameConfigs.get(resourceName);
+      } else if (fixedResourceNameConfigs.containsKey(resourceName)) {
+        resourceNameConfig = fixedResourceNameConfigs.get(resourceName);
       } else {
         diagCollector.addDiag(
             Diag.error(
