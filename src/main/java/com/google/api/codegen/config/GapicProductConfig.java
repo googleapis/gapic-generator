@@ -28,6 +28,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
+import com.google.api.codegen.util.ConfigVersionValidator;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
@@ -199,11 +200,14 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     // Toggle on/off proto annotations parsing.
     ProtoParser protoParser;
-    // TODO(andrealin): Expose command-line option for toggling proto annotations parsing.
-    if (configProto == null) {
-      // By default, enable proto annotations parsing when no GAPIC config is given.
+    ConfigVersionValidator versionValidator = new ConfigVersionValidator();
+    if (versionValidator.isV2Config(configProto)) {
+      versionValidator.validateV2Config(configProto);
       protoParser = new ProtoParser(true);
-      configProto = ConfigProto.getDefaultInstance();
+
+      if (configProto == null) {
+        configProto = ConfigProto.getDefaultInstance();
+      }
     } else {
       protoParser = new ProtoParser(false);
     }
