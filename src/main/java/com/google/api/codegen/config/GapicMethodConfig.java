@@ -24,9 +24,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
-import com.google.api.codegen.config.PageStreamingConfig.PagingFields;
 import com.google.api.codegen.configgen.ProtoMethodTransformer;
-import com.google.api.codegen.configgen.ProtoPagingParameters;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoParser;
@@ -78,46 +76,18 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ImmutableSet<String> retryParamsConfigNames,
       ProtoParser protoParser) {
 
-    boolean error = false;
+    int previousErrors = diagCollector.getErrorCount();
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
 
-    PageStreamingConfig pageStreaming = null;
-    if (!PageStreamingConfigProto.getDefaultInstance()
-        .equals(methodConfigProto.getPageStreaming())) {
-      pageStreaming =
-          PageStreamingConfig.createPageStreamingFromGapicConfig(
-              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
-      if (pageStreaming == null) {
-        error = true;
-      }
-    } else if (MethodConfigProto.getDefaultInstance().equals(methodConfigProto)) {
-      // When GAPIC config not available, toggle pagination based on presence of paging params.
-      // See https://cloud.google.com/apis/design/design_patterns for API pagination pattern.
-      ProtoField tokenField = methodModel.getInputField(ProtoPagingParameters.nameForPageToken());
-      ProtoField pageSizeField = methodModel.getInputField(ProtoPagingParameters.nameForPageSize());
-      ProtoField responseTokenField =
-          methodModel.getOutputField(ProtoPagingParameters.nameForNextPageToken());
-      if (tokenField != null && responseTokenField != null && pageSizeField != null) {
-        PagingFields pagingFields =
-            PagingFields.newBuilder()
-                .setResponseTokenField(responseTokenField)
-                .setRequestTokenField(tokenField)
-                .setPageSizeField(pageSizeField)
-                .build();
-        pageStreaming =
-            PageStreamingConfig.createPageStreamingFromProtoFile(
-                diagCollector,
-                messageConfigs,
-                resourceNameConfigs,
-                methodModel,
-                pagingFields,
-                protoParser,
-                defaultPackageName);
-        if (pageStreaming == null) {
-          error = true;
-        }
-      }
-    }
+    PageStreamingConfig pageStreaming =
+        PageStreamingConfig.createPageStreamingConfig(
+            diagCollector,
+            defaultPackageName,
+            methodModel,
+            methodConfigProto,
+            messageConfigs,
+            resourceNameConfigs,
+            protoParser);
 
     GrpcStreamingConfig grpcStreaming = null;
     if (isGrpcStreamingMethod(methodModel)) {
@@ -128,9 +98,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
         grpcStreaming =
             GrpcStreamingConfig.createGrpcStreaming(
                 diagCollector, methodConfigProto.getGrpcStreaming(), method);
-        if (grpcStreaming == null) {
-          error = true;
-        }
       }
     }
 
@@ -148,9 +115,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
       batching =
           BatchingConfig.createBatching(
               diagCollector, methodConfigProto.getBatching(), methodModel);
-      if (batching == null) {
-        error = true;
-      }
     }
 
     String retryCodesName = retryCodesConfig.getMethodRetryNames().get(method.getSimpleName());
@@ -158,7 +122,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
     String retryParamsName =
         RetryDefinitionsTransformer.getRetryParamsName(
             methodConfigProto, diagCollector, retryParamsConfigNames);
-    error |= (retryParamsName == null);
 
     long defaultTimeout = methodConfigProto.getTimeoutMillis();
     if (defaultTimeout <= 0) {
@@ -173,7 +136,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
               SimpleLocation.TOPLEVEL,
               "Default timeout not found or has invalid value (in method %s)",
               methodModel.getFullName()));
-      error = true;
     }
 
     ImmutableMap<String, String> fieldNamePatterns;
@@ -186,8 +148,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ResourceNameTreatment defaultResourceNameTreatment =
         defaultResourceNameTreatment(methodConfigProto, method, protoParser, defaultPackageName);
 
-    List<String> requiredFields = protoParser.getRequiredFields(method);
-    if (requiredFields.isEmpty()) {
+    List<String> requiredFields;
+    if (protoParser.isProtoAnnotationsEnabled()) {
+      requiredFields = protoParser.getRequiredFields(method);
+    } else {
       requiredFields = methodConfigProto.getRequiredFieldsList();
     }
 
@@ -207,8 +171,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getOptionalFields(methodModel, methodConfigProto.getRequiredFieldsList()));
-    if (diagCollector.getErrorCount() > 0) {
+            getOptionalFields(methodModel, requiredFields));
+    if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
     }
 
@@ -236,13 +200,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
             method, diagCollector, methodConfigProto.getLongRunning(), protoParser);
-    if (diagCollector.getErrorCount() > 0) {
-      error = true;
-    }
 
     List<String> headerRequestParams = findHeaderRequestParams(method);
 
-    if (error) {
+    if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
     } else {
       return new AutoValue_GapicMethodConfig(
