@@ -148,8 +148,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ResourceNameTreatment defaultResourceNameTreatment =
         defaultResourceNameTreatment(methodConfigProto, method, protoParser, defaultPackageName);
 
-    List<String> requiredFields = protoParser.getRequiredFields(method);
-    if (requiredFields.isEmpty()) {
+    List<String> requiredFields;
+    if (protoParser.isProtoAnnotationsEnabled()) {
+      requiredFields = protoParser.getRequiredFields(method);
+    } else {
       requiredFields = methodConfigProto.getRequiredFieldsList();
     }
 
@@ -169,7 +171,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getOptionalFields(methodModel, methodConfigProto.getRequiredFieldsList()));
+            getOptionalFields(methodModel, requiredFields));
     if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
     }

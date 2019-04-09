@@ -223,6 +223,7 @@ public abstract class PageStreamingConfig {
     return new AutoValue_PageStreamingConfig(pagingFields, resourcesFieldConfig);
   }
 
+  /** package-private for use by {@link GapicMethodConfig}. */
   static PageStreamingConfig createPageStreamingConfig(
       DiagCollector diagCollector,
       String defaultPackageName,
