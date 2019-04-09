@@ -24,6 +24,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
@@ -129,6 +130,17 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     List<String> resourceReferences = resourceSet.getResourceReferencesList();
 
     for (Resource resource : resourceDefs) {
+      if (Strings.isNullOrEmpty(resource.getSymbol())) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                String.format(
+                    "google.api.Resource with pattern \"%s\" "
+                        + "and nested inside ResourceSet \"%s\" was not given a symbol",
+                    resource.getPattern(), resourceSet.getSymbol())));
+        continue;
+      }
+
       SingleResourceNameConfig singleResourceNameConfig =
           singleResourceNameConfigs.get(resource.getSymbol());
       if (singleResourceNameConfig != null) {
