@@ -1,5 +1,5 @@
 ============== file: README.md ==============
-# Node.js Client for Google Example Library API ([Production/Stable](https://github.com/GoogleCloudPlatform/google-cloud-node#versioning))
+# Node.js Clients for Google Example Library API ([Production/Stable](https://github.com/GoogleCloudPlatform/google-cloud-node#versioning))
 
 [Google Example Library API][Product Documentation]:
 A simple Google Example Library API.
@@ -89,6 +89,7 @@ $ npm install --save @google-cloud/library
     "google-gax": "^0.25.3",
     "google-some-other-package-v1": "^0.2.1",
     "lodash.merge": "^4.6.0",
+    "lodash.union": "^4.6.0",
     "protobufjs": "^6.8.0"
   },
   "devDependencies": {
@@ -195,10 +196,14 @@ const gapic = Object.freeze({
  *
  * - `LibraryServiceClient` - Reference to
  *   {@link v1.LibraryServiceClient}
+ * - `MyProtoClient` - Reference to
+ *   {@link v1.MyProtoClient}
  * - `v1` - This is used for selecting or pinning a
  *   particular backend service version. It exports:
  *     - `LibraryServiceClient` - Reference to
  *       {@link v1.LibraryServiceClient}
+ *     - `MyProtoClient` - Reference to
+ *       {@link v1.MyProtoClient}
  *
  * @module {object} @google-cloud/library
  * @alias nodejs-library
@@ -223,6 +228,8 @@ const gapic = Object.freeze({
  * @type {object}
  * @property {constructor} LibraryServiceClient
  *   Reference to {@link v1.LibraryServiceClient}
+ * @property {constructor} MyProtoClient
+ *   Reference to {@link v1.MyProtoClient}
  */
 module.exports = gapic.v1;
 
@@ -230,6 +237,8 @@ module.exports = gapic.v1;
  * @type {object}
  * @property {constructor} LibraryServiceClient
  *   Reference to {@link v1.LibraryServiceClient}
+ * @property {constructor} MyProtoClient
+ *   Reference to {@link v1.MyProtoClient}
  */
 module.exports.v1 = gapic.v1;
 
@@ -1370,6 +1379,65 @@ function sampleStreamShelves() {
 // tslint:disable-next-line:no-any
 
 sampleStreamShelves();
+============== file: src/v1/doc/google/example/library/v1/doc_another_service.js ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Note: this file is purely for documentation. Any contents are not expected
+// to be loaded as the JS file.
+
+/**
+ * @property {Object[]} mylist
+ *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+ *
+ * @property {Object} myfield
+ *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+ *
+ * @property {Object} secondfield
+ *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+ *
+ * @typedef MethodRequest
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.MethodRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/another_service.proto}
+ */
+const MethodRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {string} subfield
+ *
+ * @property {string} subsecondfield
+ *
+ * @typedef SubMessage
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.SubMessage definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/another_service.proto}
+ */
+const SubMessage = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {string} myfield
+ *
+ * @typedef MethodResponse
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.MethodResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/another_service.proto}
+ */
+const MethodResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 ============== file: src/v1/doc/google/example/library/v1/doc_book_from_anywhere.js ==============
 // Copyright 2019 Google LLC
 //
@@ -3729,8 +3797,10 @@ const Used = {
 'use strict';
 
 const LibraryServiceClient = require('./library_service_client');
+const MyProtoClient = require('./my_proto_client');
 
 module.exports.LibraryServiceClient = LibraryServiceClient;
+module.exports.MyProtoClient = MyProtoClient;
 
 ============== file: src/v1/library_service_client.js ==============
 // Copyright 2019 Google LLC
@@ -3858,9 +3928,6 @@ class LibraryServiceClient {
       ),
       bookPathTemplate: new gax.PathTemplate(
         'shelves/{shelf_id}/books/{book_id}'
-      ),
-      returnPathTemplate: new gax.PathTemplate(
-        'shelves/{shelf}/books/{book}/returns/{return}'
       ),
       projectPathTemplate: new gax.PathTemplate(
         'projects/{project}'
@@ -6345,22 +6412,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * Return a fully-qualified return resource name string.
-   *
-   * @param {String} shelf
-   * @param {String} book
-   * @param {String} return_
-   * @returns {String}
-   */
-  returnPath(shelf, book, return_) {
-    return this._pathTemplates.returnPathTemplate.render({
-      shelf: shelf,
-      book: book,
-      return: return_,
-    });
-  }
-
-  /**
    * Return a fully-qualified project resource name string.
    *
    * @param {String} project
@@ -6423,45 +6474,6 @@ class LibraryServiceClient {
     return this._pathTemplates.bookPathTemplate
       .match(bookName)
       .book_id;
-  }
-
-  /**
-   * Parse the returnName from a return resource.
-   *
-   * @param {String} returnName
-   *   A fully-qualified path representing a return resources.
-   * @returns {String} - A string representing the shelf.
-   */
-  matchShelfFromReturnName(returnName) {
-    return this._pathTemplates.returnPathTemplate
-      .match(returnName)
-      .shelf;
-  }
-
-  /**
-   * Parse the returnName from a return resource.
-   *
-   * @param {String} returnName
-   *   A fully-qualified path representing a return resources.
-   * @returns {String} - A string representing the book.
-   */
-  matchBookFromReturnName(returnName) {
-    return this._pathTemplates.returnPathTemplate
-      .match(returnName)
-      .book;
-  }
-
-  /**
-   * Parse the returnName from a return resource.
-   *
-   * @param {String} returnName
-   *   A fully-qualified path representing a return resources.
-   * @returns {String} - A string representing the return.
-   */
-  matchReturnFromReturnName(returnName) {
-    return this._pathTemplates.returnPathTemplate
-      .match(returnName)
-      .return;
   }
 
   /**
@@ -6685,6 +6697,338 @@ module.exports = LibraryServiceClient;
         "PrivateGetBook": {
           "timeout_millis": 60000,
           "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        }
+      }
+    }
+  }
+}
+
+============== file: src/v1/my_proto_client.js ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+'use strict';
+
+const gapicConfig = require('./my_proto_client_config.json');
+const gax = require('google-gax');
+const merge = require('lodash.merge');
+const path = require('path');
+
+const VERSION = require('../../package.json').version;
+
+/**
+ * @class
+ * @memberof v1
+ */
+class MyProtoClient {
+  /**
+   * Construct an instance of MyProtoClient.
+   *
+   * @param {object} [options] - The configuration object. See the subsequent
+   *   parameters for more details.
+   * @param {object} [options.credentials] - Credentials object.
+   * @param {string} [options.credentials.client_email]
+   * @param {string} [options.credentials.private_key]
+   * @param {string} [options.email] - Account email address. Required when
+   *     using a .pem or .p12 keyFilename.
+   * @param {string} [options.keyFilename] - Full path to the a .json, .pem, or
+   *     .p12 key downloaded from the Google Developers Console. If you provide
+   *     a path to a JSON file, the projectId option below is not necessary.
+   *     NOTE: .pem and .p12 require you to specify options.email as well.
+   * @param {number} [options.port] - The port on which to connect to
+   *     the remote host.
+   * @param {string} [options.projectId] - The project ID from the Google
+   *     Developer's Console, e.g. 'grape-spaceship-123'. We will also check
+   *     the environment variable GCLOUD_PROJECT for your project ID. If your
+   *     app is running in an environment which supports
+   *     {@link https://developers.google.com/identity/protocols/application-default-credentials Application Default Credentials},
+   *     your project ID will be detected automatically.
+   * @param {function} [options.promise] - Custom promise module to use instead
+   *     of native Promises.
+   * @param {string} [options.servicePath] - The domain name of the
+   *     API remote host.
+   */
+  constructor(opts) {
+    this._descriptors = {};
+
+    // Ensure that options include the service address and port.
+    opts = Object.assign(
+      {
+        clientConfig: {},
+        port: this.constructor.port,
+        servicePath: this.constructor.servicePath,
+      },
+      opts
+    );
+
+    // Create a `gaxGrpc` object, with any grpc-specific options
+    // sent to the client.
+    opts.scopes = this.constructor.scopes;
+    const gaxGrpc = new gax.GrpcClient(opts);
+
+    // Save the auth object to the client, for use by other methods.
+    this.auth = gaxGrpc.auth;
+
+    // Determine the client header string.
+    const clientHeader = [
+      `gl-node/${process.version}`,
+      `grpc/${gaxGrpc.grpcVersion}`,
+      `gax/${gax.version}`,
+      `gapic/${VERSION}`,
+    ];
+    if (opts.libName && opts.libVersion) {
+      clientHeader.push(`${opts.libName}/${opts.libVersion}`);
+    }
+
+    // Load the applicable protos.
+    const protos = merge(
+      {},
+      gaxGrpc.loadProto(
+        path.join(__dirname, '..', '..', 'protos'),
+        'another_service.proto'
+      )
+    );
+
+    // This API contains "path templates"; forward-slash-separated
+    // identifiers to uniquely identify resources within the API.
+    // Create useful helper objects for these.
+    this._pathTemplates = {
+      returnPathTemplate: new gax.PathTemplate(
+        'shelves/{shelf}/books/{book}/returns/{return}'
+      ),
+    };
+
+    // Put together the default options sent with requests.
+    const defaults = gaxGrpc.constructSettings(
+      'google.example.library.v1.MyProto',
+      gapicConfig,
+      opts.clientConfig,
+      {'x-goog-api-client': clientHeader.join(' ')}
+    );
+
+    // Set up a dictionary of "inner API calls"; the core implementation
+    // of calling the API is handled in `google-gax`, with this code
+    // merely providing the destination and request information.
+    this._innerApiCalls = {};
+
+    // Put together the "service stub" for
+    // google.example.library.v1.MyProto.
+    const myProtoStub = gaxGrpc.createStub(
+      protos.google.example.library.v1.MyProto,
+      opts
+    );
+
+    // Iterate over each of the methods that the service provides
+    // and create an API call method for each.
+    const myProtoStubMethods = [
+      'myMethod',
+    ];
+    for (const methodName of myProtoStubMethods) {
+      this._innerApiCalls[methodName] = gax.createApiCall(
+        myProtoStub.then(
+          stub =>
+            function() {
+              const args = Array.prototype.slice.call(arguments, 0);
+              return stub[methodName].apply(stub, args);
+            },
+          err =>
+            function() {
+              throw err;
+            }
+        ),
+        defaults[methodName],
+        null
+      );
+    }
+  }
+
+  /**
+   * The DNS address for this API service.
+   */
+  static get servicePath() {
+    return 'library-example.googleapis.com';
+  }
+
+  /**
+   * The port for this API service.
+   */
+  static get port() {
+    return 1234;
+  }
+
+  /**
+   * The scopes needed to make gRPC calls for every method defined
+   * in this service.
+   */
+  static get scopes() {
+    return [
+      'https://www.googleapis.com/auth/cloud-platform',
+      'https://www.googleapis.com/auth/library',
+    ];
+  }
+
+  /**
+   * Return the project ID used by this class.
+   * @param {function(Error, string)} callback - the callback to
+   *   be called with the current project Id.
+   */
+  getProjectId(callback) {
+    return this.auth.getProjectId(callback);
+  }
+
+  // -------------------
+  // -- Service calls --
+  // -------------------
+
+  /**
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {Object[]} [request.mylist]
+   *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+   * @param {Object} [request.myfield]
+   *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+   * @param {Object} [request.secondfield]
+   *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing [MethodResponse]{@link google.example.library.v1.MethodResponse}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [MethodResponse]{@link google.example.library.v1.MethodResponse}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.MyProtoClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.myMethod({})
+   *   .then(responses => {
+   *     const response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
+   */
+  myMethod(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    options = options || {};
+
+    return this._innerApiCalls.myMethod(request, options, callback);
+  }
+
+  // --------------------
+  // -- Path templates --
+  // --------------------
+
+  /**
+   * Return a fully-qualified return resource name string.
+   *
+   * @param {String} shelf
+   * @param {String} book
+   * @param {String} return_
+   * @returns {String}
+   */
+  returnPath(shelf, book, return_) {
+    return this._pathTemplates.returnPathTemplate.render({
+      shelf: shelf,
+      book: book,
+      return: return_,
+    });
+  }
+
+  /**
+   * Parse the returnName from a return resource.
+   *
+   * @param {String} returnName
+   *   A fully-qualified path representing a return resources.
+   * @returns {String} - A string representing the shelf.
+   */
+  matchShelfFromReturnName(returnName) {
+    return this._pathTemplates.returnPathTemplate
+      .match(returnName)
+      .shelf;
+  }
+
+  /**
+   * Parse the returnName from a return resource.
+   *
+   * @param {String} returnName
+   *   A fully-qualified path representing a return resources.
+   * @returns {String} - A string representing the book.
+   */
+  matchBookFromReturnName(returnName) {
+    return this._pathTemplates.returnPathTemplate
+      .match(returnName)
+      .book;
+  }
+
+  /**
+   * Parse the returnName from a return resource.
+   *
+   * @param {String} returnName
+   *   A fully-qualified path representing a return resources.
+   * @returns {String} - A string representing the return.
+   */
+  matchReturnFromReturnName(returnName) {
+    return this._pathTemplates.returnPathTemplate
+      .match(returnName)
+      .return;
+  }
+}
+
+
+module.exports = MyProtoClient;
+
+============== file: src/v1/my_proto_client_config.json ==============
+{
+  "interfaces": {
+    "google.example.library.v1.MyProto": {
+      "retry_codes": {
+        "idempotent": [
+          "DEADLINE_EXCEEDED",
+          "UNAVAILABLE"
+        ],
+        "non_idempotent": []
+      },
+      "retry_params": {
+        "default": {
+          "initial_retry_delay_millis": 100,
+          "retry_delay_multiplier": 1.3,
+          "max_retry_delay_millis": 60000,
+          "initial_rpc_timeout_millis": 20000,
+          "rpc_timeout_multiplier": 1.0,
+          "max_rpc_timeout_millis": 20000,
+          "total_timeout_millis": 600000
+        }
+      },
+      "methods": {
+        "MyMethod": {
+          "timeout_millis": 1000,
+          "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         }
       }
@@ -8567,6 +8911,62 @@ describe('LibraryServiceClient', () => {
       );
 
       client.privateGetBook(request, (err, response) => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
+        done();
+      });
+    });
+  });
+
+});
+describe('MyProtoClient', () => {
+  describe('myMethod', () => {
+    it('invokes myMethod without error', done => {
+      const client = new libraryModule.v1.MyProtoClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock response
+      const myfield = 'myfield1515208398';
+      const expectedResponse = {
+        myfield: myfield,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.myMethod = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
+
+      client.myMethod(request, (err, response) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes myMethod with error', done => {
+      const client = new libraryModule.v1.MyProtoClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.myMethod = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.myMethod(request, (err, response) => {
         assert(err instanceof Error);
         assert.strictEqual(err.code, FAKE_STATUS_CODE);
         assert(typeof response === 'undefined');
