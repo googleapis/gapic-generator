@@ -4794,8 +4794,7 @@ def sample_discuss_book(image_file_name):
   if isinstance(image_file_name, six.binary_type):
     image_file_name = image_file_name.decode('utf-8')
   name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-  file_name = 'comment_file'
-  with io.open(file_name, 'rb') as f:
+  with io.open('comment_file', 'rb') as f:
     comment = f.read()
   comment_2 = {'comment': comment}
   with io.open(image_file_name, 'rb') as f:
@@ -5456,8 +5455,7 @@ def sample_publish_series():
   books = []
 
   # Comment on a file input field
-  file_name = 'xyz3141592654'
-  with io.open(file_name, 'rb') as f:
+  with io.open('xyz3141592654', 'rb') as f:
     series_bytes = f.read()
 
   # Comment on a message

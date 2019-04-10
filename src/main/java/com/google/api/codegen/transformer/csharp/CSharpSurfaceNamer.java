@@ -248,7 +248,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPathTemplateName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "template"));
+    return inittedConstantName(resourceNameConfig.getEntityName().join("template"));
   }
 
   @Override
@@ -670,5 +670,10 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   public String getAsyncTestCaseName(SymbolTable symbolTable, MethodModel method) {
     Name testCaseName = symbolTable.getNewSymbol(method.asName().join("async"));
     return publicMethodName(testCaseName);
+  }
+
+  @Override
+  public String getParamDocText(String paramName, String paramTypeName, String text) {
+    return String.format("<param name=\"%s\">%s</param>", paramName, text);
   }
 }

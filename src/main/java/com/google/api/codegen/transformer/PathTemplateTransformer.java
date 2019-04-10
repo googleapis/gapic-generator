@@ -124,7 +124,7 @@ public class PathTemplateTransformer {
             .paramName(namer.getResourceParameterName(config))
             .propertyName(namer.getResourcePropertyName(config))
             .enumName(namer.getResourceEnumName(config))
-            .docName(config.getEntityName())
+            .docName(config.getEntityName().toLowerUnderscore())
             .index(index)
             .pattern(config.getNamePattern())
             .commonResourceName(config.getCommonResourceName());
@@ -152,7 +152,7 @@ public class PathTemplateTransformer {
             .paramName(namer.getResourceParameterName(config))
             .propertyName(namer.getResourcePropertyName(config))
             .enumName(namer.getResourceEnumName(config))
-            .docName(config.getEntityName())
+            .docName(config.getEntityName().toLowerUnderscore())
             .index(index)
             .children(generateResourceNames(context, config.getResourceNameConfigs()));
     return builder.build();
@@ -167,7 +167,7 @@ public class PathTemplateTransformer {
             .paramName(namer.getResourceParameterName(config))
             .propertyName(namer.getResourcePropertyName(config))
             .enumName(namer.getResourceEnumName(config))
-            .docName(config.getEntityName())
+            .docName(config.getEntityName().toLowerUnderscore())
             .index(index)
             .value(config.getFixedValue());
     return builder.build();
@@ -187,7 +187,7 @@ public class PathTemplateTransformer {
       FormatResourceFunctionView.Builder function =
           FormatResourceFunctionView.newBuilder()
               .resourceName(namer.getResourceTypeName(resourceNameConfig))
-              .entityName(resourceNameConfig.getEntityName())
+              .entityName(resourceNameConfig.getEntityName().toLowerUnderscore())
               .name(namer.getFormatFunctionName(interfaceConfig, resourceNameConfig))
               .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
               .pathTemplateGetterName(
@@ -224,7 +224,7 @@ public class PathTemplateTransformer {
       for (String var : resourceNameConfig.getNameTemplate().vars()) {
         ParseResourceFunctionView.Builder function =
             ParseResourceFunctionView.newBuilder()
-                .entityName(resourceNameConfig.getEntityName())
+                .entityName(resourceNameConfig.getEntityName().toLowerUnderscore())
                 .name(namer.getParseFunctionName(var, resourceNameConfig))
                 .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
                 .pathTemplateGetterName(

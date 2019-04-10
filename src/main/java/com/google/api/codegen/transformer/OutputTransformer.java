@@ -174,7 +174,7 @@ public class OutputTransformer {
       String formattedArg =
           context
               .getNamer()
-              .getFormattedPrintArgName(type, variable.variable(), variable.accessors());
+              .getFormattedPrintArgName(context.getTypeTable(), type, variable.variable(), variable.accessors());
       builder.add(formattedArg);
     }
     ImmutableList<String> args = builder.build();

@@ -3427,8 +3427,7 @@ function sampleDiscussBook($imageFileName)
 
     // $imageFileName = 'image_file.jpg';
     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
-    $fileName = 'comment_file';
-    $comment = file_get_contents($fileName);
+    $comment = file_get_contents('comment_file');
     $comment2 = new Comment();
     $comment2->setComment($comment);
     $image = file_get_contents($imageFileName);
@@ -3515,8 +3514,7 @@ function sampleDiscussBook($imageFileName)
 
     // $imageFileName = 'image_file.jpg';
     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
-    $fileName = 'comment_file';
-    $comment = file_get_contents($fileName);
+    $comment = file_get_contents('comment_file');
     $comment2 = new Comment();
     $comment2->setComment($comment);
     $image = file_get_contents($imageFileName);
@@ -4281,7 +4279,7 @@ function sampleGetBook()
         $booleanKeyVal = $response->getMapBoolKey()[true];
         $mapValueField = $response->getMapMessageValue()['key']->getField();
         printf("Test printing map fields: %s" . PHP_EOL, print_r($response->getMapListValueValue()['quoted_key'], true));
-        printf("Test printing enum fields of a map value: %s" . PHP_EOL, $response->getMapMessageValue()['key']->getAlignment());
+        printf("Test printing enum fields of a map value: %s" . PHP_EOL, SomeMessage_Alignment::name($response->getMapMessageValue()['key']->getAlignment()));
     } finally {
         $libraryServiceClient->close();
     }
@@ -4338,7 +4336,7 @@ function sampleMonologAboutBook()
             $stream->write($request);
         }
         $response = $stream->readResponse();
-        printf("The stage of the comment is: %s" . PHP_EOL, $response->getStage());
+        printf("The stage of the comment is: %s" . PHP_EOL, Comment_Stage::name($response->getStage()));
     } finally {
         $libraryServiceClient->close();
     }
@@ -4392,7 +4390,7 @@ function sampleMonologAboutBook()
         $requests = [$request];
         $stream = $libraryServiceClient->monologAboutBook();
         $response = $stream->writeAllAndReadResponse($requests);
-        printf("The stage of the comment is: %s" . PHP_EOL, $response->getStage());
+        printf("The stage of the comment is: %s" . PHP_EOL, Comment_Stage::name($response->getStage()));
     } finally {
         $libraryServiceClient->close();
     }
@@ -4609,8 +4607,7 @@ function samplePublishSeries()
     $books = [];
 
     // Comment on a file input field
-    $fileName = 'xyz3141592654';
-    $seriesBytes = file_get_contents($fileName);
+    $seriesBytes = file_get_contents('xyz3141592654');
 
     // Comment on a message
     $seriesUuid = new SeriesUuid();

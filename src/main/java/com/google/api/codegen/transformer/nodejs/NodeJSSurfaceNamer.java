@@ -172,19 +172,23 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPathTemplateName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return publicFieldName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
+    return publicFieldName(resourceNameConfig.getEntityName().join(Name.from("path", "template")));
   }
 
   @Override
   public String getParseFunctionName(String var, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(
-        Name.from("match", var, "from", resourceNameConfig.getEntityName(), "name"));
+        Name.from("match")
+            .join(var)
+            .join("from")
+            .join(resourceNameConfig.getEntityName())
+            .join("name"));
   }
 
   @Override
   public String getFormatFunctionName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
+    return staticFunctionName(resourceNameConfig.getEntityName().join("path"));
   }
 
   @Override
