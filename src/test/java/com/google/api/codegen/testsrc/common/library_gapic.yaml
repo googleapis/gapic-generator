@@ -45,6 +45,17 @@ collection_oneofs:
     - archived_book
     - deleted_book
 interfaces:
+- name: google.example.library.v1.MyProto
+  collections:
+    # To test the case that entity name / variable which happens to be
+    # a language keyword. See: https://github.com/googleapis/toolkit/issues/618
+    - name_pattern: shelves/{shelf}/books/{book}/returns/{return}
+      entity_name: return
+  methods:
+    - name: MyMethod
+      retry_codes_name: non_idempotent
+      retry_params_name: default
+      timeout_millis: 1000
 - name: google.example.library.v1.LibraryService
   lang_doc:
     java: >
@@ -77,10 +88,6 @@ interfaces:
     language_overrides:
     - language: java
       entity_name: shelf_book
-  # To test the case that entity name / variable which happens to be
-  # a language keyword. See: https://github.com/googleapis/toolkit/issues/618
-  - name_pattern: shelves/{shelf}/books/{book}/returns/{return}
-    entity_name: return
   - name_pattern: projects/{project}
     entity_name: project
     language_overrides:

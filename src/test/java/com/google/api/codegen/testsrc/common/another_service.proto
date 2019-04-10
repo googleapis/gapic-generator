@@ -1,0 +1,35 @@
+// (-- Library API for toolkit testing purposes --)
+
+syntax = "proto3";
+
+package google.example.library.v1;
+
+import "google/api/annotations.proto";
+import "google/api/resource.proto";
+
+service MyProto {
+  rpc MyMethod(MethodRequest) returns (MethodResponse);
+}
+
+option (google.api.resource_definition) = {
+  // To test the case that entity name / variable which happens to be
+  // a language keyword. See: https://github.com/googleapis/toolkit/issues/618
+  symbol: "Return"
+  pattern : "shelves/{shelf}/books/{book}/returns/{return}"
+};
+
+message MethodRequest {
+  repeated SubMessage mylist = 1;
+  SubMessage myfield = 2;
+  SubMessage secondfield = 3;
+
+}
+
+message SubMessage {
+  string subfield = 1;
+  string subsecondfield = 2;
+}
+
+message MethodResponse {
+  string myfield = 1;
+}

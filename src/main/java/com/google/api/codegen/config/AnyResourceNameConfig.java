@@ -61,4 +61,10 @@ public class AnyResourceNameConfig implements ResourceNameConfig {
   public ProtoFile getAssignedProtoFile() {
     return null;
   }
+
+  @Override
+  @Nullable
+  public String getInterfaceFullName() {
+    return null;
+  }
 }

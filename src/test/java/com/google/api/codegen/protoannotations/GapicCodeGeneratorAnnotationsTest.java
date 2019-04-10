@@ -30,8 +30,9 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
-  private final String apiName;
   private final String testName;
+
+  private final String[] baseNames;
 
   public GapicCodeGeneratorAnnotationsTest(
       TargetLanguage language,
@@ -51,14 +52,15 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
         protoPackage,
         clientPackage);
 
-    this.apiName = baseNames[0];
+    String apiName = baseNames[0];
 
     String gapicConfigStatus = "_gapic_config";
     if (gapicConfigFileNames == null || gapicConfigFileNames.length == 0) {
       gapicConfigStatus = "_no" + gapicConfigStatus;
     }
+    this.baseNames = baseNames;
 
-    this.testName = this.apiName + gapicConfigStatus;
+    this.testName = apiName + gapicConfigStatus;
 
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
 
@@ -78,11 +80,12 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library_pkg2.yaml",
             "library",
             "google.example.library.v1",
-            "com.google.example.library.v1"));
+            "com.google.example.library.v1",
+            "another_service"));
   }
 
   @Test
   public void test() throws Exception {
-    test(apiName);
+    test(baseNames);
   }
 }

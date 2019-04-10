@@ -37,4 +37,12 @@ public interface ResourceNameConfig {
    * ensure that a consistent namespace can be calculated for the resource name.
    */
   ProtoFile getAssignedProtoFile();
+
+  /**
+   * Returns the package-qualified name of the interface to which the resource name config is
+   * defined in. This is so that resource names are only generated inside their relevant service
+   * clients.
+   */
+  @Nullable
+  String getInterfaceFullName();
 }
