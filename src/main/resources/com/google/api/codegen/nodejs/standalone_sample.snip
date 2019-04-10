@@ -38,8 +38,13 @@
   @else
     const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
   @end
-  {@importList(sample.sampleImports.appImports)}
+  @let imports = {@importList(sample.sampleImports.appImports)}
+    @if imports
+      {@imports}
 
+    @end
+
+  @end
   @if not(sample.sampleFunctionDoc.isEmpty)
     {@processDoc(sample.sampleFunctionDoc)}
   @end
