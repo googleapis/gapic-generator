@@ -8,7 +8,9 @@ import "google/api/annotations.proto";
 import "google/api/resource.proto";
 
 service MyProto {
-  rpc MyMethod(MethodRequest) returns (MethodResponse);
+  rpc MyMethod(MethodRequest) returns (MethodResponse) {
+    option (google.api.http) = { post: "/v1/myMethod" body: "*" };
+  };
 }
 
 option (google.api.resource_definition) = {

@@ -46,6 +46,13 @@ collection_oneofs:
     - deleted_book
 interfaces:
 - name: google.example.library.v1.MyProto
+  retry_codes_def:
+    - name: idempotent
+      retry_codes:
+        - UNAVAILABLE
+        - DEADLINE_EXCEEDED
+    - name: non_idempotent
+      retry_codes: []
   collections:
     # To test the case that entity name / variable which happens to be
     # a language keyword. See: https://github.com/googleapis/toolkit/issues/618
