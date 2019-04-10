@@ -412,12 +412,13 @@
 @private processWriteFileView(view, hasMultipleFileOutputs, isAsyncMethod)
   @if and(hasMultipleFileOutputs, view.isFirst)
     var writeFile = util.promisify(fs.writeFile);
+
   @else
     @if view.isFirst
       const writeFile = util.promisify(fs.writeFile);
+
     @end
   @end
-
   @if view.contents.type.isBytesType
     {@if(isAsyncMethod, "await ", "")}writeFile({@stringFormattedFileName(view.fileName)}, {@variableField(view.contents)}, 'binary');
   @else
