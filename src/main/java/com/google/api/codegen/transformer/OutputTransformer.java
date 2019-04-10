@@ -126,9 +126,9 @@ public class OutputTransformer {
         "%s:%s: print spec cannot be empty",
         context.getMethodModel().getSimpleName(),
         valueSet.getId());
-    OutputView.StringFormatView formattedString =
-        stringFormatView(context, outputContext, config, valueSet, form);
-    return OutputView.PrintView.newBuilder().formattedString(formattedString).build();
+    OutputView.StringInterpolationView interpolatedString =
+        stringInterpolationView(context, outputContext, config, valueSet, form);
+    return OutputView.PrintView.newBuilder().interpolatedString(interpolatedString).build();
   }
 
   private OutputView.WriteFileView writeFileView(
@@ -137,14 +137,14 @@ public class OutputTransformer {
       SampleValueSet valueSet,
       OutputContext outputContext,
       CallingForm form) {
-    OutputView.StringFormatView fileName =
-        stringFormatView(context, outputContext, config.getFileNameList(), valueSet, form);
+    OutputView.StringInterpolationView fileName =
+        stringInterpolationView(context, outputContext, config.getFileNameList(), valueSet, form);
     OutputView.VariableView contents =
         accessor(
             new Scanner(config.getContents()), context, valueSet, outputContext.scopeTable(), form);
     Preconditions.checkArgument(
         contents.type().isStringType() || contents.type().isBytesType(),
-        "Output to file: expected string or bytes, found %s",
+        "Output to file: expected 'string' or 'bytes', found %s",
         contents.type().getTypeName());
     outputContext.fileOutputTypes().add(contents.type());
     return OutputView.WriteFileView.newBuilder()
@@ -154,7 +154,7 @@ public class OutputTransformer {
         .build();
   }
 
-  private OutputView.StringFormatView stringFormatView(
+  private OutputView.StringInterpolationView stringInterpolationView(
       MethodContext context,
       OutputContext outputContext,
       List<String> configs,
@@ -174,15 +174,16 @@ public class OutputTransformer {
       String formattedArg =
           context
               .getNamer()
-              .getFormattedPrintArgName(context.getTypeTable(), type, variable.variable(), variable.accessors());
+              .getFormattedPrintArgName(
+                  context.getTypeTable(), type, variable.variable(), variable.accessors());
       builder.add(formattedArg);
     }
     ImmutableList<String> args = builder.build();
-    ImmutableList<String> formattedFormatAndArgs =
+    ImmutableList<String> stringWithInterpolatedArgs =
         context.getNamer().getInterpolatedFormatAndArgs(format, args);
-    return OutputView.StringFormatView.newBuilder()
-        .format(formattedFormatAndArgs.get(0))
-        .args(formattedFormatAndArgs.subList(1, formattedFormatAndArgs.size()))
+    return OutputView.StringInterpolationView.newBuilder()
+        .format(stringWithInterpolatedArgs.get(0))
+        .args(stringWithInterpolatedArgs.subList(1, stringWithInterpolatedArgs.size()))
         .build();
   }
 
@@ -584,8 +585,7 @@ public class OutputTransformer {
       CallingForm form) {
     Preconditions.checkArgument(
         !context.getNamer().getSampleUsedVarNames(context, form).contains(identifier),
-        "%s: %s cannot define variable \"%s\": it is used by the sample template for calling form"
-            + " \"%s\".",
+        "%s: %s cannot define variable \"%s\": it is already used by the sample template for calling form \"%s\".",
         methodName,
         valueSetId,
         identifier,

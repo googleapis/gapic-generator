@@ -21,8 +21,8 @@ import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
 import java.util.List;
 
-@AutoValue
 /** The context for transforming the response handling of standalone samples. */
+@AutoValue
 public abstract class OutputContext {
 
   private static final TypeModel BYTES_TYPE =

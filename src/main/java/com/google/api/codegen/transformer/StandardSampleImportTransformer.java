@@ -24,7 +24,7 @@ import java.util.Collections;
 /**
  * An implementation of SampleImportTransformer. Subclasses of this class can choose to override
  * `addSampleBodyImports`, `addOutputImports` and `addInitCodeImports` to save language-specific
- * types to the type table. Currently used by Java.
+ * types to the type table in `MethodContext`. Currently used by Java.
  */
 public class StandardSampleImportTransformer implements SampleImportTransformer {
 
@@ -43,9 +43,9 @@ public class StandardSampleImportTransformer implements SampleImportTransformer 
   }
 
   /**
-   * Adds all the types to import referenced in the output handling part of a sample. The output
-   * handling does something with the object returned by RPC call, and is usually right above the
-   * closed region tag. By default is a no-op.
+   * Adds all the types to import to the type table in `context` referenced in the output handling
+   * part of a sample based on `outputContext`. The output handling does something with the object
+   * returned by RPC call, and is usually right above the closed region tag. By default is a no-op.
    */
   protected void addOutputImports(MethodContext context, OutputContext outputContext) {
     return;

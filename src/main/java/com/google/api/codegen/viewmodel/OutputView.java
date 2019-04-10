@@ -160,7 +160,7 @@ public interface OutputView {
   @AutoValue
   abstract class PrintView implements OutputView {
 
-    public abstract StringFormatView formattedString();
+    public abstract StringInterpolationView interpolatedString();
 
     public Kind kind() {
       return Kind.PRINT;
@@ -172,7 +172,7 @@ public interface OutputView {
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder formattedString(StringFormatView val);
+      public abstract Builder interpolatedString(StringInterpolationView val);
 
       public abstract PrintView build();
     }
@@ -180,7 +180,7 @@ public interface OutputView {
 
   @AutoValue
   abstract class WriteFileView implements OutputView {
-    public abstract StringFormatView fileName();
+    public abstract StringInterpolationView fileName();
 
     public abstract VariableView contents();
 
@@ -201,7 +201,7 @@ public interface OutputView {
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder fileName(StringFormatView val);
+      public abstract Builder fileName(StringInterpolationView val);
 
       public abstract Builder contents(VariableView val);
 
@@ -212,13 +212,13 @@ public interface OutputView {
   }
 
   @AutoValue
-  abstract class StringFormatView {
+  abstract class StringInterpolationView {
     public abstract ImmutableList<String> args();
 
     public abstract String format();
 
     public static Builder newBuilder() {
-      return new AutoValue_OutputView_StringFormatView.Builder();
+      return new AutoValue_OutputView_StringInterpolationView.Builder();
     }
 
     @AutoValue.Builder
@@ -227,7 +227,7 @@ public interface OutputView {
 
       public abstract Builder format(String val);
 
-      public abstract StringFormatView build();
+      public abstract StringInterpolationView build();
     }
   }
 

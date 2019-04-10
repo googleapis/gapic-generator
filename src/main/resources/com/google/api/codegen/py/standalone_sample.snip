@@ -32,6 +32,9 @@
       import six
 
 
+    @else
+
+
     @end
     def {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}):
       @if not(sample.sampleFunctionDoc.isEmpty)
@@ -266,13 +269,13 @@
 
 @private processPrintView(view)
   # Since numeric comparison seems to not work, we use explicit zero tests
-  @if not(view.formattedString.args.size)
-    print('{@view.formattedString.format}')
+  @if not(view.interpolatedString.args.size)
+    print('{@view.interpolatedString.format}')
   @else
-    @if view.formattedString.format == "{}"
-      print({@view.formattedString.args.get(0)})
+    @if view.interpolatedString.format == "{}"
+      print({@view.interpolatedString.args.get(0)})
     @else
-      print('{@view.formattedString.format}'.format({@commaSeparatedFields(view.formattedString.args)}))
+      print('{@view.interpolatedString.format}'.format({@commaSeparatedFields(view.interpolatedString.args)}))
     @end
   @end
 @end

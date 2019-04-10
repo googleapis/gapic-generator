@@ -360,13 +360,13 @@
 @end
 
 @private processPrintView(view)
-  @if view.formattedString.args.isEmpty
-    System.out.println("{@view.formattedString.format}");
+  @if view.interpolatedString.args.isEmpty
+    System.out.println("{@view.interpolatedString.format}");
   @else
-    @if view.formattedString.format == "%s"
-      System.out.println({@view.formattedString.args.get(0)});
+    @if view.interpolatedString.format == "%s"
+      System.out.println({@view.interpolatedString.args.get(0)});
     @else
-      System.out.printf("{@view.formattedString.format}\n", {@commaSeparatedFields(view.formattedString.args)});
+      System.out.printf("{@view.interpolatedString.format}\n", {@commaSeparatedFields(view.interpolatedString.args)});
     @end
   @end
 @end

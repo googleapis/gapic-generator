@@ -38,12 +38,8 @@
   @else
     const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
   @end
-  @let imports = importList(sample.sampleImports.appImports)
-    @if imports
-      {@imports}
+  {@importList(sample.sampleImports.appImports)}
 
-    @end
-  @end
   @if not(sample.sampleFunctionDoc.isEmpty)
     {@processDoc(sample.sampleFunctionDoc)}
   @end
@@ -368,13 +364,13 @@
 @end
 
 @private processPrintView(view)
-  @if view.formattedString.args.size == 0
-    console.log('{@view.formattedString.format}');
+  @if view.interpolatedString.args.size == 0
+    console.log('{@view.interpolatedString.format}');
   @else
-    @if view.formattedString.format == "%s"
-      console.log({@view.formattedString.args.get(0)});
+    @if view.interpolatedString.format == "%s"
+      console.log({@view.interpolatedString.args.get(0)});
     @else
-      console.log(`{@view.formattedString.format}`);
+      console.log(`{@view.interpolatedString.format}`);
     @end
   @end
 @end
