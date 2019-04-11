@@ -2548,6 +2548,73 @@ public class PublishSeriesRequestTestRequestObjectFieldComments {
 // FIXME: Insert here clean-up code.
 
 // [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/PublishSeriesRequestTestWriteToFile.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_write_to_file")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+// [START sample]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.PublishSeriesRequest;
+ * import com.google.example.library.v1.PublishSeriesResponse;
+ * import com.google.example.library.v1.SeriesUuid;
+ * import com.google.example.library.v1.Shelf;
+ * import java.io.FileOutputStream;
+ * import java.io.FileWriter;
+ * import java.io.OutputStream;
+ * import java.util.ArrayList;
+ * import java.util.List;
+ */
+public class PublishSeriesRequestTestWriteToFile {
+  /** Testing write fields to files. */
+  public static void samplePublishSeries() {
+    // [START sample_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(request);
+      // testing writing bytes field.
+      try (OutputStream out = new FileOutputStream(String.format("uuid_of_series_with_book_%s.raw", response.getBookNamesList().get(0)))) {
+        out.write(response.getSeriesUuid().getSeriesBytes().toByteArray());
+      }
+      // testing writing string field.
+      try (FileWriter writer = new FileWriter("series_uuid_in_plain_text.txt")) {
+        writer.write(response.getSeriesUuid().getSeriesString());
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END sample_core]
+  }
+
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END sample]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/StreamBooksCallableCallableStreamingServerProg.java ==============
 // DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "prog")
 package com.google.example.examples.library.v1;
