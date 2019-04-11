@@ -79,15 +79,21 @@ public abstract class GapicMethodConfig extends MethodConfig {
     int previousErrors = diagCollector.getErrorCount();
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
 
-    PageStreamingConfig pageStreaming =
-        PageStreamingConfig.createPageStreamingConfig(
-            diagCollector,
-            defaultPackageName,
-            methodModel,
-            methodConfigProto,
-            messageConfigs,
-            resourceNameConfigs,
-            protoParser);
+    PageStreamingConfig pageStreaming;
+    if (protoParser.isProtoAnnotationsEnabled()) {
+      pageStreaming =
+          PageStreamingConfig.createPageStreamingConfig(
+              diagCollector,
+              defaultPackageName,
+              methodModel,
+              messageConfigs,
+              resourceNameConfigs,
+              protoParser);
+    } else {
+      pageStreaming =
+          PageStreamingConfig.createPageStreamingConfig(
+              diagCollector, methodModel, methodConfigProto, messageConfigs, resourceNameConfigs);
+    }
 
     GrpcStreamingConfig grpcStreaming = null;
     if (isGrpcStreamingMethod(methodModel)) {
