@@ -4558,6 +4558,464 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
     }
   }
 }
+============== file: src/main/java/com/google/example/library/v1/MyProtoClient.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.example.library.v1;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.paging.FixedSizeCollection;
+import com.google.api.gax.paging.Page;
+import com.google.api.gax.rpc.ApiExceptions;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.example.library.v1.stub.MyProtoStub;
+import com.google.example.library.v1.stub.MyProtoStubSettings;
+import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
+import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND SERVICE
+/**
+ * Service Description:
+ *
+ * <p>This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * <pre>
+ * <code>
+ * try (MyProtoClient myProtoClient = MyProtoClient.create()) {
+ *   MethodRequest request = MethodRequest.newBuilder().build();
+ *   MethodResponse response = myProtoClient.myMethod(request);
+ * }
+ * </code>
+ * </pre>
+ *
+ * <p>Note: close() needs to be called on the myProtoClient object to clean up resources such
+ * as threads. In the example above, try-with-resources is used, which automatically calls
+ * close().
+ *
+ * <p>The surface of this class includes several types of Java methods for each of the API's methods:
+ *
+ * <ol>
+ * <li> A "flattened" method. With this type of method, the fields of the request type have been
+ * converted into function parameters. It may be the case that not all fields are available
+ * as parameters, and not every API method will have a flattened method entry point.
+ * <li> A "request object" method. This type of method only takes one parameter, a request
+ * object, which must be constructed before the call. Not every API method will have a request
+ * object method.
+ * <li> A "callable" method. This type of method takes no parameters and returns an immutable
+ * API callable object, which can be used to initiate calls to the service.
+ * </ol>
+ *
+ * <p>See the individual methods for example code.
+ *
+ * <p>Many parameters require resource names to be formatted in a particular way. To assist
+ * with these names, this class includes a format method for each type of name, and additionally
+ * a parse method to extract the individual identifiers contained within names that are
+ * returned.
+ *
+ * <p>This class can be customized by passing in a custom instance of MyProtoSettings to
+ * create(). For example:
+ *
+ * To customize credentials:
+ *
+ * <pre>
+ * <code>
+ * MyProtoSettings myProtoSettings =
+ *     MyProtoSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * MyProtoClient myProtoClient =
+ *     MyProtoClient.create(myProtoSettings);
+ * </code>
+ * </pre>
+ *
+ * To customize the endpoint:
+ *
+ * <pre>
+ * <code>
+ * MyProtoSettings myProtoSettings =
+ *     MyProtoSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * MyProtoClient myProtoClient =
+ *     MyProtoClient.create(myProtoSettings);
+ * </code>
+ * </pre>
+ */
+@Generated("by gapic-generator")
+@BetaApi
+public class MyProtoClient implements BackgroundResource {
+  private final MyProtoSettings settings;
+  private final MyProtoStub stub;
+
+
+
+  /**
+   * Constructs an instance of MyProtoClient with default settings.
+   */
+  public static final MyProtoClient create() throws IOException {
+    return create(MyProtoSettings.newBuilder().build());
+  }
+
+  /**
+   * Constructs an instance of MyProtoClient, using the given settings.
+   * The channels are created based on the settings passed in, or defaults for any
+   * settings that are not set.
+   */
+  public static final MyProtoClient create(MyProtoSettings settings) throws IOException {
+    return new MyProtoClient(settings);
+  }
+
+  /**
+   * Constructs an instance of MyProtoClient, using the given stub for making calls. This is for
+   * advanced usage - prefer to use MyProtoSettings}.
+   */
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public static final MyProtoClient create(MyProtoStub stub) {
+    return new MyProtoClient(stub);
+  }
+
+  /**
+   * Constructs an instance of MyProtoClient, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected MyProtoClient(MyProtoSettings settings) throws IOException {
+    this.settings = settings;
+    this.stub = ((MyProtoStubSettings) settings.getStubSettings()).createStub();
+  }
+
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  protected MyProtoClient(MyProtoStub stub) {
+    this.settings = null;
+    this.stub = stub;
+  }
+
+  public final MyProtoSettings getSettings() {
+    return settings;
+  }
+
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public MyProtoStub getStub() {
+    return stub;
+  }
+
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (MyProtoClient myProtoClient = MyProtoClient.create()) {
+   *   MethodRequest request = MethodRequest.newBuilder().build();
+   *   MethodResponse response = myProtoClient.myMethod(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MethodResponse myMethod(MethodRequest request) {
+    return myMethodCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (MyProtoClient myProtoClient = MyProtoClient.create()) {
+   *   MethodRequest request = MethodRequest.newBuilder().build();
+   *   ApiFuture&lt;MethodResponse&gt; future = myProtoClient.myMethodCallable().futureCall(request);
+   *   // Do something
+   *   MethodResponse response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<MethodRequest, MethodResponse> myMethodCallable() {
+    return stub.myMethodCallable();
+  }
+
+  @Override
+  public final void close() {
+    stub.close();
+  }
+
+  @Override
+  public void shutdown() {
+    stub.shutdown();
+  }
+
+  @Override
+  public boolean isShutdown() {
+    return stub.isShutdown();
+  }
+
+  @Override
+  public boolean isTerminated() {
+    return stub.isTerminated();
+  }
+
+  @Override
+  public void shutdownNow() {
+    stub.shutdownNow();
+  }
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return stub.awaitTermination(duration, unit);
+  }
+
+
+}
+============== file: src/main/java/com/google/example/library/v1/MyProtoSettings.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.example.library.v1;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.core.GaxProperties;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
+import com.google.api.gax.grpc.GrpcTransportChannel;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.HeaderProvider;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.StubSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.auth.Credentials;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.example.library.v1.stub.MyProtoStubSettings;
+import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
+import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import com.google.protos.google.example.library.v1.MyProtoGrpc;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import javax.annotation.Generated;
+import org.threeten.bp.Duration;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Settings class to configure an instance of {@link MyProtoClient}.
+ *
+ * <p>The default instance has everything set to sensible defaults:
+ *
+ * <ul>
+ * <li>The default service address (library-example.googleapis.com) and default port (1234)
+ * are used.
+ * <li>Credentials are acquired automatically through Application Default Credentials.
+ * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ * </ul>
+ *
+ * <p>The builder of this class is recursive, so contained classes are themselves builders.
+ * When build() is called, the tree of builders is called to create the complete settings
+ * object. For example, to set the total timeout of myMethod to 30 seconds:
+ *
+ * <pre>
+ * <code>
+ * MyProtoSettings.Builder myProtoSettingsBuilder =
+ *     MyProtoSettings.newBuilder();
+ * myProtoSettingsBuilder.myMethodSettings().getRetrySettings().toBuilder()
+ *     .setTotalTimeout(Duration.ofSeconds(30));
+ * MyProtoSettings myProtoSettings = myProtoSettingsBuilder.build();
+ * </code>
+ * </pre>
+ */
+@Generated("by gapic-generator")
+@BetaApi
+public class MyProtoSettings extends ClientSettings<MyProtoSettings> {
+  /**
+   * Returns the object with the settings used for calls to myMethod.
+   */
+  public UnaryCallSettings<MethodRequest, MethodResponse> myMethodSettings() {
+    return ((MyProtoStubSettings) getStubSettings()).myMethodSettings();
+  }
+
+
+  public static final MyProtoSettings create(MyProtoStubSettings stub) throws IOException {
+    return new MyProtoSettings.Builder(stub.toBuilder()).build();
+  }
+
+  /**
+   * Returns a builder for the default ExecutorProvider for this service.
+   */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+    return MyProtoStubSettings.defaultExecutorProviderBuilder();
+  }
+
+  /**
+   * Returns the default service endpoint.
+   */
+   public static String getDefaultEndpoint() {
+     return MyProtoStubSettings.getDefaultEndpoint();
+   }
+
+
+  /**
+   * Returns the default service scopes.
+   */
+  public static List<String> getDefaultServiceScopes() {
+    return MyProtoStubSettings.getDefaultServiceScopes();
+  }
+
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return MyProtoStubSettings.defaultCredentialsProviderBuilder();
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+    return MyProtoStubSettings.defaultGrpcTransportProviderBuilder();
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+    return MyProtoStubSettings.defaultTransportChannelProvider();
+  }
+
+  @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+    return MyProtoStubSettings.defaultApiClientHeaderProviderBuilder();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder() {
+    return Builder.createDefault();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder(ClientContext clientContext) {
+    return new Builder(clientContext);
+  }
+
+  /**
+   * Returns a builder containing all the values of this settings class.
+   */
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  protected MyProtoSettings(Builder settingsBuilder) throws IOException {
+    super(settingsBuilder);
+  }
+
+  /**
+   * Builder for MyProtoSettings.
+   */
+  public static class Builder extends ClientSettings.Builder<MyProtoSettings, Builder> {
+    protected Builder() throws IOException {
+      this((ClientContext) null);
+    }
+
+    protected Builder(ClientContext clientContext) {
+      super(MyProtoStubSettings.newBuilder(clientContext));
+    }
+
+    private static Builder createDefault() {
+      return new Builder(MyProtoStubSettings.newBuilder());
+    }
+
+    protected Builder(MyProtoSettings settings) {
+      super(settings.getStubSettings().toBuilder());
+    }
+
+    protected Builder(MyProtoStubSettings.Builder stubSettings) {
+      super(stubSettings);
+    }
+
+
+    public MyProtoStubSettings.Builder getStubSettingsBuilder() {
+      return ((MyProtoStubSettings.Builder) getStubSettings());
+    }
+
+    // NEXT_MAJOR_VER: remove 'throws Exception'
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder<?, ?>, Void> settingsUpdater) throws Exception {
+      super.applyToAllUnaryMethods(getStubSettingsBuilder().unaryMethodSettingsBuilders(), settingsUpdater);
+      return this;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to myMethod.
+     */
+    public UnaryCallSettings.Builder<MethodRequest, MethodResponse> myMethodSettings() {
+      return getStubSettingsBuilder().myMethodSettings();
+    }
+
+    @Override
+    public MyProtoSettings build() throws IOException {
+      return new MyProtoSettings(this);
+    }
+  }
+}
 ============== file: src/main/java/com/google/example/library/v1/package-info.java ==============
 /*
  * Copyright 2019 Google LLC
@@ -4605,6 +5063,22 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
  * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
  *   Shelf shelf = Shelf.newBuilder().build();
  *   Shelf response = libraryServiceClient.createShelf(shelf);
+ * }
+ * </code>
+ * </pre>
+ *
+ * =============
+ * MyProtoClient
+ * =============
+ *
+ * Service Description:
+ *
+ * Sample for MyProtoClient:
+ * <pre>
+ * <code>
+ * try (MyProtoClient myProtoClient = MyProtoClient.create()) {
+ *   MethodRequest request = MethodRequest.newBuilder().build();
+ *   MethodResponse response = myProtoClient.myMethod(request);
  * }
  * </code>
  * </pre>
@@ -5661,6 +6135,262 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public UnaryCallable<GetBookRequest, Book> privateGetBookCallable() {
     return privateGetBookCallable;
+  }
+
+  @Override
+  public final void close() {
+    shutdown();
+  }
+
+  @Override
+  public void shutdown() {
+    backgroundResources.shutdown();
+  }
+
+  @Override
+  public boolean isShutdown() {
+    return backgroundResources.isShutdown();
+  }
+
+  @Override
+  public boolean isTerminated() {
+    return backgroundResources.isTerminated();
+  }
+
+  @Override
+  public void shutdownNow() {
+    backgroundResources.shutdownNow();
+  }
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return backgroundResources.awaitTermination(duration, unit);
+  }
+
+}
+============== file: src/main/java/com/google/example/library/v1/stub/GrpcMyProtoCallableFactory.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.example.library.v1.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcCallableFactory;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.BatchingCallSettings;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.RequestParamsExtractor;
+import com.google.api.gax.rpc.ServerStreamingCallSettings;
+import com.google.api.gax.rpc.ServerStreamingCallable;
+import com.google.api.gax.rpc.StreamingCallSettings;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.common.collect.ImmutableMap;
+import com.google.example.library.v1.MyProtoSettings;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.OperationsStub;
+import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
+import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * gRPC callable factory implementation for Google Example Library API.
+ *
+ * <p>This class is for advanced usage.
+ */
+@Generated("by gapic-generator")
+@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+public class GrpcMyProtoCallableFactory implements GrpcStubCallableFactory {
+  @Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createUnaryCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      UnaryCallSettings<RequestT, ResponseT> callSettings, ClientContext clientContext) {
+    return GrpcCallableFactory.createUnaryCallable(grpcCallSettings, callSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT, PagedListResponseT> UnaryCallable<RequestT, PagedListResponseT> createPagedCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      PagedCallSettings<RequestT, ResponseT, PagedListResponseT> pagedCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createPagedCallable(grpcCallSettings, pagedCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createBatchingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      BatchingCallSettings<RequestT, ResponseT> batchingCallSettings, ClientContext clientContext) {
+    return GrpcCallableFactory.createBatchingCallable(grpcCallSettings, batchingCallSettings, clientContext);
+  }
+
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  @Override
+  public <RequestT, ResponseT, MetadataT> OperationCallable<RequestT, ResponseT, MetadataT> createOperationCallable(
+      GrpcCallSettings<RequestT, com.google.longrunning.Operation> grpcCallSettings,
+      OperationCallSettings<RequestT, ResponseT, MetadataT> operationCallSettings,
+      ClientContext clientContext, OperationsStub operationsStub) {
+    return GrpcCallableFactory.createOperationCallable(grpcCallSettings, operationCallSettings, clientContext, operationsStub);
+  }
+
+  @Override
+  public <RequestT, ResponseT> BidiStreamingCallable<RequestT, ResponseT> createBidiStreamingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      StreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createBidiStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> ServerStreamingCallable<RequestT, ResponseT> createServerStreamingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      ServerStreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createServerStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> ClientStreamingCallable<RequestT, ResponseT> createClientStreamingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      StreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createClientStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
+  }
+}
+============== file: src/main/java/com/google/example/library/v1/stub/GrpcMyProtoStub.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.example.library.v1.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcCallableFactory;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.RequestParamsExtractor;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.common.collect.ImmutableMap;
+import com.google.example.library.v1.MyProtoSettings;
+import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
+import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * gRPC stub implementation for Google Example Library API.
+ *
+ * <p>This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated("by gapic-generator")
+@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+public class GrpcMyProtoStub extends MyProtoStub {
+
+  private static final MethodDescriptor<MethodRequest, MethodResponse> myMethodMethodDescriptor =
+      MethodDescriptor.<MethodRequest, MethodResponse>newBuilder()
+          .setType(MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName("google.example.library.v1.MyProto/MyMethod")
+          .setRequestMarshaller(ProtoUtils.marshaller(MethodRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(MethodResponse.getDefaultInstance()))
+          .build();
+
+
+  private final BackgroundResource backgroundResources;
+
+  private final UnaryCallable<MethodRequest, MethodResponse> myMethodCallable;
+
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcMyProtoStub create(MyProtoStubSettings settings) throws IOException {
+    return new GrpcMyProtoStub(settings, ClientContext.create(settings));
+  }
+
+  public static final GrpcMyProtoStub create(ClientContext clientContext) throws IOException {
+    return new GrpcMyProtoStub(MyProtoStubSettings.newBuilder().build(), clientContext);
+  }
+
+  public static final GrpcMyProtoStub create(ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+    return new GrpcMyProtoStub(MyProtoStubSettings.newBuilder().build(), clientContext, callableFactory);
+  }
+
+  /**
+   * Constructs an instance of GrpcMyProtoStub, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected GrpcMyProtoStub(MyProtoStubSettings settings, ClientContext clientContext) throws IOException {
+    this(settings, clientContext, new GrpcMyProtoCallableFactory());
+  }
+
+  /**
+   * Constructs an instance of GrpcMyProtoStub, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected GrpcMyProtoStub(MyProtoStubSettings settings, ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+    this.callableFactory = callableFactory;
+
+    GrpcCallSettings<MethodRequest, MethodResponse> myMethodTransportSettings =
+        GrpcCallSettings.<MethodRequest, MethodResponse>newBuilder()
+            .setMethodDescriptor(myMethodMethodDescriptor)
+            .build();
+
+    this.myMethodCallable = callableFactory.createUnaryCallable(myMethodTransportSettings,settings.myMethodSettings(), clientContext);
+
+    backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
+  }
+
+
+  public UnaryCallable<MethodRequest, MethodResponse> myMethodCallable() {
+    return myMethodCallable;
   }
 
   @Override
@@ -7242,6 +7972,347 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     }
   }
 }
+============== file: src/main/java/com/google/example/library/v1/stub/MyProtoStub.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.example.library.v1.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
+import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Base stub class for Google Example Library API.
+ *
+ * <p>This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated("by gapic-generator")
+@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+public abstract class MyProtoStub implements BackgroundResource {
+
+
+  public UnaryCallable<MethodRequest, MethodResponse> myMethodCallable() {
+    throw new UnsupportedOperationException("Not implemented: myMethodCallable()");
+  }
+
+  @Override
+  public abstract void close();
+}
+============== file: src/main/java/com/google/example/library/v1/stub/MyProtoStubSettings.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.example.library.v1.stub;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.core.GaxProperties;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
+import com.google.api.gax.grpc.GrpcTransportChannel;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.HeaderProvider;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.StubSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.auth.Credentials;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
+import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import com.google.protos.google.example.library.v1.MyProtoGrpc;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import javax.annotation.Generated;
+import org.threeten.bp.Duration;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Settings class to configure an instance of {@link MyProtoStub}.
+ *
+ * <p>The default instance has everything set to sensible defaults:
+ *
+ * <ul>
+ * <li>The default service address (library-example.googleapis.com) and default port (1234)
+ * are used.
+ * <li>Credentials are acquired automatically through Application Default Credentials.
+ * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ * </ul>
+ *
+ * <p>The builder of this class is recursive, so contained classes are themselves builders.
+ * When build() is called, the tree of builders is called to create the complete settings
+ * object. For example, to set the total timeout of myMethod to 30 seconds:
+ *
+ * <pre>
+ * <code>
+ * MyProtoStubSettings.Builder myProtoSettingsBuilder =
+ *     MyProtoStubSettings.newBuilder();
+ * myProtoSettingsBuilder.myMethodSettings().getRetrySettings().toBuilder()
+ *     .setTotalTimeout(Duration.ofSeconds(30));
+ * MyProtoStubSettings myProtoSettings = myProtoSettingsBuilder.build();
+ * </code>
+ * </pre>
+ */
+@Generated("by gapic-generator")
+@BetaApi
+public class MyProtoStubSettings extends StubSettings<MyProtoStubSettings> {
+  /**
+   * The default scopes of the service.
+   */
+  private static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
+      .add("https://www.googleapis.com/auth/cloud-platform")
+      .add("https://www.googleapis.com/auth/library")
+      .build();
+
+  private final UnaryCallSettings<MethodRequest, MethodResponse> myMethodSettings;
+
+  /**
+   * Returns the object with the settings used for calls to myMethod.
+   */
+  public UnaryCallSettings<MethodRequest, MethodResponse> myMethodSettings() {
+    return myMethodSettings;
+  }
+
+
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public MyProtoStub createStub() throws IOException {
+    if (getTransportChannelProvider()
+        .getTransportName()
+        .equals(GrpcTransportChannel.getGrpcTransportName())) {
+      return GrpcMyProtoStub.create(this);
+    } else {
+      throw new UnsupportedOperationException(
+          "Transport not supported: " + getTransportChannelProvider().getTransportName());
+    }
+  }
+
+  /**
+   * Returns a builder for the default ExecutorProvider for this service.
+   */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+    return InstantiatingExecutorProvider.newBuilder();
+  }
+
+  /**
+   * Returns the default service endpoint.
+   */
+  public static String getDefaultEndpoint() {
+    return "library-example.googleapis.com:1234";
+  }
+
+
+  /**
+   * Returns the default service scopes.
+   */
+  public static List<String> getDefaultServiceScopes() {
+    return DEFAULT_SERVICE_SCOPES;
+  }
+
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return GoogleCredentialsProvider.newBuilder()
+        .setScopesToApply(DEFAULT_SERVICE_SCOPES)
+        ;
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+    return InstantiatingGrpcChannelProvider.newBuilder();
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+    return defaultGrpcTransportProviderBuilder().build();
+  }
+
+  @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+    return ApiClientHeaderProvider.newBuilder()
+        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(MyProtoStubSettings.class))
+        .setTransportToken(GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder() {
+    return Builder.createDefault();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder(ClientContext clientContext) {
+    return new Builder(clientContext);
+  }
+
+  /**
+   * Returns a builder containing all the values of this settings class.
+   */
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  protected MyProtoStubSettings(Builder settingsBuilder) throws IOException {
+    super(settingsBuilder);
+
+    myMethodSettings = settingsBuilder.myMethodSettings().build();
+  }
+
+
+
+
+  /**
+   * Builder for MyProtoStubSettings.
+   */
+  public static class Builder extends StubSettings.Builder<MyProtoStubSettings, Builder> {
+    private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
+
+    private final UnaryCallSettings.Builder<MethodRequest, MethodResponse> myMethodSettings;
+
+    private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder<String, ImmutableSet<StatusCode.Code>> definitions = ImmutableMap.builder();
+      definitions.put(
+          "non_idempotent",
+          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
+      RETRYABLE_CODE_DEFINITIONS = definitions.build();
+    }
+
+    private static final ImmutableMap<String, RetrySettings> RETRY_PARAM_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder<String, RetrySettings> definitions = ImmutableMap.builder();
+      RetrySettings settings = null;
+      settings = RetrySettings.newBuilder()
+          .setInitialRetryDelay(Duration.ofMillis(100L))
+          .setRetryDelayMultiplier(1.3)
+          .setMaxRetryDelay(Duration.ofMillis(60000L))
+          .setInitialRpcTimeout(Duration.ofMillis(20000L))
+          .setRpcTimeoutMultiplier(1.0)
+          .setMaxRpcTimeout(Duration.ofMillis(20000L))
+          .setTotalTimeout(Duration.ofMillis(600000L))
+          .build();
+      definitions.put("default", settings);
+      RETRY_PARAM_DEFINITIONS = definitions.build();
+    }
+
+    protected Builder() {
+      this((ClientContext) null);
+    }
+
+    protected Builder(ClientContext clientContext) {
+      super(clientContext);
+
+      myMethodSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+          myMethodSettings
+      );
+
+      initDefaults(this);
+    }
+
+    private static Builder createDefault() {
+      Builder builder = new Builder((ClientContext) null);
+      builder.setTransportChannelProvider(defaultTransportChannelProvider());
+      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+      builder.setInternalHeaderProvider(defaultApiClientHeaderProviderBuilder().build());
+      builder.setEndpoint(getDefaultEndpoint());
+      return initDefaults(builder);
+    }
+
+    private static Builder initDefaults(Builder builder) {
+
+      builder.myMethodSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      return builder;
+    }
+
+    protected Builder(MyProtoStubSettings settings) {
+      super(settings);
+
+      myMethodSettings = settings.myMethodSettings.toBuilder();
+
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+          myMethodSettings
+      );
+    }
+
+    // NEXT_MAJOR_VER: remove 'throws Exception'
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder<?, ?>, Void> settingsUpdater) throws Exception {
+      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);
+      return this;
+    }
+
+    public ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders() {
+      return unaryMethodSettingsBuilders;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to myMethod.
+     */
+    public UnaryCallSettings.Builder<MethodRequest, MethodResponse> myMethodSettings() {
+      return myMethodSettings;
+    }
+
+    @Override
+    public MyProtoStubSettings build() throws IOException {
+      return new MyProtoStubSettings(this);
+    }
+  }
+}
 ============== file: src/test/java/com/google/example/library/v1/LibraryServiceClientTest.java ==============
 /*
  * Copyright 2019 Google LLC
@@ -7319,6 +8390,7 @@ import org.junit.Test;
 @javax.annotation.Generated("by GAPIC")
 public class LibraryServiceClientTest {
   private static MockLibraryService mockLibraryService;
+  private static MockMyProto mockMyProto;
   private static MockServiceHelper serviceHelper;
   private LibraryServiceClient client;
   private LocalChannelProvider channelProvider;
@@ -7326,7 +8398,8 @@ public class LibraryServiceClientTest {
   @BeforeClass
   public static void startStaticServer() {
     mockLibraryService = new MockLibraryService();
-    serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList(mockLibraryService));
+    mockMyProto = new MockMyProto();
+    serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList(mockLibraryService, mockMyProto));
     serviceHelper.start();
   }
 
@@ -9656,6 +10729,224 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
     } else {
       responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
     }
+  }
+
+}
+============== file: src/test/java/com/google/example/library/v1/MockMyProto.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.example.library.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.grpc.testing.MockGrpcService;
+import com.google.protobuf.AbstractMessage;
+import io.grpc.ServerServiceDefinition;
+import java.util.List;
+
+@javax.annotation.Generated("by GAPIC")
+@BetaApi
+public class MockMyProto implements MockGrpcService  {
+  private final MockMyProtoImpl serviceImpl;
+
+  public MockMyProto() {
+    serviceImpl = new MockMyProtoImpl();
+  }
+
+  @Override
+  public List<AbstractMessage> getRequests() {
+    return serviceImpl.getRequests();
+  }
+
+  @Override
+  public void addResponse(AbstractMessage response) {
+    serviceImpl.addResponse(response);
+  }
+
+  @Override
+  public void addException(Exception exception) {
+    serviceImpl.addException(exception);
+  }
+
+  @Override
+  public ServerServiceDefinition getServiceDefinition() {
+    return serviceImpl.bindService();
+  }
+
+  @Override
+  public void reset() {
+    serviceImpl.reset();
+  }
+}
+============== file: src/test/java/com/google/example/library/v1/MockMyProtoImpl.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.example.library.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.common.collect.Lists;
+import com.google.protobuf.AbstractMessage;
+import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
+import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import com.google.protos.google.example.library.v1.MyProtoGrpc.MyProtoImplBase;
+import io.grpc.stub.StreamObserver;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+@javax.annotation.Generated("by GAPIC")
+@BetaApi
+public class MockMyProtoImpl extends MyProtoImplBase {
+  private List<AbstractMessage> requests;
+  private Queue<Object> responses;
+
+  public MockMyProtoImpl() {
+    requests = new ArrayList<>();
+    responses = new LinkedList<>();
+  }
+
+  public List<AbstractMessage> getRequests() {
+    return requests;
+  }
+
+  public void addResponse(AbstractMessage response) {
+    responses.add(response);
+  }
+
+  public void setResponses(List<AbstractMessage> responses) {
+    this.responses = new LinkedList<Object>(responses);
+  }
+
+  public void addException(Exception exception) {
+    responses.add(exception);
+  }
+
+  public void reset() {
+    requests = new ArrayList<>();
+    responses = new LinkedList<>();
+  }
+
+  @Override
+  public void myMethod(MethodRequest request,
+    StreamObserver<MethodResponse> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof MethodResponse) {
+      requests.add(request);
+      responseObserver.onNext((MethodResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+}
+============== file: src/test/java/com/google/example/library/v1/MyProtoClientTest.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.example.library.v1;
+
+import com.google.api.gax.core.NoCredentialsProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
+import com.google.api.gax.grpc.GrpcStatusCode;
+import com.google.api.gax.grpc.testing.LocalChannelProvider;
+import com.google.api.gax.grpc.testing.MockGrpcService;
+import com.google.api.gax.grpc.testing.MockServiceHelper;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.InvalidArgumentException;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.common.collect.Lists;
+import com.google.protobuf.AbstractMessage;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+@javax.annotation.Generated("by GAPIC")
+public class MyProtoClientTest {
+  private static MockLibraryService mockLibraryService;
+  private static MockMyProto mockMyProto;
+  private static MockServiceHelper serviceHelper;
+  private MyProtoClient client;
+  private LocalChannelProvider channelProvider;
+
+  @BeforeClass
+  public static void startStaticServer() {
+    mockLibraryService = new MockLibraryService();
+    mockMyProto = new MockMyProto();
+    serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList(mockLibraryService, mockMyProto));
+    serviceHelper.start();
+  }
+
+  @AfterClass
+  public static void stopServer() {
+    serviceHelper.stop();
+  }
+
+  @Before
+  public void setUp() throws IOException {
+    serviceHelper.reset();
+    channelProvider = serviceHelper.createChannelProvider();
+    MyProtoSettings settings = MyProtoSettings.newBuilder()
+        .setTransportChannelProvider(channelProvider)
+        .setCredentialsProvider(NoCredentialsProvider.create())
+        .build();
+    client = MyProtoClient.create(settings);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    client.close();
   }
 
 }
