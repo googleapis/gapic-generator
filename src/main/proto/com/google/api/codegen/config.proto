@@ -100,7 +100,8 @@ message ConfigProto {
 
   // A required field to specify the version of GAPIC config schema.
   // It is versioned using Semantic Versioning 2.0.0 (semver) and follows the
-  // semver specification. Currently, the only valid value is "1.0.0".
+  // semver specification. Currently, the only valid value is "1.0.0" and "2.0.0"
+  // Those following "2.0.0" should also follow the config_v2.proto schema.
   string config_schema_version = 21;
 }
 
@@ -257,7 +258,7 @@ message MethodConfigProto {
 
   // Specifies the default timeout for a non-retrying call. If the call is
   // retrying, refer to `retry_params_name` instead.
-  uint64 timeout_millis = 11; // UNSUPPORTED.
+  uint64 timeout_millis = 11; // UNSUPPORTED in Java, PHP, C#, Go.
 
   // Specifies the configuration for batching.
   BatchingConfigProto batching = 6;
