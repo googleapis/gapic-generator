@@ -466,7 +466,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getPrintSpecs(String spec, List<String> args) {
+  public ImmutableList<String> getInterpolatedFormatAndArgs(String spec, List<String> args) {
     // com.google.common.escape.Escaper doesn't work here. It only maps from characters to strings.
     StringBuilder sb = new StringBuilder();
     int cursor = 0;

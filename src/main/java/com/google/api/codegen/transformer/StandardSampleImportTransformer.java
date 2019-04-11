@@ -15,13 +15,17 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.MethodContext;
+import com.google.api.codegen.config.OutputContext;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ImportSectionView;
-import com.google.api.codegen.viewmodel.OutputView;
 import java.util.Collections;
-import java.util.List;
 
+/**
+ * An implementation of SampleImportTransformer. Subclasses of this class can choose to override
+ * `addSampleBodyImports`, `addOutputImports` and `addInitCodeImports` to save language-specific
+ * types to the type table in `MethodContext`. Currently used by Java.
+ */
 public class StandardSampleImportTransformer implements SampleImportTransformer {
 
   private final ImportSectionTransformer importSectionTransformer;
@@ -30,25 +34,53 @@ public class StandardSampleImportTransformer implements SampleImportTransformer 
     this.importSectionTransformer = importSectionTransformer;
   }
 
-  public void addSampleBodyImports(MethodContext context, CallingForm form) {
-    // default behavior: no types used in the sample body need to be imported
+  /**
+   * Adds all the types to import referenced in the rpc call part of a sample. By default is a
+   * no-op.
+   */
+  protected void addSampleBodyImports(MethodContext context, CallingForm form) {
+    return;
   }
 
-  public void addOutputImports(MethodContext context, List<OutputView> views) {
-    // default behavior: no types used in the output part of a sample need to be imported
+  /**
+   * Adds all the types to import to the type table in `context` referenced in the output handling
+   * part of a sample based on `outputContext`. The output handling does something with the object
+   * returned by RPC call, and is usually right above the closed region tag. By default is a no-op.
+   */
+  protected void addOutputImports(MethodContext context, OutputContext outputContext) {
+    return;
   }
 
-  public void addInitCodeImports(
+  /**
+   * Adds all the types to import referenced in the initCode part of sample. The initCode is
+   * responsible for setting up the rpc call request object and/or parameters, and is usually right
+   * below the open region tag. By default this method copies over all types from initCodeTypeTable.
+   */
+  protected void addInitCodeImports(
       MethodContext context, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes) {
-    // by default, copy over all types from initCodeTypeTable
+
     initCodeTypeTable
         .getImports()
         .values()
         .forEach(t -> context.getTypeTable().getAndSaveNicknameFor(t));
   }
 
-  public ImportSectionView generateImportSection(MethodContext context) {
+  /** Generates an import section from all types stored in the `importTypeTable` in `context`. */
+  protected ImportSectionView generateImportSection(MethodContext context) {
     return importSectionTransformer.generateImportSection(
         context, Collections.<InitCodeNode>emptyList());
+  }
+
+  @Override
+  public ImportSectionView generateImportSection(
+      MethodContext context,
+      CallingForm form,
+      OutputContext outputContext,
+      ImportTypeTable initCodeTypeTable,
+      Iterable<InitCodeNode> nodes) {
+    addInitCodeImports(context, initCodeTypeTable, nodes);
+    addOutputImports(context, outputContext);
+    addSampleBodyImports(context, form);
+    return generateImportSection(context);
   }
 }

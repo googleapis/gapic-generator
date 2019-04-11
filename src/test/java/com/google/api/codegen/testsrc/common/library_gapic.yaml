@@ -324,6 +324,21 @@ interfaces:
           description: "A super long long long long long long long long long long long long long long comment that tests word wrapping"
         - parameter: shelf.theme
           description: "A super long comment\nwraps words at newline characters\nas well"
+    - id: test_write_to_file
+      title: "test writing fields to files"
+      description: "Testing write fields to files."
+      on_success:
+        - comment: "testing writing bytes field."
+        - write_file:
+            file_name:
+            - "uuid_of_series_with_book_%s.raw"
+            - $resp.book_names[0]
+            contents: $resp.series_uuid.series_bytes
+        - comment: "testing writing string field."
+        - write_file:
+            file_name:
+            - "series_uuid_in_plain_text.txt"
+            contents: $resp.series_uuid.series_string
     samples:
       in_code:
       - calling_forms: [callable]
@@ -341,6 +356,8 @@ interfaces:
         value_sets: ["sample_code_init_fields"]       # implicit, from deprecated field
       - calling_forms: request
         value_sets: ["test_request_object_field_comments"]
+      - calling_forms: request
+        value_sets: ["test_write_to_file"]
   - name: GetBook
     flattening:
       groups:
