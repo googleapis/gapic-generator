@@ -210,9 +210,16 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    LongRunningConfig longRunningConfig =
-        LongRunningConfig.createLongRunningConfig(
-            method, diagCollector, methodConfigProto.getLongRunning(), protoParser);
+    LongRunningConfig longRunningConfig;
+    if (protoParser.isProtoAnnotationsEnabled()) {
+      longRunningConfig =
+          LongRunningConfig.createLongRunningConfig(
+              method, diagCollector, methodConfigProto.getLongRunning(), protoParser);
+    } else {
+      longRunningConfig =
+          LongRunningConfig.createLongRunningConfigFromGapicConfig(
+              method.getModel(), diagCollector, methodConfigProto.getLongRunning());
+    }
 
     List<String> headerRequestParams = findHeaderRequestParams(method);
 

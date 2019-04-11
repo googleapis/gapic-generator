@@ -58,26 +58,6 @@ public abstract class LongRunningConfig {
   /** Returns total polling timeout. */
   public abstract Duration getTotalPollTimeout();
 
-  @Nullable
-  static LongRunningConfig createLongRunningConfig(
-      Method method,
-      DiagCollector diagCollector,
-      LongRunningConfigProto longRunningConfigProto,
-      ProtoParser protoParser) {
-    LongRunningConfig longRunningConfig =
-        createLongRunningConfigFromProtoFile(
-            method, diagCollector, longRunningConfigProto, protoParser);
-    if (longRunningConfig != null) {
-      return longRunningConfig;
-    }
-
-    if (!LongRunningConfigProto.getDefaultInstance().equals(longRunningConfigProto)) {
-      return LongRunningConfig.createLongRunningConfigFromGapicConfig(
-          method.getModel(), diagCollector, longRunningConfigProto);
-    }
-    return null;
-  }
-
   private static String qualifyLroTypeName(
       String typeName, Method method, ProtoParser protoParser) {
     if (!typeName.contains(".")) {
@@ -91,7 +71,7 @@ public abstract class LongRunningConfig {
    * long running config from GAPIC config, use the GAPIC config's timeout values.
    */
   @Nullable
-  private static LongRunningConfig createLongRunningConfigFromProtoFile(
+  static LongRunningConfig createLongRunningConfig(
       Method method,
       DiagCollector diagCollector,
       LongRunningConfigProto longRunningConfigProto,
@@ -168,7 +148,7 @@ public abstract class LongRunningConfig {
 
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
-  private static LongRunningConfig createLongRunningConfigFromGapicConfig(
+  static LongRunningConfig createLongRunningConfigFromGapicConfig(
       Model model, DiagCollector diagCollector, LongRunningConfigProto longRunningConfigProto) {
 
     int preexistingErrors = diagCollector.getErrorCount();
