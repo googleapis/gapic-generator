@@ -258,7 +258,7 @@ message MethodConfigProto {
 
   // Specifies the default timeout for a non-retrying call. If the call is
   // retrying, refer to `retry_params_name` instead.
-  uint64 timeout_millis = 11; // UNSUPPORTED.
+  uint64 timeout_millis = 11; // UNSUPPORTED in Java, PHP, C#, Go.
 
   // Specifies the configuration for batching.
   BatchingConfigProto batching = 6;
@@ -715,6 +715,26 @@ message OutputSpec {
     string value = 6;
   }
 
+  message WriteFileStatement {
+    // The name of the file to write to.
+    //
+    // Similar to `print`, the elements of `file_name` consists of a printf-like
+    // format string followed by variables to be interpolated in the string,
+    // for example, ["file_name_%s.txt", thing.field]. These
+    // variables must either be `$resp` or have been previously defined
+    // by `loop` or `define`.
+    repeated string file_name = 1;
+
+    // The content to write to the local file, of the pattern
+    // `var[.field...]`. Similar to the right hand side of `define`.
+    // `var` is either `$resp` or a variable that was
+    // previously defined by `loop` or `define`, and everything to the
+    // right of the period is any valid sequence of subfield or
+    // bracketed list subscripts or map keys to dereference a descendant
+    // of `var`.
+    string contents = 2;
+  }
+
   // Exactly one of the following should be set.
 
   // A loop construct.
@@ -748,4 +768,7 @@ message OutputSpec {
   //
   // Like `print`, a newline will be automatically appended to the comment.
   repeated string comment = 4;
+
+  // An output-to-local-file construct. 
+  WriteFileStatement write_file = 5;
 }

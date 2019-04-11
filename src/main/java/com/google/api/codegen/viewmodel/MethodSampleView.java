@@ -33,9 +33,6 @@ public abstract class MethodSampleView {
   /** The response printing code. */
   public abstract ImmutableList<OutputView> outputs();
 
-  /** Extra imports required by outputs. */
-  public abstract ImmutableList<ImportFileView> outputImports();
-
   /** The region tag to be used for this sample. */
   public abstract String regionTag();
 
@@ -46,6 +43,12 @@ public abstract class MethodSampleView {
   public abstract SampleFunctionDocView sampleFunctionDoc();
 
   public abstract ImportSectionView sampleImports();
+
+  /** Whether the output has multiple write-to-file statements. */
+  public abstract boolean hasMultipleFileOutputs();
+
+  /** Node.js needs this. Can potentially be extended to C# as well. */
+  public abstract boolean isAsyncMethod();
 
   public static Builder newBuilder() {
     return new AutoValue_MethodSampleView.Builder();
@@ -61,8 +64,6 @@ public abstract class MethodSampleView {
 
     public abstract Builder outputs(ImmutableList<OutputView> val);
 
-    public abstract Builder outputImports(ImmutableList<ImportFileView> val);
-
     public abstract Builder regionTag(String val);
 
     public abstract Builder sampleFunctionName(String val);
@@ -70,6 +71,10 @@ public abstract class MethodSampleView {
     public abstract Builder sampleImports(ImportSectionView val);
 
     public abstract Builder sampleFunctionDoc(SampleFunctionDocView val);
+
+    public abstract Builder hasMultipleFileOutputs(boolean hasMultipleFileOutputs);
+
+    public abstract Builder isAsyncMethod(boolean val);
 
     public abstract MethodSampleView build();
   }

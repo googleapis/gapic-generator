@@ -6249,6 +6249,57 @@ require "optparse"
 if $0 == __FILE__
   sample_publish_series
 end
+============== file: samples/publish_series_request_test_write_to_file.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_write_to_file")
+
+require "library"
+
+# [START sample]
+
+# Testing write fields to files.
+def sample_publish_series
+  # [START sample_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  shelf = {}
+  books = []
+  series_uuid = {}
+
+  response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
+  # testing writing bytes field.
+  File.open("uuid_of_series_with_book_#{response.book_names[0]}.raw", "wb") do |file|
+    file.write(response.series_uuid.series_bytes)
+  end
+
+  # testing writing string field.
+  File.write "series_uuid_in_plain_text.txt", response.series_uuid.series_string
+
+
+  # [END sample_core]
+end
+# [END sample]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_publish_series
+end
 ============== file: samples/stream_books_request_streaming_server_prog.rb ==============
 # Copyright 2019 Google LLC
 #
