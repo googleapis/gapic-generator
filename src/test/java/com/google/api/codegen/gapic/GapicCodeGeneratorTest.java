@@ -83,12 +83,6 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
-            new String[] {"multiple_services_gapic.yaml"},
-            "multiple_services_pkg2.yaml",
-            "multiple_services",
-            "multiple_services_v2"),
-        GapicTestBase2.createTestConfig(
-            TargetLanguage.JAVA,
             new String[] {"no_path_templates_gapic.yaml"},
             "no_path_templates_pkg2.yaml",
             "no_path_templates"),
@@ -98,12 +92,6 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "library_pkg2.yaml",
             "library",
             new String[] {"another_service"}),
-        GapicTestBase2.createTestConfig(
-            TargetLanguage.RUBY,
-            new String[] {"multiple_services_gapic.yaml"},
-            "multiple_services_pkg2.yaml",
-            "multiple_services",
-            "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
             new String[] {"longrunning_gapic.yaml"},
@@ -121,12 +109,6 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "no_path_templates_pkg2.yaml",
             "no_path_templates"),
         GapicTestBase2.createTestConfig(
-            TargetLanguage.PYTHON,
-            new String[] {"multiple_services_gapic.yaml"},
-            "multiple_services_pkg2.yaml",
-            "multiple_services",
-            "multiple_services_v2"),
-        GapicTestBase2.createTestConfig(
             TargetLanguage.NODEJS,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
@@ -137,12 +119,6 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             new String[] {"no_path_templates_gapic.yaml"},
             "library_pkg2.yaml",
             "no_path_templates"),
-        GapicTestBase2.createTestConfig(
-            TargetLanguage.NODEJS,
-            new String[] {"multiple_services_gapic.yaml"},
-            "multiple_services_pkg2.yaml",
-            "multiple_services",
-            "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.CSHARP,
             new String[] {"library_gapic.yaml"},

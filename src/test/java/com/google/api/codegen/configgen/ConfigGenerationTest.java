@@ -82,9 +82,4 @@ public class ConfigGenerationTest extends ConfigBaselineTestCase {
   public void longrunning() throws Exception {
     test("longrunning");
   }
-
-  @Test
-  public void multiple_services() throws Exception {
-    test("multiple_services", "multiple_services_v2");
-  }
 }

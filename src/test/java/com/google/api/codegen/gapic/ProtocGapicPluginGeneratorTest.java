@@ -31,7 +31,7 @@ import org.junit.rules.TemporaryFolder;
 
 public class ProtocGapicPluginGeneratorTest {
 
-  private static String[] protoFiles = {"multiple_services.proto"};
+  private static String[] protoFiles = {"myproto.proto"};
   private static TestDataLocator testDataLocator;
   private static Model model;
   @ClassRule public static TemporaryFolder tempDir = new TemporaryFolder();
@@ -52,7 +52,7 @@ public class ProtocGapicPluginGeneratorTest {
             .addAllProtoFile(
                 model.getFiles().stream().map(ProtoFile::getProto).collect(Collectors.toList()))
             // Only the file to generate a client for (don't generate dependencies)
-            .addFileToGenerate("multiple_services.proto")
+            .addFileToGenerate("myproto.proto")
             .setParameter("language=java")
             .build();
 
@@ -61,8 +61,8 @@ public class ProtocGapicPluginGeneratorTest {
     // TODO(andrealin): Look into setting these up as baseline files.
     Truth.assertThat(response).isNotNull();
     Truth.assertThat(response.getError()).isEmpty();
-    Truth.assertThat(response.getFileCount()).isEqualTo(15);
-    Truth.assertThat(response.getFile(0).getContent()).contains("DecrementerServiceClient");
+    Truth.assertThat(response.getFileCount()).isEqualTo(8);
+    Truth.assertThat(response.getFile(0).getContent()).contains("MyProtoClient");
   }
 
   @Test
