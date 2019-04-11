@@ -355,6 +355,7 @@ sampleDeleteShelf();
 
 const library = require('@google-cloud/library').v1;
 
+const fs = require('fs');
 /** Testing calling forms */
 function sampleDiscussBook(imageFileName) {
   const client = new library.LibraryServiceClient();
@@ -1268,6 +1269,7 @@ samplePublishSeries();
 
 const library = require('@google-cloud/library').v1;
 
+const fs = require('fs');
 /** Test request object field comments */
 function samplePublishSeries() {
   const client = new library.LibraryServiceClient();
@@ -1310,6 +1312,48 @@ function samplePublishSeries() {
     .then(responses => {
       const response = responses[0];
       console.log(response);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+samplePublishSeries();
+============== file: src/samples/v1/publish_series_request_test_write_to_file.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_write_to_file")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+const util = require('util');
+const fs = require('fs');
+/** Testing write fields to files. */
+function samplePublishSeries() {
+  const client = new library.LibraryServiceClient();
+  const shelf = {};
+  const books = [];
+  const seriesUuid = {};
+  const request = {
+    shelf: shelf,
+    books: books,
+    seriesUuid: seriesUuid,
+  };
+  client.publishSeries(request)
+    .then(responses => {
+      const response = responses[0];
+      // testing writing bytes field.
+      var writeFile = util.promisify(fs.writeFile);
+      writeFile(`uuid_of_series_with_book_${response.bookNames[0]}.raw`, response.seriesUuid.seriesBytes, 'binary');
+      // testing writing string field.
+      writeFile('series_uuid_in_plain_text.txt', response.seriesUuid.seriesString);
     })
     .catch(err => {
       console.error(err);
