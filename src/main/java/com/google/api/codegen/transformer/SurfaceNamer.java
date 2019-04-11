@@ -1694,6 +1694,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return Collections.singletonList(CallingForm.Generic);
   }
 
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.Generic;
+  }
+
   /////////////////////////////////// Transport Protocol /////////////////////////////////////////
 
   public Name getTransportProtocolName(TransportProtocol protocol) {

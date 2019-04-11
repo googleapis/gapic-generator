@@ -426,6 +426,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.JAVA);
+  }
+
+  @Override
   public String getAndSaveTypeName(ImportTypeTable typeTable, TypeModel type) {
     return typeTable.getAndSaveNicknameForElementType(type);
   }

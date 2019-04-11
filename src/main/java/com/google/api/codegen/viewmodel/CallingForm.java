@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import static com.google.api.codegen.common.TargetLanguage.CSHARP;
 import static com.google.api.codegen.common.TargetLanguage.JAVA;
 import static com.google.api.codegen.common.TargetLanguage.NODEJS;
 import static com.google.api.codegen.common.TargetLanguage.PHP;
@@ -181,6 +182,48 @@ public enum CallingForm {
           .put(RUBY, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
           .build();
 
+  private static final Table<TargetLanguage, RpcType, CallingForm> DEFAULT_CALLING_FORM_TABLE =
+      ImmutableTable.<TargetLanguage, RpcType, CallingForm>builder()
+          // TODO(hzyi): Change C# calling forms to appropriate ones after C# LRO and streaming are
+          // done
+          .put(CSHARP, RpcType.UNARY, Generic)
+          .put(CSHARP, RpcType.LRO, Generic)
+          .put(CSHARP, RpcType.PAGED_STREAMING, Generic)
+          .put(CSHARP, RpcType.CLIENT_STREAMING, Generic)
+          .put(CSHARP, RpcType.SERVER_STREAMING, Generic)
+          .put(CSHARP, RpcType.BIDI_STREAMING, Generic)
+          .put(JAVA, RpcType.UNARY, Request)
+          .put(JAVA, RpcType.LRO, LongRunningRequest)
+          .put(JAVA, RpcType.PAGED_STREAMING, RequestPagedAll)
+          .put(JAVA, RpcType.CLIENT_STREAMING, CallableStreamingClient)
+          .put(JAVA, RpcType.SERVER_STREAMING, CallableStreamingServer)
+          .put(JAVA, RpcType.BIDI_STREAMING, CallableStreamingBidi)
+          .put(PYTHON, RpcType.UNARY, Request)
+          .put(PYTHON, RpcType.LRO, LongRunningPromise)
+          .put(PYTHON, RpcType.PAGED_STREAMING, RequestPagedAll)
+          .put(PYTHON, RpcType.CLIENT_STREAMING, RequestStreamingClient)
+          .put(PYTHON, RpcType.SERVER_STREAMING, RequestStreamingServer)
+          .put(PYTHON, RpcType.BIDI_STREAMING, RequestStreamingBidi)
+          .put(PHP, RpcType.UNARY, Request)
+          .put(PHP, RpcType.LRO, LongRunningRequest)
+          .put(PHP, RpcType.PAGED_STREAMING, RequestPagedAll)
+          .put(PHP, RpcType.CLIENT_STREAMING, RequestStreamingClient)
+          .put(PHP, RpcType.SERVER_STREAMING, RequestStreamingServer)
+          .put(PHP, RpcType.BIDI_STREAMING, RequestStreamingBidi)
+          .put(NODEJS, RpcType.UNARY, Request)
+          .put(NODEJS, RpcType.LRO, LongRunningPromiseAwait)
+          .put(NODEJS, RpcType.PAGED_STREAMING, RequestPagedAll)
+          .put(NODEJS, RpcType.CLIENT_STREAMING, RequestStreamingClient)
+          .put(NODEJS, RpcType.SERVER_STREAMING, RequestStreamingServer)
+          .put(NODEJS, RpcType.BIDI_STREAMING, RequestStreamingBidi)
+          .put(RUBY, RpcType.UNARY, Request)
+          .put(RUBY, RpcType.LRO, LongRunningRequestAsync)
+          .put(RUBY, RpcType.PAGED_STREAMING, RequestPagedAll)
+          .put(RUBY, RpcType.CLIENT_STREAMING, RequestStreamingClient)
+          .put(RUBY, RpcType.SERVER_STREAMING, RequestStreamingServer)
+          .put(RUBY, RpcType.BIDI_STREAMING, RequestStreamingBidi)
+          .build();
+
   /**
    * Returns the {@code String} representation of this enum, but in lower camelcase.
    *
@@ -199,5 +242,11 @@ public enum CallingForm {
       MethodContext methodContext, TargetLanguage lang) {
     Preconditions.checkArgument(lang != TargetLanguage.GO, "Go is not supported for now.");
     return CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
+  }
+
+  public static CallingForm getDefaultCallingForm(
+      MethodContext methodContext, TargetLanguage lang) {
+    Preconditions.checkArgument(lang != TargetLanguage.GO, "Go is not supported for now.");
+    return DEFAULT_CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
   }
 }

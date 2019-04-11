@@ -24,9 +24,9 @@ public abstract class SampleConfig {
 
   public abstract String regionTag();
 
-  public abstract SampleValueSet valueSet();
-
   public abstract CallingForm callingForm();
+
+  public abstract SampleValueSet valueSet();
 
   public abstract SampleSpec.SampleType type();
 
@@ -34,7 +34,7 @@ public abstract class SampleConfig {
       String regionTag,
       CallingForm callingForm,
       SampleValueSet valueSet,
-      SampleSepc.SampleType type) {
+      SampleSpec.SampleType type) {
     return new AutoValue_SampleConfig(regionTag, callingForm, valueSet, type);
   }
 }

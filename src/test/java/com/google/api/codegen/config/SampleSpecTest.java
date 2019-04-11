@@ -23,6 +23,7 @@ import com.google.api.codegen.SampleParameters;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.viewmodel.CallingForm;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Test;
@@ -87,9 +88,13 @@ public class SampleSpecTest {
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
     final List<SampleValueSet> matchingValues =
         sampleSpec
-            .getMatchingValueSets(CallingForm.Request, SampleType.STANDALONE)
+            .getSampleConfigs(
+                Collections.singletonList(CallingForm.Request),
+                CallingForm.Request,
+                null,
+                SampleType.STANDALONE)
             .stream()
-            .map(vsat -> vsat.values())
+            .map(config -> config.valueSet())
             .collect(Collectors.toList());
     assertThat(matchingValues).containsExactly(valueSetAlice, valueSetAlison).inOrder();
   }
@@ -116,7 +121,12 @@ public class SampleSpecTest {
                             .addCallingForms(".*")))
             .build();
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
-    assertThat(sampleSpec.getMatchingValueSets(CallingForm.Request, SampleType.STANDALONE))
+    assertThat(
+            sampleSpec.getSampleConfigs(
+                Collections.singletonList(CallingForm.Request),
+                CallingForm.Request,
+                null,
+                SampleType.STANDALONE))
         .hasSize(3);
   }
 }
