@@ -205,6 +205,7 @@ public abstract class SampleTransformer {
     List<MethodSampleView> methodSampleViews = new ArrayList<>();
     MethodConfig methodConfig = methodContext.getMethodConfig();
     ImmutableList<ValueSetAndTags> defaultValueSets = defaultValueSets(methodConfig);
+
     for (CallingForm form : callingForms) {
       List<ValueSetAndTags> matchingValueSets =
           methodConfig.getSampleSpec().getMatchingValueSets(form, sampleType());
