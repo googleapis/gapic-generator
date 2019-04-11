@@ -81,6 +81,14 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library",
             "google.example.library.v1",
             "com.google.example.library.v1",
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.RUBY,
+            null,
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "Library::V1",
             "another_service"));
   }
 
