@@ -30,6 +30,7 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
 
   public abstract String getFixedValue();
 
+  @Nullable
   @Override
   public abstract ProtoFile getAssignedProtoFile();
 
