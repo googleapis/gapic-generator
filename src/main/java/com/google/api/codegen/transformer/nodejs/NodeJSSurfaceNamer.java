@@ -55,7 +55,6 @@ import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -599,17 +598,20 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getPrintSpecs(String spec, List<String> args) {
+  public ImmutableList<String> getInterpolatedFormatAndArgs(String spec, List<String> args) {
     spec = spec.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("`", "\\`");
     if (args.isEmpty()) {
-      return Collections.singletonList(spec);
+      return ImmutableList.of(spec);
     }
     if (args.size() == 1 && "%s".equals(spec)) {
       return ImmutableList.of(spec, args.get(0));
     }
     Object[] formattedArgs =
         args.stream().map(a -> String.format("${%s}", a)).toArray(Object[]::new);
-    return Collections.singletonList(String.format(spec, formattedArgs));
+    return ImmutableList.<String>builder()
+        .add(String.format(spec, formattedArgs))
+        .addAll(args)
+        .build();
   }
 
   @Override
