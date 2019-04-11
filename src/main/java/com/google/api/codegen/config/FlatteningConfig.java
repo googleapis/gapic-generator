@@ -43,8 +43,8 @@ public abstract class FlatteningConfig {
   public abstract ImmutableMap<String, FieldConfig> getFlattenedFieldConfigs();
 
   /**
-   * Returns a map of a string representing a list of the fields in a flattening, to the flattening
-   * config created from a method in the gapic config.
+   * Appends to a map of a string representing a list of the fields in a flattening, to the
+   * flattening config created from a method in the gapic config.
    */
   private static void insertFlatteningsFromGapicConfig(
       DiagCollector diagCollector,
@@ -123,7 +123,7 @@ public abstract class FlatteningConfig {
   }
 
   /**
-   * Returns a map of a string representing a list of the fields in a flattening, to the flattening
+   * Appends to map of a string representing a list of the fields in a flattening, to the flattening
    * config created from a method from the proto file.
    */
   private static void insertFlatteningConfigsFromProtoFile(
@@ -133,7 +133,6 @@ public abstract class FlatteningConfig {
       ProtoMethodModel methodModel,
       ProtoParser protoParser,
       ImmutableMap.Builder<String, FlatteningConfig> flatteningConfigs) {
-
     // Get flattenings from protofile annotations, let these override flattenings from GAPIC config.
     List<List<String>> methodSignatures =
         protoParser.getMethodSignatures(methodModel.getProtoMethod());
@@ -147,7 +146,6 @@ public abstract class FlatteningConfig {
               methodModel,
               protoParser);
       if (groupConfig != null) {
-
         flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
       }
     }

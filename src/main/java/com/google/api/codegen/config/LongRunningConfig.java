@@ -93,7 +93,7 @@ public abstract class LongRunningConfig {
     if (responseTypeName.equals(longRunningConfigProto.getReturnType())
         && metadataTypeName.equals(longRunningConfigProto.getMetadataType())) {
       // GAPIC config refers to the same Long running config; so use its retry settings.
-      return LongRunningConfig.createLongRunningConfigFromGapicConfig(
+      return LongRunningConfig.createLongRunningConfigFromGapicConfigOnly(
           method.getModel(), diagCollector, longRunningConfigProto);
     }
 
@@ -148,8 +148,11 @@ public abstract class LongRunningConfig {
 
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
-  static LongRunningConfig createLongRunningConfigFromGapicConfig(
+  static LongRunningConfig createLongRunningConfigFromGapicConfigOnly(
       Model model, DiagCollector diagCollector, LongRunningConfigProto longRunningConfigProto) {
+    if (LongRunningConfigProto.getDefaultInstance().equals(longRunningConfigProto)) {
+      return null;
+    }
 
     int preexistingErrors = diagCollector.getErrorCount();
 
