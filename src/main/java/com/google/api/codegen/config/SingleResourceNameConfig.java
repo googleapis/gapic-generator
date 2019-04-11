@@ -42,7 +42,6 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       DiagCollector diagCollector,
       CollectionConfigProto collectionConfigProto,
       @Nullable ProtoFile file,
-      @Nullable String fullInterfaceName,
       TargetLanguage language) {
     SingleResourceNameConfig.Builder builder = newBuilder();
     String namePattern = collectionConfigProto.getNamePattern();
@@ -80,7 +79,6 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     }
     builder.setCommonResourceName(commonResourceName);
     builder.setEntityName(ResourceNameMessageConfig.entityNameToName(entityName));
-    builder.setInterfaceFullName(fullInterfaceName);
 
     return builder.build();
   }
@@ -93,7 +91,6 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       Resource resource,
       String pathTemplate,
       @Nullable ProtoFile file,
-      String interfaceFullName,
       DiagCollector diagCollector) {
     PathTemplate nameTemplate;
     try {
@@ -109,7 +106,6 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
         .setAssignedProtoFile(file)
         .setEntityId(resource.getSymbol())
         .setEntityName(ResourceNameMessageConfig.entityNameToName(resource.getSymbol()))
-        .setInterfaceFullName(interfaceFullName)
         .build();
   }
 
@@ -137,10 +133,6 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   public abstract ProtoFile getAssignedProtoFile();
 
   @Override
-  @Nullable
-  public abstract String getInterfaceFullName();
-
-  @Override
   public ResourceNameType getResourceNameType() {
     return ResourceNameType.SINGLE;
   }
@@ -164,8 +156,6 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     public abstract Builder setCommonResourceName(String val);
 
     public abstract Builder setAssignedProtoFile(ProtoFile val);
-
-    public abstract Builder setInterfaceFullName(String val);
 
     public abstract SingleResourceNameConfig build();
   }

@@ -46,10 +46,6 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
 
   @Override
   @Nullable
-  public abstract String getInterfaceFullName();
-
-  @Override
-  @Nullable
   public String getCommonResourceName() {
     return null;
   }
@@ -106,11 +102,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     }
 
     return new AutoValue_ResourceNameOneofConfig(
-        oneofName,
-        ResourceNameMessageConfig.entityNameToName(oneofName),
-        configList,
-        file,
-        fullInterfaceName);
+        oneofName, ResourceNameMessageConfig.entityNameToName(oneofName), configList, file);
   }
 
   @Nullable
@@ -195,11 +187,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     }
 
     return new AutoValue_ResourceNameOneofConfig(
-        oneOfName,
-        ResourceNameMessageConfig.entityNameToName(oneOfName),
-        configList,
-        file,
-        fullInterfaceName);
+        oneOfName, ResourceNameMessageConfig.entityNameToName(oneOfName), configList, file);
   }
 
   @Override

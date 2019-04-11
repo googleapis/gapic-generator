@@ -743,19 +743,11 @@ public abstract class GapicProductConfig implements ProductConfig {
     for (Resource resource : resourceDefs.keySet()) {
       String resourcePath = resource.getPattern();
       ProtoFile protoFile = resourceDefs.get(resource);
-      // This assumes that there is at least one interface, and that the first interface is what we
-      // want.
-      // Is this right?
-      String interfaceName = protoFile.getInterfaces().get(0).getFullName();
 
       if (FixedResourceNameConfig.isFixedResourceNameConfig(resourcePath)) {
         FixedResourceNameConfig fixedResourceNameConfig =
             FixedResourceNameConfig.createFixedResourceNameConfig(
-                diagCollector,
-                resource.getSymbol(),
-                resource.getPattern(),
-                protoFile,
-                interfaceName);
+                diagCollector, resource.getSymbol(), resource.getPattern(), protoFile);
         insertFixedResourceNameConfig(
             diagCollector,
             fixedResourceNameConfig,
@@ -766,7 +758,6 @@ public abstract class GapicProductConfig implements ProductConfig {
             diagCollector,
             resource,
             protoFile,
-            interfaceName,
             protoParser,
             fullyQualifiedSingleResourcesFromProtoFileCollector);
       }
@@ -912,14 +903,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       if (Strings.isNullOrEmpty(collectionConfigProto.getNamePattern())
           || !FixedResourceNameConfig.isFixedResourceNameConfig(
               collectionConfigProto.getNamePattern())) {
-        String fullInterfaceName = anInterface == null ? null : anInterface.getFullName();
         createSingleResourceNameConfigFromGapicConfig(
-            diagCollector,
-            collectionConfigProto,
-            singleResourceNameConfigMap,
-            protoFile,
-            fullInterfaceName,
-            language);
+            diagCollector, collectionConfigProto, singleResourceNameConfigMap, protoFile, language);
       }
     }
     return ImmutableMap.copyOf(singleResourceNameConfigMap);
@@ -934,7 +919,6 @@ public abstract class GapicProductConfig implements ProductConfig {
       CollectionConfigProto collectionConfigProto = entry.getKey();
       Interface interface_ = entry.getValue();
       ProtoFile protoFile = interface_ == null ? null : interface_.getFile();
-      String interfaceFullName = interface_ == null ? null : interface_.getFullName();
       if (!Strings.isNullOrEmpty(collectionConfigProto.getNamePattern())
           && FixedResourceNameConfig.isFixedResourceNameConfig(
               collectionConfigProto.getNamePattern())) {
@@ -943,8 +927,7 @@ public abstract class GapicProductConfig implements ProductConfig {
                 diagCollector,
                 collectionConfigProto.getEntityName(),
                 collectionConfigProto.getNamePattern(),
-                protoFile,
-                interfaceFullName);
+                protoFile);
         insertFixedResourceNameConfig(
             diagCollector, fixedResourceNameConfig, "", fixedResourceNameConfigMap);
       }
@@ -1061,11 +1044,10 @@ public abstract class GapicProductConfig implements ProductConfig {
       CollectionConfigProto collectionConfigProto,
       Map<String, SingleResourceNameConfig> singleResourceNameConfigsMap,
       @Nullable ProtoFile file,
-      @Nullable String fullInterfaceName,
       TargetLanguage language) {
     SingleResourceNameConfig singleResourceNameConfig =
         SingleResourceNameConfig.createSingleResourceName(
-            diagCollector, collectionConfigProto, file, fullInterfaceName, language);
+            diagCollector, collectionConfigProto, file, language);
     insertSingleResourceNameConfig(
         diagCollector, singleResourceNameConfig, "", singleResourceNameConfigsMap);
   }
@@ -1076,12 +1058,11 @@ public abstract class GapicProductConfig implements ProductConfig {
       DiagCollector diagCollector,
       Resource resource,
       ProtoFile file,
-      String fullInterfaceName,
       ProtoParser protoParser,
       Map<String, SingleResourceNameConfig> singleResourceNameConfigsMap) {
     SingleResourceNameConfig singleResourceNameConfig =
         SingleResourceNameConfig.createSingleResourceName(
-            resource, resource.getPattern(), file, fullInterfaceName, diagCollector);
+            resource, resource.getPattern(), file, diagCollector);
     insertSingleResourceNameConfig(
         diagCollector,
         singleResourceNameConfig,

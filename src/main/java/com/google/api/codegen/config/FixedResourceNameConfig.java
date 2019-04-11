@@ -36,10 +36,6 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
 
   @Override
   @Nullable
-  public abstract String getInterfaceFullName();
-
-  @Override
-  @Nullable
   public String getCommonResourceName() {
     return null;
   }
@@ -51,11 +47,7 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
 
   @Nullable
   public static FixedResourceNameConfig createFixedResourceNameConfig(
-      DiagCollector diagCollector,
-      String entityName,
-      String fixedValue,
-      @Nullable ProtoFile file,
-      String fullInterfaceName) {
+      DiagCollector diagCollector, String entityName, String fixedValue, @Nullable ProtoFile file) {
 
     if (entityName == null || fixedValue == null) {
       diagCollector.addDiag(
@@ -69,11 +61,7 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
     }
 
     return new AutoValue_FixedResourceNameConfig(
-        entityName,
-        ResourceNameMessageConfig.entityNameToName(entityName),
-        fixedValue,
-        file,
-        fullInterfaceName);
+        entityName, ResourceNameMessageConfig.entityNameToName(entityName), fixedValue, file);
   }
 
   /**
