@@ -107,14 +107,21 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    ImmutableList<FlatteningConfig> flattening =
-        FlatteningConfig.createFlatteningConfigs(
-            diagCollector,
-            messageConfigs,
-            resourceNameConfigs,
-            methodConfigProto,
-            methodModel,
-            protoParser);
+    ImmutableList<FlatteningConfig> flattening;
+    if (protoParser.isProtoAnnotationsEnabled()) {
+      flattening =
+          FlatteningConfig.createFlatteningConfigs(
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              methodModel,
+              protoParser);
+    } else {
+      flattening =
+          FlatteningConfig.createFlatteningConfigs(
+              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+    }
 
     BatchingConfig batching = null;
     if (!BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
