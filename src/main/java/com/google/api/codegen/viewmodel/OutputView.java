@@ -211,6 +211,10 @@ public interface OutputView {
     }
   }
 
+  /**
+   * Represents string interpolation in a certain language. `format` is the interpolated string, and
+   * `args` are the arguments to be used in the string.
+   */
   @AutoValue
   abstract class StringInterpolationView {
     public abstract ImmutableList<String> args();
