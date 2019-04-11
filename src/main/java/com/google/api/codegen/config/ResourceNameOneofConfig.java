@@ -60,8 +60,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       CollectionOneofProto collectionOneofProto,
       ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
       ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs,
-      ProtoFile file,
-      String fullInterfaceName) {
+      ProtoFile file) {
     String oneofName = collectionOneofProto.getOneofName();
     if (singleResourceNameConfigs.containsKey(oneofName)) {
       diagCollector.addDiag(
@@ -113,8 +112,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
       ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs,
       ProtoParser protoParser,
-      ProtoFile file,
-      String fullInterfaceName) {
+      ProtoFile file) {
 
     if (singleResourceNameConfigs.containsKey(oneOfName)
         || fixedResourceNameConfigs.containsKey(oneOfName)) {

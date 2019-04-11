@@ -743,7 +743,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     for (Resource resource : resourceDefs.keySet()) {
       String resourcePath = resource.getPattern();
       ProtoFile protoFile = resourceDefs.get(resource);
-
       if (FixedResourceNameConfig.isFixedResourceNameConfig(resourcePath)) {
         FixedResourceNameConfig fixedResourceNameConfig =
             FixedResourceNameConfig.createFixedResourceNameConfig(
@@ -975,8 +974,7 @@ public abstract class GapicProductConfig implements ProductConfig {
               fullyQualifiedSingleResourcesFromProtoFile,
               fullyQualifiedFixedResourcesFromProtoFile,
               protoParser,
-              protoFile,
-              protoFile.getInterfaces().get(0).getFullName());
+              protoFile);
       if (resourceNameOneofConfig == null) {
         return null;
       }
@@ -1133,12 +1131,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     for (CollectionOneofProto oneofProto : oneofConfigProtos) {
       ResourceNameOneofConfig oneofConfig =
           ResourceNameOneofConfig.createResourceNameOneof(
-              diagCollector,
-              oneofProto,
-              singleResourceNameConfigs,
-              fixedResourceNameConfigs,
-              file,
-              null);
+              diagCollector, oneofProto, singleResourceNameConfigs, fixedResourceNameConfigs, file);
       if (oneofConfig == null) {
         continue;
       }
