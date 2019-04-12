@@ -324,4 +324,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   public List<CallingForm> getCallingForms(MethodContext context) {
     return CallingForm.getCallingForms(context, TargetLanguage.PHP);
   }
+
+  @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.PHP);
+  }
 }

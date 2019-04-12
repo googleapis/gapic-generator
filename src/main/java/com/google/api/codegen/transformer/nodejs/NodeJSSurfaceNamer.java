@@ -638,4 +638,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   public List<CallingForm> getCallingForms(MethodContext context) {
     return CallingForm.getCallingForms(context, TargetLanguage.NODEJS);
   }
+
+  @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.NODEJS);
+  }
 }

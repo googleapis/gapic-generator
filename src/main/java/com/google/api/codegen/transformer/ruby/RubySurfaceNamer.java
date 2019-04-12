@@ -469,6 +469,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.RUBY);
+  }
+
+  @Override
   public ImmutableList<String> getInterpolatedFormatAndArgs(String spec, List<String> args) {
     spec =
         spec.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("\"", "\\\"");
