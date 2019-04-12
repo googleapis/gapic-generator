@@ -64,7 +64,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
    * collector.
    */
   @Nullable
-  private static GapicMethodConfig.Builder createMethodConfig(
+  private static GapicMethodConfig.Builder createCommonMethodConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
       String defaultPackageName,
@@ -169,9 +169,13 @@ public abstract class GapicMethodConfig extends MethodConfig {
     int previousErrors = diagCollector.getErrorCount();
 
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
+    ImmutableMap<String, String> fieldNamePatterns = protoParser.getFieldNamePatterns(method);
+    List<String> requiredFields = protoParser.getRequiredFields(method);
+    ResourceNameTreatment defaultResourceNameTreatment =
+        defaultResourceNameTreatmentFromProto(method, protoParser, defaultPackageName);
 
     GapicMethodConfig.Builder builder =
-        createMethodConfig(
+        createCommonMethodConfig(
             diagCollector,
             language,
             defaultPackageName,
@@ -181,14 +185,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
             messageConfigs,
             resourceNameConfigs,
             retryCodesConfig,
-            retryParamsConfigNames);
-
-    ImmutableMap<String, String> fieldNamePatterns = protoParser.getFieldNamePatterns(method);
-    List<String> requiredFields = protoParser.getRequiredFields(method);
-    ResourceNameTreatment defaultResourceNameTreatment =
-        defaultResourceNameTreatmentFromProto(method, protoParser, defaultPackageName);
-
-    builder
+            retryParamsConfigNames)
         .setPageStreaming(
             PageStreamingConfig.createPageStreamingConfig(
                 diagCollector,
@@ -248,9 +245,14 @@ public abstract class GapicMethodConfig extends MethodConfig {
     int previousErrors = diagCollector.getErrorCount();
 
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
+    List<String> requiredFields = methodConfigProto.getRequiredFieldsList();
+    ImmutableMap<String, String> fieldNamePatterns =
+        ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+    ResourceNameTreatment defaultResourceNameTreatment =
+        methodConfigProto.getResourceNameTreatment();
 
     GapicMethodConfig.Builder builder =
-        createMethodConfig(
+        createCommonMethodConfig(
             diagCollector,
             language,
             defaultPackageName,
@@ -260,15 +262,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
             messageConfigs,
             resourceNameConfigs,
             retryCodesConfig,
-            retryParamsConfigNames);
-
-    List<String> requiredFields = methodConfigProto.getRequiredFieldsList();
-    ImmutableMap<String, String> fieldNamePatterns =
-        ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
-    ResourceNameTreatment defaultResourceNameTreatment =
-        methodConfigProto.getResourceNameTreatment();
-
-    builder
+            retryParamsConfigNames)
         .setPageStreaming(
             PageStreamingConfig.createPageStreamingConfig(
                 diagCollector, methodModel, methodConfigProto, messageConfigs, resourceNameConfigs))
