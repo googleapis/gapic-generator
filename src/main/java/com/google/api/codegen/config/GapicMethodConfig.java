@@ -79,22 +79,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
     int previousErrors = diagCollector.getErrorCount();
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
 
-    PageStreamingConfig pageStreaming;
-    if (protoParser.isProtoAnnotationsEnabled()) {
-      pageStreaming =
-          PageStreamingConfig.createPageStreamingConfig(
-              diagCollector,
-              defaultPackageName,
-              methodModel,
-              messageConfigs,
-              resourceNameConfigs,
-              protoParser);
-    } else {
-      pageStreaming =
-          PageStreamingConfig.createPageStreamingConfig(
-              diagCollector, methodModel, methodConfigProto, messageConfigs, resourceNameConfigs);
-    }
-
     GrpcStreamingConfig grpcStreaming = null;
     if (isGrpcStreamingMethod(methodModel)) {
       if (PageStreamingConfigProto.getDefaultInstance()
@@ -105,22 +89,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
             GrpcStreamingConfig.createGrpcStreaming(
                 diagCollector, methodConfigProto.getGrpcStreaming(), method);
       }
-    }
-
-    ImmutableList<FlatteningConfig> flattening;
-    if (protoParser.isProtoAnnotationsEnabled()) {
-      flattening =
-          FlatteningConfig.createFlatteningConfigs(
-              diagCollector,
-              messageConfigs,
-              resourceNameConfigs,
-              methodConfigProto,
-              methodModel,
-              protoParser);
-    } else {
-      flattening =
-          FlatteningConfig.createFlatteningConfigs(
-              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
     }
 
     BatchingConfig batching = null;
@@ -151,40 +119,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
               methodModel.getFullName()));
     }
 
-    ImmutableMap<String, String> fieldNamePatterns;
-    if (protoParser.isProtoAnnotationsEnabled()) {
-      fieldNamePatterns = protoParser.getFieldNamePatterns(method);
-    } else {
-      fieldNamePatterns = ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
-    }
-
     ResourceNameTreatment defaultResourceNameTreatment =
         defaultResourceNameTreatment(methodConfigProto, method, protoParser, defaultPackageName);
 
-    List<String> requiredFields;
-    if (protoParser.isProtoAnnotationsEnabled()) {
-      requiredFields = protoParser.getRequiredFields(method);
-    } else {
-      requiredFields = methodConfigProto.getRequiredFieldsList();
-    }
-
-    ImmutableList<FieldConfig> requiredFieldConfigs =
-        createFieldNameConfigs(
-            diagCollector,
-            messageConfigs,
-            defaultResourceNameTreatment,
-            fieldNamePatterns,
-            resourceNameConfigs,
-            getRequiredFields(diagCollector, methodModel, requiredFields));
-
-    ImmutableList<FieldConfig> optionalFieldConfigs =
-        createFieldNameConfigs(
-            diagCollector,
-            messageConfigs,
-            defaultResourceNameTreatment,
-            fieldNamePatterns,
-            resourceNameConfigs,
-            getOptionalFields(methodModel, requiredFields));
     if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
     }
@@ -210,43 +147,149 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    LongRunningConfig longRunningConfig;
-    if (protoParser.isProtoAnnotationsEnabled()) {
-      longRunningConfig =
-          LongRunningConfig.createLongRunningConfig(
-              method, diagCollector, methodConfigProto.getLongRunning(), protoParser);
-    } else {
-      longRunningConfig =
-          LongRunningConfig.createLongRunningConfigFromGapicConfigOnly(
-              method.getModel(), diagCollector, methodConfigProto.getLongRunning());
-    }
-
     List<String> headerRequestParams = findHeaderRequestParams(method);
+
+    Builder builder = new AutoValue_GapicMethodConfig.Builder();
+    if (protoParser.isProtoAnnotationsEnabled()) {
+      buildMethodConfigFromProto(
+          diagCollector,
+          defaultPackageName,
+          methodConfigProto,
+          method,
+          methodModel,
+          messageConfigs,
+          resourceNameConfigs,
+          defaultResourceNameTreatment,
+          protoParser,
+          builder);
+    } else {
+      buildMethodConfigFromGapicYaml(
+          diagCollector,
+          methodConfigProto,
+          method,
+          methodModel,
+          messageConfigs,
+          resourceNameConfigs,
+          defaultResourceNameTreatment,
+          builder);
+    }
 
     if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
     } else {
-      return new AutoValue_GapicMethodConfig(
-          methodModel,
-          pageStreaming,
-          grpcStreaming,
-          flattening,
-          retryCodesName,
-          retryParamsName,
-          timeout,
-          requiredFieldConfigs,
-          optionalFieldConfigs,
-          defaultResourceNameTreatment,
-          batching,
-          fieldNamePatterns,
-          sampleCodeInitFields,
-          sampleSpec,
-          rerouteToGrpcInterface,
-          visibility,
-          releaseLevel,
-          longRunningConfig,
-          headerRequestParams);
+      return builder
+          .setMethodModel(methodModel)
+          .setGrpcStreaming(grpcStreaming)
+          .setRetryCodesConfigName(retryCodesName)
+          .setRetrySettingsConfigName(retryParamsName)
+          .setTimeout(timeout)
+          .setDefaultResourceNameTreatment(defaultResourceNameTreatment)
+          .setBatching(batching)
+          .setSampleCodeInitFields(sampleCodeInitFields)
+          .setSampleSpec(sampleSpec)
+          .setRerouteToGrpcInterface(rerouteToGrpcInterface)
+          .setVisibility(visibility)
+          .setReleaseLevel(releaseLevel)
+          .setHeaderRequestParams(headerRequestParams)
+          .build();
     }
+  }
+
+  private static void buildMethodConfigFromProto(
+      DiagCollector diagCollector,
+      String defaultPackageName,
+      @Nonnull MethodConfigProto methodConfigProto,
+      Method method,
+      ProtoMethodModel methodModel,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      ResourceNameTreatment defaultResourceNameTreatment,
+      ProtoParser protoParser,
+      Builder builder) {
+
+    ImmutableMap<String, String> fieldNamePatterns = protoParser.getFieldNamePatterns(method);
+    List<String> requiredFields = protoParser.getRequiredFields(method);
+
+    builder
+        .setPageStreaming(
+            PageStreamingConfig.createPageStreamingConfig(
+                diagCollector,
+                defaultPackageName,
+                methodModel,
+                messageConfigs,
+                resourceNameConfigs,
+                protoParser))
+        .setFlatteningConfigs(
+            FlatteningConfig.createFlatteningConfigs(
+                diagCollector,
+                messageConfigs,
+                resourceNameConfigs,
+                methodConfigProto,
+                methodModel,
+                protoParser))
+        .setFieldNamePatterns(fieldNamePatterns)
+        .setRequiredFieldConfigs(
+            createFieldNameConfigs(
+                diagCollector,
+                messageConfigs,
+                defaultResourceNameTreatment,
+                fieldNamePatterns,
+                resourceNameConfigs,
+                getRequiredFields(diagCollector, methodModel, requiredFields)))
+        .setOptionalFieldConfigs(
+            createFieldNameConfigs(
+                diagCollector,
+                messageConfigs,
+                defaultResourceNameTreatment,
+                fieldNamePatterns,
+                resourceNameConfigs,
+                getOptionalFields(methodModel, requiredFields)))
+        .setLroConfig(
+            LongRunningConfig.createLongRunningConfig(
+                method, diagCollector, methodConfigProto.getLongRunning(), protoParser));
+  }
+
+  private static void buildMethodConfigFromGapicYaml(
+      DiagCollector diagCollector,
+      @Nonnull MethodConfigProto methodConfigProto,
+      Method method,
+      ProtoMethodModel methodModel,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      ResourceNameTreatment defaultResourceNameTreatment,
+      Builder builder) {
+
+    List<String> requiredFields = methodConfigProto.getRequiredFieldsList();
+    ImmutableMap<String, String> fieldNamePatterns =
+        ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+
+    builder
+        .setPageStreaming(
+            PageStreamingConfig.createPageStreamingConfig(
+                diagCollector, methodModel, methodConfigProto, messageConfigs, resourceNameConfigs))
+        .setFlatteningConfigs(
+            FlatteningConfig.createFlatteningConfigs(
+                diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel))
+        .setFieldNamePatterns(fieldNamePatterns)
+        .setRequiredFieldConfigs(
+            createFieldNameConfigs(
+                diagCollector,
+                messageConfigs,
+                defaultResourceNameTreatment,
+                fieldNamePatterns,
+                resourceNameConfigs,
+                getRequiredFields(diagCollector, methodModel, requiredFields)))
+        .setOptionalFieldConfigs(
+            createFieldNameConfigs(
+                diagCollector,
+                messageConfigs,
+                defaultResourceNameTreatment,
+                fieldNamePatterns,
+                resourceNameConfigs,
+                getOptionalFields(methodModel, requiredFields)))
+        .setLroConfig(
+            LongRunningConfig.createLongRunningConfigFromGapicConfigOnly(
+                method.getModel(), diagCollector, methodConfigProto.getLongRunning()));
   }
 
   private static List<String> findHeaderRequestParams(Method method) {
@@ -289,5 +332,48 @@ public abstract class GapicMethodConfig extends MethodConfig {
   @Override
   public ImmutableList<ImmutableList<String>> getOneofNames(SurfaceNamer namer) {
     return ProtoField.getOneofFieldsNames(getOptionalFields(), namer);
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder setHeaderRequestParams(Iterable<String> val);
+
+    public abstract Builder setMethodModel(MethodModel val);
+
+    public abstract Builder setPageStreaming(@Nullable PageStreamingConfig val);
+
+    public abstract Builder setGrpcStreaming(@Nullable GrpcStreamingConfig val);
+
+    public abstract Builder setFlatteningConfigs(@Nullable ImmutableList<FlatteningConfig> val);
+
+    public abstract Builder setRetryCodesConfigName(String val);
+
+    public abstract Builder setRetrySettingsConfigName(String val);
+
+    public abstract Builder setTimeout(Duration val);
+
+    public abstract Builder setRequiredFieldConfigs(ImmutableList<FieldConfig> val);
+
+    public abstract Builder setOptionalFieldConfigs(ImmutableList<FieldConfig> val);
+
+    public abstract Builder setDefaultResourceNameTreatment(ResourceNameTreatment val);
+
+    public abstract Builder setBatching(@Nullable BatchingConfig val);
+
+    public abstract Builder setFieldNamePatterns(ImmutableMap<String, String> val);
+
+    public abstract Builder setSampleCodeInitFields(List<String> val);
+
+    public abstract Builder setSampleSpec(SampleSpec val);
+
+    public abstract Builder setRerouteToGrpcInterface(@Nullable String val);
+
+    public abstract Builder setVisibility(VisibilityConfig val);
+
+    public abstract Builder setReleaseLevel(ReleaseLevel val);
+
+    public abstract Builder setLroConfig(@Nullable LongRunningConfig val);
+
+    public abstract GapicMethodConfig build();
   }
 }
