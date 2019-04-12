@@ -64,20 +64,17 @@ public abstract class GapicMethodConfig extends MethodConfig {
    * collector.
    */
   @Nullable
-  static GapicMethodConfig createMethodConfig(
+  private static GapicMethodConfig.Builder createMethodConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
       String defaultPackageName,
       @Nonnull MethodConfigProto methodConfigProto,
       Method method,
+      ProtoMethodModel methodModel,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
-      ImmutableSet<String> retryParamsConfigNames,
-      ProtoParser protoParser) {
-
-    int previousErrors = diagCollector.getErrorCount();
-    ProtoMethodModel methodModel = new ProtoMethodModel(method);
+      ImmutableSet<String> retryParamsConfigNames) {
 
     GrpcStreamingConfig grpcStreaming = null;
     if (isGrpcStreamingMethod(methodModel)) {
@@ -119,13 +116,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
               methodModel.getFullName()));
     }
 
-    ResourceNameTreatment defaultResourceNameTreatment =
-        defaultResourceNameTreatment(methodConfigProto, method, protoParser, defaultPackageName);
-
-    if (diagCollector.getErrorCount() - previousErrors > 0) {
-      return null;
-    }
-
     List<String> sampleCodeInitFields =
         new ArrayList<>(methodConfigProto.getSampleCodeInitFieldsList());
     SampleSpec sampleSpec = new SampleSpec(methodConfigProto);
@@ -149,66 +139,54 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     List<String> headerRequestParams = findHeaderRequestParams(method);
 
-    Builder builder = new AutoValue_GapicMethodConfig.Builder();
-    if (protoParser.isProtoAnnotationsEnabled()) {
-      buildMethodConfigFromProto(
-          diagCollector,
-          defaultPackageName,
-          methodConfigProto,
-          method,
-          methodModel,
-          messageConfigs,
-          resourceNameConfigs,
-          defaultResourceNameTreatment,
-          protoParser,
-          builder);
-    } else {
-      buildMethodConfigFromGapicYaml(
-          diagCollector,
-          methodConfigProto,
-          method,
-          methodModel,
-          messageConfigs,
-          resourceNameConfigs,
-          defaultResourceNameTreatment,
-          builder);
-    }
-
-    if (diagCollector.getErrorCount() - previousErrors > 0) {
-      return null;
-    } else {
-      return builder
-          .setMethodModel(methodModel)
-          .setGrpcStreaming(grpcStreaming)
-          .setRetryCodesConfigName(retryCodesName)
-          .setRetrySettingsConfigName(retryParamsName)
-          .setTimeout(timeout)
-          .setDefaultResourceNameTreatment(defaultResourceNameTreatment)
-          .setBatching(batching)
-          .setSampleCodeInitFields(sampleCodeInitFields)
-          .setSampleSpec(sampleSpec)
-          .setRerouteToGrpcInterface(rerouteToGrpcInterface)
-          .setVisibility(visibility)
-          .setReleaseLevel(releaseLevel)
-          .setHeaderRequestParams(headerRequestParams)
-          .build();
-    }
+    return new AutoValue_GapicMethodConfig.Builder()
+        .setMethodModel(methodModel)
+        .setGrpcStreaming(grpcStreaming)
+        .setRetryCodesConfigName(retryCodesName)
+        .setRetrySettingsConfigName(retryParamsName)
+        .setTimeout(timeout)
+        .setBatching(batching)
+        .setSampleCodeInitFields(sampleCodeInitFields)
+        .setSampleSpec(sampleSpec)
+        .setRerouteToGrpcInterface(rerouteToGrpcInterface)
+        .setVisibility(visibility)
+        .setReleaseLevel(releaseLevel)
+        .setHeaderRequestParams(headerRequestParams);
   }
 
-  private static void buildMethodConfigFromProto(
+  @Nullable
+  static GapicMethodConfig createGapicMethodConfigFromProto(
       DiagCollector diagCollector,
+      TargetLanguage language,
       String defaultPackageName,
       @Nonnull MethodConfigProto methodConfigProto,
       Method method,
-      ProtoMethodModel methodModel,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ResourceNameTreatment defaultResourceNameTreatment,
-      ProtoParser protoParser,
-      Builder builder) {
+      RetryCodesConfig retryCodesConfig,
+      ImmutableSet<String> retryParamsConfigNames,
+      ProtoParser protoParser) {
+    int previousErrors = diagCollector.getErrorCount();
+
+    ProtoMethodModel methodModel = new ProtoMethodModel(method);
+
+    GapicMethodConfig.Builder builder =
+        createMethodConfig(
+            diagCollector,
+            language,
+            defaultPackageName,
+            methodConfigProto,
+            method,
+            methodModel,
+            messageConfigs,
+            resourceNameConfigs,
+            retryCodesConfig,
+            retryParamsConfigNames);
 
     ImmutableMap<String, String> fieldNamePatterns = protoParser.getFieldNamePatterns(method);
     List<String> requiredFields = protoParser.getRequiredFields(method);
+    ResourceNameTreatment defaultResourceNameTreatment =
+        defaultResourceNameTreatmentFromProto(method, protoParser, defaultPackageName);
 
     builder
         .setPageStreaming(
@@ -246,22 +224,49 @@ public abstract class GapicMethodConfig extends MethodConfig {
                 getOptionalFields(methodModel, requiredFields)))
         .setLroConfig(
             LongRunningConfig.createLongRunningConfig(
-                method, diagCollector, methodConfigProto.getLongRunning(), protoParser));
+                method, diagCollector, methodConfigProto.getLongRunning(), protoParser))
+        .setDefaultResourceNameTreatment(defaultResourceNameTreatment);
+
+    if (diagCollector.getErrorCount() - previousErrors > 0) {
+      return null;
+    } else {
+      return builder.build();
+    }
   }
 
-  private static void buildMethodConfigFromGapicYaml(
+  @Nullable
+  static GapicMethodConfig createGapicMethodConfigFromGapicYaml(
       DiagCollector diagCollector,
+      TargetLanguage language,
+      String defaultPackageName,
       @Nonnull MethodConfigProto methodConfigProto,
       Method method,
-      ProtoMethodModel methodModel,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ResourceNameTreatment defaultResourceNameTreatment,
-      Builder builder) {
+      RetryCodesConfig retryCodesConfig,
+      ImmutableSet<String> retryParamsConfigNames) {
+    int previousErrors = diagCollector.getErrorCount();
+
+    ProtoMethodModel methodModel = new ProtoMethodModel(method);
+
+    GapicMethodConfig.Builder builder =
+        createMethodConfig(
+            diagCollector,
+            language,
+            defaultPackageName,
+            methodConfigProto,
+            method,
+            methodModel,
+            messageConfigs,
+            resourceNameConfigs,
+            retryCodesConfig,
+            retryParamsConfigNames);
 
     List<String> requiredFields = methodConfigProto.getRequiredFieldsList();
     ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+    ResourceNameTreatment defaultResourceNameTreatment =
+        methodConfigProto.getResourceNameTreatment();
 
     builder
         .setPageStreaming(
@@ -289,7 +294,14 @@ public abstract class GapicMethodConfig extends MethodConfig {
                 getOptionalFields(methodModel, requiredFields)))
         .setLroConfig(
             LongRunningConfig.createLongRunningConfigFromGapicConfigOnly(
-                method.getModel(), diagCollector, methodConfigProto.getLongRunning()));
+                method.getModel(), diagCollector, methodConfigProto.getLongRunning()))
+        .setDefaultResourceNameTreatment(defaultResourceNameTreatment);
+
+    if (diagCollector.getErrorCount() - previousErrors > 0) {
+      return null;
+    } else {
+      return builder.build();
+    }
   }
 
   private static List<String> findHeaderRequestParams(Method method) {
@@ -300,32 +312,26 @@ public abstract class GapicMethodConfig extends MethodConfig {
   }
 
   @VisibleForTesting
-  static ResourceNameTreatment defaultResourceNameTreatment(
-      MethodConfigProto methodConfigProto,
-      Method method,
-      ProtoParser protoParser,
-      String defaultPackageName) {
-
-    ResourceNameTreatment defaultResourceNameTreatment =
-        methodConfigProto.getResourceNameTreatment();
-    if (defaultResourceNameTreatment == ResourceNameTreatment.UNSET_TREATMENT
-        && method
-            .getInputMessage()
-            .getFields()
-            .stream()
-            .anyMatch(
-                f ->
-                    !Strings.isNullOrEmpty(protoParser.getResourceReference(f))
-                        || !Strings.isNullOrEmpty(protoParser.getResourceOrSetEntityName(f)))) {
+  static ResourceNameTreatment defaultResourceNameTreatmentFromProto(
+      Method method, ProtoParser protoParser, String defaultPackageName) {
+    if (method
+        .getInputMessage()
+        .getFields()
+        .stream()
+        .anyMatch(
+            f ->
+                !Strings.isNullOrEmpty(protoParser.getResourceReference(f))
+                    || !Strings.isNullOrEmpty(protoParser.getResourceOrSetEntityName(f)))) {
       String methodInputPackageName =
           protoParser.getProtoPackage(((ProtoFile) method.getInputMessage().getParent()));
       if (defaultPackageName.equals(methodInputPackageName)) {
-        defaultResourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
+        return ResourceNameTreatment.STATIC_TYPES;
       } else {
-        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
+        return ResourceNameTreatment.VALIDATE;
       }
+    } else {
+      return ResourceNameTreatment.UNSET_TREATMENT;
     }
-    return defaultResourceNameTreatment;
   }
 
   /** Return the list of "one of" instances associated with the fields. */
