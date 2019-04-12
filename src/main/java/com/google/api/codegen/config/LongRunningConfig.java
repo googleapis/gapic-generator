@@ -58,26 +58,6 @@ public abstract class LongRunningConfig {
   /** Returns total polling timeout. */
   public abstract Duration getTotalPollTimeout();
 
-  @Nullable
-  static LongRunningConfig createLongRunningConfig(
-      Method method,
-      DiagCollector diagCollector,
-      LongRunningConfigProto longRunningConfigProto,
-      ProtoParser protoParser) {
-    LongRunningConfig longRunningConfig =
-        createLongRunningConfigFromProtoFile(
-            method, diagCollector, longRunningConfigProto, protoParser);
-    if (longRunningConfig != null) {
-      return longRunningConfig;
-    }
-
-    if (!LongRunningConfigProto.getDefaultInstance().equals(longRunningConfigProto)) {
-      return LongRunningConfig.createLongRunningConfigFromGapicConfig(
-          method.getModel(), diagCollector, longRunningConfigProto);
-    }
-    return null;
-  }
-
   private static String qualifyLroTypeName(
       String typeName, Method method, ProtoParser protoParser) {
     if (!typeName.contains(".")) {
@@ -91,7 +71,7 @@ public abstract class LongRunningConfig {
    * long running config from GAPIC config, use the GAPIC config's timeout values.
    */
   @Nullable
-  private static LongRunningConfig createLongRunningConfigFromProtoFile(
+  static LongRunningConfig createLongRunningConfig(
       Method method,
       DiagCollector diagCollector,
       LongRunningConfigProto longRunningConfigProto,
@@ -113,7 +93,7 @@ public abstract class LongRunningConfig {
     if (responseTypeName.equals(longRunningConfigProto.getReturnType())
         && metadataTypeName.equals(longRunningConfigProto.getMetadataType())) {
       // GAPIC config refers to the same Long running config; so use its retry settings.
-      return LongRunningConfig.createLongRunningConfigFromGapicConfig(
+      return LongRunningConfig.createLongRunningConfigFromGapicConfigOnly(
           method.getModel(), diagCollector, longRunningConfigProto);
     }
 
@@ -168,8 +148,11 @@ public abstract class LongRunningConfig {
 
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
-  private static LongRunningConfig createLongRunningConfigFromGapicConfig(
+  static LongRunningConfig createLongRunningConfigFromGapicConfigOnly(
       Model model, DiagCollector diagCollector, LongRunningConfigProto longRunningConfigProto) {
+    if (LongRunningConfigProto.getDefaultInstance().equals(longRunningConfigProto)) {
+      return null;
+    }
 
     int preexistingErrors = diagCollector.getErrorCount();
 

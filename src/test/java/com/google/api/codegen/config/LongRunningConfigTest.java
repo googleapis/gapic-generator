@@ -137,8 +137,8 @@ public class LongRunningConfigTest {
     // simpleMethod has no LRO proto annotations.
     // lroConfigProtoWithPollSettings contains LRO settings.
     LongRunningConfig longRunningConfig =
-        LongRunningConfig.createLongRunningConfig(
-            simpleMethod, diagCollector, lroConfigProtoWithPollSettings, protoParser);
+        LongRunningConfig.createLongRunningConfigFromGapicConfigOnly(
+            simpleMethod.getModel(), diagCollector, lroConfigProtoWithPollSettings);
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(longRunningConfig).isNotNull();
