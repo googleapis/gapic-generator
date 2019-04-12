@@ -36,10 +36,10 @@ import javax.annotation.Nullable;
 public class SampleSpec {
 
   /** A reference to the {@code SampleConfiguration} from which the other fields are derived. */
-  public final SampleConfiguration sampleConfiguration;
+  private final SampleConfiguration sampleConfiguration;
 
   /** All the {@code SampleValueSets} defined for this method. */
-  public final List<SampleValueSet> valueSets;
+  private final List<SampleValueSet> valueSets;
 
   /** Whether samples have been specified (ie. need to be emitted) for this method. */
   private final boolean specified;
