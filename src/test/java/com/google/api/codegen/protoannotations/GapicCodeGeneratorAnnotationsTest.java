@@ -81,7 +81,8 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library",
             "google.example.library.v1",
             "com.google.example.library.v1",
-            "another_service"),
+            "another_service",
+            "myproto"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
             null,
@@ -89,7 +90,8 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library",
             "google.example.library.v1",
             "Library::V1",
-            "another_service"));
+            "another_service",
+            "myproto"));
   }
 
   @Test

@@ -41,7 +41,10 @@ public class GapicConfigProducerTest {
     locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
     model =
         CodegenTestUtil.readModel(
-            locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
+            locator,
+            tempDir,
+            new String[] {"myproto.proto"},
+            new String[] {"myproto_service.yaml"});
 
     ConfigProto configProto =
         CodegenTestUtil.readConfig(
