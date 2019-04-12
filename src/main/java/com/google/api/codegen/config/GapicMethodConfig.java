@@ -79,15 +79,21 @@ public abstract class GapicMethodConfig extends MethodConfig {
     int previousErrors = diagCollector.getErrorCount();
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
 
-    PageStreamingConfig pageStreaming =
-        PageStreamingConfig.createPageStreamingConfig(
-            diagCollector,
-            defaultPackageName,
-            methodModel,
-            methodConfigProto,
-            messageConfigs,
-            resourceNameConfigs,
-            protoParser);
+    PageStreamingConfig pageStreaming;
+    if (protoParser.isProtoAnnotationsEnabled()) {
+      pageStreaming =
+          PageStreamingConfig.createPageStreamingConfig(
+              diagCollector,
+              defaultPackageName,
+              methodModel,
+              messageConfigs,
+              resourceNameConfigs,
+              protoParser);
+    } else {
+      pageStreaming =
+          PageStreamingConfig.createPageStreamingConfig(
+              diagCollector, methodModel, methodConfigProto, messageConfigs, resourceNameConfigs);
+    }
 
     GrpcStreamingConfig grpcStreaming = null;
     if (isGrpcStreamingMethod(methodModel)) {
@@ -101,14 +107,21 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    ImmutableList<FlatteningConfig> flattening =
-        FlatteningConfig.createFlatteningConfigs(
-            diagCollector,
-            messageConfigs,
-            resourceNameConfigs,
-            methodConfigProto,
-            methodModel,
-            protoParser);
+    ImmutableList<FlatteningConfig> flattening;
+    if (protoParser.isProtoAnnotationsEnabled()) {
+      flattening =
+          FlatteningConfig.createFlatteningConfigs(
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              methodModel,
+              protoParser);
+    } else {
+      flattening =
+          FlatteningConfig.createFlatteningConfigs(
+              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+    }
 
     BatchingConfig batching = null;
     if (!BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
@@ -197,9 +210,16 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     }
 
-    LongRunningConfig longRunningConfig =
-        LongRunningConfig.createLongRunningConfig(
-            method, diagCollector, methodConfigProto.getLongRunning(), protoParser);
+    LongRunningConfig longRunningConfig;
+    if (protoParser.isProtoAnnotationsEnabled()) {
+      longRunningConfig =
+          LongRunningConfig.createLongRunningConfig(
+              method, diagCollector, methodConfigProto.getLongRunning(), protoParser);
+    } else {
+      longRunningConfig =
+          LongRunningConfig.createLongRunningConfigFromGapicConfigOnly(
+              method.getModel(), diagCollector, methodConfigProto.getLongRunning());
+    }
 
     List<String> headerRequestParams = findHeaderRequestParams(method);
 

@@ -227,39 +227,45 @@ public abstract class PageStreamingConfig {
       DiagCollector diagCollector,
       String defaultPackageName,
       ProtoMethodModel methodModel,
-      @Nonnull MethodConfigProto methodConfigProto,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ProtoParser protoParser) {
-    if (protoParser.isProtoAnnotationsEnabled()) {
-      // Toggle pagination based on presence of paging params.
-      // See https://cloud.google.com/apis/design/design_patterns for API pagination pattern.
-      ProtoField tokenField = methodModel.getInputField(ProtoPagingParameters.nameForPageToken());
-      ProtoField pageSizeField = methodModel.getInputField(ProtoPagingParameters.nameForPageSize());
-      ProtoField responseTokenField =
-          methodModel.getOutputField(ProtoPagingParameters.nameForNextPageToken());
-      if (tokenField != null && responseTokenField != null && pageSizeField != null) {
-        PagingFields pagingFields =
-            PagingFields.newBuilder()
-                .setResponseTokenField(responseTokenField)
-                .setRequestTokenField(tokenField)
-                .setPageSizeField(pageSizeField)
-                .build();
-        return PageStreamingConfig.createPageStreamingFromProtoFile(
-            diagCollector,
-            messageConfigs,
-            resourceNameConfigs,
-            methodModel,
-            pagingFields,
-            protoParser,
-            defaultPackageName);
-      }
-    } else {
-      if (!PageStreamingConfigProto.getDefaultInstance()
-          .equals(methodConfigProto.getPageStreaming())) {
-        return PageStreamingConfig.createPageStreamingFromGapicConfig(
-            diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
-      }
+    // Toggle pagination based on presence of paging params.
+    // See https://cloud.google.com/apis/design/design_patterns for API pagination pattern.
+    ProtoField tokenField = methodModel.getInputField(ProtoPagingParameters.nameForPageToken());
+    ProtoField pageSizeField = methodModel.getInputField(ProtoPagingParameters.nameForPageSize());
+    ProtoField responseTokenField =
+        methodModel.getOutputField(ProtoPagingParameters.nameForNextPageToken());
+    if (tokenField != null && responseTokenField != null && pageSizeField != null) {
+      PagingFields pagingFields =
+          PagingFields.newBuilder()
+              .setResponseTokenField(responseTokenField)
+              .setRequestTokenField(tokenField)
+              .setPageSizeField(pageSizeField)
+              .build();
+      return PageStreamingConfig.createPageStreamingFromProtoFile(
+          diagCollector,
+          messageConfigs,
+          resourceNameConfigs,
+          methodModel,
+          pagingFields,
+          protoParser,
+          defaultPackageName);
+    }
+    return null;
+  }
+
+  /** package-private for use by {@link GapicMethodConfig}. */
+  static PageStreamingConfig createPageStreamingConfig(
+      DiagCollector diagCollector,
+      ProtoMethodModel methodModel,
+      @Nonnull MethodConfigProto methodConfigProto,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
+    if (!PageStreamingConfigProto.getDefaultInstance()
+        .equals(methodConfigProto.getPageStreaming())) {
+      return PageStreamingConfig.createPageStreamingFromGapicConfig(
+          diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
     }
     return null;
   }
