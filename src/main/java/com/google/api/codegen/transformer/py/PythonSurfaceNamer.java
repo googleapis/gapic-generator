@@ -154,8 +154,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSampleFileName(String className) {
-    return Name.anyCamel(className).toLowerUnderscore() + ".py";
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toLowerUnderscore() + ".py";
   }
 
   @Override

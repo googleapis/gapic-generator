@@ -281,8 +281,8 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSampleFileName(String className) {
-    return className + ".php";
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toUpperUnderscore() + ".php";
   }
 
   @Override

@@ -512,6 +512,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return String.format("[%s]", getModelTypeFormatter().renderPrimitiveValue(keyType, key));
   }
 
+  @Override
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toLowerUnderscore() + ".rb";
+  }
+
   public String getSampleResponseVarName(MethodContext context, CallingForm form) {
     MethodConfig config = context.getMethodConfig();
     if (config.getPageStreaming() != null) {

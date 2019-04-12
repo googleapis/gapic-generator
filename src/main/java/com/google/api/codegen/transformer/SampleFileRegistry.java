@@ -14,8 +14,11 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,13 +28,57 @@ import java.util.Map;
 public class SampleFileRegistry {
 
   private final Map<String, SampleInfo> files = new HashMap<>();
+  private final Map<String, Integer> regionTagCount = new HashMap<>();
+  private final SurfaceNamer namer;
+
+  public SampleFileRegistry(SurfaceNamer namer, List<MethodSampleView> allSamples) {
+    this.namer = namer;
+    for (MethodSampleView sample : allSamples) {
+      regionTagCount.put(
+          sample.regionTag(), regionTagCount.getOrDefault(sample.regionTag(), 0) + 1);
+    }
+  }
+
+  public String getSampleClassName(MethodSampleView sample, String method) {
+    String regionTag = sample.regionTag();
+    String callingForm = sample.callingForm().toLowerCamel();
+    String valueSet = sample.valueSet().id();
+    Preconditions.checkState(
+        regionTagCount.get(regionTag) != null && regionTagCount.get(regionTag) > 0,
+        "Sample not registered.");
+    if (regionTagCount.get(regionTag) == 1) {
+      return namer.getApiSampleClassName(regionTag);
+    } else {
+      return namer.getApiSampleClassName(
+          method, sample.callingForm().toLowerUnderscore(), sample.valueSet().id());
+    }
+  }
+
+  public String getSampleFileName(MethodSampleView sample, String method) {
+    String regionTag = sample.regionTag();
+    String callingForm = sample.callingForm().toLowerCamel();
+    String valueSet = sample.valueSet().id();
+    Preconditions.checkState(
+        regionTagCount.get(regionTag) != null && regionTagCount.get(regionTag) > 0,
+        "Sample not registered.");
+    String fileName;
+    if (regionTagCount.get(regionTag) == 1) {
+      fileName = namer.getApiSampleFileName(regionTag);
+    } else {
+      fileName =
+          namer.getApiSampleFileName(
+              method, sample.callingForm().toLowerUnderscore(), sample.valueSet().id());
+    }
+    addFile(fileName, method, callingForm, valueSet, regionTag);
+    return fileName;
+  }
 
   /**
    * Adds a file with the given parameters to the registry. If a file with the given {@code path}
    * previously existed in the registry and any of the parameters don't match, throws an exception
    * describing the conflict.
    */
-  public void addFile(
+  private void addFile(
       String path, String method, String callingForm, String valueSet, String regionTag) {
     SampleInfo current =
         SampleInfo.newBuilder()

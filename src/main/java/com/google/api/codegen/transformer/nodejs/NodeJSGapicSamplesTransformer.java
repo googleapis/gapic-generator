@@ -31,12 +31,12 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.Arrays;
@@ -104,32 +104,33 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<Pro
       GapicInterfaceContext context, boolean hasMultipleServices) {
     ImmutableList.Builder<ViewModel> viewModels = new ImmutableList.Builder<>();
     SurfaceNamer namer = context.getNamer();
-    SampleFileRegistry generatedSamples = new SampleFileRegistry();
 
-    List<OptionalArrayMethodView> allmethods =
+    List<OptionalArrayMethodView> allMethods =
         methodGenerator.generateApiMethods(context, hasMultipleServices);
+    List<MethodSampleView> allSamples =
+        allMethods
+            .stream()
+            .flatMap(m -> m.samples().stream())
+            .collect(ImmutableList.toImmutableList());
+    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
     DynamicLangSampleView.Builder sampleClassBuilder = DynamicLangSampleView.newBuilder();
-    for (OptionalArrayMethodView method : allmethods) {
+    for (OptionalArrayMethodView method : allMethods) {
       String subPath =
           pathMapper.getSamplesOutputPath(
-              context.getInterfaceModel().getFullName(), context.getProductConfig(), method.name());
+              context.getInterfaceModel().getFullName(),
+              context.getProductConfig(),
+              Name.lowerCamel(method.name()).toLowerUnderscore());
       for (MethodSampleView methodSample : method.samples()) {
-        String callingForm = methodSample.callingForm().toLowerCamel();
-        String valueSet = methodSample.valueSet().id();
-        String className =
-            namer.getApiSampleClassName(
-                CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, method.name()),
-                callingForm,
-                valueSet);
-        String sampleOutputPath = subPath + File.separator + namer.getApiSampleFileName(className);
-        generatedSamples.addFile(
-            sampleOutputPath, method.name(), callingForm, valueSet, methodSample.regionTag());
+        String sampleOutputPath =
+            subPath
+                + File.separator
+                + registry.getSampleFileName(
+                    methodSample, Name.anyLower((method.name())).toLowerUnderscore());
         viewModels.add(
             sampleClassBuilder
                 .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
                 .fileHeader(fileHeaderTransformer.generateFileHeader(context))
                 .outputPath(sampleOutputPath)
-                .className(className)
                 .libraryMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build())
                 .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
                 .build());

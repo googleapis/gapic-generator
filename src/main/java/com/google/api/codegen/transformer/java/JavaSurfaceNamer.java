@@ -103,8 +103,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSampleFileName(String className) {
-    return className + ".java";
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toUpperCamel() + ".java";
   }
 
   @Override

@@ -5169,68 +5169,6 @@ require "optparse"
 if $0 == __FILE__
   sample_delete_shelf
 end
-============== file: samples/discuss_book_request_streaming_bidi_prog.rb ==============
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
-
-require "library"
-
-# [START turing_prog_request_streaming_bidi]
-
-# Testing calling forms
-def sample_discuss_book(image_file_name)
-  # [START turing_prog_request_streaming_bidi_core]
-  # Instantiate a client
-  library_client = Library.new version: :v1
-
-  # image_file_name = "image_file.jpg"
-  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
-  comment = File.binread "comment_file"
-  comment_2 = { comment: comment }
-  image = File.binread image_file_name
-  request = {
-    name: formatted_name,
-    comment: comment_2,
-    image: image
-  }
-
-  requests = [request]
-  library_client.discuss_book(requests).each do |element|
-    puts element
-  end
-
-  # [END turing_prog_request_streaming_bidi_core]
-end
-# [END turing_prog_request_streaming_bidi]
-
-
-require "optparse"
-
-if $0 == __FILE__
-
-  image_file_name = "image_file.jpg"
-
-  ARGV.options do |opts|
-    opts.on("--image_file_name=val") { |val| image_file_name = val }
-    opts.parse!
-  end
-
-
-  sample_discuss_book(image_file_name)
-end
 ============== file: samples/find_related_books_request_paged_all_odyssey.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5621,6 +5559,49 @@ require "optparse"
 if $0 == __FILE__
   sample_get_book
 end
+============== file: samples/lovelace.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
+
+require "library"
+
+# [START lovelace]
+
+# Testing calling forms
+def sample_stream_books
+  # [START lovelace_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  name = "BASIC"
+
+  library_client.stream_books(name).each do |element|
+    puts element
+  end
+
+  # [END lovelace_core]
+end
+# [END lovelace]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_stream_books
+end
 ============== file: samples/monolog_about_book_request_streaming_client_prog.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5910,7 +5891,7 @@ require "optparse"
 if $0 == __FILE__
   sample_publish_series
 end
-============== file: samples/stream_books_request_streaming_server_prog.rb ==============
+============== file: samples/sample_get_shelf.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5925,33 +5906,33 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
+# DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
 
 require "library"
 
-# [START lovelace]
+# [START sample_get_shelf]
 
-# Testing calling forms
-def sample_stream_books
-  # [START lovelace_core]
+# Test default calling forms for unary methods.
+def sample_get_shelf
+  # [START sample_get_shelf_core]
   # Instantiate a client
   library_client = Library.new version: :v1
 
-  name = "BASIC"
+  formatted_name = library_client.class.shelf_path("my-shelf")
+  options_ = ''
 
-  library_client.stream_books(name).each do |element|
-    puts element
-  end
+  response = library_client.get_shelf(formatted_name, options_)
+  puts "The theme of the shelf is: #{response.theme}"
 
-  # [END lovelace_core]
+  # [END sample_get_shelf_core]
 end
-# [END lovelace]
+# [END sample_get_shelf]
 
 
 require "optparse"
 
 if $0 == __FILE__
-  sample_stream_books
+  sample_get_shelf
 end
 ============== file: samples/stream_shelves_request_streaming_server_empty.rb ==============
 # Copyright 2019 Google LLC
@@ -5995,6 +5976,187 @@ require "optparse"
 
 if $0 == __FILE__
   sample_stream_shelves
+end
+============== file: samples/test_default_calling_form_for_paging.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_paging")
+
+require "library"
+
+# [START test_default_calling_form_for_paging]
+
+# Test default calling form for paging methods.
+def sample_list_shelves
+  # [START test_default_calling_form_for_paging_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  # Iterate over all results.
+  library_client.list_shelves.each do |element|
+    puts "shelf name: #{element}"
+  end
+
+  # [END test_default_calling_form_for_paging_core]
+end
+# [END test_default_calling_form_for_paging]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_list_shelves
+end
+============== file: samples/this_tag_should_be_the_name_of_the_file.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
+
+require "library"
+
+# [START this_tag_should_be_the_name_of_the_file]
+
+# Testing calling forms
+def sample_get_big_book(shelf)
+  # [START this_tag_should_be_the_name_of_the_file_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  # shelf = "Novel"
+  formatted_name = library_client.class.book_path(shelf, "War and Peace")
+
+  # Make the long-running operation request
+  operation = library_client.get_big_book(formatted_name)
+
+  # Block until operation complete
+  operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  results = operation.response.results
+
+  # Testing iterating over map fields when both key and value are specified.
+  response.map_list_value_value.each do |my_key, my_value|
+    puts "key: #{my_key}, value: #{my_value}"
+  end
+
+  # Testing iterating over map fields when only key is specified.
+  response.map_list_value_value.keys.each do |another_key|
+    puts "key: #{another_key}"
+  end
+
+  # Testing iterating over map fields when only value is specified.
+  response.map_list_value_value.values.each do |another_value|
+    puts "value: #{another_value}"
+  end
+
+  puts "name: #{response.name}"
+  puts "author: #{response.author}"
+
+  # [END this_tag_should_be_the_name_of_the_file_core]
+end
+# [END this_tag_should_be_the_name_of_the_file]
+
+
+require "optparse"
+
+if $0 == __FILE__
+
+  shelf = "Novel"
+
+  ARGV.options do |opts|
+    opts.on("--shelf=val") { |val| shelf = val }
+    opts.parse!
+  end
+
+
+  sample_get_big_book(shelf)
+end
+============== file: samples/turing_prog_request_streaming_bidi.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+
+require "library"
+
+# [START turing_prog_request_streaming_bidi]
+
+# Testing calling forms
+def sample_discuss_book(image_file_name)
+  # [START turing_prog_request_streaming_bidi_core]
+  # Instantiate a client
+  library_client = Library.new version: :v1
+
+  # image_file_name = "image_file.jpg"
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  comment = File.binread "comment_file"
+  comment_2 = { comment: comment }
+  image = File.binread image_file_name
+  request = {
+    name: formatted_name,
+    comment: comment_2,
+    image: image
+  }
+
+  requests = [request]
+  library_client.discuss_book(requests).each do |element|
+    puts element
+  end
+
+  # [END turing_prog_request_streaming_bidi_core]
+end
+# [END turing_prog_request_streaming_bidi]
+
+
+require "optparse"
+
+if $0 == __FILE__
+
+  image_file_name = "image_file.jpg"
+
+  ARGV.options do |opts|
+    opts.on("--image_file_name=val") { |val| image_file_name = val }
+    opts.parse!
+  end
+
+
+  sample_discuss_book(image_file_name)
 end
 ============== file: test/library/v1/library_service_client_test.rb ==============
 # Copyright 2019 Google LLC

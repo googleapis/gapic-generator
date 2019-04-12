@@ -150,16 +150,16 @@ public class SampleSpec {
       SampleValueSet defaultValueSet,
       SampleType type) {
     List<SampleConfig> sampleConfigs = new ArrayList<>();
-    for (SampleTypeConfiguration config : getConfigFor(type)) {
-      List<CallingForm> matchingCallingForms = null;
-      List<SampleValueSet> matchingValueSets = null;
-      if (type == SampleType.EXPLORER) {
-        throw new UnsupportedOperationException("API Explorer samples unimplemented yet.");
+    if (type == SampleType.EXPLORER) {
+      throw new UnsupportedOperationException("API Explorer samples unimplemented yet.");
+    } else if (type == SampleType.IN_CODE) {
+      for (CallingForm form : allValidCallingForms) {
+        sampleConfigs.add(SampleConfig.create("", form, defaultValueSet, type));
       }
-      if (type == SampleType.IN_CODE) {
-        matchingCallingForms = allValidCallingForms;
-        matchingValueSets = Collections.singletonList(defaultValueSet);
-      } else if (type == SampleType.STANDALONE) {
+    } else {
+      for (SampleTypeConfiguration config : getConfigFor(type)) {
+        List<CallingForm> matchingCallingForms = null;
+        List<SampleValueSet> matchingValueSets = null;
         // match calling forms
         List<String> callingFormNames =
             config.getCallingFormsList().isEmpty()
@@ -173,12 +173,12 @@ public class SampleSpec {
         // match value sets
         matchingValueSets =
             expressionsMatchIds(config.getValueSetsList(), valueSets, v -> v.getId());
-      }
 
-      for (CallingForm form : matchingCallingForms) {
-        for (SampleValueSet matchingValueSet : matchingValueSets) {
-          sampleConfigs.add(
-              SampleConfig.create(config.getRegionTag(), form, matchingValueSet, type));
+        for (CallingForm form : matchingCallingForms) {
+          for (SampleValueSet matchingValueSet : matchingValueSets) {
+            sampleConfigs.add(
+                SampleConfig.create(config.getRegionTag(), form, matchingValueSet, type));
+          }
         }
       }
     }
