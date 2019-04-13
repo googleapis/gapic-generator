@@ -25,12 +25,14 @@ import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.util.csharp.CSharpAliasMode;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
@@ -124,99 +126,185 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             .build();
 
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
+
+    // gRPC streaming methods.
     for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       MethodContext requestMethodContext = context.asRequestMethodContext(method);
       if (methodConfig.isGrpcStreaming()) {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
+            MethodContext methodContext =
+                // TODO: replace the empty list with real calling forms:
+                //
+                // FlattenedStreamingBidi
+                // FlattenedStreamingServer
+                //
+                // Keep an empty list here to turn off generating samples for
+                // gRPC streaming methods for now so that the baseline does not explode
+                context
+                    .asFlattenedMethodContext(requestMethodContext, flatteningGroup)
+                    .withCallingForms(Collections.emptyList());
             apiMethods.add(
                 generateGrpcStreamingFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));
           }
         }
+        // TODO: replace the empty list with real calling forms:
+        //
+        // RequestStreamingBidi
+        // RequestStreamingServer
+        //
+        // Keep an empty list here to turn off generating samples for
+        // gRPC streaming methods for now so that the baseline does not explode
+        requestMethodContext = requestMethodContext.withCallingForms(Collections.emptyList());
         apiMethods.add(generateGrpcStreamingRequestObjectMethod(requestMethodContext));
       } else if (requestMethodContext.isLongRunningMethodContext()) {
-        GapicMethodContext gapicMethodContext = (GapicMethodContext) requestMethodContext;
+
+        // LRO methods.
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
                 generateAsyncOperationFlattenedMethod(
-                    methodContext,
+                    // TODO: replace the empty list with real calling forms:
+                    //
+                    // LongRunningFlattenedAsyncPollUntilComplete
+                    // LongRunningFlattenedAsyncPollLater
+                    //
+                    // Keep an empty list here to turn off generating samples for
+                    // LRO methods for now so that the baseline does not explode
+                    methodContext.withCallingForms(Collections.emptyList()),
                     csharpCommonTransformer.callSettingsParam(),
                     ClientMethodType.AsyncOperationFlattenedCallSettingsMethod,
                     true));
             apiMethods.add(
                 generateAsyncOperationFlattenedMethod(
-                    methodContext,
+                    methodContext.withCallingForms(Collections.emptyList()),
                     csharpCommonTransformer.cancellationTokenParam(),
                     ClientMethodType.AsyncOperationFlattenedCancellationMethod,
                     true));
             apiMethods.add(
                 generateOperationFlattenedMethod(
-                    methodContext, csharpCommonTransformer.callSettingsParam()));
+                    // TODO: replace the empty list with real calling forms:
+                    //
+                    // LongRunningFlattenedPollUntilComplete
+                    // LongRunningFlattenedPollLater
+                    //
+                    // Keep an empty list here to turn off generating samples for
+                    // LRO methods for now so that the baseline does not explode
+                    methodContext.withCallingForms(Collections.emptyList()),
+                    csharpCommonTransformer.callSettingsParam()));
           }
         }
         apiMethods.add(
             generateAsyncOperationRequestObjectMethod(
-                requestMethodContext, csharpCommonTransformer.callSettingsParam(), true));
+                // TODO: replace the empty list with real calling forms:
+                //
+                // LongRunningRequestAsyncPollUntilComplete
+                // LongRunningRequestAsyncPollLater
+                //
+                // Keep an empty list here to turn off generating samples for
+                // LRO methods for now so that the baseline does not explode
+                requestMethodContext.withCallingForms(Collections.emptyList()),
+                csharpCommonTransformer.callSettingsParam(),
+                true));
         apiMethods.add(
             generateOperationRequestObjectMethod(
-                gapicMethodContext, csharpCommonTransformer.callSettingsParam()));
+                // TODO: replace the empty list with real calling forms:
+                //
+                // LongRunningRequestPollUntilComplete
+                // LongRunningRequestPollLater
+                //
+                // Keep an empty list here to turn off generating samples for
+                // LRO methods for now so that the baseline does not explode
+                requestMethodContext.withCallingForms(Collections.emptyList()),
+                csharpCommonTransformer.callSettingsParam()));
       } else if (methodConfig.isPageStreaming()) {
+
+        // Paged streaming methods.
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
-                generatePagedFlattenedAsyncMethod(methodContext, pagedMethodAdditionalParams));
+                generatePagedFlattenedAsyncMethod(
+                    methodContext.withCallingForms(
+                        ImmutableList.of(
+                            CallingForm.FlattenedAsyncPaged,
+                            CallingForm.FlattenedAsyncPagedAll,
+                            CallingForm.FlattenedAsyncPagedPageSize)),
+                    pagedMethodAdditionalParams));
             apiMethods.add(
-                generatePagedFlattenedMethod(methodContext, pagedMethodAdditionalParams));
+                generatePagedFlattenedMethod(
+                    methodContext.withCallingForms(
+                        ImmutableList.of(
+                            CallingForm.FlattenedPaged,
+                            CallingForm.FlattenedPagedAll,
+                            CallingForm.FlattenedPagedPageSize)),
+                    pagedMethodAdditionalParams));
           }
         }
         apiMethods.add(
             generatePagedRequestObjectAsyncMethod(
-                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+                requestMethodContext.withCallingForms(
+                    ImmutableList.of(
+                        CallingForm.RequestAsyncPaged,
+                        CallingForm.RequestAsyncPagedAll,
+                        CallingForm.RequestAsyncPagedPageSize)),
+                csharpCommonTransformer.callSettingsParam()));
         apiMethods.add(
             generatePagedRequestObjectMethod(
-                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+                requestMethodContext.withCallingForms(
+                    ImmutableList.of(
+                        CallingForm.RequestPaged,
+                        CallingForm.RequestPagedAll,
+                        CallingForm.RequestPagedPageSize)),
+                csharpCommonTransformer.callSettingsParam()));
       } else {
+
+        // Unary methods.
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.add(
                 generateFlattenedAsyncMethod(
-                    methodContext,
+                    methodContext.withCallingForms(
+                        Collections.singletonList(CallingForm.FlattenedAsync)),
                     csharpCommonTransformer.callSettingsParam(),
                     ClientMethodType.FlattenedAsyncCallSettingsMethod));
             apiMethods.add(
                 generateFlattenedAsyncMethod(
-                    methodContext,
+                    methodContext.withCallingForms(
+                        Collections.singletonList(CallingForm.FlattenedAsync)),
                     csharpCommonTransformer.cancellationTokenParam(),
                     ClientMethodType.FlattenedAsyncCancellationTokenMethod));
             apiMethods.add(
                 generateFlattenedMethod(
-                    methodContext, csharpCommonTransformer.callSettingsParam()));
+                    methodContext.withCallingForms(
+                        Collections.singletonList(CallingForm.Flattened)),
+                    csharpCommonTransformer.callSettingsParam()));
           }
         }
         apiMethods.add(
             generateRequestObjectAsyncMethod(
-                requestMethodContext,
+                requestMethodContext.withCallingForms(
+                    Collections.singletonList(CallingForm.RequestAsync)),
                 csharpCommonTransformer.callSettingsParam(),
                 ClientMethodType.AsyncRequestObjectCallSettingsMethod));
         apiMethods.add(
             generateRequestObjectAsyncMethod(
-                requestMethodContext,
+                requestMethodContext.withCallingForms(
+                    Collections.singletonList(CallingForm.RequestAsync)),
                 csharpCommonTransformer.cancellationTokenParam(),
                 ClientMethodType.AsyncRequestObjectCancellationMethod));
         apiMethods.add(
             generateRequestObjectMethod(
-                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+                requestMethodContext.withCallingForms(
+                    Collections.singletonList(CallingForm.Request)),
+                csharpCommonTransformer.callSettingsParam()));
       }
     }
 

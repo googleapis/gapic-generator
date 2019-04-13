@@ -26,14 +26,16 @@ public interface OutputView {
     DEFINE,
     ARRAY_LOOP,
     MAP_LOOP,
-    PRINT
+    PRINT,
+    WRITE_FILE
   }
 
   Kind kind();
 
   @AutoValue
   abstract class DefineView implements OutputView {
-    public abstract String variableType(); // TODO: Replace with appropriate type type
+
+    public abstract String variableTypeName();
 
     public abstract String variableName();
 
@@ -49,7 +51,8 @@ public interface OutputView {
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder variableType(String val);
+
+      public abstract Builder variableTypeName(String val);
 
       public abstract Builder variableName(String val);
 
@@ -81,7 +84,8 @@ public interface OutputView {
 
   @AutoValue
   abstract class ArrayLoopView implements OutputView {
-    public abstract String variableType(); // TODO: Replace with appropriate type type
+    // TODO: change this to `variableTypeName` for consistency.
+    public abstract String variableType();
 
     public abstract String variableName();
 
@@ -156,9 +160,7 @@ public interface OutputView {
   @AutoValue
   abstract class PrintView implements OutputView {
 
-    public abstract String format();
-
-    public abstract ImmutableList<PrintArgView> args();
+    public abstract StringInterpolationView interpolatedString();
 
     public Kind kind() {
       return Kind.PRINT;
@@ -170,33 +172,66 @@ public interface OutputView {
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder format(String val);
-
-      public abstract Builder args(ImmutableList<PrintArgView> val);
+      public abstract Builder interpolatedString(StringInterpolationView val);
 
       public abstract PrintView build();
     }
   }
 
   @AutoValue
-  abstract class PrintArgView {
+  abstract class WriteFileView implements OutputView {
+    public abstract StringInterpolationView fileName();
 
-    public abstract String formattedName();
+    public abstract VariableView contents();
 
-    @Nullable
-    public abstract TypeModel type();
+    /**
+     * Used in Node.js. Node.js needs to define `const writeFile` or `var writeFile` if used for the
+     * first time. `writerFile` can be reused if defined through `var writeFile` when there are
+     * multiple write-to-file statements.
+     */
+    public abstract boolean isFirst();
+
+    public Kind kind() {
+      return Kind.WRITE_FILE;
+    }
 
     public static Builder newBuilder() {
-      return new AutoValue_OutputView_PrintArgView.Builder();
+      return new AutoValue_OutputView_WriteFileView.Builder();
     }
 
     @AutoValue.Builder
     public abstract static class Builder {
-      public abstract Builder formattedName(String val);
+      public abstract Builder fileName(StringInterpolationView val);
 
-      public abstract Builder type(TypeModel val);
+      public abstract Builder contents(VariableView val);
 
-      public abstract PrintArgView build();
+      public abstract Builder isFirst(boolean val);
+
+      public abstract WriteFileView build();
+    }
+  }
+
+  /**
+   * Represents string interpolation in a certain language. `format` is the interpolated string, and
+   * `args` are the arguments to be used in the string.
+   */
+  @AutoValue
+  abstract class StringInterpolationView {
+    public abstract ImmutableList<String> args();
+
+    public abstract String format();
+
+    public static Builder newBuilder() {
+      return new AutoValue_OutputView_StringInterpolationView.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+      public abstract Builder args(ImmutableList<String> val);
+
+      public abstract Builder format(String val);
+
+      public abstract StringInterpolationView build();
     }
   }
 
@@ -218,9 +253,9 @@ public interface OutputView {
     public abstract static class Builder {
       public abstract Builder variable(String val);
 
-      public abstract Builder accessors(ImmutableList<String> val);
-
       public abstract Builder type(TypeModel val);
+
+      public abstract Builder accessors(ImmutableList<String> val);
 
       public abstract VariableView build();
     }

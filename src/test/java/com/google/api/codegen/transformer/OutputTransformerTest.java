@@ -87,7 +87,7 @@ public class OutputTransformerTest {
     } catch (IllegalArgumentException e) {
       assertThat(e.getMessage())
           .contains(
-              "cannot define variable \"fooResponse\": it is used by the sample template for calling form");
+              "cannot define variable \"fooResponse\": it is already used by the sample template for calling form");
     }
   }
 

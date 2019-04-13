@@ -70,7 +70,7 @@ public class ConfigGenerationTest extends ConfigBaselineTestCase {
 
   @Test
   public void library() throws Exception {
-    test("library");
+    test("library", "another_service");
   }
 
   @Test
