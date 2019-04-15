@@ -176,53 +176,53 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     GapicMethodConfig.Builder builder =
         createCommonMethodConfig(
-            diagCollector,
-            language,
-            defaultPackageName,
-            methodConfigProto,
-            method,
-            methodModel,
-            messageConfigs,
-            resourceNameConfigs,
-            retryCodesConfig,
-            retryParamsConfigNames)
-        .setPageStreaming(
-            PageStreamingConfig.createPageStreamingConfig(
                 diagCollector,
+                language,
                 defaultPackageName,
-                methodModel,
-                messageConfigs,
-                resourceNameConfigs,
-                protoParser))
-        .setFlatteningConfigs(
-            FlatteningConfig.createFlatteningConfigs(
-                diagCollector,
-                messageConfigs,
-                resourceNameConfigs,
                 methodConfigProto,
+                method,
                 methodModel,
-                protoParser))
-        .setFieldNamePatterns(fieldNamePatterns)
-        .setRequiredFieldConfigs(
-            createFieldNameConfigs(
-                diagCollector,
                 messageConfigs,
-                defaultResourceNameTreatment,
-                fieldNamePatterns,
                 resourceNameConfigs,
-                getRequiredFields(diagCollector, methodModel, requiredFields)))
-        .setOptionalFieldConfigs(
-            createFieldNameConfigs(
-                diagCollector,
-                messageConfigs,
-                defaultResourceNameTreatment,
-                fieldNamePatterns,
-                resourceNameConfigs,
-                getOptionalFields(methodModel, requiredFields)))
-        .setLroConfig(
-            LongRunningConfig.createLongRunningConfig(
-                method, diagCollector, methodConfigProto.getLongRunning(), protoParser))
-        .setDefaultResourceNameTreatment(defaultResourceNameTreatment);
+                retryCodesConfig,
+                retryParamsConfigNames)
+            .setPageStreaming(
+                PageStreamingConfig.createPageStreamingConfig(
+                    diagCollector,
+                    defaultPackageName,
+                    methodModel,
+                    messageConfigs,
+                    resourceNameConfigs,
+                    protoParser))
+            .setFlatteningConfigs(
+                FlatteningConfig.createFlatteningConfigs(
+                    diagCollector,
+                    messageConfigs,
+                    resourceNameConfigs,
+                    methodConfigProto,
+                    methodModel,
+                    protoParser))
+            .setFieldNamePatterns(fieldNamePatterns)
+            .setRequiredFieldConfigs(
+                createFieldNameConfigs(
+                    diagCollector,
+                    messageConfigs,
+                    defaultResourceNameTreatment,
+                    fieldNamePatterns,
+                    resourceNameConfigs,
+                    getRequiredFields(diagCollector, methodModel, requiredFields)))
+            .setOptionalFieldConfigs(
+                createFieldNameConfigs(
+                    diagCollector,
+                    messageConfigs,
+                    defaultResourceNameTreatment,
+                    fieldNamePatterns,
+                    resourceNameConfigs,
+                    getOptionalFields(methodModel, requiredFields)))
+            .setLroConfig(
+                LongRunningConfig.createLongRunningConfig(
+                    method, diagCollector, methodConfigProto.getLongRunning(), protoParser))
+            .setDefaultResourceNameTreatment(defaultResourceNameTreatment);
 
     if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
@@ -253,43 +253,51 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     GapicMethodConfig.Builder builder =
         createCommonMethodConfig(
-            diagCollector,
-            language,
-            defaultPackageName,
-            methodConfigProto,
-            method,
-            methodModel,
-            messageConfigs,
-            resourceNameConfigs,
-            retryCodesConfig,
-            retryParamsConfigNames)
-        .setPageStreaming(
-            PageStreamingConfig.createPageStreamingConfig(
-                diagCollector, methodModel, methodConfigProto, messageConfigs, resourceNameConfigs))
-        .setFlatteningConfigs(
-            FlatteningConfig.createFlatteningConfigs(
-                diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel))
-        .setFieldNamePatterns(fieldNamePatterns)
-        .setRequiredFieldConfigs(
-            createFieldNameConfigs(
                 diagCollector,
+                language,
+                defaultPackageName,
+                methodConfigProto,
+                method,
+                methodModel,
                 messageConfigs,
-                defaultResourceNameTreatment,
-                fieldNamePatterns,
                 resourceNameConfigs,
-                getRequiredFields(diagCollector, methodModel, requiredFields)))
-        .setOptionalFieldConfigs(
-            createFieldNameConfigs(
-                diagCollector,
-                messageConfigs,
-                defaultResourceNameTreatment,
-                fieldNamePatterns,
-                resourceNameConfigs,
-                getOptionalFields(methodModel, requiredFields)))
-        .setLroConfig(
-            LongRunningConfig.createLongRunningConfigFromGapicConfigOnly(
-                method.getModel(), diagCollector, methodConfigProto.getLongRunning()))
-        .setDefaultResourceNameTreatment(defaultResourceNameTreatment);
+                retryCodesConfig,
+                retryParamsConfigNames)
+            .setPageStreaming(
+                PageStreamingConfig.createPageStreamingConfig(
+                    diagCollector,
+                    methodModel,
+                    methodConfigProto,
+                    messageConfigs,
+                    resourceNameConfigs))
+            .setFlatteningConfigs(
+                FlatteningConfig.createFlatteningConfigs(
+                    diagCollector,
+                    messageConfigs,
+                    resourceNameConfigs,
+                    methodConfigProto,
+                    methodModel))
+            .setFieldNamePatterns(fieldNamePatterns)
+            .setRequiredFieldConfigs(
+                createFieldNameConfigs(
+                    diagCollector,
+                    messageConfigs,
+                    defaultResourceNameTreatment,
+                    fieldNamePatterns,
+                    resourceNameConfigs,
+                    getRequiredFields(diagCollector, methodModel, requiredFields)))
+            .setOptionalFieldConfigs(
+                createFieldNameConfigs(
+                    diagCollector,
+                    messageConfigs,
+                    defaultResourceNameTreatment,
+                    fieldNamePatterns,
+                    resourceNameConfigs,
+                    getOptionalFields(methodModel, requiredFields)))
+            .setLroConfig(
+                LongRunningConfig.createLongRunningConfigFromGapicConfigOnly(
+                    method.getModel(), diagCollector, methodConfigProto.getLongRunning()))
+            .setDefaultResourceNameTreatment(defaultResourceNameTreatment);
 
     if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
