@@ -763,13 +763,17 @@ message MoveBookRequest {
 }
 
 message ListStringsRequest {
-  string name = 1;
+  string name = 1 [
+    // Test setting the "*" on a field in a request message
+    (google.api.resource_reference) = "*"];
   int32 page_size = 2;
   string page_token = 3;
 }
 
 message ListStringsResponse {
-  repeated string strings = 1;
+  repeated string strings = 1 [
+    // Test setting the "*" on a field in a response message
+    (google.api.resource_reference) = "*"];
   string next_page_token = 2;
 }
 
