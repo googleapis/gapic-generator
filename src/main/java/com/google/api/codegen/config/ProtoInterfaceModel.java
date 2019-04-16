@@ -18,6 +18,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SymbolTable;
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Api;
 import com.google.protobuf.Mixin;
 import java.util.List;
 
@@ -73,10 +74,13 @@ public class ProtoInterfaceModel implements InterfaceModel {
       methods.add(new ProtoMethodModel(method));
     }
     SymbolTable symbolTable = protoInterface.getModel().getSymbolTable();
-    for (Mixin mixin : protoInterface.getConfig().getMixinsList()) {
-      Interface mixinInterface = symbolTable.lookupInterface(mixin.getName());
-      for (Method method : mixinInterface.getMethods()) {
-        methods.add(new ProtoMethodModel(method));
+    Api protoInterfaceConfig = protoInterface.getConfig();
+    if (protoInterfaceConfig != null) {
+      for (Mixin mixin : protoInterface.getConfig().getMixinsList()) {
+        Interface mixinInterface = symbolTable.lookupInterface(mixin.getName());
+        for (Method method : mixinInterface.getMethods()) {
+          methods.add(new ProtoMethodModel(method));
+        }
       }
     }
     return methods.build();
