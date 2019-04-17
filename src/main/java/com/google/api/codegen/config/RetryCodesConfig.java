@@ -31,9 +31,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +44,8 @@ public class RetryCodesConfig {
 
   public static ImmutableList<String> RETRY_CODES_FOR_HTTP_GET =
       DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME);
+  public static ImmutableList<String> RETRY_CODES_FOR_HTTP_NON_GET =
+      DEFAULT_RETRY_CODES.get(RETRY_CODES_NON_IDEMPOTENT_NAME);
 
   private Map<String, ImmutableList<String>> retryCodesDefinition = new HashMap<>();
   private Map<String, String> methodRetryNames = new HashMap<>();
@@ -81,12 +83,9 @@ public class RetryCodesConfig {
 
     retryCodesConfig.populateRetryCodesDefinitionFromConfigProto(
         diagCollector, interfaceConfigProto);
-    if (retryCodesConfig.error) {
+    if (!retryCodesConfig.setFinalRetryProperties()) {
       return null;
     }
-    retryCodesConfig.finalMethodRetryNames = ImmutableMap.copyOf(retryCodesConfig.methodRetryNames);
-    retryCodesConfig.finalRetryCodesDefinition =
-        ImmutableMap.copyOf(retryCodesConfig.retryCodesDefinition);
     return retryCodesConfig;
   }
 
@@ -98,12 +97,9 @@ public class RetryCodesConfig {
     RetryCodesConfig retryCodesConfig = new RetryCodesConfig();
     retryCodesConfig.populateRetryCodesDefinition(
         diagCollector, interfaceConfigProto, methodsToGenerate, protoParser);
-    if (retryCodesConfig.error) {
+    if (!retryCodesConfig.setFinalRetryProperties()) {
       return null;
     }
-    retryCodesConfig.finalMethodRetryNames = ImmutableMap.copyOf(retryCodesConfig.methodRetryNames);
-    retryCodesConfig.finalRetryCodesDefinition =
-        ImmutableMap.copyOf(retryCodesConfig.retryCodesDefinition);
     return retryCodesConfig;
   }
 
@@ -146,6 +142,15 @@ public class RetryCodesConfig {
       return null;
     }
     return builder.build();
+  }
+
+  private boolean setFinalRetryProperties() {
+    if (error) {
+      return false;
+    }
+    finalMethodRetryNames = ImmutableMap.copyOf(methodRetryNames);
+    finalRetryCodesDefinition = ImmutableMap.copyOf(retryCodesDefinition);
+    return true;
   }
 
   /**
@@ -205,6 +210,11 @@ public class RetryCodesConfig {
 
     SymbolTable symbolTable = new SymbolTable();
 
+    // Add retry codes for default cases (idempotent and non_idempotent) if they have not
+    // already be added previously (in the GAPIC config).
+    retryCodesDefinition.putIfAbsent(RETRY_CODES_IDEMPOTENT_NAME, RETRY_CODES_FOR_HTTP_GET);
+    retryCodesDefinition.putIfAbsent(RETRY_CODES_NON_IDEMPOTENT_NAME, RETRY_CODES_FOR_HTTP_NON_GET);
+
     for (String retryCodesName : retryCodesDefinition.keySet()) {
       // Record all the preexisting retryCodeNames from configProto.
       symbolTable.getNewSymbol(retryCodesName);
@@ -213,11 +223,8 @@ public class RetryCodesConfig {
     // Unite all HTTP GET methods that have no additional retry codes under one retry code name to
     // reduce duplication.
     String httpGetRetryName;
-    Set<String> defaultRetryCodesForHttpGet = new HashSet<>(RETRY_CODES_FOR_HTTP_GET);
-    Set<String> existingIdempotentRetryCodes =
-        new HashSet<>(
-            retryCodesDefinition.getOrDefault(RETRY_CODES_IDEMPOTENT_NAME, ImmutableList.of()));
-    if (defaultRetryCodesForHttpGet.equals(existingIdempotentRetryCodes)) {
+    if (Sets.newHashSet(RETRY_CODES_FOR_HTTP_GET)
+        .containsAll(retryCodesDefinition.get(RETRY_CODES_IDEMPOTENT_NAME))) {
       // The GAPIC config defined RETRY_CODES_IDEMPOTENT_NAME to have the same retry codes as
       // this method would have,
       // so we can just reuse RETRY_CODES_IDEMPOTENT_NAME.
@@ -228,9 +235,8 @@ public class RetryCodesConfig {
 
     // Unite all methods that have no retry codes under one retry code name to reduce duplication.
     String noRetryName;
-    if (retryCodesDefinition
-        .getOrDefault(RETRY_CODES_NON_IDEMPOTENT_NAME, ImmutableList.of())
-        .isEmpty()) {
+    if (Sets.newHashSet(RETRY_CODES_FOR_HTTP_NON_GET)
+        .containsAll(retryCodesDefinition.get(RETRY_CODES_NON_IDEMPOTENT_NAME))) {
       noRetryName = RETRY_CODES_NON_IDEMPOTENT_NAME;
     } else {
       noRetryName = symbolTable.getNewSymbol(RETRY_CODES_NON_IDEMPOTENT_NAME);
