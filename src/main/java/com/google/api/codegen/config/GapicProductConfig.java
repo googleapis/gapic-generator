@@ -212,6 +212,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     DiagCollector diagCollector = model.getDiagReporter().getDiagCollector();
 
+    /*
     Map<Resource, ProtoFile> resourceFileLevelDefs =
         protoParser.getResourceDefs(sourceProtos, diagCollector);
     Map<ResourceSet, ProtoFile> resourceSetDefs =
@@ -227,14 +228,20 @@ public abstract class GapicProductConfig implements ProductConfig {
             .putAll(resourceFileLevelDefs)
             .putAll(resourcesDefinedInSetsBuilder)
             .build();
+            */
 
     // Get list of fields from proto
     ResourceNameMessageConfigs messageConfigs =
-        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            sourceProtos, configProto, defaultPackage, resourceDefs, resourceSetDefs, protoParser);
+        // ResourceNameMessageConfigs.createMessageResourceTypesConfig(
+        //    sourceProtos, configProto, defaultPackage, resourceDefs, resourceSetDefs,
+        // protoParser);
+        ResourceNameMessageConfigs.createMessageResourceTypesConfig(configProto, defaultPackage);
 
-    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs;
     ProtoFile packageProtoFile = sourceProtos.isEmpty() ? null : sourceProtos.get(0);
+    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
+        createResourceNameConfigsForGapicConfigOnly(
+            model, diagCollector, configProto, packageProtoFile, language);
+    /*
     if (protoParser.isProtoAnnotationsEnabled()) {
       resourceNameConfigs =
           createResourceNameConfigsWithProtoFileAndGapicConfig(
@@ -251,6 +258,7 @@ public abstract class GapicProductConfig implements ProductConfig {
           createResourceNameConfigsForGapicConfigOnly(
               model, diagCollector, configProto, packageProtoFile, language);
     }
+    */
 
     if (resourceNameConfigs == null) {
       return null;

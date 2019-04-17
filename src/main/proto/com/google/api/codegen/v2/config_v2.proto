@@ -124,7 +124,14 @@ message SmokeTestConfigProto {
 }
 
 message CollectionConfigProto {
-  reserved 1;
+  // A pattern to describe the names of the resources of this
+  // collection, using the platform's conventions for URI patterns. A
+  // generator may use this to generate methods to compose and
+  // decompose such names. The pattern should use named placeholders
+  // as in `shelves/{shelf}/books/{book}`; those will be taken as
+  // hints for the parameter names of the generated methods.  If
+  // empty, no name methods are generated.
+  string name_pattern = 1;
 
   // Name to be used as a basis for generated methods and classes.
   string entity_name = 2;
@@ -165,7 +172,7 @@ message MethodConfigProto {
   // The fully qualified name of the method.
   string name = 1;
 
-  reserved 2, 3, 7, 8, 9, 14, 15;
+  reserved 2, 3, 7, 8, 14, 15;
 
   // Specifies the configuration for gRPC-streaming responses.
   // Note that this is for configuring paged gRPC-streaming responses.
@@ -179,6 +186,10 @@ message MethodConfigProto {
   // Specifies the configuration for retry/backoff parameters.
   // The name must be defined in InterfaceConfigProto::retry_params_def.
   string retry_params_name = 5;
+
+  // Maps the field name of the request type to entity_name of CollectionConfigProto.
+  // It is used to specify the string pattern that the field must follow.
+  map<string, string> field_name_patterns = 9;
 
   // Specifies the default timeout for a non-retrying call. If the call is
   // retrying, refer to `retry_params_name` instead.
