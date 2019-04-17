@@ -185,8 +185,7 @@ public abstract class FieldConfig {
             throw new IllegalArgumentException(error.toString());
           }
           diagCollector.addDiag(error);
-          throw new IllegalArgumentException(error.toString());
-          // return null;
+          return null;
         }
         return flattenedFieldResourceNameConfig;
       }

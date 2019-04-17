@@ -51,6 +51,15 @@ public abstract class ResourceNameMessageConfigs {
 
   @VisibleForTesting
   static ResourceNameMessageConfigs createMessageResourceTypesConfig(
+      List<ProtoFile> protoFiles, ConfigProto configProto, String defaultPackage) {
+    HashMap<String, ResourceNameMessageConfig> mutableMap = new HashMap<>();
+    insertMessageResourceTypesConfigFromGapicConfig(configProto, defaultPackage, mutableMap);
+    return new AutoValue_ResourceNameMessageConfigs(
+        ImmutableSortedMap.copyOf(mutableMap), createFieldsByMessage(protoFiles, mutableMap));
+  }
+
+  @VisibleForTesting
+  static ResourceNameMessageConfigs createMessageResourceTypesConfig(
       List<ProtoFile> protoFiles,
       ConfigProto configProto,
       String defaultPackage,
@@ -65,13 +74,37 @@ public abstract class ResourceNameMessageConfigs {
         ImmutableSortedMap.copyOf(mutableMap), createFieldsByMessage(protoFiles, mutableMap));
   }
 
-  @VisibleForTesting
-  static ResourceNameMessageConfigs createMessageResourceTypesConfig(
-      List<ProtoFile> protoFiles, ConfigProto configProto, String defaultPackage) {
-    HashMap<String, ResourceNameMessageConfig> mutableMap = new HashMap<>();
-    insertMessageResourceTypesConfigFromGapicConfig(configProto, defaultPackage, mutableMap);
-    return new AutoValue_ResourceNameMessageConfigs(
-        ImmutableSortedMap.copyOf(mutableMap), createFieldsByMessage(protoFiles, mutableMap));
+  private static void insertMessageResourceTypesConfigFromAnnotations(
+      List<ProtoFile> protoFiles,
+      Map<Resource, ProtoFile> resourceDefs,
+      Map<ResourceSet, ProtoFile> resourceSetDefs,
+      ProtoParser protoParser,
+      HashMap<String, ResourceNameMessageConfig> mutableMap) {
+    for (ProtoFile protoFile : protoFiles) {
+      for (MessageType message : protoFile.getMessages()) {
+        ResourceNameMessageConfig resourceNameMessageConfig =
+            ResourceNameMessageConfig.createResourceNameMessageConfig(
+                message, resourceDefs, resourceSetDefs, protoParser);
+        if (resourceNameMessageConfig != null) {
+          mutableMap.put(message.getFullName(), resourceNameMessageConfig);
+        }
+      }
+    }
+  }
+
+  private static void insertMessageResourceTypesConfigFromGapicConfig(
+      ConfigProto configProto,
+      String defaultPackage,
+      HashMap<String, ResourceNameMessageConfig> mutableMap) {
+    // Add more ResourceNameMessageConfigs from configProto. Overwrite the configs from
+    // configProto if any clash.
+    for (ResourceNameMessageConfigProto messageResourceTypesProto :
+        configProto.getResourceNameGenerationList()) {
+      ResourceNameMessageConfig messageResourceTypeConfig =
+          ResourceNameMessageConfig.createResourceNameMessageConfig(
+              messageResourceTypesProto, defaultPackage);
+      mutableMap.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
+    }
   }
 
   private static ListMultimap<String, FieldModel> createFieldsByMessage(
@@ -97,39 +130,6 @@ public abstract class ResourceNameMessageConfigs {
       }
     }
     return fieldsByMessage;
-  }
-
-  private static void insertMessageResourceTypesConfigFromGapicConfig(
-      ConfigProto configProto,
-      String defaultPackage,
-      HashMap<String, ResourceNameMessageConfig> mutableMap) {
-    // Add more ResourceNameMessageConfigs from configProto. Overwrite the configs from
-    // configProto if any clash.
-    for (ResourceNameMessageConfigProto messageResourceTypesProto :
-        configProto.getResourceNameGenerationList()) {
-      ResourceNameMessageConfig messageResourceTypeConfig =
-          ResourceNameMessageConfig.createResourceNameMessageConfig(
-              messageResourceTypesProto, defaultPackage);
-      mutableMap.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
-    }
-  }
-
-  private static void insertMessageResourceTypesConfigFromAnnotations(
-      List<ProtoFile> protoFiles,
-      Map<Resource, ProtoFile> resourceDefs,
-      Map<ResourceSet, ProtoFile> resourceSetDefs,
-      ProtoParser protoParser,
-      HashMap<String, ResourceNameMessageConfig> mutableMap) {
-    for (ProtoFile protoFile : protoFiles) {
-      for (MessageType message : protoFile.getMessages()) {
-        ResourceNameMessageConfig resourceNameMessageConfig =
-            ResourceNameMessageConfig.createResourceNameMessageConfig(
-                message, resourceDefs, resourceSetDefs, protoParser);
-        if (resourceNameMessageConfig != null) {
-          mutableMap.put(message.getFullName(), resourceNameMessageConfig);
-        }
-      }
-    }
   }
 
   static ResourceNameMessageConfigs createMessageResourceTypesConfig(
