@@ -23,10 +23,7 @@ import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -53,7 +50,6 @@ public class RetryCodesConfig {
   private ImmutableSet<String> retryCodeDefsFromGapicConfig;
   private ImmutableMap<String, ImmutableList<String>> finalRetryCodesDefinition;
   private ImmutableMap<String, String> finalMethodRetryNames;
-  private boolean error = false;
 
   /**
    * A map of retry config names to the list of codes to retry on, e.g. { "idempotent" :
@@ -77,29 +73,22 @@ public class RetryCodesConfig {
 
   private RetryCodesConfig() {}
 
-  public static RetryCodesConfig create(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
+  public static RetryCodesConfig create(InterfaceConfigProto interfaceConfigProto) {
     RetryCodesConfig retryCodesConfig = new RetryCodesConfig();
 
-    retryCodesConfig.populateRetryCodesDefinitionFromConfigProto(
-        diagCollector, interfaceConfigProto);
-    if (!retryCodesConfig.setFinalRetryProperties()) {
-      return null;
-    }
+    retryCodesConfig.populateRetryCodesDefinitionFromConfigProto(interfaceConfigProto);
+    retryCodesConfig.setFinalRetryProperties();
     return retryCodesConfig;
   }
 
   public static RetryCodesConfig create(
-      DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
       List<Method> methodsToGenerate,
       ProtoParser protoParser) {
     RetryCodesConfig retryCodesConfig = new RetryCodesConfig();
     retryCodesConfig.populateRetryCodesDefinition(
-        diagCollector, interfaceConfigProto, methodsToGenerate, protoParser);
-    if (!retryCodesConfig.setFinalRetryProperties()) {
-      return null;
-    }
+        interfaceConfigProto, methodsToGenerate, protoParser);
+    retryCodesConfig.setFinalRetryProperties();
     return retryCodesConfig;
   }
 
@@ -118,39 +107,19 @@ public class RetryCodesConfig {
 
   @Nullable
   private static ImmutableMap<String, ImmutableList<String>>
-      createRetryCodesDefinitionFromConfigProto(
-          DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
+      createRetryCodesDefinitionFromConfigProto(InterfaceConfigProto interfaceConfigProto) {
     ImmutableMap.Builder<String, ImmutableList<String>> builder = ImmutableMap.builder();
     for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
       // Enforce ordering on set for baseline test consistency.
-      Set<String> codes = new TreeSet<>();
-      for (String codeText : retryDef.getRetryCodesList()) {
-        try {
-          codes.add(String.valueOf(codeText));
-        } catch (IllegalArgumentException e) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "status code not found: '%s' (in interface %s)",
-                  codeText,
-                  interfaceConfigProto.getName()));
-        }
-      }
+      Set<String> codes = new TreeSet<>(retryDef.getRetryCodesList());
       builder.put(retryDef.getName(), ImmutableList.copyOf(codes));
-    }
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
     }
     return builder.build();
   }
 
-  private boolean setFinalRetryProperties() {
-    if (error) {
-      return false;
-    }
+  private void setFinalRetryProperties() {
     finalMethodRetryNames = ImmutableMap.copyOf(methodRetryNames);
     finalRetryCodesDefinition = ImmutableMap.copyOf(retryCodesDefinition);
-    return true;
   }
 
   /**
@@ -159,15 +128,11 @@ public class RetryCodesConfig {
    * settings name.
    */
   private void populateRetryCodesDefinition(
-      DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
       Collection<Method> methodsToGenerate,
       ProtoParser protoParser) {
     // First create the retry codes definitions from the GAPIC config.
-    populateRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
-    if (error) {
-      return;
-    }
+    populateRetryCodesDefinitionFromConfigProto(interfaceConfigProto);
 
     // Then create the retry codes defs from the proto annotations, but don't overwrite
     // existing retry codes defs from the GAPIC config.
@@ -180,10 +145,10 @@ public class RetryCodesConfig {
    * settings name.
    */
   private void populateRetryCodesDefinitionFromConfigProto(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
+      InterfaceConfigProto interfaceConfigProto) {
 
     ImmutableMap<String, ImmutableList<String>> retryCodesDefFromConfigProto =
-        createRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
+        createRetryCodesDefinitionFromConfigProto(interfaceConfigProto);
     if (retryCodesDefFromConfigProto == null) {
       return;
     }
