@@ -32,14 +32,11 @@ public class GapicConfigProducerTest {
 
   @ClassRule public static TemporaryFolder tempDir = new TemporaryFolder();
 
-  private static Model model;
-  private static GapicProductConfig productConfig;
-
   @Test
   public void missingConfigSchemaVersion() {
     TestDataLocator locator = MixedPathTestDataLocator.create(this.getClass());
     locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
-    model =
+    Model model =
         CodegenTestUtil.readModel(
             locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
 
@@ -48,10 +45,32 @@ public class GapicConfigProducerTest {
             model.getDiagReporter().getDiagCollector(),
             locator,
             new String[] {"missing_config_schema_version.yaml"});
-    productConfig = GapicProductConfig.create(model, configProto, null, null, TargetLanguage.JAVA);
+    GapicProductConfig.create(model, configProto, null, null, TargetLanguage.JAVA);
     Diag expectedError =
         Diag.error(
             SimpleLocation.TOPLEVEL, "config_schema_version field is required in GAPIC yaml.");
+    assertThat(model.getDiagReporter().getDiagCollector().hasErrors()).isTrue();
+    assertThat(model.getDiagReporter().getDiagCollector().getDiags()).contains(expectedError);
+  }
+
+  @Test
+  public void missingInterface() {
+    TestDataLocator locator = MixedPathTestDataLocator.create(this.getClass());
+    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    Model model =
+        CodegenTestUtil.readModel(
+            locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
+
+    ConfigProto configProto =
+        CodegenTestUtil.readConfig(
+            model.getDiagReporter().getDiagCollector(),
+            locator,
+            new String[] {"missing_interface.yaml"});
+    GapicProductConfig.create(model, configProto, null, null, TargetLanguage.JAVA);
+    Diag expectedError =
+        Diag.error(
+            SimpleLocation.TOPLEVEL,
+            "interface not found: google.example.myproto.v1.MyUnknownProto. Interfaces: [google.example.myproto.v1.MyProto]");
     assertThat(model.getDiagReporter().getDiagCollector().hasErrors()).isTrue();
     assertThat(model.getDiagReporter().getDiagCollector().getDiags()).contains(expectedError);
   }
