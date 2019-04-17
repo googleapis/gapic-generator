@@ -169,10 +169,11 @@ public abstract class GapicMethodConfig extends MethodConfig {
     int previousErrors = diagCollector.getErrorCount();
 
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
-    ImmutableMap<String, String> fieldNamePatterns = protoParser.getFieldNamePatterns(method);
+    ImmutableMap<String, String> fieldNamePatterns =
+        ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+    // protoParser.getFieldNamePatterns(method);
     List<String> requiredFields = protoParser.getRequiredFields(method);
-    ResourceNameTreatment defaultResourceNameTreatment =
-        defaultResourceNameTreatmentFromProto(method, protoParser, defaultPackageName);
+    ResourceNameTreatment defaultResourceNameTreatment = ResourceNameTreatment.NONE;
 
     GapicMethodConfig.Builder builder =
         createCommonMethodConfig(

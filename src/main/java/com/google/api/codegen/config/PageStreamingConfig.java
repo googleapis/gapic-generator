@@ -206,9 +206,7 @@ public abstract class PageStreamingConfig {
               method.getOutputFullName()));
       resourcesFieldConfig = null;
     } else {
-      ResourceNameTreatment resourceNameTreatment =
-          GapicMethodConfig.defaultResourceNameTreatmentFromProto(
-              method.getProtoMethod(), protoParser, defaultPackageName);
+      ResourceNameTreatment resourceNameTreatment = ResourceNameTreatment.NONE;
       resourcesFieldConfig =
           FieldConfig.createMessageFieldConfig(
               messageConfigs, resourceNameConfigs, resourcesField, resourceNameTreatment);
