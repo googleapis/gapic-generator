@@ -585,15 +585,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         Interface apiInterface = symbolTable.lookupInterface(serviceFullName);
         if (apiInterface == null) {
           diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "interface not found: %s. Interfaces: [%s]",
-                  service.getName(),
-                  symbolTable
-                      .getInterfaces()
-                      .stream()
-                      .map(ProtoElement::getFullName)
-                      .collect(Collectors.joining(","))));
+              Diag.error(SimpleLocation.TOPLEVEL, "interface not found: %s", service.getName()));
           continue;
         }
         protoInterfaces.put(serviceFullName, apiInterface);

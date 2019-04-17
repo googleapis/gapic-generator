@@ -65,7 +65,7 @@ public class GapicConfigProducerTest {
         CodegenTestUtil.readConfig(
             model.getDiagReporter().getDiagCollector(),
             locator,
-            new String[] {"missing_interface.yaml"});
+            new String[] {"missing_interface_v1.yaml"});
     GapicProductConfig.create(model, configProto, null, null, TargetLanguage.JAVA);
     Diag expectedError =
         Diag.error(
