@@ -67,12 +67,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
   private static GapicMethodConfig.Builder createCommonMethodConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
-      String defaultPackageName,
       @Nonnull MethodConfigProto methodConfigProto,
       Method method,
       ProtoMethodModel methodModel,
-      ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames) {
 
@@ -171,7 +168,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
     ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
-    // protoParser.getFieldNamePatterns(method);
     List<String> requiredFields = protoParser.getRequiredFields(method);
     ResourceNameTreatment defaultResourceNameTreatment = ResourceNameTreatment.NONE;
 
@@ -179,12 +175,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
         createCommonMethodConfig(
                 diagCollector,
                 language,
-                defaultPackageName,
                 methodConfigProto,
                 method,
                 methodModel,
-                messageConfigs,
-                resourceNameConfigs,
                 retryCodesConfig,
                 retryParamsConfigNames)
             .setPageStreaming(
@@ -236,7 +229,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
   static GapicMethodConfig createGapicMethodConfigFromGapicYaml(
       DiagCollector diagCollector,
       TargetLanguage language,
-      String defaultPackageName,
       @Nonnull MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
@@ -256,12 +248,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
         createCommonMethodConfig(
                 diagCollector,
                 language,
-                defaultPackageName,
                 methodConfigProto,
                 method,
                 methodModel,
-                messageConfigs,
-                resourceNameConfigs,
                 retryCodesConfig,
                 retryParamsConfigNames)
             .setPageStreaming(
