@@ -753,6 +753,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         ImmutableMap.copyOf(
             resourceDefs
                 .stream()
+                .filter(ResourceDescriptorConfig::getRequiresOneofConfig)
                 .map(r -> r.buildResourceNameOneofConfig(diagCollector))
                 .collect(
                     Collectors.toMap(c -> c.getEntityName().toUpperCamel(), Function.identity())));

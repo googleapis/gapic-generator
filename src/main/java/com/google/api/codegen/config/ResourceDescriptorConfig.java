@@ -79,16 +79,15 @@ public abstract class ResourceDescriptorConfig {
         assignedProtoFile);
   }
 
-  private String buildEntityName() {
-    return getUnifiedResourceType().substring(getUnifiedResourceType().lastIndexOf("/") + 1)
-        + "Name";
+  private String getUnqualifiedTypeName() {
+    return getUnifiedResourceType().substring(getUnifiedResourceType().lastIndexOf("/") + 1);
   }
 
-  private String buildEntityName(String pattern) {
-    if (pattern.equals(getSinglePattern())) {
-      return buildEntityName();
+  private String buildEntityName() {
+    if (getHistory() == ResourceDescriptor.History.ORIGINALLY_SINGLE_PATTERN) {
+      return getUnqualifiedTypeName() + "NameOneof";
     } else {
-      return "Project" + buildEntityName();
+      return getUnqualifiedTypeName() + "Name";
     }
   }
 
@@ -97,14 +96,30 @@ public abstract class ResourceDescriptorConfig {
       return getPatterns()
           .stream()
           .map(
-              p ->
-                  SingleResourceNameConfig.newBuilder()
-                      .setNamePattern(p)
-                      .setNameTemplate(PathTemplate.create(p))
-                      .setAssignedProtoFile(getAssignedProtoFile())
-                      .setEntityId(buildEntityName(p))
-                      .setEntityName(Name.anyCamel(buildEntityName(p)))
-                      .build())
+              (String p) -> {
+                String unqualifiedType = getUnqualifiedTypeName();
+                String entityId = unqualifiedType + "Name";
+                if (!p.equals(getSinglePattern())) {
+                  List<String> variableSegments =
+                      getSegments(p)
+                          .stream()
+                          .filter(ResourceDescriptorConfig::isVariableBinding)
+                          .map(ResourceDescriptorConfig::unwrapVariableSegment)
+                          .collect(Collectors.toList());
+                  if (variableSegments.size() > 1) {
+                    entityId =
+                        Name.from(variableSegments.get(variableSegments.size() - 2)).toUpperCamel()
+                            + entityId;
+                  }
+                }
+                return SingleResourceNameConfig.newBuilder()
+                    .setNamePattern(p)
+                    .setNameTemplate(PathTemplate.create(p))
+                    .setAssignedProtoFile(getAssignedProtoFile())
+                    .setEntityId(entityId)
+                    .setEntityName(Name.anyCamel(entityId))
+                    .build();
+              })
           .collect(Collectors.toList());
     } catch (ValidationException e) {
       // Catch exception that may be thrown by PathTemplate.create
@@ -120,5 +135,17 @@ public abstract class ResourceDescriptorConfig {
         Name.anyCamel(oneOfName),
         buildSingleResourceNameConfigs(diagCollector),
         getAssignedProtoFile());
+  }
+
+  private static List<String> getSegments(String pattern) {
+    return ImmutableList.copyOf(pattern.split("/"));
+  }
+
+  private static boolean isVariableBinding(String segment) {
+    return segment.startsWith("{") && segment.endsWith("}");
+  }
+
+  private static String unwrapVariableSegment(String segment) {
+    return segment.substring(1, segment.length() - 1);
   }
 }
