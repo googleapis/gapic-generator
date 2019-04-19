@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.Resource;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionLanguageOverridesProto;
 import com.google.api.codegen.common.TargetLanguage;
@@ -83,32 +82,6 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     return builder.build();
   }
 
-  /**
-   * Creates an instance of SingleResourceNameConfig based on a field. On errors, null will be
-   * returned, and diagnostics are reported to the diag collector.
-   */
-  static SingleResourceNameConfig createSingleResourceName(
-      Resource resource,
-      String pathTemplate,
-      @Nullable ProtoFile file,
-      DiagCollector diagCollector) {
-    PathTemplate nameTemplate;
-    try {
-      nameTemplate = PathTemplate.create(pathTemplate);
-    } catch (ValidationException e) {
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
-      return null;
-    }
-
-    return newBuilder()
-        .setNamePattern(pathTemplate)
-        .setNameTemplate(nameTemplate)
-        .setAssignedProtoFile(file)
-        .setEntityId(resource.getSymbol())
-        .setEntityName(ResourceNameMessageConfig.entityNameToName(resource.getSymbol()))
-        .build();
-  }
-
   /** Returns the name pattern for the resource name config. */
   public abstract String getNamePattern();
 
@@ -139,6 +112,10 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
 
   public static SingleResourceNameConfig.Builder newBuilder() {
     return new AutoValue_SingleResourceNameConfig.Builder();
+  }
+
+  public String getUnqualifiedEntityId() {
+    return getEntityId().substring(getEntityId().lastIndexOf('.') + 1);
   }
 
   public abstract Builder toBuilder();

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 package com.google.api.codegen.config;
-
+/*
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -258,7 +258,6 @@ public class ResourceNameMessageConfigsTest {
     // TODO(more asserts)
   }
 
-  /*
   @Test
   public void testCreateResourceNameConfigs() {
     DiagCollector diagCollector = new BoundedDiagCollector();
@@ -298,9 +297,7 @@ public class ResourceNameMessageConfigsTest {
     assertThat(bookResourcenameConfigFromProtoFile.getNamePattern()).isEqualTo(PROTO_BOOK_PATH);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
   }
-  */
 
-  /*
   @Test
   public void testCreateFlattenings() {
     ProtoMethodModel methodModel = new ProtoMethodModel(createShelvesMethod);
@@ -442,7 +439,6 @@ public class ResourceNameMessageConfigsTest {
     assertThat(((ProtoTypeRef) bookConfig.getField().getType()).getProtoType().getMessageType())
         .isEqualTo(bookType);
   }
-  */
 
   @Test
   public void testDefaultResourceNameTreatment() {
@@ -465,3 +461,4 @@ public class ResourceNameMessageConfigsTest {
     Mockito.doReturn(null).when(protoParser).getResourceReference(bookName);
   }
 }
+*/

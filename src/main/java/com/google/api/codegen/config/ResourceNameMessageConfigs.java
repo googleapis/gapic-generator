@@ -14,14 +14,11 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.Resource;
-import com.google.api.ResourceSet;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
-import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -56,40 +53,6 @@ public abstract class ResourceNameMessageConfigs {
     insertMessageResourceTypesConfigFromGapicConfig(configProto, defaultPackage, mutableMap);
     return new AutoValue_ResourceNameMessageConfigs(
         ImmutableSortedMap.copyOf(mutableMap), createFieldsByMessage(protoFiles, mutableMap));
-  }
-
-  @VisibleForTesting
-  static ResourceNameMessageConfigs createMessageResourceTypesConfig(
-      List<ProtoFile> protoFiles,
-      ConfigProto configProto,
-      String defaultPackage,
-      Map<Resource, ProtoFile> resourceDefs,
-      Map<ResourceSet, ProtoFile> resourceSetDefs,
-      ProtoParser protoParser) {
-    HashMap<String, ResourceNameMessageConfig> mutableMap = new HashMap<>();
-    insertMessageResourceTypesConfigFromAnnotations(
-        protoFiles, resourceDefs, resourceSetDefs, protoParser, mutableMap);
-    insertMessageResourceTypesConfigFromGapicConfig(configProto, defaultPackage, mutableMap);
-    return new AutoValue_ResourceNameMessageConfigs(
-        ImmutableSortedMap.copyOf(mutableMap), createFieldsByMessage(protoFiles, mutableMap));
-  }
-
-  private static void insertMessageResourceTypesConfigFromAnnotations(
-      List<ProtoFile> protoFiles,
-      Map<Resource, ProtoFile> resourceDefs,
-      Map<ResourceSet, ProtoFile> resourceSetDefs,
-      ProtoParser protoParser,
-      HashMap<String, ResourceNameMessageConfig> mutableMap) {
-    for (ProtoFile protoFile : protoFiles) {
-      for (MessageType message : protoFile.getMessages()) {
-        ResourceNameMessageConfig resourceNameMessageConfig =
-            ResourceNameMessageConfig.createResourceNameMessageConfig(
-                message, resourceDefs, resourceSetDefs, protoParser);
-        if (resourceNameMessageConfig != null) {
-          mutableMap.put(message.getFullName(), resourceNameMessageConfig);
-        }
-      }
-    }
   }
 
   private static void insertMessageResourceTypesConfigFromGapicConfig(

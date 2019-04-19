@@ -306,14 +306,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   @VisibleForTesting
   static ResourceNameTreatment defaultResourceNameTreatmentFromProto(
       Method method, ProtoParser protoParser, String defaultPackageName) {
-    if (method
-        .getInputMessage()
-        .getFields()
-        .stream()
-        .anyMatch(
-            f ->
-                !Strings.isNullOrEmpty(protoParser.getResourceReference(f))
-                    || !Strings.isNullOrEmpty(protoParser.getResourceOrSetEntityName(f)))) {
+    if (method.getInputMessage().getFields().stream().anyMatch(protoParser::hasResourceReference)) {
       String methodInputPackageName =
           protoParser.getProtoPackage(((ProtoFile) method.getInputMessage().getParent()));
       if (defaultPackageName.equals(methodInputPackageName)) {

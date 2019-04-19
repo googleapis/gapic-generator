@@ -16,8 +16,6 @@ package com.google.api.codegen.util;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.Resource;
-import com.google.api.ResourceSet;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.protoannotations.GapicCodeGeneratorAnnotationsTest;
@@ -32,7 +30,6 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.common.collect.ImmutableSet;
 import com.google.longrunning.OperationInfo;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.junit.BeforeClass;
@@ -54,8 +51,6 @@ public class ProtoParserTest {
   private static Method getBigBookMethod;
   private static MessageType book;
   private static MessageType shelf;
-  private static Map<Resource, ProtoFile> resourceDefs;
-  private static Map<ResourceSet, ProtoFile> resourceSetDefs;
   private static final DiagCollector diagCollector = new BoundedDiagCollector();
 
   // Object under test.
@@ -116,23 +111,15 @@ public class ProtoParserTest {
     deleteShelfMethod = libraryService.lookupMethod("DeleteShelf");
     getBigBookMethod = libraryService.lookupMethod("GetBigBook");
 
-    resourceDefs = protoParser.getResourceDefs(Arrays.asList(libraryProtoFile), diagCollector);
-    resourceSetDefs =
-        protoParser.getResourceSetDefs(Arrays.asList(libraryProtoFile), diagCollector);
+    // resourceDefs = protoParser.getResourceDefs(Arrays.asList(libraryProtoFile), diagCollector);
+    // resourceSetDefs =
+    //    protoParser.getResourceSetDefs(Arrays.asList(libraryProtoFile), diagCollector);
   }
 
   @Test
   public void testGetPackageName() {
     String packageName = GapicProductConfig.getPackageName(model);
     assertThat(packageName).isEqualTo("google.example.library.v1");
-  }
-
-  @Test
-  public void testGetResourcePath() {
-    Field shelfNameField =
-        shelf.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
-    assertThat(protoParser.getResource(shelfNameField).getPattern())
-        .isEqualTo("shelves/{shelf_id}");
   }
 
   @Test
@@ -146,127 +133,7 @@ public class ProtoParserTest {
             .get();
     Field authorBookField =
         book.getFields().stream().filter(f -> f.getSimpleName().equals("author")).findFirst().get();
-    assertThat(protoParser.getResource(authorBookField)).isNull();
-  }
-
-  /** Return the entity name, e.g. "shelf" for a resource field. */
-  @Test
-  public void testGetResourceEntityName() {
-    assertThat(protoParser.getResourceEntityName(shelfNameField)).isEqualTo("Shelf");
-  }
-
-  @Test
-  public void testGetResourceSet() {
-    Field bookNameField =
-        book.getFields().stream().filter(f -> f.getSimpleName().equals("name")).findFirst().get();
-    ResourceSet bookResourceSet = protoParser.getResourceSet(bookNameField);
-    assertThat(bookResourceSet).isNotNull();
-    assertThat(bookResourceSet.getSymbol()).isEqualTo("BookOneof");
-    assertThat(bookResourceSet.getResourcesCount()).isEqualTo(1);
-    assertThat(bookResourceSet.getResources(0))
-        .isEqualTo(
-            Resource.newBuilder().setSymbol("DeletedBook").setPattern("_deleted-book_").build());
-    assertThat(bookResourceSet.getResourceReferencesList()).containsExactly("ArchivedBook", "Book");
-  }
-
-  @Test
-  public void testGetAllResourceDefs() {
-    // resourceDefs has already been computed in the setUp() method.
-
-    assertThat(resourceDefs).hasSize(4);
-    assertThat(resourceDefs)
-        .containsEntry(
-            Resource.newBuilder().setSymbol("Shelf").setPattern("shelves/{shelf_id}").build(),
-            libraryProtoFile);
-    assertThat(resourceDefs)
-        .containsEntry(
-            Resource.newBuilder().setSymbol("Project").setPattern("projects/{project}").build(),
-            libraryProtoFile);
-    assertThat(resourceDefs)
-        .containsEntry(
-            Resource.newBuilder()
-                .setSymbol("Book")
-                .setPattern("shelves/{shelf_id}/books/{book_id}")
-                .build(),
-            libraryProtoFile);
-    assertThat(resourceDefs)
-        .containsEntry(
-            Resource.newBuilder()
-                .setSymbol("ArchivedBook")
-                .setPattern("archives/{archive_path}/books/{book_id=**}")
-                .build(),
-            libraryProtoFile);
-  }
-
-  @Test
-  public void testGetAllResourceSetDefs() {
-    // resourceSetDefs has already been computed in the setUp() method.
-    assertThat(resourceSetDefs).hasSize(1);
-    assertThat(resourceSetDefs)
-        .containsEntry(
-            ResourceSet.newBuilder()
-                .setSymbol("BookOneof")
-                .addResourceReferences("Book")
-                .addResourceReferences("ArchivedBook")
-                .addResources(
-                    Resource.newBuilder().setSymbol("DeletedBook").setPattern("_deleted-book_"))
-                .build(),
-            libraryProtoFile);
-  }
-
-  @Test
-  public void testGetResourceTypeEntityNameFromOneof() {
-    MessageType getBookFromAnywhereRequest =
-        libraryProtoFile
-            .getMessages()
-            .stream()
-            .filter(m -> m.getSimpleName().equals("GetBookFromAnywhereRequest"))
-            .findFirst()
-            .get();
-    Field nameField =
-        getBookFromAnywhereRequest
-            .getFields()
-            .stream()
-            .filter(f -> f.getSimpleName().equals("name"))
-            .findFirst()
-            .get();
-    assertThat(protoParser.getResourceReferenceName(nameField, resourceDefs, resourceSetDefs))
-        .isEqualTo("BookOneof");
-
-    MessageType bookFromAnywhere =
-        bookFromAnywhereProtoFile
-            .getMessages()
-            .stream()
-            .filter(m -> m.getSimpleName().equals("BookFromAnywhere"))
-            .findFirst()
-            .get();
-    Field bookFromAnywhereNameField =
-        bookFromAnywhere
-            .getFields()
-            .stream()
-            .filter(f -> f.getSimpleName().equals("name"))
-            .findFirst()
-            .get();
-    assertThat(
-            protoParser.getResourceReferenceName(
-                bookFromAnywhereNameField, resourceDefs, resourceSetDefs))
-        .isEqualTo("BookOneof");
-
-    Field altBookNameField =
-        getBookFromAnywhereRequest
-            .getFields()
-            .stream()
-            .filter(f -> f.getSimpleName().equals("alt_book_name"))
-            .findFirst()
-            .get();
-    assertThat(
-            protoParser.getResourceReferenceName(altBookNameField, resourceDefs, resourceSetDefs))
-        .isEqualTo("Book");
-  }
-
-  @Test
-  public void getResourceEntityName() {
-    assertThat(protoParser.getResourceEntityName(shelfNameField)).isEqualTo("Shelf");
+    assertThat(protoParser.getResourceReference(authorBookField)).isNull();
   }
 
   @Test
@@ -316,8 +183,8 @@ public class ProtoParserTest {
             .filter(f -> f.getSimpleName().equals("name"))
             .findFirst()
             .get();
-    String shelfType = protoParser.getResourceReference(shelves);
-    assertThat(shelfType).isEqualTo("Shelf");
+    String shelfType = protoParser.getResourceReference(shelves).getType();
+    assertThat(shelfType).isEqualTo("library.googleapis.com/Shelf");
   }
 
   @Test

@@ -14,23 +14,18 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.Resource;
-import com.google.api.ResourceSet;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.StringUtils;
 
 /** ResourceNameOneofConfig represents the configuration for a oneof set of resource names. */
 @AutoValue
@@ -102,90 +97,6 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
 
     return new AutoValue_ResourceNameOneofConfig(
         oneofName, ResourceNameMessageConfig.entityNameToName(oneofName), configList, file);
-  }
-
-  @Nullable
-  static ResourceNameOneofConfig createResourceNameOneof(
-      DiagCollector diagCollector,
-      ResourceSet resourceSet,
-      String oneOfName,
-      ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
-      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs,
-      ProtoParser protoParser,
-      ProtoFile file) {
-
-    if (singleResourceNameConfigs.containsKey(oneOfName)
-        || fixedResourceNameConfigs.containsKey(oneOfName)) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "oneof_name \"" + oneOfName + "\" already exists in collection configs"));
-      return null;
-    }
-    List<ResourceNameConfig> configList = new ArrayList<>();
-
-    // Set of contained Resources is the list of resources defined in the ResourceSet,
-    // plus the referent Resources from the top-level.
-    List<Resource> resourceDefs = resourceSet.getResourcesList();
-    List<String> resourceReferences = resourceSet.getResourceReferencesList();
-
-    for (Resource resource : resourceDefs) {
-      if (Strings.isNullOrEmpty(resource.getSymbol())) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                String.format(
-                    "google.api.Resource with pattern \"%s\" "
-                        + "and nested inside ResourceSet \"%s\" was not given a symbol",
-                    resource.getPattern(), resourceSet.getSymbol())));
-        continue;
-      }
-
-      SingleResourceNameConfig singleResourceNameConfig =
-          singleResourceNameConfigs.get(resource.getSymbol());
-      if (singleResourceNameConfig != null) {
-        configList.add(singleResourceNameConfig);
-        continue;
-      }
-
-      FixedResourceNameConfig fixedResourceNameConfig =
-          fixedResourceNameConfigs.get(resource.getSymbol());
-      if (fixedResourceNameConfig != null) {
-        configList.add(fixedResourceNameConfig);
-        continue;
-      }
-
-      // This shouldn't happen because the resource config maps were
-      // previously constructed from Resource objects.
-      throw new IllegalStateException(
-          String.format(
-              "Failed to create a ResourceNameConfig for the protofile-defined Resource %s.",
-              resource.getSymbol()));
-    }
-    for (String resourceRef : resourceReferences) {
-      String resourceName =
-          StringUtils.removeStart(resourceRef, protoParser.getProtoPackage(file) + ".");
-      ResourceNameConfig resourceNameConfig;
-      if (singleResourceNameConfigs.containsKey(resourceName)) {
-        resourceNameConfig = singleResourceNameConfigs.get(resourceName);
-      } else if (fixedResourceNameConfigs.containsKey(resourceName)) {
-        resourceNameConfig = fixedResourceNameConfigs.get(resourceName);
-      } else {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "name \""
-                    + resourceRef
-                    + "\" in ResourceSet \""
-                    + oneOfName
-                    + "\" not found in collection configs"));
-        return null;
-      }
-      configList.add(resourceNameConfig);
-    }
-
-    return new AutoValue_ResourceNameOneofConfig(
-        oneOfName, ResourceNameMessageConfig.entityNameToName(oneOfName), configList, file);
   }
 
   @Override
