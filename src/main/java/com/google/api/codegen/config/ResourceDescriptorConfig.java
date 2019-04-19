@@ -79,26 +79,22 @@ public abstract class ResourceDescriptorConfig {
         assignedProtoFile);
   }
 
+  public static String getUnqualifiedTypeName(String typeName) {
+    return typeName.substring(typeName.lastIndexOf("/") + 1);
+  }
+
   private String getUnqualifiedTypeName() {
-    return getUnifiedResourceType().substring(getUnifiedResourceType().lastIndexOf("/") + 1);
+    return getUnqualifiedTypeName(getUnifiedResourceType());
   }
 
-  private String buildEntityName() {
-    if (getHistory() == ResourceDescriptor.History.ORIGINALLY_SINGLE_PATTERN) {
-      return getUnqualifiedTypeName() + "NameOneof";
-    } else {
-      return getUnqualifiedTypeName() + "Name";
-    }
-  }
-
-  private List<ResourceNameConfig> buildSingleResourceNameConfigs(DiagCollector diagCollector) {
+  public List<SingleResourceNameConfig> buildSingleResourceNameConfigs(
+      DiagCollector diagCollector) {
     try {
       return getPatterns()
           .stream()
           .map(
               (String p) -> {
-                String unqualifiedType = getUnqualifiedTypeName();
-                String entityId = unqualifiedType + "Name";
+                String entityId = getUnqualifiedTypeName();
                 if (!p.equals(getSinglePattern())) {
                   List<String> variableSegments =
                       getSegments(p)
@@ -129,11 +125,11 @@ public abstract class ResourceDescriptorConfig {
   }
 
   public ResourceNameOneofConfig buildResourceNameOneofConfig(DiagCollector diagCollector) {
-    String oneOfName = buildEntityName();
+    String oneofId = getUnqualifiedTypeName() + "Oneof";
     return new AutoValue_ResourceNameOneofConfig(
-        oneOfName,
-        Name.anyCamel(oneOfName),
-        buildSingleResourceNameConfigs(diagCollector),
+        oneofId,
+        Name.anyCamel(oneofId),
+        ImmutableList.copyOf(buildSingleResourceNameConfigs(diagCollector)),
         getAssignedProtoFile());
   }
 

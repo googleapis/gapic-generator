@@ -204,7 +204,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
           timeout,
           requiredFieldConfigs,
           optionalFieldConfigs,
-          defaultResourceNameTreatment,
           batching,
           fieldNamePatterns,
           sampleCodeInitFields,

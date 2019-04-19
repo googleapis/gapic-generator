@@ -149,13 +149,13 @@ public class ProtoParser {
   }
 
   /** Return a Map of ResourceDescriptor elements to their containing ProtoFile. */
-  public Map<ResourceDescriptor, ProtoFile> getResourceDescriptorDefs(
+  public Map<ResourceDescriptor, MessageType> getResourceDescriptorMap(
       List<ProtoFile> protoFiles, DiagCollector diagCollector) {
-    ImmutableMap.Builder<ResourceDescriptor, ProtoFile> definitions = ImmutableMap.builder();
+    ImmutableMap.Builder<ResourceDescriptor, MessageType> definitions = ImmutableMap.builder();
 
     for (ProtoFile protoFile : protoFiles) {
 
-      // Maps base names to Resource[Sets].
+      // Maps base names to ResourceDescriptors.
       Map<String, ResourceDescriptor> localDefs = new LinkedHashMap<>();
 
       // Get Resource[Set] definitions from fields in message types.
@@ -170,13 +170,10 @@ public class ProtoParser {
                         + " %s are defined in proto file %s. Values for type must be unique.",
                     definition.getType(),
                     protoFile.getFullName()));
+          } else {
+            definitions.put(definition, message);
           }
         }
-      }
-
-      for (String baseName : localDefs.keySet()) {
-        ResourceDescriptor def = localDefs.get(baseName);
-        definitions.put(def, protoFile);
       }
     }
     return definitions.build();

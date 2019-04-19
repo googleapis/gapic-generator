@@ -19,20 +19,14 @@ import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.codegen.util.ProtoParser;
+import com.google.api.tools.framework.model.*;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ListMultimap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /** Configuration of the resource name types for all message field. */
 @AutoValue
@@ -47,27 +41,33 @@ public abstract class ResourceNameMessageConfigs {
   public abstract ListMultimap<String, FieldModel> getFieldsWithResourceNamesByMessage();
 
   @VisibleForTesting
-  static ResourceNameMessageConfigs createMessageResourceTypesConfig(
-      List<ProtoFile> protoFiles, ConfigProto configProto, String defaultPackage) {
-    HashMap<String, ResourceNameMessageConfig> mutableMap = new HashMap<>();
-    insertMessageResourceTypesConfigFromGapicConfig(configProto, defaultPackage, mutableMap);
-    return new AutoValue_ResourceNameMessageConfigs(
-        ImmutableSortedMap.copyOf(mutableMap), createFieldsByMessage(protoFiles, mutableMap));
+  static ResourceNameMessageConfigs createFromAnnotations(
+      List<ProtoFile> protoFiles, ProtoParser parser) {
+    ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
+    for (ProtoFile protoFile : protoFiles) {
+      for (MessageType message : protoFile.getMessages()) {
+        for (Field field : message.getFields()) {
+          if (parser.hasResourceReference(field)) {
+            // If at least one field on the message has a resource_reference
+            // annotation, build a config for the message, then break.
+            builder.put(
+                message.getFullName(),
+                ResourceNameMessageConfig.createFromAnnotationsOnMessage(parser, message));
+            break;
+          }
+        }
+      }
+    }
+    ImmutableMap<String, ResourceNameMessageConfig> map = builder.build();
+    return new AutoValue_ResourceNameMessageConfigs(map, createFieldsByMessage(protoFiles, map));
   }
 
-  private static void insertMessageResourceTypesConfigFromGapicConfig(
-      ConfigProto configProto,
-      String defaultPackage,
-      HashMap<String, ResourceNameMessageConfig> mutableMap) {
-    // Add more ResourceNameMessageConfigs from configProto. Overwrite the configs from
-    // configProto if any clash.
-    for (ResourceNameMessageConfigProto messageResourceTypesProto :
-        configProto.getResourceNameGenerationList()) {
-      ResourceNameMessageConfig messageResourceTypeConfig =
-          ResourceNameMessageConfig.createResourceNameMessageConfig(
-              messageResourceTypesProto, defaultPackage);
-      mutableMap.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
-    }
+  @VisibleForTesting
+  static ResourceNameMessageConfigs createFromGapicConfigOnly(
+      List<ProtoFile> protoFiles, ConfigProto configProto, String defaultPackage) {
+    ImmutableMap<String, ResourceNameMessageConfig> map =
+        createMapFromGapicConfig(configProto, defaultPackage);
+    return new AutoValue_ResourceNameMessageConfigs(map, createFieldsByMessage(protoFiles, map));
   }
 
   private static ListMultimap<String, FieldModel> createFieldsByMessage(
@@ -95,8 +95,8 @@ public abstract class ResourceNameMessageConfigs {
     return fieldsByMessage;
   }
 
-  static ResourceNameMessageConfigs createMessageResourceTypesConfig(
-      DiscoApiModel model, ConfigProto configProto, String defaultPackage) {
+  private static ImmutableMap<String, ResourceNameMessageConfig> createMapFromGapicConfig(
+      ConfigProto configProto, String defaultPackage) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
     for (ResourceNameMessageConfigProto messageResourceTypesProto :
         configProto.getResourceNameGenerationList()) {
@@ -105,7 +105,13 @@ public abstract class ResourceNameMessageConfigs {
               messageResourceTypesProto, defaultPackage);
       builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
     }
-    ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
+    return builder.build();
+  }
+
+  static ResourceNameMessageConfigs createMessageResourceTypesConfig(
+      DiscoApiModel model, ConfigProto configProto, String defaultPackage) {
+    ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap =
+        createMapFromGapicConfig(configProto, defaultPackage);
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
     DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer();

@@ -169,7 +169,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
     List<String> requiredFields = protoParser.getRequiredFields(method);
-    ResourceNameTreatment defaultResourceNameTreatment = ResourceNameTreatment.NONE;
+    ResourceNameTreatment defaultResourceNameTreatment = ResourceNameTreatment.UNSET_TREATMENT;
 
     GapicMethodConfig.Builder builder =
         createCommonMethodConfig(
@@ -215,8 +215,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
                     getOptionalFields(methodModel, requiredFields)))
             .setLroConfig(
                 LongRunningConfig.createLongRunningConfig(
-                    method, diagCollector, methodConfigProto.getLongRunning(), protoParser))
-            .setDefaultResourceNameTreatment(defaultResourceNameTreatment);
+                    method, diagCollector, methodConfigProto.getLongRunning(), protoParser));
 
     if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
@@ -286,8 +285,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
                     getOptionalFields(methodModel, requiredFields)))
             .setLroConfig(
                 LongRunningConfig.createLongRunningConfigFromGapicConfigOnly(
-                    method.getModel(), diagCollector, methodConfigProto.getLongRunning()))
-            .setDefaultResourceNameTreatment(defaultResourceNameTreatment);
+                    method.getModel(), diagCollector, methodConfigProto.getLongRunning()));
 
     if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
@@ -346,8 +344,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
     public abstract Builder setRequiredFieldConfigs(ImmutableList<FieldConfig> val);
 
     public abstract Builder setOptionalFieldConfigs(ImmutableList<FieldConfig> val);
-
-    public abstract Builder setDefaultResourceNameTreatment(ResourceNameTreatment val);
 
     public abstract Builder setBatching(@Nullable BatchingConfig val);
 

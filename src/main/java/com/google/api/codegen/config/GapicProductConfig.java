@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.ResourceDescriptor;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
@@ -28,18 +29,9 @@ import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
 import com.google.api.codegen.util.ConfigVersionValidator;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
-import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
-import com.google.api.tools.framework.model.SimpleLocation;
-import com.google.api.tools.framework.model.SymbolTable;
+import com.google.api.tools.framework.model.*;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Functions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -212,26 +204,21 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     DiagCollector diagCollector = model.getDiagReporter().getDiagCollector();
 
+    Map<ResourceDescriptor, MessageType> resourceDescriptorMap =
+        protoParser.getResourceDescriptorMap(sourceProtos, diagCollector);
     // Get list of fields from proto
     ResourceNameMessageConfigs messageConfigs =
-        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            sourceProtos, configProto, defaultPackage);
+        ResourceNameMessageConfigs.createFromAnnotations(sourceProtos, protoParser);
 
     ProtoFile packageProtoFile = sourceProtos.isEmpty() ? null : sourceProtos.get(0);
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs;
     if (protoParser.isProtoAnnotationsEnabled()) {
       resourceNameConfigs =
-          createResourceNameConfigsWithProtoFileAndGapicConfig(
-              model,
-              diagCollector,
-              sourceProtos,
-              configProto,
-              packageProtoFile,
-              language,
-              protoParser);
+          createResourceNameConfigsFromAnnotationsAndGapicConfig(
+              model, diagCollector, configProto, packageProtoFile, language, resourceDescriptorMap);
     } else {
       resourceNameConfigs =
-          createResourceNameConfigsForGapicConfigOnly(
+          createResourceNameConfigsFromGapicConfigOnly(
               model, diagCollector, configProto, packageProtoFile, language);
     }
 
@@ -577,22 +564,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     return protoInterfaces.build();
   }
 
-  /** Find the methods that should be generated on the surface when no GAPIC config was given. */
-  private static ImmutableMap<Method, MethodConfigProto> findMethodsToGenerateWithoutConfigYaml(
-      Interface apiInterface) {
-    ImmutableMap.Builder<Method, MethodConfigProto> methodsToSurface = ImmutableMap.builder();
-
-    // TODO(andrealin): After migration off GAPIC config is complete; generate all methods
-    // from protofile even if they aren't included in the GAPIC config.
-
-    // Just generate all methods defined in the protos.
-    apiInterface
-        .getMethods()
-        .forEach(m -> methodsToSurface.put(m, MethodConfigProto.getDefaultInstance()));
-
-    return methodsToSurface.build();
-  }
-
   /** Find the methods that should be generated on the surface when a GAPIC config was given. */
   @Nullable
   private static ImmutableMap<Method, MethodConfigProto> findMethodsToGenerateWithConfigYaml(
@@ -722,7 +693,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   private static ImmutableMap<String, ResourceNameConfig> createResourceNameConfigs(
       DiagCollector diagCollector, ConfigProto configProto, TargetLanguage language) {
-    return createResourceNameConfigsForGapicConfigOnly(
+    return createResourceNameConfigsFromGapicConfigOnly(
         null, diagCollector, configProto, null, language);
   }
 
@@ -733,21 +704,19 @@ public abstract class GapicProductConfig implements ProductConfig {
   @VisibleForTesting
   @Nullable
   static ImmutableMap<String, ResourceNameConfig>
-      createResourceNameConfigsWithProtoFileAndGapicConfig(
+      createResourceNameConfigsFromAnnotationsAndGapicConfig(
           Model model,
           DiagCollector diagCollector,
-          List<ProtoFile> protoFiles,
           ConfigProto configProto,
           @Nullable ProtoFile sampleProtoFile,
           TargetLanguage language,
-          ProtoParser protoParser) {
+          Map<ResourceDescriptor, MessageType> resourceDescriptorMap) {
 
     List<ResourceDescriptorConfig> resourceDefs =
-        protoParser
-            .getResourceDescriptorDefs(protoFiles, diagCollector)
+        resourceDescriptorMap
             .entrySet()
             .stream()
-            .map(e -> ResourceDescriptorConfig.from(e.getKey(), e.getValue()))
+            .map(e -> ResourceDescriptorConfig.from(e.getKey(), e.getValue().getFile()))
             .collect(Collectors.toList());
     ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigsFromProtoFile =
         ImmutableMap.copyOf(
@@ -758,17 +727,21 @@ public abstract class GapicProductConfig implements ProductConfig {
                 .collect(
                     Collectors.toMap(c -> c.getEntityName().toUpperCamel(), Function.identity())));
 
+    ImmutableMap.Builder<String, SingleResourceNameConfig> configBuilder = ImmutableMap.builder();
+    // Extract the configs already built in the oneofs.
+    resourceNameOneofConfigsFromProtoFile
+        .values()
+        .stream()
+        .flatMap(r -> StreamSupport.stream(r.getSingleResourceNameConfigs().spliterator(), false))
+        .forEach(config -> configBuilder.put(config.getUnqualifiedEntityId(), config));
+    // Build the configs that were not already built as part of a oneof.
+    resourceDefs
+        .stream()
+        .filter(r -> !r.getRequiresOneofConfig())
+        .flatMap(r -> r.buildSingleResourceNameConfigs(diagCollector).stream())
+        .forEach(config -> configBuilder.put(config.getUnqualifiedEntityId(), config));
     ImmutableMap<String, SingleResourceNameConfig> singleResourceConfigsFromProtoFile =
-        ImmutableMap.copyOf(
-            resourceNameOneofConfigsFromProtoFile
-                .values()
-                .stream()
-                .flatMap(
-                    r ->
-                        StreamSupport.stream(r.getSingleResourceNameConfigs().spliterator(), false))
-                .collect(
-                    Collectors.toMap(
-                        SingleResourceNameConfig::getUnqualifiedEntityId, Functions.identity())));
+        configBuilder.build();
 
     Map<CollectionConfigProto, Interface> allCollectionConfigProtos =
         getAllCollectionConfigProtos(model, configProto);
@@ -820,7 +793,7 @@ public abstract class GapicProductConfig implements ProductConfig {
    */
   @Nullable
   private static ImmutableMap<String, ResourceNameConfig>
-      createResourceNameConfigsForGapicConfigOnly(
+      createResourceNameConfigsFromGapicConfigOnly(
           Model model,
           DiagCollector diagCollector,
           ConfigProto configProto,

@@ -1074,7 +1074,7 @@ module Google
     # @!attribute [rw] done
     #   @return [true, false]
     #     If the value is `false`, it means the operation is still in progress.
-    #     If true, the operation is completed, and either `error` or `response` is
+    #     If `true`, the operation is completed, and either `error` or `response` is
     #     available.
     # @!attribute [rw] error
     #   @return [Google::Rpc::Status]
@@ -1857,24 +1857,25 @@ end
 
 module Google
   module Rpc
-    # The `Status` type defines a logical error model that is suitable for different
-    # programming environments, including REST APIs and RPC APIs. It is used by
-    # [gRPC](https://github.com/grpc). The error model is designed to be:
+    # The `Status` type defines a logical error model that is suitable for
+    # different programming environments, including REST APIs and RPC APIs. It is
+    # used by [gRPC](https://github.com/grpc). The error model is designed to be:
     #
     # * Simple to use and understand for most users
     # * Flexible enough to meet unexpected needs
     #
     # = Overview
     #
-    # The `Status` message contains three pieces of data: error code, error message,
-    # and error details. The error code should be an enum value of
-    # {Google::Rpc::Code}, but it may accept additional error codes if needed.  The
-    # error message should be a developer-facing English message that helps
-    # developers *understand* and *resolve* the error. If a localized user-facing
-    # error message is needed, put the localized message in the error details or
-    # localize it in the client. The optional error details may contain arbitrary
-    # information about the error. There is a predefined set of error detail types
-    # in the package `google.rpc` that can be used for common error conditions.
+    # The `Status` message contains three pieces of data: error code, error
+    # message, and error details. The error code should be an enum value of
+    # {Google::Rpc::Code}, but it may accept additional error codes
+    # if needed.  The error message should be a developer-facing English message
+    # that helps developers *understand* and *resolve* the error. If a localized
+    # user-facing error message is needed, put the localized message in the error
+    # details or localize it in the client. The optional error details may contain
+    # arbitrary information about the error. There is a predefined set of error
+    # detail types in the package `google.rpc` that can be used for common error
+    # conditions.
     #
     # = Language mapping
     #
@@ -1911,12 +1912,14 @@ module Google
     #   be used directly after any stripping needed for security/privacy reasons.
     # @!attribute [rw] code
     #   @return [Integer]
-    #     The status code, which should be an enum value of {Google::Rpc::Code}.
+    #     The status code, which should be an enum value of
+    #     {Google::Rpc::Code}.
     # @!attribute [rw] message
     #   @return [String]
     #     A developer-facing error message, which should be in English. Any
     #     user-facing error message should be localized and sent in the
-    #     {Google::Rpc::Status#details} field, or localized by the client.
+    #     {Google::Rpc::Status#details} field, or localized
+    #     by the client.
     # @!attribute [rw] details
     #   @return [Array<Google::Protobuf::Any>]
     #     A list of messages that carry the error details.  There is a common set of
@@ -2770,6 +2773,72 @@ module Library
       class OperationsClient < Google::Longrunning::OperationsClient
         self::SERVICE_ADDRESS = LibraryServiceClient::SERVICE_ADDRESS
         self::GRPC_INTERCEPTORS = LibraryServiceClient::GRPC_INTERCEPTORS
+      end
+
+      ARCHIVE_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "archives/{archive}/books/{book}"
+      )
+
+      private_constant :ARCHIVE_BOOK_PATH_TEMPLATE
+
+      BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "bookShelves/{book_shelf}/books/{book}"
+      )
+
+      private_constant :BOOK_PATH_TEMPLATE
+
+      BOOK_FROM_ARCHIVE_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "archives/{archive}/books/{book}"
+      )
+
+      private_constant :BOOK_FROM_ARCHIVE_PATH_TEMPLATE
+
+      SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf_id}"
+      )
+
+      private_constant :SHELF_PATH_TEMPLATE
+
+      # Returns a fully-qualified archive_book resource name string.
+      # @param archive [String]
+      # @param book [String]
+      # @return [String]
+      def self.archive_book_path archive, book
+        ARCHIVE_BOOK_PATH_TEMPLATE.render(
+          :"archive" => archive,
+          :"book" => book
+        )
+      end
+
+      # Returns a fully-qualified book resource name string.
+      # @param book_shelf [String]
+      # @param book [String]
+      # @return [String]
+      def self.book_path book_shelf, book
+        BOOK_PATH_TEMPLATE.render(
+          :"book_shelf" => book_shelf,
+          :"book" => book
+        )
+      end
+
+      # Returns a fully-qualified book_from_archive resource name string.
+      # @param archive [String]
+      # @param book [String]
+      # @return [String]
+      def self.book_from_archive_path archive, book
+        BOOK_FROM_ARCHIVE_PATH_TEMPLATE.render(
+          :"archive" => archive,
+          :"book" => book
+        )
+      end
+
+      # Returns a fully-qualified shelf resource name string.
+      # @param shelf_id [String]
+      # @return [String]
+      def self.shelf_path shelf_id
+        SHELF_PATH_TEMPLATE.render(
+          :"shelf_id" => shelf_id
+        )
       end
 
       # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
@@ -4256,7 +4325,6 @@ module Library
       #   can also be provided.
       # @param required_singular_resource_name [String]
       # @param required_singular_resource_name_oneof [String]
-      # @param required_singular_resource_name_common [String]
       # @param required_singular_fixed32 [Integer]
       # @param required_singular_fixed64 [Integer]
       # @param required_repeated_int32 [Array<Integer>]
@@ -4276,6 +4344,7 @@ module Library
       # @param required_repeated_fixed32 [Array<Integer>]
       # @param required_repeated_fixed64 [Array<Integer>]
       # @param required_map [Hash{Integer => String}]
+      # @param required_singular_resource_name_common [String]
       # @param optional_singular_int32 [Integer]
       # @param optional_singular_int64 [Integer]
       # @param optional_singular_float [Float]
@@ -4451,9 +4520,6 @@ module Library
       #   # TODO: Initialize `required_singular_resource_name_oneof`:
       #   required_singular_resource_name_oneof = ''
       #
-      #   # TODO: Initialize `required_singular_resource_name_common`:
-      #   required_singular_resource_name_common = ''
-      #
       #   # TODO: Initialize `required_singular_fixed32`:
       #   required_singular_fixed32 = 0
       #
@@ -4504,7 +4570,7 @@ module Library
       #
       #   # TODO: Initialize `required_map`:
       #   required_map = {}
-      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
+      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
       def test_optional_required_flattening_params \
           required_singular_int32,
@@ -4518,7 +4584,6 @@ module Library
           required_singular_message,
           required_singular_resource_name,
           required_singular_resource_name_oneof,
-          required_singular_resource_name_common,
           required_singular_fixed32,
           required_singular_fixed64,
           required_repeated_int32,
@@ -4536,6 +4601,7 @@ module Library
           required_repeated_fixed32,
           required_repeated_fixed64,
           required_map,
+          required_singular_resource_name_common: nil,
           optional_singular_int32: nil,
           optional_singular_int64: nil,
           optional_singular_float: nil,
@@ -4611,7 +4677,6 @@ module Library
           required_singular_message: required_singular_message,
           required_singular_resource_name: required_singular_resource_name,
           required_singular_resource_name_oneof: required_singular_resource_name_oneof,
-          required_singular_resource_name_common: required_singular_resource_name_common,
           required_singular_fixed32: required_singular_fixed32,
           required_singular_fixed64: required_singular_fixed64,
           required_repeated_int32: required_repeated_int32,
@@ -4629,6 +4694,7 @@ module Library
           required_repeated_fixed32: required_repeated_fixed32,
           required_repeated_fixed64: required_repeated_fixed64,
           required_map: required_map,
+          required_singular_resource_name_common: required_singular_resource_name_common,
           optional_singular_int32: optional_singular_int32,
           optional_singular_int64: optional_singular_int64,
           optional_singular_float: optional_singular_float,
@@ -7445,7 +7511,6 @@ describe Library::V1::LibraryServiceClient do
       required_singular_message = {}
       required_singular_resource_name = ''
       required_singular_resource_name_oneof = ''
-      required_singular_resource_name_common = ''
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
       required_repeated_int32 = []
@@ -7482,7 +7547,6 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
         assert_equal(required_singular_resource_name, request.required_singular_resource_name)
         assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
-        assert_equal(required_singular_resource_name_common, request.required_singular_resource_name_common)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
         assert_equal(required_singular_fixed64, request.required_singular_fixed64)
         assert_equal(required_repeated_int32, request.required_repeated_int32)
@@ -7527,7 +7591,6 @@ describe Library::V1::LibraryServiceClient do
             required_singular_message,
             required_singular_resource_name,
             required_singular_resource_name_oneof,
-            required_singular_resource_name_common,
             required_singular_fixed32,
             required_singular_fixed64,
             required_repeated_int32,
@@ -7563,7 +7626,6 @@ describe Library::V1::LibraryServiceClient do
             required_singular_message,
             required_singular_resource_name,
             required_singular_resource_name_oneof,
-            required_singular_resource_name_common,
             required_singular_fixed32,
             required_singular_fixed64,
             required_repeated_int32,
@@ -7603,7 +7665,6 @@ describe Library::V1::LibraryServiceClient do
       required_singular_message = {}
       required_singular_resource_name = ''
       required_singular_resource_name_oneof = ''
-      required_singular_resource_name_common = ''
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
       required_repeated_int32 = []
@@ -7636,7 +7697,6 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
         assert_equal(required_singular_resource_name, request.required_singular_resource_name)
         assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
-        assert_equal(required_singular_resource_name_common, request.required_singular_resource_name_common)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
         assert_equal(required_singular_fixed64, request.required_singular_fixed64)
         assert_equal(required_repeated_int32, request.required_repeated_int32)
@@ -7682,7 +7742,6 @@ describe Library::V1::LibraryServiceClient do
               required_singular_message,
               required_singular_resource_name,
               required_singular_resource_name_oneof,
-              required_singular_resource_name_common,
               required_singular_fixed32,
               required_singular_fixed64,
               required_repeated_int32,
