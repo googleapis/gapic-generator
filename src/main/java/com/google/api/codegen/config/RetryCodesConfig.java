@@ -23,17 +23,14 @@ import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +41,8 @@ public class RetryCodesConfig {
 
   public static ImmutableList<String> RETRY_CODES_FOR_HTTP_GET =
       DEFAULT_RETRY_CODES.get(RETRY_CODES_IDEMPOTENT_NAME);
+  public static ImmutableList<String> RETRY_CODES_FOR_HTTP_NON_GET =
+      DEFAULT_RETRY_CODES.get(RETRY_CODES_NON_IDEMPOTENT_NAME);
 
   private Map<String, ImmutableList<String>> retryCodesDefinition = new HashMap<>();
   private Map<String, String> methodRetryNames = new HashMap<>();
@@ -51,7 +50,6 @@ public class RetryCodesConfig {
   private ImmutableSet<String> retryCodeDefsFromGapicConfig;
   private ImmutableMap<String, ImmutableList<String>> finalRetryCodesDefinition;
   private ImmutableMap<String, String> finalMethodRetryNames;
-  private boolean error = false;
 
   /**
    * A map of retry config names to the list of codes to retry on, e.g. { "idempotent" :
@@ -75,35 +73,22 @@ public class RetryCodesConfig {
 
   private RetryCodesConfig() {}
 
-  public static RetryCodesConfig create(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
+  public static RetryCodesConfig create(InterfaceConfigProto interfaceConfigProto) {
     RetryCodesConfig retryCodesConfig = new RetryCodesConfig();
 
-    retryCodesConfig.populateRetryCodesDefinitionFromConfigProto(
-        diagCollector, interfaceConfigProto);
-    if (retryCodesConfig.error) {
-      return null;
-    }
-    retryCodesConfig.finalMethodRetryNames = ImmutableMap.copyOf(retryCodesConfig.methodRetryNames);
-    retryCodesConfig.finalRetryCodesDefinition =
-        ImmutableMap.copyOf(retryCodesConfig.retryCodesDefinition);
+    retryCodesConfig.populateRetryCodesDefinitionFromConfigProto(interfaceConfigProto);
+    retryCodesConfig.setFinalRetryProperties();
     return retryCodesConfig;
   }
 
   public static RetryCodesConfig create(
-      DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
       List<Method> methodsToGenerate,
       ProtoParser protoParser) {
     RetryCodesConfig retryCodesConfig = new RetryCodesConfig();
     retryCodesConfig.populateRetryCodesDefinition(
-        diagCollector, interfaceConfigProto, methodsToGenerate, protoParser);
-    if (retryCodesConfig.error) {
-      return null;
-    }
-    retryCodesConfig.finalMethodRetryNames = ImmutableMap.copyOf(retryCodesConfig.methodRetryNames);
-    retryCodesConfig.finalRetryCodesDefinition =
-        ImmutableMap.copyOf(retryCodesConfig.retryCodesDefinition);
+        interfaceConfigProto, methodsToGenerate, protoParser);
+    retryCodesConfig.setFinalRetryProperties();
     return retryCodesConfig;
   }
 
@@ -122,30 +107,19 @@ public class RetryCodesConfig {
 
   @Nullable
   private static ImmutableMap<String, ImmutableList<String>>
-      createRetryCodesDefinitionFromConfigProto(
-          DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
+      createRetryCodesDefinitionFromConfigProto(InterfaceConfigProto interfaceConfigProto) {
     ImmutableMap.Builder<String, ImmutableList<String>> builder = ImmutableMap.builder();
     for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
       // Enforce ordering on set for baseline test consistency.
-      Set<String> codes = new TreeSet<>();
-      for (String codeText : retryDef.getRetryCodesList()) {
-        try {
-          codes.add(String.valueOf(codeText));
-        } catch (IllegalArgumentException e) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "status code not found: '%s' (in interface %s)",
-                  codeText,
-                  interfaceConfigProto.getName()));
-        }
-      }
+      Set<String> codes = new TreeSet<>(retryDef.getRetryCodesList());
       builder.put(retryDef.getName(), ImmutableList.copyOf(codes));
     }
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    }
     return builder.build();
+  }
+
+  private void setFinalRetryProperties() {
+    finalMethodRetryNames = ImmutableMap.copyOf(methodRetryNames);
+    finalRetryCodesDefinition = ImmutableMap.copyOf(retryCodesDefinition);
   }
 
   /**
@@ -154,15 +128,11 @@ public class RetryCodesConfig {
    * settings name.
    */
   private void populateRetryCodesDefinition(
-      DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
       Collection<Method> methodsToGenerate,
       ProtoParser protoParser) {
     // First create the retry codes definitions from the GAPIC config.
-    populateRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
-    if (error) {
-      return;
-    }
+    populateRetryCodesDefinitionFromConfigProto(interfaceConfigProto);
 
     // Then create the retry codes defs from the proto annotations, but don't overwrite
     // existing retry codes defs from the GAPIC config.
@@ -175,10 +145,10 @@ public class RetryCodesConfig {
    * settings name.
    */
   private void populateRetryCodesDefinitionFromConfigProto(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
+      InterfaceConfigProto interfaceConfigProto) {
 
     ImmutableMap<String, ImmutableList<String>> retryCodesDefFromConfigProto =
-        createRetryCodesDefinitionFromConfigProto(diagCollector, interfaceConfigProto);
+        createRetryCodesDefinitionFromConfigProto(interfaceConfigProto);
     if (retryCodesDefFromConfigProto == null) {
       return;
     }
@@ -205,6 +175,11 @@ public class RetryCodesConfig {
 
     SymbolTable symbolTable = new SymbolTable();
 
+    // Add retry codes for default cases (idempotent and non_idempotent) if they have not
+    // already be added previously (in the GAPIC config).
+    retryCodesDefinition.putIfAbsent(RETRY_CODES_IDEMPOTENT_NAME, RETRY_CODES_FOR_HTTP_GET);
+    retryCodesDefinition.putIfAbsent(RETRY_CODES_NON_IDEMPOTENT_NAME, RETRY_CODES_FOR_HTTP_NON_GET);
+
     for (String retryCodesName : retryCodesDefinition.keySet()) {
       // Record all the preexisting retryCodeNames from configProto.
       symbolTable.getNewSymbol(retryCodesName);
@@ -213,11 +188,8 @@ public class RetryCodesConfig {
     // Unite all HTTP GET methods that have no additional retry codes under one retry code name to
     // reduce duplication.
     String httpGetRetryName;
-    Set<String> defaultRetryCodesForHttpGet = new HashSet<>(RETRY_CODES_FOR_HTTP_GET);
-    Set<String> existingIdempotentRetryCodes =
-        new HashSet<>(
-            retryCodesDefinition.getOrDefault(RETRY_CODES_IDEMPOTENT_NAME, ImmutableList.of()));
-    if (defaultRetryCodesForHttpGet.equals(existingIdempotentRetryCodes)) {
+    if (Sets.newHashSet(RETRY_CODES_FOR_HTTP_GET)
+        .containsAll(retryCodesDefinition.get(RETRY_CODES_IDEMPOTENT_NAME))) {
       // The GAPIC config defined RETRY_CODES_IDEMPOTENT_NAME to have the same retry codes as
       // this method would have,
       // so we can just reuse RETRY_CODES_IDEMPOTENT_NAME.
@@ -228,9 +200,8 @@ public class RetryCodesConfig {
 
     // Unite all methods that have no retry codes under one retry code name to reduce duplication.
     String noRetryName;
-    if (retryCodesDefinition
-        .getOrDefault(RETRY_CODES_NON_IDEMPOTENT_NAME, ImmutableList.of())
-        .isEmpty()) {
+    if (Sets.newHashSet(RETRY_CODES_FOR_HTTP_NON_GET)
+        .containsAll(retryCodesDefinition.get(RETRY_CODES_NON_IDEMPOTENT_NAME))) {
       noRetryName = RETRY_CODES_NON_IDEMPOTENT_NAME;
     } else {
       noRetryName = symbolTable.getNewSymbol(RETRY_CODES_NON_IDEMPOTENT_NAME);
