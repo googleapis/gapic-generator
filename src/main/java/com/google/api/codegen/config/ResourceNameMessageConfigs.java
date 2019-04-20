@@ -42,7 +42,9 @@ public abstract class ResourceNameMessageConfigs {
 
   @VisibleForTesting
   static ResourceNameMessageConfigs createFromAnnotations(
-      List<ProtoFile> protoFiles, ProtoParser parser) {
+      List<ProtoFile> protoFiles,
+      ProtoParser parser,
+      Map<String, ResourceDescriptorConfig> descriptorMap) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
     for (ProtoFile protoFile : protoFiles) {
       for (MessageType message : protoFile.getMessages()) {
@@ -52,7 +54,8 @@ public abstract class ResourceNameMessageConfigs {
             // annotation, build a config for the message, then break.
             builder.put(
                 message.getFullName(),
-                ResourceNameMessageConfig.createFromAnnotationsOnMessage(parser, message));
+                ResourceNameMessageConfig.createFromAnnotationsOnMessage(
+                    parser, message, descriptorMap));
             break;
           }
         }

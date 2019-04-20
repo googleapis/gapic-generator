@@ -24,7 +24,12 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @AutoValue
@@ -48,6 +53,8 @@ public abstract class ResourceDescriptorConfig {
    */
   public abstract ProtoFile getAssignedProtoFile();
 
+  public abstract String getDerivedEntityName();
+
   public static ResourceDescriptorConfig from(
       ResourceDescriptor descriptor, ProtoFile assignedProtoFile) {
     // The logic for requiresOneofConfig and requiresSinglePattern is finicky, so let's lay out
@@ -69,6 +76,7 @@ public abstract class ResourceDescriptorConfig {
             || (descriptor.getHistory() == ResourceDescriptor.History.HISTORY_UNSPECIFIED
                 && descriptor.getPatternList().size() == 1);
 
+    String unqualifiedTypeName = getUnqualifiedTypeName(descriptor.getType());
     return new AutoValue_ResourceDescriptorConfig(
         descriptor.getType(),
         ImmutableList.copyOf(descriptor.getPatternList()),
@@ -76,7 +84,8 @@ public abstract class ResourceDescriptorConfig {
         descriptor.getHistory(),
         requiresOneofConfig,
         requiresSinglePattern ? descriptor.getPattern(0) : "",
-        assignedProtoFile);
+        assignedProtoFile,
+        requiresOneofConfig ? (unqualifiedTypeName + "Oneof") : unqualifiedTypeName);
   }
 
   public static String getUnqualifiedTypeName(String typeName) {
@@ -90,32 +99,18 @@ public abstract class ResourceDescriptorConfig {
   public List<SingleResourceNameConfig> buildSingleResourceNameConfigs(
       DiagCollector diagCollector) {
     try {
+      Map<String, Name> nameMap = buildEntityNameMap();
       return getPatterns()
           .stream()
           .map(
-              (String p) -> {
-                String entityId = getUnqualifiedTypeName();
-                if (!p.equals(getSinglePattern())) {
-                  List<String> variableSegments =
-                      getSegments(p)
-                          .stream()
-                          .filter(ResourceDescriptorConfig::isVariableBinding)
-                          .map(ResourceDescriptorConfig::unwrapVariableSegment)
-                          .collect(Collectors.toList());
-                  if (variableSegments.size() > 1) {
-                    entityId =
-                        Name.from(variableSegments.get(variableSegments.size() - 2)).toUpperCamel()
-                            + entityId;
-                  }
-                }
-                return SingleResourceNameConfig.newBuilder()
-                    .setNamePattern(p)
-                    .setNameTemplate(PathTemplate.create(p))
-                    .setAssignedProtoFile(getAssignedProtoFile())
-                    .setEntityId(entityId)
-                    .setEntityName(Name.anyCamel(entityId))
-                    .build();
-              })
+              (String p) ->
+                  SingleResourceNameConfig.newBuilder()
+                      .setNamePattern(p)
+                      .setNameTemplate(PathTemplate.create(p))
+                      .setAssignedProtoFile(getAssignedProtoFile())
+                      .setEntityId(nameMap.get(p).toUpperCamel())
+                      .setEntityName(nameMap.get(p))
+                      .build())
           .collect(Collectors.toList());
     } catch (ValidationException e) {
       // Catch exception that may be thrown by PathTemplate.create
@@ -143,5 +138,61 @@ public abstract class ResourceDescriptorConfig {
 
   private static String unwrapVariableSegment(String segment) {
     return segment.substring(1, segment.length() - 1);
+  }
+
+  private Map<String, Name> buildEntityNameMap() {
+    TrieNode trie = new TrieNode();
+    Map<String, List<String>> patternsToSegmentsMap =
+        getPatterns()
+            .stream()
+            .collect(
+                Collectors.toMap(
+                    Function.identity(),
+                    (String p) ->
+                        Lists.reverse(
+                            getSegments(p)
+                                .stream()
+                                .filter(ResourceDescriptorConfig::isVariableBinding)
+                                .map(ResourceDescriptorConfig::unwrapVariableSegment)
+                                .collect(Collectors.toList()))));
+    for (List<String> segments : patternsToSegmentsMap.values()) {
+      insertSegmentsIntoTrie(segments, trie);
+    }
+
+    Name unqualifiedTypeName = Name.anyCamel(getUnqualifiedTypeName());
+    HashMap<String, Name> nameMap = new HashMap<>();
+    for (String pattern : patternsToSegmentsMap.keySet()) {
+      if (pattern.equals(getSinglePattern())) {
+        continue;
+      }
+      List<String> identifyingNamePieces = new ArrayList<>();
+      TrieNode node = trie;
+      for (String segment : patternsToSegmentsMap.get(pattern)) {
+        if (node.size() > 1) {
+          identifyingNamePieces.add(segment);
+        }
+        node = node.get(segment);
+      }
+      Name entityName =
+          Name.from(Lists.reverse(identifyingNamePieces).toArray(new String[0]))
+              .join(unqualifiedTypeName);
+      nameMap.put(pattern, entityName);
+    }
+
+    if (!getSinglePattern().isEmpty()) {
+      nameMap.put(getSinglePattern(), unqualifiedTypeName);
+    }
+    return nameMap;
+  }
+
+  class TrieNode extends HashMap<String, TrieNode> {}
+
+  private void insertSegmentsIntoTrie(List<String> segments, TrieNode trieNode) {
+    for (String segment : segments) {
+      if (!trieNode.containsKey(segment)) {
+        trieNode.put(segment, new TrieNode());
+      }
+      trieNode = trieNode.get(segment);
+    }
   }
 }

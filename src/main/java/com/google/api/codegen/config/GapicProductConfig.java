@@ -39,15 +39,7 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -204,22 +196,37 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     DiagCollector diagCollector = model.getDiagReporter().getDiagCollector();
 
-    Map<ResourceDescriptor, MessageType> resourceDescriptorMap =
-        protoParser.getResourceDescriptorMap(sourceProtos, diagCollector);
-    // Get list of fields from proto
-    ResourceNameMessageConfigs messageConfigs =
-        ResourceNameMessageConfigs.createFromAnnotations(sourceProtos, protoParser);
-
     ProtoFile packageProtoFile = sourceProtos.isEmpty() ? null : sourceProtos.get(0);
+
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs;
+    ResourceNameMessageConfigs messageConfigs;
     if (protoParser.isProtoAnnotationsEnabled()) {
+      Map<ResourceDescriptor, MessageType> resourceDescriptorMap =
+          protoParser.getResourceDescriptorMap(sourceProtos, diagCollector);
+
+      Map<String, ResourceDescriptorConfig> descriptorConfigMap =
+          resourceDescriptorMap
+              .entrySet()
+              .stream()
+              .map(e -> ResourceDescriptorConfig.from(e.getKey(), e.getValue().getFile()))
+              .collect(
+                  Collectors.toMap(
+                      ResourceDescriptorConfig::getUnifiedResourceType, Function.identity()));
       resourceNameConfigs =
           createResourceNameConfigsFromAnnotationsAndGapicConfig(
-              model, diagCollector, configProto, packageProtoFile, language, resourceDescriptorMap);
+              model, diagCollector, configProto, packageProtoFile, language, descriptorConfigMap);
+
+      // Get list of fields from proto
+      messageConfigs =
+          ResourceNameMessageConfigs.createFromAnnotations(
+              sourceProtos, protoParser, descriptorConfigMap);
     } else {
       resourceNameConfigs =
           createResourceNameConfigsFromGapicConfigOnly(
               model, diagCollector, configProto, packageProtoFile, language);
+      messageConfigs =
+          ResourceNameMessageConfigs.createFromGapicConfigOnly(
+              sourceProtos, configProto, defaultPackage);
     }
 
     if (resourceNameConfigs == null) {
@@ -710,17 +717,11 @@ public abstract class GapicProductConfig implements ProductConfig {
           ConfigProto configProto,
           @Nullable ProtoFile sampleProtoFile,
           TargetLanguage language,
-          Map<ResourceDescriptor, MessageType> resourceDescriptorMap) {
-
-    List<ResourceDescriptorConfig> resourceDefs =
-        resourceDescriptorMap
-            .entrySet()
-            .stream()
-            .map(e -> ResourceDescriptorConfig.from(e.getKey(), e.getValue().getFile()))
-            .collect(Collectors.toList());
+          Map<String, ResourceDescriptorConfig> resourceDescriptorConfigs) {
     ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigsFromProtoFile =
         ImmutableMap.copyOf(
-            resourceDefs
+            resourceDescriptorConfigs
+                .values()
                 .stream()
                 .filter(ResourceDescriptorConfig::getRequiresOneofConfig)
                 .map(r -> r.buildResourceNameOneofConfig(diagCollector))
@@ -735,7 +736,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         .flatMap(r -> StreamSupport.stream(r.getSingleResourceNameConfigs().spliterator(), false))
         .forEach(config -> configBuilder.put(config.getUnqualifiedEntityId(), config));
     // Build the configs that were not already built as part of a oneof.
-    resourceDefs
+    resourceDescriptorConfigs
+        .values()
         .stream()
         .filter(r -> !r.getRequiresOneofConfig())
         .flatMap(r -> r.buildSingleResourceNameConfigs(diagCollector).stream())
