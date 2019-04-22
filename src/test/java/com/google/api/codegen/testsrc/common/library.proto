@@ -365,7 +365,8 @@ message Book {
   // Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
   // Message field comment may include special characters: <>&"`'@.
   string name = 1 [
-    (google.api.field_behavior) = REQUIRED
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "library.googleapis.com/Book"
   ];
 
   // The name of the book author.
@@ -499,7 +500,9 @@ message Shelf {
   // The resource name of the shelf.
   // Shelf names have the form `bookShelves/{shelf_id}`.
   string name = 1 [
-    (google.api.field_behavior) = REQUIRED];
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "library.googleapis.com/Shelf"
+  ];
 
   // The theme of the shelf
   string theme = 2;
