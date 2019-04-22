@@ -114,7 +114,8 @@ public class SampleSpec {
   }
 
   /**
-   * Returns all the `ids` that can match to one or more elements of `expressions` through regex.
+   * Matches all the IDs within `targets` that match one or more elements of `expressions`. The IDs
+   * are extracted from elements of targets via `targetToId`."
    */
   private static <T> List<T> expressionsMatchIds(
       List<String> expressions, List<T> targets, Function<T, String> targetToId) {
@@ -160,7 +161,7 @@ public class SampleSpec {
       for (SampleTypeConfiguration config : getConfigFor(type)) {
         List<CallingForm> matchingCallingForms = null;
         List<SampleValueSet> matchingValueSets = null;
-        // match calling forms
+
         List<String> callingFormNames =
             config.getCallingFormsList().isEmpty()
                 ? Collections.singletonList(
@@ -170,7 +171,6 @@ public class SampleSpec {
             expressionsMatchIds(
                 callingFormNames, allValidCallingForms, CallingForm::toLowerUnderscore);
 
-        // match value sets
         matchingValueSets =
             expressionsMatchIds(config.getValueSetsList(), valueSets, v -> v.getId());
 

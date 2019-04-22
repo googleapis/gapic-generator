@@ -1,4 +1,4 @@
-/* Copyright 2018 Google LLC
+/* Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,29 @@ public abstract class SampleConfig {
       CallingForm callingForm,
       SampleValueSet valueSet,
       SampleSpec.SampleType type) {
-    return new AutoValue_SampleConfig(regionTag, callingForm, valueSet, type);
+    return newBuilder()
+        .regionTag(regionTag)
+        .callingForm(callingForm)
+        .valueSet(valueSet)
+        .type(type)
+        .build();
+  }
+
+  public static Builder newBuilder() {
+    return new AutoValue_SampleConfig.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+
+    public abstract Builder regionTag(String val);
+
+    public abstract Builder callingForm(CallingForm val);
+
+    public abstract Builder valueSet(SampleValueSet val);
+
+    public abstract Builder type(SampleSpec.SampleType val);
+
+    public abstract SampleConfig build();
   }
 }

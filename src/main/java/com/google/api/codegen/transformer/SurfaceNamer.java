@@ -792,8 +792,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * The name of the file holding the sample class for a single API method and variant. Constucted
-   * from pieces in the language-idiomatic case, followed by appropriate suffix.
+   * The name of the file holding the sample class for a single API method and variant. The name is
+   * constucted from pieces in the language-idiomatic case, followed by appropriate suffix.
    */
   public String getApiSampleFileName(String... pieces) {
     return getNotImplementedString("SurfaceNamer.getApiSampleFileName");

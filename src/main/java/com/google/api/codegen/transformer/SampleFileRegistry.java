@@ -24,6 +24,13 @@ import java.util.Map;
 /**
  * {@code SampleFileRegistry} is used to verify that the samples we generate with different
  * parameters have different paths, so they don't clobber each other.
+ *
+ * <p>If a sample has a unique region tag, the file name of the sample will be its region tag in the
+ * language-idiomatic case, followed by an appropriate extension.
+ *
+ * <p>If the region tag of a sample is not unique, the file name of the sample will be constructed
+ * by concatinating `method_name`, `calling_form` and `value_set_id`. The file name will be in the
+ * language-idiomatic case and followed by an appropriate extension as well.
  */
 public class SampleFileRegistry {
 
@@ -41,14 +48,14 @@ public class SampleFileRegistry {
 
   public String getSampleClassName(MethodSampleView sample, String method) {
     String regionTag = sample.regionTag();
-    String callingForm = sample.callingForm().toLowerCamel();
-    String valueSet = sample.valueSet().id();
     Preconditions.checkState(
         regionTagCount.get(regionTag) != null && regionTagCount.get(regionTag) > 0,
         "Sample not registered.");
     if (regionTagCount.get(regionTag) == 1) {
       return namer.getApiSampleClassName(regionTag);
     } else {
+      String callingForm = sample.callingForm().toLowerCamel();
+      String valueSet = sample.valueSet().id();
       return namer.getApiSampleClassName(
           method, sample.callingForm().toLowerUnderscore(), sample.valueSet().id());
     }
