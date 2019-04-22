@@ -120,6 +120,51 @@ clean {
   delete 'all-jars'
 }
 
+============== file: samples/src/main/java/com/google/example/examples/library/v1/Babbage.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "prog")
+package com.google.example.examples.library.v1;
+
+import com.google.api.gax.rpc.ServerStream;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.StreamBooksRequest;
+
+// [START babbage]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.gax.rpc.ServerStream;
+ * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.StreamBooksRequest;
+ */
+public class Babbage {
+  /** Testing calling forms */
+  public static void sampleStreamBooks() {
+    // [START babbage_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      String name = "BASIC";
+      StreamBooksRequest request = StreamBooksRequest.newBuilder()
+        .setName(name)
+        .build();
+
+      ServerStream<Book> stream = libraryClient.streamBooksCallable().call(request);
+      for (Book responseItem : stream) {
+        System.out.println(responseItem);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END babbage_core]
+  }
+
+  public static void main(String[] args) {
+    sampleStreamBooks();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END babbage]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithResponseHandling.java ==============
 // DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "empty_response_type_with_response_handling")
 package com.google.example.examples.library.v1;
@@ -473,88 +518,6 @@ public class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling {
 // FIXME: Insert here clean-up code.
 
 // [END sample]
-============== file: samples/src/main/java/com/google/example/examples/library/v1/DiscussBookCallableCallableStreamingBidiProg.java ==============
-// DO NOT EDIT! This is a generated sample ("CallableStreamingBidi",  "prog")
-package com.google.example.examples.library.v1;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import com.google.api.gax.rpc.BidiStream;
-import com.google.example.library.v1.Comment;
-import com.google.example.library.v1.DiscussBookRequest;
-import com.google.example.library.v1.LibraryClient;
-import com.google.protobuf.ByteString;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-// [START turing_prog_callable_streaming_bidi]
-/*
- * Please include the following imports to run this sample.
- *
- * import com.google.api.gax.rpc.BidiStream;
- * import com.google.example.library.v1.Comment;
- * import com.google.example.library.v1.DiscussBookRequest;
- * import com.google.example.library.v1.LibraryClient;
- * import com.google.protobuf.ByteString;
- * import java.nio.file.Files;
- * import java.nio.file.Path;
- * import java.nio.file.Paths;
- */
-public class DiscussBookCallableCallableStreamingBidiProg {
-  /** Testing calling forms */
-  public static void sampleDiscussBook(String imageFileName) {
-    // [START turing_prog_callable_streaming_bidi_core]
-    try (LibraryClient libraryClient = LibraryClient.create()) {
-      BidiStream<DiscussBookRequest, Comment> bidiStream =
-          libraryClient.discussBookCallable().call();
-
-      // String imageFileName = "image_file.jpg";
-      String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
-      Path path = Paths.get("comment_file");
-      byte[] data = Files.readAllBytes(path);
-      ByteString comment = ByteString.copyFrom(data);
-      Comment comment2 = Comment.newBuilder()
-        .setComment(comment)
-        .build();
-      path = Paths.get(imageFileName);
-      data = Files.readAllBytes(path);
-      ByteString image = ByteString.copyFrom(data);
-      DiscussBookRequest request = DiscussBookRequest.newBuilder()
-        .setName(formattedName)
-        .setComment(comment2)
-        .setImage(image)
-        .build();
-      bidiStream.send(request);
-      for (Comment responseItem : bidiStream) {
-        System.out.println(responseItem);
-      }
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
-    }
-    // [END turing_prog_callable_streaming_bidi_core]
-  }
-
-  public static void main(String[] args) throws Exception {
-    Options options = new Options();
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("image_file_name")
-          .build());
-
-    CommandLine cl = (new DefaultParser()).parse(options, args);
-    String imageFileName = cl.getOptionValue("image_file_name", "image_file.jpg");
-
-    sampleDiscussBook(imageFileName);
-  }
-}
-// FIXME: Insert here clean-up code.
-
-// [END turing_prog_callable_streaming_bidi]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/FindRelatedBooksCallableCallableListOdyssey.java ==============
 // DO NOT EDIT! This is a generated sample ("CallableList",  "odyssey")
 package com.google.example.examples.library.v1;
@@ -2615,51 +2578,50 @@ public class PublishSeriesRequestTestWriteToFile {
 // FIXME: Insert here clean-up code.
 
 // [END sample]
-============== file: samples/src/main/java/com/google/example/examples/library/v1/StreamBooksCallableCallableStreamingServerProg.java ==============
-// DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "prog")
+============== file: samples/src/main/java/com/google/example/examples/library/v1/SampleGetShelf.java ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
 package com.google.example.examples.library.v1;
 
-import com.google.api.gax.rpc.ServerStream;
-import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetShelfRequest;
 import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.StreamBooksRequest;
+import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfName;
 
-// [START babbage]
+// [START sample_get_shelf]
 /*
  * Please include the following imports to run this sample.
  *
- * import com.google.api.gax.rpc.ServerStream;
- * import com.google.example.library.v1.Book;
+ * import com.google.example.library.v1.GetShelfRequest;
  * import com.google.example.library.v1.LibraryClient;
- * import com.google.example.library.v1.StreamBooksRequest;
+ * import com.google.example.library.v1.Shelf;
+ * import com.google.example.library.v1.ShelfName;
  */
-public class StreamBooksCallableCallableStreamingServerProg {
-  /** Testing calling forms */
-  public static void sampleStreamBooks() {
-    // [START babbage_core]
+public class SampleGetShelf {
+  /** Test default calling forms for unary methods. */
+  public static void sampleGetShelf() {
+    // [START sample_get_shelf_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      String name = "BASIC";
-      StreamBooksRequest request = StreamBooksRequest.newBuilder()
-        .setName(name)
+      ShelfName name = ShelfName.of("my-shelf");
+      String options = "";
+      GetShelfRequest request = GetShelfRequest.newBuilder()
+        .setName(name.toString())
+        .setOptions(options)
         .build();
-
-      ServerStream<Book> stream = libraryClient.streamBooksCallable().call(request);
-      for (Book responseItem : stream) {
-        System.out.println(responseItem);
-      }
+      Shelf response = libraryClient.getShelf(request);
+      System.out.printf("The theme of the shelf is: %s\n", response.getTheme());
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
-    // [END babbage_core]
+    // [END sample_get_shelf_core]
   }
 
   public static void main(String[] args) {
-    sampleStreamBooks();
+    sampleGetShelf();
   }
 }
 // FIXME: Insert here clean-up code.
 
-// [END babbage]
+// [END sample_get_shelf]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/StreamShelvesCallableCallableStreamingServerEmpty.java ==============
 // DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "empty")
 package com.google.example.examples.library.v1;
@@ -2705,6 +2667,88 @@ public class StreamShelvesCallableCallableStreamingServerEmpty {
 // FIXME: Insert here clean-up code.
 
 // [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/TuringProgCallableStreamingBidi.java ==============
+// DO NOT EDIT! This is a generated sample ("CallableStreamingBidi",  "prog")
+package com.google.example.examples.library.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.api.gax.rpc.BidiStream;
+import com.google.example.library.v1.Comment;
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.protobuf.ByteString;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+// [START turing_prog_callable_streaming_bidi]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.api.gax.rpc.BidiStream;
+ * import com.google.example.library.v1.Comment;
+ * import com.google.example.library.v1.DiscussBookRequest;
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.protobuf.ByteString;
+ * import java.nio.file.Files;
+ * import java.nio.file.Path;
+ * import java.nio.file.Paths;
+ */
+public class TuringProgCallableStreamingBidi {
+  /** Testing calling forms */
+  public static void sampleDiscussBook(String imageFileName) {
+    // [START turing_prog_callable_streaming_bidi_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      BidiStream<DiscussBookRequest, Comment> bidiStream =
+          libraryClient.discussBookCallable().call();
+
+      // String imageFileName = "image_file.jpg";
+      String formattedName = LibraryClient.formatShelfBookName("[SHELF_ID]", "[BOOK_ID]");
+      Path path = Paths.get("comment_file");
+      byte[] data = Files.readAllBytes(path);
+      ByteString comment = ByteString.copyFrom(data);
+      Comment comment2 = Comment.newBuilder()
+        .setComment(comment)
+        .build();
+      path = Paths.get(imageFileName);
+      data = Files.readAllBytes(path);
+      ByteString image = ByteString.copyFrom(data);
+      DiscussBookRequest request = DiscussBookRequest.newBuilder()
+        .setName(formattedName)
+        .setComment(comment2)
+        .setImage(image)
+        .build();
+      bidiStream.send(request);
+      for (Comment responseItem : bidiStream) {
+        System.out.println(responseItem);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END turing_prog_callable_streaming_bidi_core]
+  }
+
+  public static void main(String[] args) throws Exception {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("image_file_name")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String imageFileName = cl.getOptionValue("image_file_name", "image_file.jpg");
+
+    sampleDiscussBook(imageFileName);
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END turing_prog_callable_streaming_bidi]
 ============== file: src/main/java/com/google/example/library/v1/LibraryClient.java ==============
 /*
  * Copyright 2019 Google LLC

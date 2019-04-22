@@ -34,13 +34,13 @@ import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StandardSampleImportTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -96,37 +96,38 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
   private List<ViewModel> generateSamples(GapicInterfaceContext context) {
     ImmutableList.Builder<ViewModel> viewModels = new ImmutableList.Builder<>();
     SurfaceNamer namer = context.getNamer();
-    SampleFileRegistry generatedSamples = new SampleFileRegistry();
 
-    List<OptionalArrayMethodView> allmethods = methodGenerator.generateApiMethods(context);
+    List<OptionalArrayMethodView> allMethods = methodGenerator.generateApiMethods(context);
+    List<MethodSampleView> allSamples =
+        allMethods
+            .stream()
+            .flatMap(m -> m.samples().stream())
+            .collect(ImmutableList.toImmutableList());
+    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
     DynamicLangSampleView.Builder sampleClassBuilder = DynamicLangSampleView.newBuilder();
-    for (OptionalArrayMethodView method : allmethods) {
+    for (OptionalArrayMethodView method : allMethods) {
       String subPath =
           pathMapper.getSamplesOutputPath(
-              context.getInterfaceModel().getFullName(), context.getProductConfig(), method.name());
+              context.getInterfaceModel().getFullName(),
+              context.getProductConfig(),
+              Name.lowerCamel(method.name()).toLowerUnderscore());
       for (MethodSampleView methodSample : method.samples()) {
-        String callingForm = methodSample.callingForm().toLowerCamel();
-        String valueSet = methodSample.valueSet().id();
-        String className =
-            namer.getApiSampleClassName(
-                CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, method.name()),
-                callingForm,
-                valueSet);
-        String sampleOutputPath = subPath + File.separator + namer.getApiSampleFileName(className);
+        String sampleOutputPath =
+            subPath
+                + File.separator
+                + registry.getSampleFileName(
+                    methodSample, Name.anyLower(method.name()).toLowerUnderscore());
         String autoloadPath =
             "__DIR__ . '"
                 + Strings.repeat(
                     "/..",
                     (int) sampleOutputPath.chars().filter(c -> c == File.separatorChar).count())
                 + "/vendor/autoload.php'";
-        generatedSamples.addFile(
-            sampleOutputPath, method.name(), callingForm, valueSet, methodSample.regionTag());
         viewModels.add(
             sampleClassBuilder
                 .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
                 .fileHeader(fileHeaderTransformer.generateFileHeader(context))
                 .outputPath(sampleOutputPath)
-                .className(className)
                 .libraryMethod(
                     method.toBuilder().samples(Collections.singletonList(methodSample)).build())
                 .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))

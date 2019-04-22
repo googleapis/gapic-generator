@@ -103,8 +103,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSampleFileName(String className) {
-    return className + ".java";
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toUpperCamel() + ".java";
   }
 
   @Override
@@ -423,6 +423,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public List<CallingForm> getCallingForms(MethodContext context) {
     return CallingForm.getCallingForms(context, TargetLanguage.JAVA);
+  }
+
+  @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.JAVA);
   }
 
   @Override
