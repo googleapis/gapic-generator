@@ -457,26 +457,14 @@ public class ResourceNameMessageConfigsTest {
 
     Mockito.doReturn("Book").when(protoParser).getResourceReference(bookName);
 
-    MethodConfigProto noConfig = MethodConfigProto.getDefaultInstance();
-
     ResourceNameTreatment noTreatment =
-        GapicMethodConfig.defaultResourceNameTreatment(
-            noConfig, createShelvesMethod, protoParser, DEFAULT_PACKAGE);
+        GapicMethodConfig.defaultResourceNameTreatmentFromProto(
+            createShelvesMethod, protoParser, DEFAULT_PACKAGE);
     assertThat(noTreatment).isEqualTo(ResourceNameTreatment.UNSET_TREATMENT);
 
-    MethodConfigProto staticTypesMethodConfig =
-        MethodConfigProto.newBuilder()
-            .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
-            .build();
-
-    ResourceNameTreatment resourceNameTreatment =
-        GapicMethodConfig.defaultResourceNameTreatment(
-            staticTypesMethodConfig, createShelvesMethod, protoParser, DEFAULT_PACKAGE);
-    assertThat(resourceNameTreatment).isEqualTo(ResourceNameTreatment.STATIC_TYPES);
-
     ResourceNameTreatment noConfigWithAnnotatedResourceReferenceTreatment =
-        GapicMethodConfig.defaultResourceNameTreatment(
-            noConfig, insertBook, protoParser, DEFAULT_PACKAGE);
+        GapicMethodConfig.defaultResourceNameTreatmentFromProto(
+            insertBook, protoParser, DEFAULT_PACKAGE);
     assertThat(noConfigWithAnnotatedResourceReferenceTreatment)
         .isEqualTo(ResourceNameTreatment.STATIC_TYPES);
 
