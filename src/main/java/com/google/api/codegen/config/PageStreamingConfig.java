@@ -206,6 +206,7 @@ public abstract class PageStreamingConfig {
               method.getOutputFullName()));
       resourcesFieldConfig = null;
     } else {
+      // TODO: correct resource name treatment
       ResourceNameTreatment resourceNameTreatment = ResourceNameTreatment.NONE;
       resourcesFieldConfig =
           FieldConfig.createMessageFieldConfig(
