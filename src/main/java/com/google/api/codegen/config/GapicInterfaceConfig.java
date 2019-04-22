@@ -164,7 +164,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       }
     }
 
-    ImmutableList.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableList.builder();
+    List<SingleResourceNameConfig> resourcesBuilder = new ArrayList<>();
     if (protoParser.isProtoAnnotationsEnabled()) {
       resourceNameConfigs
           .values()
@@ -194,7 +194,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
     ImmutableList<SingleResourceNameConfig> singleResourceNames =
         ImmutableList.sortedCopyOf(
-            Comparator.comparing(ResourceNameConfig::getEntityId), resourcesBuilder.build());
+            Comparator.comparing(ResourceNameConfig::getEntityId), resourcesBuilder);
 
     String manualDoc =
         Strings.nullToEmpty(
