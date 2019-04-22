@@ -4054,14 +4054,14 @@ class LibraryServiceClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this._pathTemplates = {
-      shelfPathTemplate: new gax.PathTemplate(
-        'shelves/{shelf_id}'
-      ),
       bookPathTemplate: new gax.PathTemplate(
         'shelves/{shelf_id}/books/{book_id}'
       ),
       projectPathTemplate: new gax.PathTemplate(
         'projects/{project}'
+      ),
+      shelfPathTemplate: new gax.PathTemplate(
+        'shelves/{shelf_id}'
       ),
       archivedBookPathTemplate: new gax.PathTemplate(
         'archives/{archive_path}/books/{book_id=**}'
@@ -6517,18 +6517,6 @@ class LibraryServiceClient {
   // --------------------
 
   /**
-   * Return a fully-qualified shelf resource name string.
-   *
-   * @param {String} shelfId
-   * @returns {String}
-   */
-  shelfPath(shelfId) {
-    return this._pathTemplates.shelfPathTemplate.render({
-      shelf_id: shelfId,
-    });
-  }
-
-  /**
    * Return a fully-qualified book resource name string.
    *
    * @param {String} shelfId
@@ -6555,6 +6543,18 @@ class LibraryServiceClient {
   }
 
   /**
+   * Return a fully-qualified shelf resource name string.
+   *
+   * @param {String} shelfId
+   * @returns {String}
+   */
+  shelfPath(shelfId) {
+    return this._pathTemplates.shelfPathTemplate.render({
+      shelf_id: shelfId,
+    });
+  }
+
+  /**
    * Return a fully-qualified archived_book resource name string.
    *
    * @param {String} archivePath
@@ -6566,19 +6566,6 @@ class LibraryServiceClient {
       archive_path: archivePath,
       book_id: bookId,
     });
-  }
-
-  /**
-   * Parse the shelfName from a shelf resource.
-   *
-   * @param {String} shelfName
-   *   A fully-qualified path representing a shelf resources.
-   * @returns {String} - A string representing the shelf_id.
-   */
-  matchShelfIdFromShelfName(shelfName) {
-    return this._pathTemplates.shelfPathTemplate
-      .match(shelfName)
-      .shelf_id;
   }
 
   /**
@@ -6618,6 +6605,19 @@ class LibraryServiceClient {
     return this._pathTemplates.projectPathTemplate
       .match(projectName)
       .project;
+  }
+
+  /**
+   * Parse the shelfName from a shelf resource.
+   *
+   * @param {String} shelfName
+   *   A fully-qualified path representing a shelf resources.
+   * @returns {String} - A string representing the shelf_id.
+   */
+  matchShelfIdFromShelfName(shelfName) {
+    return this._pathTemplates.shelfPathTemplate
+      .match(shelfName)
+      .shelf_id;
   }
 
   /**

@@ -2916,12 +2916,6 @@ module Library
         self::GRPC_INTERCEPTORS = LibraryServiceClient::GRPC_INTERCEPTORS
       end
 
-      SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf_id}"
-      )
-
-      private_constant :SHELF_PATH_TEMPLATE
-
       BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf_id}/books/{book_id}"
       )
@@ -2934,20 +2928,17 @@ module Library
 
       private_constant :PROJECT_PATH_TEMPLATE
 
+      SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf_id}"
+      )
+
+      private_constant :SHELF_PATH_TEMPLATE
+
       ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "archives/{archive_path}/books/{book_id=**}"
       )
 
       private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
-
-      # Returns a fully-qualified shelf resource name string.
-      # @param shelf_id [String]
-      # @return [String]
-      def self.shelf_path shelf_id
-        SHELF_PATH_TEMPLATE.render(
-          :"shelf_id" => shelf_id
-        )
-      end
 
       # Returns a fully-qualified book resource name string.
       # @param shelf_id [String]
@@ -2966,6 +2957,15 @@ module Library
       def self.project_path project
         PROJECT_PATH_TEMPLATE.render(
           :"project" => project
+        )
+      end
+
+      # Returns a fully-qualified shelf resource name string.
+      # @param shelf_id [String]
+      # @return [String]
+      def self.shelf_path shelf_id
+        SHELF_PATH_TEMPLATE.render(
+          :"shelf_id" => shelf_id
         )
       end
 

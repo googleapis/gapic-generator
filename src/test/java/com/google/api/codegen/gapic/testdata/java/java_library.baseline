@@ -2912,29 +2912,17 @@ public class LibraryClient implements BackgroundResource {
   private final LibraryServiceStub stub;
   private final OperationsClient operationsClient;
 
-  private static final PathTemplate SHELF_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
-
   private static final PathTemplate SHELF_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}/books/{book_id}");
 
   private static final PathTemplate PROJECT_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("projects/{project}");
 
+  private static final PathTemplate SHELF_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
+
   private static final PathTemplate ARCHIVED_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("archives/{archive_path}/books/{book_id=**}");
-
-  /**
-   * Formats a string containing the fully-qualified path to represent
-   * a shelf resource.
-   *
-   * @deprecated Use the {@link ShelfName} class instead.
-   */
-  @Deprecated
-  public static final String formatShelfName(String shelfId) {
-    return SHELF_PATH_TEMPLATE.instantiate(
-        "shelf_id", shelfId);
-  }
 
   /**
    * Formats a string containing the fully-qualified path to represent
@@ -2963,6 +2951,18 @@ public class LibraryClient implements BackgroundResource {
 
   /**
    * Formats a string containing the fully-qualified path to represent
+   * a shelf resource.
+   *
+   * @deprecated Use the {@link ShelfName} class instead.
+   */
+  @Deprecated
+  public static final String formatShelfName(String shelfId) {
+    return SHELF_PATH_TEMPLATE.instantiate(
+        "shelf_id", shelfId);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
    * a archived_book resource.
    *
    * @deprecated Use the {@link ArchivedBookName} class instead.
@@ -2972,17 +2972,6 @@ public class LibraryClient implements BackgroundResource {
     return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
         "archive_path", archivePath,
         "book_id", bookId);
-  }
-
-  /**
-   * Parses the shelf_id from the given fully-qualified path which
-   * represents a shelf resource.
-   *
-   * @deprecated Use the {@link ShelfName} class instead.
-   */
-  @Deprecated
-  public static final String parseShelfIdFromShelfName(String shelfName) {
-    return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf_id");
   }
 
   /**
@@ -3016,6 +3005,17 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseProjectFromProjectName(String projectName) {
     return PROJECT_PATH_TEMPLATE.parse(projectName).get("project");
+  }
+
+  /**
+   * Parses the shelf_id from the given fully-qualified path which
+   * represents a shelf resource.
+   *
+   * @deprecated Use the {@link ShelfName} class instead.
+   */
+  @Deprecated
+  public static final String parseShelfIdFromShelfName(String shelfName) {
+    return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf_id");
   }
 
   /**

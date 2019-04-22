@@ -194,9 +194,9 @@ class LibraryServiceGapicClient
         'https://www.googleapis.com/auth/cloud-platform',
         'https://www.googleapis.com/auth/library',
     ];
-    private static $shelfNameTemplate;
     private static $bookNameTemplate;
     private static $projectNameTemplate;
+    private static $shelfNameTemplate;
     private static $archivedBookNameTemplate;
     private static $pathTemplateMap;
 
@@ -220,15 +220,6 @@ class LibraryServiceGapicClient
         ];
     }
 
-    private static function getShelfNameTemplate()
-    {
-        if (self::$shelfNameTemplate == null) {
-            self::$shelfNameTemplate = new PathTemplate('shelves/{shelf_id}');
-        }
-
-        return self::$shelfNameTemplate;
-    }
-
     private static function getBookNameTemplate()
     {
         if (self::$bookNameTemplate == null) {
@@ -247,6 +238,15 @@ class LibraryServiceGapicClient
         return self::$projectNameTemplate;
     }
 
+    private static function getShelfNameTemplate()
+    {
+        if (self::$shelfNameTemplate == null) {
+            self::$shelfNameTemplate = new PathTemplate('shelves/{shelf_id}');
+        }
+
+        return self::$shelfNameTemplate;
+    }
+
     private static function getArchivedBookNameTemplate()
     {
         if (self::$archivedBookNameTemplate == null) {
@@ -261,29 +261,14 @@ class LibraryServiceGapicClient
     {
         if (self::$pathTemplateMap == null) {
             self::$pathTemplateMap = [
-                'shelf' => self::getShelfNameTemplate(),
                 'book' => self::getBookNameTemplate(),
                 'project' => self::getProjectNameTemplate(),
+                'shelf' => self::getShelfNameTemplate(),
                 'archivedBook' => self::getArchivedBookNameTemplate(),
             ];
         }
         return self::$pathTemplateMap;
     }
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a shelf resource.
-     *
-     * @param string $shelfId
-     * @return string The formatted shelf resource.
-     * @experimental
-     */
-    public static function shelfName($shelfId)
-    {
-        return self::getShelfNameTemplate()->render([
-            'shelf_id' => $shelfId,
-        ]);
-    }
-
     /**
      * Formats a string containing the fully-qualified path to represent
      * a book resource.
@@ -318,6 +303,21 @@ class LibraryServiceGapicClient
 
     /**
      * Formats a string containing the fully-qualified path to represent
+     * a shelf resource.
+     *
+     * @param string $shelfId
+     * @return string The formatted shelf resource.
+     * @experimental
+     */
+    public static function shelfName($shelfId)
+    {
+        return self::getShelfNameTemplate()->render([
+            'shelf_id' => $shelfId,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
      * a archived_book resource.
      *
      * @param string $archivePath
@@ -337,9 +337,9 @@ class LibraryServiceGapicClient
      * Parses a formatted name string and returns an associative array of the components in the name.
      * The following name formats are supported:
      * Template: Pattern
-     * - shelf: shelves/{shelf_id}
      * - book: shelves/{shelf_id}/books/{book_id}
      * - project: projects/{project}
+     * - shelf: shelves/{shelf_id}
      * - archivedBook: archives/{archive_path}/books/{book_id=**}
      *
      * The optional $template argument can be supplied to specify a particular pattern, and must

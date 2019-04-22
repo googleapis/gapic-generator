@@ -1145,14 +1145,6 @@ class LibraryServiceClient(object):
 
 
     @classmethod
-    def shelf_path(cls, shelf_id):
-        """Return a fully-qualified shelf string."""
-        return google.api_core.path_template.expand(
-            'shelves/{shelf_id}',
-            shelf_id=shelf_id,
-        )
-
-    @classmethod
     def book_path(cls, shelf_id, book_id):
         """Return a fully-qualified book string."""
         return google.api_core.path_template.expand(
@@ -1167,6 +1159,14 @@ class LibraryServiceClient(object):
         return google.api_core.path_template.expand(
             'projects/{project}',
             project=project,
+        )
+
+    @classmethod
+    def shelf_path(cls, shelf_id):
+        """Return a fully-qualified shelf string."""
+        return google.api_core.path_template.expand(
+            'shelves/{shelf_id}',
+            shelf_id=shelf_id,
         )
 
     @classmethod
