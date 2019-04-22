@@ -118,8 +118,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSampleFileName(String className) {
-    return Name.anyCamel(className).toLowerUnderscore() + ".js";
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toLowerUnderscore() + ".js";
   }
 
   @Override
@@ -637,5 +637,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public List<CallingForm> getCallingForms(MethodContext context) {
     return CallingForm.getCallingForms(context, TargetLanguage.NODEJS);
+  }
+
+  @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.NODEJS);
   }
 }

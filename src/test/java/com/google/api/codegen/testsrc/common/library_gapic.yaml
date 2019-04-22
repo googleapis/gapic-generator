@@ -139,6 +139,21 @@ interfaces:
     timeout_millis: 2000
     field_name_patterns:
       name: shelf
+    sample_value_sets:
+    - id: test_default_calling_form_unary
+      title: test_default_calling_form_unary
+      description: "Test default calling forms for unary methods."
+      parameters:
+        defaults:
+        - name%shelf_id="my-shelf"
+      on_success:
+      - print:
+          - "The theme of the shelf is: %s"
+          - $resp.theme
+    samples:
+      standalone:
+      - region_tag: sample_get_shelf
+        value_sets: test_default_calling_form_unary
   - name: ListShelves
     flattening:
       groups:
@@ -152,6 +167,18 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 3000
+    sample_value_sets:
+    - id: "test_default_calling_form_paging"
+      title: "test default calling form for paging"
+      description: "Test default calling form for paging methods."
+      on_success:
+        - print:
+          - "shelf name: %s"
+          - $resp
+    samples:
+      standalone:
+      - value_sets: [test_default_calling_form_paging]
+        region_tag: "test_default_calling_form_for_paging"
   - name: DeleteShelf
     flattening:
       groups:
@@ -901,7 +928,6 @@ interfaces:
       - comment:
         - "Testing iterating over map fields when only value is specified."
       - loop:
-
           map: $resp.map_list_value_value
           value: another_value
           body:
@@ -933,6 +959,8 @@ interfaces:
       - calling_forms: ".*"
         value_sets: ".*"
         region_tag: hopper
+      - value_sets: wap
+        region_tag: "this_tag_should_be_the_name_of_the_file"
   - name: GetBigNothing
     flattening:
       groups:

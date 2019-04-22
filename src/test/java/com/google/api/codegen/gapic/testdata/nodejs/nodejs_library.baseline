@@ -355,51 +355,6 @@ function sampleDeleteShelf() {
 // tslint:disable-next-line:no-any
 
 sampleDeleteShelf();
-============== file: src/samples/v1/discuss_book_request_streaming_bidi_prog.js ==============
-// DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
-'use strict';
-
-// [START turing_prog_request_streaming_bidi]
-// [START turing_prog_request_streaming_bidi_core]
-
-const library = require('@google-cloud/library').v1;
-
-const fs = require('fs');
-/** Testing calling forms */
-function sampleDiscussBook(imageFileName) {
-  const client = new library.LibraryServiceClient();
-  const stream = client.discussBook().on('data', response => {
-    console.log(response);
-  });
-  // const imageFileName = 'image_file.jpg';
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-  const comment = fs.readFileSync('comment_file').toString('base64');
-  const comment2 = {
-    comment: comment,
-  };
-  const image = fs.readFileSync(imageFileName).toString('base64');
-  const request = {
-    name: formattedName,
-    comment: comment2,
-    image: image,
-  };
-  // Write request objects.
-  stream.write(request);
-}
-
-
-// [END turing_prog_request_streaming_bidi_core]
-// [END turing_prog_request_streaming_bidi]
-// tslint:disable-next-line:no-any
-
-const argv = require(`yargs`)
-  .option('image_file_name', {
-    default: 'image_file.jpg',
-    string: true
-  })
-  .argv;
-
-sampleDiscussBook(argv.image_file_name);
 ============== file: src/samples/v1/find_related_books_request_async_paged_all_odyssey.js ==============
 // DO NOT EDIT! This is a generated sample ("RequestAsyncPagedAll",  "odyssey")
 'use strict';
@@ -1119,6 +1074,30 @@ function sampleGetBook() {
 // tslint:disable-next-line:no-any
 
 sampleGetBook();
+============== file: src/samples/v1/lovelace.js ==============
+// DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
+'use strict';
+
+// [START lovelace]
+// [START lovelace_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Testing calling forms */
+function sampleStreamBooks() {
+  const client = new library.LibraryServiceClient();
+  const name = 'BASIC';
+    client.streamBooks({name: name}).on('data', response => {
+      console.log(response);
+    });
+}
+
+
+// [END lovelace_core]
+// [END lovelace]
+// tslint:disable-next-line:no-any
+
+sampleStreamBooks();
 ============== file: src/samples/v1/monolog_about_book_request_streaming_client_prog.js ==============
 // DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
 'use strict';
@@ -1375,30 +1354,40 @@ function samplePublishSeries() {
 // tslint:disable-next-line:no-any
 
 samplePublishSeries();
-============== file: src/samples/v1/stream_books_request_streaming_server_prog.js ==============
-// DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
+============== file: src/samples/v1/sample_get_shelf.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
 'use strict';
 
-// [START lovelace]
-// [START lovelace_core]
+// [START sample_get_shelf]
+// [START sample_get_shelf_core]
 
 const library = require('@google-cloud/library').v1;
 
-/** Testing calling forms */
-function sampleStreamBooks() {
+/** Test default calling forms for unary methods. */
+function sampleGetShelf() {
   const client = new library.LibraryServiceClient();
-  const name = 'BASIC';
-    client.streamBooks({name: name}).on('data', response => {
-      console.log(response);
+  const formattedName = client.shelfPath('my-shelf');
+  const options = '';
+  const request = {
+    name: formattedName,
+    options: options,
+  };
+  client.getShelf(request)
+    .then(responses => {
+      const response = responses[0];
+      console.log(`The theme of the shelf is: ${response.theme}`);
+    })
+    .catch(err => {
+      console.error(err);
     });
 }
 
 
-// [END lovelace_core]
-// [END lovelace]
+// [END sample_get_shelf_core]
+// [END sample_get_shelf]
 // tslint:disable-next-line:no-any
 
-sampleStreamBooks();
+sampleGetShelf();
 ============== file: src/samples/v1/stream_shelves_request_streaming_server_empty.js ==============
 // DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
 'use strict';
@@ -1423,6 +1412,104 @@ function sampleStreamShelves() {
 // tslint:disable-next-line:no-any
 
 sampleStreamShelves();
+============== file: src/samples/v1/this_tag_should_be_the_name_of_the_file.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap")
+'use strict';
+
+// [START this_tag_should_be_the_name_of_the_file]
+// [START this_tag_should_be_the_name_of_the_file_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Testing calling forms */
+async function sampleGetBigBook(shelf) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  const formattedName = client.bookPath(shelf, 'War and Peace');
+
+  // Create a job whose results you can either wait for now, or get later
+  const [operation] = await client.getBigBook({name: formattedName});
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+
+  // Testing iterating over map fields when both key and value are specified.
+  for (const [myKey, myValue] of Object.entries(response.mapListValueValue)) {
+    console.log(`key: ${myKey}, value: ${myValue}`);
+  }
+
+  // Testing iterating over map fields when only key is specified.
+  for (const anotherKey of Object.keys(response.mapListValueValue)) {
+    console.log(`key: ${anotherKey}`);
+  }
+
+  // Testing iterating over map fields when only value is specified.
+  for (const anotherValue of Object.values(response.mapListValueValue)) {
+    console.log(`value: ${anotherValue}`);
+  }
+
+  console.log(`name: ${response.name}`);
+  console.log(`author: ${response.author}`);
+}
+
+
+// [END this_tag_should_be_the_name_of_the_file_core]
+// [END this_tag_should_be_the_name_of_the_file]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .option('shelf', {
+    default: 'Novel',
+    string: true
+  })
+  .argv;
+
+sampleGetBigBook(argv.shelf).catch(console.error);
+============== file: src/samples/v1/turing_prog_request_streaming_bidi.js ==============
+// DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+'use strict';
+
+// [START turing_prog_request_streaming_bidi]
+// [START turing_prog_request_streaming_bidi_core]
+
+const library = require('@google-cloud/library').v1;
+
+const fs = require('fs');
+/** Testing calling forms */
+function sampleDiscussBook(imageFileName) {
+  const client = new library.LibraryServiceClient();
+  const stream = client.discussBook().on('data', response => {
+    console.log(response);
+  });
+  // const imageFileName = 'image_file.jpg';
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const comment = fs.readFileSync('comment_file').toString('base64');
+  const comment2 = {
+    comment: comment,
+  };
+  const image = fs.readFileSync(imageFileName).toString('base64');
+  const request = {
+    name: formattedName,
+    comment: comment2,
+    image: image,
+  };
+  // Write request objects.
+  stream.write(request);
+}
+
+
+// [END turing_prog_request_streaming_bidi_core]
+// [END turing_prog_request_streaming_bidi]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .option('image_file_name', {
+    default: 'image_file.jpg',
+    string: true
+  })
+  .argv;
+
+sampleDiscussBook(argv.image_file_name);
 ============== file: src/v1/doc/google/example/library/v1/doc_another_service.js ==============
 // Copyright 2019 Google LLC
 //

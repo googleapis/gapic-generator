@@ -154,8 +154,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSampleFileName(String className) {
-    return Name.anyCamel(className).toLowerUnderscore() + ".py";
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toLowerUnderscore() + ".py";
   }
 
   @Override
@@ -554,5 +554,10 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public List<CallingForm> getCallingForms(MethodContext context) {
     return CallingForm.getCallingForms(context, TargetLanguage.PYTHON);
+  }
+
+  @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.PYTHON);
   }
 }
