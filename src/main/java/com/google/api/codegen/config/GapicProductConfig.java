@@ -35,6 +35,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
@@ -47,17 +48,16 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
@@ -279,16 +279,18 @@ public abstract class GapicProductConfig implements ProductConfig {
         getInterfacesFromProtoFile(diagCollector, sourceProtos, symbolTable);
 
     ImmutableList<GapicInterfaceInput> interfaceInputs;
-    if (!configProto.equals(ConfigProto.getDefaultInstance())) {
+    if (protoParser.isProtoAnnotationsEnabled()) {
       interfaceInputs =
-          createInterfaceInputsWithGapicConfig(
+          createInterfaceInputsWithAnnotationsAndGapicConfig(
+              diagCollector, configProto.getInterfacesList(), protoInterfaces, language);
+    } else {
+      interfaceInputs =
+          createInterfaceInputsWithGapicConfigOnly(
               diagCollector,
               configProto.getInterfacesList(),
               protoInterfaces,
               symbolTable,
               language);
-    } else {
-      interfaceInputs = createInterfaceInputsWithoutGapicConfig(protoInterfaces.values());
     }
     if (interfaceInputs == null) {
       return null;
@@ -475,7 +477,22 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   /** Return the list of information about clients to be generated. */
-  private static ImmutableList<GapicInterfaceInput> createInterfaceInputsWithGapicConfig(
+  private static ImmutableList<GapicInterfaceInput>
+      createInterfaceInputsWithAnnotationsAndGapicConfig(
+          DiagCollector diagCollector,
+          List<InterfaceConfigProto> interfaceConfigProtosList,
+          ImmutableMap<String, Interface> protoInterfaces,
+          TargetLanguage language) {
+    return createGapicInterfaceInputList(
+        diagCollector,
+        language,
+        protoInterfaces.values(),
+        interfaceConfigProtosList
+            .stream()
+            .collect(Collectors.toMap(InterfaceConfigProto::getName, Function.identity())));
+  }
+
+  private static ImmutableList<GapicInterfaceInput> createInterfaceInputsWithGapicConfigOnly(
       DiagCollector diagCollector,
       List<InterfaceConfigProto> interfaceConfigProtosList,
       ImmutableMap<String, Interface> protoInterfaces,
@@ -491,11 +508,27 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Parse GAPIC config for interfaceConfigProtos.
     for (InterfaceConfigProto interfaceConfigProto : interfaceConfigProtosList) {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
-      if (apiInterface == null || !apiInterface.isReachable()) {
+      if (apiInterface == null) {
+        List<String> interfaces =
+            symbolTable
+                .getInterfaces()
+                .stream()
+                .map(ProtoElement::getFullName)
+                .collect(Collectors.toList());
+        String interfacesString = String.join(",", interfaces);
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "interface not found: %s",
+                "interface not found: %s. Interfaces: [%s]",
+                interfaceConfigProto.getName(),
+                interfacesString));
+        continue;
+      }
+      if (!apiInterface.isReachable()) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "interface not reachable: %s.",
                 interfaceConfigProto.getName()));
         continue;
       }
@@ -503,11 +536,20 @@ public abstract class GapicProductConfig implements ProductConfig {
       interfaceMap.put(interfaceConfigProto.getName(), apiInterface);
     }
 
+    return createGapicInterfaceInputList(
+        diagCollector, language, interfaceMap.values(), interfaceConfigProtos);
+  }
+
+  private static ImmutableList<GapicInterfaceInput> createGapicInterfaceInputList(
+      DiagCollector diagCollector,
+      TargetLanguage language,
+      Iterable<Interface> interfaceList,
+      Map<String, InterfaceConfigProto> interfaceConfigProtos) {
+
     // Store info about each Interface in a GapicInterfaceInput object.
     ImmutableList.Builder<GapicInterfaceInput> interfaceInputs = ImmutableList.builder();
-    for (Entry<String, Interface> interfaceEntry : interfaceMap.entrySet()) {
-      String serviceFullName = interfaceEntry.getKey();
-      Interface apiInterface = interfaceEntry.getValue();
+    for (Interface apiInterface : interfaceList) {
+      String serviceFullName = apiInterface.getFullName();
       GapicInterfaceInput.Builder interfaceInput =
           GapicInterfaceInput.newBuilder().setInterface(apiInterface);
 
@@ -550,22 +592,6 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
     return protoInterfaces.build();
-  }
-
-  /** Return the list of information about clients to be generated. */
-  private static ImmutableList<GapicInterfaceInput> createInterfaceInputsWithoutGapicConfig(
-      Collection<Interface> protoInterfaces) {
-    // Store info about each Interface in a GapicInterfaceInput object.
-    ImmutableList.Builder<GapicInterfaceInput> interfaceInputs = ImmutableList.builder();
-    for (Interface apiInterface : protoInterfaces) {
-      GapicInterfaceInput.Builder interfaceInput =
-          GapicInterfaceInput.newBuilder()
-              .setInterface(apiInterface)
-              .setInterfaceConfigProto(InterfaceConfigProto.getDefaultInstance())
-              .setMethodsToGenerate(findMethodsToGenerateWithoutConfigYaml(apiInterface));
-      interfaceInputs.add(interfaceInput.build());
-    }
-    return interfaceInputs.build();
   }
 
   /** Find the methods that should be generated on the surface when no GAPIC config was given. */
