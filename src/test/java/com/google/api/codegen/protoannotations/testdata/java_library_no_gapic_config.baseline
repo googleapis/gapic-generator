@@ -1955,7 +1955,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookFromAnywhere response = libraryServiceClient.getBookFromAnywhere(name, altBookName);
    * }
@@ -1983,7 +1983,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookFromAnywhere response = libraryServiceClient.getBookFromAnywhere(name.toString(), altBookName.toString());
    * }
@@ -2011,7 +2011,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
@@ -2035,7 +2035,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
@@ -2058,7 +2058,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookFromAnywhere response = libraryServiceClient.getBookFromAbsolutelyAnywhere(name);
    * }
    * </code></pre>
@@ -2082,7 +2082,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   BookFromAnywhere response = libraryServiceClient.getBookFromAbsolutelyAnywhere(name.toString());
    * }
    * </code></pre>
@@ -2106,7 +2106,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2128,7 +2128,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookName name = DeletedBookName.of();
+   *   BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -2864,7 +2864,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *   ByteString optionalSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
    *   BookName optionalSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-   *   BookName optionalSingularResourceNameOneof = DeletedBookName.of();
+   *   BookName optionalSingularResourceNameOneof = BookName.of("[SHELF_ID]", "[BOOK_ID]");
    *   ProjectName optionalSingularResourceNameCommon = ProjectName.of("[PROJECT]");
    *   int optionalSingularFixed32 = 0;
    *   long optionalSingularFixed64 = 0L;
@@ -3155,7 +3155,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *   ByteString optionalSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
    *   String formattedOptionalSingularResourceName = BookName.format("[SHELF_ID]", "[BOOK_ID]");
-   *   String formattedOptionalSingularResourceNameOneof = DeletedBookName.format();
+   *   String formattedOptionalSingularResourceNameOneof = BookName.format("[SHELF_ID]", "[BOOK_ID]");
    *   String formattedOptionalSingularResourceNameCommon = ProjectName.format("[PROJECT]");
    *   int optionalSingularFixed32 = 0;
    *   long optionalSingularFixed64 = 0L;
@@ -8279,6 +8279,9 @@ public class MyProtoStubSettings extends StubSettings<MyProtoStubSettings> {
     static {
       ImmutableMap.Builder<String, ImmutableSet<StatusCode.Code>> definitions = ImmutableMap.builder();
       definitions.put(
+          "idempotent",
+          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
+      definitions.put(
           "non_idempotent",
           ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
       RETRYABLE_CODE_DEFINITIONS = definitions.build();
@@ -8809,7 +8812,7 @@ public class LibraryServiceClientTest {
   @Test
   @SuppressWarnings("all")
   public void createBookTest() {
-    BookName name2 = DeletedBookName.of();
+    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -8908,7 +8911,7 @@ public class LibraryServiceClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookTest() {
-    BookName name2 = DeletedBookName.of();
+    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9043,7 +9046,7 @@ public class LibraryServiceClientTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookTest() {
-    BookName name2 = DeletedBookName.of();
+    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9094,7 +9097,7 @@ public class LibraryServiceClientTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookTest2() {
-    BookName name2 = DeletedBookName.of();
+    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9154,7 +9157,7 @@ public class LibraryServiceClientTest {
   @Test
   @SuppressWarnings("all")
   public void moveBookTest() {
-    BookName name2 = DeletedBookName.of();
+    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9394,7 +9397,7 @@ public class LibraryServiceClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromAnywhereTest() {
-    BookName name2 = DeletedBookName.of();
+    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9406,7 +9409,7 @@ public class LibraryServiceClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = DeletedBookName.of();
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
 
     BookFromAnywhere actualResponse =
@@ -9432,7 +9435,7 @@ public class LibraryServiceClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = DeletedBookName.of();
+      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
       BookName altBookName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
 
       client.getBookFromAnywhere(name, altBookName);
@@ -9445,7 +9448,7 @@ public class LibraryServiceClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromAbsolutelyAnywhereTest() {
-    BookName name2 = DeletedBookName.of();
+    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9457,7 +9460,7 @@ public class LibraryServiceClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = DeletedBookName.of();
+    BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
 
     BookFromAnywhere actualResponse =
         client.getBookFromAbsolutelyAnywhere(name);
@@ -9481,7 +9484,7 @@ public class LibraryServiceClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = DeletedBookName.of();
+      BookName name = BookName.of("[SHELF_ID]", "[BOOK_ID]");
 
       client.getBookFromAbsolutelyAnywhere(name);
       Assert.fail("No exception raised");
@@ -9583,7 +9586,7 @@ public class LibraryServiceClientTest {
   @Test
   @SuppressWarnings("all")
   public void streamBooksTest() throws Exception {
-    BookName name2 = DeletedBookName.of();
+    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9752,7 +9755,7 @@ public class LibraryServiceClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBigBookTest() throws Exception {
-    BookName name2 = DeletedBookName.of();
+    BookName name2 = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -9937,7 +9940,7 @@ public class LibraryServiceClientTest {
     ByteString optionalSingularBytes = ByteString.copyFromUtf8("2");
     TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
     BookName optionalSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-    BookName optionalSingularResourceNameOneof = DeletedBookName.of();
+    BookName optionalSingularResourceNameOneof = BookName.of("[SHELF_ID]", "[BOOK_ID]");
     ProjectName optionalSingularResourceNameCommon = ProjectName.of("[PROJECT]");
     int optionalSingularFixed32 = 1648847958;
     long optionalSingularFixed64 = 1648847863;
@@ -10139,7 +10142,7 @@ public class LibraryServiceClientTest {
       ByteString optionalSingularBytes = ByteString.copyFromUtf8("2");
       TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
       BookName optionalSingularResourceName = BookName.of("[SHELF_ID]", "[BOOK_ID]");
-      BookName optionalSingularResourceNameOneof = DeletedBookName.of();
+      BookName optionalSingularResourceNameOneof = BookName.of("[SHELF_ID]", "[BOOK_ID]");
       ProjectName optionalSingularResourceNameCommon = ProjectName.of("[PROJECT]");
       int optionalSingularFixed32 = 1648847958;
       long optionalSingularFixed64 = 1648847863;

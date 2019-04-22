@@ -90,6 +90,7 @@ public abstract class PageStreamingConfig {
     return getResourcesField().getSimpleName();
   }
 
+  // TODO(andrealin): combine this with the protofile one, pass in resourcenametreatment as param
   /**
    * Creates an instance of PageStreamingConfig based on PageStreamingConfigProto, linking it up
    * with the provided method. On errors, null will be returned, and diagnostics are reported to the

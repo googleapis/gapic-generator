@@ -35,6 +35,7 @@ import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Diag.Kind;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -70,6 +71,7 @@ public class ResourceNameMessageConfigsTest {
   private static final MessageType bookMessage = Mockito.mock(MessageType.class);
   private static final ProtoFile protoFile = Mockito.mock(ProtoFile.class);
   private static final ImmutableList<ProtoFile> sourceProtoFiles = ImmutableList.of(protoFile);
+  private static final Interface anInterface = Mockito.mock(Interface.class);
   private static final Method insertBook = Mockito.mock(Method.class);
 
   private static final String DEFAULT_PACKAGE = "library";
@@ -172,6 +174,8 @@ public class ResourceNameMessageConfigsTest {
 
     Mockito.doReturn(bookMessage).when(insertBook).getInputMessage();
     Mockito.doReturn(protoFile).when(bookMessage).getParent();
+    Mockito.doReturn(ImmutableList.of(anInterface)).when(protoFile).getInterfaces();
+    Mockito.doReturn("library.LibraryService").when(anInterface).getFullName();
     // Mockito.doReturn("Book").when(protoParser).getResourceReference(bookName);
   }
 
@@ -271,6 +275,7 @@ public class ResourceNameMessageConfigsTest {
 
     Map<String, ResourceNameConfig> resourceNameConfigs =
         GapicProductConfig.createResourceNameConfigsWithProtoFileAndGapicConfig(
+            null,
             diagCollector,
             configProto,
             protoFile,
@@ -364,6 +369,7 @@ public class ResourceNameMessageConfigsTest {
             protoParser);
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         GapicProductConfig.createResourceNameConfigsWithProtoFileAndGapicConfig(
+            null,
             diagCollector,
             extraConfigProto,
             protoFile,

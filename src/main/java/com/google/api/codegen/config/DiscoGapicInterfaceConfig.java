@@ -71,8 +71,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
-    RetryCodesConfig retryCodesConfig =
-        RetryCodesConfig.create(model.getDiagCollector(), interfaceConfigProto);
+    RetryCodesConfig retryCodesConfig = RetryCodesConfig.create(interfaceConfigProto);
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
