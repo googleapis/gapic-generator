@@ -88,7 +88,10 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
    * returned, and diagnostics are reported to the diag collector.
    */
   static SingleResourceNameConfig createSingleResourceName(
-      Resource resource, String pathTemplate, ProtoFile file, DiagCollector diagCollector) {
+      Resource resource,
+      String pathTemplate,
+      @Nullable ProtoFile file,
+      DiagCollector diagCollector) {
     PathTemplate nameTemplate;
     try {
       nameTemplate = PathTemplate.create(pathTemplate);

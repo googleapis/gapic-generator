@@ -104,6 +104,7 @@ public class LongRunningConfigTest {
 
   @Test
   public void testCreateLROWithoutGapicConfig() {
+    Mockito.when(protoParser.isProtoAnnotationsEnabled()).thenReturn(true);
     DiagCollector diagCollector = new BoundedDiagCollector();
     LongRunningConfig longRunningConfig =
         LongRunningConfig.createLongRunningConfig(
@@ -120,19 +121,20 @@ public class LongRunningConfigTest {
     ProtoTypeRef returnTypeModel = (ProtoTypeRef) longRunningConfig.getReturnType();
     assertThat(returnTypeModel.getProtoType()).isEqualTo(annotationsReturnType);
 
-    assertThat(longRunningConfig.getInitialPollDelay().toMillis())
+    assertThat(longRunningConfig.getInitialPollDelay())
         .isEqualTo(LongRunningConfig.LRO_INITIAL_POLL_DELAY_MILLIS);
-    assertThat(longRunningConfig.getMaxPollDelay().toMillis())
+    assertThat(longRunningConfig.getMaxPollDelay())
         .isEqualTo(LongRunningConfig.LRO_MAX_POLL_DELAY_MILLIS);
     assertThat(longRunningConfig.getPollDelayMultiplier())
         .isEqualTo(LongRunningConfig.LRO_POLL_DELAY_MULTIPLIER);
-    assertThat(longRunningConfig.getTotalPollTimeout().toMillis())
+    assertThat(longRunningConfig.getTotalPollTimeout())
         .isEqualTo(LongRunningConfig.LRO_TOTAL_POLL_TIMEOUT_MILLS);
   }
 
   @Test
   public void testCreateLROWithGapicConfigOnly() {
     DiagCollector diagCollector = new BoundedDiagCollector();
+    Mockito.when(protoParser.isProtoAnnotationsEnabled()).thenReturn(false);
 
     // simpleMethod has no LRO proto annotations.
     // lroConfigProtoWithPollSettings contains LRO settings.
@@ -160,6 +162,7 @@ public class LongRunningConfigTest {
   @Test
   public void testCreateLROWithAnnotationsOverridingGapicConfig() {
     DiagCollector diagCollector = new BoundedDiagCollector();
+    Mockito.when(protoParser.isProtoAnnotationsEnabled()).thenReturn(true);
 
     // lroAnnotatedMethod contains different settings than that in lroConfigProtoWithPollSettings.
     LongRunningConfig longRunningConfig =
@@ -169,24 +172,25 @@ public class LongRunningConfigTest {
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(longRunningConfig).isNotNull();
 
-    // Assert that proto annotations settings take precendence over gapic config.
+    // Assert that proto annotations settings take precendence over gapic config for
+    // return and metadata types.
     ProtoTypeRef metadataTypeModel = (ProtoTypeRef) longRunningConfig.getMetadataType();
     assertThat(metadataTypeModel.getProtoType()).isEqualTo(annotationsMetadataType);
     ProtoTypeRef returnTypeModel = (ProtoTypeRef) longRunningConfig.getReturnType();
     assertThat(returnTypeModel.getProtoType()).isEqualTo(annotationsReturnType);
 
+    // Assert that GAPIC config timeout values are used.
     assertThat(longRunningConfig.getInitialPollDelay().toMillis())
-        .isEqualTo(LongRunningConfig.LRO_INITIAL_POLL_DELAY_MILLIS);
-    assertThat(longRunningConfig.getMaxPollDelay().toMillis())
-        .isEqualTo(LongRunningConfig.LRO_MAX_POLL_DELAY_MILLIS);
-    assertThat(longRunningConfig.getPollDelayMultiplier())
-        .isEqualTo(LongRunningConfig.LRO_POLL_DELAY_MULTIPLIER);
+        .isEqualTo(TEST_INITIAL_POLL_DELAY);
+    assertThat(longRunningConfig.getMaxPollDelay().toMillis()).isEqualTo(TEST_MAX_POLL_DELAY);
+    assertThat(longRunningConfig.getPollDelayMultiplier()).isEqualTo(TEST_POLL_DELAY_MULTIPLIER);
     assertThat(longRunningConfig.getTotalPollTimeout().toMillis())
-        .isEqualTo(LongRunningConfig.LRO_TOTAL_POLL_TIMEOUT_MILLS);
+        .isEqualTo(TEST_TOTAL_POLL_TIMEOUT);
   }
 
   @Test
   public void testCreateSameLROFromProtoFileAndGapicConfig() {
+    Mockito.when(protoParser.isProtoAnnotationsEnabled()).thenReturn(true);
     // Given a Protobuf LRO method annotated with the same Return and Metadata Type
     // as in the GAPIC config, use the GAPIC config settings.
     DiagCollector diagCollector = new BoundedDiagCollector();
