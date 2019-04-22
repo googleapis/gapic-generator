@@ -235,18 +235,33 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     for (Entry<Method, MethodConfigProto> methodEntry : methodsToGenerate.entrySet()) {
       MethodConfigProto methodConfigProto = methodEntry.getValue();
       Method method = methodEntry.getKey();
-      GapicMethodConfig methodConfig =
-          GapicMethodConfig.createMethodConfig(
-              diagCollector,
-              language,
-              defaultPackageName,
-              methodConfigProto,
-              method,
-              messageConfigs,
-              resourceNameConfigs,
-              retryCodesConfig,
-              retryParamsConfigNames,
-              protoParser);
+      GapicMethodConfig methodConfig;
+      if (protoParser.isProtoAnnotationsEnabled()) {
+        methodConfig =
+            GapicMethodConfig.createGapicMethodConfigFromProto(
+                diagCollector,
+                language,
+                defaultPackageName,
+                methodConfigProto,
+                method,
+                messageConfigs,
+                resourceNameConfigs,
+                retryCodesConfig,
+                retryParamsConfigNames,
+                protoParser);
+      } else {
+        methodConfig =
+            GapicMethodConfig.createGapicMethodConfigFromGapicYaml(
+                diagCollector,
+                language,
+                defaultPackageName,
+                methodConfigProto,
+                method,
+                messageConfigs,
+                resourceNameConfigs,
+                retryCodesConfig,
+                retryParamsConfigNames);
+      }
       if (methodConfig == null) {
         continue;
       }
