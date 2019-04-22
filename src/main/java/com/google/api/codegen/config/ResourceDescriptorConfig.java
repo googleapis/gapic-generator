@@ -96,36 +96,122 @@ public abstract class ResourceDescriptorConfig {
     return getUnqualifiedTypeName(getUnifiedResourceType());
   }
 
-  public List<SingleResourceNameConfig> buildSingleResourceNameConfigs(
+  private static ArrayList<ResourceNameConfig> buildSingleResourceNameConfigs(
+      List<String> patterns,
+      Map<String, Name> nameMap,
+      ProtoFile protoFile,
       DiagCollector diagCollector) {
     try {
-      Map<String, Name> nameMap = buildEntityNameMap();
-      return getPatterns()
+      return patterns
           .stream()
           .map(
               (String p) ->
                   SingleResourceNameConfig.newBuilder()
                       .setNamePattern(p)
                       .setNameTemplate(PathTemplate.create(p))
-                      .setAssignedProtoFile(getAssignedProtoFile())
+                      .setAssignedProtoFile(protoFile)
                       .setEntityId(nameMap.get(p).toUpperCamel())
                       .setEntityName(nameMap.get(p))
                       .build())
-          .collect(Collectors.toList());
+          .collect(Collectors.toCollection(ArrayList::new));
     } catch (ValidationException e) {
       // Catch exception that may be thrown by PathTemplate.create
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
-      return ImmutableList.of();
+      return new ArrayList<>();
     }
   }
 
-  public ResourceNameOneofConfig buildResourceNameOneofConfig(DiagCollector diagCollector) {
-    String oneofId = getUnqualifiedTypeName() + "Oneof";
-    return new AutoValue_ResourceNameOneofConfig(
-        oneofId,
-        Name.anyCamel(oneofId),
-        ImmutableList.copyOf(buildSingleResourceNameConfigs(diagCollector)),
-        getAssignedProtoFile());
+  public List<ResourceNameConfig> buildResourceNameConfigs(DiagCollector diagCollector) {
+    HashMap<String, Name> entityNameMap = buildEntityNameMap(getPatterns());
+    Name unqualifiedTypeName = Name.anyCamel(getUnqualifiedTypeName());
+    for (String key : entityNameMap.keySet()) {
+      if (key.equals(getSinglePattern())) {
+        entityNameMap.put(key, unqualifiedTypeName);
+      } else {
+        entityNameMap.put(key, entityNameMap.get(key).join(unqualifiedTypeName));
+      }
+    }
+
+    ArrayList<ResourceNameConfig> resourceNameConfigs =
+        buildSingleResourceNameConfigs(
+            getPatterns(), entityNameMap, getAssignedProtoFile(), diagCollector);
+
+    if (getRequiresOneofConfig()) {
+      String oneofId = getUnqualifiedTypeName() + "Oneof";
+      resourceNameConfigs.add(
+          new AutoValue_ResourceNameOneofConfig(
+              oneofId,
+              Name.anyCamel(oneofId),
+              ImmutableList.copyOf(resourceNameConfigs),
+              getAssignedProtoFile()));
+    }
+    return resourceNameConfigs;
+  }
+
+  public List<ResourceNameConfig> buildParentResourceNameConfigs(DiagCollector diagCollector) {
+    List<String> parentPatterns = getParentPatterns();
+    HashMap<String, Name> entityNameMap = buildEntityNameMap(parentPatterns);
+    ArrayList<ResourceNameConfig> resourceNameConfigs =
+        buildSingleResourceNameConfigs(
+            parentPatterns, entityNameMap, getAssignedProtoFile(), diagCollector);
+
+    if (parentPatterns.size() > 1) {
+      String oneofId = "ParentOneof";
+      resourceNameConfigs.add(
+          new AutoValue_ResourceNameOneofConfig(
+              oneofId,
+              Name.anyCamel(oneofId),
+              ImmutableList.copyOf(resourceNameConfigs),
+              getAssignedProtoFile()));
+    }
+    return resourceNameConfigs;
+  }
+
+  public String getDerivedParentEntityName() {
+    List<String> parentPatterns = getParentPatterns();
+    if (parentPatterns.size() == 0) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Unexpected error - size of getParentPatterns is zero. patterns: [%s]",
+              String.join(", ", getPatterns())));
+    }
+    if (parentPatterns.size() > 1) {
+      return "ParentOneof";
+    } else {
+      List<String> segments = getSegments(parentPatterns.get(0));
+      if (segments.size() == 0) {
+        throw new IllegalArgumentException(
+            String.format(
+                "Unexpected error - size of segments is zero. pattern: %s", parentPatterns.get(0)));
+      }
+      String lastSegment = segments.get(segments.size() - 1);
+      if (isVariableBinding(lastSegment)) {
+        return Name.from(unwrapVariableSegment(lastSegment)).toUpperCamel();
+      } else {
+        return Name.anyCamel(lastSegment).toUpperCamel();
+      }
+    }
+  }
+
+  public List<String> getParentPatterns() {
+    return getPatterns()
+        .stream()
+        .map(ResourceDescriptorConfig::getParentPattern)
+        .distinct()
+        .collect(Collectors.toList());
+  }
+
+  public static String getParentPattern(String pattern) {
+    List<String> segments = getSegments(pattern);
+    int index = segments.size() - 2;
+    while (index >= 0 && !isVariableBinding(segments.get(index))) {
+      index--;
+    }
+    index++;
+    if (index <= 0) {
+      return "";
+    }
+    return String.join("/", segments.subList(0, index));
   }
 
   private static List<String> getSegments(String pattern) {
@@ -140,10 +226,10 @@ public abstract class ResourceDescriptorConfig {
     return segment.substring(1, segment.length() - 1);
   }
 
-  private Map<String, Name> buildEntityNameMap() {
+  private static HashMap<String, Name> buildEntityNameMap(List<String> patterns) {
     TrieNode trie = new TrieNode();
     Map<String, List<String>> patternsToSegmentsMap =
-        getPatterns()
+        patterns
             .stream()
             .collect(
                 Collectors.toMap(
@@ -159,12 +245,8 @@ public abstract class ResourceDescriptorConfig {
       insertSegmentsIntoTrie(segments, trie);
     }
 
-    Name unqualifiedTypeName = Name.anyCamel(getUnqualifiedTypeName());
     HashMap<String, Name> nameMap = new HashMap<>();
     for (String pattern : patternsToSegmentsMap.keySet()) {
-      if (pattern.equals(getSinglePattern())) {
-        continue;
-      }
       List<String> identifyingNamePieces = new ArrayList<>();
       TrieNode node = trie;
       for (String segment : patternsToSegmentsMap.get(pattern)) {
@@ -173,21 +255,15 @@ public abstract class ResourceDescriptorConfig {
         }
         node = node.get(segment);
       }
-      Name entityName =
-          Name.from(Lists.reverse(identifyingNamePieces).toArray(new String[0]))
-              .join(unqualifiedTypeName);
+      Name entityName = Name.from(Lists.reverse(identifyingNamePieces).toArray(new String[0]));
       nameMap.put(pattern, entityName);
-    }
-
-    if (!getSinglePattern().isEmpty()) {
-      nameMap.put(getSinglePattern(), unqualifiedTypeName);
     }
     return nameMap;
   }
 
-  class TrieNode extends HashMap<String, TrieNode> {}
+  private static class TrieNode extends HashMap<String, TrieNode> {}
 
-  private void insertSegmentsIntoTrie(List<String> segments, TrieNode trieNode) {
+  private static void insertSegmentsIntoTrie(List<String> segments, TrieNode trieNode) {
     for (String segment : segments) {
       if (!trieNode.containsKey(segment)) {
         trieNode.put(segment, new TrieNode());

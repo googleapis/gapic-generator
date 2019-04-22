@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.ResourceDescriptor;
+import com.google.api.ResourceReference;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
@@ -42,7 +43,6 @@ import com.google.protobuf.DescriptorProtos;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 
@@ -212,14 +212,68 @@ public abstract class GapicProductConfig implements ProductConfig {
               .collect(
                   Collectors.toMap(
                       ResourceDescriptorConfig::getUnifiedResourceType, Function.identity()));
+
+      HashSet<String> configsWithChildTypeReferences = new HashSet<>();
+      HashMap<Field, String> resourceReferenceMap = new HashMap<>();
+      for (ProtoFile protoFile : sourceProtos) {
+        for (MessageType message : protoFile.getMessages()) {
+          for (Field field : message.getFields()) {
+            if (protoParser.hasResourceReference(field)) {
+              ResourceReference reference = protoParser.getResourceReference(field);
+              boolean isChildReference = !Strings.isNullOrEmpty(reference.getChildType());
+              String type = isChildReference ? reference.getChildType() : reference.getType();
+              ResourceDescriptorConfig config = descriptorConfigMap.get(type);
+              if (config == null) {
+                diagCollector.addDiag(
+                    Diag.error(
+                        SimpleLocation.TOPLEVEL,
+                        "Reference to unknown type \"%s\" on field %s.%s",
+                        type,
+                        message.getFullName(),
+                        field.getFullName()));
+                continue;
+              }
+
+              if (isChildReference) {
+                // Attempt to resolve the reference to an existing type. If we can't, mark this
+                // type as having a child reference, and resolve the reference to the derived
+                // parent type.
+                List<String> parentPatterns = config.getParentPatterns();
+                Optional<ResourceDescriptorConfig> parentConfig =
+                    descriptorConfigMap
+                        .values()
+                        .stream()
+                        .filter(
+                            c ->
+                                parentPatterns.size() == c.getPatterns().size()
+                                    && parentPatterns.containsAll(c.getPatterns()))
+                        .findFirst();
+                if (parentConfig.isPresent()) {
+                  resourceReferenceMap.put(field, parentConfig.get().getDerivedEntityName());
+                } else {
+                  configsWithChildTypeReferences.add(type);
+                  resourceReferenceMap.put(field, config.getDerivedParentEntityName());
+                }
+              } else {
+                resourceReferenceMap.put(field, config.getDerivedEntityName());
+              }
+            }
+          }
+        }
+      }
+
       resourceNameConfigs =
           createResourceNameConfigsFromAnnotationsAndGapicConfig(
-              model, diagCollector, configProto, packageProtoFile, language, descriptorConfigMap);
+              model,
+              diagCollector,
+              configProto,
+              packageProtoFile,
+              language,
+              descriptorConfigMap,
+              configsWithChildTypeReferences);
 
-      // Get list of fields from proto
       messageConfigs =
-          ResourceNameMessageConfigs.createFromAnnotations(
-              sourceProtos, protoParser, descriptorConfigMap);
+          ResourceNameMessageConfigs.createFromAnnotations(sourceProtos, resourceReferenceMap);
     } else {
       resourceNameConfigs =
           createResourceNameConfigsFromGapicConfigOnly(
@@ -717,33 +771,21 @@ public abstract class GapicProductConfig implements ProductConfig {
           ConfigProto configProto,
           @Nullable ProtoFile sampleProtoFile,
           TargetLanguage language,
-          Map<String, ResourceDescriptorConfig> resourceDescriptorConfigs) {
-    ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigsFromProtoFile =
-        ImmutableMap.copyOf(
-            resourceDescriptorConfigs
-                .values()
-                .stream()
-                .filter(ResourceDescriptorConfig::getRequiresOneofConfig)
-                .map(r -> r.buildResourceNameOneofConfig(diagCollector))
-                .collect(
-                    Collectors.toMap(c -> c.getEntityName().toUpperCamel(), Function.identity())));
+          Map<String, ResourceDescriptorConfig> resourceDescriptorConfigs,
+          Set<String> typesWithChildReferences) {
 
-    ImmutableMap.Builder<String, SingleResourceNameConfig> configBuilder = ImmutableMap.builder();
-    // Extract the configs already built in the oneofs.
-    resourceNameOneofConfigsFromProtoFile
-        .values()
-        .stream()
-        .flatMap(r -> StreamSupport.stream(r.getSingleResourceNameConfigs().spliterator(), false))
-        .forEach(config -> configBuilder.put(config.getUnqualifiedEntityId(), config));
-    // Build the configs that were not already built as part of a oneof.
+    HashMap<String, ResourceNameConfig> annotationResourceNameConfigs = new HashMap<>();
     resourceDescriptorConfigs
         .values()
         .stream()
-        .filter(r -> !r.getRequiresOneofConfig())
-        .flatMap(r -> r.buildSingleResourceNameConfigs(diagCollector).stream())
-        .forEach(config -> configBuilder.put(config.getUnqualifiedEntityId(), config));
-    ImmutableMap<String, SingleResourceNameConfig> singleResourceConfigsFromProtoFile =
-        configBuilder.build();
+        .flatMap(r -> r.buildResourceNameConfigs(diagCollector).stream())
+        .forEach(config -> annotationResourceNameConfigs.put(config.getEntityId(), config));
+    resourceDescriptorConfigs
+        .values()
+        .stream()
+        .filter(c -> typesWithChildReferences.contains(c.getUnifiedResourceType()))
+        .flatMap(r -> r.buildParentResourceNameConfigs(diagCollector).stream())
+        .forEach(config -> annotationResourceNameConfigs.put(config.getEntityId(), config));
 
     Map<CollectionConfigProto, Interface> allCollectionConfigProtos =
         getAllCollectionConfigProtos(model, configProto);
@@ -751,12 +793,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigsFromGapicConfig =
         createSingleResourceNamesFromGapicConfigOnly(
             diagCollector, allCollectionConfigProtos, sampleProtoFile, language);
-
-    // Combine the ResourceNameConfigs from the GAPIC and protofile.
-    ImmutableMap<String, SingleResourceNameConfig> finalSingleResourceNameConfigs =
-        mergeSingleResourceNameConfigsFromGapicConfigAndProtoFile(
-            singleResourceNameConfigsFromGapicConfig, singleResourceConfigsFromProtoFile);
-    validateSingleResourceNameConfigs(finalSingleResourceNameConfigs);
 
     // TODO(andrealin): Remove this once explicit fixed resource names are gone-zos.
     ImmutableMap<String, FixedResourceNameConfig> finalFixedResourceNameConfigs =
@@ -774,18 +810,12 @@ public abstract class GapicProductConfig implements ProductConfig {
       return null;
     }
 
-    // TODO(andrealin): Remove this once ResourceSets are approved.
-    Map<String, ResourceNameOneofConfig> finalResourceOneofNameConfigs =
-        mergeResourceNameConfigs(
-            diagCollector,
-            resourceNameOneofConfigsFromGapicConfig,
-            resourceNameOneofConfigsFromProtoFile);
-
     ImmutableMap.Builder<String, ResourceNameConfig> resourceNameConfigs =
         new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
-    resourceNameConfigs.putAll(finalSingleResourceNameConfigs);
+    resourceNameConfigs.putAll(annotationResourceNameConfigs);
+    resourceNameConfigs.putAll(singleResourceNameConfigsFromGapicConfig);
     resourceNameConfigs.putAll(finalFixedResourceNameConfigs);
-    resourceNameConfigs.putAll(finalResourceOneofNameConfigs);
+    resourceNameConfigs.putAll(resourceNameOneofConfigsFromGapicConfig);
     return resourceNameConfigs.build();
   }
 

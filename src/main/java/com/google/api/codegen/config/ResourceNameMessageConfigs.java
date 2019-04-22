@@ -19,7 +19,6 @@ import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
-import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.*;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
@@ -42,20 +41,18 @@ public abstract class ResourceNameMessageConfigs {
 
   @VisibleForTesting
   static ResourceNameMessageConfigs createFromAnnotations(
-      List<ProtoFile> protoFiles,
-      ProtoParser parser,
-      Map<String, ResourceDescriptorConfig> descriptorMap) {
+      List<ProtoFile> protoFiles, Map<Field, String> resourceReferenceMap) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
     for (ProtoFile protoFile : protoFiles) {
       for (MessageType message : protoFile.getMessages()) {
         for (Field field : message.getFields()) {
-          if (parser.hasResourceReference(field)) {
+          if (resourceReferenceMap.containsKey(field)) {
             // If at least one field on the message has a resource_reference
             // annotation, build a config for the message, then break.
             builder.put(
                 message.getFullName(),
                 ResourceNameMessageConfig.createFromAnnotationsOnMessage(
-                    parser, message, descriptorMap));
+                    message, resourceReferenceMap));
             break;
           }
         }

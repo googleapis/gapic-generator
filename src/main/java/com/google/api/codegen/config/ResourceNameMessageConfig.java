@@ -14,14 +14,11 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.ResourceReference;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 
@@ -47,22 +44,11 @@ public abstract class ResourceNameMessageConfig {
   }
 
   static ResourceNameMessageConfig createFromAnnotationsOnMessage(
-      ProtoParser parser,
-      MessageType messageType,
-      Map<String, ResourceDescriptorConfig> descriptorMap) {
+      MessageType messageType, Map<Field, String> resourceReferenceMap) {
     ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
     for (Field field : messageType.getFields()) {
-      if (parser.hasResourceReference(field)) {
-        ResourceReference ref = parser.getResourceReference(field);
-        String type = Strings.isNullOrEmpty(ref.getType()) ? ref.getChildType() : ref.getType();
-        if (!descriptorMap.containsKey(type)) {
-          throw new IllegalArgumentException(
-              String.format(
-                  "Unknown resource reference \"%s\", known types: [%s]",
-                  type, String.join(", ", descriptorMap.keySet())));
-        }
-        ResourceDescriptorConfig descriptor = descriptorMap.get(type);
-        builder.put(field.getSimpleName(), descriptor.getDerivedEntityName());
+      if (resourceReferenceMap.containsKey(field)) {
+        builder.put(field.getSimpleName(), resourceReferenceMap.get(field));
       }
     }
     return new AutoValue_ResourceNameMessageConfig(messageType.getFullName(), builder.build());
