@@ -194,10 +194,10 @@ class LibraryServiceGapicClient
         'https://www.googleapis.com/auth/cloud-platform',
         'https://www.googleapis.com/auth/library',
     ];
+    private static $archivedBookNameTemplate;
     private static $bookNameTemplate;
     private static $projectNameTemplate;
     private static $shelfNameTemplate;
-    private static $archivedBookNameTemplate;
     private static $pathTemplateMap;
 
     private $operationsClient;
@@ -218,6 +218,15 @@ class LibraryServiceGapicClient
                 ]
             ]
         ];
+    }
+
+    private static function getArchivedBookNameTemplate()
+    {
+        if (self::$archivedBookNameTemplate == null) {
+            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path}/books/{book_id=**}');
+        }
+
+        return self::$archivedBookNameTemplate;
     }
 
     private static function getBookNameTemplate()
@@ -247,28 +256,36 @@ class LibraryServiceGapicClient
         return self::$shelfNameTemplate;
     }
 
-    private static function getArchivedBookNameTemplate()
-    {
-        if (self::$archivedBookNameTemplate == null) {
-            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path}/books/{book_id=**}');
-        }
-
-        return self::$archivedBookNameTemplate;
-    }
-
 
     private static function getPathTemplateMap()
     {
         if (self::$pathTemplateMap == null) {
             self::$pathTemplateMap = [
+                'archivedBook' => self::getArchivedBookNameTemplate(),
                 'book' => self::getBookNameTemplate(),
                 'project' => self::getProjectNameTemplate(),
                 'shelf' => self::getShelfNameTemplate(),
-                'archivedBook' => self::getArchivedBookNameTemplate(),
             ];
         }
         return self::$pathTemplateMap;
     }
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a archived_book resource.
+     *
+     * @param string $archivePath
+     * @param string $bookId
+     * @return string The formatted archived_book resource.
+     * @experimental
+     */
+    public static function archivedBookName($archivePath, $bookId)
+    {
+        return self::getArchivedBookNameTemplate()->render([
+            'archive_path' => $archivePath,
+            'book_id' => $bookId,
+        ]);
+    }
+
     /**
      * Formats a string containing the fully-qualified path to represent
      * a book resource.
@@ -317,30 +334,13 @@ class LibraryServiceGapicClient
     }
 
     /**
-     * Formats a string containing the fully-qualified path to represent
-     * a archived_book resource.
-     *
-     * @param string $archivePath
-     * @param string $bookId
-     * @return string The formatted archived_book resource.
-     * @experimental
-     */
-    public static function archivedBookName($archivePath, $bookId)
-    {
-        return self::getArchivedBookNameTemplate()->render([
-            'archive_path' => $archivePath,
-            'book_id' => $bookId,
-        ]);
-    }
-
-    /**
      * Parses a formatted name string and returns an associative array of the components in the name.
      * The following name formats are supported:
      * Template: Pattern
+     * - archivedBook: archives/{archive_path}/books/{book_id=**}
      * - book: shelves/{shelf_id}/books/{book_id}
      * - project: projects/{project}
      * - shelf: shelves/{shelf_id}
-     * - archivedBook: archives/{archive_path}/books/{book_id=**}
      *
      * The optional $template argument can be supplied to specify a particular pattern, and must
      * match one of the templates listed above. If no $template argument is provided, or if the

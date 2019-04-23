@@ -35,6 +35,7 @@ import com.google.api.codegen.viewmodel.ResourceNameSingleView;
 import com.google.api.codegen.viewmodel.ResourceNameView;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,10 +65,9 @@ public class PathTemplateTransformer {
       InterfaceContext context) {
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     Set<String> foundSet = new HashSet<>();
-    ImmutableList.Builder<SingleResourceNameConfig> resourceNameConfigsBuilder =
-        ImmutableList.builder();
+    List<SingleResourceNameConfig> resourceNameConfigs = new ArrayList<>();
     for (SingleResourceNameConfig config : interfaceConfig.getSingleResourceNameConfigs()) {
-      resourceNameConfigsBuilder.add(config);
+      resourceNameConfigs.add(config);
       foundSet.add(config.getEntityId());
     }
     for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
@@ -76,12 +76,13 @@ public class PathTemplateTransformer {
         SingleResourceNameConfig resourceNameConfig =
             methodContext.getSingleResourceNameConfig(fieldNamePattern);
         if (resourceNameConfig != null && !foundSet.contains(resourceNameConfig.getEntityId())) {
-          resourceNameConfigsBuilder.add(resourceNameConfig);
+          resourceNameConfigs.add(resourceNameConfig);
           foundSet.add(resourceNameConfig.getEntityId());
         }
       }
     }
-    return resourceNameConfigsBuilder.build();
+    return ImmutableList.sortedCopyOf(
+        Comparator.comparing(ResourceNameConfig::getEntityId), resourceNameConfigs);
   }
 
   public List<ResourceNameView> generateResourceNames(GapicInterfaceContext context) {
