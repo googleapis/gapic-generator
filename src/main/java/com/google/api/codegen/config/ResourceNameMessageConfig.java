@@ -16,11 +16,8 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.util.Name;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.MessageType;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
-import java.util.Map;
 
 /** Configuration of the resource name types for fields of a single message. */
 @AutoValue
@@ -41,17 +38,6 @@ public abstract class ResourceNameMessageConfig {
         ImmutableMap.copyOf(messageResourceTypesProto.getFieldEntityMap());
 
     return new AutoValue_ResourceNameMessageConfig(fullyQualifiedMessageName, fieldEntityMap);
-  }
-
-  static ResourceNameMessageConfig createFromAnnotationsOnMessage(
-      MessageType messageType, Map<Field, String> resourceReferenceMap) {
-    ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-    for (Field field : messageType.getFields()) {
-      if (resourceReferenceMap.containsKey(field)) {
-        builder.put(field.getSimpleName(), resourceReferenceMap.get(field));
-      }
-    }
-    return new AutoValue_ResourceNameMessageConfig(messageType.getFullName(), builder.build());
   }
 
   static String getFullyQualifiedMessageName(String defaultPackage, String messageName) {

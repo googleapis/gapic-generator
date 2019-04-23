@@ -23,7 +23,6 @@ import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -34,7 +33,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,8 +112,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ProtoParser protoParser,
-      HashMap<Field, String> resourceReferenceMap) {
+      ProtoParser protoParser) {
 
     Interface apiInterface = interfaceInput.getInterface();
     Map<Method, MethodConfigProto> methodsToGenerate = interfaceInput.getMethodsToGenerate();
@@ -143,8 +140,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               resourceNameConfigs,
               retryCodesConfig,
               retrySettingsDefinition.keySet(),
-              protoParser,
-              resourceReferenceMap);
+              protoParser);
       if (methodConfigsMap == null) {
         diagCollector.addDiag(
             Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
@@ -245,8 +241,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames,
-      ProtoParser protoParser,
-      HashMap<Field, String> resourceReferenceMap) {
+      ProtoParser protoParser) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
 
     for (Entry<Method, MethodConfigProto> methodEntry : methodsToGenerate.entrySet()) {
@@ -265,8 +260,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
                 resourceNameConfigs,
                 retryCodesConfig,
                 retryParamsConfigNames,
-                protoParser,
-                resourceReferenceMap);
+                protoParser);
       } else {
         methodConfig =
             GapicMethodConfig.createGapicMethodConfigFromGapicYaml(

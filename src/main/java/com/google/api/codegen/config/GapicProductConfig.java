@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.ResourceDescriptor;
-import com.google.api.ResourceReference;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
@@ -200,67 +198,19 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs;
     ResourceNameMessageConfigs messageConfigs;
-    HashMap<Field, String> resourceReferenceMap = new HashMap<>();
     if (protoParser.isProtoAnnotationsEnabled()) {
-      Map<ResourceDescriptor, MessageType> resourceDescriptorMap =
-          protoParser.getResourceDescriptorMap(sourceProtos, diagCollector);
-
       Map<String, ResourceDescriptorConfig> descriptorConfigMap =
-          resourceDescriptorMap
-              .entrySet()
+          protoParser.getResourceDescriptorConfigMap(sourceProtos, diagCollector);
+
+      Set<String> configsWithChildTypeReferences =
+          sourceProtos
               .stream()
-              .map(e -> ResourceDescriptorConfig.from(e.getKey(), e.getValue().getFile()))
-              .collect(
-                  Collectors.toMap(
-                      ResourceDescriptorConfig::getUnifiedResourceType, Function.identity()));
-
-      HashSet<String> configsWithChildTypeReferences = new HashSet<>();
-      for (ProtoFile protoFile : sourceProtos) {
-        for (MessageType message : protoFile.getMessages()) {
-          for (Field field : message.getFields()) {
-            if (protoParser.hasResourceReference(field)) {
-              ResourceReference reference = protoParser.getResourceReference(field);
-              boolean isChildReference = !Strings.isNullOrEmpty(reference.getChildType());
-              String type = isChildReference ? reference.getChildType() : reference.getType();
-              ResourceDescriptorConfig config = descriptorConfigMap.get(type);
-              if (config == null) {
-                diagCollector.addDiag(
-                    Diag.error(
-                        SimpleLocation.TOPLEVEL,
-                        "Reference to unknown type \"%s\" on field %s.%s",
-                        type,
-                        message.getFullName(),
-                        field.getFullName()));
-                continue;
-              }
-
-              if (isChildReference) {
-                // Attempt to resolve the reference to an existing type. If we can't, mark this
-                // type as having a child reference, and resolve the reference to the derived
-                // parent type.
-                List<String> parentPatterns = config.getParentPatterns();
-                Optional<ResourceDescriptorConfig> parentConfig =
-                    descriptorConfigMap
-                        .values()
-                        .stream()
-                        .filter(
-                            c ->
-                                parentPatterns.size() == c.getPatterns().size()
-                                    && parentPatterns.containsAll(c.getPatterns()))
-                        .findFirst();
-                if (parentConfig.isPresent()) {
-                  resourceReferenceMap.put(field, parentConfig.get().getDerivedEntityName());
-                } else {
-                  configsWithChildTypeReferences.add(type);
-                  resourceReferenceMap.put(field, config.getDerivedParentEntityName());
-                }
-              } else {
-                resourceReferenceMap.put(field, config.getDerivedEntityName());
-              }
-            }
-          }
-        }
-      }
+              .flatMap(protoFile -> protoFile.getMessages().stream())
+              .flatMap(messageType -> messageType.getFields().stream())
+              .filter(protoParser::hasResourceReference)
+              .map(field -> protoParser.getResourceReference(field).getChildType())
+              .filter(type -> !Strings.isNullOrEmpty(type))
+              .collect(Collectors.toSet());
 
       resourceNameConfigs =
           createResourceNameConfigsFromAnnotationsAndGapicConfig(
@@ -273,7 +223,8 @@ public abstract class GapicProductConfig implements ProductConfig {
               configsWithChildTypeReferences);
 
       messageConfigs =
-          ResourceNameMessageConfigs.createFromAnnotations(sourceProtos, resourceReferenceMap);
+          ResourceNameMessageConfigs.createFromAnnotations(
+              diagCollector, sourceProtos, protoParser, descriptorConfigMap);
     } else {
       resourceNameConfigs =
           createResourceNameConfigsFromGapicConfigOnly(
@@ -336,8 +287,7 @@ public abstract class GapicProductConfig implements ProductConfig {
             messageConfigs,
             resourceNameConfigs,
             language,
-            protoParser,
-            resourceReferenceMap);
+            protoParser);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -688,8 +638,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       TargetLanguage language,
-      ProtoParser protoParser,
-      HashMap<Field, String> resourceReferenceMap) {
+      ProtoParser protoParser) {
     // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
@@ -707,8 +656,7 @@ public abstract class GapicProductConfig implements ProductConfig {
               interfaceNameOverride,
               messageConfigs,
               resourceNameConfigs,
-              protoParser,
-              resourceReferenceMap);
+              protoParser);
       if (interfaceConfig == null) {
         continue;
       }

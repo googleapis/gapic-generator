@@ -13,20 +13,25 @@
  * limitations under the License.
  */
 package com.google.api.codegen.config;
-/*
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 
-import com.google.api.Resource;
-import com.google.api.ResourceSet;
+import static com.google.common.truth.Truth.assertThat;
+
+import com.google.api.ResourceDescriptor;
+import com.google.api.ResourceReference;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.FlatteningConfigProto;
+import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.InterfaceConfigProto;
+import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.Diag.Kind;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -36,9 +41,15 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -72,19 +83,29 @@ public class ResourceNameMessageConfigsTest {
   private static final String PROTO_BOOK_PATH = "bookShelves/{book}";
   private static final String CREATE_SHELF_METHOD_NAME = "CreateShelf";
 
-  private static final Map<Resource, ProtoFile> allResourceDefs =
+  private static final Map<String, ResourceDescriptorConfig> resourceDescriptorConfigMap =
       ImmutableMap.of(
-          Resource.newBuilder().setSymbol("Shelf").setPattern(PROTO_SHELF_PATH).build(),
-          protoFile,
-          Resource.newBuilder().setSymbol("Book").setPattern(PROTO_BOOK_PATH).build(),
-          protoFile,
-          Resource.newBuilder()
-              .setSymbol("archived_book")
-              .setPattern(PROTO_ARCHIVED_BOOK_PATH)
-              .build(),
-          protoFile);
-
-  private static final Map<ResourceSet, ProtoFile> allResourceSetDefs = ImmutableMap.of();
+          "library.googleapis.com/Shelf",
+          ResourceDescriptorConfig.from(
+              ResourceDescriptor.newBuilder()
+                  .setType("library.googleapis.com/Shelf")
+                  .addPattern(PROTO_SHELF_PATH)
+                  .build(),
+              protoFile),
+          "library.googleapis.com/Book",
+          ResourceDescriptorConfig.from(
+              ResourceDescriptor.newBuilder()
+                  .setType("library.googleapis.com/Book")
+                  .addPattern(PROTO_BOOK_PATH)
+                  .build(),
+              protoFile),
+          "library.googleapis.com/ArchivedBook",
+          ResourceDescriptorConfig.from(
+              ResourceDescriptor.newBuilder()
+                  .setType("library.googleapis.com/ArchivedBook")
+                  .addPattern(PROTO_ARCHIVED_BOOK_PATH)
+                  .build(),
+              protoFile));
 
   @BeforeClass
   public static void startUp() {
@@ -134,6 +155,9 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(shelfName.getParent()).thenReturn(shelfMessage);
     Mockito.when(shelfName.getType()).thenReturn(TypeRef.fromPrimitiveName("string"));
     Mockito.when(shelfName.getSimpleName()).thenReturn("name");
+    Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Shelf").build())
+        .when(protoParser)
+        .getResourceReference(shelfName);
 
     Mockito.when(shelfMessage.getFullName()).thenReturn("library.Shelf");
     Mockito.when(shelfMessage.getFields()).thenReturn(ImmutableList.of(shelfName, shelfTheme));
@@ -143,12 +167,14 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(bookName.getParent()).thenReturn(bookMessage);
     Mockito.when(bookName.getSimpleName()).thenReturn("name");
     Mockito.when(bookName.getType()).thenReturn(TypeRef.fromPrimitiveName("string"));
+    Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Book").build())
+        .when(protoParser)
+        .getResourceReference(bookName);
 
     Mockito.when(bookMessage.getFullName()).thenReturn("library.Book");
     Mockito.when(bookMessage.getSimpleName()).thenReturn("Book");
     Mockito.when(bookMessage.getFields()).thenReturn(ImmutableList.of(bookAuthor, bookName));
 
-    Mockito.doReturn(null).when(protoParser).getResourceSet(any());
     Mockito.when(protoFile.getSimpleName()).thenReturn("library");
     Mockito.when(protoFile.getMessages()).thenReturn(ImmutableList.of(bookMessage, shelfMessage));
 
@@ -169,24 +195,10 @@ public class ResourceNameMessageConfigsTest {
 
   @Test
   public void testCreateResourceNamesWithProtoFilesOnly() {
-    ConfigProto emptyConfigProto = ConfigProto.getDefaultInstance();
-    String defaultPackage = "";
-
-    Mockito.doReturn(Resource.newBuilder().setPattern(PROTO_BOOK_PATH).build())
-        .when(protoParser)
-        .getResource(bookName);
-    Mockito.doReturn(Resource.newBuilder().setPattern(PROTO_SHELF_PATH).build())
-        .when(protoParser)
-        .getResource(shelfName);
 
     ResourceNameMessageConfigs messageConfigs =
-        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            sourceProtoFiles,
-            emptyConfigProto,
-            defaultPackage,
-            allResourceDefs,
-            allResourceSetDefs,
-            protoParser);
+        ResourceNameMessageConfigs.createFromAnnotations(
+            null, sourceProtoFiles, protoParser, resourceDescriptorConfigMap);
 
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(2);
     ResourceNameMessageConfig bookMessageConfig =
@@ -224,7 +236,7 @@ public class ResourceNameMessageConfigsTest {
     String defaultPackage = "library";
 
     ResourceNameMessageConfigs messageConfigs =
-        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
+        ResourceNameMessageConfigs.createFromGapicConfigOnly(
             ImmutableList.of(), configProto, defaultPackage);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(messageConfigs).isNotNull();
@@ -244,34 +256,18 @@ public class ResourceNameMessageConfigsTest {
   }
 
   @Test
-  public void testCreateResourceNames() {
-    Map<ResourceSet, ProtoFile> resourceSetDefs = new HashMap<>();
-    ResourceNameMessageConfigs messageConfigs =
-        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            sourceProtoFiles,
-            configProto,
-            DEFAULT_PACKAGE,
-            allResourceDefs,
-            resourceSetDefs,
-            protoParser);
-    assertThat(messageConfigs).isNotNull();
-    // TODO(more asserts)
-  }
-
-  @Test
   public void testCreateResourceNameConfigs() {
     DiagCollector diagCollector = new BoundedDiagCollector();
 
     Map<String, ResourceNameConfig> resourceNameConfigs =
-        GapicProductConfig.createResourceNameConfigsWithProtoFileAndGapicConfig(
+        GapicProductConfig.createResourceNameConfigsFromAnnotationsAndGapicConfig(
             null,
             diagCollector,
             configProto,
             protoFile,
             TargetLanguage.CSHARP,
-            allResourceDefs,
-            allResourceSetDefs,
-            protoParser);
+            resourceDescriptorConfigMap,
+            ImmutableSet.of());
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(resourceNameConfigs.size()).isEqualTo(5);
@@ -315,8 +311,12 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(createShelvesRequest.getFields())
         .thenReturn(ImmutableList.of(bookField, nameField));
 
-    Mockito.doReturn("library.Book").when(protoParser).getResourceReference(bookField);
-    Mockito.doReturn("library.Shelf").when(protoParser).getResourceReference(nameField);
+    Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Book").build())
+        .when(protoParser)
+        .getResourceReference(bookField);
+    Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Shelf").build())
+        .when(protoParser)
+        .getResourceReference(nameField);
 
     // ProtoFile contributes flattenings {["name", "book"], ["name"]}.
     Mockito.doReturn(Arrays.asList(Arrays.asList("name", "book"), Arrays.asList("name")))
@@ -349,23 +349,20 @@ public class ResourceNameMessageConfigsTest {
 
     DiagCollector diagCollector = new BoundedDiagCollector();
     ResourceNameMessageConfigs messageConfigs =
-        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
+        ResourceNameMessageConfigs.createFromAnnotations(
+            diagCollector,
             sourceProtoFiles,
-            extraConfigProto,
-            DEFAULT_PACKAGE,
-            allResourceDefs,
-            allResourceSetDefs,
-            protoParser);
+            protoParser,
+            protoParser.getResourceDescriptorConfigMap(sourceProtoFiles, diagCollector));
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        GapicProductConfig.createResourceNameConfigsWithProtoFileAndGapicConfig(
+        GapicProductConfig.createResourceNameConfigsFromAnnotationsAndGapicConfig(
             null,
             diagCollector,
             extraConfigProto,
             protoFile,
             TargetLanguage.CSHARP,
-            allResourceDefs,
-            allResourceSetDefs,
-            protoParser);
+            resourceDescriptorConfigMap,
+            ImmutableSet.of());
 
     List<FlatteningConfig> flatteningConfigs =
         new ArrayList<>(
@@ -443,9 +440,6 @@ public class ResourceNameMessageConfigsTest {
   @Test
   public void testDefaultResourceNameTreatment() {
     // Test GapicMethodConfig.defaultResourceNameTreatment().
-
-    Mockito.doReturn("Book").when(protoParser).getResourceReference(bookName);
-
     ResourceNameTreatment noTreatment =
         GapicMethodConfig.defaultResourceNameTreatmentFromProto(
             createShelvesMethod, protoParser, DEFAULT_PACKAGE);
@@ -461,4 +455,3 @@ public class ResourceNameMessageConfigsTest {
     Mockito.doReturn(null).when(protoParser).getResourceReference(bookName);
   }
 }
-*/

@@ -42,7 +42,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -165,14 +164,11 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames,
-      ProtoParser protoParser,
-      HashMap<Field, String> resourceReferenceMap) {
+      ProtoParser protoParser) {
     int previousErrors = diagCollector.getErrorCount();
 
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
-    // TODO: correct parsing of field name patterns
-    ImmutableMap<String, String> fieldNamePatterns =
-        getFieldNamePatterns(method, resourceReferenceMap);
+    ImmutableMap<String, String> fieldNamePatterns = getFieldNamePatterns(method, messageConfigs);
     List<String> requiredFields = protoParser.getRequiredFields(method);
     ResourceNameTreatment defaultResourceNameTreatment = ResourceNameTreatment.UNSET_TREATMENT;
 
@@ -323,10 +319,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
   }
 
   public static ImmutableMap<String, String> getFieldNamePatterns(
-      Method method, HashMap<Field, String> resourceReferenceMap) {
+      Method method, ResourceNameMessageConfigs messageConfigs) {
     ImmutableMap.Builder<String, String> resultCollector = ImmutableMap.builder();
     // Only look two levels deep in the request object, so fields of fields of the request object.
-    getFieldNamePatterns(resourceReferenceMap, method.getInputMessage(), resultCollector, "", 2);
+    getFieldNamePatterns(messageConfigs, method.getInputMessage(), resultCollector, "", 2);
     return resultCollector.build();
   }
 
@@ -334,19 +330,19 @@ public abstract class GapicMethodConfig extends MethodConfig {
    * Recursively populates the given map builder with field name patterns, up to a given depth.
    *
    * <p>A field name pattern entry maps a field name String, which can be a dot-separated nested
-   * field such as "shelf.name", to the String name of the resource/resourceSet/resource-reference
-   * entity that is represented by that field.
+   * field such as "shelf.name", to the String name of the resource entity that is represented by
+   * that field.
    *
    * <p>Note: this method does not check for circular references.
    *
-   * @param resourceReferenceMap A map from fields to resource entity names
+   * @param messageConfigs ResourceNameMessageConfigs object
    * @param messageType the starting messageType from which to parse fields for resource names
    * @param resultCollector collects the resulting field name patterns
    * @param fieldNamePrefix a nested field is prefixed by the parents' names, dot-separated
    * @param depth number of levels deep in which to parse the messageType; must be positive int
    */
   private static void getFieldNamePatterns(
-      HashMap<Field, String> resourceReferenceMap,
+      ResourceNameMessageConfigs messageConfigs,
       MessageType messageType,
       ImmutableMap.Builder<String, String> resultCollector,
       String fieldNamePrefix,
@@ -357,15 +353,17 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
       if (field.getType().isMessage() && depth > 1) {
         getFieldNamePatterns(
-            resourceReferenceMap,
+            messageConfigs,
             field.getType().getMessageType(),
             resultCollector,
             fieldNameKey + ".",
             depth - 1);
       }
 
-      if (resourceReferenceMap.containsKey(field)) {
-        resultCollector.put(fieldNameKey, resourceReferenceMap.get(field));
+      if (messageConfigs.fieldHasResourceName(messageType.getFullName(), field.getSimpleName())) {
+        resultCollector.put(
+            fieldNameKey,
+            messageConfigs.getFieldResourceName(messageType.getFullName(), field.getSimpleName()));
       }
     }
   }

@@ -16,7 +16,14 @@ package com.google.api.codegen.util;
 
 import static com.google.api.FieldBehavior.REQUIRED;
 
-import com.google.api.*;
+import com.google.api.AnnotationsProto;
+import com.google.api.ClientProto;
+import com.google.api.FieldBehaviorProto;
+import com.google.api.HttpRule;
+import com.google.api.ResourceDescriptor;
+import com.google.api.ResourceProto;
+import com.google.api.ResourceReference;
+import com.google.api.codegen.config.ResourceDescriptorConfig;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -134,6 +141,11 @@ public class ProtoParser {
   }
 
   @Nullable
+  public ResourceDescriptor getResourceDescriptor(MessageType element) {
+    return getProtoExtension(element, ResourceProto.resource);
+  }
+
+  @Nullable
   public ResourceReference getResourceReference(Field element) {
     return getProtoExtension(element, ResourceProto.resourceReference);
   }
@@ -148,10 +160,10 @@ public class ProtoParser {
     return method.getDescriptor().getMethodAnnotation(OperationsProto.operationInfo);
   }
 
-  /** Return a Map of ResourceDescriptor elements to their containing ProtoFile. */
-  public Map<ResourceDescriptor, MessageType> getResourceDescriptorMap(
+  /** Return a Map of Unified Resource Types to a ResourceDescriptorConfig object. */
+  public Map<String, ResourceDescriptorConfig> getResourceDescriptorConfigMap(
       List<ProtoFile> protoFiles, DiagCollector diagCollector) {
-    ImmutableMap.Builder<ResourceDescriptor, MessageType> definitions = ImmutableMap.builder();
+    ImmutableMap.Builder<String, ResourceDescriptorConfig> mapBuilder = ImmutableMap.builder();
 
     for (ProtoFile protoFile : protoFiles) {
 
@@ -160,7 +172,7 @@ public class ProtoParser {
 
       // Get Resource[Set] definitions from fields in message types.
       for (MessageType message : protoFile.getMessages()) {
-        ResourceDescriptor definition = getProtoExtension(message, ResourceProto.resource);
+        ResourceDescriptor definition = getResourceDescriptor(message);
         if (definition != null) {
           if (localDefs.put(definition.getType(), definition) != null) {
             diagCollector.addDiag(
@@ -170,13 +182,15 @@ public class ProtoParser {
                         + " %s are defined in proto file %s. Values for type must be unique.",
                     definition.getType(),
                     protoFile.getFullName()));
-          } else {
-            definitions.put(definition, message);
+            continue;
           }
+          ResourceDescriptorConfig config =
+              ResourceDescriptorConfig.from(definition, message.getFile());
+          mapBuilder.put(config.getUnifiedResourceType(), config);
         }
       }
     }
-    return definitions.build();
+    return mapBuilder.build();
   }
 
   /* Return a list of method signatures, aka flattenings, specified on a given method.
