@@ -56,7 +56,7 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 
 public class ResourceNameMessageConfigsTest {
-  @Spy private static final ProtoParser protoParser = Mockito.spy(new ProtoParser(true));
+  @Spy private static final ProtoParser protoParser = Mockito.mock(ProtoParser.class);
   private static ConfigProto configProto;
   private static final Method createShelvesMethod = Mockito.mock(Method.class);
   private static final MessageType createShelvesRequest = Mockito.mock(MessageType.class);
@@ -158,6 +158,7 @@ public class ResourceNameMessageConfigsTest {
     Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Shelf").build())
         .when(protoParser)
         .getResourceReference(shelfName);
+    Mockito.doReturn(true).when(protoParser).hasResourceReference(shelfName);
 
     Mockito.when(shelfMessage.getFullName()).thenReturn("library.Shelf");
     Mockito.when(shelfMessage.getFields()).thenReturn(ImmutableList.of(shelfName, shelfTheme));
@@ -170,6 +171,7 @@ public class ResourceNameMessageConfigsTest {
     Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Book").build())
         .when(protoParser)
         .getResourceReference(bookName);
+    Mockito.doReturn(true).when(protoParser).hasResourceReference(bookName);
 
     Mockito.when(bookMessage.getFullName()).thenReturn("library.Book");
     Mockito.when(bookMessage.getSimpleName()).thenReturn("Book");
@@ -297,15 +299,18 @@ public class ResourceNameMessageConfigsTest {
   @Test
   public void testCreateFlattenings() {
     ProtoMethodModel methodModel = new ProtoMethodModel(createShelvesMethod);
+
     Field bookField = Mockito.mock(Field.class);
     Mockito.when(bookField.getType()).thenReturn(TypeRef.of(bookType));
     Mockito.when(bookField.getParent()).thenReturn(createShelvesRequest);
     Mockito.when(bookField.getSimpleName()).thenReturn("book");
+
     Field nameField = Mockito.mock(Field.class);
     Mockito.when(nameField.getParent()).thenReturn(createShelvesRequest);
     Mockito.when(createShelvesRequest.getFullName()).thenReturn("library.CreateShelvesRequest");
     Mockito.when(nameField.getType()).thenReturn(TypeRef.fromPrimitiveName("string"));
     Mockito.when(nameField.getSimpleName()).thenReturn("name");
+
     Mockito.when(createShelvesRequest.lookupField("book")).thenReturn(bookField);
     Mockito.when(createShelvesRequest.lookupField("name")).thenReturn(nameField);
     Mockito.when(createShelvesRequest.getFields())
@@ -314,9 +319,11 @@ public class ResourceNameMessageConfigsTest {
     Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Book").build())
         .when(protoParser)
         .getResourceReference(bookField);
+    Mockito.doReturn(true).when(protoParser).hasResourceReference(bookField);
     Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Shelf").build())
         .when(protoParser)
         .getResourceReference(nameField);
+    Mockito.doReturn(true).when(protoParser).hasResourceReference(nameField);
 
     // ProtoFile contributes flattenings {["name", "book"], ["name"]}.
     Mockito.doReturn(Arrays.asList(Arrays.asList("name", "book"), Arrays.asList("name")))
@@ -350,10 +357,9 @@ public class ResourceNameMessageConfigsTest {
     DiagCollector diagCollector = new BoundedDiagCollector();
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createFromAnnotations(
-            diagCollector,
-            sourceProtoFiles,
-            protoParser,
-            protoParser.getResourceDescriptorConfigMap(sourceProtoFiles, diagCollector));
+            diagCollector, sourceProtoFiles, protoParser, resourceDescriptorConfigMap);
+    assertThat(diagCollector.getErrorCount()).isEqualTo(0);
+
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         GapicProductConfig.createResourceNameConfigsFromAnnotationsAndGapicConfig(
             null,
@@ -363,6 +369,7 @@ public class ResourceNameMessageConfigsTest {
             TargetLanguage.CSHARP,
             resourceDescriptorConfigMap,
             ImmutableSet.of());
+    assertThat(diagCollector.getErrorCount()).isEqualTo(0);
 
     List<FlatteningConfig> flatteningConfigs =
         new ArrayList<>(
@@ -374,6 +381,7 @@ public class ResourceNameMessageConfigsTest {
                 methodModel,
                 protoParser));
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
+
     List<Diag> warningDiags =
         diagCollector
             .getDiags()
