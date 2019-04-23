@@ -281,8 +281,8 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSampleFileName(String className) {
-    return className + ".php";
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toUpperUnderscore() + ".php";
   }
 
   @Override
@@ -323,5 +323,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public List<CallingForm> getCallingForms(MethodContext context) {
     return CallingForm.getCallingForms(context, TargetLanguage.PHP);
+  }
+
+  @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.PHP);
   }
 }

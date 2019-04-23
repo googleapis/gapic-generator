@@ -22,9 +22,9 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.OutputContext;
+import com.google.api.codegen.config.SampleConfig;
 import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
-import com.google.api.codegen.config.SampleSpec.ValueSetAndTags;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -202,42 +202,34 @@ public abstract class SampleTransformer {
       InitCodeOutputType initCodeOutputType,
       List<CallingForm> callingForms) {
 
+    CallingForm defaultCallingForm = methodContext.getNamer().getDefaultCallingForm(methodContext);
     List<MethodSampleView> methodSampleViews = new ArrayList<>();
     MethodConfig methodConfig = methodContext.getMethodConfig();
-    ImmutableList<ValueSetAndTags> defaultValueSets = defaultValueSets(methodConfig);
-    for (CallingForm form : callingForms) {
-      List<ValueSetAndTags> matchingValueSets =
-          methodConfig.getSampleSpec().getMatchingValueSets(form, sampleType());
+    SampleValueSet defaultValueSet = defaultValueSet(methodConfig);
 
-      if (sampleType() == SampleType.IN_CODE
-          || !methodConfig.getSampleSpec().isConfigured()
-          || matchingValueSets.isEmpty()) {
-        matchingValueSets = defaultValueSets;
+    for (SampleConfig sampleConfig :
+        methodConfig
+            .getSampleSpec()
+            .getSampleConfigs(callingForms, defaultCallingForm, defaultValueSet, sampleType())) {
+      InitCodeContext thisContext = initContext; // Do not override outer initContext
+      if (thisContext == null) {
+        thisContext =
+            createInitCodeContext(
+                methodContext, fieldConfigs, initCodeOutputType, sampleConfig.valueSet());
       }
-
-      for (ValueSetAndTags setAndTag : matchingValueSets) {
-        // Don't overwrite the initContext in outer scope.
-        InitCodeContext thisContext = initContext;
-        SampleValueSet valueSet = setAndTag.values();
-        if (thisContext == null) {
-          thisContext =
-              createInitCodeContext(methodContext, fieldConfigs, initCodeOutputType, valueSet);
-        }
-        methodSampleViews.add(generateSample(setAndTag, form, methodContext, thisContext));
-      }
+      methodSampleViews.add(generateSample(sampleConfig, methodContext, thisContext));
     }
     return methodSampleViews;
   }
 
   private MethodSampleView generateSample(
-      ValueSetAndTags setAndTag,
-      CallingForm form,
-      MethodContext methodContext,
-      InitCodeContext initCodeContext) {
+      SampleConfig config, MethodContext methodContext, InitCodeContext initCodeContext) {
     methodContext = methodContext.cloneWithEmptyTypeTable();
     InitCodeView initCodeView =
         initCodeTransformer().generateInitCode(methodContext, initCodeContext);
-    SampleValueSet valueSet = setAndTag.values();
+    SampleValueSet valueSet = config.valueSet();
+    CallingForm form = config.callingForm();
+    String regionTag = config.regionTag();
     List<OutputSpec> outputs = valueSet.getOnSuccessList();
     if (outputs.isEmpty()) {
       outputs = OutputTransformer.defaultOutputSpecs(methodContext);
@@ -280,10 +272,7 @@ public abstract class SampleTransformer {
         .sampleImports(sampleImportSectionView)
         .regionTag(
             regionTagFromSpec(
-                setAndTag.regionTag(),
-                methodContext.getMethodModel().getSimpleName(),
-                form,
-                valueSet.getId()))
+                regionTag, methodContext.getMethodModel().getSimpleName(), form, valueSet.getId()))
         .sampleFunctionName(
             methodContext.getNamer().getSampleFunctionName(methodContext.getMethodModel()))
         .sampleFunctionDoc(sampleFunctionDocView)
@@ -323,28 +312,22 @@ public abstract class SampleTransformer {
         .build();
   }
 
-  private ImmutableList<ValueSetAndTags> defaultValueSets(MethodConfig methodConfig) {
+  private SampleValueSet defaultValueSet(MethodConfig methodConfig) {
     // For backwards compatibility in the configs, we need to use sample_code_init_fields instead
     // to generate the samples in various scenarios. Once all the configs have been migrated to
     // use the SampleSpec, we can delete the code below as well as sample_code_init_fields.
     String defaultId =
         (sampleType() == SampleType.IN_CODE) ? "sample_code_init_field" : INIT_CODE_SHIM;
-    ImmutableList<ValueSetAndTags> defaultValueSets =
-        ImmutableList.of(
-            ValueSetAndTags.newBuilder()
-                .values(
-                    SampleValueSet.newBuilder()
-                        .setParameters(
-                            SampleParameters.newBuilder()
-                                .addAllDefaults(methodConfig.getSampleCodeInitFields())
-                                .build())
-                        .setId(defaultId)
-                        .setDescription("value set imported from sample_code_init_fields")
-                        .setTitle("Sample Values")
-                        .build())
-                .regionTag("")
-                .build());
-    return defaultValueSets;
+
+    return SampleValueSet.newBuilder()
+        .setParameters(
+            SampleParameters.newBuilder()
+                .addAllDefaults(methodConfig.getSampleCodeInitFields())
+                .build())
+        .setId(defaultId)
+        .setDescription("value set imported from sample_code_init_fields")
+        .setTitle("Sample Values")
+        .build();
   }
 
   private ImmutableMap<String, SampleParameterConfig> sampleParamConfigMapFromValueSet(

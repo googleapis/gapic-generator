@@ -147,28 +147,27 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
   private List<ViewModel> generateSampleClasses(GapicInterfaceContext context) {
     ImmutableList.Builder<ViewModel> viewModels = new ImmutableList.Builder<>();
     SurfaceNamer namer = context.getNamer();
-    SampleFileRegistry generatedSamples = new SampleFileRegistry();
-
-    List<OptionalArrayMethodView> allmethods = apiMethodTransformer.generateApiMethods(context);
-
+    List<OptionalArrayMethodView> allMethods = apiMethodTransformer.generateApiMethods(context);
+    List<MethodSampleView> allSamples =
+        allMethods
+            .stream()
+            .flatMap(m -> m.samples().stream())
+            .collect(ImmutableList.toImmutableList());
+    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
     DynamicLangSampleView.Builder sampleClassBuilder = DynamicLangSampleView.newBuilder();
-    for (OptionalArrayMethodView method : allmethods) {
+    for (OptionalArrayMethodView method : allMethods) {
       String subPath =
           pathMapper.getSamplesOutputPath(
               context.getInterfaceModel().getFullName(), context.getProductConfig(), method.name());
       for (MethodSampleView methodSample : method.samples()) {
-        String callingForm = methodSample.callingForm().toLowerCamel();
-        String valueSet = methodSample.valueSet().id();
-        String className = namer.getApiSampleClassName(method.name(), callingForm, valueSet);
-        String sampleOutputPath = subPath + File.separator + namer.getApiSampleFileName(className);
-        generatedSamples.addFile(
-            sampleOutputPath, method.name(), callingForm, valueSet, methodSample.regionTag());
+        String sampleFileName = registry.getSampleFileName(methodSample, method.name());
+        String sampleOutputPath = subPath + File.separator + sampleFileName;
+
         viewModels.add(
             sampleClassBuilder
                 .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
                 .fileHeader(fileHeaderTransformer.generateFileHeader(context))
                 .outputPath(sampleOutputPath)
-                .className(className)
                 .libraryMethod(
                     method.toBuilder().samples(Collections.singletonList(methodSample)).build())
                 .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))

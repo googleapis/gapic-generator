@@ -31,6 +31,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String apiModuleName();
 
+  @Nullable
   public abstract InitCodeView initCode();
 
   public abstract ApiMethodDocView doc();
