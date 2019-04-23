@@ -268,6 +268,9 @@ public class ProtoParser {
       BiFunction<T, String, T> setNameFunc) {
     ImmutableMap.Builder<T, ProtoFile> definitions = ImmutableMap.builder();
 
+    // Skip unnecessary file parsing.
+    if (!enableProtoAnnotations) return definitions.build();
+
     for (ProtoFile protoFile : protoFiles) {
 
       // Maps base names to Resource[Sets].
