@@ -876,13 +876,13 @@ public abstract class GapicProductConfig implements ProductConfig {
    * config resourceNames override the protofile resourceNames in event of clashes.
    */
   @Nullable
-  private static ImmutableMap<String, ResourceNameConfig>
-      createResourceNameConfigsForGapicConfigOnly(
-          Model model,
-          DiagCollector diagCollector,
-          ConfigProto configProto,
-          @Nullable ProtoFile sampleProtoFile,
-          TargetLanguage language) {
+  @VisibleForTesting
+  static ImmutableMap<String, ResourceNameConfig> createResourceNameConfigsForGapicConfigOnly(
+      Model model,
+      DiagCollector diagCollector,
+      ConfigProto configProto,
+      @Nullable ProtoFile sampleProtoFile,
+      TargetLanguage language) {
 
     Map<CollectionConfigProto, Interface> allCollectionConfigProtos =
         getAllCollectionConfigProtos(model, configProto);
@@ -976,6 +976,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   // Return map of fully qualified ResourceNameOneofConfig name to its derived config.
+  @Nullable
   private static ImmutableMap<String, ResourceNameOneofConfig>
       createResourceNameOneofConfigsFromProtoFile(
           DiagCollector diagCollector,
