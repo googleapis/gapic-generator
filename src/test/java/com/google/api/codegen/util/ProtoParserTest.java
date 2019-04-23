@@ -31,7 +31,6 @@ import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.common.collect.ImmutableSet;
 import com.google.longrunning.OperationInfo;
 import java.util.List;
-import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -243,14 +242,5 @@ public class ProtoParserTest {
     Method publishMethod = libraryService.lookupMethod("PublishSeries");
     ImmutableSet<String> publishHeaderParams = protoParser.getHeaderParams(publishMethod);
     assertThat(publishHeaderParams).containsExactly("shelf.name");
-  }
-
-  @Test
-  public void testGetFieldNamePatterns() {
-    Method publishMethod = libraryService.lookupMethod("PublishSeries");
-    Map<String, String> fieldNamePatterns = protoParser.getFieldNamePatterns(publishMethod);
-    assertThat(fieldNamePatterns.size()).isEqualTo(2);
-    assertThat(fieldNamePatterns.get("shelf.name")).isEqualTo("Shelf");
-    assertThat(fieldNamePatterns.get("books.name")).isEqualTo("BookOneof");
   }
 }

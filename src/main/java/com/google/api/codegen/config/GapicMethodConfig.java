@@ -30,6 +30,8 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -40,6 +42,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -162,13 +165,14 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      HashMap<Field, String> resourceReferenceMap) {
     int previousErrors = diagCollector.getErrorCount();
 
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
     // TODO: correct parsing of field name patterns
     ImmutableMap<String, String> fieldNamePatterns =
-        ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+        getFieldNamePatterns(method, resourceReferenceMap);
     List<String> requiredFields = protoParser.getRequiredFields(method);
     ResourceNameTreatment defaultResourceNameTreatment = ResourceNameTreatment.UNSET_TREATMENT;
 
@@ -315,6 +319,54 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     } else {
       return ResourceNameTreatment.UNSET_TREATMENT;
+    }
+  }
+
+  public static ImmutableMap<String, String> getFieldNamePatterns(
+      Method method, HashMap<Field, String> resourceReferenceMap) {
+    ImmutableMap.Builder<String, String> resultCollector = ImmutableMap.builder();
+    // Only look two levels deep in the request object, so fields of fields of the request object.
+    getFieldNamePatterns(resourceReferenceMap, method.getInputMessage(), resultCollector, "", 2);
+    return resultCollector.build();
+  }
+
+  /**
+   * Recursively populates the given map builder with field name patterns, up to a given depth.
+   *
+   * <p>A field name pattern entry maps a field name String, which can be a dot-separated nested
+   * field such as "shelf.name", to the String name of the resource/resourceSet/resource-reference
+   * entity that is represented by that field.
+   *
+   * <p>Note: this method does not check for circular references.
+   *
+   * @param resourceReferenceMap A map from fields to resource entity names
+   * @param messageType the starting messageType from which to parse fields for resource names
+   * @param resultCollector collects the resulting field name patterns
+   * @param fieldNamePrefix a nested field is prefixed by the parents' names, dot-separated
+   * @param depth number of levels deep in which to parse the messageType; must be positive int
+   */
+  private static void getFieldNamePatterns(
+      HashMap<Field, String> resourceReferenceMap,
+      MessageType messageType,
+      ImmutableMap.Builder<String, String> resultCollector,
+      String fieldNamePrefix,
+      int depth) {
+    if (depth < 1) throw new IllegalStateException("depth must be positive");
+    for (Field field : messageType.getFields()) {
+      String fieldNameKey = fieldNamePrefix + field.getSimpleName();
+
+      if (field.getType().isMessage() && depth > 1) {
+        getFieldNamePatterns(
+            resourceReferenceMap,
+            field.getType().getMessageType(),
+            resultCollector,
+            fieldNameKey + ".",
+            depth - 1);
+      }
+
+      if (resourceReferenceMap.containsKey(field)) {
+        resultCollector.put(fieldNameKey, resourceReferenceMap.get(field));
+      }
     }
   }
 

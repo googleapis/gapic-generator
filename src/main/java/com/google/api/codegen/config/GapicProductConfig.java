@@ -200,6 +200,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs;
     ResourceNameMessageConfigs messageConfigs;
+    HashMap<Field, String> resourceReferenceMap = new HashMap<>();
     if (protoParser.isProtoAnnotationsEnabled()) {
       Map<ResourceDescriptor, MessageType> resourceDescriptorMap =
           protoParser.getResourceDescriptorMap(sourceProtos, diagCollector);
@@ -214,7 +215,6 @@ public abstract class GapicProductConfig implements ProductConfig {
                       ResourceDescriptorConfig::getUnifiedResourceType, Function.identity()));
 
       HashSet<String> configsWithChildTypeReferences = new HashSet<>();
-      HashMap<Field, String> resourceReferenceMap = new HashMap<>();
       for (ProtoFile protoFile : sourceProtos) {
         for (MessageType message : protoFile.getMessages()) {
           for (Field field : message.getFields()) {
@@ -336,7 +336,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             messageConfigs,
             resourceNameConfigs,
             language,
-            protoParser);
+            protoParser,
+            resourceReferenceMap);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -687,7 +688,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       TargetLanguage language,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      HashMap<Field, String> resourceReferenceMap) {
     // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
@@ -705,7 +707,8 @@ public abstract class GapicProductConfig implements ProductConfig {
               interfaceNameOverride,
               messageConfigs,
               resourceNameConfigs,
-              protoParser);
+              protoParser,
+              resourceReferenceMap);
       if (interfaceConfig == null) {
         continue;
       }
