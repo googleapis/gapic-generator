@@ -594,22 +594,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     return protoInterfaces.build();
   }
 
-  /** Find the methods that should be generated on the surface when no GAPIC config was given. */
-  private static ImmutableMap<Method, MethodConfigProto> findMethodsToGenerateWithoutConfigYaml(
-      Interface apiInterface) {
-    ImmutableMap.Builder<Method, MethodConfigProto> methodsToSurface = ImmutableMap.builder();
-
-    // TODO(andrealin): After migration off GAPIC config is complete; generate all methods
-    // from protofile even if they aren't included in the GAPIC config.
-
-    // Just generate all methods defined in the protos.
-    apiInterface
-        .getMethods()
-        .forEach(m -> methodsToSurface.put(m, MethodConfigProto.getDefaultInstance()));
-
-    return methodsToSurface.build();
-  }
-
   /** Find the methods that should be generated on the surface when a GAPIC config was given. */
   @Nullable
   private static ImmutableMap<Method, MethodConfigProto> findMethodsToGenerateWithConfigYaml(
