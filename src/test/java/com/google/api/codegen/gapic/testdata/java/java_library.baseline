@@ -2912,6 +2912,9 @@ public class LibraryClient implements BackgroundResource {
   private final LibraryServiceStub stub;
   private final OperationsClient operationsClient;
 
+  private static final PathTemplate ARCHIVED_BOOK_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("archives/{archive_path}/books/{book_id=**}");
+
   private static final PathTemplate SHELF_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}/books/{book_id}");
 
@@ -2921,8 +2924,18 @@ public class LibraryClient implements BackgroundResource {
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
 
-  private static final PathTemplate ARCHIVED_BOOK_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("archives/{archive_path}/books/{book_id=**}");
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
+   */
+  @Deprecated
+  public static final String formatArchivedBookName(String archivePath, String bookId) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
+        "archive_path", archivePath,
+        "book_id", bookId);
+  }
 
   /**
    * Formats a string containing the fully-qualified path to represent
@@ -2962,16 +2975,25 @@ public class LibraryClient implements BackgroundResource {
   }
 
   /**
-   * Formats a string containing the fully-qualified path to represent
-   * a archived_book resource.
+   * Parses the archive_path from the given fully-qualified path which
+   * represents a archived_book resource.
    *
    * @deprecated Use the {@link ArchivedBookName} class instead.
    */
   @Deprecated
-  public static final String formatArchivedBookName(String archivePath, String bookId) {
-    return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
-        "archive_path", archivePath,
-        "book_id", bookId);
+  public static final String parseArchivePathFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive_path");
+  }
+
+  /**
+   * Parses the book_id from the given fully-qualified path which
+   * represents a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
+   */
+  @Deprecated
+  public static final String parseBookIdFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book_id");
   }
 
   /**
@@ -3016,28 +3038,6 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseShelfIdFromShelfName(String shelfName) {
     return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf_id");
-  }
-
-  /**
-   * Parses the archive_path from the given fully-qualified path which
-   * represents a archived_book resource.
-   *
-   * @deprecated Use the {@link ArchivedBookName} class instead.
-   */
-  @Deprecated
-  public static final String parseArchivePathFromArchivedBookName(String archivedBookName) {
-    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive_path");
-  }
-
-  /**
-   * Parses the book_id from the given fully-qualified path which
-   * represents a archived_book resource.
-   *
-   * @deprecated Use the {@link ArchivedBookName} class instead.
-   */
-  @Deprecated
-  public static final String parseBookIdFromArchivedBookName(String archivedBookName) {
-    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book_id");
   }
 
   /**
