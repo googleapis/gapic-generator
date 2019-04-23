@@ -75,11 +75,9 @@ interfaces:
         - book . rating=GOOD
     methods:
       - name: CreateShelf
-        retry_codes_name: non_idempotent
         retry_params_name: default
         timeout_millis: 1000
       - name: GetShelf
-        retry_codes_name: idempotent
         retry_params_name: default
         timeout_millis: 2000
         sample_value_sets:
@@ -98,7 +96,6 @@ interfaces:
           - region_tag: sample_get_shelf
             value_sets: test_default_calling_form_unary
       - name: ListShelves
-        retry_codes_name: idempotent
         retry_params_name: default
         timeout_millis: 3000
         sample_value_sets:
@@ -132,15 +129,12 @@ interfaces:
             - calling_forms: ".*"
               value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
       - name: MergeShelves
-        retry_codes_name: non_idempotent
         retry_params_name: default
         timeout_millis: 5000
       - name: CreateBook
-        retry_codes_name: non_idempotent
         retry_params_name: default
         timeout_millis: 6000
       - name: PublishSeries
-        retry_codes_name: non_idempotent
         retry_params_name: default
         timeout_millis: 7000
         batching:
@@ -288,7 +282,6 @@ interfaces:
             - calling_forms: request
               value_sets: ["test_write_to_file"]
       - name: GetBook
-        retry_codes_name: idempotent
         retry_params_name: default
         timeout_millis: 8000
         sample_value_sets:
@@ -321,7 +314,6 @@ interfaces:
             - calling_forms: ".*"
               value_sets: test_on_success_map
       - name: ListBooks
-        retry_codes_name: idempotent
         retry_params_name: default
         timeout_millis: 10000
         sample_code_init_fields:
@@ -340,11 +332,9 @@ interfaces:
         retry_params_name: default
         timeout_millis: 10000
       - name: ListStrings
-        retry_codes_name: idempotent
         retry_params_name: default
         timeout_millis: 10000
       - name: AddComments
-        retry_codes_name: non_idempotent
         retry_params_name: default
         timeout_millis: 10000
         # Test batching with minimal settings (no flow control)
@@ -362,7 +352,6 @@ interfaces:
           - comments[0].stage
           - comments[0].alignment
       - name: GetBookFromArchive
-        retry_codes_name: idempotent
         retry_params_name: default
         timeout_millis: 10000
         surface_treatments:
@@ -370,7 +359,6 @@ interfaces:
               - go
             visibility: DISABLED
       - name: GetBookFromAnywhere
-        retry_codes_name: idempotent
         retry_params_name: default
         timeout_millis: 10000
       - name: GetBookFromAbsolutelyAnywhere
@@ -388,7 +376,6 @@ interfaces:
         grpc_streaming:
           response:
             resources_field: shelves
-        retry_codes_name: non_idempotent
         retry_params_name: default
         timeout_millis: 30000
         sample_value_sets:
@@ -472,7 +459,6 @@ interfaces:
             - calling_forms: ".*"
               value_sets: ".*"
       - name: MonologAboutBook
-        retry_codes_name: idempotent
         retry_params_name: default
         timeout_millis: 30000
         sample_value_sets:
@@ -515,7 +501,6 @@ interfaces:
             - calling_forms: ".*"
               value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
       - name: FindRelatedBooks
-        retry_codes_name: idempotent
         retry_params_name: default
         timeout_millis: 3000
         sample_code_init_fields:
@@ -550,7 +535,6 @@ interfaces:
             - calling_forms: ".*"
               value_sets: odyssey
       - name: AddTag
-        retry_codes_name: non_idempotent
         retry_params_name: default
         timeout_millis: 60000
         surface_treatments:
@@ -564,7 +548,6 @@ interfaces:
               - python
             visibility: DISABLED
       - name: AddLabel
-        retry_codes_name: non_idempotent
         retry_params_name: default
         timeout_millis: 60000
         reroute_to_grpc_interface: google.tagger.v1.Labeler
@@ -678,7 +661,6 @@ interfaces:
             - calling_forms: ".*"
               value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
       - name: TestOptionalRequiredFlatteningParams
-        retry_codes_name: non_idempotent
         retry_params_name: default
     # Intentionally leave out PrivateGetBook method from GAPIC config.
 # Force Java client to have the formatting string functions.
