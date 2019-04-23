@@ -106,7 +106,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       }
     }
 
-    ImmutableList.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableList.builder();
+    ImmutableSet.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableSet.builder();
     for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
       String entityName = collectionConfigProto.getEntityName();
       ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
@@ -123,7 +123,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       }
       resourcesBuilder.add((SingleResourceNameConfig) resourceName);
     }
-    ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
+    ImmutableSet<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
 
     ImmutableMap.Builder<MethodConfig, SingleResourceNameConfig> methodToSingleResourceNameMap =
         ImmutableMap.builder();
@@ -322,5 +322,5 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   abstract ImmutableMap<String, ? extends MethodConfig> getMethodConfigMap();
 
   @Override
-  public abstract ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
+  public abstract ImmutableSet<SingleResourceNameConfig> getSingleResourceNameConfigs();
 }
