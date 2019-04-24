@@ -155,10 +155,6 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(shelfName.getParent()).thenReturn(shelfMessage);
     Mockito.when(shelfName.getType()).thenReturn(TypeRef.fromPrimitiveName("string"));
     Mockito.when(shelfName.getSimpleName()).thenReturn("name");
-    Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Shelf").build())
-        .when(protoParser)
-        .getResourceReference(shelfName);
-    Mockito.doReturn(true).when(protoParser).hasResourceReference(shelfName);
 
     Mockito.when(shelfMessage.getFullName()).thenReturn("library.Shelf");
     Mockito.when(shelfMessage.getFields()).thenReturn(ImmutableList.of(shelfName, shelfTheme));
@@ -197,6 +193,11 @@ public class ResourceNameMessageConfigsTest {
 
   @Test
   public void testCreateResourceNamesWithProtoFilesOnly() {
+
+    Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Shelf").build())
+        .when(protoParser)
+        .getResourceReference(shelfName);
+    Mockito.doReturn(true).when(protoParser).hasResourceReference(shelfName);
 
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createFromAnnotations(
@@ -272,13 +273,16 @@ public class ResourceNameMessageConfigsTest {
             ImmutableSet.of());
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
-    assertThat(resourceNameConfigs.size()).isEqualTo(5);
+    assertThat(resourceNameConfigs.size()).isEqualTo(8);
 
     assertThat(((SingleResourceNameConfig) resourceNameConfigs.get("Book")).getNamePattern())
         .isEqualTo(PROTO_BOOK_PATH);
 
     assertThat(
             ((SingleResourceNameConfig) resourceNameConfigs.get("archived_book")).getNamePattern())
+        .isEqualTo(GAPIC_ARCHIVED_BOOK_PATH);
+    assertThat(
+            ((SingleResourceNameConfig) resourceNameConfigs.get("ArchivedBook")).getNamePattern())
         .isEqualTo(PROTO_ARCHIVED_BOOK_PATH);
     assertThat(
             ((ResourceNameOneofConfig) resourceNameConfigs.get("book_oneof"))
@@ -305,16 +309,26 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(bookField.getParent()).thenReturn(createShelvesRequest);
     Mockito.when(bookField.getSimpleName()).thenReturn("book");
 
+    Mockito.when(bookType.getFields()).thenReturn(ImmutableList.of());
+
     Field nameField = Mockito.mock(Field.class);
     Mockito.when(nameField.getParent()).thenReturn(createShelvesRequest);
     Mockito.when(createShelvesRequest.getFullName()).thenReturn("library.CreateShelvesRequest");
     Mockito.when(nameField.getType()).thenReturn(TypeRef.fromPrimitiveName("string"));
     Mockito.when(nameField.getSimpleName()).thenReturn("name");
+    Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Shelf").build())
+        .when(protoParser)
+        .getResourceReference(nameField);
+    Mockito.doReturn(true).when(protoParser).hasResourceReference(nameField);
 
     Mockito.when(createShelvesRequest.lookupField("book")).thenReturn(bookField);
     Mockito.when(createShelvesRequest.lookupField("name")).thenReturn(nameField);
     Mockito.when(createShelvesRequest.getFields())
         .thenReturn(ImmutableList.of(bookField, nameField));
+    Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Shelf").build())
+        .when(protoParser)
+        .getResourceReference(shelfName);
+    Mockito.doReturn(true).when(protoParser).hasResourceReference(shelfName);
 
     Mockito.doReturn(ResourceReference.newBuilder().setType("library.googleapis.com/Book").build())
         .when(protoParser)
@@ -329,6 +343,9 @@ public class ResourceNameMessageConfigsTest {
     Mockito.doReturn(Arrays.asList(Arrays.asList("name", "book"), Arrays.asList("name")))
         .when(protoParser)
         .getMethodSignatures(createShelvesMethod);
+
+    Mockito.when(protoFile.getMessages())
+        .thenReturn(ImmutableList.of(bookMessage, shelfMessage, createShelvesRequest));
 
     // Gapic config contributes flattenings {["book"]}.
     MethodConfigProto methodConfigProto =
@@ -443,6 +460,9 @@ public class ResourceNameMessageConfigsTest {
         .isEqualTo(PROTO_BOOK_PATH);
     assertThat(((ProtoTypeRef) bookConfig.getField().getType()).getProtoType().getMessageType())
         .isEqualTo(bookType);
+
+    // Restore protoFile.getMessages()
+    Mockito.when(protoFile.getMessages()).thenReturn(ImmutableList.of(bookMessage, shelfMessage));
   }
 
   @Test
@@ -458,8 +478,5 @@ public class ResourceNameMessageConfigsTest {
             insertBook, protoParser, DEFAULT_PACKAGE);
     assertThat(noConfigWithAnnotatedResourceReferenceTreatment)
         .isEqualTo(ResourceNameTreatment.STATIC_TYPES);
-
-    // Reset the mock's behavior for the getResourceReference method.
-    Mockito.doReturn(null).when(protoParser).getResourceReference(bookName);
   }
 }
