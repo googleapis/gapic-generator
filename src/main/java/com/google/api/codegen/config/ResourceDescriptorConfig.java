@@ -23,6 +23,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
@@ -32,19 +33,35 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Class that represents a google.api.ResourceDescriptor annotation, and is used to construct
+ * ResourceNameConfig objects.
+ */
 @AutoValue
 public abstract class ResourceDescriptorConfig {
 
+  /** The unified resource type, taken from the annotation. */
   public abstract String getUnifiedResourceType();
 
+  /** List of resource patterns, taken from the annotation. */
   public abstract ImmutableList<String> getPatterns();
 
+  /** The name field taken from the annotation. */
   public abstract String getNameField();
 
+  /** The history field taken from the annotation. */
   public abstract ResourceDescriptor.History getHistory();
 
+  /**
+   * Boolean for whether this resource should be represented in client libraries by a Oneof object.
+   */
   public abstract boolean getRequiresOneofConfig();
 
+  /**
+   * Pattern for a single resource that will be treated differently for the purposes of entity
+   * naming. This pattern will also exist in getPatterns. If there is no single resource, will be
+   * "".
+   */
   public abstract String getSinglePattern();
 
   /**
@@ -53,6 +70,7 @@ public abstract class ResourceDescriptorConfig {
    */
   public abstract ProtoFile getAssignedProtoFile();
 
+  /** The entity name for the resource config. */
   public abstract String getDerivedEntityName();
 
   public static ResourceDescriptorConfig from(
@@ -88,7 +106,7 @@ public abstract class ResourceDescriptorConfig {
         requiresOneofConfig ? (unqualifiedTypeName + "Oneof") : unqualifiedTypeName);
   }
 
-  public static String getUnqualifiedTypeName(String typeName) {
+  private static String getUnqualifiedTypeName(String typeName) {
     return typeName.substring(typeName.lastIndexOf("/") + 1);
   }
 
@@ -121,14 +139,13 @@ public abstract class ResourceDescriptorConfig {
     }
   }
 
-  public List<ResourceNameConfig> buildResourceNameConfigs(DiagCollector diagCollector) {
-    HashMap<String, Name> entityNameMap = buildEntityNameMap(getPatterns());
+  /** Package-private for use in GapicProductConfig. */
+  List<ResourceNameConfig> buildResourceNameConfigs(DiagCollector diagCollector) {
     Name unqualifiedTypeName = Name.anyCamel(getUnqualifiedTypeName());
+    HashMap<String, Name> entityNameMap = buildEntityNameMap(getPatterns(), unqualifiedTypeName);
     for (String key : entityNameMap.keySet()) {
       if (key.equals(getSinglePattern())) {
         entityNameMap.put(key, unqualifiedTypeName);
-      } else {
-        entityNameMap.put(key, entityNameMap.get(key).join(unqualifiedTypeName));
       }
     }
 
@@ -148,9 +165,10 @@ public abstract class ResourceDescriptorConfig {
     return resourceNameConfigs;
   }
 
-  public List<ResourceNameConfig> buildParentResourceNameConfigs(DiagCollector diagCollector) {
+  /** Package-private for use in GapicProductConfig. */
+  List<ResourceNameConfig> buildParentResourceNameConfigs(DiagCollector diagCollector) {
     List<String> parentPatterns = getParentPatterns();
-    HashMap<String, Name> entityNameMap = buildEntityNameMap(parentPatterns);
+    HashMap<String, Name> entityNameMap = buildEntityNameMap(parentPatterns, Name.from(""));
     ArrayList<ResourceNameConfig> resourceNameConfigs =
         buildSingleResourceNameConfigs(
             parentPatterns, entityNameMap, getAssignedProtoFile(), diagCollector);
@@ -167,7 +185,8 @@ public abstract class ResourceDescriptorConfig {
     return resourceNameConfigs;
   }
 
-  public String getDerivedParentEntityName() {
+  /** Package-private for use in ResourceNameMessageConfigs. */
+  String getDerivedParentEntityName() {
     List<String> parentPatterns = getParentPatterns();
     if (parentPatterns.size() == 0) {
       throw new IllegalArgumentException(
@@ -193,7 +212,8 @@ public abstract class ResourceDescriptorConfig {
     }
   }
 
-  public List<String> getParentPatterns() {
+  /** Package-private for use in ResourceNameMessageConfigs. */
+  List<String> getParentPatterns() {
     return getPatterns()
         .stream()
         .map(ResourceDescriptorConfig::getParentPattern)
@@ -201,7 +221,8 @@ public abstract class ResourceDescriptorConfig {
         .collect(Collectors.toList());
   }
 
-  public static String getParentPattern(String pattern) {
+  @VisibleForTesting
+  static String getParentPattern(String pattern) {
     List<String> segments = getSegments(pattern);
     int index = segments.size() - 2;
     while (index >= 0 && !isVariableBinding(segments.get(index))) {
@@ -226,7 +247,12 @@ public abstract class ResourceDescriptorConfig {
     return segment.substring(1, segment.length() - 1);
   }
 
-  private static HashMap<String, Name> buildEntityNameMap(List<String> patterns) {
+  /**
+   * Builds a map from patterns to unique entity names. Uses a trie structure to determine the
+   * shortest unique name that can be used.
+   */
+  @VisibleForTesting
+  static HashMap<String, Name> buildEntityNameMap(List<String> patterns, Name suffix) {
     TrieNode trie = new TrieNode();
     Map<String, List<String>> patternsToSegmentsMap =
         patterns
@@ -249,13 +275,21 @@ public abstract class ResourceDescriptorConfig {
     for (String pattern : patternsToSegmentsMap.keySet()) {
       List<String> identifyingNamePieces = new ArrayList<>();
       TrieNode node = trie;
-      for (String segment : patternsToSegmentsMap.get(pattern)) {
+      List<String> segments = patternsToSegmentsMap.get(pattern);
+      for (String segment : segments) {
         if (node.size() > 1) {
           identifyingNamePieces.add(segment);
         }
         node = node.get(segment);
       }
-      Name entityName = Name.from(Lists.reverse(identifyingNamePieces).toArray(new String[0]));
+      Name entityName =
+          Name.from(Lists.reverse(identifyingNamePieces).toArray(new String[0])).join(suffix);
+      if (entityName.toLowerCamel().isEmpty()) {
+        // This can occur for a single pattern and empty suffix
+        if (segments.size() > 0) {
+          entityName = Name.from(segments.get(0));
+        }
+      }
       nameMap.put(pattern, entityName);
     }
     return nameMap;
