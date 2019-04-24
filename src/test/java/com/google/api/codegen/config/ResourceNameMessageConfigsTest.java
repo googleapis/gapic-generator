@@ -58,6 +58,7 @@ import org.mockito.Spy;
 public class ResourceNameMessageConfigsTest {
   @Spy private static final ProtoParser protoParser = Mockito.mock(ProtoParser.class);
   private static ConfigProto configProto;
+  private static ConfigProto configProtoV2;
   private static final Method createShelvesMethod = Mockito.mock(Method.class);
   private static final MessageType createShelvesRequest = Mockito.mock(MessageType.class);
   private static final MessageType createShelvesResponse = Mockito.mock(MessageType.class);
@@ -75,6 +76,7 @@ public class ResourceNameMessageConfigsTest {
 
   private static final String DEFAULT_PACKAGE = "library";
   private static final String GAPIC_SHELF_PATH = "shelves/{shelf_id}";
+  private static final String DELETED_BOOK_PATH = "_deleted-book_";
   private static final String GAPIC_BOOK_PATH = "shelves/{shelf_id}/books/{book_id}";
   private static final String PROTO_ARCHIVED_BOOK_PATH =
       "archives/{archive_path}/books/{book_id=**}";
@@ -150,6 +152,15 @@ public class ResourceNameMessageConfigsTest {
                         CollectionConfigProto.newBuilder()
                             .setNamePattern(GAPIC_BOOK_PATH)
                             .setEntityName("book")))
+            .build();
+    configProtoV2 =
+        ConfigProto.newBuilder()
+            .addCollections(CollectionConfigProto.newBuilder().setEntityName("Shelf"))
+            .addCollections(CollectionConfigProto.newBuilder().setEntityName("archived_book"))
+            .addInterfaces(
+                InterfaceConfigProto.newBuilder()
+                    .addCollections(CollectionConfigProto.newBuilder().setEntityName("Shelf"))
+                    .addCollections(CollectionConfigProto.newBuilder().setEntityName("Book")))
             .build();
 
     Mockito.when(shelfName.getParent()).thenReturn(shelfMessage);
@@ -266,7 +277,7 @@ public class ResourceNameMessageConfigsTest {
         GapicProductConfig.createResourceNameConfigsFromAnnotationsAndGapicConfig(
             null,
             diagCollector,
-            configProto,
+            configProtoV2,
             protoFile,
             TargetLanguage.CSHARP,
             resourceDescriptorConfigMap,
@@ -289,7 +300,7 @@ public class ResourceNameMessageConfigsTest {
                 .getResourceNameConfigs())
         .hasSize(3);
     assertThat(((FixedResourceNameConfig) resourceNameConfigs.get("deleted_book")).getFixedValue())
-        .isEqualTo("_deleted-book_");
+        .isEqualTo(DELETED_BOOK_PATH);
     assertThat(((SingleResourceNameConfig) resourceNameConfigs.get("Shelf")).getNamePattern())
         .isEqualTo(PROTO_SHELF_PATH);
 

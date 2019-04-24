@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -62,7 +63,7 @@ public interface InterfaceConfig {
 
   boolean hasReroutedInterfaceMethods();
 
-  ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
+  ImmutableSet<SingleResourceNameConfig> getSingleResourceNameConfigs();
 
   @Nullable
   String getInterfaceNameOverride();

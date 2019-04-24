@@ -14,10 +14,9 @@
  */
 package com.google.api.codegen.util;
 
-import static com.google.api.FieldBehavior.REQUIRED;
-
 import com.google.api.AnnotationsProto;
 import com.google.api.ClientProto;
+import com.google.api.FieldBehavior;
 import com.google.api.FieldBehaviorProto;
 import com.google.api.HttpRule;
 import com.google.api.ResourceDescriptor;
@@ -41,11 +40,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.longrunning.OperationInfo;
 import com.google.longrunning.OperationsProto;
+import com.google.protobuf.*;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import com.google.protobuf.Message;
-import com.google.protobuf.ProtocolMessageEnum;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -69,13 +66,20 @@ public class ProtoParser {
   @Nullable
   private <T, O extends Message, E extends ProtoElement> T getProtoExtension(
       E element, GeneratedExtension<O, T> extension) {
-    // Use this method as the chokepoint for all annotations processing, so we can toggle on/off
-    // annotations processing in one place.
-    if (enableProtoAnnotations) {
-      return (T) element.getOptionFields().get(extension.getDescriptor());
-    } else {
+    // Use this method as the chokepoint for all field annotations processing, so we can
+    // toggle on/off annotations processing in one place.
+    if (!enableProtoAnnotations) {
       return null;
     }
+    return (T) element.getOptionFields().get(extension.getDescriptor());
+  }
+
+  /** Get a method annotation. */
+  @Nullable
+  private <T extends Message> T getMethodAnnotation(
+      Method method, Extension<DescriptorProtos.MethodOptions, T> extension) {
+    // We may want to parse the annotation even if enableProtoAnnotations is false.
+    return method.getDescriptor().getMethodAnnotation(extension);
   }
 
   @SuppressWarnings("unchecked")
@@ -85,11 +89,10 @@ public class ProtoParser {
           E element, GeneratedExtension<O, List<T>> extension) {
     // Use this method as the chokepoint for all annotations processing for enum values
     // so we can toggle on/off annotations processing in one place.
-    if (enableProtoAnnotations) {
-      return (List<EnumValueDescriptor>) element.getOptionFields().get(extension.getDescriptor());
-    } else {
+    if (!enableProtoAnnotations) {
       return null;
     }
+    return (List<EnumValueDescriptor>) element.getOptionFields().get(extension.getDescriptor());
   }
 
   /* Return the name of the field representing the header parameter. */
@@ -100,7 +103,7 @@ public class ProtoParser {
       return allParams.build();
     }
 
-    HttpRule topRule = method.getDescriptor().getMethodAnnotation(AnnotationsProto.http);
+    HttpRule topRule = getHttpRule(method);
     if (topRule == null) {
       return allParams.build();
     }
@@ -156,14 +159,24 @@ public class ProtoParser {
   }
 
   /** Get long running settings. */
+  @Nullable
   public OperationInfo getLongRunningOperation(Method method) {
-    return method.getDescriptor().getMethodAnnotation(OperationsProto.operationInfo);
+    return getMethodAnnotation(method, OperationsProto.operationInfo);
+  }
+
+  /** Get HTTP settings. */
+  @Nullable
+  private HttpRule getHttpRule(Method method) {
+    return getMethodAnnotation(method, AnnotationsProto.http);
   }
 
   /** Return a Map of Unified Resource Types to a ResourceDescriptorConfig object. */
   public Map<String, ResourceDescriptorConfig> getResourceDescriptorConfigMap(
       List<ProtoFile> protoFiles, DiagCollector diagCollector) {
     ImmutableMap.Builder<String, ResourceDescriptorConfig> mapBuilder = ImmutableMap.builder();
+
+    // Skip unnecessary file parsing.
+    if (!enableProtoAnnotations) return mapBuilder.build();
 
     for (ProtoFile protoFile : protoFiles) {
 
@@ -228,13 +241,17 @@ public class ProtoParser {
   private boolean isFieldRequired(Field field) {
     List<EnumValueDescriptor> fieldBehaviors =
         getProtoExtensionForEnumValue(field, FieldBehaviorProto.fieldBehavior);
-    return fieldBehaviors != null && fieldBehaviors.contains(REQUIRED.getValueDescriptor());
+    return fieldBehaviors != null
+        && fieldBehaviors.contains(FieldBehavior.REQUIRED.getValueDescriptor());
   }
 
   /** Return whether the method has the HttpRule for GET. */
   public boolean isHttpGetMethod(Method method) {
-    return !Strings.isNullOrEmpty(
-        method.getDescriptor().getMethodAnnotation(AnnotationsProto.http).getGet());
+    HttpRule httpRule = getHttpRule(method);
+    if (httpRule == null) {
+      return false;
+    }
+    return !Strings.isNullOrEmpty(httpRule.getGet());
   }
 
   /** The hostname for this service (e.g. "foo.googleapis.com"). */

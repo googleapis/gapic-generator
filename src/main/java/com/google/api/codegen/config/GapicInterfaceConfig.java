@@ -32,7 +32,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +80,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   public abstract ImmutableList<String> getRequiredConstructorParams();
 
   @Override
-  public abstract ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
+  public abstract ImmutableSet<SingleResourceNameConfig> getSingleResourceNameConfigs();
 
   @Override
   public abstract String getManualDoc();
@@ -164,7 +163,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       }
     }
 
-    List<SingleResourceNameConfig> resourcesBuilder = new ArrayList<>();
+    ImmutableSet.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableSet.builder();
     if (protoParser.isProtoAnnotationsEnabled()) {
       resourceNameConfigs
           .values()
@@ -192,9 +191,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
         resourcesBuilder.add((SingleResourceNameConfig) resourceName);
       }
     }
-    ImmutableList<SingleResourceNameConfig> singleResourceNames =
-        ImmutableList.sortedCopyOf(
-            Comparator.comparing(ResourceNameConfig::getEntityId), resourcesBuilder);
+    ImmutableSet<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
 
     String manualDoc =
         Strings.nullToEmpty(

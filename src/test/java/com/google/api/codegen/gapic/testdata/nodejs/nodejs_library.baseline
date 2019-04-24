@@ -4057,6 +4057,9 @@ class LibraryServiceClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this._pathTemplates = {
+      archivedBookPathTemplate: new gax.PathTemplate(
+        'archives/{archive_path}/books/{book_id=**}'
+      ),
       bookPathTemplate: new gax.PathTemplate(
         'shelves/{shelf_id}/books/{book_id}'
       ),
@@ -4065,9 +4068,6 @@ class LibraryServiceClient {
       ),
       shelfPathTemplate: new gax.PathTemplate(
         'shelves/{shelf_id}'
-      ),
-      archivedBookPathTemplate: new gax.PathTemplate(
-        'archives/{archive_path}/books/{book_id=**}'
       ),
     };
 
@@ -6520,6 +6520,20 @@ class LibraryServiceClient {
   // --------------------
 
   /**
+   * Return a fully-qualified archived_book resource name string.
+   *
+   * @param {String} archivePath
+   * @param {String} bookId
+   * @returns {String}
+   */
+  archivedBookPath(archivePath, bookId) {
+    return this._pathTemplates.archivedBookPathTemplate.render({
+      archive_path: archivePath,
+      book_id: bookId,
+    });
+  }
+
+  /**
    * Return a fully-qualified book resource name string.
    *
    * @param {String} shelfId
@@ -6558,17 +6572,29 @@ class LibraryServiceClient {
   }
 
   /**
-   * Return a fully-qualified archived_book resource name string.
+   * Parse the archivedBookName from a archived_book resource.
    *
-   * @param {String} archivePath
-   * @param {String} bookId
-   * @returns {String}
+   * @param {String} archivedBookName
+   *   A fully-qualified path representing a archived_book resources.
+   * @returns {String} - A string representing the archive_path.
    */
-  archivedBookPath(archivePath, bookId) {
-    return this._pathTemplates.archivedBookPathTemplate.render({
-      archive_path: archivePath,
-      book_id: bookId,
-    });
+  matchArchivePathFromArchivedBookName(archivedBookName) {
+    return this._pathTemplates.archivedBookPathTemplate
+      .match(archivedBookName)
+      .archive_path;
+  }
+
+  /**
+   * Parse the archivedBookName from a archived_book resource.
+   *
+   * @param {String} archivedBookName
+   *   A fully-qualified path representing a archived_book resources.
+   * @returns {String} - A string representing the book_id.
+   */
+  matchBookIdFromArchivedBookName(archivedBookName) {
+    return this._pathTemplates.archivedBookPathTemplate
+      .match(archivedBookName)
+      .book_id;
   }
 
   /**
@@ -6621,32 +6647,6 @@ class LibraryServiceClient {
     return this._pathTemplates.shelfPathTemplate
       .match(shelfName)
       .shelf_id;
-  }
-
-  /**
-   * Parse the archivedBookName from a archived_book resource.
-   *
-   * @param {String} archivedBookName
-   *   A fully-qualified path representing a archived_book resources.
-   * @returns {String} - A string representing the archive_path.
-   */
-  matchArchivePathFromArchivedBookName(archivedBookName) {
-    return this._pathTemplates.archivedBookPathTemplate
-      .match(archivedBookName)
-      .archive_path;
-  }
-
-  /**
-   * Parse the archivedBookName from a archived_book resource.
-   *
-   * @param {String} archivedBookName
-   *   A fully-qualified path representing a archived_book resources.
-   * @returns {String} - A string representing the book_id.
-   */
-  matchBookIdFromArchivedBookName(archivedBookName) {
-    return this._pathTemplates.archivedBookPathTemplate
-      .match(archivedBookName)
-      .book_id;
   }
 }
 
