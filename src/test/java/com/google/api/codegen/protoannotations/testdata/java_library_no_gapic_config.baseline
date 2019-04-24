@@ -1838,7 +1838,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookFromArchiveName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
    *   BookFromArchive response = libraryServiceClient.getBookFromArchive(name);
    * }
    * </code></pre>
@@ -1846,7 +1846,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final BookFromArchive getBookFromArchive(BookFromArchiveName name) {
+  public final BookFromArchive getBookFromArchive(ArchivedBookName name) {
 
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
@@ -1862,7 +1862,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookFromArchiveName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
    *   BookFromArchive response = libraryServiceClient.getBookFromArchive(name.toString());
    * }
    * </code></pre>
@@ -1886,7 +1886,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookFromArchiveName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -1908,7 +1908,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   BookFromArchiveName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -5123,10 +5123,10 @@ import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.BookFromArchiveName;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
@@ -5300,10 +5300,10 @@ import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.BookFromArchiveName;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
@@ -6447,10 +6447,10 @@ import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.BookFromArchiveName;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
@@ -9275,19 +9275,19 @@ public class LibraryServiceClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromArchiveTest() {
-    String name2 = "name2-1052831874";
+    ArchivedBookName name2 = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     BookFromArchive expectedResponse = BookFromArchive.newBuilder()
-      .setName(name2)
+      .setName(name2.toString())
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookFromArchiveName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+    ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
 
     BookFromArchive actualResponse =
         client.getBookFromArchive(name);
@@ -9297,7 +9297,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromArchiveRequest actualRequest = (GetBookFromArchiveRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookFromArchiveName.parse(actualRequest.getName()));
+    Assert.assertEquals(name, ArchivedBookName.parse(actualRequest.getName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -9311,7 +9311,7 @@ public class LibraryServiceClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookFromArchiveName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+      ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
 
       client.getBookFromArchive(name);
       Assert.fail("No exception raised");

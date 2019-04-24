@@ -430,13 +430,14 @@ message Book {
 // A single book in the archives.
 message BookFromArchive {
   option (google.api.resource) = {
-    type: "library.googleapis.com/BookFromArchive",
+    type: "library.googleapis.com/ArchivedBook",
     pattern: "archives/{archive}/books/{book}",
   };
   // The resource name of the book.
   // Book names have the form `archives/{archive_id}/books/{book_id}`.
   string name = 1 [
-    (google.api.field_behavior) = REQUIRED
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "library.googleapis.com/ArchivedBook"
   ];
 
   // The name of the book author.
@@ -793,7 +794,7 @@ message GetBookFromArchiveRequest {
   // The name of the book to retrieve.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "library.googleapis.com/BookFromArchive"];
+    (google.api.resource_reference).type = "library.googleapis.com/ArchivedBook"];
 }
 
 // Request message for LibraryService.GetBookFromAnywhere.

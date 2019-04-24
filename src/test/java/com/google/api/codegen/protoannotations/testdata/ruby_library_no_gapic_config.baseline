@@ -2781,17 +2781,17 @@ module Library
 
       private_constant :ARCHIVE_BOOK_PATH_TEMPLATE
 
+      ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "archives/{archive}/books/{book}"
+      )
+
+      private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
+
       BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "bookShelves/{book_shelf}/books/{book}"
       )
 
       private_constant :BOOK_PATH_TEMPLATE
-
-      BOOK_FROM_ARCHIVE_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "archives/{archive}/books/{book}"
-      )
-
-      private_constant :BOOK_FROM_ARCHIVE_PATH_TEMPLATE
 
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf_id}"
@@ -2810,6 +2810,17 @@ module Library
         )
       end
 
+      # Returns a fully-qualified archived_book resource name string.
+      # @param archive [String]
+      # @param book [String]
+      # @return [String]
+      def self.archived_book_path archive, book
+        ARCHIVED_BOOK_PATH_TEMPLATE.render(
+          :"archive" => archive,
+          :"book" => book
+        )
+      end
+
       # Returns a fully-qualified book resource name string.
       # @param book_shelf [String]
       # @param book [String]
@@ -2817,17 +2828,6 @@ module Library
       def self.book_path book_shelf, book
         BOOK_PATH_TEMPLATE.render(
           :"book_shelf" => book_shelf,
-          :"book" => book
-        )
-      end
-
-      # Returns a fully-qualified book_from_archive resource name string.
-      # @param archive [String]
-      # @param book [String]
-      # @return [String]
-      def self.book_from_archive_path archive, book
-        BOOK_FROM_ARCHIVE_PATH_TEMPLATE.render(
-          :"archive" => archive,
           :"book" => book
         )
       end
@@ -3753,7 +3753,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE]", "[BOOK]")
       #   response = library_client.get_book_from_archive(formatted_name)
 
       def get_book_from_archive \
@@ -6369,7 +6369,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_archive without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE]", "[BOOK]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -6417,7 +6417,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_archive with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|

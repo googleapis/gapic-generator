@@ -3019,11 +3019,11 @@ public class LibraryClient implements BackgroundResource {
   private static final PathTemplate ARCHIVE_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("archives/{archive}/books/{book}");
 
+  private static final PathTemplate ARCHIVED_BOOK_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("archives/{archive}/books/{book}");
+
   private static final PathTemplate SHELF_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("bookShelves/{book_shelf}/books/{book}");
-
-  private static final PathTemplate BOOK_FROM_ARCHIVE_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("archives/{archive}/books/{book}");
 
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
@@ -3043,6 +3043,19 @@ public class LibraryClient implements BackgroundResource {
 
   /**
    * Formats a string containing the fully-qualified path to represent
+   * a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
+   */
+  @Deprecated
+  public static final String formatArchivedBookName(String archive, String book) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
+        "archive", archive,
+        "book", book);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
    * a shelf_book resource.
    *
    * @deprecated Use the {@link ShelfBookName} class instead.
@@ -3051,19 +3064,6 @@ public class LibraryClient implements BackgroundResource {
   public static final String formatShelfBookName(String bookShelf, String book) {
     return SHELF_BOOK_PATH_TEMPLATE.instantiate(
         "book_shelf", bookShelf,
-        "book", book);
-  }
-
-  /**
-   * Formats a string containing the fully-qualified path to represent
-   * a book_from_archive resource.
-   *
-   * @deprecated Use the {@link BookFromArchiveName} class instead.
-   */
-  @Deprecated
-  public static final String formatBookFromArchiveName(String archive, String book) {
-    return BOOK_FROM_ARCHIVE_PATH_TEMPLATE.instantiate(
-        "archive", archive,
         "book", book);
   }
 
@@ -3102,6 +3102,28 @@ public class LibraryClient implements BackgroundResource {
   }
 
   /**
+   * Parses the archive from the given fully-qualified path which
+   * represents a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
+   */
+  @Deprecated
+  public static final String parseArchiveFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a archived_book resource.
+   *
+   * @deprecated Use the {@link ArchivedBookName} class instead.
+   */
+  @Deprecated
+  public static final String parseBookFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book");
+  }
+
+  /**
    * Parses the book_shelf from the given fully-qualified path which
    * represents a shelf_book resource.
    *
@@ -3121,28 +3143,6 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseBookFromShelfBookName(String shelfBookName) {
     return SHELF_BOOK_PATH_TEMPLATE.parse(shelfBookName).get("book");
-  }
-
-  /**
-   * Parses the archive from the given fully-qualified path which
-   * represents a book_from_archive resource.
-   *
-   * @deprecated Use the {@link BookFromArchiveName} class instead.
-   */
-  @Deprecated
-  public static final String parseArchiveFromBookFromArchiveName(String bookFromArchiveName) {
-    return BOOK_FROM_ARCHIVE_PATH_TEMPLATE.parse(bookFromArchiveName).get("archive");
-  }
-
-  /**
-   * Parses the book from the given fully-qualified path which
-   * represents a book_from_archive resource.
-   *
-   * @deprecated Use the {@link BookFromArchiveName} class instead.
-   */
-  @Deprecated
-  public static final String parseBookFromBookFromArchiveName(String bookFromArchiveName) {
-    return BOOK_FROM_ARCHIVE_PATH_TEMPLATE.parse(bookFromArchiveName).get("book");
   }
 
   /**
@@ -4802,7 +4802,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookFromArchiveName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
    *   BookFromArchive response = libraryClient.getBookFromArchive(name);
    * }
    * </code></pre>
@@ -4810,7 +4810,7 @@ public class LibraryClient implements BackgroundResource {
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final BookFromArchive getBookFromArchive(BookFromArchiveName name) {
+  public final BookFromArchive getBookFromArchive(ArchivedBookName name) {
 
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
@@ -4826,7 +4826,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookFromArchiveName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
    *   BookFromArchive response = libraryClient.getBookFromArchive(name.toString());
    * }
    * </code></pre>
@@ -4850,7 +4850,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookFromArchiveName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -4872,7 +4872,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookFromArchiveName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+   *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -8102,10 +8102,10 @@ import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.BookFromArchiveName;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
@@ -8279,10 +8279,10 @@ import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.BookFromArchiveName;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
@@ -9427,10 +9427,10 @@ import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.BookFromArchiveName;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
@@ -12441,19 +12441,19 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromArchiveTest() {
-    String name2 = "name2-1052831874";
+    ArchivedBookName name2 = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     BookFromArchive expectedResponse = BookFromArchive.newBuilder()
-      .setName(name2)
+      .setName(name2.toString())
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookFromArchiveName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+    ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
 
     BookFromArchive actualResponse =
         client.getBookFromArchive(name);
@@ -12463,7 +12463,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromArchiveRequest actualRequest = (GetBookFromArchiveRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookFromArchiveName.parse(actualRequest.getName()));
+    Assert.assertEquals(name, ArchivedBookName.parse(actualRequest.getName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -12477,7 +12477,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookFromArchiveName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+      ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
 
       client.getBookFromArchive(name);
       Assert.fail("No exception raised");
