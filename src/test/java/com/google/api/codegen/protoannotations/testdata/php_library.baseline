@@ -3416,63 +3416,7 @@ return [
     ]
 ];
 
-============== file: src/V1/samples/babble_about_book/BABBLE_ABOUT_BOOK_REQUEST_STREAMING_CLIENT_ASYNC_EMPTY_RESPONSE_TYPE_WITHOUT_RESPONSE_HANDLING.php ==============
-<?php
-/*
- * Copyright 2019 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingClientAsync",  "empty_response_type_without_response_handling")
- */
-
-// [START sample]
-require __DIR__ . '/../../../../vendor/autoload.php';
-
-use Google\Cloud\Example\Library\V1\LibraryServiceClient;
-use Google\Example\Library\V1\DiscussBookRequest;
-
-/** Test default response handling is turned off for methods that return empty */
-function sampleBabbleAboutBook()
-{
-    // [START sample_core]
-
-    $libraryServiceClient = new LibraryServiceClient();
-
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
-    $request = new DiscussBookRequest();
-    $request->setName($formattedName);
-
-    try {
-        // Write data as it becomes available, then wait for a response
-        $requests = [$request];
-        $stream = $libraryServiceClient->babbleAboutBook();
-        foreach ($requests as $request) {
-            $stream->write($request);
-        }
-        $response = $stream->readResponse();
-    } finally {
-        $libraryServiceClient->close();
-    }
-
-    // [END sample_core]
-}
-// [END sample]
-
-sampleBabbleAboutBook();
-============== file: src/V1/samples/babble_about_book/BABBLE_ABOUT_BOOK_REQUEST_STREAMING_CLIENT_ASYNC_EMPTY_RESPONSE_TYPE_WITH_RESPONSE_HANDLING.php ==============
+============== file: src/V1/samples/babble_about_book/babble_about_book_request_streaming_client_async_empty_response_type_with_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3530,7 +3474,7 @@ function sampleBabbleAboutBook()
 // [END sample]
 
 sampleBabbleAboutBook();
-============== file: src/V1/samples/babble_about_book/BABBLE_ABOUT_BOOK_REQUEST_STREAMING_CLIENT_EMPTY_RESPONSE_TYPE_WITHOUT_RESPONSE_HANDLING.php ==============
+============== file: src/V1/samples/babble_about_book/babble_about_book_request_streaming_client_async_empty_response_type_without_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3549,7 +3493,7 @@ sampleBabbleAboutBook();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClientAsync",  "empty_response_type_without_response_handling")
  */
 
 // [START sample]
@@ -3570,10 +3514,13 @@ function sampleBabbleAboutBook()
     $request->setName($formattedName);
 
     try {
-        // Write data to server and wait for a response
+        // Write data as it becomes available, then wait for a response
         $requests = [$request];
         $stream = $libraryServiceClient->babbleAboutBook();
-        $response = $stream->writeAllAndReadResponse($requests);
+        foreach ($requests as $request) {
+            $stream->write($request);
+        }
+        $response = $stream->readResponse();
     } finally {
         $libraryServiceClient->close();
     }
@@ -3583,7 +3530,7 @@ function sampleBabbleAboutBook()
 // [END sample]
 
 sampleBabbleAboutBook();
-============== file: src/V1/samples/babble_about_book/BABBLE_ABOUT_BOOK_REQUEST_STREAMING_CLIENT_EMPTY_RESPONSE_TYPE_WITH_RESPONSE_HANDLING.php ==============
+============== file: src/V1/samples/babble_about_book/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3638,7 +3585,7 @@ function sampleBabbleAboutBook()
 // [END sample]
 
 sampleBabbleAboutBook();
-============== file: src/V1/samples/delete_shelf/DELETE_SHELF_REQUEST_EMPTY_RESPONSE_TYPE_WITHOUT_RESPONSE_HANDLING.php ==============
+============== file: src/V1/samples/babble_about_book/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3657,26 +3604,31 @@ sampleBabbleAboutBook();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
  */
 
 // [START sample]
 require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\DiscussBookRequest;
 
 /** Test default response handling is turned off for methods that return empty */
-function sampleDeleteShelf()
+function sampleBabbleAboutBook()
 {
     // [START sample_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $request = new DiscussBookRequest();
+    $request->setName($formattedName);
 
     try {
-        $libraryServiceClient->deleteShelf($formattedName);
-
+        // Write data to server and wait for a response
+        $requests = [$request];
+        $stream = $libraryServiceClient->babbleAboutBook();
+        $response = $stream->writeAllAndReadResponse($requests);
     } finally {
         $libraryServiceClient->close();
     }
@@ -3685,8 +3637,8 @@ function sampleDeleteShelf()
 }
 // [END sample]
 
-sampleDeleteShelf();
-============== file: src/V1/samples/delete_shelf/DELETE_SHELF_REQUEST_EMPTY_RESPONSE_TYPE_WITH_RESPONSE_HANDLING.php ==============
+sampleBabbleAboutBook();
+============== file: src/V1/samples/delete_shelf/delete_shelf_request_empty_response_type_with_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3735,7 +3687,55 @@ function sampleDeleteShelf()
 // [END sample]
 
 sampleDeleteShelf();
-============== file: src/V1/samples/discuss_book/TURING_PROG_REQUEST_STREAMING_BIDI.php ==============
+============== file: src/V1/samples/delete_shelf/delete_shelf_request_empty_response_type_without_response_handling.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+/** Test default response handling is turned off for methods that return empty */
+function sampleDeleteShelf()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+
+    try {
+        $libraryServiceClient->deleteShelf($formattedName);
+
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleDeleteShelf();
+============== file: src/V1/samples/discuss_book/turing_prog_request_streaming_bidi.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3813,7 +3813,7 @@ $options += $defaultOptions;
 $imageFileName = $options['image_file_name'];
 
 sampleDiscussBook($imageFileName);
-============== file: src/V1/samples/discuss_book/TURING_PROG_REQUEST_STREAMING_BIDI_ASYNC.php ==============
+============== file: src/V1/samples/discuss_book/turing_prog_request_streaming_bidi_async.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3900,7 +3900,7 @@ $options += $defaultOptions;
 $imageFileName = $options['image_file_name'];
 
 sampleDiscussBook($imageFileName);
-============== file: src/V1/samples/find_related_books/FIND_RELATED_BOOKS_REQUEST_PAGED_ALL_ODYSSEY.php ==============
+============== file: src/V1/samples/find_related_books/find_related_books_request_paged_all_odyssey.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3955,7 +3955,7 @@ function sampleFindRelatedBooks()
 // [END sample]
 
 sampleFindRelatedBooks();
-============== file: src/V1/samples/find_related_books/FIND_RELATED_BOOKS_REQUEST_PAGED_ODYSSEY.php ==============
+============== file: src/V1/samples/find_related_books/find_related_books_request_paged_odyssey.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4012,7 +4012,7 @@ function sampleFindRelatedBooks()
 // [END sample]
 
 sampleFindRelatedBooks();
-============== file: src/V1/samples/get_big_book/GET_BIG_BOOK_LONG_RUNNING_REQUEST_ASYNC_WAP.php ==============
+============== file: src/V1/samples/get_big_book/get_big_book_long_running_request_async_wap.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4104,7 +4104,7 @@ $options += $defaultOptions;
 $shelf = $options['shelf'];
 
 sampleGetBigBook($shelf);
-============== file: src/V1/samples/get_big_book/GET_BIG_BOOK_LONG_RUNNING_REQUEST_ASYNC_WAP2.php ==============
+============== file: src/V1/samples/get_big_book/get_big_book_long_running_request_async_wap2.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4190,7 +4190,7 @@ $shelf = $options['shelf'];
 $bigBookName = $options['big_book_name'];
 
 sampleGetBigBook($shelf, $bigBookName);
-============== file: src/V1/samples/get_big_book/GET_BIG_BOOK_LONG_RUNNING_REQUEST_WAP.php ==============
+============== file: src/V1/samples/get_big_book/get_big_book_long_running_request_wap.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4275,7 +4275,7 @@ $options += $defaultOptions;
 $shelf = $options['shelf'];
 
 sampleGetBigBook($shelf);
-============== file: src/V1/samples/get_big_book/GET_BIG_BOOK_LONG_RUNNING_REQUEST_WAP2.php ==============
+============== file: src/V1/samples/get_big_book/get_big_book_long_running_request_wap2.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4354,7 +4354,7 @@ $shelf = $options['shelf'];
 $bigBookName = $options['big_book_name'];
 
 sampleGetBigBook($shelf, $bigBookName);
-============== file: src/V1/samples/get_big_book/THIS_TAG_SHOULD_BE_THE_NAME_OF_THE_FILE.php ==============
+============== file: src/V1/samples/get_big_book/this_tag_should_be_the_name_of_the_file.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4439,68 +4439,7 @@ $options += $defaultOptions;
 $shelf = $options['shelf'];
 
 sampleGetBigBook($shelf);
-============== file: src/V1/samples/get_big_nothing/GET_BIG_NOTHING_LONG_RUNNING_REQUEST_ASYNC_EMPTY_RESPONSE_TYPE_WITHOUT_RESPONSE_HANDLING.php ==============
-<?php
-/*
- * Copyright 2019 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/*
- * DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_without_response_handling")
- */
-
-// [START sample]
-require __DIR__ . '/../../../../vendor/autoload.php';
-
-use Google\Cloud\Example\Library\V1\LibraryServiceClient;
-
-/** Test default response handling is turned off for methods that return empty */
-function sampleGetBigNothing()
-{
-    // [START sample_core]
-
-    $libraryServiceClient = new LibraryServiceClient();
-
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
-
-    try {
-        // start the operation, keep the operation name, and resume later
-        $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
-        $operationName = $operationResponse->getName();
-        // ... do other work
-        $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigNothing');
-        while (!$newOperationResponse->isDone()) {
-            // ... do other work
-            $newOperationResponse->reload();
-        }
-        if ($newOperationResponse->operationSucceeded()) {
-            // operation succeeded and returns no value
-        } else {
-          $error = $newOperationResponse->getError();
-          // handleError($error)
-        }
-    } finally {
-        $libraryServiceClient->close();
-    }
-
-    // [END sample_core]
-}
-// [END sample]
-
-sampleGetBigNothing();
-============== file: src/V1/samples/get_big_nothing/GET_BIG_NOTHING_LONG_RUNNING_REQUEST_ASYNC_EMPTY_RESPONSE_TYPE_WITH_RESPONSE_HANDLING.php ==============
+============== file: src/V1/samples/get_big_nothing/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4561,7 +4500,7 @@ function sampleGetBigNothing()
 // [END sample]
 
 sampleGetBigNothing();
-============== file: src/V1/samples/get_big_nothing/GET_BIG_NOTHING_LONG_RUNNING_REQUEST_EMPTY_RESPONSE_TYPE_WITHOUT_RESPONSE_HANDLING.php ==============
+============== file: src/V1/samples/get_big_nothing/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4580,7 +4519,7 @@ sampleGetBigNothing();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("LongRunningRequest",  "empty_response_type_without_response_handling")
+ * DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_without_response_handling")
  */
 
 // [START sample]
@@ -4598,13 +4537,20 @@ function sampleGetBigNothing()
     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
 
     try {
+        // start the operation, keep the operation name, and resume later
         $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
-        $operationResponse->pollUntilComplete();
-        if ($operationResponse->operationSucceeded()) {
+        $operationName = $operationResponse->getName();
+        // ... do other work
+        $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigNothing');
+        while (!$newOperationResponse->isDone()) {
+            // ... do other work
+            $newOperationResponse->reload();
+        }
+        if ($newOperationResponse->operationSucceeded()) {
             // operation succeeded and returns no value
         } else {
-            $error = $operationResponse->getError();
-            // handleError($error)
+          $error = $newOperationResponse->getError();
+          // handleError($error)
         }
     } finally {
         $libraryServiceClient->close();
@@ -4615,7 +4561,7 @@ function sampleGetBigNothing()
 // [END sample]
 
 sampleGetBigNothing();
-============== file: src/V1/samples/get_big_nothing/GET_BIG_NOTHING_LONG_RUNNING_REQUEST_EMPTY_RESPONSE_TYPE_WITH_RESPONSE_HANDLING.php ==============
+============== file: src/V1/samples/get_big_nothing/get_big_nothing_long_running_request_empty_response_type_with_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4669,7 +4615,61 @@ function sampleGetBigNothing()
 // [END sample]
 
 sampleGetBigNothing();
-============== file: src/V1/samples/get_book/GET_BOOK_REQUEST_TEST_ON_SUCCESS_MAP.php ==============
+============== file: src/V1/samples/get_big_nothing/get_big_nothing_long_running_request_empty_response_type_without_response_handling.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("LongRunningRequest",  "empty_response_type_without_response_handling")
+ */
+
+// [START sample]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+/** Test default response handling is turned off for methods that return empty */
+function sampleGetBigNothing()
+{
+    // [START sample_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+
+    try {
+        $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
+        $operationResponse->pollUntilComplete();
+        if ($operationResponse->operationSucceeded()) {
+            // operation succeeded and returns no value
+        } else {
+            $error = $operationResponse->getError();
+            // handleError($error)
+        }
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_core]
+}
+// [END sample]
+
+sampleGetBigNothing();
+============== file: src/V1/samples/get_book/get_book_request_test_on_success_map.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4720,7 +4720,7 @@ function sampleGetBook()
 // [END sample]
 
 sampleGetBook();
-============== file: src/V1/samples/get_shelf/SAMPLE_GET_SHELF.php ==============
+============== file: src/V1/samples/get_shelf/sample_get_shelf.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4769,7 +4769,7 @@ function sampleGetShelf()
 // [END sample_get_shelf]
 
 sampleGetShelf();
-============== file: src/V1/samples/list_shelves/TEST_DEFAULT_CALLING_FORM_FOR_PAGING.php ==============
+============== file: src/V1/samples/list_shelves/test_default_calling_form_for_paging.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4815,7 +4815,7 @@ function sampleListShelves()
 // [END test_default_calling_form_for_paging]
 
 sampleListShelves();
-============== file: src/V1/samples/monolog_about_book/MONOLOG_ABOUT_BOOK_REQUEST_STREAMING_CLIENT_ASYNC_PROG.php ==============
+============== file: src/V1/samples/monolog_about_book/monolog_about_book_request_streaming_client_async_prog.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4872,7 +4872,7 @@ function sampleMonologAboutBook()
 // [END sample]
 
 sampleMonologAboutBook();
-============== file: src/V1/samples/monolog_about_book/MONOLOG_ABOUT_BOOK_REQUEST_STREAMING_CLIENT_PROG.php ==============
+============== file: src/V1/samples/monolog_about_book/monolog_about_book_request_streaming_client_prog.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4926,7 +4926,7 @@ function sampleMonologAboutBook()
 // [END sample]
 
 sampleMonologAboutBook();
-============== file: src/V1/samples/publish_series/PUBLISH_SERIES_REQUEST_PI_VERSION.php ==============
+============== file: src/V1/samples/publish_series/publish_series_request_pi_version.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -5024,7 +5024,7 @@ $shelfName = $options['shelf_name'];
 $edition = $options['edition'];
 
 samplePublishSeries($shelfName, $edition);
-============== file: src/V1/samples/publish_series/PUBLISH_SERIES_REQUEST_SECOND_EDITION.php ==============
+============== file: src/V1/samples/publish_series/publish_series_request_second_edition.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -5078,7 +5078,7 @@ function samplePublishSeries()
 // [END canonical]
 
 samplePublishSeries();
-============== file: src/V1/samples/publish_series/PUBLISH_SERIES_REQUEST_TEST_REQUEST_OBJECT_FIELD_COMMENTS.php ==============
+============== file: src/V1/samples/publish_series/publish_series_request_test_request_object_field_comments.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -5155,7 +5155,7 @@ function samplePublishSeries()
 // [END sample]
 
 samplePublishSeries();
-============== file: src/V1/samples/publish_series/PUBLISH_SERIES_REQUEST_TEST_WRITE_TO_FILE.php ==============
+============== file: src/V1/samples/publish_series/publish_series_request_test_write_to_file.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -5211,7 +5211,7 @@ function samplePublishSeries()
 // [END sample]
 
 samplePublishSeries();
-============== file: src/V1/samples/stream_books/LOVELACE.php ==============
+============== file: src/V1/samples/stream_books/lovelace.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -5262,7 +5262,7 @@ function sampleStreamBooks()
 // [END lovelace]
 
 sampleStreamBooks();
-============== file: src/V1/samples/stream_shelves/STREAM_SHELVES_REQUEST_STREAMING_SERVER_EMPTY.php ==============
+============== file: src/V1/samples/stream_shelves/stream_shelves_request_streaming_server_empty.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
