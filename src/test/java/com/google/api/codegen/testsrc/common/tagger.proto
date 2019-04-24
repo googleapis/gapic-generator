@@ -34,8 +34,7 @@ service Labeler {
 
 message AddTagRequest {
   // REQUIRED: The resource which the tag is being added to.
-  // Resource is usually specified as a path, such as,
-  // projects/{project}/zones/{zone}/disks/{disk}.
+  // In the form "shelves/{shelf_id}/books/{book_id}".
   string resource = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference).type = "library.googleapis.com/Book"];
@@ -47,12 +46,15 @@ message AddTagRequest {
 
 message AddLabelRequest {
   // REQUIRED: The resource which the label is being added to.
-  // Resource is usually specified as a path, such as,
-  // projects/{project}/zones/{zone}/disks/{disk}.
-  string resource = 1;
+  // In the form "shelves/{shelf_id}/books/{book_id}".
+  string resource = 1  [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "library.googleapis.com/Book"
+  ];
 
   // REQUIRED: The label to add.
-  string label = 2;
+  string label = 2  [
+    (google.api.field_behavior) = REQUIRED];
 }
 
 // Response message for the `AddTag` method.

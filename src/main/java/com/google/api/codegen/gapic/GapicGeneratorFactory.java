@@ -55,6 +55,7 @@ import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceDocTransforme
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransformer;
+import com.google.api.codegen.transformer.nodejs.NodeJSSamplePackageMetadataTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSamplesTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
@@ -314,7 +315,16 @@ public class GapicGeneratorFactory {
                   .setModelToViewTransformer(
                       new NodeJSGapicSamplesTransformer(nodeJSPathMapper, packageConfig))
                   .build();
+          CodeGenerator sampleMetadataGenerator =
+              GapicGenerator.newBuilder()
+                  .setModel(model)
+                  .setProductConfig(productConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(
+                      new NodeJSSamplePackageMetadataTransformer(packageConfig))
+                  .build();
           generators.add(sampleGenerator);
+          generators.add(sampleMetadataGenerator);
         }
 
         CodeGenerator messageGenerator =

@@ -3657,7 +3657,10 @@ func TestLibraryServiceBabbleAboutBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var request *librarypb.DiscussBookRequest = &librarypb.DiscussBookRequest{}
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.DiscussBookRequest{
+        Name: formattedName,
+    }
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -3687,7 +3690,10 @@ func TestLibraryServiceBabbleAboutBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var request *librarypb.DiscussBookRequest = &librarypb.DiscussBookRequest{}
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.DiscussBookRequest{
+        Name: formattedName,
+    }
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {

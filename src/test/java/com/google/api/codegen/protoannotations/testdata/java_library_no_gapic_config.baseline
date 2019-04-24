@@ -3532,19 +3532,24 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+<<<<<<< HEAD
    *   BookName name = BookName.of("[BOOK_SHELF]", "[BOOK]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
    *   Book response = libraryServiceClient.privateGetBook(request);
+=======
+   *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
+   *   Book response = libraryServiceClient.privateListShelves(request);
+>>>>>>> origin/master
    * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final Book privateGetBook(GetBookRequest request) {
-    return privateGetBookCallable().call(request);
+  public final Book privateListShelves(ListShelvesRequest request) {
+    return privateListShelvesCallable().call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -3554,18 +3559,23 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+<<<<<<< HEAD
    *   BookName name = BookName.of("[BOOK_SHELF]", "[BOOK]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
    *   ApiFuture&lt;Book&gt; future = libraryServiceClient.privateGetBookCallable().futureCall(request);
+=======
+   *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
+   *   ApiFuture&lt;Book&gt; future = libraryServiceClient.privateListShelvesCallable().futureCall(request);
+>>>>>>> origin/master
    *   // Do something
    *   Book response = future.get();
    * }
    * </code></pre>
    */
-  public final UnaryCallable<GetBookRequest, Book> privateGetBookCallable() {
-    return stub.privateGetBookCallable();
+  public final UnaryCallable<ListShelvesRequest, Book> privateListShelvesCallable() {
+    return stub.privateListShelvesCallable();
   }
 
   @Override
@@ -4209,10 +4219,10 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
   }
 
   /**
-   * Returns the object with the settings used for calls to privateGetBook.
+   * Returns the object with the settings used for calls to privateListShelves.
    */
-  public UnaryCallSettings<GetBookRequest, Book> privateGetBookSettings() {
-    return ((LibraryServiceStubSettings) getStubSettings()).privateGetBookSettings();
+  public UnaryCallSettings<ListShelvesRequest, Book> privateListShelvesSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).privateListShelvesSettings();
   }
 
 
@@ -4542,10 +4552,10 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
     }
 
     /**
-     * Returns the builder for the settings used for calls to privateGetBook.
+     * Returns the builder for the settings used for calls to privateListShelves.
      */
-    public UnaryCallSettings.Builder<GetBookRequest, Book> privateGetBookSettings() {
-      return getStubSettingsBuilder().privateGetBookSettings();
+    public UnaryCallSettings.Builder<ListShelvesRequest, Book> privateListShelvesSettings() {
+      return getStubSettingsBuilder().privateListShelvesSettings();
     }
 
     @Override
@@ -5583,11 +5593,11 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setRequestMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsResponse.getDefaultInstance()))
           .build();
-  private static final MethodDescriptor<GetBookRequest, Book> privateGetBookMethodDescriptor =
-      MethodDescriptor.<GetBookRequest, Book>newBuilder()
+  private static final MethodDescriptor<ListShelvesRequest, Book> privateListShelvesMethodDescriptor =
+      MethodDescriptor.<ListShelvesRequest, Book>newBuilder()
           .setType(MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName("google.example.library.v1.LibraryService/PrivateGetBook")
-          .setRequestMarshaller(ProtoUtils.marshaller(GetBookRequest.getDefaultInstance()))
+          .setFullMethodName("google.example.library.v1.LibraryService/PrivateListShelves")
+          .setRequestMarshaller(ProtoUtils.marshaller(ListShelvesRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(Book.getDefaultInstance()))
           .build();
 
@@ -5628,7 +5638,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable;
   private final OperationCallable<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationCallable;
   private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
-  private final UnaryCallable<GetBookRequest, Book> privateGetBookCallable;
+  private final UnaryCallable<ListShelvesRequest, Book> privateListShelvesCallable;
 
   private final GrpcStubCallableFactory callableFactory;
 
@@ -5937,18 +5947,9 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
         GrpcCallSettings.<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>newBuilder()
             .setMethodDescriptor(testOptionalRequiredFlatteningParamsMethodDescriptor)
             .build();
-    GrpcCallSettings<GetBookRequest, Book> privateGetBookTransportSettings =
-        GrpcCallSettings.<GetBookRequest, Book>newBuilder()
-            .setMethodDescriptor(privateGetBookMethodDescriptor)
-            .setParamsExtractor(
-                new RequestParamsExtractor<GetBookRequest>() {
-                  @Override
-                  public Map<String, String> extract(GetBookRequest request) {
-                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
-                    params.put("name", String.valueOf(request.getName()));
-                    return params.build();
-                  }
-                })
+    GrpcCallSettings<ListShelvesRequest, Book> privateListShelvesTransportSettings =
+        GrpcCallSettings.<ListShelvesRequest, Book>newBuilder()
+            .setMethodDescriptor(privateListShelvesMethodDescriptor)
             .build();
 
     this.createShelfCallable = callableFactory.createUnaryCallable(createShelfTransportSettings,settings.createShelfSettings(), clientContext);
@@ -5986,7 +5987,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.getBigNothingOperationCallable = callableFactory.createOperationCallable(
         getBigNothingTransportSettings,settings.getBigNothingOperationSettings(), clientContext, this.operationsStub);
     this.testOptionalRequiredFlatteningParamsCallable = callableFactory.createUnaryCallable(testOptionalRequiredFlatteningParamsTransportSettings,settings.testOptionalRequiredFlatteningParamsSettings(), clientContext);
-    this.privateGetBookCallable = callableFactory.createUnaryCallable(privateGetBookTransportSettings,settings.privateGetBookSettings(), clientContext);
+    this.privateListShelvesCallable = callableFactory.createUnaryCallable(privateListShelvesTransportSettings,settings.privateListShelvesSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
@@ -6129,8 +6130,8 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     return testOptionalRequiredFlatteningParamsCallable;
   }
 
-  public UnaryCallable<GetBookRequest, Book> privateGetBookCallable() {
-    return privateGetBookCallable;
+  public UnaryCallable<ListShelvesRequest, Book> privateListShelvesCallable() {
+    return privateListShelvesCallable;
   }
 
   @Override
@@ -6667,8 +6668,8 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: testOptionalRequiredFlatteningParamsCallable()");
   }
 
-  public UnaryCallable<GetBookRequest, Book> privateGetBookCallable() {
-    throw new UnsupportedOperationException("Not implemented: privateGetBookCallable()");
+  public UnaryCallable<ListShelvesRequest, Book> privateListShelvesCallable() {
+    throw new UnsupportedOperationException("Not implemented: privateListShelvesCallable()");
   }
 
   @Override
@@ -6849,7 +6850,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final UnaryCallSettings<GetBookRequest, Operation> getBigNothingSettings;
   private final OperationCallSettings<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
   private final UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
-  private final UnaryCallSettings<GetBookRequest, Book> privateGetBookSettings;
+  private final UnaryCallSettings<ListShelvesRequest, Book> privateListShelvesSettings;
 
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -7064,10 +7065,10 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   }
 
   /**
-   * Returns the object with the settings used for calls to privateGetBook.
+   * Returns the object with the settings used for calls to privateListShelves.
    */
-  public UnaryCallSettings<GetBookRequest, Book> privateGetBookSettings() {
-    return privateGetBookSettings;
+  public UnaryCallSettings<ListShelvesRequest, Book> privateListShelvesSettings() {
+    return privateListShelvesSettings;
   }
 
 
@@ -7185,7 +7186,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     getBigNothingSettings = settingsBuilder.getBigNothingSettings().build();
     getBigNothingOperationSettings = settingsBuilder.getBigNothingOperationSettings().build();
     testOptionalRequiredFlatteningParamsSettings = settingsBuilder.testOptionalRequiredFlatteningParamsSettings().build();
-    privateGetBookSettings = settingsBuilder.privateGetBookSettings().build();
+    privateListShelvesSettings = settingsBuilder.privateListShelvesSettings().build();
   }
 
   private static final PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_STR_DESC =
@@ -7372,7 +7373,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final UnaryCallSettings.Builder<GetBookRequest, Operation> getBigNothingSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
     private final UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
-    private final UnaryCallSettings.Builder<GetBookRequest, Book> privateGetBookSettings;
+    private final UnaryCallSettings.Builder<ListShelvesRequest, Book> privateListShelvesSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -7475,7 +7476,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       testOptionalRequiredFlatteningParamsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
-      privateGetBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+      privateListShelvesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           createShelfSettings,
@@ -7501,7 +7502,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBigBookSettings,
           getBigNothingSettings,
           testOptionalRequiredFlatteningParamsSettings,
-          privateGetBookSettings
+          privateListShelvesSettings
       );
 
       initDefaults(this);
@@ -7618,7 +7619,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.privateGetBookSettings()
+      builder.privateListShelvesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
       builder
@@ -7698,7 +7699,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
       getBigNothingOperationSettings = settings.getBigNothingOperationSettings.toBuilder();
       testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
-      privateGetBookSettings = settings.privateGetBookSettings.toBuilder();
+      privateListShelvesSettings = settings.privateListShelvesSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
           createShelfSettings,
@@ -7724,7 +7725,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBigBookSettings,
           getBigNothingSettings,
           testOptionalRequiredFlatteningParamsSettings,
-          privateGetBookSettings
+          privateListShelvesSettings
       );
     }
 
@@ -7956,10 +7957,10 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     }
 
     /**
-     * Returns the builder for the settings used for calls to privateGetBook.
+     * Returns the builder for the settings used for calls to privateListShelves.
      */
-    public UnaryCallSettings.Builder<GetBookRequest, Book> privateGetBookSettings() {
-      return privateGetBookSettings;
+    public UnaryCallSettings.Builder<ListShelvesRequest, Book> privateListShelvesSettings() {
+      return privateListShelvesSettings;
     }
 
     @Override
@@ -10716,7 +10717,7 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   }
 
   @Override
-  public void privateGetBook(GetBookRequest request,
+  public void privateListShelves(ListShelvesRequest request,
     StreamObserver<Book> responseObserver) {
     Object response = responses.remove();
     if (response instanceof Book) {

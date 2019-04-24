@@ -19,24 +19,33 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.util.VersionMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 
 public class NodeJSCodePathMapper implements GapicCodePathMapper {
   @Override
   public String getOutputPath(String elementFullName, ProductConfig config) {
-    return getOutputPath(elementFullName, config, null);
+    ArrayList<String> dirs = new ArrayList<>();
+    dirs.add("src");
+    String apiVersion = getVersion(elementFullName);
+    if (!apiVersion.isEmpty()) {
+      dirs.add(apiVersion);
+    }
+    return Joiner.on("/").join(dirs);
   }
 
   @Override
   public String getSamplesOutputPath(String elementFullName, ProductConfig config, String method) {
-    return getOutputPath(elementFullName, config, method);
+    ArrayList<String> dirs = new ArrayList<>();
+    dirs.add("samples");
+    String apiVersion = getVersion(elementFullName);
+    if (!apiVersion.isEmpty()) {
+      dirs.add(apiVersion);
+    }
+    return Joiner.on("/").join(dirs);
   }
 
-  private String getOutputPath(String elementFullName, ProductConfig config, String methodSample) {
-    boolean haveSample = !Strings.isNullOrEmpty(methodSample);
-
+  private String getVersion(String elementFullName) {
     String apiVersion = "";
     List<String> packages = Splitter.on(".").splitToList(elementFullName);
     for (String p : packages) {
@@ -44,18 +53,6 @@ public class NodeJSCodePathMapper implements GapicCodePathMapper {
         apiVersion = p;
       }
     }
-
-    ArrayList<String> dirs = new ArrayList<>();
-    dirs.add("src");
-
-    if (haveSample) {
-      dirs.add(SAMPLES_DIRECTORY);
-    }
-
-    if (!apiVersion.isEmpty()) {
-      dirs.add(apiVersion);
-    }
-
-    return Joiner.on("/").join(dirs);
+    return apiVersion;
   }
 }

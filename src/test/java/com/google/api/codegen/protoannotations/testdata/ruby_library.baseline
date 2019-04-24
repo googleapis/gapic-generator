@@ -1194,7 +1194,7 @@ module Google
     # @!attribute [rw] done
     #   @return [true, false]
     #     If the value is `false`, it means the operation is still in progress.
-    #     If `true`, the operation is completed, and either `error` or `response` is
+    #     If true, the operation is completed, and either `error` or `response` is
     #     available.
     # @!attribute [rw] error
     #   @return [Google::Rpc::Status]
@@ -1977,25 +1977,24 @@ end
 
 module Google
   module Rpc
-    # The `Status` type defines a logical error model that is suitable for
-    # different programming environments, including REST APIs and RPC APIs. It is
-    # used by [gRPC](https://github.com/grpc). The error model is designed to be:
+    # The `Status` type defines a logical error model that is suitable for different
+    # programming environments, including REST APIs and RPC APIs. It is used by
+    # [gRPC](https://github.com/grpc). The error model is designed to be:
     #
     # * Simple to use and understand for most users
     # * Flexible enough to meet unexpected needs
     #
     # = Overview
     #
-    # The `Status` message contains three pieces of data: error code, error
-    # message, and error details. The error code should be an enum value of
-    # {Google::Rpc::Code}, but it may accept additional error codes
-    # if needed.  The error message should be a developer-facing English message
-    # that helps developers *understand* and *resolve* the error. If a localized
-    # user-facing error message is needed, put the localized message in the error
-    # details or localize it in the client. The optional error details may contain
-    # arbitrary information about the error. There is a predefined set of error
-    # detail types in the package `google.rpc` that can be used for common error
-    # conditions.
+    # The `Status` message contains three pieces of data: error code, error message,
+    # and error details. The error code should be an enum value of
+    # {Google::Rpc::Code}, but it may accept additional error codes if needed.  The
+    # error message should be a developer-facing English message that helps
+    # developers *understand* and *resolve* the error. If a localized user-facing
+    # error message is needed, put the localized message in the error details or
+    # localize it in the client. The optional error details may contain arbitrary
+    # information about the error. There is a predefined set of error detail types
+    # in the package `google.rpc` that can be used for common error conditions.
     #
     # = Language mapping
     #
@@ -2032,14 +2031,12 @@ module Google
     #   be used directly after any stripping needed for security/privacy reasons.
     # @!attribute [rw] code
     #   @return [Integer]
-    #     The status code, which should be an enum value of
-    #     {Google::Rpc::Code}.
+    #     The status code, which should be an enum value of {Google::Rpc::Code}.
     # @!attribute [rw] message
     #   @return [String]
     #     A developer-facing error message, which should be in English. Any
     #     user-facing error message should be localized and sent in the
-    #     {Google::Rpc::Status#details} field, or localized
-    #     by the client.
+    #     {Google::Rpc::Status#details} field, or localized by the client.
     # @!attribute [rw] details
     #   @return [Array<Google::Protobuf::Any>]
     #     A list of messages that carry the error details.  There is a common set of
@@ -4182,7 +4179,8 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   request = {}
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   request = { name: formatted_name }
       #   requests = [request]
       #   library_client.babble_about_book(requests)
 
@@ -5400,7 +5398,8 @@ def sample_babble_about_book
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  request = {}
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  request = { name: formatted_name }
 
   requests = [request]
   library_client.babble_about_book(requests)
@@ -5445,7 +5444,8 @@ def sample_babble_about_book
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  request = {}
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  request = { name: formatted_name }
 
   requests = [request]
   library_client.babble_about_book(requests)
@@ -8364,11 +8364,14 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes babble_about_book without error' do
       # Create request parameters
-      request = {}
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      request = { name: formatted_name }
 
       # Mock Grpc layer
       mock_method = proc do |requests|
         request = requests.first
+        assert_instance_of(Google::Example::Library::V1::DiscussBookRequest, request)
+        assert_equal(formatted_name, request.name)
         OpenStruct.new(execute: nil)
       end
       mock_stub = MockGrpcClientStub_v1.new(:babble_about_book, mock_method)
@@ -8391,10 +8394,14 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes babble_about_book with error' do
       # Create request parameters
-      request = {}
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      request = { name: formatted_name }
 
       # Mock Grpc layer
       mock_method = proc do |requests|
+        request = requests.first
+        assert_instance_of(Google::Example::Library::V1::DiscussBookRequest, request)
+        assert_equal(formatted_name, request.name)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:babble_about_book, mock_method)
