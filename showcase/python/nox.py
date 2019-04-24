@@ -41,7 +41,7 @@ def showcase(session, py):
     session.install(
         '-e',
         os.path.join('..', '..', 'artman-genfiles', 'python',
-                     'showcase-v1alpha3'))
+                     'showcase-v1beta1'))
 
     # Run py.test against the unit tests.
     session.run('py.test', '--quiet', 'tests')
@@ -65,10 +65,10 @@ def unit(session, py):
     session.install(
         '-e',
         os.path.join('..', '..', 'artman-genfiles', 'python',
-                     'showcase-v1alpha3'))
+                     'showcase-v1beta1'))
 
     # Run py.test against the unit tests.
     session.run(
         'py.test', '--quiet',
         os.path.join('..', '..', 'artman-genfiles', 'python',
-                     'showcase-v1alpha3', 'tests', 'unit'))
+                     'showcase-v1beta1', 'tests', 'unit'))

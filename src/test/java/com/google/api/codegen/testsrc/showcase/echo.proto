@@ -22,10 +22,10 @@ import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 import "google/rpc/status.proto";
 
-package google.showcase.v1alpha3;
+package google.showcase.v1beta1;
 
 option go_package = "github.com/googleapis/gapic-showcase/server/genproto";
-option java_package = "com.google.showcase.v1alpha3";
+option java_package = "com.google.showcase.v1beta1";
 option java_multiple_files = true;
 
 // This service is used showcase the four main types of rpcs - unary, server
@@ -40,7 +40,7 @@ service Echo {
   // This method simply echos the request. This method is showcases unary rpcs.
   rpc Echo(EchoRequest) returns (EchoResponse) {
     option (google.api.http) = {
-      post: "/v1alpha3/echo:echo"
+      post: "/v1beta1/echo:echo"
       body: "*"
     };
   }
@@ -49,7 +49,7 @@ service Echo {
   // through the stream. This method showcases server-side streaming rpcs.
   rpc Expand(ExpandRequest) returns (stream EchoResponse) {
     option (google.api.http) = {
-      post: "/v1alpha3/echo:expand"
+      post: "/v1beta1/echo:expand"
       body: "*"
     };
     // TODO(landrito): change this to be `fields: ["content", "error"]` once
@@ -62,7 +62,7 @@ service Echo {
   // passed to it. This method showcases client-side streaming rpcs.
   rpc Collect(stream EchoRequest) returns (EchoResponse) {
     option (google.api.http) = {
-      post: "/v1alpha3/echo:collect"
+      post: "/v1beta1/echo:collect"
       body: "*"
     };
   }
@@ -76,7 +76,7 @@ service Echo {
   // expanded words, this method returns a paged list of expanded words.
   rpc PagedExpand(PagedExpandRequest) returns (PagedExpandResponse) {
     option (google.api.http) = {
-      post: "/v1alpha3/echo:pagedExpand"
+      post: "/v1beta1/echo:pagedExpand"
       body: "*"
     };
   }
@@ -85,7 +85,7 @@ service Echo {
   // This method showcases how a client handles a request timing out.
   rpc Wait(WaitRequest) returns (google.longrunning.Operation) {
     option (google.api.http) = {
-      post: "/v1alpha3/echo:wait"
+      post: "/v1beta1/echo:wait"
       body: "*"
     };
     option (google.longrunning.operation_info) = {

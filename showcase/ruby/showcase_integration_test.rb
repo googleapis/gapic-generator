@@ -17,12 +17,12 @@ require "minitest/spec"
 
 require "grpc"
 
-require "google/showcase/v1alpha3/echo_client"
-require "google/showcase/v1alpha3/echo_services_pb"
+require "google/showcase/v1beta1/echo_client"
+require "google/showcase/v1beta1/echo_services_pb"
 
-describe Google::Showcase::V1alpha3::EchoClient do
+describe Google::Showcase::V1beta1::EchoClient do
   before(:all) do
-    @client = Google::Showcase::V1alpha3::EchoClient.new(
+    @client = Google::Showcase::V1beta1::EchoClient.new(
       credentials: GRPC::Core::Channel.new(
         "localhost:7469", nil, :this_channel_is_insecure))
   end
@@ -33,7 +33,7 @@ describe Google::Showcase::V1alpha3::EchoClient do
       content = "Echo Content"
       expected_response = { content: content }
       expected_response = Google::Gax::to_proto(
-        expected_response, Google::Showcase::V1alpha3::EchoResponse)
+        expected_response, Google::Showcase::V1beta1::EchoResponse)
 
       # Call method
       response = @client.echo(content: content)
@@ -103,7 +103,7 @@ describe Google::Showcase::V1alpha3::EchoClient do
       response_delay = {seconds: 2}
       success = { content: "wait Content" }
       expected_response = Google::Gax::to_proto(
-        success, Google::Showcase::V1alpha3::WaitResponse)
+        success, Google::Showcase::V1beta1::WaitResponse)
 
       # Call method
       operation = @client.wait(ttl: response_delay, success: success)

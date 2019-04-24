@@ -16,17 +16,17 @@
 import grpc
 import pytest
 
-from google import showcase_v1alpha3
+from google import showcase_v1beta1
 from google.api_core import exceptions
 from google.rpc import status_pb2
-from google.showcase_v1alpha3.proto import echo_pb2
-from google.showcase_v1alpha3.gapic.transports import echo_grpc_transport
+from google.showcase_v1beta1.proto import echo_pb2
+from google.showcase_v1beta1.gapic.transports import echo_grpc_transport
 
 
 class TestEchoClient(object):
     channel = grpc.insecure_channel('localhost:7469')
     transport = echo_grpc_transport.EchoGrpcTransport(channel=channel)
-    client = showcase_v1alpha3.EchoClient(transport=transport)
+    client = showcase_v1beta1.EchoClient(transport=transport)
 
     def test_echo(self):
         content = 'hello world'

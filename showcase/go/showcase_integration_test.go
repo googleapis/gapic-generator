@@ -24,7 +24,7 @@ import (
 	"testing"
 	"time"
 
-	showcase "cloud.google.com/go/showcase/apiv1alpha3"
+	showcase "cloud.google.com/go/showcase/apiv1beta1"
 	durationpb "github.com/golang/protobuf/ptypes/duration"
 	genprotopb "github.com/googleapis/gapic-showcase/server/genproto"
 	"google.golang.org/api/option"
