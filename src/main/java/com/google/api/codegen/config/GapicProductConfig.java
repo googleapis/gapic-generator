@@ -725,25 +725,52 @@ public abstract class GapicProductConfig implements ProductConfig {
           Map<String, ResourceDescriptorConfig> resourceDescriptorConfigs,
           Set<String> typesWithChildReferences) {
 
+    Map<CollectionConfigProto, Interface> allCollectionConfigProtos =
+        getAllCollectionConfigProtos(model, configProto);
+    ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigsFromGapicConfig =
+        createSingleResourceNamesFromGapicConfigOnly(
+            diagCollector, allCollectionConfigProtos, sampleProtoFile, language);
+
     HashMap<String, ResourceNameConfig> annotationResourceNameConfigs = new HashMap<>();
     resourceDescriptorConfigs
         .values()
         .stream()
-        .flatMap(r -> r.buildResourceNameConfigs(diagCollector).stream())
+        .flatMap(
+            r ->
+                r.buildResourceNameConfigs(diagCollector, singleResourceNameConfigsFromGapicConfig)
+                    .stream())
         .forEach(config -> annotationResourceNameConfigs.put(config.getEntityId(), config));
     resourceDescriptorConfigs
         .values()
         .stream()
         .filter(c -> typesWithChildReferences.contains(c.getUnifiedResourceType()))
-        .flatMap(r -> r.buildParentResourceNameConfigs(diagCollector).stream())
+        .flatMap(
+            r ->
+                r.buildParentResourceNameConfigs(
+                        diagCollector, singleResourceNameConfigsFromGapicConfig)
+                    .stream())
         .forEach(config -> annotationResourceNameConfigs.put(config.getEntityId(), config));
 
-    Map<CollectionConfigProto, Interface> allCollectionConfigProtos =
-        getAllCollectionConfigProtos(model, configProto);
-
-    ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigsFromGapicConfig =
-        createSingleResourceNamesFromGapicConfigOnly(
-            diagCollector, allCollectionConfigProtos, sampleProtoFile, language);
+    // Single resource names cannot be supported in a standalone manner for GAPIC v2, because the
+    // pattern field has been removed. Therefore, throw an error if a single resource config is
+    // found that does not exist in an annotation.
+    for (String key : singleResourceNameConfigsFromGapicConfig.keySet()) {
+      if (!annotationResourceNameConfigs.containsKey(key)) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Found single resource name \"%s\" in GAPIC config that has no corresponding annotation",
+                key));
+      }
+      if (annotationResourceNameConfigs.get(key).getResourceNameType() != ResourceNameType.SINGLE) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Found single resource name \"%s\" in GAPIC config that had entity name matching a non-single resource annotation: %s",
+                key,
+                annotationResourceNameConfigs.get(key)));
+      }
+    }
 
     // TODO(andrealin): Remove this once explicit fixed resource names are gone-zos.
     ImmutableMap<String, FixedResourceNameConfig> finalFixedResourceNameConfigs =
@@ -764,7 +791,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableMap.Builder<String, ResourceNameConfig> resourceNameConfigs =
         new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
     resourceNameConfigs.putAll(annotationResourceNameConfigs);
-    resourceNameConfigs.putAll(singleResourceNameConfigsFromGapicConfig);
     resourceNameConfigs.putAll(finalFixedResourceNameConfigs);
     resourceNameConfigs.putAll(resourceNameOneofConfigsFromGapicConfig);
     return resourceNameConfigs.build();

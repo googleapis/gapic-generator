@@ -156,7 +156,7 @@ public class ResourceNameMessageConfigsTest {
     configProtoV2 =
         ConfigProto.newBuilder()
             .addCollections(CollectionConfigProto.newBuilder().setEntityName("Shelf"))
-            .addCollections(CollectionConfigProto.newBuilder().setEntityName("archived_book"))
+            .addCollections(CollectionConfigProto.newBuilder().setEntityName("ArchivedBook"))
             .addInterfaces(
                 InterfaceConfigProto.newBuilder()
                     .addCollections(CollectionConfigProto.newBuilder().setEntityName("Shelf"))
@@ -284,23 +284,13 @@ public class ResourceNameMessageConfigsTest {
             ImmutableSet.of());
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
-    assertThat(resourceNameConfigs.size()).isEqualTo(8);
+    assertThat(resourceNameConfigs.size()).isEqualTo(3);
 
     assertThat(((SingleResourceNameConfig) resourceNameConfigs.get("Book")).getNamePattern())
         .isEqualTo(PROTO_BOOK_PATH);
-
-    assertThat(
-            ((SingleResourceNameConfig) resourceNameConfigs.get("archived_book")).getNamePattern())
-        .isEqualTo(GAPIC_ARCHIVED_BOOK_PATH);
     assertThat(
             ((SingleResourceNameConfig) resourceNameConfigs.get("ArchivedBook")).getNamePattern())
         .isEqualTo(PROTO_ARCHIVED_BOOK_PATH);
-    assertThat(
-            ((ResourceNameOneofConfig) resourceNameConfigs.get("book_oneof"))
-                .getResourceNameConfigs())
-        .hasSize(3);
-    assertThat(((FixedResourceNameConfig) resourceNameConfigs.get("deleted_book")).getFixedValue())
-        .isEqualTo(DELETED_BOOK_PATH);
     assertThat(((SingleResourceNameConfig) resourceNameConfigs.get("Shelf")).getNamePattern())
         .isEqualTo(PROTO_SHELF_PATH);
 
@@ -368,19 +358,6 @@ public class ResourceNameMessageConfigsTest {
                         FlatteningGroupProto.newBuilder().addAllParameters(Arrays.asList("book"))))
             .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
             .build();
-    InterfaceConfigProto interfaceConfigProto =
-        configProto.toBuilder().getInterfaces(0).toBuilder().addMethods(methodConfigProto).build();
-
-    ConfigProto extraConfigProto =
-        configProto
-            .toBuilder()
-            .setInterfaces(0, interfaceConfigProto)
-            .addResourceNameGeneration(
-                ResourceNameMessageConfigProto.newBuilder()
-                    .setMessageName("CreateShelvesRequest")
-                    .putFieldEntityMap("name", "Shelf")
-                    .putFieldEntityMap("book", "Book"))
-            .build();
 
     DiagCollector diagCollector = new BoundedDiagCollector();
     ResourceNameMessageConfigs messageConfigs =
@@ -392,7 +369,7 @@ public class ResourceNameMessageConfigsTest {
         GapicProductConfig.createResourceNameConfigsFromAnnotationsAndGapicConfig(
             null,
             diagCollector,
-            extraConfigProto,
+            ConfigProto.getDefaultInstance(),
             protoFile,
             TargetLanguage.CSHARP,
             resourceDescriptorConfigMap,

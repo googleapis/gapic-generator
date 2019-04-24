@@ -115,22 +115,37 @@ public abstract class ResourceDescriptorConfig {
   }
 
   private static ArrayList<ResourceNameConfig> buildSingleResourceNameConfigs(
+      DiagCollector diagCollector,
       List<String> patterns,
       Map<String, Name> nameMap,
       ProtoFile protoFile,
-      DiagCollector diagCollector) {
+      Map<String, SingleResourceNameConfig> configOverrides) {
     try {
       return patterns
           .stream()
           .map(
-              (String p) ->
-                  SingleResourceNameConfig.newBuilder()
+              (String p) -> {
+                String entityId = nameMap.get(p).toUpperCamel();
+                if (configOverrides.containsKey(entityId)) {
+                  SingleResourceNameConfig overrideConfig = configOverrides.get(entityId);
+                  return SingleResourceNameConfig.newBuilder()
                       .setNamePattern(p)
                       .setNameTemplate(PathTemplate.create(p))
                       .setAssignedProtoFile(protoFile)
-                      .setEntityId(nameMap.get(p).toUpperCamel())
+                      .setEntityId(entityId)
+                      .setEntityName(overrideConfig.getEntityName())
+                      .setCommonResourceName(overrideConfig.getCommonResourceName())
+                      .build();
+                } else {
+                  return SingleResourceNameConfig.newBuilder()
+                      .setNamePattern(p)
+                      .setNameTemplate(PathTemplate.create(p))
+                      .setAssignedProtoFile(protoFile)
+                      .setEntityId(entityId)
                       .setEntityName(nameMap.get(p))
-                      .build())
+                      .build();
+                }
+              })
           .collect(Collectors.toCollection(ArrayList::new));
     } catch (ValidationException e) {
       // Catch exception that may be thrown by PathTemplate.create
@@ -140,7 +155,8 @@ public abstract class ResourceDescriptorConfig {
   }
 
   /** Package-private for use in GapicProductConfig. */
-  List<ResourceNameConfig> buildResourceNameConfigs(DiagCollector diagCollector) {
+  List<ResourceNameConfig> buildResourceNameConfigs(
+      DiagCollector diagCollector, Map<String, SingleResourceNameConfig> configOverrides) {
     Name unqualifiedTypeName = Name.anyCamel(getUnqualifiedTypeName());
     HashMap<String, Name> entityNameMap = buildEntityNameMap(getPatterns(), unqualifiedTypeName);
     for (String key : entityNameMap.keySet()) {
@@ -151,7 +167,7 @@ public abstract class ResourceDescriptorConfig {
 
     ArrayList<ResourceNameConfig> resourceNameConfigs =
         buildSingleResourceNameConfigs(
-            getPatterns(), entityNameMap, getAssignedProtoFile(), diagCollector);
+            diagCollector, getPatterns(), entityNameMap, getAssignedProtoFile(), configOverrides);
 
     if (getRequiresOneofConfig()) {
       String oneofId = getUnqualifiedTypeName() + "Oneof";
@@ -166,12 +182,13 @@ public abstract class ResourceDescriptorConfig {
   }
 
   /** Package-private for use in GapicProductConfig. */
-  List<ResourceNameConfig> buildParentResourceNameConfigs(DiagCollector diagCollector) {
+  List<ResourceNameConfig> buildParentResourceNameConfigs(
+      DiagCollector diagCollector, Map<String, SingleResourceNameConfig> configOverrides) {
     List<String> parentPatterns = getParentPatterns();
     HashMap<String, Name> entityNameMap = buildEntityNameMap(parentPatterns, Name.from(""));
     ArrayList<ResourceNameConfig> resourceNameConfigs =
         buildSingleResourceNameConfigs(
-            parentPatterns, entityNameMap, getAssignedProtoFile(), diagCollector);
+            diagCollector, parentPatterns, entityNameMap, getAssignedProtoFile(), configOverrides);
 
     if (parentPatterns.size() > 1) {
       String oneofId = "ParentOneof";
