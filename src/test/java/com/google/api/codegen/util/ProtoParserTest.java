@@ -109,10 +109,6 @@ public class ProtoParserTest {
     libraryService = libraryProtoFile.getInterfaces().get(0);
     deleteShelfMethod = libraryService.lookupMethod("DeleteShelf");
     getBigBookMethod = libraryService.lookupMethod("GetBigBook");
-
-    // resourceDefs = protoParser.getResourceDefs(Arrays.asList(libraryProtoFile), diagCollector);
-    // resourceSetDefs =
-    //    protoParser.getResourceSetDefs(Arrays.asList(libraryProtoFile), diagCollector);
   }
 
   @Test
