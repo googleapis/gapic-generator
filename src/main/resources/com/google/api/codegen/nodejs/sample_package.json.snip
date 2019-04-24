@@ -1,0 +1,23 @@
+@snippet generate(metadata)
+  {
+    "name": "{@metadata.identifier}",
+    "private": true,
+    "license": "{@metadata.licenseName}",
+    "author": "{@metadata.author}",
+    "files": [
+      "*.js"
+    ],
+    "dependencies": {
+      @join packageDep : metadata.additionalDependencies on ",".add(BREAK)
+        @if packageDep.versionBound.lower == packageDep.versionBound.upper
+          "{@packageDep.name}": "{@packageDep.versionBound.lower}"
+        @else
+          "{@packageDep.name}": "^{@packageDep.versionBound.lower}"
+        @end
+      @end
+    },
+    "engines": {
+      "node": ">=6.0.0"
+    }
+  }
+@end
