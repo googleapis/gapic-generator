@@ -91,7 +91,6 @@ public class NodeJSSamplePackageMetadataTransformer
     PackageDependencyView yargsDep =
         PackageDependencyView.create(
             "yargs", packageConfig.commonsCliVersionBound(TargetLanguage.NODEJS));
-    System.out.println(yargsDep);
     PackageDependencyView gapicDep =
         PackageDependencyView.create(
             gapicPackageNamer.getMetadataIdentifier(), VersionBound.create("file:..", "file:.."));
