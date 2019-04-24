@@ -144,7 +144,10 @@ function sampleBabbleAboutBook() {
     // No one replied
     console.log(`No one replied.`);
   });
-  const request = {};
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const request = {
+    name: formattedName,
+  };
   // Write request objects.
   stream.write(request);
 }
@@ -173,7 +176,10 @@ function sampleBabbleAboutBook() {
       return;
     }
   });
-  const request = {};
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const request = {
+    name: formattedName,
+  };
   // Write request objects.
   stream.write(request);
 }
@@ -5751,7 +5757,10 @@ class LibraryServiceClient {
    *   }
    *   // doThingsWith(response)
    * });
-   * const request = {};
+   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const request = {
+   *   name: formattedName,
+   * };
    * // Write request objects.
    * stream.write(request);
    */

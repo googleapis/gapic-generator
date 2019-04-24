@@ -2785,8 +2785,7 @@ module Google
       # @!attribute [rw] resource
       #   @return [String]
       #     REQUIRED: The resource which the tag is being added to.
-      #     Resource is usually specified as a path, such as,
-      #     projects/{project}/zones/{zone}/disks/{disk}.
+      #     In the form "shelves/{shelf_id}/books/{book_id}".
       # @!attribute [rw] tag
       #   @return [String]
       #     REQUIRED: The tag to add.
@@ -2867,10 +2866,6 @@ module Library
       DEFAULT_TIMEOUT = 30
 
       PAGE_DESCRIPTORS = {
-        "list_shelves" => Google::Gax::PageDescriptor.new(
-          "page_token",
-          "next_page_token",
-          "shelves"),
         "list_books" => Google::Gax::PageDescriptor.new(
           "page_token",
           "next_page_token",
@@ -3298,13 +3293,10 @@ module Library
           defaults["test_optional_required_flattening_params"],
           exception_transformer: exception_transformer
         )
-        @private_get_book = Google::Gax.create_api_call(
-          @library_service_stub.method(:private_get_book),
-          defaults["private_get_book"],
-          exception_transformer: exception_transformer,
-          params_extractor: proc do |request|
-            {'name' => request.name}
-          end
+        @private_list_shelves = Google::Gax.create_api_call(
+          @library_service_stub.method(:private_list_shelves),
+          defaults["private_list_shelves"],
+          exception_transformer: exception_transformer
         )
       end
 
@@ -3395,38 +3387,33 @@ module Library
 
       # Lists shelves.
       #
+      # @param page_token [String]
+      #   A token identifying a page of results the server should return.
+      #   Typically, this is the value of
+      #   {Google::Example::Library::V1::ListShelvesResponse#next_page_token ListShelvesResponse#next_page_token}
+      #   returned from the previous call to `ListShelves` method.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
       # @yield [result, operation] Access the result along with the RPC operation
-      # @yieldparam result [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Shelf>]
+      # @yieldparam result [Google::Example::Library::V1::ListShelvesResponse]
       # @yieldparam operation [GRPC::ActiveCall::Operation]
-      # @return [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Shelf>]
-      #   An enumerable of Google::Example::Library::V1::Shelf instances.
-      #   See Google::Gax::PagedEnumerable documentation for other
-      #   operations such as per-page iteration or access to the response
-      #   object.
+      # @return [Google::Example::Library::V1::ListShelvesResponse]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #
-      #   # Iterate over all results.
-      #   library_client.list_shelves.each do |element|
-      #     # Process element.
-      #   end
-      #
-      #   # Or iterate over results one page at a time.
-      #   library_client.list_shelves.each_page do |page|
-      #     # Process each page at a time.
-      #     page.each do |element|
-      #       # Process element.
-      #     end
-      #   end
+      #   response = library_client.list_shelves
 
-      def list_shelves options: nil, &block
-        req = Google::Example::Library::V1::ListShelvesRequest.new
+      def list_shelves \
+          page_token: nil,
+          options: nil,
+          &block
+        req = {
+          page_token: page_token
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListShelvesRequest)
         @list_shelves.call(req, options, &block)
       end
 
@@ -4059,7 +4046,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   library_client.stream_shelves(formatted_name).each do |element|
       #     # Process element.
       #   end
@@ -4233,16 +4220,16 @@ module Library
       #   names_element = ''
       #   names = [names_element]
       #
-      #   # TODO: Initialize `shelves`:
-      #   shelves = []
+      #   # TODO: Initialize `formatted_shelves`:
+      #   formatted_shelves = []
       #
       #   # Iterate over all results.
-      #   library_client.find_related_books(names, shelves).each do |element|
+      #   library_client.find_related_books(formatted_names, formatted_shelves).each do |element|
       #     # Process element.
       #   end
       #
       #   # Or iterate over results one page at a time.
-      #   library_client.find_related_books(names, shelves).each_page do |page|
+      #   library_client.find_related_books(formatted_names, formatted_shelves).each_page do |page|
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
@@ -4268,8 +4255,7 @@ module Library
       #
       # @param resource [String]
       #   REQUIRED: The resource which the label is being added to.
-      #   Resource is usually specified as a path, such as,
-      #   projects/{project}/zones/{zone}/disks/{disk}.
+      #   In the form "shelves/{shelf_id}/books/{book_id}".
       # @param label [String]
       #   REQUIRED: The label to add.
       # @param options [Google::Gax::CallOptions]
@@ -4626,15 +4612,9 @@ module Library
       #
       #   # TODO: Initialize `required_singular_message`:
       #   required_singular_message = {}
-      #
-      #   # TODO: Initialize `required_singular_resource_name`:
-      #   required_singular_resource_name = ''
-      #
-      #   # TODO: Initialize `required_singular_resource_name_oneof`:
-      #   required_singular_resource_name_oneof = ''
-      #
-      #   # TODO: Initialize `required_singular_resource_name_common`:
-      #   required_singular_resource_name_common = ''
+      #   formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_required_singular_resource_name_common = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
       #
       #   # TODO: Initialize `required_singular_fixed32`:
       #   required_singular_fixed32 = 0
@@ -4675,8 +4655,8 @@ module Library
       #   # TODO: Initialize `formatted_required_repeated_resource_name_oneof`:
       #   formatted_required_repeated_resource_name_oneof = []
       #
-      #   # TODO: Initialize `required_repeated_resource_name_common`:
-      #   required_repeated_resource_name_common = []
+      #   # TODO: Initialize `formatted_required_repeated_resource_name_common`:
+      #   formatted_required_repeated_resource_name_common = []
       #
       #   # TODO: Initialize `required_repeated_fixed32`:
       #   required_repeated_fixed32 = []
@@ -4686,7 +4666,7 @@ module Library
       #
       #   # TODO: Initialize `required_map`:
       #   required_map = {}
-      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
+      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, formatted_required_singular_resource_name, formatted_required_singular_resource_name_oneof, formatted_required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, formatted_required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
       def test_optional_required_flattening_params \
           required_singular_int32,
@@ -4879,8 +4859,11 @@ module Library
 
       # This method is not exposed in the GAPIC config. It should be generated.
       #
-      # @param name [String]
-      #   The name of the book to retrieve.
+      # @param page_token [String]
+      #   A token identifying a page of results the server should return.
+      #   Typically, this is the value of
+      #   {Google::Example::Library::V1::ListShelvesResponse#next_page_token ListShelvesResponse#next_page_token}
+      #   returned from the previous call to `ListShelves` method.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -4893,17 +4876,17 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   response = library_client.private_get_book
+      #   response = library_client.private_list_shelves
 
-      def private_get_book \
-          name: nil,
+      def private_list_shelves \
+          page_token: nil,
           options: nil,
           &block
         req = {
-          name: name
+          page_token: page_token
         }.delete_if { |_, v| v.nil? }
-        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookRequest)
-        @private_get_book.call(req, options, &block)
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListShelvesRequest)
+        @private_list_shelves.call(req, options, &block)
       end
     end
   end
@@ -5084,7 +5067,7 @@ end
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
-        "PrivateGetBook": {
+        "PrivateListShelves": {
           "timeout_millis": 60000,
           "retry_codes_name": "idempotent",
           "retry_params_name": "default"
@@ -5592,7 +5575,7 @@ def sample_find_related_books
   shelves = [shelves_element]
 
   # Iterate over all results.
-  library_client.find_related_books(names, shelves).each do |element|
+  library_client.find_related_books(formatted_names, formatted_shelves).each do |element|
     book = element
     puts "Here's a related book: #{book}"
   end
@@ -5640,7 +5623,7 @@ def sample_find_related_books
   shelves = [shelves_element]
 
   # Iterate over results one page at a time.
-  library_client.find_related_books(names, shelves).each_page do |page|
+  library_client.find_related_books(formatted_names, formatted_shelves).each_page do |page|
     # Process each page at a time.
     page.each do |element|
       book = element
@@ -6351,7 +6334,7 @@ def sample_stream_shelves
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_name = library_client.class.shelf_path("[SHELF_ID]")
 
   library_client.stream_shelves(formatted_name).each do |element|
     puts element
@@ -6382,7 +6365,7 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_paging")
+# DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_paging")
 
 require "library"
 
@@ -6394,10 +6377,8 @@ def sample_list_shelves
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  # Iterate over all results.
-  library_client.list_shelves.each do |element|
-    puts "shelf name: #{element}"
-  end
+  response = library_client.list_shelves
+  puts "shelf name: #{response}"
 
   # [END test_default_calling_form_for_paging_core]
 end
@@ -6789,10 +6770,8 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes list_shelves without error' do
       # Create expected grpc response
-      next_page_token = ""
-      shelves_element = {}
-      shelves = [shelves_element]
-      expected_response = { next_page_token: next_page_token, shelves: shelves }
+      next_page_token = "nextPageToken-1530815211"
+      expected_response = { next_page_token: next_page_token }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::ListShelvesResponse)
 
       # Mock Grpc layer
@@ -6812,10 +6791,14 @@ describe Library::V1::LibraryServiceClient do
           response = client.list_shelves
 
           # Verify the response
-          assert(response.instance_of?(Google::Gax::PagedEnumerable))
-          assert_equal(expected_response, response.page.response)
-          assert_nil(response.next_page)
-          assert_equal(expected_response.shelves.to_a, response.to_a)
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.list_shelves do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
         end
       end
     end
@@ -8088,7 +8071,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes stream_shelves without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
 
       # Create expected grpc response
       shelves_element = {}
@@ -8123,7 +8106,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes stream_shelves with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -8439,7 +8422,7 @@ describe Library::V1::LibraryServiceClient do
       # Create request parameters
       names_element = ''
       names = [names_element]
-      shelves = []
+      formatted_shelves = []
 
       # Create expected grpc response
       next_page_token = ""
@@ -8451,8 +8434,8 @@ describe Library::V1::LibraryServiceClient do
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::FindRelatedBooksRequest, request)
-        assert_equal(names, request.names)
-        assert_equal(shelves, request.shelves)
+        assert_equal(formatted_names, request.names)
+        assert_equal(formatted_shelves, request.shelves)
         OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub_v1.new(:find_related_books, mock_method)
@@ -8465,7 +8448,7 @@ describe Library::V1::LibraryServiceClient do
           client = Library::Library.new(version: :v1)
 
           # Call method
-          response = client.find_related_books(names, shelves)
+          response = client.find_related_books(formatted_names, formatted_shelves)
 
           # Verify the response
           assert(response.instance_of?(Google::Gax::PagedEnumerable))
@@ -8480,13 +8463,13 @@ describe Library::V1::LibraryServiceClient do
       # Create request parameters
       names_element = ''
       names = [names_element]
-      shelves = []
+      formatted_shelves = []
 
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::FindRelatedBooksRequest, request)
-        assert_equal(names, request.names)
-        assert_equal(shelves, request.shelves)
+        assert_equal(formatted_names, request.names)
+        assert_equal(formatted_shelves, request.shelves)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:find_related_books, mock_method)
@@ -8500,7 +8483,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
-            client.find_related_books(names, shelves)
+            client.find_related_books(formatted_names, formatted_shelves)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
@@ -8834,9 +8817,9 @@ describe Library::V1::LibraryServiceClient do
       required_singular_string = ''
       required_singular_bytes = ''
       required_singular_message = {}
-      required_singular_resource_name = ''
-      required_singular_resource_name_oneof = ''
-      required_singular_resource_name_common = ''
+      formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_required_singular_resource_name_common = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
       required_repeated_int32 = []
@@ -8850,7 +8833,7 @@ describe Library::V1::LibraryServiceClient do
       required_repeated_message = []
       formatted_required_repeated_resource_name = []
       formatted_required_repeated_resource_name_oneof = []
-      required_repeated_resource_name_common = []
+      formatted_required_repeated_resource_name_common = []
       required_repeated_fixed32 = []
       required_repeated_fixed64 = []
       required_map = {}
@@ -8871,9 +8854,9 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_singular_string, request.required_singular_string)
         assert_equal(required_singular_bytes, request.required_singular_bytes)
         assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
-        assert_equal(required_singular_resource_name, request.required_singular_resource_name)
-        assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
-        assert_equal(required_singular_resource_name_common, request.required_singular_resource_name_common)
+        assert_equal(formatted_required_singular_resource_name, request.required_singular_resource_name)
+        assert_equal(formatted_required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
+        assert_equal(formatted_required_singular_resource_name_common, request.required_singular_resource_name_common)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
         assert_equal(required_singular_fixed64, request.required_singular_fixed64)
         assert_equal(required_repeated_int32, request.required_repeated_int32)
@@ -8890,7 +8873,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_message, request.required_repeated_message)
         assert_equal(formatted_required_repeated_resource_name, request.required_repeated_resource_name)
         assert_equal(formatted_required_repeated_resource_name_oneof, request.required_repeated_resource_name_oneof)
-        assert_equal(required_repeated_resource_name_common, request.required_repeated_resource_name_common)
+        assert_equal(formatted_required_repeated_resource_name_common, request.required_repeated_resource_name_common)
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
         assert_equal(required_map, request.required_map)
@@ -8916,9 +8899,9 @@ describe Library::V1::LibraryServiceClient do
             required_singular_string,
             required_singular_bytes,
             required_singular_message,
-            required_singular_resource_name,
-            required_singular_resource_name_oneof,
-            required_singular_resource_name_common,
+            formatted_required_singular_resource_name,
+            formatted_required_singular_resource_name_oneof,
+            formatted_required_singular_resource_name_common,
             required_singular_fixed32,
             required_singular_fixed64,
             required_repeated_int32,
@@ -8932,7 +8915,7 @@ describe Library::V1::LibraryServiceClient do
             required_repeated_message,
             formatted_required_repeated_resource_name,
             formatted_required_repeated_resource_name_oneof,
-            required_repeated_resource_name_common,
+            formatted_required_repeated_resource_name_common,
             required_repeated_fixed32,
             required_repeated_fixed64,
             required_map
@@ -8952,9 +8935,9 @@ describe Library::V1::LibraryServiceClient do
             required_singular_string,
             required_singular_bytes,
             required_singular_message,
-            required_singular_resource_name,
-            required_singular_resource_name_oneof,
-            required_singular_resource_name_common,
+            formatted_required_singular_resource_name,
+            formatted_required_singular_resource_name_oneof,
+            formatted_required_singular_resource_name_common,
             required_singular_fixed32,
             required_singular_fixed64,
             required_repeated_int32,
@@ -8968,7 +8951,7 @@ describe Library::V1::LibraryServiceClient do
             required_repeated_message,
             formatted_required_repeated_resource_name,
             formatted_required_repeated_resource_name_oneof,
-            required_repeated_resource_name_common,
+            formatted_required_repeated_resource_name_common,
             required_repeated_fixed32,
             required_repeated_fixed64,
             required_map
@@ -8992,9 +8975,9 @@ describe Library::V1::LibraryServiceClient do
       required_singular_string = ''
       required_singular_bytes = ''
       required_singular_message = {}
-      required_singular_resource_name = ''
-      required_singular_resource_name_oneof = ''
-      required_singular_resource_name_common = ''
+      formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_required_singular_resource_name_common = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
       required_repeated_int32 = []
@@ -9008,7 +8991,7 @@ describe Library::V1::LibraryServiceClient do
       required_repeated_message = []
       formatted_required_repeated_resource_name = []
       formatted_required_repeated_resource_name_oneof = []
-      required_repeated_resource_name_common = []
+      formatted_required_repeated_resource_name_common = []
       required_repeated_fixed32 = []
       required_repeated_fixed64 = []
       required_map = {}
@@ -9025,9 +9008,9 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_singular_string, request.required_singular_string)
         assert_equal(required_singular_bytes, request.required_singular_bytes)
         assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
-        assert_equal(required_singular_resource_name, request.required_singular_resource_name)
-        assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
-        assert_equal(required_singular_resource_name_common, request.required_singular_resource_name_common)
+        assert_equal(formatted_required_singular_resource_name, request.required_singular_resource_name)
+        assert_equal(formatted_required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
+        assert_equal(formatted_required_singular_resource_name_common, request.required_singular_resource_name_common)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
         assert_equal(required_singular_fixed64, request.required_singular_fixed64)
         assert_equal(required_repeated_int32, request.required_repeated_int32)
@@ -9044,7 +9027,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_message, request.required_repeated_message)
         assert_equal(formatted_required_repeated_resource_name, request.required_repeated_resource_name)
         assert_equal(formatted_required_repeated_resource_name_oneof, request.required_repeated_resource_name_oneof)
-        assert_equal(required_repeated_resource_name_common, request.required_repeated_resource_name_common)
+        assert_equal(formatted_required_repeated_resource_name_common, request.required_repeated_resource_name_common)
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
         assert_equal(required_map, request.required_map)
@@ -9071,9 +9054,9 @@ describe Library::V1::LibraryServiceClient do
               required_singular_string,
               required_singular_bytes,
               required_singular_message,
-              required_singular_resource_name,
-              required_singular_resource_name_oneof,
-              required_singular_resource_name_common,
+              formatted_required_singular_resource_name,
+              formatted_required_singular_resource_name_oneof,
+              formatted_required_singular_resource_name_common,
               required_singular_fixed32,
               required_singular_fixed64,
               required_repeated_int32,
@@ -9087,7 +9070,7 @@ describe Library::V1::LibraryServiceClient do
               required_repeated_message,
               formatted_required_repeated_resource_name,
               formatted_required_repeated_resource_name_oneof,
-              required_repeated_resource_name_common,
+              formatted_required_repeated_resource_name_common,
               required_repeated_fixed32,
               required_repeated_fixed64,
               required_map
@@ -9101,10 +9084,10 @@ describe Library::V1::LibraryServiceClient do
     end
   end
 
-  describe 'private_get_book' do
-    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#private_get_book."
+  describe 'private_list_shelves' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#private_list_shelves."
 
-    it 'invokes private_get_book without error' do
+    it 'invokes private_list_shelves without error' do
       # Create expected grpc response
       name = "name3373707"
       author = "author-1406328437"
@@ -9122,23 +9105,23 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub_v1.new(:private_get_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:private_list_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials_v1.new("private_get_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("private_list_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library::Library.new(version: :v1)
 
           # Call method
-          response = client.private_get_book
+          response = client.private_list_shelves
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.private_get_book do |response, operation|
+          client.private_list_shelves do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -9147,15 +9130,15 @@ describe Library::V1::LibraryServiceClient do
       end
     end
 
-    it 'invokes private_get_book with error' do
+    it 'invokes private_list_shelves with error' do
       # Mock Grpc layer
       mock_method = proc do
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub_v1.new(:private_get_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:private_list_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials_v1.new("private_get_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("private_list_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -9163,7 +9146,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
-            client.private_get_book
+            client.private_list_shelves
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
