@@ -89,6 +89,14 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library",
             "google.example.library.v1",
             "Library::V1",
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA,
+            new String[] {"library_v2_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "google.cloud.example.library_v1.gapic",
             "another_service"));
   }
 
