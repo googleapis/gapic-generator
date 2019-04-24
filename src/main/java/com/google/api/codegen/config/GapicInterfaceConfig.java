@@ -36,6 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import javax.annotation.Nullable;
 
 /**
@@ -79,7 +80,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   public abstract ImmutableList<String> getRequiredConstructorParams();
 
   @Override
-  public abstract ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
+  public abstract ImmutableSet<SingleResourceNameConfig> getSingleResourceNameConfigs();
 
   @Override
   public abstract String getManualDoc();
@@ -118,7 +119,6 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
 
     RetryCodesConfig retryCodesConfig =
         RetryCodesConfig.create(
-            diagCollector,
             interfaceConfigProto,
             new ArrayList<>(interfaceInput.getMethodsToGenerate().keySet()),
             protoParser);
@@ -163,22 +163,35 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       }
     }
 
-    ImmutableList.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableList.builder();
-    for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
-      String entityName = collectionConfigProto.getEntityName();
-      ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
-      if (!(resourceName instanceof SingleResourceNameConfig)) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Inconsistent configuration - single resource name %s specified for interface, "
-                    + " but was not found in GapicProductConfig configuration.",
-                entityName));
-        return null;
+    ImmutableSet.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableSet.builder();
+    if (protoParser.isProtoAnnotationsEnabled()) {
+      resourceNameConfigs
+          .values()
+          .stream()
+          .filter(
+              r ->
+                  r.getResourceNameType() == ResourceNameType.SINGLE
+                      && Objects.equals(r.getAssignedProtoFile(), apiInterface.getFile()))
+          .map(r -> (SingleResourceNameConfig) r)
+          .forEach(resourcesBuilder::add);
+    } else {
+      for (CollectionConfigProto collectionConfigProto :
+          interfaceConfigProto.getCollectionsList()) {
+        String entityName = collectionConfigProto.getEntityName();
+        ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
+        if (!(resourceName instanceof SingleResourceNameConfig)) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "Inconsistent configuration - single resource name %s specified for interface, "
+                      + " but was not found in GapicProductConfig configuration.",
+                  entityName));
+          return null;
+        }
+        resourcesBuilder.add((SingleResourceNameConfig) resourceName);
       }
-      resourcesBuilder.add((SingleResourceNameConfig) resourceName);
     }
-    ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
+    ImmutableSet<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
 
     String manualDoc =
         Strings.nullToEmpty(
@@ -231,18 +244,33 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     for (Entry<Method, MethodConfigProto> methodEntry : methodsToGenerate.entrySet()) {
       MethodConfigProto methodConfigProto = methodEntry.getValue();
       Method method = methodEntry.getKey();
-      GapicMethodConfig methodConfig =
-          GapicMethodConfig.createMethodConfig(
-              diagCollector,
-              language,
-              defaultPackageName,
-              methodConfigProto,
-              method,
-              messageConfigs,
-              resourceNameConfigs,
-              retryCodesConfig,
-              retryParamsConfigNames,
-              protoParser);
+      GapicMethodConfig methodConfig;
+      if (protoParser.isProtoAnnotationsEnabled()) {
+        methodConfig =
+            GapicMethodConfig.createGapicMethodConfigFromProto(
+                diagCollector,
+                language,
+                defaultPackageName,
+                methodConfigProto,
+                method,
+                messageConfigs,
+                resourceNameConfigs,
+                retryCodesConfig,
+                retryParamsConfigNames,
+                protoParser);
+      } else {
+        methodConfig =
+            GapicMethodConfig.createGapicMethodConfigFromGapicYaml(
+                diagCollector,
+                language,
+                defaultPackageName,
+                methodConfigProto,
+                method,
+                messageConfigs,
+                resourceNameConfigs,
+                retryCodesConfig,
+                retryParamsConfigNames);
+      }
       if (methodConfig == null) {
         continue;
       }

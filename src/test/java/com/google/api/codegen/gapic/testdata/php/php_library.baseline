@@ -194,10 +194,10 @@ class LibraryServiceGapicClient
         'https://www.googleapis.com/auth/cloud-platform',
         'https://www.googleapis.com/auth/library',
     ];
-    private static $shelfNameTemplate;
+    private static $archivedBookNameTemplate;
     private static $bookNameTemplate;
     private static $projectNameTemplate;
-    private static $archivedBookNameTemplate;
+    private static $shelfNameTemplate;
     private static $pathTemplateMap;
 
     private $operationsClient;
@@ -220,13 +220,13 @@ class LibraryServiceGapicClient
         ];
     }
 
-    private static function getShelfNameTemplate()
+    private static function getArchivedBookNameTemplate()
     {
-        if (self::$shelfNameTemplate == null) {
-            self::$shelfNameTemplate = new PathTemplate('shelves/{shelf_id}');
+        if (self::$archivedBookNameTemplate == null) {
+            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path}/books/{book_id=**}');
         }
 
-        return self::$shelfNameTemplate;
+        return self::$archivedBookNameTemplate;
     }
 
     private static function getBookNameTemplate()
@@ -247,13 +247,13 @@ class LibraryServiceGapicClient
         return self::$projectNameTemplate;
     }
 
-    private static function getArchivedBookNameTemplate()
+    private static function getShelfNameTemplate()
     {
-        if (self::$archivedBookNameTemplate == null) {
-            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path}/books/{book_id=**}');
+        if (self::$shelfNameTemplate == null) {
+            self::$shelfNameTemplate = new PathTemplate('shelves/{shelf_id}');
         }
 
-        return self::$archivedBookNameTemplate;
+        return self::$shelfNameTemplate;
     }
 
 
@@ -261,26 +261,28 @@ class LibraryServiceGapicClient
     {
         if (self::$pathTemplateMap == null) {
             self::$pathTemplateMap = [
-                'shelf' => self::getShelfNameTemplate(),
+                'archivedBook' => self::getArchivedBookNameTemplate(),
                 'book' => self::getBookNameTemplate(),
                 'project' => self::getProjectNameTemplate(),
-                'archivedBook' => self::getArchivedBookNameTemplate(),
+                'shelf' => self::getShelfNameTemplate(),
             ];
         }
         return self::$pathTemplateMap;
     }
     /**
      * Formats a string containing the fully-qualified path to represent
-     * a shelf resource.
+     * a archived_book resource.
      *
-     * @param string $shelfId
-     * @return string The formatted shelf resource.
+     * @param string $archivePath
+     * @param string $bookId
+     * @return string The formatted archived_book resource.
      * @experimental
      */
-    public static function shelfName($shelfId)
+    public static function archivedBookName($archivePath, $bookId)
     {
-        return self::getShelfNameTemplate()->render([
-            'shelf_id' => $shelfId,
+        return self::getArchivedBookNameTemplate()->render([
+            'archive_path' => $archivePath,
+            'book_id' => $bookId,
         ]);
     }
 
@@ -318,18 +320,16 @@ class LibraryServiceGapicClient
 
     /**
      * Formats a string containing the fully-qualified path to represent
-     * a archived_book resource.
+     * a shelf resource.
      *
-     * @param string $archivePath
-     * @param string $bookId
-     * @return string The formatted archived_book resource.
+     * @param string $shelfId
+     * @return string The formatted shelf resource.
      * @experimental
      */
-    public static function archivedBookName($archivePath, $bookId)
+    public static function shelfName($shelfId)
     {
-        return self::getArchivedBookNameTemplate()->render([
-            'archive_path' => $archivePath,
-            'book_id' => $bookId,
+        return self::getShelfNameTemplate()->render([
+            'shelf_id' => $shelfId,
         ]);
     }
 
@@ -337,10 +337,10 @@ class LibraryServiceGapicClient
      * Parses a formatted name string and returns an associative array of the components in the name.
      * The following name formats are supported:
      * Template: Pattern
-     * - shelf: shelves/{shelf_id}
+     * - archivedBook: archives/{archive_path}/books/{book_id=**}
      * - book: shelves/{shelf_id}/books/{book_id}
      * - project: projects/{project}
-     * - archivedBook: archives/{archive_path}/books/{book_id=**}
+     * - shelf: shelves/{shelf_id}
      *
      * The optional $template argument can be supplied to specify a particular pattern, and must
      * match one of the templates listed above. If no $template argument is provided, or if the
@@ -576,22 +576,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     // Iterate over pages of elements
-     *     $pagedResponse = $libraryServiceClient->listShelves();
-     *     foreach ($pagedResponse->iteratePages() as $page) {
-     *         foreach ($page as $element) {
-     *             // doSomethingWith($element);
-     *         }
-     *     }
-     *
-     *
-     *     // Alternatively:
-     *
-     *     // Iterate through all elements
-     *     $pagedResponse = $libraryServiceClient->listShelves();
-     *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doSomethingWith($element);
-     *     }
+     *     $response = $libraryServiceClient->listShelves();
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -600,10 +585,10 @@ class LibraryServiceGapicClient
      * @param array $optionalArgs {
      *     Optional.
      *     @type string $pageToken
-     *          A page token is used to specify a page of values to be returned.
-     *          If no page token is specified (the default), the first page
-     *          of values will be returned. Any page token used here must have
-     *          been generated by a previous call to the API.
+     *          A token identifying a page of results the server should return.
+     *          Typically, this is the value of
+     *          [ListShelvesResponse.next_page_token][google.example.library.v1.ListShelvesResponse.next_page_token]
+     *          returned from the previous call to `ListShelves` method.
      *     @type RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
      *          {@see Google\ApiCore\RetrySettings} object, or an associative array
@@ -611,7 +596,7 @@ class LibraryServiceGapicClient
      *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\ApiCore\PagedListResponse
+     * @return \Google\Example\Library\V1\ListShelvesResponse
      *
      * @throws ApiException if the remote call fails
      * @experimental
@@ -623,12 +608,12 @@ class LibraryServiceGapicClient
             $request->setPageToken($optionalArgs['pageToken']);
         }
 
-        return $this->getPagedListResponse(
+        return $this->startCall(
             'ListShelves',
-            $optionalArgs,
             ListShelvesResponse::class,
+            $optionalArgs,
             $request
-        );
+        )->wait();
     }
 
     /**
@@ -1501,7 +1486,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
      *     // Read all responses until the stream is complete
      *     $stream = $libraryServiceClient->streamShelves($formattedName);
      *     foreach ($stream->readAll() as $element) {
@@ -1763,9 +1748,9 @@ class LibraryServiceGapicClient
      * try {
      *     $namesElement = '';
      *     $names = [$namesElement];
-     *     $shelves = [];
+     *     $formattedShelves = [];
      *     // Iterate over pages of elements
-     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
+     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($formattedNames, $formattedShelves);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
      *             // doSomethingWith($element);
@@ -1776,7 +1761,7 @@ class LibraryServiceGapicClient
      *     // Alternatively:
      *
      *     // Iterate through all elements
-     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
+     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($formattedNames, $formattedShelves);
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
      *         // doSomethingWith($element);
      *     }
@@ -1846,8 +1831,7 @@ class LibraryServiceGapicClient
      * ```
      *
      * @param string $resource REQUIRED: The resource which the label is being added to.
-     * Resource is usually specified as a path, such as,
-     * projects/{project}/zones/{zone}/disks/{disk}.
+     * In the form "shelves/{shelf_id}/books/{book_id}".
      * @param string $label REQUIRED: The label to add.
      * @param array $optionalArgs {
      *     Optional.
@@ -2054,9 +2038,9 @@ class LibraryServiceGapicClient
      *     $requiredSingularString = '';
      *     $requiredSingularBytes = '';
      *     $requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest_InnerMessage();
-     *     $requiredSingularResourceName = '';
-     *     $requiredSingularResourceNameOneof = '';
-     *     $requiredSingularResourceNameCommon = '';
+     *     $formattedRequiredSingularResourceName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedRequiredSingularResourceNameOneof = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedRequiredSingularResourceNameCommon = $libraryServiceClient->projectName('[PROJECT]');
      *     $requiredSingularFixed32 = 0;
      *     $requiredSingularFixed64 = 0;
      *     $requiredRepeatedInt32 = [];
@@ -2070,11 +2054,11 @@ class LibraryServiceGapicClient
      *     $requiredRepeatedMessage = [];
      *     $formattedRequiredRepeatedResourceName = [];
      *     $formattedRequiredRepeatedResourceNameOneof = [];
-     *     $requiredRepeatedResourceNameCommon = [];
+     *     $formattedRequiredRepeatedResourceNameCommon = [];
      *     $requiredRepeatedFixed32 = [];
      *     $requiredRepeatedFixed64 = [];
      *     $requiredMap = [];
-     *     $response = $libraryServiceClient->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
+     *     $response = $libraryServiceClient->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $formattedRequiredSingularResourceName, $formattedRequiredSingularResourceNameOneof, $formattedRequiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $formattedRequiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -2417,7 +2401,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $response = $libraryServiceClient->privateGetBook();
+     *     $response = $libraryServiceClient->privateListShelves();
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -2425,8 +2409,11 @@ class LibraryServiceGapicClient
      *
      * @param array $optionalArgs {
      *     Optional.
-     *     @type string $name
-     *          The name of the book to retrieve.
+     *     @type string $pageToken
+     *          A token identifying a page of results the server should return.
+     *          Typically, this is the value of
+     *          [ListShelvesResponse.next_page_token][google.example.library.v1.ListShelvesResponse.next_page_token]
+     *          returned from the previous call to `ListShelves` method.
      *     @type RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
      *          {@see Google\ApiCore\RetrySettings} object, or an associative array
@@ -2439,22 +2426,15 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function privateGetBook(array $optionalArgs = [])
+    public function privateListShelves(array $optionalArgs = [])
     {
-        $request = new GetBookRequest();
-        if (isset($optionalArgs['name'])) {
-            $request->setName($optionalArgs['name']);
+        $request = new ListShelvesRequest();
+        if (isset($optionalArgs['pageToken'])) {
+            $request->setPageToken($optionalArgs['pageToken']);
         }
 
-        $requestParams = new RequestParamsHeaderDescriptor([
-          'name' => $request->getName(),
-        ]);
-        $optionalArgs['headers'] = isset($optionalArgs['headers'])
-            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
-            : $requestParams->getHeader();
-
         return $this->startCall(
-            'PrivateGetBook',
+            'PrivateListShelves',
             Book::class,
             $optionalArgs,
             $request
@@ -3010,7 +2990,7 @@ class MyProtoClient extends MyProtoGapicClient
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
-        "PrivateGetBook": {
+        "PrivateListShelves": {
           "timeout_millis": 60000,
           "retry_codes_name": "idempotent",
           "retry_params_name": "default"
@@ -3044,14 +3024,6 @@ return [
                     'pollDelayMultiplier' => '1.3',
                     'maxPollDelayMillis' => '60000',
                     'totalPollTimeoutMillis' => '600000',
-                ]
-            ],
-            'ListShelves' => [
-                'pageStreaming' => [
-                    'requestPageTokenGetMethod' => 'getPageToken',
-                    'requestPageTokenSetMethod' => 'setPageToken',
-                    'responsePageTokenGetMethod' => 'getNextPageToken',
-                    'resourcesGetMethod' => 'getShelves'
                 ]
             ],
             'ListBooks' => [
@@ -3362,16 +3334,9 @@ return [
                 'uriTemplate' => '/v1/testofp',
                 'body' => '*',
             ],
-            'PrivateGetBook' => [
+            'PrivateListShelves' => [
                 'method' => 'get',
-                'uriTemplate' => '/v1/{name=bookShelves/*/books/*}',
-                'placeholders' => [
-                    'name' => [
-                        'getters' => [
-                            'getName',
-                        ],
-                    ],
-                ]
+                'uriTemplate' => '/v1/bookShelves',
             ],
         ],
         'google.tagger.v1.Labeler' => [
@@ -3449,7 +3414,7 @@ return [
     ]
 ];
 
-============== file: src/V1/samples/babbleAboutBook/BabbleAboutBookRequestStreamingClientAsyncEmptyResponseTypeWithResponseHandling.php ==============
+============== file: src/V1/samples/babble_about_book/babble_about_book_request_streaming_client_async_empty_response_type_with_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3505,7 +3470,7 @@ function sampleBabbleAboutBook()
 // [END sample]
 
 sampleBabbleAboutBook();
-============== file: src/V1/samples/babbleAboutBook/BabbleAboutBookRequestStreamingClientAsyncEmptyResponseTypeWithoutResponseHandling.php ==============
+============== file: src/V1/samples/babble_about_book/babble_about_book_request_streaming_client_async_empty_response_type_without_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3559,7 +3524,7 @@ function sampleBabbleAboutBook()
 // [END sample]
 
 sampleBabbleAboutBook();
-============== file: src/V1/samples/babbleAboutBook/BabbleAboutBookRequestStreamingClientEmptyResponseTypeWithResponseHandling.php ==============
+============== file: src/V1/samples/babble_about_book/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3612,7 +3577,7 @@ function sampleBabbleAboutBook()
 // [END sample]
 
 sampleBabbleAboutBook();
-============== file: src/V1/samples/babbleAboutBook/BabbleAboutBookRequestStreamingClientEmptyResponseTypeWithoutResponseHandling.php ==============
+============== file: src/V1/samples/babble_about_book/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3663,7 +3628,7 @@ function sampleBabbleAboutBook()
 // [END sample]
 
 sampleBabbleAboutBook();
-============== file: src/V1/samples/deleteShelf/DeleteShelfRequestEmptyResponseTypeWithResponseHandling.php ==============
+============== file: src/V1/samples/delete_shelf/delete_shelf_request_empty_response_type_with_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3712,7 +3677,7 @@ function sampleDeleteShelf()
 // [END sample]
 
 sampleDeleteShelf();
-============== file: src/V1/samples/deleteShelf/DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling.php ==============
+============== file: src/V1/samples/delete_shelf/delete_shelf_request_empty_response_type_without_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3760,7 +3725,85 @@ function sampleDeleteShelf()
 // [END sample]
 
 sampleDeleteShelf();
-============== file: src/V1/samples/discussBook/DiscussBookRequestStreamingBidiAsyncProg.php ==============
+============== file: src/V1/samples/discuss_book/turing_prog_request_streaming_bidi.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+ */
+
+// [START turing_prog_request_streaming_bidi]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\Comment;
+use Google\Example\Library\V1\DiscussBookRequest;
+
+/** Testing calling forms */
+function sampleDiscussBook($imageFileName)
+{
+    // [START turing_prog_request_streaming_bidi_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    // $imageFileName = 'image_file.jpg';
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $comment = file_get_contents('comment_file');
+    $comment2 = new Comment();
+    $comment2->setComment($comment);
+    $image = file_get_contents($imageFileName);
+    $request = new DiscussBookRequest();
+    $request->setName($formattedName);
+    $request->setComment($comment2);
+    $request->setImage($image);
+
+    try {
+        // Write all requests to the server, then read all responses until the
+        // stream is complete
+        $requests = [$request];
+        $stream = $libraryServiceClient->discussBook();
+        $stream->writeAll($requests);
+        foreach ($stream->closeWriteAndReadAll() as $responseItem) {
+            printf("%s" . PHP_EOL, print_r($responseItem, true));
+        }
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END turing_prog_request_streaming_bidi_core]
+}
+// [END turing_prog_request_streaming_bidi]
+
+$opts = [
+    'image_file_name::',
+];
+
+$defaultOptions = [
+    'image_file_name' => 'image_file.jpg',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$imageFileName = $options['image_file_name'];
+
+sampleDiscussBook($imageFileName);
+============== file: src/V1/samples/discuss_book/turing_prog_request_streaming_bidi_async.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3847,85 +3890,7 @@ $options += $defaultOptions;
 $imageFileName = $options['image_file_name'];
 
 sampleDiscussBook($imageFileName);
-============== file: src/V1/samples/discussBook/DiscussBookRequestStreamingBidiProg.php ==============
-<?php
-/*
- * Copyright 2019 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
- */
-
-// [START turing_prog_request_streaming_bidi]
-require __DIR__ . '/../../../../vendor/autoload.php';
-
-use Google\Cloud\Example\Library\V1\LibraryServiceClient;
-use Google\Example\Library\V1\Comment;
-use Google\Example\Library\V1\DiscussBookRequest;
-
-/** Testing calling forms */
-function sampleDiscussBook($imageFileName)
-{
-    // [START turing_prog_request_streaming_bidi_core]
-
-    $libraryServiceClient = new LibraryServiceClient();
-
-    // $imageFileName = 'image_file.jpg';
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
-    $comment = file_get_contents('comment_file');
-    $comment2 = new Comment();
-    $comment2->setComment($comment);
-    $image = file_get_contents($imageFileName);
-    $request = new DiscussBookRequest();
-    $request->setName($formattedName);
-    $request->setComment($comment2);
-    $request->setImage($image);
-
-    try {
-        // Write all requests to the server, then read all responses until the
-        // stream is complete
-        $requests = [$request];
-        $stream = $libraryServiceClient->discussBook();
-        $stream->writeAll($requests);
-        foreach ($stream->closeWriteAndReadAll() as $responseItem) {
-            printf("%s" . PHP_EOL, print_r($responseItem, true));
-        }
-    } finally {
-        $libraryServiceClient->close();
-    }
-
-    // [END turing_prog_request_streaming_bidi_core]
-}
-// [END turing_prog_request_streaming_bidi]
-
-$opts = [
-    'image_file_name::',
-];
-
-$defaultOptions = [
-    'image_file_name' => 'image_file.jpg',
-];
-
-$options = getopt('', $opts);
-$options += $defaultOptions;
-
-$imageFileName = $options['image_file_name'];
-
-sampleDiscussBook($imageFileName);
-============== file: src/V1/samples/findRelatedBooks/FindRelatedBooksRequestPagedAllOdyssey.php ==============
+============== file: src/V1/samples/find_related_books/find_related_books_request_paged_all_odyssey.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -3966,7 +3931,7 @@ function sampleFindRelatedBooks()
 
     try {
         // Iterate through all elements
-        $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
+        $pagedResponse = $libraryServiceClient->findRelatedBooks($formattedNames, $formattedShelves);
         foreach ($pagedResponse->iterateAllElements() as $responseItem) {
             $book = $responseItem;
             printf("Here's a related book: %s" . PHP_EOL, $book);
@@ -3980,7 +3945,7 @@ function sampleFindRelatedBooks()
 // [END sample]
 
 sampleFindRelatedBooks();
-============== file: src/V1/samples/findRelatedBooks/FindRelatedBooksRequestPagedOdyssey.php ==============
+============== file: src/V1/samples/find_related_books/find_related_books_request_paged_odyssey.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4021,7 +3986,7 @@ function sampleFindRelatedBooks()
 
     try {
         // Iterate over pages of elements
-        $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
+        $pagedResponse = $libraryServiceClient->findRelatedBooks($formattedNames, $formattedShelves);
         foreach ($pagedResponse->iteratePages() as $page) {
             foreach ($page as $responseItem) {
                 $book = $responseItem;
@@ -4037,7 +4002,7 @@ function sampleFindRelatedBooks()
 // [END sample]
 
 sampleFindRelatedBooks();
-============== file: src/V1/samples/getBigBook/GetBigBookLongRunningRequestAsyncWap.php ==============
+============== file: src/V1/samples/get_big_book/get_big_book_long_running_request_async_wap.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4129,7 +4094,7 @@ $options += $defaultOptions;
 $shelf = $options['shelf'];
 
 sampleGetBigBook($shelf);
-============== file: src/V1/samples/getBigBook/GetBigBookLongRunningRequestAsyncWap2.php ==============
+============== file: src/V1/samples/get_big_book/get_big_book_long_running_request_async_wap2.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4215,7 +4180,7 @@ $shelf = $options['shelf'];
 $bigBookName = $options['big_book_name'];
 
 sampleGetBigBook($shelf, $bigBookName);
-============== file: src/V1/samples/getBigBook/GetBigBookLongRunningRequestWap.php ==============
+============== file: src/V1/samples/get_big_book/get_big_book_long_running_request_wap.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4300,7 +4265,7 @@ $options += $defaultOptions;
 $shelf = $options['shelf'];
 
 sampleGetBigBook($shelf);
-============== file: src/V1/samples/getBigBook/GetBigBookLongRunningRequestWap2.php ==============
+============== file: src/V1/samples/get_big_book/get_big_book_long_running_request_wap2.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4379,7 +4344,92 @@ $shelf = $options['shelf'];
 $bigBookName = $options['big_book_name'];
 
 sampleGetBigBook($shelf, $bigBookName);
-============== file: src/V1/samples/getBigNothing/GetBigNothingLongRunningRequestAsyncEmptyResponseTypeWithResponseHandling.php ==============
+============== file: src/V1/samples/get_big_book/this_tag_should_be_the_name_of_the_file.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("LongRunningRequest",  "wap")
+ */
+
+// [START this_tag_should_be_the_name_of_the_file]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+/** Testing calling forms */
+function sampleGetBigBook($shelf)
+{
+    // [START this_tag_should_be_the_name_of_the_file_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    // $shelf = 'Novel';
+    $formattedName = $libraryServiceClient->bookName($shelf, 'War and Peace');
+
+    try {
+        $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+        $operationResponse->pollUntilComplete();
+        if ($operationResponse->operationSucceeded()) {
+            $response = $operationResponse->getResult();
+            // Testing iterating over map fields when both key and value are specified.
+            foreach ($response->getMapListValueValue() as $myKey => $myValue) {
+                printf("key: %s, value: %s" . PHP_EOL, $myKey, print_r($myValue, true));
+            }
+
+            // Testing iterating over map fields when only key is specified.
+            foreach (array_keys($response->getMapListValueValue()) as $anotherKey) {
+                printf("key: %s" . PHP_EOL, $anotherKey);
+            }
+
+            // Testing iterating over map fields when only value is specified.
+            foreach ($response->getMapListValueValue() as $anotherValue) {
+                printf("value: %s" . PHP_EOL, print_r($anotherValue, true));
+            }
+
+            printf("name: %s" . PHP_EOL, $response->getName());
+            printf("author: %s" . PHP_EOL, $response->getAuthor());
+        } else {
+            $error = $operationResponse->getError();
+            // handleError($error)
+        }
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END this_tag_should_be_the_name_of_the_file_core]
+}
+// [END this_tag_should_be_the_name_of_the_file]
+
+$opts = [
+    'shelf::',
+];
+
+$defaultOptions = [
+    'shelf' => 'Novel',
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$shelf = $options['shelf'];
+
+sampleGetBigBook($shelf);
+============== file: src/V1/samples/get_big_nothing/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4440,7 +4490,7 @@ function sampleGetBigNothing()
 // [END sample]
 
 sampleGetBigNothing();
-============== file: src/V1/samples/getBigNothing/GetBigNothingLongRunningRequestAsyncEmptyResponseTypeWithoutResponseHandling.php ==============
+============== file: src/V1/samples/get_big_nothing/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4501,7 +4551,7 @@ function sampleGetBigNothing()
 // [END sample]
 
 sampleGetBigNothing();
-============== file: src/V1/samples/getBigNothing/GetBigNothingLongRunningRequestEmptyResponseTypeWithResponseHandling.php ==============
+============== file: src/V1/samples/get_big_nothing/get_big_nothing_long_running_request_empty_response_type_with_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4555,7 +4605,7 @@ function sampleGetBigNothing()
 // [END sample]
 
 sampleGetBigNothing();
-============== file: src/V1/samples/getBigNothing/GetBigNothingLongRunningRequestEmptyResponseTypeWithoutResponseHandling.php ==============
+============== file: src/V1/samples/get_big_nothing/get_big_nothing_long_running_request_empty_response_type_without_response_handling.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4609,7 +4659,7 @@ function sampleGetBigNothing()
 // [END sample]
 
 sampleGetBigNothing();
-============== file: src/V1/samples/getBook/GetBookRequestTestOnSuccessMap.php ==============
+============== file: src/V1/samples/get_book/get_book_request_test_on_success_map.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4660,7 +4710,102 @@ function sampleGetBook()
 // [END sample]
 
 sampleGetBook();
-============== file: src/V1/samples/monologAboutBook/MonologAboutBookRequestStreamingClientAsyncProg.php ==============
+============== file: src/V1/samples/get_shelf/sample_get_shelf.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
+ */
+
+// [START sample_get_shelf]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+/** Test default calling forms for unary methods. */
+function sampleGetShelf()
+{
+    // [START sample_get_shelf_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->shelfName('my-shelf');
+    $options = '';
+
+    try {
+        $response = $libraryServiceClient->getShelf($formattedName, $options);
+        printf("The theme of the shelf is: %s" . PHP_EOL, $response->getTheme());
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END sample_get_shelf_core]
+}
+// [END sample_get_shelf]
+
+sampleGetShelf();
+============== file: src/V1/samples/list_shelves/test_default_calling_form_for_paging.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_paging")
+ */
+
+// [START test_default_calling_form_for_paging]
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+
+/** Test default calling form for paging methods. */
+function sampleListShelves()
+{
+    // [START test_default_calling_form_for_paging_core]
+
+    $libraryServiceClient = new LibraryServiceClient();
+
+    try {
+        $response = $libraryServiceClient->listShelves();
+        printf("shelf name: %s" . PHP_EOL, print_r($response, true));
+    } finally {
+        $libraryServiceClient->close();
+    }
+
+    // [END test_default_calling_form_for_paging_core]
+}
+// [END test_default_calling_form_for_paging]
+
+sampleListShelves();
+============== file: src/V1/samples/monolog_about_book/monolog_about_book_request_streaming_client_async_prog.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4717,7 +4862,7 @@ function sampleMonologAboutBook()
 // [END sample]
 
 sampleMonologAboutBook();
-============== file: src/V1/samples/monologAboutBook/MonologAboutBookRequestStreamingClientProg.php ==============
+============== file: src/V1/samples/monolog_about_book/monolog_about_book_request_streaming_client_prog.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4771,7 +4916,7 @@ function sampleMonologAboutBook()
 // [END sample]
 
 sampleMonologAboutBook();
-============== file: src/V1/samples/publishSeries/PublishSeriesRequestPiVersion.php ==============
+============== file: src/V1/samples/publish_series/publish_series_request_pi_version.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4869,7 +5014,7 @@ $shelfName = $options['shelf_name'];
 $edition = $options['edition'];
 
 samplePublishSeries($shelfName, $edition);
-============== file: src/V1/samples/publishSeries/PublishSeriesRequestSecondEdition.php ==============
+============== file: src/V1/samples/publish_series/publish_series_request_second_edition.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -4923,7 +5068,7 @@ function samplePublishSeries()
 // [END canonical]
 
 samplePublishSeries();
-============== file: src/V1/samples/publishSeries/PublishSeriesRequestTestRequestObjectFieldComments.php ==============
+============== file: src/V1/samples/publish_series/publish_series_request_test_request_object_field_comments.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -5000,7 +5145,7 @@ function samplePublishSeries()
 // [END sample]
 
 samplePublishSeries();
-============== file: src/V1/samples/publishSeries/PublishSeriesRequestTestWriteToFile.php ==============
+============== file: src/V1/samples/publish_series/publish_series_request_test_write_to_file.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -5056,7 +5201,7 @@ function samplePublishSeries()
 // [END sample]
 
 samplePublishSeries();
-============== file: src/V1/samples/streamBooks/StreamBooksRequestStreamingServerProg.php ==============
+============== file: src/V1/samples/stream_books/lovelace.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -5107,7 +5252,7 @@ function sampleStreamBooks()
 // [END lovelace]
 
 sampleStreamBooks();
-============== file: src/V1/samples/streamShelves/StreamShelvesRequestStreamingServerEmpty.php ==============
+============== file: src/V1/samples/stream_shelves/stream_shelves_request_streaming_server_empty.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -5141,7 +5286,7 @@ function sampleStreamShelves()
 
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
 
     try {
         // Read all responses until the stream is complete
@@ -5495,25 +5640,19 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         // Mock response
-        $nextPageToken = '';
-        $shelvesElement = new Shelf();
-        $shelves = [$shelvesElement];
+        $nextPageToken = 'nextPageToken-1530815211';
         $expectedResponse = new ListShelvesResponse();
         $expectedResponse->setNextPageToken($nextPageToken);
-        $expectedResponse->setShelves($shelves);
         $transport->addResponse($expectedResponse);
 
         $response = $client->listShelves();
-        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
-        $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertSame(1, count($resources));
-        $this->assertEquals($expectedResponse->getShelves()[0], $resources[0]);
-
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/ListShelves', $actualFuncCall);
+
 
         $this->assertTrue($transport->isExhausted());
     }
@@ -6787,7 +6926,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse3);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->shelfName('[SHELF_ID]');
 
         $serverStream = $client->streamShelves($formattedName);
         $this->assertInstanceOf(ServerStream::class, $serverStream);
@@ -6837,7 +6976,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->shelfName('[SHELF_ID]');
 
         $serverStream = $client->streamShelves($formattedName);
         $results = $serverStream->readAll();
@@ -7110,9 +7249,9 @@ class LibraryServiceClientTest extends GeneratedTest
         // Mock request
         $namesElement = 'namesElement-249113339';
         $names = [$namesElement];
-        $shelves = [];
+        $formattedShelves = [];
 
-        $response = $client->findRelatedBooks($names, $shelves);
+        $response = $client->findRelatedBooks($formattedNames, $formattedShelves);
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
         $this->assertSame(1, count($resources));
@@ -7126,10 +7265,10 @@ class LibraryServiceClientTest extends GeneratedTest
 
         $actualValue = $actualRequestObject->getNames();
 
-        $this->assertProtobufEquals($names, $actualValue);
+        $this->assertProtobufEquals($formattedNames, $actualValue);
         $actualValue = $actualRequestObject->getShelves();
 
-        $this->assertProtobufEquals($shelves, $actualValue);
+        $this->assertProtobufEquals($formattedShelves, $actualValue);
         $this->assertTrue($transport->isExhausted());
     }
 
@@ -7158,10 +7297,10 @@ class LibraryServiceClientTest extends GeneratedTest
         // Mock request
         $namesElement = 'namesElement-249113339';
         $names = [$namesElement];
-        $shelves = [];
+        $formattedShelves = [];
 
         try {
-            $client->findRelatedBooks($names, $shelves);
+            $client->findRelatedBooks($formattedNames, $formattedShelves);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
@@ -7558,9 +7697,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredSingularString = 'requiredSingularString-1949894503';
         $requiredSingularBytes = '-29';
         $requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest_InnerMessage();
-        $requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
-        $requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
-        $requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
+        $formattedRequiredSingularResourceName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedRequiredSingularResourceNameOneof = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedRequiredSingularResourceNameCommon = $client->projectName('[PROJECT]');
         $requiredSingularFixed32 = 720656715;
         $requiredSingularFixed64 = 720656810;
         $requiredRepeatedInt32 = [];
@@ -7574,12 +7713,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredRepeatedMessage = [];
         $formattedRequiredRepeatedResourceName = [];
         $formattedRequiredRepeatedResourceNameOneof = [];
-        $requiredRepeatedResourceNameCommon = [];
+        $formattedRequiredRepeatedResourceNameCommon = [];
         $requiredRepeatedFixed32 = [];
         $requiredRepeatedFixed64 = [];
         $requiredMap = [];
 
-        $response = $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
+        $response = $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $formattedRequiredSingularResourceName, $formattedRequiredSingularResourceNameOneof, $formattedRequiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $formattedRequiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -7616,13 +7755,13 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertProtobufEquals($requiredSingularMessage, $actualValue);
         $actualValue = $actualRequestObject->getRequiredSingularResourceName();
 
-        $this->assertProtobufEquals($requiredSingularResourceName, $actualValue);
+        $this->assertProtobufEquals($formattedRequiredSingularResourceName, $actualValue);
         $actualValue = $actualRequestObject->getRequiredSingularResourceNameOneof();
 
-        $this->assertProtobufEquals($requiredSingularResourceNameOneof, $actualValue);
+        $this->assertProtobufEquals($formattedRequiredSingularResourceNameOneof, $actualValue);
         $actualValue = $actualRequestObject->getRequiredSingularResourceNameCommon();
 
-        $this->assertProtobufEquals($requiredSingularResourceNameCommon, $actualValue);
+        $this->assertProtobufEquals($formattedRequiredSingularResourceNameCommon, $actualValue);
         $actualValue = $actualRequestObject->getRequiredSingularFixed32();
 
         $this->assertProtobufEquals($requiredSingularFixed32, $actualValue);
@@ -7664,7 +7803,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertProtobufEquals($formattedRequiredRepeatedResourceNameOneof, $actualValue);
         $actualValue = $actualRequestObject->getRequiredRepeatedResourceNameCommon();
 
-        $this->assertProtobufEquals($requiredRepeatedResourceNameCommon, $actualValue);
+        $this->assertProtobufEquals($formattedRequiredRepeatedResourceNameCommon, $actualValue);
         $actualValue = $actualRequestObject->getRequiredRepeatedFixed32();
 
         $this->assertProtobufEquals($requiredRepeatedFixed32, $actualValue);
@@ -7710,9 +7849,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredSingularString = 'requiredSingularString-1949894503';
         $requiredSingularBytes = '-29';
         $requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest_InnerMessage();
-        $requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
-        $requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
-        $requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
+        $formattedRequiredSingularResourceName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedRequiredSingularResourceNameOneof = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedRequiredSingularResourceNameCommon = $client->projectName('[PROJECT]');
         $requiredSingularFixed32 = 720656715;
         $requiredSingularFixed64 = 720656810;
         $requiredRepeatedInt32 = [];
@@ -7726,13 +7865,13 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredRepeatedMessage = [];
         $formattedRequiredRepeatedResourceName = [];
         $formattedRequiredRepeatedResourceNameOneof = [];
-        $requiredRepeatedResourceNameCommon = [];
+        $formattedRequiredRepeatedResourceNameCommon = [];
         $requiredRepeatedFixed32 = [];
         $requiredRepeatedFixed64 = [];
         $requiredMap = [];
 
         try {
-            $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
+            $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $formattedRequiredSingularResourceName, $formattedRequiredSingularResourceNameOneof, $formattedRequiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $formattedRequiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
@@ -7748,7 +7887,7 @@ class LibraryServiceClientTest extends GeneratedTest
     /**
      * @test
      */
-    public function privateGetBookTest()
+    public function privateListShelvesTest()
     {
         $transport = $this->createTransport();
         $client = $this->createClient(['transport' => $transport]);
@@ -7767,13 +7906,13 @@ class LibraryServiceClientTest extends GeneratedTest
         $expectedResponse->setRead($read);
         $transport->addResponse($expectedResponse);
 
-        $response = $client->privateGetBook();
+        $response = $client->privateListShelves();
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
-        $this->assertSame('/google.example.library.v1.LibraryService/PrivateGetBook', $actualFuncCall);
+        $this->assertSame('/google.example.library.v1.LibraryService/PrivateListShelves', $actualFuncCall);
 
 
         $this->assertTrue($transport->isExhausted());
@@ -7782,7 +7921,7 @@ class LibraryServiceClientTest extends GeneratedTest
     /**
      * @test
      */
-    public function privateGetBookExceptionTest()
+    public function privateListShelvesExceptionTest()
     {
         $transport = $this->createTransport();
         $client = $this->createClient(['transport' => $transport]);
@@ -7802,7 +7941,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         try {
-            $client->privateGetBook();
+            $client->privateListShelves();
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

@@ -319,84 +319,23 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for ListShelvesAsync</summary>
         public async Task ListShelvesAsync()
         {
-            // Snippet: ListShelvesAsync(string,int?,CallSettings)
+            // Snippet: ListShelvesAsync(,CallSettings)
+            // Additional: ListShelvesAsync(,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Make the request
-            PagedAsyncEnumerable<ListShelvesResponse, Shelf> response =
-                libraryServiceClient.ListShelvesAsync();
-
-            // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((Shelf item) =>
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            });
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            await response.AsRawResponses().ForEachAsync((ListShelvesResponse page) =>
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (Shelf item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            });
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<Shelf> singlePage = await response.ReadPageAsync(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (Shelf item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
+            ListShelvesResponse response = await libraryServiceClient.ListShelvesAsync();
             // End snippet
         }
 
         /// <summary>Snippet for ListShelves</summary>
         public void ListShelves()
         {
-            // Snippet: ListShelves(string,int?,CallSettings)
+            // Snippet: ListShelves(,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Make the request
-            PagedEnumerable<ListShelvesResponse, Shelf> response =
-                libraryServiceClient.ListShelves();
-
-            // Iterate over all response items, lazily performing RPCs as required
-            foreach (Shelf item in response)
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            }
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            foreach (ListShelvesResponse page in response.AsRawResponses())
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (Shelf item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            }
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<Shelf> singlePage = response.ReadPage(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (Shelf item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
+            ListShelvesResponse response = libraryServiceClient.ListShelves();
             // End snippet
         }
 
@@ -404,43 +343,13 @@ namespace Google.Example.Library.V1.Snippets
         public async Task ListShelvesAsync_RequestObject()
         {
             // Snippet: ListShelvesAsync(ListShelvesRequest,CallSettings)
+            // Additional: ListShelvesAsync(ListShelvesRequest,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
             ListShelvesRequest request = new ListShelvesRequest();
             // Make the request
-            PagedAsyncEnumerable<ListShelvesResponse, Shelf> response =
-                libraryServiceClient.ListShelvesAsync(request);
-
-            // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((Shelf item) =>
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            });
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            await response.AsRawResponses().ForEachAsync((ListShelvesResponse page) =>
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (Shelf item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            });
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<Shelf> singlePage = await response.ReadPageAsync(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (Shelf item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
+            ListShelvesResponse response = await libraryServiceClient.ListShelvesAsync(request);
             // End snippet
         }
 
@@ -453,38 +362,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             ListShelvesRequest request = new ListShelvesRequest();
             // Make the request
-            PagedEnumerable<ListShelvesResponse, Shelf> response =
-                libraryServiceClient.ListShelves(request);
-
-            // Iterate over all response items, lazily performing RPCs as required
-            foreach (Shelf item in response)
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            }
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            foreach (ListShelvesResponse page in response.AsRawResponses())
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (Shelf item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            }
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<Shelf> singlePage = response.ReadPage(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (Shelf item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
+            ListShelvesResponse response = libraryServiceClient.ListShelves(request);
             // End snippet
         }
 
@@ -1490,12 +1368,12 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for AddCommentsAsync</summary>
         public async Task AddCommentsAsync()
         {
-            // Snippet: AddCommentsAsync(string,IEnumerable<Comment>,CallSettings)
-            // Additional: AddCommentsAsync(string,IEnumerable<Comment>,CancellationToken)
+            // Snippet: AddCommentsAsync(BookName,IEnumerable<Comment>,CallSettings)
+            // Additional: AddCommentsAsync(BookName,IEnumerable<Comment>,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -1506,18 +1384,18 @@ namespace Google.Example.Library.V1.Snippets
                 },
             };
             // Make the request
-            await libraryServiceClient.AddCommentsAsync(formattedName, comments);
+            await libraryServiceClient.AddCommentsAsync(name, comments);
             // End snippet
         }
 
         /// <summary>Snippet for AddComments</summary>
         public void AddComments()
         {
-            // Snippet: AddComments(string,IEnumerable<Comment>,CallSettings)
+            // Snippet: AddComments(BookName,IEnumerable<Comment>,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -1528,7 +1406,7 @@ namespace Google.Example.Library.V1.Snippets
                 },
             };
             // Make the request
-            libraryServiceClient.AddComments(formattedName, comments);
+            libraryServiceClient.AddComments(name, comments);
             // End snippet
         }
 
@@ -1542,7 +1420,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             AddCommentsRequest request = new AddCommentsRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 Comments = {
                                new Comment
                                {
@@ -1566,7 +1444,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             AddCommentsRequest request = new AddCommentsRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 Comments = {
                                new Comment
                                {
@@ -1852,7 +1730,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument
             StreamShelvesRequest request = new StreamShelvesRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                ShelfName = new ShelfName("[SHELF_ID]"),
             };
             // Make the request, returning a streaming response
             LibraryServiceClient.StreamShelvesStream streamingResponse = libraryServiceClient.StreamShelves(request);
@@ -1924,7 +1802,7 @@ namespace Google.Example.Library.V1.Snippets
                 // Initialize a request
                 DiscussBookRequest request = new DiscussBookRequest
                 {
-                    Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                    BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 };
                 // Stream a request to the server
                 await duplexStream.WriteAsync(request);
@@ -2778,30 +2656,30 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        /// <summary>Snippet for PrivateGetBookAsync</summary>
-        public async Task PrivateGetBookAsync_RequestObject()
+        /// <summary>Snippet for PrivateListShelvesAsync</summary>
+        public async Task PrivateListShelvesAsync_RequestObject()
         {
-            // Snippet: PrivateGetBookAsync(GetBookRequest,CallSettings)
-            // Additional: PrivateGetBookAsync(GetBookRequest,CancellationToken)
+            // Snippet: PrivateListShelvesAsync(ListShelvesRequest,CallSettings)
+            // Additional: PrivateListShelvesAsync(ListShelvesRequest,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            GetBookRequest request = new GetBookRequest();
+            ListShelvesRequest request = new ListShelvesRequest();
             // Make the request
-            Book response = await libraryServiceClient.PrivateGetBookAsync(request);
+            Book response = await libraryServiceClient.PrivateListShelvesAsync(request);
             // End snippet
         }
 
-        /// <summary>Snippet for PrivateGetBook</summary>
-        public void PrivateGetBook_RequestObject()
+        /// <summary>Snippet for PrivateListShelves</summary>
+        public void PrivateListShelves_RequestObject()
         {
-            // Snippet: PrivateGetBook(GetBookRequest,CallSettings)
+            // Snippet: PrivateListShelves(ListShelvesRequest,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            GetBookRequest request = new GetBookRequest();
+            ListShelvesRequest request = new ListShelvesRequest();
             // Make the request
-            Book response = libraryServiceClient.PrivateGetBook(request);
+            Book response = libraryServiceClient.PrivateListShelves(request);
             // End snippet
         }
 
@@ -3270,6 +3148,92 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
+        public void ListShelves()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            ListShelvesRequest expectedRequest = new ListShelvesRequest();
+            ListShelvesResponse expectedResponse = new ListShelvesResponse
+            {
+                NextPageToken = "nextPageToken-1530815211",
+            };
+            mockGrpcClient.Setup(x => x.ListShelves(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+
+            ListShelvesResponse response = client.ListShelves();
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task ListShelvesAsync()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            ListShelvesRequest expectedRequest = new ListShelvesRequest();
+            ListShelvesResponse expectedResponse = new ListShelvesResponse
+            {
+                NextPageToken = "nextPageToken-1530815211",
+            };
+            mockGrpcClient.Setup(x => x.ListShelvesAsync(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<ListShelvesResponse>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+
+            ListShelvesResponse response = await client.ListShelvesAsync();
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public void ListShelves2()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            ListShelvesRequest request = new ListShelvesRequest();
+            ListShelvesResponse expectedResponse = new ListShelvesResponse
+            {
+                NextPageToken = "nextPageToken-1530815211",
+            };
+            mockGrpcClient.Setup(x => x.ListShelves(request, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            ListShelvesResponse response = client.ListShelves(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task ListShelvesAsync2()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            ListShelvesRequest request = new ListShelvesRequest();
+            ListShelvesResponse expectedResponse = new ListShelvesResponse
+            {
+                NextPageToken = "nextPageToken-1530815211",
+            };
+            mockGrpcClient.Setup(x => x.ListShelvesAsync(request, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<ListShelvesResponse>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            ListShelvesResponse response = await client.ListShelvesAsync(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
         public void DeleteShelf()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
@@ -3478,7 +3442,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -3508,7 +3472,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -3538,7 +3502,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -3566,7 +3530,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -3733,7 +3697,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -3761,7 +3725,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -3789,7 +3753,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -3816,7 +3780,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -3926,7 +3890,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -3956,7 +3920,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -3989,7 +3953,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -4025,7 +3989,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -4058,7 +4022,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -4086,7 +4050,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -4114,7 +4078,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -4144,7 +4108,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -4174,7 +4138,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -4202,7 +4166,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -4225,7 +4189,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest expectedRequest = new AddCommentsRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 Comments = {
                                new Comment
                                {
@@ -4239,7 +4203,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.AddComments(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -4249,7 +4213,7 @@ namespace Google.Example.Library.V1.Tests
                     Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
                 },
             };
-            client.AddComments(formattedName, comments);
+            client.AddComments(name, comments);
             mockGrpcClient.VerifyAll();
         }
 
@@ -4263,7 +4227,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest expectedRequest = new AddCommentsRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 Comments = {
                                new Comment
                                {
@@ -4277,7 +4241,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.AddCommentsAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            string formattedName = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -4287,7 +4251,7 @@ namespace Google.Example.Library.V1.Tests
                     Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
                 },
             };
-            await client.AddCommentsAsync(formattedName, comments);
+            await client.AddCommentsAsync(name, comments);
             mockGrpcClient.VerifyAll();
         }
 
@@ -4301,7 +4265,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest request = new AddCommentsRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 Comments = {
                                new Comment
                                {
@@ -4329,7 +4293,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest request = new AddCommentsRequest
             {
-                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 Comments = {
                                new Comment
                                {
@@ -5328,49 +5292,49 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public void PrivateGetBook()
+        public void PrivateListShelves()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
                 .Returns(new Mock<Labeler.LabelerClient>().Object);
             mockGrpcClient.Setup(x => x.CreateOperationsClient())
                 .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetBookRequest request = new GetBookRequest();
+            ListShelvesRequest request = new ListShelvesRequest();
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
             };
-            mockGrpcClient.Setup(x => x.PrivateGetBook(request, It.IsAny<CallOptions>()))
+            mockGrpcClient.Setup(x => x.PrivateListShelves(request, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            Book response = client.PrivateGetBook(request);
+            Book response = client.PrivateListShelves(request);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
 
         [Fact]
-        public async Task PrivateGetBookAsync()
+        public async Task PrivateListShelvesAsync()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
                 .Returns(new Mock<Labeler.LabelerClient>().Object);
             mockGrpcClient.Setup(x => x.CreateOperationsClient())
                 .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetBookRequest request = new GetBookRequest();
+            ListShelvesRequest request = new ListShelvesRequest();
             Book expectedResponse = new Book
             {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
             };
-            mockGrpcClient.Setup(x => x.PrivateGetBookAsync(request, It.IsAny<CallOptions>()))
+            mockGrpcClient.Setup(x => x.PrivateListShelvesAsync(request, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            Book response = await client.PrivateGetBookAsync(request);
+            Book response = await client.PrivateListShelvesAsync(request);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -5587,7 +5551,7 @@ namespace Google.Example.Library.V1
             GetBigNothingSettings = existing.GetBigNothingSettings;
             GetBigNothingOperationsSettings = existing.GetBigNothingOperationsSettings?.Clone();
             TestOptionalRequiredFlatteningParamsSettings = existing.TestOptionalRequiredFlatteningParamsSettings;
-            PrivateGetBookSettings = existing.PrivateGetBookSettings;
+            PrivateListShelvesSettings = existing.PrivateListShelvesSettings;
             OnCopy(existing);
         }
 
@@ -6418,11 +6382,11 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
-        /// <c>LibraryServiceClient.PrivateGetBook</c> and <c>LibraryServiceClient.PrivateGetBookAsync</c>.
+        /// <c>LibraryServiceClient.PrivateListShelves</c> and <c>LibraryServiceClient.PrivateListShelvesAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <c>LibraryServiceClient.PrivateGetBook</c> and
-        /// <c>LibraryServiceClient.PrivateGetBookAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.PrivateListShelves</c> and
+        /// <c>LibraryServiceClient.PrivateListShelvesAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -6438,7 +6402,7 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public gaxgrpc::CallSettings PrivateGetBookSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
+        public gaxgrpc::CallSettings PrivateListShelvesSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
             gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
                 retryBackoff: GetDefaultRetryBackoff(),
                 timeoutBackoff: GetDefaultTimeoutBackoff(),
@@ -7015,56 +6979,45 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists shelves.
         /// </summary>
-        /// <param name="pageToken">
-        /// The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.
-        /// </param>
-        /// <param name="pageSize">
-        /// The size of page to request. The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.
-        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable asynchronous sequence of <see cref="Shelf"/> resources.
+        /// A Task containing the RPC response.
         /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListShelvesResponse, Shelf> ListShelvesAsync(
-            string pageToken = null,
-            int? pageSize = null,
+        public virtual stt::Task<ListShelvesResponse> ListShelvesAsync(
             gaxgrpc::CallSettings callSettings = null) => ListShelvesAsync(
                 new ListShelvesRequest
                 {
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
                 },
                 callSettings);
 
         /// <summary>
         /// Lists shelves.
         /// </summary>
-        /// <param name="pageToken">
-        /// The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
         /// </param>
-        /// <param name="pageSize">
-        /// The size of page to request. The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.
-        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<ListShelvesResponse> ListShelvesAsync(
+            st::CancellationToken cancellationToken) => ListShelvesAsync(
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable sequence of <see cref="Shelf"/> resources.
+        /// The RPC response.
         /// </returns>
-        public virtual gax::PagedEnumerable<ListShelvesResponse, Shelf> ListShelves(
-            string pageToken = null,
-            int? pageSize = null,
+        public virtual ListShelvesResponse ListShelves(
             gaxgrpc::CallSettings callSettings = null) => ListShelves(
                 new ListShelvesRequest
                 {
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
                 },
                 callSettings);
 
@@ -7078,9 +7031,9 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable asynchronous sequence of <see cref="Shelf"/> resources.
+        /// A Task containing the RPC response.
         /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListShelvesResponse, Shelf> ListShelvesAsync(
+        public virtual stt::Task<ListShelvesResponse> ListShelvesAsync(
             ListShelvesRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
@@ -7093,13 +7046,31 @@ namespace Google.Example.Library.V1
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.
         /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<ListShelvesResponse> ListShelvesAsync(
+            ListShelvesRequest request,
+            st::CancellationToken cancellationToken) => ListShelvesAsync(
+                request,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable sequence of <see cref="Shelf"/> resources.
+        /// The RPC response.
         /// </returns>
-        public virtual gax::PagedEnumerable<ListShelvesResponse, Shelf> ListShelves(
+        public virtual ListShelvesResponse ListShelves(
             ListShelvesRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
@@ -8549,12 +8520,12 @@ namespace Google.Example.Library.V1
         /// A Task that completes when the RPC has completed.
         /// </returns>
         public virtual stt::Task AddCommentsAsync(
-            string name,
+            BookName name,
             scg::IEnumerable<Comment> comments,
             gaxgrpc::CallSettings callSettings = null) => AddCommentsAsync(
                 new AddCommentsRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    BookName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Comments = { gax::GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
                 },
                 callSettings);
@@ -8575,7 +8546,7 @@ namespace Google.Example.Library.V1
         /// A Task that completes when the RPC has completed.
         /// </returns>
         public virtual stt::Task AddCommentsAsync(
-            string name,
+            BookName name,
             scg::IEnumerable<Comment> comments,
             st::CancellationToken cancellationToken) => AddCommentsAsync(
                 name,
@@ -8595,12 +8566,12 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         public virtual void AddComments(
-            string name,
+            BookName name,
             scg::IEnumerable<Comment> comments,
             gaxgrpc::CallSettings callSettings = null) => AddComments(
                 new AddCommentsRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    BookName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     Comments = { gax::GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
                 },
                 callSettings);
@@ -9178,11 +9149,11 @@ namespace Google.Example.Library.V1
         /// The server stream.
         /// </returns>
         public virtual StreamShelvesStream StreamShelves(
-            string name,
+            ShelfName name,
             gaxgrpc::CallSettings callSettings = null) => StreamShelves(
                 new StreamShelvesRequest
                 {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    ShelfName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -9407,8 +9378,7 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="resource">
         /// REQUIRED: The resource which the label is being added to.
-        /// Resource is usually specified as a path, such as,
-        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// In the form "shelves/{shelf_id}/books/{book_id}".
         /// </param>
         /// <param name="label">
         /// REQUIRED: The label to add.
@@ -9435,8 +9405,7 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="resource">
         /// REQUIRED: The resource which the label is being added to.
-        /// Resource is usually specified as a path, such as,
-        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// In the form "shelves/{shelf_id}/books/{book_id}".
         /// </param>
         /// <param name="label">
         /// REQUIRED: The label to add.
@@ -9460,8 +9429,7 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="resource">
         /// REQUIRED: The resource which the label is being added to.
-        /// Resource is usually specified as a path, such as,
-        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// In the form "shelves/{shelf_id}/books/{book_id}".
         /// </param>
         /// <param name="label">
         /// REQUIRED: The label to add.
@@ -11311,8 +11279,8 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual stt::Task<Book> PrivateGetBookAsync(
-            GetBookRequest request,
+        public virtual stt::Task<Book> PrivateListShelvesAsync(
+            ListShelvesRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             throw new sys::NotImplementedException();
@@ -11330,9 +11298,9 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual stt::Task<Book> PrivateGetBookAsync(
-            GetBookRequest request,
-            st::CancellationToken cancellationToken) => PrivateGetBookAsync(
+        public virtual stt::Task<Book> PrivateListShelvesAsync(
+            ListShelvesRequest request,
+            st::CancellationToken cancellationToken) => PrivateListShelvesAsync(
                 request,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
@@ -11348,8 +11316,8 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public virtual Book PrivateGetBook(
-            GetBookRequest request,
+        public virtual Book PrivateListShelves(
+            ListShelvesRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             throw new sys::NotImplementedException();
@@ -11388,7 +11356,7 @@ namespace Google.Example.Library.V1
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigBook;
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigNothing;
         private readonly gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> _callTestOptionalRequiredFlatteningParams;
-        private readonly gaxgrpc::ApiCall<GetBookRequest, Book> _callPrivateGetBook;
+        private readonly gaxgrpc::ApiCall<ListShelvesRequest, Book> _callPrivateListShelves;
 
         /// <summary>
         /// Constructs a client wrapper for the LibraryService service, with the specified gRPC client and settings.
@@ -11475,9 +11443,8 @@ namespace Google.Example.Library.V1
                 .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}"));
             _callTestOptionalRequiredFlatteningParams = clientHelper.BuildApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>(
                 GrpcClient.TestOptionalRequiredFlatteningParamsAsync, GrpcClient.TestOptionalRequiredFlatteningParams, effectiveSettings.TestOptionalRequiredFlatteningParamsSettings);
-            _callPrivateGetBook = clientHelper.BuildApiCall<GetBookRequest, Book>(
-                GrpcClient.PrivateGetBookAsync, GrpcClient.PrivateGetBook, effectiveSettings.PrivateGetBookSettings)
-                .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}"));
+            _callPrivateListShelves = clientHelper.BuildApiCall<ListShelvesRequest, Book>(
+                GrpcClient.PrivateListShelvesAsync, GrpcClient.PrivateListShelves, effectiveSettings.PrivateListShelvesSettings);
             Modify_ApiCall(ref _callCreateShelf);
             Modify_CreateShelfApiCall(ref _callCreateShelf);
             Modify_ApiCall(ref _callGetShelf);
@@ -11530,8 +11497,8 @@ namespace Google.Example.Library.V1
             Modify_GetBigNothingApiCall(ref _callGetBigNothing);
             Modify_ApiCall(ref _callTestOptionalRequiredFlatteningParams);
             Modify_TestOptionalRequiredFlatteningParamsApiCall(ref _callTestOptionalRequiredFlatteningParams);
-            Modify_ApiCall(ref _callPrivateGetBook);
-            Modify_PrivateGetBookApiCall(ref _callPrivateGetBook);
+            Modify_ApiCall(ref _callPrivateListShelves);
+            Modify_PrivateListShelvesApiCall(ref _callPrivateListShelves);
             OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
 
@@ -11577,7 +11544,7 @@ namespace Google.Example.Library.V1
         partial void Modify_GetBigBookApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_GetBigNothingApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_TestOptionalRequiredFlatteningParamsApiCall(ref gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> call);
-        partial void Modify_PrivateGetBookApiCall(ref gaxgrpc::ApiCall<GetBookRequest, Book> call);
+        partial void Modify_PrivateListShelvesApiCall(ref gaxgrpc::ApiCall<ListShelvesRequest, Book> call);
         partial void OnConstruction(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings effectiveSettings, gaxgrpc::ClientHelper clientHelper);
 
         /// <summary>
@@ -11706,14 +11673,14 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable asynchronous sequence of <see cref="Shelf"/> resources.
+        /// A Task containing the RPC response.
         /// </returns>
-        public override gax::PagedAsyncEnumerable<ListShelvesResponse, Shelf> ListShelvesAsync(
+        public override stt::Task<ListShelvesResponse> ListShelvesAsync(
             ListShelvesRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             Modify_ListShelvesRequest(ref request, ref callSettings);
-            return new gaxgrpc::GrpcPagedAsyncEnumerable<ListShelvesRequest, ListShelvesResponse, Shelf>(_callListShelves, request, callSettings);
+            return _callListShelves.Async(request, callSettings);
         }
 
         /// <summary>
@@ -11726,14 +11693,14 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable sequence of <see cref="Shelf"/> resources.
+        /// The RPC response.
         /// </returns>
-        public override gax::PagedEnumerable<ListShelvesResponse, Shelf> ListShelves(
+        public override ListShelvesResponse ListShelves(
             ListShelvesRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             Modify_ListShelvesRequest(ref request, ref callSettings);
-            return new gaxgrpc::GrpcPagedEnumerable<ListShelvesRequest, ListShelvesResponse, Shelf>(_callListShelves, request, callSettings);
+            return _callListShelves.Sync(request, callSettings);
         }
 
         /// <summary>
@@ -12719,12 +12686,12 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public override stt::Task<Book> PrivateGetBookAsync(
-            GetBookRequest request,
+        public override stt::Task<Book> PrivateListShelvesAsync(
+            ListShelvesRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
-            Modify_GetBookRequest(ref request, ref callSettings);
-            return _callPrivateGetBook.Async(request, callSettings);
+            Modify_ListShelvesRequest(ref request, ref callSettings);
+            return _callPrivateListShelves.Async(request, callSettings);
         }
 
         /// <summary>
@@ -12739,29 +12706,17 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public override Book PrivateGetBook(
-            GetBookRequest request,
+        public override Book PrivateListShelves(
+            ListShelvesRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
-            Modify_GetBookRequest(ref request, ref callSettings);
-            return _callPrivateGetBook.Sync(request, callSettings);
+            Modify_ListShelvesRequest(ref request, ref callSettings);
+            return _callPrivateListShelves.Sync(request, callSettings);
         }
 
     }
 
     // Partial classes to enable page-streaming
-
-    public partial class ListShelvesRequest : gaxgrpc::IPageRequest { }
-    public partial class ListShelvesResponse : gaxgrpc::IPageResponse<Shelf>
-    {
-        /// <summary>
-        /// Returns an enumerator that iterates through the resources in this response.
-        /// </summary>
-        public scg::IEnumerator<Shelf> GetEnumerator() => Shelves.GetEnumerator();
-
-        /// <inheritdoc/>
-        sc::IEnumerator sc::IEnumerable.GetEnumerator() => GetEnumerator();
-    }
 
     public partial class ListBooksRequest : gaxgrpc::IPageRequest { }
     public partial class ListBooksResponse : gaxgrpc::IPageResponse<Book>
@@ -13996,7 +13951,7 @@ namespace Google.Example.Library.V1
     }
 
 
-    public partial class Book
+    public partial class AddCommentsRequest
     {
         /// <summary>
         /// <see cref="Google.Example.Library.V1.BookName"/>-typed view over the <see cref="Name"/> resource name property.
@@ -14004,6 +13959,19 @@ namespace Google.Example.Library.V1
         public Google.Example.Library.V1.BookName BookName
         {
             get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.BookName.Parse(Name); }
+            set { Name = value != null ? value.ToString() : ""; }
+        }
+
+    }
+
+    public partial class Book
+    {
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.BookNameOneof"/>-typed view over the <see cref="Name"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.BookNameOneof BookNameOneof
+        {
+            get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.BookNameOneof.Parse(Name, true); }
             set { Name = value != null ? value.ToString() : ""; }
         }
 
@@ -14069,6 +14037,19 @@ namespace Google.Example.Library.V1
         public Google.Example.Library.V1.ShelfName ShelfName
         {
             get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.ShelfName.Parse(Name); }
+            set { Name = value != null ? value.ToString() : ""; }
+        }
+
+    }
+
+    public partial class DiscussBookRequest
+    {
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.BookName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.BookName BookName
+        {
+            get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.BookName.Parse(Name); }
             set { Name = value != null ? value.ToString() : ""; }
         }
 
@@ -14259,6 +14240,19 @@ namespace Google.Example.Library.V1
     }
 
     public partial class Shelf
+    {
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.ShelfName ShelfName
+        {
+            get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.ShelfName.Parse(Name); }
+            set { Name = value != null ? value.ToString() : ""; }
+        }
+
+    }
+
+    public partial class StreamShelvesRequest
     {
         /// <summary>
         /// <see cref="Google.Example.Library.V1.ShelfName"/>-typed view over the <see cref="Name"/> resource name property.

@@ -385,5 +385,11 @@ public class ProtoParserTest {
     assertThat(fieldNamePatterns.size()).isEqualTo(2);
     assertThat(fieldNamePatterns.get("shelf.name")).isEqualTo("Shelf");
     assertThat(fieldNamePatterns.get("books.name")).isEqualTo("BookOneof");
+
+    Method listStrings = libraryService.lookupMethod("ListStrings");
+    Map<String, String> fieldNamePatternsForListStrings =
+        protoParser.getFieldNamePatterns(listStrings);
+    assertThat(fieldNamePatternsForListStrings.size()).isEqualTo(1);
+    assertThat(fieldNamePatternsForListStrings.get("name")).isEqualTo("*");
   }
 }

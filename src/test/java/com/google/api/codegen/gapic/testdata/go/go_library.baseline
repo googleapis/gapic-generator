@@ -243,7 +243,7 @@ type CallOptions struct {
     GetBigBook []gax.CallOption
     GetBigNothing []gax.CallOption
     TestOptionalRequiredFlatteningParams []gax.CallOption
-    PrivateGetBook []gax.CallOption
+    PrivateListShelves []gax.CallOption
 }
 
 func defaultClientOptions() []option.ClientOption {
@@ -296,7 +296,7 @@ func defaultCallOptions() *CallOptions {
         GetBigBook: retry[[2]string{"default", "non_idempotent"}],
         GetBigNothing: retry[[2]string{"default", "non_idempotent"}],
         TestOptionalRequiredFlatteningParams: retry[[2]string{"default", "non_idempotent"}],
-        PrivateGetBook: retry[[2]string{"default", "idempotent"}],
+        PrivateListShelves: retry[[2]string{"default", "idempotent"}],
     }
 }
 
@@ -423,40 +423,19 @@ func (c *LibClient) GetShelf(ctx context.Context, req *librarypb.GetShelfRequest
 }
 
 // ListShelves lists shelves.
-func (c *LibClient) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequest, opts ...gax.CallOption) *ShelfIterator {
+func (c *LibClient) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequest, opts ...gax.CallOption) (*librarypb.ListShelvesResponse, error) {
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.ListShelves[0:len(c.CallOptions.ListShelves):len(c.CallOptions.ListShelves)], opts...)
-    it := &ShelfIterator{}
-    req = proto.Clone(req).(*librarypb.ListShelvesRequest)
-    it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Shelf, string, error) {
-        var resp *librarypb.ListShelvesResponse
-        req.PageToken = pageToken
-        if pageSize > math.MaxInt32 {
-            req.PageSize = math.MaxInt32
-        } else {
-            req.PageSize = int32(pageSize)
-        }
-        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
-            var err error
-            resp, err = c.client.ListShelves(ctx, req, settings.GRPC...)
-            return err
-        }, opts...)
-        if err != nil {
-            return nil, "", err
-        }
-        return resp.Shelves, resp.NextPageToken, nil
+    var resp *librarypb.ListShelvesResponse
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.ListShelves(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
     }
-    fetch := func(pageSize int, pageToken string) (string, error) {
-        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
-        if err != nil {
-            return "", err
-        }
-        it.items = append(it.items, items...)
-        return nextPageToken, nil
-    }
-    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
-    it.pageInfo.MaxSize = int(req.PageSize)
-    return it
+    return resp, nil
 }
 
 // DeleteShelf deletes a shelf.
@@ -577,6 +556,7 @@ func (c *LibClient) ListBooks(ctx context.Context, req *librarypb.ListBooksReque
     }
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
     it.pageInfo.MaxSize = int(req.PageSize)
+    it.pageInfo.Token = req.PageToken
     return it
 }
 
@@ -661,6 +641,7 @@ func (c *LibClient) ListStrings(ctx context.Context, req *librarypb.ListStringsR
     }
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
     it.pageInfo.MaxSize = int(req.PageSize)
+    it.pageInfo.Token = req.PageToken
     return it
 }
 
@@ -841,6 +822,7 @@ func (c *LibClient) FindRelatedBooks(ctx context.Context, req *librarypb.FindRel
     }
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
     it.pageInfo.MaxSize = int(req.PageSize)
+    it.pageInfo.Token = req.PageToken
     return it
 }
 
@@ -915,15 +897,14 @@ func (c *LibClient) TestOptionalRequiredFlatteningParams(ctx context.Context, re
     return resp, nil
 }
 
-// PrivateGetBook this method is not exposed in the GAPIC config. It should be generated.
-func (c *LibClient) PrivateGetBook(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
-    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
-    opts = append(c.CallOptions.PrivateGetBook[0:len(c.CallOptions.PrivateGetBook):len(c.CallOptions.PrivateGetBook)], opts...)
+// PrivateListShelves this method is not exposed in the GAPIC config. It should be generated.
+func (c *LibClient) PrivateListShelves(ctx context.Context, req *librarypb.ListShelvesRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.PrivateListShelves[0:len(c.CallOptions.PrivateListShelves):len(c.CallOptions.PrivateListShelves)], opts...)
     var resp *librarypb.Book
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.PrivateGetBook(ctx, req, settings.GRPC...)
+        resp, err = c.client.PrivateListShelves(ctx, req, settings.GRPC...)
         return err
     }, opts...)
     if err != nil {
@@ -970,48 +951,6 @@ func (it *BookIterator) bufLen() int {
 }
 
 func (it *BookIterator) takeBuf() interface{} {
-    b := it.items
-    it.items = nil
-    return b
-}
-
-// ShelfIterator manages a stream of *librarypb.Shelf.
-type ShelfIterator struct {
-    items    []*librarypb.Shelf
-    pageInfo *iterator.PageInfo
-    nextFunc func() error
-
-    // InternalFetch is for use by the Google Cloud Libraries only.
-    // It is not part of the stable interface of this package.
-    //
-    // InternalFetch returns results from a single call to the underlying RPC.
-    // The number of results is no greater than pageSize.
-    // If there are no more results, nextPageToken is empty and err is nil.
-    InternalFetch func(pageSize int, pageToken string) (results []*librarypb.Shelf, nextPageToken string, err error)
-}
-
-// PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
-func (it *ShelfIterator) PageInfo() *iterator.PageInfo {
-    return it.pageInfo
-}
-
-// Next returns the next result. Its second return value is iterator.Done if there are no more
-// results. Once Next returns Done, all subsequent calls will return Done.
-func (it *ShelfIterator) Next() (*librarypb.Shelf, error) {
-    var item *librarypb.Shelf
-    if err := it.nextFunc(); err != nil {
-        return item, err
-    }
-    item = it.items[0]
-    it.items = it.items[1:]
-    return item, nil
-}
-
-func (it *ShelfIterator) bufLen() int {
-    return len(it.items)
-}
-
-func (it *ShelfIterator) takeBuf() interface{} {
     b := it.items
     it.items = nil
     return b
@@ -1269,18 +1208,12 @@ func ExampleClient_ListShelves() {
     req := &librarypb.ListShelvesRequest{
         // TODO: Fill request struct fields.
     }
-    it := c.ListShelves(ctx, req)
-    for {
-        resp, err := it.Next()
-        if err == iterator.Done {
-            break
-        }
-        if err != nil {
-            // TODO: Handle error.
-        }
-        // TODO: Use resp.
-        _ = resp
+    resp, err := c.ListShelves(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
     }
+    // TODO: Use resp.
+    _ = resp
 }
 
 func ExampleClient_DeleteShelf() {
@@ -1763,17 +1696,17 @@ func ExampleClient_TestOptionalRequiredFlatteningParams() {
     _ = resp
 }
 
-func ExampleClient_PrivateGetBook() {
+func ExampleClient_PrivateListShelves() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
     if err != nil {
         // TODO: Handle error.
     }
 
-    req := &librarypb.GetBookRequest{
+    req := &librarypb.ListShelvesRequest{
         // TODO: Fill request struct fields.
     }
-    resp, err := c.PrivateGetBook(ctx, req)
+    resp, err := c.PrivateListShelves(ctx, req)
     if err != nil {
         // TODO: Handle error.
     }
@@ -2201,7 +2134,7 @@ func (s *mockLibraryServer) TestOptionalRequiredFlatteningParams(ctx context.Con
     return s.resps[0].(*librarypb.TestOptionalRequiredFlatteningParamsResponse), nil
 }
 
-func (s *mockLibraryServer) PrivateGetBook(ctx context.Context, req *librarypb.GetBookRequest) (*librarypb.Book, error) {
+func (s *mockLibraryServer) PrivateListShelves(ctx context.Context, req *librarypb.ListShelvesRequest) (*librarypb.Book, error) {
     md, _ := metadata.FromIncomingContext(ctx)
     if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
         return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
@@ -2432,12 +2365,9 @@ func TestLibraryServiceGetShelfError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceListShelves(t *testing.T) {
-    var nextPageToken string = ""
-    var shelvesElement *librarypb.Shelf = &librarypb.Shelf{}
-    var shelves = []*librarypb.Shelf{shelvesElement}
+    var nextPageToken string = "nextPageToken-1530815211"
     var expectedResponse = &librarypb.ListShelvesResponse{
         NextPageToken: nextPageToken,
-        Shelves: shelves,
     }
 
     mockLibrary.err = nil
@@ -2452,7 +2382,7 @@ func TestLibraryServiceListShelves(t *testing.T) {
         t.Fatal(err)
     }
 
-    resp, err := c.ListShelves(context.Background(), request).Next()
+    resp, err := c.ListShelves(context.Background(), request)
 
     if err != nil {
         t.Fatal(err)
@@ -2462,17 +2392,7 @@ func TestLibraryServiceListShelves(t *testing.T) {
         t.Errorf("wrong request %q, want %q", got, want)
     }
 
-    want := (interface{})(expectedResponse.Shelves[0])
-    got := (interface{})(resp)
-    var ok bool
-
-    switch want := (want).(type) {
-    case proto.Message:
-        ok = proto.Equal(want, got.(proto.Message))
-    default:
-        ok = want == got
-    }
-    if !ok {
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
         t.Errorf("wrong response %q, want %q)", got, want)
     }
 }
@@ -2488,7 +2408,7 @@ func TestLibraryServiceListShelvesError(t *testing.T) {
         t.Fatal(err)
     }
 
-    resp, err := c.ListShelves(context.Background(), request).Next()
+    resp, err := c.ListShelves(context.Background(), request)
 
     if st, ok := gstatus.FromError(err); !ok {
         t.Errorf("got error %v, expected grpc error", err)
@@ -3444,7 +3364,7 @@ func TestLibraryServiceStreamShelves(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
     var request = &librarypb.StreamShelvesRequest{
         Name: formattedName,
     }
@@ -3477,7 +3397,7 @@ func TestLibraryServiceStreamShelvesError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
     var request = &librarypb.StreamShelvesRequest{
         Name: formattedName,
     }
@@ -3805,10 +3725,10 @@ func TestLibraryServiceFindRelatedBooks(t *testing.T) {
 
     var namesElement string = "namesElement-249113339"
     var names = []string{namesElement}
-    var shelves []string = nil
+    var formattedShelves []string = nil
     var request = &librarypb.FindRelatedBooksRequest{
-        Names: names,
-        Shelves: shelves,
+        Names: formattedNames,
+        Shelves: formattedShelves,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -3847,10 +3767,10 @@ func TestLibraryServiceFindRelatedBooksError(t *testing.T) {
 
     var namesElement string = "namesElement-249113339"
     var names = []string{namesElement}
-    var shelves []string = nil
+    var formattedShelves []string = nil
     var request = &librarypb.FindRelatedBooksRequest{
-        Names: names,
-        Shelves: shelves,
+        Names: formattedNames,
+        Shelves: formattedShelves,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -4113,9 +4033,9 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
     var requiredSingularString string = "requiredSingularString-1949894503"
     var requiredSingularBytes []byte = []byte("-29")
     var requiredSingularMessage *librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = &librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage{}
-    var requiredSingularResourceName string = "requiredSingularResourceName-1701575020"
-    var requiredSingularResourceNameOneof string = "requiredSingularResourceNameOneof-25303726"
-    var requiredSingularResourceNameCommon string = "requiredSingularResourceNameCommon-1126805002"
+    var formattedRequiredSingularResourceName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var formattedRequiredSingularResourceNameOneof string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var formattedRequiredSingularResourceNameCommon string = fmt.Sprintf("projects/%s", "[PROJECT]")
     var requiredSingularFixed32 int32 = 720656715
     var requiredSingularFixed64 int64 = 720656810
     var requiredRepeatedInt32 []int32 = nil
@@ -4129,7 +4049,7 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
     var requiredRepeatedMessage []*librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = nil
     var formattedRequiredRepeatedResourceName []string = nil
     var formattedRequiredRepeatedResourceNameOneof []string = nil
-    var requiredRepeatedResourceNameCommon []string = nil
+    var formattedRequiredRepeatedResourceNameCommon []string = nil
     var requiredRepeatedFixed32 []int32 = nil
     var requiredRepeatedFixed64 []int64 = nil
     var requiredMap map[int32]string = nil
@@ -4143,9 +4063,9 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
         RequiredSingularString: requiredSingularString,
         RequiredSingularBytes: requiredSingularBytes,
         RequiredSingularMessage: requiredSingularMessage,
-        RequiredSingularResourceName: requiredSingularResourceName,
-        RequiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
-        RequiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
+        RequiredSingularResourceName: formattedRequiredSingularResourceName,
+        RequiredSingularResourceNameOneof: formattedRequiredSingularResourceNameOneof,
+        RequiredSingularResourceNameCommon: formattedRequiredSingularResourceNameCommon,
         RequiredSingularFixed32: requiredSingularFixed32,
         RequiredSingularFixed64: requiredSingularFixed64,
         RequiredRepeatedInt32: requiredRepeatedInt32,
@@ -4159,7 +4079,7 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
         RequiredRepeatedMessage: requiredRepeatedMessage,
         RequiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
         RequiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
-        RequiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
+        RequiredRepeatedResourceNameCommon: formattedRequiredRepeatedResourceNameCommon,
         RequiredRepeatedFixed32: requiredRepeatedFixed32,
         RequiredRepeatedFixed64: requiredRepeatedFixed64,
         RequiredMap: requiredMap,
@@ -4198,9 +4118,9 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     var requiredSingularString string = "requiredSingularString-1949894503"
     var requiredSingularBytes []byte = []byte("-29")
     var requiredSingularMessage *librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = &librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage{}
-    var requiredSingularResourceName string = "requiredSingularResourceName-1701575020"
-    var requiredSingularResourceNameOneof string = "requiredSingularResourceNameOneof-25303726"
-    var requiredSingularResourceNameCommon string = "requiredSingularResourceNameCommon-1126805002"
+    var formattedRequiredSingularResourceName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var formattedRequiredSingularResourceNameOneof string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF_ID]", "[BOOK_ID]")
+    var formattedRequiredSingularResourceNameCommon string = fmt.Sprintf("projects/%s", "[PROJECT]")
     var requiredSingularFixed32 int32 = 720656715
     var requiredSingularFixed64 int64 = 720656810
     var requiredRepeatedInt32 []int32 = nil
@@ -4214,7 +4134,7 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     var requiredRepeatedMessage []*librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = nil
     var formattedRequiredRepeatedResourceName []string = nil
     var formattedRequiredRepeatedResourceNameOneof []string = nil
-    var requiredRepeatedResourceNameCommon []string = nil
+    var formattedRequiredRepeatedResourceNameCommon []string = nil
     var requiredRepeatedFixed32 []int32 = nil
     var requiredRepeatedFixed64 []int64 = nil
     var requiredMap map[int32]string = nil
@@ -4228,9 +4148,9 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
         RequiredSingularString: requiredSingularString,
         RequiredSingularBytes: requiredSingularBytes,
         RequiredSingularMessage: requiredSingularMessage,
-        RequiredSingularResourceName: requiredSingularResourceName,
-        RequiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
-        RequiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
+        RequiredSingularResourceName: formattedRequiredSingularResourceName,
+        RequiredSingularResourceNameOneof: formattedRequiredSingularResourceNameOneof,
+        RequiredSingularResourceNameCommon: formattedRequiredSingularResourceNameCommon,
         RequiredSingularFixed32: requiredSingularFixed32,
         RequiredSingularFixed64: requiredSingularFixed64,
         RequiredRepeatedInt32: requiredRepeatedInt32,
@@ -4244,7 +4164,7 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
         RequiredRepeatedMessage: requiredRepeatedMessage,
         RequiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
         RequiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
-        RequiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
+        RequiredRepeatedResourceNameCommon: formattedRequiredRepeatedResourceNameCommon,
         RequiredRepeatedFixed32: requiredRepeatedFixed32,
         RequiredRepeatedFixed64: requiredRepeatedFixed64,
         RequiredMap: requiredMap,
@@ -4264,7 +4184,7 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     }
     _ = resp
 }
-func TestLibraryServicePrivateGetBook(t *testing.T) {
+func TestLibraryServicePrivateListShelves(t *testing.T) {
     var name string = "name3373707"
     var author string = "author-1406328437"
     var title string = "title110371416"
@@ -4281,14 +4201,14 @@ func TestLibraryServicePrivateGetBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var request *librarypb.GetBookRequest = &librarypb.GetBookRequest{}
+    var request *librarypb.ListShelvesRequest = &librarypb.ListShelvesRequest{}
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
         t.Fatal(err)
     }
 
-    resp, err := c.PrivateGetBook(context.Background(), request)
+    resp, err := c.PrivateListShelves(context.Background(), request)
 
     if err != nil {
         t.Fatal(err)
@@ -4303,18 +4223,18 @@ func TestLibraryServicePrivateGetBook(t *testing.T) {
     }
 }
 
-func TestLibraryServicePrivateGetBookError(t *testing.T) {
+func TestLibraryServicePrivateListShelvesError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var request *librarypb.GetBookRequest = &librarypb.GetBookRequest{}
+    var request *librarypb.ListShelvesRequest = &librarypb.ListShelvesRequest{}
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
         t.Fatal(err)
     }
 
-    resp, err := c.PrivateGetBook(context.Background(), request)
+    resp, err := c.PrivateListShelves(context.Background(), request)
 
     if st, ok := gstatus.FromError(err); !ok {
         t.Errorf("got error %v, expected grpc error", err)

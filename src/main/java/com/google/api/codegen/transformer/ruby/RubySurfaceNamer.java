@@ -469,6 +469,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.RUBY);
+  }
+
+  @Override
   public ImmutableList<String> getInterpolatedFormatAndArgs(String spec, List<String> args) {
     spec =
         spec.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("\"", "\\\"");
@@ -505,6 +510,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getMapKeyAccessorName(TypeModel keyType, String key) {
     return String.format("[%s]", getModelTypeFormatter().renderPrimitiveValue(keyType, key));
+  }
+
+  @Override
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toLowerUnderscore() + ".rb";
   }
 
   public String getSampleResponseVarName(MethodContext context, CallingForm form) {

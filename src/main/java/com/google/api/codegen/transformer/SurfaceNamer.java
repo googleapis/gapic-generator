@@ -792,10 +792,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * The name of the file holding the sample class for a single API method and variant. The variant
-   * is typically a calling form.
+   * The name of the file holding the sample class for a single API method and variant. The name is
+   * constucted from pieces in the language-idiomatic case, followed by appropriate suffix.
    */
-  public String getApiSampleFileName(String className) {
+  public String getApiSampleFileName(String... pieces) {
     return getNotImplementedString("SurfaceNamer.getApiSampleFileName");
   }
 
@@ -1692,6 +1692,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   // calling forms.
   public List<CallingForm> getCallingForms(MethodContext context) {
     return Collections.singletonList(CallingForm.Generic);
+  }
+
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.Generic;
   }
 
   /////////////////////////////////// Transport Protocol /////////////////////////////////////////

@@ -229,6 +229,16 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiSampleClassName(String... pieces) {
+    return Name.anyLower(pieces).toUpperCamel();
+  }
+
+  @Override
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toUpperCamel() + ".cs";
+  }
+
+  @Override
   public String getCallableName(MethodModel method) {
     return privateFieldName(Name.upperCamel("Call", method.getSimpleName()));
   }

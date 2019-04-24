@@ -2665,8 +2665,7 @@ module Google
       # @!attribute [rw] resource
       #   @return [String]
       #     REQUIRED: The resource which the tag is being added to.
-      #     Resource is usually specified as a path, such as,
-      #     projects/{project}/zones/{zone}/disks/{disk}.
+      #     In the form "shelves/{shelf_id}/books/{book_id}".
       # @!attribute [rw] tag
       #   @return [String]
       #     REQUIRED: The tag to add.
@@ -2772,17 +2771,11 @@ module Library
         self::GRPC_INTERCEPTORS = LibraryServiceClient::GRPC_INTERCEPTORS
       end
 
-      SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf_id}"
+      ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "archives/{archive_path}/books/{book_id=**}"
       )
 
-      private_constant :SHELF_PATH_TEMPLATE
-
-      DELETED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "_deleted-book_"
-      )
-
-      private_constant :DELETED_BOOK_PATH_TEMPLATE
+      private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
 
       BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf_id}/books/{book_id}"
@@ -2790,32 +2783,26 @@ module Library
 
       private_constant :BOOK_PATH_TEMPLATE
 
-      ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "archives/{archive_path}/books/{book_id=**}"
-      )
-
-      private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
-
       PROJECT_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "projects/{project}"
       )
 
       private_constant :PROJECT_PATH_TEMPLATE
 
-      # Returns a fully-qualified shelf resource name string.
-      # @param shelf_id [String]
-      # @return [String]
-      def self.shelf_path shelf_id
-        SHELF_PATH_TEMPLATE.render(
-          :"shelf_id" => shelf_id
-        )
-      end
+      SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf_id}"
+      )
 
-      # Returns a fully-qualified deleted_book resource name string.
-      # @return [String]
-      def self.deleted_book_path
-        DELETED_BOOK_PATH_TEMPLATE.render(
+      private_constant :SHELF_PATH_TEMPLATE
 
+      # Returns a fully-qualified archived_book resource name string.
+      # @param archive_path [String]
+      # @param book_id [String]
+      # @return [String]
+      def self.archived_book_path archive_path, book_id
+        ARCHIVED_BOOK_PATH_TEMPLATE.render(
+          :"archive_path" => archive_path,
+          :"book_id" => book_id
         )
       end
 
@@ -2830,23 +2817,21 @@ module Library
         )
       end
 
-      # Returns a fully-qualified archived_book resource name string.
-      # @param archive_path [String]
-      # @param book_id [String]
-      # @return [String]
-      def self.archived_book_path archive_path, book_id
-        ARCHIVED_BOOK_PATH_TEMPLATE.render(
-          :"archive_path" => archive_path,
-          :"book_id" => book_id
-        )
-      end
-
       # Returns a fully-qualified project resource name string.
       # @param project [String]
       # @return [String]
       def self.project_path project
         PROJECT_PATH_TEMPLATE.render(
           :"project" => project
+        )
+      end
+
+      # Returns a fully-qualified shelf resource name string.
+      # @param shelf_id [String]
+      # @return [String]
+      def self.shelf_path shelf_id
+        SHELF_PATH_TEMPLATE.render(
+          :"shelf_id" => shelf_id
         )
       end
 
@@ -3156,13 +3141,10 @@ module Library
           defaults["test_optional_required_flattening_params"],
           exception_transformer: exception_transformer
         )
-        @private_get_book = Google::Gax.create_api_call(
-          @library_service_stub.method(:private_get_book),
-          defaults["private_get_book"],
-          exception_transformer: exception_transformer,
-          params_extractor: proc do |request|
-            {'name' => request.name}
-          end
+        @private_list_shelves = Google::Gax.create_api_call(
+          @library_service_stub.method(:private_list_shelves),
+          defaults["private_list_shelves"],
+          exception_transformer: exception_transformer
         )
       end
 
@@ -3795,7 +3777,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.deleted_book_path()
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   response = library_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
 
@@ -3831,7 +3813,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.deleted_book_path()
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   response = library_client.get_book_from_absolutely_anywhere(formatted_name)
 
       def get_book_from_absolutely_anywhere \
@@ -4116,8 +4098,7 @@ module Library
       #
       # @param resource [String]
       #   REQUIRED: The resource which the tag is being added to.
-      #   Resource is usually specified as a path, such as,
-      #   projects/{project}/zones/{zone}/disks/{disk}.
+      #   In the form "shelves/{shelf_id}/books/{book_id}".
       # @param tag [String]
       #   REQUIRED: The tag to add.
       # @param options [Google::Gax::CallOptions]
@@ -4721,8 +4702,11 @@ module Library
 
       # This method is not exposed in the GAPIC config. It should be generated.
       #
-      # @param name [String]
-      #   The name of the book to retrieve.
+      # @param page_token [String]
+      #   A token identifying a page of results the server should return.
+      #   Typically, this is the value of
+      #   {Google::Example::Library::V1::ListShelvesResponse#next_page_token ListShelvesResponse#next_page_token}
+      #   returned from the previous call to `ListShelves` method.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -4735,18 +4719,17 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   response = library_client.private_get_book(formatted_name)
+      #   response = library_client.private_list_shelves
 
-      def private_get_book \
-          name,
+      def private_list_shelves \
+          page_token: nil,
           options: nil,
           &block
         req = {
-          name: name
+          page_token: page_token
         }.delete_if { |_, v| v.nil? }
-        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookRequest)
-        @private_get_book.call(req, options, &block)
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListShelvesRequest)
+        @private_list_shelves.call(req, options, &block)
       end
     end
   end
@@ -4915,7 +4898,7 @@ end
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
-        "PrivateGetBook": {
+        "PrivateListShelves": {
           "timeout_millis": 60000,
           "retry_codes_name": "idempotent",
           "retry_params_name": "default"
@@ -4980,6 +4963,25 @@ module Library
         "https://www.googleapis.com/auth/library"
       ].freeze
 
+
+      RETURN_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf}/books/{book}/returns/{return}"
+      )
+
+      private_constant :RETURN_PATH_TEMPLATE
+
+      # Returns a fully-qualified return resource name string.
+      # @param shelf [String]
+      # @param book [String]
+      # @param return_ [String]
+      # @return [String]
+      def self.return_path shelf, book, return_
+        RETURN_PATH_TEMPLATE.render(
+          :"shelf" => shelf,
+          :"book" => book,
+          :"return" => return_
+        )
+      end
 
       # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #   Provides the means for authenticating requests made by the client. This parameter can
@@ -5138,6 +5140,10 @@ end
   "interfaces": {
     "google.example.library.v1.MyProto": {
       "retry_codes": {
+        "idempotent": [
+          "DEADLINE_EXCEEDED",
+          "UNAVAILABLE"
+        ],
         "non_idempotent": []
       },
       "retry_params": {
@@ -6455,7 +6461,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_anywhere without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.deleted_book_path()
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
       # Create expected grpc response
@@ -6505,7 +6511,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_anywhere with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.deleted_book_path()
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
       # Mock Grpc layer
@@ -6541,7 +6547,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_absolutely_anywhere without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.deleted_book_path()
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -6589,7 +6595,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_absolutely_anywhere with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.deleted_book_path()
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -7728,20 +7734,17 @@ describe Library::V1::LibraryServiceClient do
     end
   end
 
-  describe 'private_get_book' do
-    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#private_get_book."
+  describe 'private_list_shelves' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#private_list_shelves."
 
-    it 'invokes private_get_book without error' do
-      # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-
+    it 'invokes private_list_shelves without error' do
       # Create expected grpc response
-      name_2 = "name2-1052831874"
+      name = "name3373707"
       author = "author-1406328437"
       title = "title110371416"
       read = true
       expected_response = {
-        name: name_2,
+        name: name,
         author: author,
         title: title,
         read: read
@@ -7749,28 +7752,26 @@ describe Library::V1::LibraryServiceClient do
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
       # Mock Grpc layer
-      mock_method = proc do |request|
-        assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
-        assert_equal(formatted_name, request.name)
+      mock_method = proc do
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub_v1.new(:private_get_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:private_list_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials_v1.new("private_get_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("private_list_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
           client = Library::Library.new(version: :v1)
 
           # Call method
-          response = client.private_get_book(formatted_name)
+          response = client.private_list_shelves
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.private_get_book(formatted_name) do |response, operation|
+          client.private_list_shelves do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -7779,20 +7780,15 @@ describe Library::V1::LibraryServiceClient do
       end
     end
 
-    it 'invokes private_get_book with error' do
-      # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-
+    it 'invokes private_list_shelves with error' do
       # Mock Grpc layer
-      mock_method = proc do |request|
-        assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
-        assert_equal(formatted_name, request.name)
+      mock_method = proc do
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub_v1.new(:private_get_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:private_list_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials_v1.new("private_get_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("private_list_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
@@ -7800,7 +7796,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
-            client.private_get_book(formatted_name)
+            client.private_list_shelves
           end
 
           # Verify the GaxError wrapped the custom error that was raised.

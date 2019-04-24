@@ -75,13 +75,20 @@ public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer
                     GapicInterfaceContext.create(
                         i, productConfig, typeTable, namer, new CSharpFeatureConfig()))
             .collect(ImmutableList.toImmutableList());
+    List<MethodSampleView> allSamples =
+        interfaceContexts
+            .stream()
+            .flatMap(c -> csharpApiMethodTransformer.generateApiMethods(c).stream())
+            .flatMap(m -> m.samples().stream())
+            .collect(ImmutableList.toImmutableList());
+    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
     ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
     for (InterfaceContext interfaceContext : interfaceContexts) {
       List<StaticLangApiMethodView> methods =
           csharpApiMethodTransformer.generateApiMethods(interfaceContext);
       for (StaticLangApiMethodView method : methods) {
         for (MethodSampleView sample : method.samples()) {
-          sampleFileViews.add(newSampleFileView(interfaceContext, method, sample, namer));
+          sampleFileViews.add(newSampleFileView(interfaceContext, method, sample, namer, registry));
         }
       }
     }
@@ -92,16 +99,14 @@ public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer
       InterfaceContext context,
       StaticLangApiMethodView method,
       MethodSampleView sample,
-      SurfaceNamer namer) {
-    SampleFileRegistry registry = new SampleFileRegistry();
-    String callingForm = sample.callingForm().toLowerUnderscore();
-    String valueSet = sample.valueSet().id();
+      SurfaceNamer namer,
+      SampleFileRegistry registry) {
     String regionTag = sample.regionTag();
-    String sampleClassName = method.name() + Name.anyLower(callingForm, valueSet).toUpperCamel();
-    String sampleOutputPath =
-        Paths.get(CSHARP_SAMPLE_PACKAGE_NAME, sampleClassName + ".cs").toString();
-
-    registry.addFile(sampleOutputPath, method.name(), callingForm, valueSet, regionTag);
+    String sampleClassName =
+        registry.getSampleClassName(sample, Name.upperCamel(method.name()).toLowerUnderscore());
+    String sampleFileName =
+        registry.getSampleFileName(sample, Name.upperCamel(method.name()).toLowerUnderscore());
+    String sampleOutputPath = Paths.get(CSHARP_SAMPLE_PACKAGE_NAME, sampleFileName).toString();
 
     StaticLangSampleClassView sampleClassView =
         StaticLangSampleClassView.newBuilder()
