@@ -46,7 +46,10 @@ public class FieldStructureParser {
     if (fieldConfig.isFormattedConfig()
         && !initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
       // If the field is a formatted field, it must exist in the value config map.
-      throw new IllegalArgumentException("The field name is not found in the collection map.");
+      throw new IllegalArgumentException(
+          String.format(
+              "The field name is not found in the collection map. Field name: %s, map keys: [%s]",
+              fieldConfig.fieldPath(), String.join(",", initValueConfigMap.keySet())));
     }
 
     InitValueConfig valueConfig = null;

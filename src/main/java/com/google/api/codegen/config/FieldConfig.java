@@ -179,8 +179,9 @@ public abstract class FieldConfig {
           Diag error =
               Diag.error(
                   SimpleLocation.TOPLEVEL,
-                  "No resourceNameConfig with entity_name \"%s\"",
-                  entityName);
+                  "No resourceNameConfig with entity_name \"%s\", names: [%s]",
+                  entityName,
+                  String.join(", ", resourceNameConfigs.keySet()));
           if (diagCollector == null) {
             throw new IllegalArgumentException(error.toString());
           }

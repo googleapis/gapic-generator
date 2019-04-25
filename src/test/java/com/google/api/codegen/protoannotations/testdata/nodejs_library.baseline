@@ -29,7 +29,7 @@ $ npm install --save @google-cloud/library
    // optional auth parameters.
  });
 
- const formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
+ const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
  const rating = 'GOOD';
  const book = {
    rating: rating,
@@ -144,7 +144,7 @@ function sampleBabbleAboutBook() {
     // No one replied
     console.log(`No one replied.`);
   });
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
   const request = {
     name: formattedName,
   };
@@ -176,7 +176,7 @@ function sampleBabbleAboutBook() {
       return;
     }
   });
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
   const request = {
     name: formattedName,
   };
@@ -347,7 +347,7 @@ const library = require('@google-cloud/library').v1;
 function sampleGetBigBook(shelf) {
   const client = new library.LibraryServiceClient();
   // const shelf = 'Novel';
-  const formattedName = client.bookPath(shelf, 'War and Peace');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Handle the operation using the event emitter pattern.
   client.getBigBook({name: formattedName})
@@ -425,7 +425,7 @@ function sampleGetBigBook(shelf, bigBookName) {
   const client = new library.LibraryServiceClient();
   // const shelf = 'Novel';
   // const bigBookName = 'War and Peace';
-  const formattedName = client.bookPath(shelf, bigBookName);
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Handle the operation using the event emitter pattern.
   client.getBigBook({name: formattedName})
@@ -484,7 +484,7 @@ const library = require('@google-cloud/library').v1;
 async function sampleGetBigBook(shelf) {
   const client = new library.LibraryServiceClient();
   // const shelf = 'Novel';
-  const formattedName = client.bookPath(shelf, 'War and Peace');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Create a job whose results you can either wait for now, or get later
   const [operation] = await client.getBigBook({name: formattedName});
@@ -544,7 +544,7 @@ async function sampleGetBigBook(shelf, bigBookName) {
   const client = new library.LibraryServiceClient();
   // const shelf = 'Novel';
   // const bigBookName = 'War and Peace';
-  const formattedName = client.bookPath(shelf, bigBookName);
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Create a job whose results you can either wait for now, or get later
   const [operation] = await client.getBigBook({name: formattedName});
@@ -585,7 +585,7 @@ const library = require('@google-cloud/library').v1;
 function sampleGetBigBook(shelf) {
   const client = new library.LibraryServiceClient();
   // const shelf = 'Novel';
-  const formattedName = client.bookPath(shelf, 'War and Peace');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Handle the operation using the promise pattern.
   client.getBigBook({name: formattedName})
@@ -656,7 +656,7 @@ function sampleGetBigBook(shelf, bigBookName) {
   const client = new library.LibraryServiceClient();
   // const shelf = 'Novel';
   // const bigBookName = 'War and Peace';
-  const formattedName = client.bookPath(shelf, bigBookName);
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Handle the operation using the promise pattern.
   client.getBigBook({name: formattedName})
@@ -707,7 +707,7 @@ const library = require('@google-cloud/library').v1;
 /** Test response handling for methods that return empty */
 function sampleGetBigNothing() {
   const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Handle the operation using the event emitter pattern.
   client.getBigNothing({name: formattedName})
@@ -755,7 +755,7 @@ const library = require('@google-cloud/library').v1;
 /** Test default response handling is turned off for methods that return empty */
 function sampleGetBigNothing() {
   const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Handle the operation using the event emitter pattern.
   client.getBigNothing({name: formattedName})
@@ -801,7 +801,7 @@ const library = require('@google-cloud/library').v1;
 /** Test response handling for methods that return empty */
 async function sampleGetBigNothing() {
   const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Create a job whose results you can either wait for now, or get later
   const [operation] = await client.getBigNothing({name: formattedName});
@@ -831,7 +831,7 @@ const library = require('@google-cloud/library').v1;
 /** Test default response handling is turned off for methods that return empty */
 async function sampleGetBigNothing() {
   const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Create a job whose results you can either wait for now, or get later
   const [operation] = await client.getBigNothing({name: formattedName});
@@ -859,7 +859,7 @@ const library = require('@google-cloud/library').v1;
 /** Test response handling for methods that return empty */
 function sampleGetBigNothing() {
   const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Handle the operation using the promise pattern.
   client.getBigNothing({name: formattedName})
@@ -900,7 +900,7 @@ const library = require('@google-cloud/library').v1;
 /** Test default response handling is turned off for methods that return empty */
 function sampleGetBigNothing() {
   const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Handle the operation using the promise pattern.
   client.getBigNothing({name: formattedName})
@@ -938,7 +938,7 @@ const library = require('@google-cloud/library').v1;
 
 function sampleGetBook() {
   const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
   client.getBook({name: formattedName})
     .then(responses => {
       const response = responses[0];
@@ -1002,7 +1002,7 @@ function sampleMonologAboutBook() {
     }
     console.log(`The stage of the comment is: ${response.stage}`);
   });
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
   const request = {
     name: formattedName,
   };
@@ -1339,7 +1339,7 @@ const library = require('@google-cloud/library').v1;
 async function sampleGetBigBook(shelf) {
   const client = new library.LibraryServiceClient();
   // const shelf = 'Novel';
-  const formattedName = client.bookPath(shelf, 'War and Peace');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
   // Create a job whose results you can either wait for now, or get later
   const [operation] = await client.getBigBook({name: formattedName});
@@ -1396,7 +1396,7 @@ function sampleDiscussBook(imageFileName) {
     console.log(response);
   });
   // const imageFileName = 'image_file.jpg';
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
   const comment = fs.readFileSync('comment_file').toString('base64');
   const comment2 = {
     comment: comment,
@@ -1442,11 +1442,6 @@ sampleDiscussBook(argv.image_file_name);
 'use strict';
 
 describe('LibraryServiceSmokeTest', () => {
-  if (!process.env.GCLOUD_PROJECT) {
-    throw new Error("Usage: GCLOUD_PROJECT=<project_id> node #{$0}");
-  }
-  const projectId = process.env.GCLOUD_PROJECT;
-
   it('successfully makes a call to the service', done => {
     const library = require('../src');
 
@@ -1454,7 +1449,7 @@ describe('LibraryServiceSmokeTest', () => {
       // optional auth parameters.
     });
 
-    const formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
+    const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
     const rating = 'GOOD';
     const book = {
       rating: rating,
@@ -2874,7 +2869,7 @@ const TestOptionalRequiredFlatteningParamsResponse = {
  *
  * @property {boolean} done
  *   If the value is `false`, it means the operation is still in progress.
- *   If true, the operation is completed, and either `error` or `response` is
+ *   If `true`, the operation is completed, and either `error` or `response` is
  *   available.
  *
  * @property {Object} error
@@ -3812,24 +3807,25 @@ const BytesValue = {
 // to be loaded as the JS file.
 
 /**
- * The `Status` type defines a logical error model that is suitable for different
- * programming environments, including REST APIs and RPC APIs. It is used by
- * [gRPC](https://github.com/grpc). The error model is designed to be:
+ * The `Status` type defines a logical error model that is suitable for
+ * different programming environments, including REST APIs and RPC APIs. It is
+ * used by [gRPC](https://github.com/grpc). The error model is designed to be:
  *
  * - Simple to use and understand for most users
  * - Flexible enough to meet unexpected needs
  *
  * # Overview
  *
- * The `Status` message contains three pieces of data: error code, error message,
- * and error details. The error code should be an enum value of
- * google.rpc.Code, but it may accept additional error codes if needed.  The
- * error message should be a developer-facing English message that helps
- * developers *understand* and *resolve* the error. If a localized user-facing
- * error message is needed, put the localized message in the error details or
- * localize it in the client. The optional error details may contain arbitrary
- * information about the error. There is a predefined set of error detail types
- * in the package `google.rpc` that can be used for common error conditions.
+ * The `Status` message contains three pieces of data: error code, error
+ * message, and error details. The error code should be an enum value of
+ * google.rpc.Code, but it may accept additional error codes
+ * if needed.  The error message should be a developer-facing English message
+ * that helps developers *understand* and *resolve* the error. If a localized
+ * user-facing error message is needed, put the localized message in the error
+ * details or localize it in the client. The optional error details may contain
+ * arbitrary information about the error. There is a predefined set of error
+ * detail types in the package `google.rpc` that can be used for common error
+ * conditions.
  *
  * # Language mapping
  *
@@ -3866,12 +3862,14 @@ const BytesValue = {
  *     be used directly after any stripping needed for security/privacy reasons.
  *
  * @property {number} code
- *   The status code, which should be an enum value of google.rpc.Code.
+ *   The status code, which should be an enum value of
+ *   google.rpc.Code.
  *
  * @property {string} message
  *   A developer-facing error message, which should be in English. Any
  *   user-facing error message should be localized and sent in the
- *   google.rpc.Status.details field, or localized by the client.
+ *   google.rpc.Status.details field, or localized
+ *   by the client.
  *
  * @property {Object[]} details
  *   A list of messages that carry the error details.  There is a common set of
@@ -4105,14 +4103,14 @@ class LibraryServiceClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this._pathTemplates = {
+      archiveBookPathTemplate: new gax.PathTemplate(
+        'archives/{archive}/books/{book}'
+      ),
       archivedBookPathTemplate: new gax.PathTemplate(
-        'archives/{archive_path}/books/{book_id=**}'
+        'archives/{archive}/books/{book}'
       ),
       bookPathTemplate: new gax.PathTemplate(
-        'shelves/{shelf_id}/books/{book_id}'
-      ),
-      projectPathTemplate: new gax.PathTemplate(
-        'projects/{project}'
+        'bookShelves/{book_shelf}/books/{book}'
       ),
       shelfPathTemplate: new gax.PathTemplate(
         'shelves/{shelf_id}'
@@ -4786,7 +4784,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * client.getBook({name: formattedName})
    *   .then(responses => {
    *     const response = responses[0];
@@ -5009,7 +5007,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * client.deleteBook({name: formattedName}).catch(err => {
    *   console.error(err);
    * });
@@ -5070,7 +5068,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * const book = {};
    * const request = {
    *   name: formattedName,
@@ -5129,7 +5127,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * const formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
    * const request = {
    *   name: formattedName,
@@ -5327,7 +5325,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * const comment = '';
    * const stage = 'UNSET';
    * const alignment = 'CHAR';
@@ -5387,7 +5385,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
+   * const formattedName = client.archivedBookPath('[ARCHIVE]', '[BOOK]');
    * client.getBookFromArchive({name: formattedName})
    *   .then(responses => {
    *     const response = responses[0];
@@ -5442,8 +5440,8 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * const formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+   * const formattedAltBookName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * const request = {
    *   name: formattedName,
    *   altBookName: formattedAltBookName,
@@ -5502,7 +5500,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * client.getBookFromAbsolutelyAnywhere({name: formattedName})
    *   .then(responses => {
    *     const response = responses[0];
@@ -5555,7 +5553,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * const indexName = 'default index';
    * const indexMapItem = '';
    * const indexMap = {'default_key' : indexMapItem,};
@@ -5672,7 +5670,7 @@ class LibraryServiceClient {
    * const stream = client.discussBook().on('data', response => {
    *   // doThingsWith(response)
    * });
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * const request = {
    *   name: formattedName,
    * };
@@ -5713,7 +5711,7 @@ class LibraryServiceClient {
    *   }
    *   // doThingsWith(response)
    * });
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * const request = {
    *   name: formattedName,
    * };
@@ -5757,7 +5755,7 @@ class LibraryServiceClient {
    *   }
    *   // doThingsWith(response)
    * });
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * const request = {
    *   name: formattedName,
    * };
@@ -5968,10 +5966,10 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const resource = '';
    * const label = '';
    * const request = {
-   *   resource: formattedResource,
+   *   resource: resource,
    *   label: label,
    * };
    * client.addLabel(request)
@@ -6025,7 +6023,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    *
    * // Handle the operation using the promise pattern.
    * client.getBigBook({name: formattedName})
@@ -6044,7 +6042,7 @@ class LibraryServiceClient {
    *     console.error(err);
    *   });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    *
    * // Handle the operation using the event emitter pattern.
    * client.getBigBook({name: formattedName})
@@ -6072,7 +6070,7 @@ class LibraryServiceClient {
    *     console.error(err);
    *   });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    *
    * // Handle the operation using the await pattern.
    * const [operation] = await client.getBigBook({name: formattedName});
@@ -6121,7 +6119,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    *
    * // Handle the operation using the promise pattern.
    * client.getBigNothing({name: formattedName})
@@ -6140,7 +6138,7 @@ class LibraryServiceClient {
    *     console.error(err);
    *   });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    *
    * // Handle the operation using the event emitter pattern.
    * client.getBigNothing({name: formattedName})
@@ -6168,7 +6166,7 @@ class LibraryServiceClient {
    *     console.error(err);
    *   });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    *
    * // Handle the operation using the await pattern.
    * const [operation] = await client.getBigNothing({name: formattedName});
@@ -6354,9 +6352,9 @@ class LibraryServiceClient {
    * const requiredSingularString = '';
    * const requiredSingularBytes = '';
    * const requiredSingularMessage = {};
-   * const formattedRequiredSingularResourceName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * const formattedRequiredSingularResourceNameCommon = client.projectPath('[PROJECT]');
+   * const formattedRequiredSingularResourceName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+   * const formattedRequiredSingularResourceNameOneof = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+   * const requiredSingularResourceNameCommon = '';
    * const requiredSingularFixed32 = 0;
    * const requiredSingularFixed64 = 0;
    * const requiredRepeatedInt32 = [];
@@ -6370,7 +6368,7 @@ class LibraryServiceClient {
    * const requiredRepeatedMessage = [];
    * const formattedRequiredRepeatedResourceName = [];
    * const formattedRequiredRepeatedResourceNameOneof = [];
-   * const formattedRequiredRepeatedResourceNameCommon = [];
+   * const requiredRepeatedResourceNameCommon = [];
    * const requiredRepeatedFixed32 = [];
    * const requiredRepeatedFixed64 = [];
    * const requiredMap = {};
@@ -6386,7 +6384,7 @@ class LibraryServiceClient {
    *   requiredSingularMessage: requiredSingularMessage,
    *   requiredSingularResourceName: formattedRequiredSingularResourceName,
    *   requiredSingularResourceNameOneof: formattedRequiredSingularResourceNameOneof,
-   *   requiredSingularResourceNameCommon: formattedRequiredSingularResourceNameCommon,
+   *   requiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
    *   requiredSingularFixed32: requiredSingularFixed32,
    *   requiredSingularFixed64: requiredSingularFixed64,
    *   requiredRepeatedInt32: requiredRepeatedInt32,
@@ -6400,7 +6398,7 @@ class LibraryServiceClient {
    *   requiredRepeatedMessage: requiredRepeatedMessage,
    *   requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
    *   requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
-   *   requiredRepeatedResourceNameCommon: formattedRequiredRepeatedResourceNameCommon,
+   *   requiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
    *   requiredRepeatedFixed32: requiredRepeatedFixed32,
    *   requiredRepeatedFixed64: requiredRepeatedFixed64,
    *   requiredMap: requiredMap,
@@ -6478,42 +6476,44 @@ class LibraryServiceClient {
   // --------------------
 
   /**
-   * Return a fully-qualified archived_book resource name string.
+   * Return a fully-qualified archive_book resource name string.
    *
-   * @param {String} archivePath
-   * @param {String} bookId
+   * @param {String} archive
+   * @param {String} book
    * @returns {String}
    */
-  archivedBookPath(archivePath, bookId) {
+  archiveBookPath(archive, book) {
+    return this._pathTemplates.archiveBookPathTemplate.render({
+      archive: archive,
+      book: book,
+    });
+  }
+
+  /**
+   * Return a fully-qualified archived_book resource name string.
+   *
+   * @param {String} archive
+   * @param {String} book
+   * @returns {String}
+   */
+  archivedBookPath(archive, book) {
     return this._pathTemplates.archivedBookPathTemplate.render({
-      archive_path: archivePath,
-      book_id: bookId,
+      archive: archive,
+      book: book,
     });
   }
 
   /**
    * Return a fully-qualified book resource name string.
    *
-   * @param {String} shelfId
-   * @param {String} bookId
+   * @param {String} bookShelf
+   * @param {String} book
    * @returns {String}
    */
-  bookPath(shelfId, bookId) {
+  bookPath(bookShelf, book) {
     return this._pathTemplates.bookPathTemplate.render({
-      shelf_id: shelfId,
-      book_id: bookId,
-    });
-  }
-
-  /**
-   * Return a fully-qualified project resource name string.
-   *
-   * @param {String} project
-   * @returns {String}
-   */
-  projectPath(project) {
-    return this._pathTemplates.projectPathTemplate.render({
-      project: project,
+      book_shelf: bookShelf,
+      book: book,
     });
   }
 
@@ -6530,16 +6530,29 @@ class LibraryServiceClient {
   }
 
   /**
-   * Parse the archivedBookName from a archived_book resource.
+   * Parse the archiveBookName from a archive_book resource.
    *
-   * @param {String} archivedBookName
-   *   A fully-qualified path representing a archived_book resources.
-   * @returns {String} - A string representing the archive_path.
+   * @param {String} archiveBookName
+   *   A fully-qualified path representing a archive_book resources.
+   * @returns {String} - A string representing the archive.
    */
-  matchArchivePathFromArchivedBookName(archivedBookName) {
-    return this._pathTemplates.archivedBookPathTemplate
-      .match(archivedBookName)
-      .archive_path;
+  matchArchiveFromArchiveBookName(archiveBookName) {
+    return this._pathTemplates.archiveBookPathTemplate
+      .match(archiveBookName)
+      .archive;
+  }
+
+  /**
+   * Parse the archiveBookName from a archive_book resource.
+   *
+   * @param {String} archiveBookName
+   *   A fully-qualified path representing a archive_book resources.
+   * @returns {String} - A string representing the book.
+   */
+  matchBookFromArchiveBookName(archiveBookName) {
+    return this._pathTemplates.archiveBookPathTemplate
+      .match(archiveBookName)
+      .book;
   }
 
   /**
@@ -6547,12 +6560,25 @@ class LibraryServiceClient {
    *
    * @param {String} archivedBookName
    *   A fully-qualified path representing a archived_book resources.
-   * @returns {String} - A string representing the book_id.
+   * @returns {String} - A string representing the archive.
    */
-  matchBookIdFromArchivedBookName(archivedBookName) {
+  matchArchiveFromArchivedBookName(archivedBookName) {
     return this._pathTemplates.archivedBookPathTemplate
       .match(archivedBookName)
-      .book_id;
+      .archive;
+  }
+
+  /**
+   * Parse the archivedBookName from a archived_book resource.
+   *
+   * @param {String} archivedBookName
+   *   A fully-qualified path representing a archived_book resources.
+   * @returns {String} - A string representing the book.
+   */
+  matchBookFromArchivedBookName(archivedBookName) {
+    return this._pathTemplates.archivedBookPathTemplate
+      .match(archivedBookName)
+      .book;
   }
 
   /**
@@ -6560,12 +6586,12 @@ class LibraryServiceClient {
    *
    * @param {String} bookName
    *   A fully-qualified path representing a book resources.
-   * @returns {String} - A string representing the shelf_id.
+   * @returns {String} - A string representing the book_shelf.
    */
-  matchShelfIdFromBookName(bookName) {
+  matchBookShelfFromBookName(bookName) {
     return this._pathTemplates.bookPathTemplate
       .match(bookName)
-      .shelf_id;
+      .book_shelf;
   }
 
   /**
@@ -6573,25 +6599,12 @@ class LibraryServiceClient {
    *
    * @param {String} bookName
    *   A fully-qualified path representing a book resources.
-   * @returns {String} - A string representing the book_id.
+   * @returns {String} - A string representing the book.
    */
-  matchBookIdFromBookName(bookName) {
+  matchBookFromBookName(bookName) {
     return this._pathTemplates.bookPathTemplate
       .match(bookName)
-      .book_id;
-  }
-
-  /**
-   * Parse the projectName from a project resource.
-   *
-   * @param {String} projectName
-   *   A fully-qualified path representing a project resources.
-   * @returns {String} - A string representing the project.
-   */
-  matchProjectFromProjectName(projectName) {
-    return this._pathTemplates.projectPathTemplate
-      .match(projectName)
-      .project;
+      .book;
   }
 
   /**
@@ -6893,15 +6906,6 @@ class MyProtoClient {
       )
     );
 
-    // This API contains "path templates"; forward-slash-separated
-    // identifiers to uniquely identify resources within the API.
-    // Create useful helper objects for these.
-    this._pathTemplates = {
-      returnPathTemplate: new gax.PathTemplate(
-        'shelves/{shelf}/books/{book}/returns/{return}'
-      ),
-    };
-
     // Put together the default options sent with requests.
     const defaults = gaxGrpc.constructSettings(
       'google.example.library.v1.MyProto',
@@ -7030,65 +7034,6 @@ class MyProtoClient {
     options = options || {};
 
     return this._innerApiCalls.myMethod(request, options, callback);
-  }
-
-  // --------------------
-  // -- Path templates --
-  // --------------------
-
-  /**
-   * Return a fully-qualified return resource name string.
-   *
-   * @param {String} shelf
-   * @param {String} book
-   * @param {String} return_
-   * @returns {String}
-   */
-  returnPath(shelf, book, return_) {
-    return this._pathTemplates.returnPathTemplate.render({
-      shelf: shelf,
-      book: book,
-      return: return_,
-    });
-  }
-
-  /**
-   * Parse the returnName from a return resource.
-   *
-   * @param {String} returnName
-   *   A fully-qualified path representing a return resources.
-   * @returns {String} - A string representing the shelf.
-   */
-  matchShelfFromReturnName(returnName) {
-    return this._pathTemplates.returnPathTemplate
-      .match(returnName)
-      .shelf;
-  }
-
-  /**
-   * Parse the returnName from a return resource.
-   *
-   * @param {String} returnName
-   *   A fully-qualified path representing a return resources.
-   * @returns {String} - A string representing the book.
-   */
-  matchBookFromReturnName(returnName) {
-    return this._pathTemplates.returnPathTemplate
-      .match(returnName)
-      .book;
-  }
-
-  /**
-   * Parse the returnName from a return resource.
-   *
-   * @param {String} returnName
-   *   A fully-qualified path representing a return resources.
-   * @returns {String} - A string representing the return.
-   */
-  matchReturnFromReturnName(returnName) {
-    return this._pathTemplates.returnPathTemplate
-      .match(returnName)
-      .return;
   }
 }
 
@@ -7611,7 +7556,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -7648,7 +7593,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -7744,7 +7689,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -7765,7 +7710,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -7793,7 +7738,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const book = {};
       const request = {
         name: formattedName,
@@ -7832,7 +7777,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const book = {};
       const request = {
         name: formattedName,
@@ -7863,7 +7808,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       const request = {
         name: formattedName,
@@ -7902,7 +7847,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       const request = {
         name: formattedName,
@@ -7990,7 +7935,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const comment = '95';
       const stage = 'UNSET';
       const alignment = 'CHAR';
@@ -8021,7 +7966,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const comment = '95';
       const stage = 'UNSET';
       const alignment = 'CHAR';
@@ -8059,7 +8004,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
+      const formattedName = client.archivedBookPath('[ARCHIVE]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -8096,7 +8041,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
+      const formattedName = client.archivedBookPath('[ARCHIVE]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -8125,8 +8070,8 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      const formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+      const formattedAltBookName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
         altBookName: formattedAltBookName,
@@ -8164,8 +8109,8 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      const formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+      const formattedAltBookName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
         altBookName: formattedAltBookName,
@@ -8195,7 +8140,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -8232,7 +8177,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -8261,7 +8206,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const indexName = 'default index';
       const indexMapItem = 'indexMapItem1918721251';
       const indexMap = {'default_key' : indexMapItem,};
@@ -8287,7 +8232,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const indexName = 'default index';
       const indexMapItem = 'indexMapItem1918721251';
       const indexMap = {'default_key' : indexMapItem,};
@@ -8453,7 +8398,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -8486,7 +8431,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -8583,10 +8528,10 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const resource = 'resource-341064690';
       const label = 'label102727412';
       const request = {
-        resource: formattedResource,
+        resource: resource,
         label: label,
       };
 
@@ -8613,10 +8558,10 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const resource = 'resource-341064690';
       const label = 'label102727412';
       const request = {
-        resource: formattedResource,
+        resource: resource,
         label: label,
       };
 
@@ -8644,7 +8589,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -8682,7 +8627,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -8720,7 +8665,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -8749,7 +8694,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
       const request = {
         name: formattedName,
       };
@@ -8796,9 +8741,9 @@ describe('LibraryServiceClient', () => {
       const requiredSingularString = 'requiredSingularString-1949894503';
       const requiredSingularBytes = '-29';
       const requiredSingularMessage = {};
-      const formattedRequiredSingularResourceName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      const formattedRequiredSingularResourceNameCommon = client.projectPath('[PROJECT]');
+      const formattedRequiredSingularResourceName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+      const formattedRequiredSingularResourceNameOneof = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+      const requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
       const requiredSingularFixed32 = 720656715;
       const requiredSingularFixed64 = 720656810;
       const requiredRepeatedInt32 = [];
@@ -8812,7 +8757,7 @@ describe('LibraryServiceClient', () => {
       const requiredRepeatedMessage = [];
       const formattedRequiredRepeatedResourceName = [];
       const formattedRequiredRepeatedResourceNameOneof = [];
-      const formattedRequiredRepeatedResourceNameCommon = [];
+      const requiredRepeatedResourceNameCommon = [];
       const requiredRepeatedFixed32 = [];
       const requiredRepeatedFixed64 = [];
       const requiredMap = {};
@@ -8828,7 +8773,7 @@ describe('LibraryServiceClient', () => {
         requiredSingularMessage: requiredSingularMessage,
         requiredSingularResourceName: formattedRequiredSingularResourceName,
         requiredSingularResourceNameOneof: formattedRequiredSingularResourceNameOneof,
-        requiredSingularResourceNameCommon: formattedRequiredSingularResourceNameCommon,
+        requiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
         requiredSingularFixed32: requiredSingularFixed32,
         requiredSingularFixed64: requiredSingularFixed64,
         requiredRepeatedInt32: requiredRepeatedInt32,
@@ -8842,7 +8787,7 @@ describe('LibraryServiceClient', () => {
         requiredRepeatedMessage: requiredRepeatedMessage,
         requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
         requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
-        requiredRepeatedResourceNameCommon: formattedRequiredRepeatedResourceNameCommon,
+        requiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
         requiredRepeatedFixed32: requiredRepeatedFixed32,
         requiredRepeatedFixed64: requiredRepeatedFixed64,
         requiredMap: requiredMap,
@@ -8880,9 +8825,9 @@ describe('LibraryServiceClient', () => {
       const requiredSingularString = 'requiredSingularString-1949894503';
       const requiredSingularBytes = '-29';
       const requiredSingularMessage = {};
-      const formattedRequiredSingularResourceName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-      const formattedRequiredSingularResourceNameCommon = client.projectPath('[PROJECT]');
+      const formattedRequiredSingularResourceName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+      const formattedRequiredSingularResourceNameOneof = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+      const requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
       const requiredSingularFixed32 = 720656715;
       const requiredSingularFixed64 = 720656810;
       const requiredRepeatedInt32 = [];
@@ -8896,7 +8841,7 @@ describe('LibraryServiceClient', () => {
       const requiredRepeatedMessage = [];
       const formattedRequiredRepeatedResourceName = [];
       const formattedRequiredRepeatedResourceNameOneof = [];
-      const formattedRequiredRepeatedResourceNameCommon = [];
+      const requiredRepeatedResourceNameCommon = [];
       const requiredRepeatedFixed32 = [];
       const requiredRepeatedFixed64 = [];
       const requiredMap = {};
@@ -8912,7 +8857,7 @@ describe('LibraryServiceClient', () => {
         requiredSingularMessage: requiredSingularMessage,
         requiredSingularResourceName: formattedRequiredSingularResourceName,
         requiredSingularResourceNameOneof: formattedRequiredSingularResourceNameOneof,
-        requiredSingularResourceNameCommon: formattedRequiredSingularResourceNameCommon,
+        requiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
         requiredSingularFixed32: requiredSingularFixed32,
         requiredSingularFixed64: requiredSingularFixed64,
         requiredRepeatedInt32: requiredRepeatedInt32,
@@ -8926,7 +8871,7 @@ describe('LibraryServiceClient', () => {
         requiredRepeatedMessage: requiredRepeatedMessage,
         requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
         requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
-        requiredRepeatedResourceNameCommon: formattedRequiredRepeatedResourceNameCommon,
+        requiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
         requiredRepeatedFixed32: requiredRepeatedFixed32,
         requiredRepeatedFixed64: requiredRepeatedFixed64,
         requiredMap: requiredMap,

@@ -30,6 +30,8 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -67,12 +69,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
   private static GapicMethodConfig.Builder createCommonMethodConfig(
       DiagCollector diagCollector,
       TargetLanguage language,
-      String defaultPackageName,
       @Nonnull MethodConfigProto methodConfigProto,
       Method method,
       ProtoMethodModel methodModel,
-      ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames) {
 
@@ -169,21 +168,17 @@ public abstract class GapicMethodConfig extends MethodConfig {
     int previousErrors = diagCollector.getErrorCount();
 
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
-    ImmutableMap<String, String> fieldNamePatterns = protoParser.getFieldNamePatterns(method);
+    ImmutableMap<String, String> fieldNamePatterns = getFieldNamePatterns(method, messageConfigs);
     List<String> requiredFields = protoParser.getRequiredFields(method);
-    ResourceNameTreatment defaultResourceNameTreatment =
-        defaultResourceNameTreatmentFromProto(method, protoParser, defaultPackageName);
+    ResourceNameTreatment defaultResourceNameTreatment = ResourceNameTreatment.UNSET_TREATMENT;
 
     GapicMethodConfig.Builder builder =
         createCommonMethodConfig(
                 diagCollector,
                 language,
-                defaultPackageName,
                 methodConfigProto,
                 method,
                 methodModel,
-                messageConfigs,
-                resourceNameConfigs,
                 retryCodesConfig,
                 retryParamsConfigNames)
             .setPageStreaming(
@@ -221,8 +216,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
                     getOptionalFields(methodModel, requiredFields)))
             .setLroConfig(
                 LongRunningConfig.createLongRunningConfig(
-                    method, diagCollector, methodConfigProto.getLongRunning(), protoParser))
-            .setDefaultResourceNameTreatment(defaultResourceNameTreatment);
+                    method, diagCollector, methodConfigProto.getLongRunning(), protoParser));
 
     if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
@@ -235,7 +229,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
   static GapicMethodConfig createGapicMethodConfigFromGapicYaml(
       DiagCollector diagCollector,
       TargetLanguage language,
-      String defaultPackageName,
       @Nonnull MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
@@ -255,12 +248,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
         createCommonMethodConfig(
                 diagCollector,
                 language,
-                defaultPackageName,
                 methodConfigProto,
                 method,
                 methodModel,
-                messageConfigs,
-                resourceNameConfigs,
                 retryCodesConfig,
                 retryParamsConfigNames)
             .setPageStreaming(
@@ -296,8 +286,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
                     getOptionalFields(methodModel, requiredFields)))
             .setLroConfig(
                 LongRunningConfig.createLongRunningConfigFromGapicConfigOnly(
-                    method.getModel(), diagCollector, methodConfigProto.getLongRunning()))
-            .setDefaultResourceNameTreatment(defaultResourceNameTreatment);
+                    method.getModel(), diagCollector, methodConfigProto.getLongRunning()));
 
     if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
@@ -316,14 +305,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   @VisibleForTesting
   static ResourceNameTreatment defaultResourceNameTreatmentFromProto(
       Method method, ProtoParser protoParser, String defaultPackageName) {
-    if (method
-        .getInputMessage()
-        .getFields()
-        .stream()
-        .anyMatch(
-            f ->
-                !Strings.isNullOrEmpty(protoParser.getResourceReference(f))
-                    || !Strings.isNullOrEmpty(protoParser.getResourceOrSetEntityName(f)))) {
+    if (method.getInputMessage().getFields().stream().anyMatch(protoParser::hasResourceReference)) {
       String methodInputPackageName =
           protoParser.getProtoPackage(((ProtoFile) method.getInputMessage().getParent()));
       if (defaultPackageName.equals(methodInputPackageName)) {
@@ -333,6 +315,56 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
     } else {
       return ResourceNameTreatment.UNSET_TREATMENT;
+    }
+  }
+
+  public static ImmutableMap<String, String> getFieldNamePatterns(
+      Method method, ResourceNameMessageConfigs messageConfigs) {
+    ImmutableMap.Builder<String, String> resultCollector = ImmutableMap.builder();
+    // Only look two levels deep in the request object, so fields of fields of the request object.
+    getFieldNamePatterns(messageConfigs, method.getInputMessage(), resultCollector, "", 2);
+    return resultCollector.build();
+  }
+
+  /**
+   * Recursively populates the given map builder with field name patterns, up to a given depth.
+   *
+   * <p>A field name pattern entry maps a field name String, which can be a dot-separated nested
+   * field such as "shelf.name", to the String name of the resource entity that is represented by
+   * that field.
+   *
+   * <p>Note: this method does not check for circular references.
+   *
+   * @param messageConfigs ResourceNameMessageConfigs object
+   * @param messageType the starting messageType from which to parse fields for resource names
+   * @param resultCollector collects the resulting field name patterns
+   * @param fieldNamePrefix a nested field is prefixed by the parents' names, dot-separated
+   * @param depth number of levels deep in which to parse the messageType; must be positive int
+   */
+  private static void getFieldNamePatterns(
+      ResourceNameMessageConfigs messageConfigs,
+      MessageType messageType,
+      ImmutableMap.Builder<String, String> resultCollector,
+      String fieldNamePrefix,
+      int depth) {
+    if (depth < 1) throw new IllegalStateException("depth must be positive");
+    for (Field field : messageType.getFields()) {
+      String fieldNameKey = fieldNamePrefix + field.getSimpleName();
+
+      if (field.getType().isMessage() && depth > 1) {
+        getFieldNamePatterns(
+            messageConfigs,
+            field.getType().getMessageType(),
+            resultCollector,
+            fieldNameKey + ".",
+            depth - 1);
+      }
+
+      if (messageConfigs.fieldHasResourceName(messageType.getFullName(), field.getSimpleName())) {
+        resultCollector.put(
+            fieldNameKey,
+            messageConfigs.getFieldResourceName(messageType.getFullName(), field.getSimpleName()));
+      }
     }
   }
 
@@ -363,8 +395,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
     public abstract Builder setRequiredFieldConfigs(ImmutableList<FieldConfig> val);
 
     public abstract Builder setOptionalFieldConfigs(ImmutableList<FieldConfig> val);
-
-    public abstract Builder setDefaultResourceNameTreatment(ResourceNameTreatment val);
 
     public abstract Builder setBatching(@Nullable BatchingConfig val);
 
