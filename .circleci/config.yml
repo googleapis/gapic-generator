@@ -77,6 +77,8 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
     - run:
         <<: *anchor_check_generation
     # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
+    # Disabling showcase tests until annotations are supported, see:
+    # https://github.com/googleapis/gapic-generator/issues/2735
     #- run:
     #    name: Run Showcase Generated Unit Tests.
     #    command: |
@@ -156,6 +158,8 @@ anchor_run_ruby: &anchor_run_ruby
     - run:
         name: Test Logging.
         <<: *anchor_test_ruby_client
+    # Disabling showcase tests until annotations are supported, see:
+    # https://github.com/googleapis/gapic-generator/issues/2735
     #- run:
     #    name: Prepare to test Showcase.
     #    command: echo 'export TEST_API="showcase"' >> $BASH_ENV
@@ -264,6 +268,8 @@ anchor_run_php: &anchor_run_php
     - run:
         name: Test PHP Logging client
         <<: *anchor_test_php
+    # Disabling showcase tests until annotations are supported, see:
+    # https://github.com/googleapis/gapic-generator/issues/2735
     #- run:
     #    name: Prepare to test Showcase.
     #    command: |
@@ -454,6 +460,8 @@ jobs:
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
           when: always
+      # Disabling showcase tests until annotations are supported, see:
+      # https://github.com/googleapis/gapic-generator/issues/2735
       #- run:
       #    name: Generate Showcase Libraries
       #    command: |
@@ -555,6 +563,8 @@ jobs:
           command: |
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} /tmp/workspace/reports/ \;
           when: always
+      # Disabling showcase tests until annotations are supported, see:
+      # https://github.com/googleapis/gapic-generator/issues/2735
       #- run:
       #    name: Install the generated showcase library
       #    command: |
@@ -637,6 +647,8 @@ jobs:
       - run:
           name: Verify all NodeJS generation succeeded
           <<: *anchor_check_generation
+      # Disabling showcase tests until annotations are supported, see:
+      # https://github.com/googleapis/gapic-generator/issues/2735
       #- run:
       #    name: Test Showcase
       #    command: |
@@ -728,6 +740,8 @@ jobs:
           name: Test Speech
           command: go test cloud.google.com/go/speech/apiv1
           when: always
+      # Disabling showcase tests until annotations are supported, see:
+      # https://github.com/googleapis/gapic-generator/issues/2735
       #- run:
       #    name: Test Showcase
       #    command: go test cloud.google.com/go/showcase/apiv1alpha2
