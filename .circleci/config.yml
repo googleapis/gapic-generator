@@ -454,17 +454,17 @@ jobs:
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
           when: always
-      - run:
-          name: Generate Showcase Libraries
-          command: |
-            cd workspace/gapic-generator
-            python generate_clients.py \
-                google/showcase/artman_showcase.yaml \
-                --user-config=.circleci/artman_config.yaml \
-                --log-dir=${ARTMAN_REPORTS_DIR} \
-                --languages go nodejs php python ruby \
-                --root-dir=/tmp/workspace/showcase-protos
-          when: never
+      #- run:
+      #    name: Generate Showcase Libraries
+      #    command: |
+      #      cd workspace/gapic-generator
+      #      python generate_clients.py \
+      #          google/showcase/artman_showcase.yaml \
+      #          --user-config=.circleci/artman_config.yaml \
+      #          --log-dir=${ARTMAN_REPORTS_DIR} \
+      #          --languages go nodejs php python ruby \
+      #          --root-dir=/tmp/workspace/showcase-protos
+      #    when: always
       # Java needs to use the patched showcase dir since showcase contains
       # the new annotations. Protos using those new annotations will not
       # compile. This lets us use a patched version of the echo.proto that
