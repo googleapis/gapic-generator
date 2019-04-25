@@ -4274,6 +4274,7 @@ module Library
       #   can also be provided.
       # @param required_singular_resource_name [String]
       # @param required_singular_resource_name_oneof [String]
+      # @param required_singular_resource_name_common [String]
       # @param required_singular_fixed32 [Integer]
       # @param required_singular_fixed64 [Integer]
       # @param required_repeated_int32 [Array<Integer>]
@@ -4293,7 +4294,6 @@ module Library
       # @param required_repeated_fixed32 [Array<Integer>]
       # @param required_repeated_fixed64 [Array<Integer>]
       # @param required_map [Hash{Integer => String}]
-      # @param required_singular_resource_name_common [String]
       # @param optional_singular_int32 [Integer]
       # @param optional_singular_int64 [Integer]
       # @param optional_singular_float [Float]
@@ -4465,6 +4465,9 @@ module Library
       #   formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
       #   formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
       #
+      #   # TODO: Initialize `required_singular_resource_name_common`:
+      #   required_singular_resource_name_common = ''
+      #
       #   # TODO: Initialize `required_singular_fixed32`:
       #   required_singular_fixed32 = 0
       #
@@ -4515,7 +4518,7 @@ module Library
       #
       #   # TODO: Initialize `required_map`:
       #   required_map = {}
-      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, formatted_required_singular_resource_name, formatted_required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
+      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, formatted_required_singular_resource_name, formatted_required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
       def test_optional_required_flattening_params \
           required_singular_int32,
@@ -4529,6 +4532,7 @@ module Library
           required_singular_message,
           required_singular_resource_name,
           required_singular_resource_name_oneof,
+          required_singular_resource_name_common,
           required_singular_fixed32,
           required_singular_fixed64,
           required_repeated_int32,
@@ -4546,7 +4550,6 @@ module Library
           required_repeated_fixed32,
           required_repeated_fixed64,
           required_map,
-          required_singular_resource_name_common: nil,
           optional_singular_int32: nil,
           optional_singular_int64: nil,
           optional_singular_float: nil,
@@ -4622,6 +4625,7 @@ module Library
           required_singular_message: required_singular_message,
           required_singular_resource_name: required_singular_resource_name,
           required_singular_resource_name_oneof: required_singular_resource_name_oneof,
+          required_singular_resource_name_common: required_singular_resource_name_common,
           required_singular_fixed32: required_singular_fixed32,
           required_singular_fixed64: required_singular_fixed64,
           required_repeated_int32: required_repeated_int32,
@@ -4639,7 +4643,6 @@ module Library
           required_repeated_fixed32: required_repeated_fixed32,
           required_repeated_fixed64: required_repeated_fixed64,
           required_map: required_map,
-          required_singular_resource_name_common: required_singular_resource_name_common,
           optional_singular_int32: optional_singular_int32,
           optional_singular_int64: optional_singular_int64,
           optional_singular_float: optional_singular_float,
@@ -4725,12 +4728,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-<<<<<<< HEAD
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
-      #   response = library_client.private_get_book(formatted_name)
-=======
       #   response = library_client.private_list_shelves
->>>>>>> origin/master
 
       def private_list_shelves \
           page_token: nil,
@@ -7461,6 +7459,7 @@ describe Library::V1::LibraryServiceClient do
       required_singular_message = {}
       formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
       formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
+      required_singular_resource_name_common = ''
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
       required_repeated_int32 = []
@@ -7497,6 +7496,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
         assert_equal(formatted_required_singular_resource_name, request.required_singular_resource_name)
         assert_equal(formatted_required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
+        assert_equal(required_singular_resource_name_common, request.required_singular_resource_name_common)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
         assert_equal(required_singular_fixed64, request.required_singular_fixed64)
         assert_equal(required_repeated_int32, request.required_repeated_int32)
@@ -7541,6 +7541,7 @@ describe Library::V1::LibraryServiceClient do
             required_singular_message,
             formatted_required_singular_resource_name,
             formatted_required_singular_resource_name_oneof,
+            required_singular_resource_name_common,
             required_singular_fixed32,
             required_singular_fixed64,
             required_repeated_int32,
@@ -7576,6 +7577,7 @@ describe Library::V1::LibraryServiceClient do
             required_singular_message,
             formatted_required_singular_resource_name,
             formatted_required_singular_resource_name_oneof,
+            required_singular_resource_name_common,
             required_singular_fixed32,
             required_singular_fixed64,
             required_repeated_int32,
@@ -7615,6 +7617,7 @@ describe Library::V1::LibraryServiceClient do
       required_singular_message = {}
       formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
       formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
+      required_singular_resource_name_common = ''
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
       required_repeated_int32 = []
@@ -7647,6 +7650,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
         assert_equal(formatted_required_singular_resource_name, request.required_singular_resource_name)
         assert_equal(formatted_required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
+        assert_equal(required_singular_resource_name_common, request.required_singular_resource_name_common)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
         assert_equal(required_singular_fixed64, request.required_singular_fixed64)
         assert_equal(required_repeated_int32, request.required_repeated_int32)
@@ -7692,6 +7696,7 @@ describe Library::V1::LibraryServiceClient do
               required_singular_message,
               formatted_required_singular_resource_name,
               formatted_required_singular_resource_name_oneof,
+              required_singular_resource_name_common,
               required_singular_fixed32,
               required_singular_fixed64,
               required_repeated_int32,
@@ -7719,17 +7724,8 @@ describe Library::V1::LibraryServiceClient do
     end
   end
 
-<<<<<<< HEAD
-  describe 'private_get_book' do
-    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#private_get_book."
-
-    it 'invokes private_get_book without error' do
-      # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
-=======
   describe 'private_list_shelves' do
     custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#private_list_shelves."
->>>>>>> origin/master
 
     it 'invokes private_list_shelves without error' do
       # Create expected grpc response
@@ -7774,14 +7770,7 @@ describe Library::V1::LibraryServiceClient do
       end
     end
 
-<<<<<<< HEAD
-    it 'invokes private_get_book with error' do
-      # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
-
-=======
     it 'invokes private_list_shelves with error' do
->>>>>>> origin/master
       # Mock Grpc layer
       mock_method = proc do
         raise custom_error
