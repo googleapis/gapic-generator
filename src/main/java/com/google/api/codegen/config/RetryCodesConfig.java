@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class RetryCodesConfig {
@@ -81,6 +82,7 @@ public class RetryCodesConfig {
     return retryCodesConfig;
   }
 
+  @Nonnull
   public static RetryCodesConfig create(
       InterfaceConfigProto interfaceConfigProto,
       List<Method> methodsToGenerate,

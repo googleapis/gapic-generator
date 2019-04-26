@@ -126,30 +126,24 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
         RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
 
-    ImmutableMap<String, GapicMethodConfig> methodConfigsMap;
     List<GapicMethodConfig> methodConfigs;
-    if (retryCodesConfig != null && retrySettingsDefinition != null) {
-      methodConfigsMap =
-          createMethodConfigMap(
-              diagCollector,
-              language,
-              defaultPackageName,
-              methodsToGenerate,
-              messageConfigs,
-              resourceNameConfigs,
-              retryCodesConfig,
-              retrySettingsDefinition.keySet(),
-              protoParser);
-      if (methodConfigsMap == null) {
-        diagCollector.addDiag(
-            Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
-        return null;
-      }
-      methodConfigs = ImmutableList.copyOf(methodConfigsMap.values());
-    } else {
-      methodConfigsMap = ImmutableMap.of();
-      methodConfigs = ImmutableList.of();
+    ImmutableMap<String, GapicMethodConfig> methodConfigsMap =
+        createMethodConfigMap(
+            diagCollector,
+            language,
+            defaultPackageName,
+            methodsToGenerate,
+            messageConfigs,
+            resourceNameConfigs,
+            retryCodesConfig,
+            retrySettingsDefinition.keySet(),
+            protoParser);
+    if (methodConfigsMap == null) {
+      diagCollector.addDiag(
+          Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
+      return null;
     }
+    methodConfigs = ImmutableList.copyOf(methodConfigsMap.values());
 
     SmokeTestConfig smokeTestConfig =
         createSmokeTestConfig(diagCollector, apiInterface, interfaceConfigProto);
