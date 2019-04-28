@@ -231,18 +231,4 @@ public class ShowcaseTest {
 
     assertThat(responses).containsExactlyElementsIn(inputs).inOrder();
   }
-
-  @Test
-  public void retries() throws Exception {
-    WaitResponse response =
-        client
-            .waitAsync(
-                WaitRequest.newBuilder()
-                    .setTtl(Duration.newBuilder().setSeconds(2).build())
-                    .setSuccess(WaitResponse.newBuilder().setContent("I waited!").build())
-                    .build())
-            .get();
-
-    assertThat(response.getContent()).isEqualTo("I waited!");
-  }
 }
