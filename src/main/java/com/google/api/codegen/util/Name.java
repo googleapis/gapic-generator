@@ -317,6 +317,11 @@ public class Name {
   }
 
   @Override
+  public String toString() {
+    return String.format("Name(%s)", toLowerUnderscore());
+  }
+
+  @Override
   public boolean equals(Object other) {
     if (other instanceof Name) {
       return ((Name) other).toLowerUnderscore().equals(this.toLowerUnderscore());

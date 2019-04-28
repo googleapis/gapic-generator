@@ -5,20 +5,12 @@ syntax = "proto3";
 package google.example.library.v1;
 
 import "google/api/annotations.proto";
-import "google/api/resource.proto";
 
 service MyProto {
   rpc MyMethod(MethodRequest) returns (MethodResponse) {
     option (google.api.http) = { post: "/v1/myMethod" body: "*" };
   };
 }
-
-option (google.api.resource_definition) = {
-  // To test the case that entity name / variable which happens to be
-  // a language keyword. See: https://github.com/googleapis/toolkit/issues/618
-  symbol: "Return"
-  pattern : "shelves/{shelf}/books/{book}/returns/{return}"
-};
 
 message MethodRequest {
   repeated SubMessage mylist = 1;

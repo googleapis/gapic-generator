@@ -56,8 +56,6 @@ public abstract class MethodConfig {
 
   public abstract ImmutableList<FieldConfig> getOptionalFieldConfigs();
 
-  public abstract ResourceNameTreatment getDefaultResourceNameTreatment();
-
   @Nullable
   public abstract BatchingConfig getBatching();
 

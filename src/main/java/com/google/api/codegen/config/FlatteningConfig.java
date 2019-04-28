@@ -25,7 +25,6 @@ import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -280,11 +279,10 @@ public abstract class FlatteningConfig {
         oneofNames.add(oneofName);
       }
 
-      ResourceNameTreatment resourceNameTreatment = ResourceNameTreatment.NONE;
-      String resourceNameType = protoParser.getResourceReference(parameterField.getProtoField());
-      if (!Strings.isNullOrEmpty(resourceNameType)) {
-        resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
-      }
+      ResourceNameTreatment resourceNameTreatment =
+          protoParser.hasResourceReference(parameterField.getProtoField())
+              ? ResourceNameTreatment.STATIC_TYPES
+              : ResourceNameTreatment.NONE;
       FieldConfig fieldConfig =
           FieldConfig.createMessageFieldConfig(
               messageConfigs, resourceNameConfigs, parameterField, resourceNameTreatment);
