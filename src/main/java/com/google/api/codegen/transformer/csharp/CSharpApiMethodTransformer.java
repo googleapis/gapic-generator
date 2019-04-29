@@ -148,6 +148,14 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             apiMethods.add(
                 generateGrpcStreamingFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));
+            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
+              apiMethods.add(
+                  generateGrpcStreamingFlattenedMethod(
+                      methodContext
+                          .withResourceNamesInSamplesOnly()
+                          .withCallingForms(Collections.singletonList(CallingForm.Flattened)),
+                      csharpCommonTransformer.callSettingsParam()));
+            }
           }
         }
         // TODO: replace the empty list with real calling forms:
@@ -196,6 +204,14 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
                     // LRO methods for now so that the baseline does not explode
                     methodContext.withCallingForms(Collections.emptyList()),
                     csharpCommonTransformer.callSettingsParam()));
+            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
+              apiMethods.add(
+                  generateOperationFlattenedMethod(
+                      methodContext
+                          .withResourceNamesInSamplesOnly()
+                          .withCallingForms(Collections.singletonList(CallingForm.Flattened)),
+                      csharpCommonTransformer.callSettingsParam()));
+            }
           }
         }
         apiMethods.add(
@@ -244,6 +260,14 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
                             CallingForm.FlattenedPagedAll,
                             CallingForm.FlattenedPagedPageSize)),
                     pagedMethodAdditionalParams));
+            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
+              apiMethods.add(
+                  generatePagedFlattenedMethod(
+                      methodContext
+                          .withResourceNamesInSamplesOnly()
+                          .withCallingForms(Collections.singletonList(CallingForm.Flattened)),
+                      csharpCommonTransformer.callSettingsParam()));
+            }
           }
         }
         apiMethods.add(
@@ -286,6 +310,14 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
                     methodContext.withCallingForms(
                         Collections.singletonList(CallingForm.Flattened)),
                     csharpCommonTransformer.callSettingsParam()));
+            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
+              apiMethods.add(
+                  generateFlattenedMethod(
+                      methodContext
+                          .withResourceNamesInSamplesOnly()
+                          .withCallingForms(Collections.singletonList(CallingForm.Flattened)),
+                      csharpCommonTransformer.callSettingsParam()));
+            }
           }
         }
         apiMethods.add(
