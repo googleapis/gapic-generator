@@ -1,0 +1,32 @@
+@extends "csharp/common.snip"
+@extends "csharp/common_initcode.snip"
+
+@snippet optionsClass(sample, libraryMethod)
+	public class Options
+	{
+		@join param : sample.sampleInitCode.argDefaultParams on "".add(BREAK).add(BREAK)
+		  	{@optionProperty(param)}
+		@end
+	}
+@end
+
+@snippet processCliArguments(sample)
+	@if sample.sampleInitCode.argDefaultParams
+		CommandLine.Parser.Default.ParseArguments<Options>(args)
+			.withParsed<Options>({@if(sample.usesAsyncAwaitPattern, "async ", "")}opts =>
+			    {@if(sample.usesAsyncAwaitPattern, "await ", "")}{@sample.sampleFunctionName}({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}));
+	@else
+		{@sample.sampleFunctionName()}();
+	@end
+@end
+
+@private optionProperty(param)
+	[Option("{@param.cliFlagName}", DEFAULT = {@renderInitValue(param.initValue, FALSE)})]
+	{@""}    public {@param.typeName} {@param.upperCamelIdentifier} { get; set; }
+@end
+
+@private commaSeparatedOpts(args)
+	@join arg : args on ", "
+	  	opts.{@arg.upperCamelIdentifier}
+	@end
+@end

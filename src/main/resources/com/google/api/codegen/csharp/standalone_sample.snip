@@ -1,4 +1,5 @@
 @extends "common.snip"
+@extends "csharp/commandline.snip"
 @extends "csharp/common.snip"
 @extends "csharp/common_initcode.snip"
 
@@ -22,7 +23,11 @@
             @if not(sample.sampleFunctionDoc.isEmpty)
                 {@processDoc(sample.sampleFunctionDoc)}
             @end
-            public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)})
+            @if sample.usesAsyncAwaitPattern
+                public static async Task {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)})
+            @else
+                public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)}) 
+            @end
             {
                 @switch sample.callingForm
                 #
@@ -100,11 +105,18 @@
             }
 
             // [END {@sample.regionTag}]
-            public static void Main(String[] args)
+            @if sample.usesAsyncAwaitPattern
+                public static Task Main(String[] args)
+            @else
+                public static void Main(String[] args)
+            @end
             {
-            	// FIXME: pass in commandline arguments
-            	// FIXME: call the sample function
+            	{@processCliArguments(sample)}
             }
+            @if sample.sampleInitCode.argDefaultParams
+
+                {@optionsClass(sample, apiMethod)}
+            @end
         }
         @end
     @end
