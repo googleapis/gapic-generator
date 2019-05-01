@@ -2869,6 +2869,10 @@ module Library
       DEFAULT_TIMEOUT = 30
 
       PAGE_DESCRIPTORS = {
+        "list_shelves" => Google::Gax::PageDescriptor.new(
+          "page_token",
+          "next_page_token",
+          "shelves"),
         "list_books" => Google::Gax::PageDescriptor.new(
           "page_token",
           "next_page_token",
@@ -3390,33 +3394,38 @@ module Library
 
       # Lists shelves.
       #
-      # @param page_token [String]
-      #   A token identifying a page of results the server should return.
-      #   Typically, this is the value of
-      #   {Google::Example::Library::V1::ListShelvesResponse#next_page_token ListShelvesResponse#next_page_token}
-      #   returned from the previous call to `ListShelves` method.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
       # @yield [result, operation] Access the result along with the RPC operation
-      # @yieldparam result [Google::Example::Library::V1::ListShelvesResponse]
+      # @yieldparam result [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Shelf>]
       # @yieldparam operation [GRPC::ActiveCall::Operation]
-      # @return [Google::Example::Library::V1::ListShelvesResponse]
+      # @return [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Shelf>]
+      #   An enumerable of Google::Example::Library::V1::Shelf instances.
+      #   See Google::Gax::PagedEnumerable documentation for other
+      #   operations such as per-page iteration or access to the response
+      #   object.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   response = library_client.list_shelves
+      #
+      #   # Iterate over all results.
+      #   library_client.list_shelves.each do |element|
+      #     # Process element.
+      #   end
+      #
+      #   # Or iterate over results one page at a time.
+      #   library_client.list_shelves.each_page do |page|
+      #     # Process each page at a time.
+      #     page.each do |element|
+      #       # Process element.
+      #     end
+      #   end
 
-      def list_shelves \
-          page_token: nil,
-          options: nil,
-          &block
-        req = {
-          page_token: page_token
-        }.delete_if { |_, v| v.nil? }
-        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListShelvesRequest)
+      def list_shelves options: nil, &block
+        req = Google::Example::Library::V1::ListShelvesRequest.new
         @list_shelves.call(req, options, &block)
       end
 
@@ -6368,7 +6377,7 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_paging")
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_paging")
 
 require "library"
 
@@ -6380,8 +6389,10 @@ def sample_list_shelves
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  response = library_client.list_shelves
-  puts "shelf name: #{response}"
+  # Iterate over all results.
+  library_client.list_shelves.each do |element|
+    puts "shelf name: #{element}"
+  end
 
   # [END test_default_calling_form_for_paging_core]
 end
@@ -6773,8 +6784,10 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes list_shelves without error' do
       # Create expected grpc response
-      next_page_token = "nextPageToken-1530815211"
-      expected_response = { next_page_token: next_page_token }
+      next_page_token = ""
+      shelves_element = {}
+      shelves = [shelves_element]
+      expected_response = { next_page_token: next_page_token, shelves: shelves }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::ListShelvesResponse)
 
       # Mock Grpc layer
@@ -6794,14 +6807,10 @@ describe Library::V1::LibraryServiceClient do
           response = client.list_shelves
 
           # Verify the response
-          assert_equal(expected_response, response)
-
-          # Call method with block
-          client.list_shelves do |response, operation|
-            # Verify the response
-            assert_equal(expected_response, response)
-            refute_nil(operation)
-          end
+          assert(response.instance_of?(Google::Gax::PagedEnumerable))
+          assert_equal(expected_response, response.page.response)
+          assert_nil(response.next_page)
+          assert_equal(expected_response.shelves.to_a, response.to_a)
         end
       end
     end
