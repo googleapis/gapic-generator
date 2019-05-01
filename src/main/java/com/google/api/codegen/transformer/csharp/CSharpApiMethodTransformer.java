@@ -241,10 +241,10 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
-            apiMethods.addAll(generateFlattenedAsyncMethods(methodContext));
+            apiMethods.addAll(generateNormalFlattenedMethods(methodContext));
             if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
               apiMethods.addAll(
-                  generateFlattenedAsyncMethods(methodContext.withResourceNamesInSamplesOnly()));
+                  generateNormalFlattenedMethods(methodContext.withResourceNamesInSamplesOnly()));
             }
           }
         }
@@ -328,7 +328,8 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
     return apiMethods;
   }
 
-  private List<StaticLangApiMethodView> generateFlattenedAsyncMethods(MethodContext methodContext) {
+  private List<StaticLangApiMethodView> generateNormalFlattenedMethods(
+      MethodContext methodContext) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     apiMethods.add(
         generateFlattenedAsyncMethod(
