@@ -16,7 +16,7 @@
 			.withParsed<Options>({@if(sample.usesAsyncAwaitPattern, "async ", "")}opts =>
 			    {@if(sample.usesAsyncAwaitPattern, "await ", "")}{@sample.sampleFunctionName}({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}));
 	@else
-		{@sample.sampleFunctionName()}();
+		{@if(sample.usesAsyncAwaitPattern, "await ", "")}{@sample.sampleFunctionName()}();
 	@end
 @end
 

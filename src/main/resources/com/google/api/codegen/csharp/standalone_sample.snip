@@ -100,9 +100,9 @@
 
             // [END {@sample.regionTag}]
             @if sample.usesAsyncAwaitPattern
-                public static Task Main(String[] args)
+                public static Task Main(string[] args)
             @else
-                public static void Main(String[] args)
+                public static void Main(string[] args)
             @end
             {
             	{@processCliArguments(sample)}
@@ -188,9 +188,9 @@
     {
         {@asyncClient(apiMethod)}
         {@standaloneSampleInitCode(sample.sampleInitCode)}
-        await {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        {@apiMethod.callerResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
             {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-        {@paging(apiMethod, sample)}
+        {@pagingAsync(apiMethod, sample)}
     }
 @end
 
@@ -199,9 +199,9 @@
     {
         {@asyncClient(apiMethod)}
         {@standaloneSampleInitCode(sample.sampleInitCode)}
-        await {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        {@apiMethod.callerResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
             {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-        {@pagingAll(apiMethod, sample)}
+        {@pagingAllAsync(apiMethod, sample)}
     }
 @end
 
@@ -210,9 +210,9 @@
     {
         {@asyncClient(apiMethod)}
         {@standaloneSampleInitCode(sample.sampleInitCode)}
-        await {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        {@apiMethod.callerResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
             {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-        {@pagingPageSize(apiMethod, sample)}
+        {@pagingPageSizeAsync(apiMethod, sample)}
     }
 @end
 

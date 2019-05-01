@@ -14132,9 +14132,9 @@ class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithResponseHandling
    }
 
    // [END sample]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SampleDeleteShelf();
+   	await SampleDeleteShelf();
    }
 }
 ============== file: Samples/DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithoutResponseHandling.cs ==============
@@ -14175,9 +14175,9 @@ class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithoutResponseHandling
    }
 
    // [END sample]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SampleDeleteShelf();
+   	await SampleDeleteShelf();
    }
 }
 ============== file: Samples/DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithResponseHandling.cs ==============
@@ -14221,9 +14221,9 @@ class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithResponseHandling
    }
 
    // [END sample]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SampleDeleteShelf();
+   	await SampleDeleteShelf();
    }
 }
 ============== file: Samples/DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithoutResponseHandling.cs ==============
@@ -14267,9 +14267,9 @@ class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithoutResponseHandling
    }
 
    // [END sample]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SampleDeleteShelf();
+   	await SampleDeleteShelf();
    }
 }
 ============== file: Samples/DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling.cs ==============
@@ -14310,7 +14310,7 @@ class DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SampleDeleteShelf();
    }
@@ -14353,7 +14353,7 @@ class DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SampleDeleteShelf();
    }
@@ -14399,7 +14399,7 @@ class DeleteShelfRequestEmptyResponseTypeWithResponseHandling
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SampleDeleteShelf();
    }
@@ -14445,7 +14445,7 @@ class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SampleDeleteShelf();
    }
@@ -14488,20 +14488,20 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedAllOdyssey
        {
            new ShelfName("[SHELF_ID]"),
        };
-       await gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = libraryServiceClient.FindRelatedBooksAsync(names, shelves);
+       gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
        // Iterate over pages (of server-defined size), performing one RPC per page
-       foreach (BookNameOneof item in response)
+       await response.ForEachAsync((BookNameOneof item) =>
        {
            // FIXME: inspect the results
-       }
+       });
    }
    // [END sample_core]
    }
 
    // [END sample]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SampleFindRelatedBooks();
+   	await SampleFindRelatedBooks();
    }
 }
 ============== file: Samples/FindRelatedBooksAsyncFlattenedAsyncPagedOdyssey.cs ==============
@@ -14542,23 +14542,23 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedOdyssey
        {
            new ShelfName("[SHELF_ID]"),
        };
-       await gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = libraryServiceClient.FindRelatedBooksAsync(names, shelves);
+       gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
        // Iterate over all response items, lazily performing RPCs as required
-       foreach (FindRelatedBooksResponse page in response.asRawResponses())
+       await response.AsRawResponses().ForEachAsync((FindRelatedBooksResponse page) =>
        {
            foreach (BookNameOneof item in page)
            {
                // FIXME: inspect the results
            }
-       }
+       });
    }
    // [END sample_core]
    }
 
    // [END sample]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SampleFindRelatedBooks();
+   	await SampleFindRelatedBooks();
    }
 }
 ============== file: Samples/FindRelatedBooksAsyncFlattenedAsyncPagedPageSizeOdyssey.cs ==============
@@ -14599,10 +14599,10 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedPageSizeOdyssey
        {
            new ShelfName("[SHELF_ID]"),
        };
-       await gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = libraryServiceClient.FindRelatedBooksAsync(names, shelves);
+       gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
        // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
        int pageSize = 10;
-       Page<BookNameOneof> singlePage = response.ReadPage(pageSize);
+       Page<BookNameOneof> singlePage = await response.ReadPageAsync(pageSize);
        foreach (BookNameOneof item in response)
        {
            // FIXME: inspect the results
@@ -14614,9 +14614,9 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedPageSizeOdyssey
    }
 
    // [END sample]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SampleFindRelatedBooks();
+   	await SampleFindRelatedBooks();
    }
 }
 ============== file: Samples/FindRelatedBooksAsyncRequestAsyncPagedAllOdyssey.cs ==============
@@ -14658,20 +14658,20 @@ class FindRelatedBooksAsyncRequestAsyncPagedAllOdyssey
                                      new ShelfName("[SHELF_ID]"),
                                  },
        };
-       await gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = libraryServiceClient.FindRelatedBooksAsync(request);
+       gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = await libraryServiceClient.FindRelatedBooksAsync(request);
        // Iterate over pages (of server-defined size), performing one RPC per page
-       foreach (BookNameOneof item in response)
+       await response.ForEachAsync((BookNameOneof item) =>
        {
            // FIXME: inspect the results
-       }
+       });
    }
    // [END sample_core]
    }
 
    // [END sample]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SampleFindRelatedBooks();
+   	await SampleFindRelatedBooks();
    }
 }
 ============== file: Samples/FindRelatedBooksAsyncRequestAsyncPagedOdyssey.cs ==============
@@ -14713,23 +14713,23 @@ class FindRelatedBooksAsyncRequestAsyncPagedOdyssey
                                      new ShelfName("[SHELF_ID]"),
                                  },
        };
-       await gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = libraryServiceClient.FindRelatedBooksAsync(request);
+       gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = await libraryServiceClient.FindRelatedBooksAsync(request);
        // Iterate over all response items, lazily performing RPCs as required
-       foreach (FindRelatedBooksResponse page in response.asRawResponses())
+       await response.AsRawResponses().ForEachAsync((FindRelatedBooksResponse page) =>
        {
            foreach (BookNameOneof item in page)
            {
                // FIXME: inspect the results
            }
-       }
+       });
    }
    // [END sample_core]
    }
 
    // [END sample]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SampleFindRelatedBooks();
+   	await SampleFindRelatedBooks();
    }
 }
 ============== file: Samples/FindRelatedBooksAsyncRequestAsyncPagedPageSizeOdyssey.cs ==============
@@ -14771,10 +14771,10 @@ class FindRelatedBooksAsyncRequestAsyncPagedPageSizeOdyssey
                                      new ShelfName("[SHELF_ID]"),
                                  },
        };
-       await gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = libraryServiceClient.FindRelatedBooksAsync(request);
+       gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = await libraryServiceClient.FindRelatedBooksAsync(request);
        // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
        int pageSize = 10;
-       Page<BookNameOneof> singlePage = response.ReadPage(pageSize);
+       Page<BookNameOneof> singlePage = await response.ReadPageAsync(pageSize);
        foreach (BookNameOneof item in response)
        {
            // FIXME: inspect the results
@@ -14786,9 +14786,9 @@ class FindRelatedBooksAsyncRequestAsyncPagedPageSizeOdyssey
    }
 
    // [END sample]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SampleFindRelatedBooks();
+   	await SampleFindRelatedBooks();
    }
 }
 ============== file: Samples/FindRelatedBooksFlattenedPagedAllOdyssey.cs ==============
@@ -14840,7 +14840,7 @@ class FindRelatedBooksFlattenedPagedAllOdyssey
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SampleFindRelatedBooks();
    }
@@ -14898,7 +14898,7 @@ class FindRelatedBooksFlattenedPagedOdyssey
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SampleFindRelatedBooks();
    }
@@ -14956,7 +14956,7 @@ class FindRelatedBooksFlattenedPagedPageSizeOdyssey
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SampleFindRelatedBooks();
    }
@@ -15011,7 +15011,7 @@ class FindRelatedBooksRequestPagedAllOdyssey
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SampleFindRelatedBooks();
    }
@@ -15070,7 +15070,7 @@ class FindRelatedBooksRequestPagedOdyssey
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SampleFindRelatedBooks();
    }
@@ -15129,7 +15129,7 @@ class FindRelatedBooksRequestPagedPageSizeOdyssey
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SampleFindRelatedBooks();
    }
@@ -15169,9 +15169,9 @@ class GetBookAsyncFlattenedAsyncTestOnSuccessMap
    }
 
    // [END sample]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SampleGetBook();
+   	await SampleGetBook();
    }
 }
 ============== file: Samples/GetBookAsyncRequestAsyncTestOnSuccessMap.cs ==============
@@ -15212,9 +15212,9 @@ class GetBookAsyncRequestAsyncTestOnSuccessMap
    }
 
    // [END sample]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SampleGetBook();
+   	await SampleGetBook();
    }
 }
 ============== file: Samples/GetBookFlattenedTestOnSuccessMap.cs ==============
@@ -15252,7 +15252,7 @@ class GetBookFlattenedTestOnSuccessMap
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SampleGetBook();
    }
@@ -15295,7 +15295,7 @@ class GetBookRequestTestOnSuccessMap
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SampleGetBook();
    }
@@ -15351,7 +15351,7 @@ class PublishSeriesAsyncFlattenedAsyncPiVersion
    }
 
    // [END canonical]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
    	CommandLine.Parser.Default.ParseArguments<Options>(args)
     	.withParsed<Options>(async opts =>
@@ -15408,9 +15408,9 @@ class PublishSeriesAsyncFlattenedAsyncSecondEdition
    }
 
    // [END canonical]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SamplePublishSeries();
+   	await SamplePublishSeries();
    }
 }
 ============== file: Samples/PublishSeriesAsyncRequestAsyncPiVersion.cs ==============
@@ -15467,7 +15467,7 @@ class PublishSeriesAsyncRequestAsyncPiVersion
    }
 
    // [END canonical]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
    	CommandLine.Parser.Default.ParseArguments<Options>(args)
     	.withParsed<Options>(async opts =>
@@ -15527,9 +15527,9 @@ class PublishSeriesAsyncRequestAsyncSecondEdition
    }
 
    // [END canonical]
-   public static Task Main(String[] args)
+   public static Task Main(string[] args)
    {
-   	SamplePublishSeries();
+   	await SamplePublishSeries();
    }
 }
 ============== file: Samples/PublishSeriesFlattenedPiVersion.cs ==============
@@ -15583,7 +15583,7 @@ class PublishSeriesFlattenedPiVersion
    }
 
    // [END canonical]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	CommandLine.Parser.Default.ParseArguments<Options>(args)
     	.withParsed<Options>(opts =>
@@ -15640,7 +15640,7 @@ class PublishSeriesFlattenedSecondEdition
    }
 
    // [END canonical]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SamplePublishSeries();
    }
@@ -15699,7 +15699,7 @@ class PublishSeriesRequestPiVersion
    }
 
    // [END canonical]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	CommandLine.Parser.Default.ParseArguments<Options>(args)
     	.withParsed<Options>(opts =>
@@ -15759,7 +15759,7 @@ class PublishSeriesRequestSecondEdition
    }
 
    // [END canonical]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SamplePublishSeries();
    }
@@ -15816,7 +15816,7 @@ class PublishSeriesRequestTestRequestObjectFieldComments
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SamplePublishSeries();
    }
@@ -15864,7 +15864,7 @@ class PublishSeriesRequestTestWriteToFile
    }
 
    // [END sample]
-   public static void Main(String[] args)
+   public static void Main(string[] args)
    {
    	SamplePublishSeries();
    }
