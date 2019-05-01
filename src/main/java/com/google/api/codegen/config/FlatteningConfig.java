@@ -329,4 +329,13 @@ public abstract class FlatteningConfig {
     paramList.forEach(p -> paramsAsString.append(p.getSimpleName()).append(", "));
     return paramsAsString.toString();
   }
+
+  /** Return if the flattening config contains a parameter that is a resource name. */
+  public static boolean hasAnyResourceNameParameter(FlatteningConfig flatteningGroup) {
+    return flatteningGroup
+        .getFlattenedFieldConfigs()
+        .values()
+        .stream()
+        .anyMatch(FieldConfig::useResourceNameType);
+  }
 }
