@@ -49,7 +49,20 @@
 
         {
             @join fieldSetting : line.fieldSettings
-                {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
+                @switch fieldSetting.initCodeLine.lineType
+                @case "StructureInitLine"
+                    {@fieldSetting.fieldSetFunction} = new {@fieldSetting.initCodeLine.typeName}
+                    {@innerStructureInitLine(fieldSetting.initCodeLine)},
+                # For correct indentation, the line has to be split here
+                @case "ListInitLine"
+                    {@fieldSetting.fieldSetFunction} = 
+                    {@innerListInitLine(fieldSetting.initCodeLine)},
+                @case "MapInitLine"
+                    {@fieldSetting.fieldSetFunction} =
+                    {@innerMapInitLine(fieldSetting.initCodeLine)},
+                @default
+                    {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
+                @end
             @end
         }
     @case "ListInitLine"
@@ -59,7 +72,17 @@
         @end
         {
             @join child : line.elements
-                {@initCode(FALSE, child)},
+                @switch child.lineType
+                @case "StructureInitLine"
+                    new {@child.typeName}
+                    {@innerStructureInitLine(child)},
+                @case "ListInitLine"
+                    {@innerListInitLine(child)},
+                @case "MapInitLine"
+                    {@innerMapInitLine(child)},
+                @default
+                    {@initCode(FALSE, child)},
+                @end
             @end
         }
     @case "MapInitLine"
@@ -70,7 +93,18 @@
         @end
         {
             @join mapEntry : line.initEntries
-                { {@mapEntry.key}, {@initCode(FALSE, mapEntry.value)} },
+                @switch mapEntry.value.lineType
+                @case "StructureInitLine"
+                    { {@mapEntry.key}, 
+                      new {@fieldSetting.initCodeLine.typeName}
+                      {@innerStructureInitLine(mapEntry.value)} },
+                @case "ListInitLine"
+                    { {@mapEntry.key}, {@innerListInitLine(mapEntry.value)} },
+                @case "MapInitLine"
+                    { {@mapEntry.key}, {@innerMapInitLine(mapEntry.value)} },
+                @default
+                    {@initCode(FALSE, mapEntry.value)},
+                @end
             @end
         }
     @case "SimpleInitLine"
@@ -88,6 +122,31 @@
     @default
         $unhandledCase: {@line.lineType.toString}$
     @end
+@end
+
+@private innerStructureInitLine(line)
+    {
+        @join fieldSetting : line.fieldSettings
+            {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
+        @end
+    }
+@end
+
+
+@private innerListInitLine(line)
+    {
+        @join child : line.elements
+            {@initCode(FALSE, child)},
+        @end
+    }
+@end
+
+@private innerMapInitLine(line)
+    {
+        @join mapEntry : line.initEntries
+            { {@mapEntry.key}, {@initCode(FALSE, mapEntry.value)} },
+        @end
+    }
 @end
 
 #initValue: InitValueView, isObjectInitializer: Boolean

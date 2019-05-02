@@ -606,9 +606,9 @@ namespace Google.Example.Library.V1.Snippets
                 Shelf = new Shelf(),
                 Books = { },
                 SeriesUuid = new SeriesUuid
-                             {
-                                 SeriesString = "foobar",
-                             },
+                {
+                    SeriesString = "foobar",
+                },
             };
             // Make the request
             PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(request);
@@ -627,9 +627,9 @@ namespace Google.Example.Library.V1.Snippets
                 Shelf = new Shelf(),
                 Books = { },
                 SeriesUuid = new SeriesUuid
-                             {
-                                 SeriesString = "foobar",
-                             },
+                {
+                    SeriesString = "foobar",
+                },
             };
             // Make the request
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
@@ -1421,14 +1421,15 @@ namespace Google.Example.Library.V1.Snippets
             AddCommentsRequest request = new AddCommentsRequest
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                Comments = {
-                               new Comment
-                               {
-                                   Comment = ByteString.Empty,
-                                   Stage = Comment.Types.Stage.Unset,
-                                   Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                               },
-                           },
+                Comments =
+                {
+                    new Comment
+                    {
+                        Comment = ByteString.Empty,
+                        Stage = Comment.Types.Stage.Unset,
+                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
+                    },
+                },
             };
             // Make the request
             await libraryServiceClient.AddCommentsAsync(request);
@@ -1445,14 +1446,15 @@ namespace Google.Example.Library.V1.Snippets
             AddCommentsRequest request = new AddCommentsRequest
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                Comments = {
-                               new Comment
-                               {
-                                   Comment = ByteString.Empty,
-                                   Stage = Comment.Types.Stage.Unset,
-                                   Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                               },
-                           },
+                Comments =
+                {
+                    new Comment
+                    {
+                        Comment = ByteString.Empty,
+                        Stage = Comment.Types.Stage.Unset,
+                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
+                    },
+                },
             };
             // Make the request
             libraryServiceClient.AddComments(request);
@@ -1655,7 +1657,7 @@ namespace Google.Example.Library.V1.Snippets
             string indexName = "default index";
             IDictionary<string, string> indexMap = new Dictionary<string, string>
             {
-                { "default_key", "" },
+                "",
             };
             // Make the request
             await libraryServiceClient.UpdateBookIndexAsync(name, indexName, indexMap);
@@ -1673,7 +1675,7 @@ namespace Google.Example.Library.V1.Snippets
             string indexName = "default index";
             IDictionary<string, string> indexMap = new Dictionary<string, string>
             {
-                { "default_key", "" },
+                "",
             };
             // Make the request
             libraryServiceClient.UpdateBookIndex(name, indexName, indexMap);
@@ -1692,9 +1694,10 @@ namespace Google.Example.Library.V1.Snippets
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 IndexName = "default index",
-                IndexMap = {
-                               { "default_key", "" },
-                           },
+                IndexMap =
+                {
+                    { "default_key", "" },
+                },
             };
             // Make the request
             await libraryServiceClient.UpdateBookIndexAsync(request);
@@ -1712,9 +1715,10 @@ namespace Google.Example.Library.V1.Snippets
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 IndexName = "default index",
-                IndexMap = {
-                               { "default_key", "" },
-                           },
+                IndexMap =
+                {
+                    { "default_key", "" },
+                },
             };
             // Make the request
             libraryServiceClient.UpdateBookIndex(request);
@@ -1922,9 +1926,10 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             FindRelatedBooksRequest request = new FindRelatedBooksRequest
             {
-                BookNames = {
-                                new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                            },
+                BookNames =
+                {
+                    new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                },
                 ShelvesAsShelfNames = { },
             };
             // Make the request
@@ -1972,9 +1977,10 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             FindRelatedBooksRequest request = new FindRelatedBooksRequest
             {
-                BookNames = {
-                                new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                            },
+                BookNames =
+                {
+                    new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                },
                 ShelvesAsShelfNames = { },
             };
             // Make the request
@@ -3557,15 +3563,16 @@ namespace Google.Example.Library.V1.Tests
                 Books = { },
                 Edition = 1887963714,
                 SeriesUuid = new SeriesUuid
-                             {
-                                 SeriesString = "foobar",
-                             },
+                {
+                    SeriesString = "foobar",
+                },
             };
             PublishSeriesResponse expectedResponse = new PublishSeriesResponse
             {
-                BookNames = {
-                                "bookNamesElement1491670575",
-                            },
+                BookNames =
+                {
+                    "bookNamesElement1491670575",
+                },
             };
             mockGrpcClient.Setup(x => x.PublishSeries(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
@@ -3596,15 +3603,16 @@ namespace Google.Example.Library.V1.Tests
                 Books = { },
                 Edition = 1887963714,
                 SeriesUuid = new SeriesUuid
-                             {
-                                 SeriesString = "foobar",
-                             },
+                {
+                    SeriesString = "foobar",
+                },
             };
             PublishSeriesResponse expectedResponse = new PublishSeriesResponse
             {
-                BookNames = {
-                                "bookNamesElement1491670575",
-                            },
+                BookNames =
+                {
+                    "bookNamesElement1491670575",
+                },
             };
             mockGrpcClient.Setup(x => x.PublishSeriesAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<PublishSeriesResponse>(Task.FromResult(expectedResponse), null, null, null, null));
@@ -3634,15 +3642,16 @@ namespace Google.Example.Library.V1.Tests
                 Shelf = new Shelf(),
                 Books = { },
                 SeriesUuid = new SeriesUuid
-                             {
-                                 SeriesString = "foobar",
-                             },
+                {
+                    SeriesString = "foobar",
+                },
             };
             PublishSeriesResponse expectedResponse = new PublishSeriesResponse
             {
-                BookNames = {
-                                "bookNamesElement1491670575",
-                            },
+                BookNames =
+                {
+                    "bookNamesElement1491670575",
+                },
             };
             mockGrpcClient.Setup(x => x.PublishSeries(request, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
@@ -3665,15 +3674,16 @@ namespace Google.Example.Library.V1.Tests
                 Shelf = new Shelf(),
                 Books = { },
                 SeriesUuid = new SeriesUuid
-                             {
-                                 SeriesString = "foobar",
-                             },
+                {
+                    SeriesString = "foobar",
+                },
             };
             PublishSeriesResponse expectedResponse = new PublishSeriesResponse
             {
-                BookNames = {
-                                "bookNamesElement1491670575",
-                            },
+                BookNames =
+                {
+                    "bookNamesElement1491670575",
+                },
             };
             mockGrpcClient.Setup(x => x.PublishSeriesAsync(request, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<PublishSeriesResponse>(Task.FromResult(expectedResponse), null, null, null, null));
@@ -4190,14 +4200,15 @@ namespace Google.Example.Library.V1.Tests
             AddCommentsRequest expectedRequest = new AddCommentsRequest
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                Comments = {
-                               new Comment
-                               {
-                                   Comment = ByteString.CopyFromUtf8("95"),
-                                   Stage = Comment.Types.Stage.Unset,
-                                   Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                               },
-                           },
+                Comments =
+                {
+                    new Comment
+                    {
+                        Comment = ByteString.CopyFromUtf8("95"),
+                        Stage = Comment.Types.Stage.Unset,
+                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
+                    },
+                },
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.AddComments(expectedRequest, It.IsAny<CallOptions>()))
@@ -4228,14 +4239,15 @@ namespace Google.Example.Library.V1.Tests
             AddCommentsRequest expectedRequest = new AddCommentsRequest
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                Comments = {
-                               new Comment
-                               {
-                                   Comment = ByteString.CopyFromUtf8("95"),
-                                   Stage = Comment.Types.Stage.Unset,
-                                   Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                               },
-                           },
+                Comments =
+                {
+                    new Comment
+                    {
+                        Comment = ByteString.CopyFromUtf8("95"),
+                        Stage = Comment.Types.Stage.Unset,
+                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
+                    },
+                },
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.AddCommentsAsync(expectedRequest, It.IsAny<CallOptions>()))
@@ -4266,14 +4278,15 @@ namespace Google.Example.Library.V1.Tests
             AddCommentsRequest request = new AddCommentsRequest
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                Comments = {
-                               new Comment
-                               {
-                                   Comment = ByteString.CopyFromUtf8("95"),
-                                   Stage = Comment.Types.Stage.Unset,
-                                   Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                               },
-                           },
+                Comments =
+                {
+                    new Comment
+                    {
+                        Comment = ByteString.CopyFromUtf8("95"),
+                        Stage = Comment.Types.Stage.Unset,
+                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
+                    },
+                },
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.AddComments(request, It.IsAny<CallOptions>()))
@@ -4294,14 +4307,15 @@ namespace Google.Example.Library.V1.Tests
             AddCommentsRequest request = new AddCommentsRequest
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                Comments = {
-                               new Comment
-                               {
-                                   Comment = ByteString.CopyFromUtf8("95"),
-                                   Stage = Comment.Types.Stage.Unset,
-                                   Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                               },
-                           },
+                Comments =
+                {
+                    new Comment
+                    {
+                        Comment = ByteString.CopyFromUtf8("95"),
+                        Stage = Comment.Types.Stage.Unset,
+                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
+                    },
+                },
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.AddCommentsAsync(request, It.IsAny<CallOptions>()))
@@ -4659,9 +4673,10 @@ namespace Google.Example.Library.V1.Tests
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 IndexName = "default index",
-                IndexMap = {
-                               { "default_key", "indexMapItem1918721251" },
-                           },
+                IndexMap =
+                {
+                    { "default_key", "indexMapItem1918721251" },
+                },
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.UpdateBookIndex(expectedRequest, It.IsAny<CallOptions>()))
@@ -4671,7 +4686,7 @@ namespace Google.Example.Library.V1.Tests
             string indexName = "default index";
             IDictionary<string, string> indexMap = new Dictionary<string, string>
             {
-                { "default_key", "indexMapItem1918721251" },
+                "indexMapItem1918721251",
             };
             client.UpdateBookIndex(name, indexName, indexMap);
             mockGrpcClient.VerifyAll();
@@ -4689,9 +4704,10 @@ namespace Google.Example.Library.V1.Tests
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 IndexName = "default index",
-                IndexMap = {
-                               { "default_key", "indexMapItem1918721251" },
-                           },
+                IndexMap =
+                {
+                    { "default_key", "indexMapItem1918721251" },
+                },
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.UpdateBookIndexAsync(expectedRequest, It.IsAny<CallOptions>()))
@@ -4701,7 +4717,7 @@ namespace Google.Example.Library.V1.Tests
             string indexName = "default index";
             IDictionary<string, string> indexMap = new Dictionary<string, string>
             {
-                { "default_key", "indexMapItem1918721251" },
+                "indexMapItem1918721251",
             };
             await client.UpdateBookIndexAsync(name, indexName, indexMap);
             mockGrpcClient.VerifyAll();
@@ -4719,9 +4735,10 @@ namespace Google.Example.Library.V1.Tests
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 IndexName = "default index",
-                IndexMap = {
-                               { "default_key", "indexMapItem1918721251" },
-                           },
+                IndexMap =
+                {
+                    { "default_key", "indexMapItem1918721251" },
+                },
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.UpdateBookIndex(request, It.IsAny<CallOptions>()))
@@ -4743,9 +4760,10 @@ namespace Google.Example.Library.V1.Tests
             {
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
                 IndexName = "default index",
-                IndexMap = {
-                               { "default_key", "indexMapItem1918721251" },
-                           },
+                IndexMap =
+                {
+                    { "default_key", "indexMapItem1918721251" },
+                },
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.UpdateBookIndexAsync(request, It.IsAny<CallOptions>()))
@@ -14413,27 +14431,27 @@ namespace Google.Example.Library.V1
 
 // [START sample]
 // FIXME: import everything this sample needs
-class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithResponseHandling
+public class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithResponseHandling
 {
     // [START sample_core]
-   /// <summary>
-   /// Test response handling for methods that return empty
-   /// </summary>
-   public static async Task SampleDeleteShelfAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       ShelfName name = new ShelfName("[SHELF_ID]");
-       await libraryServiceClient.DeleteShelfAsync(name);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Test response handling for methods that return empty
+    /// </summary>
+    public static async Task SampleDeleteShelfAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        ShelfName name = new ShelfName("[SHELF_ID]");
+        await libraryServiceClient.DeleteShelfAsync(name);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static Task Main(string[] args)
-   {
-   	await SampleDeleteShelf();
-   }
+    // [END sample]
+    public static async Task Main(string[] args)
+    {
+        await SampleDeleteShelfAsync();
+    }
 }
 ============== file: Samples/DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithoutResponseHandling.cs ==============
 // Copyright 2019 Google LLC
@@ -14456,27 +14474,27 @@ class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithResponseHandling
 
 // [START sample]
 // FIXME: import everything this sample needs
-class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithoutResponseHandling
+public class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithoutResponseHandling
 {
     // [START sample_core]
-   /// <summary>
-   /// Test default response handling is turned off for methods that return empty
-   /// </summary>
-   public static async Task SampleDeleteShelfAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       ShelfName name = new ShelfName("[SHELF_ID]");
-       await libraryServiceClient.DeleteShelfAsync(name);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Test default response handling is turned off for methods that return empty
+    /// </summary>
+    public static async Task SampleDeleteShelfAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        ShelfName name = new ShelfName("[SHELF_ID]");
+        await libraryServiceClient.DeleteShelfAsync(name);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static Task Main(string[] args)
-   {
-   	await SampleDeleteShelf();
-   }
+    // [END sample]
+    public static async Task Main(string[] args)
+    {
+        await SampleDeleteShelfAsync();
+    }
 }
 ============== file: Samples/DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithResponseHandling.cs ==============
 // Copyright 2019 Google LLC
@@ -14499,30 +14517,30 @@ class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithoutResponseHandling
 
 // [START sample]
 // FIXME: import everything this sample needs
-class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithResponseHandling
+public class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithResponseHandling
 {
     // [START sample_core]
-   /// <summary>
-   /// Test response handling for methods that return empty
-   /// </summary>
-   public static async Task SampleDeleteShelfAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       DeleteShelfRequest request = new DeleteShelfRequest
-       {
-           ShelfName = new ShelfName("[SHELF_ID]"),
-       };
-       await libraryServiceClient.DeleteShelfAsync(request);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Test response handling for methods that return empty
+    /// </summary>
+    public static async Task SampleDeleteShelfAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        DeleteShelfRequest request = new DeleteShelfRequest
+        {
+            ShelfName = new ShelfName("[SHELF_ID]"),
+        };
+        await libraryServiceClient.DeleteShelfAsync(request);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static Task Main(string[] args)
-   {
-   	await SampleDeleteShelf();
-   }
+    // [END sample]
+    public static async Task Main(string[] args)
+    {
+        await SampleDeleteShelfAsync();
+    }
 }
 ============== file: Samples/DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithoutResponseHandling.cs ==============
 // Copyright 2019 Google LLC
@@ -14545,30 +14563,30 @@ class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithResponseHandling
 
 // [START sample]
 // FIXME: import everything this sample needs
-class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithoutResponseHandling
+public class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithoutResponseHandling
 {
     // [START sample_core]
-   /// <summary>
-   /// Test default response handling is turned off for methods that return empty
-   /// </summary>
-   public static async Task SampleDeleteShelfAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       DeleteShelfRequest request = new DeleteShelfRequest
-       {
-           ShelfName = new ShelfName("[SHELF_ID]"),
-       };
-       await libraryServiceClient.DeleteShelfAsync(request);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Test default response handling is turned off for methods that return empty
+    /// </summary>
+    public static async Task SampleDeleteShelfAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        DeleteShelfRequest request = new DeleteShelfRequest
+        {
+            ShelfName = new ShelfName("[SHELF_ID]"),
+        };
+        await libraryServiceClient.DeleteShelfAsync(request);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static Task Main(string[] args)
-   {
-   	await SampleDeleteShelf();
-   }
+    // [END sample]
+    public static async Task Main(string[] args)
+    {
+        await SampleDeleteShelfAsync();
+    }
 }
 ============== file: Samples/DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling.cs ==============
 // Copyright 2019 Google LLC
@@ -14591,27 +14609,27 @@ class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithoutResponseHandling
 
 // [START sample]
 // FIXME: import everything this sample needs
-class DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling
+public class DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling
 {
     // [START sample_core]
-   /// <summary>
-   /// Test response handling for methods that return empty
-   /// </summary>
-   public static void SampleDeleteShelf()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       ShelfName name = new ShelfName("[SHELF_ID]");
-       libraryServiceClient.DeleteShelf(name);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Test response handling for methods that return empty
+    /// </summary>
+    public static void SampleDeleteShelf()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        ShelfName name = new ShelfName("[SHELF_ID]");
+        libraryServiceClient.DeleteShelf(name);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SampleDeleteShelf();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SampleDeleteShelf();
+    }
 }
 ============== file: Samples/DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling.cs ==============
 // Copyright 2019 Google LLC
@@ -14634,27 +14652,27 @@ class DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling
 
 // [START sample]
 // FIXME: import everything this sample needs
-class DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling
+public class DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling
 {
     // [START sample_core]
-   /// <summary>
-   /// Test default response handling is turned off for methods that return empty
-   /// </summary>
-   public static void SampleDeleteShelf()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       ShelfName name = new ShelfName("[SHELF_ID]");
-       libraryServiceClient.DeleteShelf(name);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Test default response handling is turned off for methods that return empty
+    /// </summary>
+    public static void SampleDeleteShelf()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        ShelfName name = new ShelfName("[SHELF_ID]");
+        libraryServiceClient.DeleteShelf(name);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SampleDeleteShelf();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SampleDeleteShelf();
+    }
 }
 ============== file: Samples/DeleteShelfRequestEmptyResponseTypeWithResponseHandling.cs ==============
 // Copyright 2019 Google LLC
@@ -14677,30 +14695,30 @@ class DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling
 
 // [START sample]
 // FIXME: import everything this sample needs
-class DeleteShelfRequestEmptyResponseTypeWithResponseHandling
+public class DeleteShelfRequestEmptyResponseTypeWithResponseHandling
 {
     // [START sample_core]
-   /// <summary>
-   /// Test response handling for methods that return empty
-   /// </summary>
-   public static void SampleDeleteShelf()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       DeleteShelfRequest request = new DeleteShelfRequest
-       {
-           ShelfName = new ShelfName("[SHELF_ID]"),
-       };
-       libraryServiceClient.DeleteShelf(request);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Test response handling for methods that return empty
+    /// </summary>
+    public static void SampleDeleteShelf()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        DeleteShelfRequest request = new DeleteShelfRequest
+        {
+            ShelfName = new ShelfName("[SHELF_ID]"),
+        };
+        libraryServiceClient.DeleteShelf(request);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SampleDeleteShelf();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SampleDeleteShelf();
+    }
 }
 ============== file: Samples/DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling.cs ==============
 // Copyright 2019 Google LLC
@@ -14723,30 +14741,30 @@ class DeleteShelfRequestEmptyResponseTypeWithResponseHandling
 
 // [START sample]
 // FIXME: import everything this sample needs
-class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling
+public class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling
 {
     // [START sample_core]
-   /// <summary>
-   /// Test default response handling is turned off for methods that return empty
-   /// </summary>
-   public static void SampleDeleteShelf()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       DeleteShelfRequest request = new DeleteShelfRequest
-       {
-           ShelfName = new ShelfName("[SHELF_ID]"),
-       };
-       libraryServiceClient.DeleteShelf(request);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Test default response handling is turned off for methods that return empty
+    /// </summary>
+    public static void SampleDeleteShelf()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        DeleteShelfRequest request = new DeleteShelfRequest
+        {
+            ShelfName = new ShelfName("[SHELF_ID]"),
+        };
+        libraryServiceClient.DeleteShelf(request);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SampleDeleteShelf();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SampleDeleteShelf();
+    }
 }
 ============== file: Samples/FindRelatedBooksAsyncFlattenedAsyncPagedAllOdyssey.cs ==============
 // Copyright 2019 Google LLC
@@ -14769,38 +14787,38 @@ class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling
 
 // [START sample]
 // FIXME: import everything this sample needs
-class FindRelatedBooksAsyncFlattenedAsyncPagedAllOdyssey
+public class FindRelatedBooksAsyncFlattenedAsyncPagedAllOdyssey
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static async Task SampleFindRelatedBooksAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       IEnumerable<BookName> names = new[]
-       {
-           new BookName("[SHELF_ID]", "[BOOK_ID]"),
-       };
-       IEnumerable<ShelfName> shelves = new[]
-       {
-           new ShelfName("[SHELF_ID]"),
-       };
-       gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> response = await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
-       // Iterate over pages (of server-defined size), performing one RPC per page
-       await response.ForEachAsync((BookName item) =>
-       {
-           // FIXME: inspect the results
-       });
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static async Task SampleFindRelatedBooksAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        IEnumerable<BookName> names = new[]
+        {
+            new BookName("[SHELF_ID]", "[BOOK_ID]"),
+        };
+        IEnumerable<ShelfName> shelves = new[]
+        {
+            new ShelfName("[SHELF_ID]"),
+        };
+        gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> response = await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
+        // Iterate over pages (of server-defined size), performing one RPC per page
+        await response.ForEachAsync((BookName item) =>
+        {
+            // FIXME: inspect the results
+        });
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static Task Main(string[] args)
-   {
-   	await SampleFindRelatedBooks();
-   }
+    // [END sample]
+    public static async Task Main(string[] args)
+    {
+        await SampleFindRelatedBooksAsync();
+    }
 }
 ============== file: Samples/FindRelatedBooksAsyncFlattenedAsyncPagedOdyssey.cs ==============
 // Copyright 2019 Google LLC
@@ -14823,41 +14841,41 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedAllOdyssey
 
 // [START sample]
 // FIXME: import everything this sample needs
-class FindRelatedBooksAsyncFlattenedAsyncPagedOdyssey
+public class FindRelatedBooksAsyncFlattenedAsyncPagedOdyssey
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static async Task SampleFindRelatedBooksAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       IEnumerable<BookName> names = new[]
-       {
-           new BookName("[SHELF_ID]", "[BOOK_ID]"),
-       };
-       IEnumerable<ShelfName> shelves = new[]
-       {
-           new ShelfName("[SHELF_ID]"),
-       };
-       gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> response = await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
-       // Iterate over all response items, lazily performing RPCs as required
-       await response.AsRawResponses().ForEachAsync((FindRelatedBooksResponse page) =>
-       {
-           foreach (BookName item in page)
-           {
-               // FIXME: inspect the results
-           }
-       });
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static async Task SampleFindRelatedBooksAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        IEnumerable<BookName> names = new[]
+        {
+            new BookName("[SHELF_ID]", "[BOOK_ID]"),
+        };
+        IEnumerable<ShelfName> shelves = new[]
+        {
+            new ShelfName("[SHELF_ID]"),
+        };
+        gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> response = await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
+        // Iterate over all response items, lazily performing RPCs as required
+        await response.AsRawResponses().ForEachAsync((FindRelatedBooksResponse page) =>
+        {
+            foreach (BookName item in page)
+            {
+                // FIXME: inspect the results
+            }
+        });
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static Task Main(string[] args)
-   {
-   	await SampleFindRelatedBooks();
-   }
+    // [END sample]
+    public static async Task Main(string[] args)
+    {
+        await SampleFindRelatedBooksAsync();
+    }
 }
 ============== file: Samples/FindRelatedBooksAsyncFlattenedAsyncPagedPageSizeOdyssey.cs ==============
 // Copyright 2019 Google LLC
@@ -14880,42 +14898,42 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedOdyssey
 
 // [START sample]
 // FIXME: import everything this sample needs
-class FindRelatedBooksAsyncFlattenedAsyncPagedPageSizeOdyssey
+public class FindRelatedBooksAsyncFlattenedAsyncPagedPageSizeOdyssey
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static async Task SampleFindRelatedBooksAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       IEnumerable<BookName> names = new[]
-       {
-           new BookName("[SHELF_ID]", "[BOOK_ID]"),
-       };
-       IEnumerable<ShelfName> shelves = new[]
-       {
-           new ShelfName("[SHELF_ID]"),
-       };
-       gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> response = await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
-       // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-       int pageSize = 10;
-       Page<BookName> singlePage = await response.ReadPageAsync(pageSize);
-       foreach (BookName item in response)
-       {
-           // FIXME: inspect the results
-       }
-       // Store the pageToken, for when the next page is required.
-       string nextPageToken = singlePage.NextPageToken;
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static async Task SampleFindRelatedBooksAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        IEnumerable<BookName> names = new[]
+        {
+            new BookName("[SHELF_ID]", "[BOOK_ID]"),
+        };
+        IEnumerable<ShelfName> shelves = new[]
+        {
+            new ShelfName("[SHELF_ID]"),
+        };
+        gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> response = await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
+        // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+        int pageSize = 10;
+        Page<BookName> singlePage = await response.ReadPageAsync(pageSize);
+        foreach (BookName item in response)
+        {
+            // FIXME: inspect the results
+        }
+        // Store the pageToken, for when the next page is required.
+        string nextPageToken = singlePage.NextPageToken;
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static Task Main(string[] args)
-   {
-   	await SampleFindRelatedBooks();
-   }
+    // [END sample]
+    public static async Task Main(string[] args)
+    {
+        await SampleFindRelatedBooksAsync();
+    }
 }
 ============== file: Samples/FindRelatedBooksAsyncRequestAsyncPagedAllOdyssey.cs ==============
 // Copyright 2019 Google LLC
@@ -14938,39 +14956,41 @@ class FindRelatedBooksAsyncFlattenedAsyncPagedPageSizeOdyssey
 
 // [START sample]
 // FIXME: import everything this sample needs
-class FindRelatedBooksAsyncRequestAsyncPagedAllOdyssey
+public class FindRelatedBooksAsyncRequestAsyncPagedAllOdyssey
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static async Task SampleFindRelatedBooksAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       FindRelatedBooksRequest request = new FindRelatedBooksRequest
-       {
-           BookNames = {
-                           new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                       },
-           ShelvesAsShelfNames = {
-                                     new ShelfName("[SHELF_ID]"),
-                                 },
-       };
-       gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> response = await libraryServiceClient.FindRelatedBooksAsync(request);
-       // Iterate over pages (of server-defined size), performing one RPC per page
-       await response.ForEachAsync((BookName item) =>
-       {
-           // FIXME: inspect the results
-       });
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static async Task SampleFindRelatedBooksAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        FindRelatedBooksRequest request = new FindRelatedBooksRequest
+        {
+            BookNames =
+            {
+                new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            },
+            ShelvesAsShelfNames =
+            {
+                new ShelfName("[SHELF_ID]"),
+            },
+        };
+        gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> response = await libraryServiceClient.FindRelatedBooksAsync(request);
+        // Iterate over pages (of server-defined size), performing one RPC per page
+        await response.ForEachAsync((BookName item) =>
+        {
+            // FIXME: inspect the results
+        });
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static Task Main(string[] args)
-   {
-   	await SampleFindRelatedBooks();
-   }
+    // [END sample]
+    public static async Task Main(string[] args)
+    {
+        await SampleFindRelatedBooksAsync();
+    }
 }
 ============== file: Samples/FindRelatedBooksAsyncRequestAsyncPagedOdyssey.cs ==============
 // Copyright 2019 Google LLC
@@ -14993,42 +15013,44 @@ class FindRelatedBooksAsyncRequestAsyncPagedAllOdyssey
 
 // [START sample]
 // FIXME: import everything this sample needs
-class FindRelatedBooksAsyncRequestAsyncPagedOdyssey
+public class FindRelatedBooksAsyncRequestAsyncPagedOdyssey
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static async Task SampleFindRelatedBooksAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       FindRelatedBooksRequest request = new FindRelatedBooksRequest
-       {
-           BookNames = {
-                           new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                       },
-           ShelvesAsShelfNames = {
-                                     new ShelfName("[SHELF_ID]"),
-                                 },
-       };
-       gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> response = await libraryServiceClient.FindRelatedBooksAsync(request);
-       // Iterate over all response items, lazily performing RPCs as required
-       await response.AsRawResponses().ForEachAsync((FindRelatedBooksResponse page) =>
-       {
-           foreach (BookName item in page)
-           {
-               // FIXME: inspect the results
-           }
-       });
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static async Task SampleFindRelatedBooksAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        FindRelatedBooksRequest request = new FindRelatedBooksRequest
+        {
+            BookNames =
+            {
+                new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            },
+            ShelvesAsShelfNames =
+            {
+                new ShelfName("[SHELF_ID]"),
+            },
+        };
+        gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> response = await libraryServiceClient.FindRelatedBooksAsync(request);
+        // Iterate over all response items, lazily performing RPCs as required
+        await response.AsRawResponses().ForEachAsync((FindRelatedBooksResponse page) =>
+        {
+            foreach (BookName item in page)
+            {
+                // FIXME: inspect the results
+            }
+        });
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static Task Main(string[] args)
-   {
-   	await SampleFindRelatedBooks();
-   }
+    // [END sample]
+    public static async Task Main(string[] args)
+    {
+        await SampleFindRelatedBooksAsync();
+    }
 }
 ============== file: Samples/FindRelatedBooksAsyncRequestAsyncPagedPageSizeOdyssey.cs ==============
 // Copyright 2019 Google LLC
@@ -15051,43 +15073,45 @@ class FindRelatedBooksAsyncRequestAsyncPagedOdyssey
 
 // [START sample]
 // FIXME: import everything this sample needs
-class FindRelatedBooksAsyncRequestAsyncPagedPageSizeOdyssey
+public class FindRelatedBooksAsyncRequestAsyncPagedPageSizeOdyssey
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static async Task SampleFindRelatedBooksAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       FindRelatedBooksRequest request = new FindRelatedBooksRequest
-       {
-           BookNames = {
-                           new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                       },
-           ShelvesAsShelfNames = {
-                                     new ShelfName("[SHELF_ID]"),
-                                 },
-       };
-       gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> response = await libraryServiceClient.FindRelatedBooksAsync(request);
-       // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-       int pageSize = 10;
-       Page<BookName> singlePage = await response.ReadPageAsync(pageSize);
-       foreach (BookName item in response)
-       {
-           // FIXME: inspect the results
-       }
-       // Store the pageToken, for when the next page is required.
-       string nextPageToken = singlePage.NextPageToken;
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static async Task SampleFindRelatedBooksAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        FindRelatedBooksRequest request = new FindRelatedBooksRequest
+        {
+            BookNames =
+            {
+                new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            },
+            ShelvesAsShelfNames =
+            {
+                new ShelfName("[SHELF_ID]"),
+            },
+        };
+        gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> response = await libraryServiceClient.FindRelatedBooksAsync(request);
+        // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+        int pageSize = 10;
+        Page<BookName> singlePage = await response.ReadPageAsync(pageSize);
+        foreach (BookName item in response)
+        {
+            // FIXME: inspect the results
+        }
+        // Store the pageToken, for when the next page is required.
+        string nextPageToken = singlePage.NextPageToken;
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static Task Main(string[] args)
-   {
-   	await SampleFindRelatedBooks();
-   }
+    // [END sample]
+    public static async Task Main(string[] args)
+    {
+        await SampleFindRelatedBooksAsync();
+    }
 }
 ============== file: Samples/FindRelatedBooksFlattenedPagedAllOdyssey.cs ==============
 // Copyright 2019 Google LLC
@@ -15110,38 +15134,38 @@ class FindRelatedBooksAsyncRequestAsyncPagedPageSizeOdyssey
 
 // [START sample]
 // FIXME: import everything this sample needs
-class FindRelatedBooksFlattenedPagedAllOdyssey
+public class FindRelatedBooksFlattenedPagedAllOdyssey
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static void SampleFindRelatedBooks()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       IEnumerable<BookName> names = new[]
-       {
-           new BookName("[SHELF_ID]", "[BOOK_ID]"),
-       };
-       IEnumerable<ShelfName> shelves = new[]
-       {
-           new ShelfName("[SHELF_ID]"),
-       };
-       gax::PagedEnumerable<FindRelatedBooksResponse, BookName> response = libraryServiceClient.FindRelatedBooks(names, shelves);
-       // Iterate over pages (of server-defined size), performing one RPC per page
-       foreach (BookName item in response)
-       {
-           // FIXME: inspect the results
-       }
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static void SampleFindRelatedBooks()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        IEnumerable<BookName> names = new[]
+        {
+            new BookName("[SHELF_ID]", "[BOOK_ID]"),
+        };
+        IEnumerable<ShelfName> shelves = new[]
+        {
+            new ShelfName("[SHELF_ID]"),
+        };
+        gax::PagedEnumerable<FindRelatedBooksResponse, BookName> response = libraryServiceClient.FindRelatedBooks(names, shelves);
+        // Iterate over pages (of server-defined size), performing one RPC per page
+        foreach (BookName item in response)
+        {
+            // FIXME: inspect the results
+        }
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SampleFindRelatedBooks();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SampleFindRelatedBooks();
+    }
 }
 ============== file: Samples/FindRelatedBooksFlattenedPagedOdyssey.cs ==============
 // Copyright 2019 Google LLC
@@ -15164,42 +15188,42 @@ class FindRelatedBooksFlattenedPagedAllOdyssey
 
 // [START sample]
 // FIXME: import everything this sample needs
-class FindRelatedBooksFlattenedPagedOdyssey
+public class FindRelatedBooksFlattenedPagedOdyssey
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static void SampleFindRelatedBooks()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       IEnumerable<BookName> names = new[]
-       {
-           new BookName("[SHELF_ID]", "[BOOK_ID]"),
-       };
-       IEnumerable<ShelfName> shelves = new[]
-       {
-           new ShelfName("[SHELF_ID]"),
-       };
-       gax::PagedEnumerable<FindRelatedBooksResponse, BookName> response = libraryServiceClient.FindRelatedBooks(names, shelves);
-       // Iterate over all response items, lazily performing RPCs as required
-       foreach (FindRelatedBooksResponse page in response.asRawResponses())
-       {
-           foreach (BookName item in page)
-           {
-               // FIXME: inspect the results
-           }
-       }
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static void SampleFindRelatedBooks()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        IEnumerable<BookName> names = new[]
+        {
+            new BookName("[SHELF_ID]", "[BOOK_ID]"),
+        };
+        IEnumerable<ShelfName> shelves = new[]
+        {
+            new ShelfName("[SHELF_ID]"),
+        };
+        gax::PagedEnumerable<FindRelatedBooksResponse, BookName> response = libraryServiceClient.FindRelatedBooks(names, shelves);
+        // Iterate over all response items, lazily performing RPCs as required
+        foreach (FindRelatedBooksResponse page in response.asRawResponses())
+        {
+            foreach (BookName item in page)
+            {
+                // FIXME: inspect the results
+            }
+        }
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SampleFindRelatedBooks();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SampleFindRelatedBooks();
+    }
 }
 ============== file: Samples/FindRelatedBooksFlattenedPagedPageSizeOdyssey.cs ==============
 // Copyright 2019 Google LLC
@@ -15222,42 +15246,42 @@ class FindRelatedBooksFlattenedPagedOdyssey
 
 // [START sample]
 // FIXME: import everything this sample needs
-class FindRelatedBooksFlattenedPagedPageSizeOdyssey
+public class FindRelatedBooksFlattenedPagedPageSizeOdyssey
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static void SampleFindRelatedBooks()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       IEnumerable<BookName> names = new[]
-       {
-           new BookName("[SHELF_ID]", "[BOOK_ID]"),
-       };
-       IEnumerable<ShelfName> shelves = new[]
-       {
-           new ShelfName("[SHELF_ID]"),
-       };
-       gax::PagedEnumerable<FindRelatedBooksResponse, BookName> response = libraryServiceClient.FindRelatedBooks(names, shelves);
-       // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-       int pageSize = 10;
-       Page<BookName> singlePage = response.ReadPage(pageSize);
-       foreach (BookName item in response)
-       {
-           // FIXME: inspect the results
-       }
-       // Store the pageToken, for when the next page is required.
-       string nextPageToken = singlePage.NextPageToken;
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static void SampleFindRelatedBooks()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        IEnumerable<BookName> names = new[]
+        {
+            new BookName("[SHELF_ID]", "[BOOK_ID]"),
+        };
+        IEnumerable<ShelfName> shelves = new[]
+        {
+            new ShelfName("[SHELF_ID]"),
+        };
+        gax::PagedEnumerable<FindRelatedBooksResponse, BookName> response = libraryServiceClient.FindRelatedBooks(names, shelves);
+        // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+        int pageSize = 10;
+        Page<BookName> singlePage = response.ReadPage(pageSize);
+        foreach (BookName item in response)
+        {
+            // FIXME: inspect the results
+        }
+        // Store the pageToken, for when the next page is required.
+        string nextPageToken = singlePage.NextPageToken;
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SampleFindRelatedBooks();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SampleFindRelatedBooks();
+    }
 }
 ============== file: Samples/FindRelatedBooksRequestPagedAllOdyssey.cs ==============
 // Copyright 2019 Google LLC
@@ -15280,39 +15304,41 @@ class FindRelatedBooksFlattenedPagedPageSizeOdyssey
 
 // [START sample]
 // FIXME: import everything this sample needs
-class FindRelatedBooksRequestPagedAllOdyssey
+public class FindRelatedBooksRequestPagedAllOdyssey
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static void SampleFindRelatedBooks()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       FindRelatedBooksRequest request = new FindRelatedBooksRequest
-       {
-           BookNames = {
-                           new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                       },
-           ShelvesAsShelfNames = {
-                                     new ShelfName("[SHELF_ID]"),
-                                 },
-       };
-       gax::PagedEnumerable<FindRelatedBooksResponse, BookName> response = libraryServiceClient.FindRelatedBooks(request);
-       // Iterate over pages (of server-defined size), performing one RPC per page
-       foreach (BookName item in response)
-       {
-           // FIXME: inspect the results
-       }
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static void SampleFindRelatedBooks()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        FindRelatedBooksRequest request = new FindRelatedBooksRequest
+        {
+            BookNames =
+            {
+                new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            },
+            ShelvesAsShelfNames =
+            {
+                new ShelfName("[SHELF_ID]"),
+            },
+        };
+        gax::PagedEnumerable<FindRelatedBooksResponse, BookName> response = libraryServiceClient.FindRelatedBooks(request);
+        // Iterate over pages (of server-defined size), performing one RPC per page
+        foreach (BookName item in response)
+        {
+            // FIXME: inspect the results
+        }
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SampleFindRelatedBooks();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SampleFindRelatedBooks();
+    }
 }
 ============== file: Samples/FindRelatedBooksRequestPagedOdyssey.cs ==============
 // Copyright 2019 Google LLC
@@ -15335,43 +15361,45 @@ class FindRelatedBooksRequestPagedAllOdyssey
 
 // [START sample]
 // FIXME: import everything this sample needs
-class FindRelatedBooksRequestPagedOdyssey
+public class FindRelatedBooksRequestPagedOdyssey
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static void SampleFindRelatedBooks()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       FindRelatedBooksRequest request = new FindRelatedBooksRequest
-       {
-           BookNames = {
-                           new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                       },
-           ShelvesAsShelfNames = {
-                                     new ShelfName("[SHELF_ID]"),
-                                 },
-       };
-       gax::PagedEnumerable<FindRelatedBooksResponse, BookName> response = libraryServiceClient.FindRelatedBooks(request);
-       // Iterate over all response items, lazily performing RPCs as required
-       foreach (FindRelatedBooksResponse page in response.asRawResponses())
-       {
-           foreach (BookName item in page)
-           {
-               // FIXME: inspect the results
-           }
-       }
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static void SampleFindRelatedBooks()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        FindRelatedBooksRequest request = new FindRelatedBooksRequest
+        {
+            BookNames =
+            {
+                new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            },
+            ShelvesAsShelfNames =
+            {
+                new ShelfName("[SHELF_ID]"),
+            },
+        };
+        gax::PagedEnumerable<FindRelatedBooksResponse, BookName> response = libraryServiceClient.FindRelatedBooks(request);
+        // Iterate over all response items, lazily performing RPCs as required
+        foreach (FindRelatedBooksResponse page in response.asRawResponses())
+        {
+            foreach (BookName item in page)
+            {
+                // FIXME: inspect the results
+            }
+        }
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SampleFindRelatedBooks();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SampleFindRelatedBooks();
+    }
 }
 ============== file: Samples/FindRelatedBooksRequestPagedPageSizeOdyssey.cs ==============
 // Copyright 2019 Google LLC
@@ -15394,43 +15422,45 @@ class FindRelatedBooksRequestPagedOdyssey
 
 // [START sample]
 // FIXME: import everything this sample needs
-class FindRelatedBooksRequestPagedPageSizeOdyssey
+public class FindRelatedBooksRequestPagedPageSizeOdyssey
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static void SampleFindRelatedBooks()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       FindRelatedBooksRequest request = new FindRelatedBooksRequest
-       {
-           BookNames = {
-                           new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                       },
-           ShelvesAsShelfNames = {
-                                     new ShelfName("[SHELF_ID]"),
-                                 },
-       };
-       gax::PagedEnumerable<FindRelatedBooksResponse, BookName> response = libraryServiceClient.FindRelatedBooks(request);
-       // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-       int pageSize = 10;
-       Page<BookName> singlePage = response.ReadPage(pageSize);
-       foreach (BookName item in response)
-       {
-           // FIXME: inspect the results
-       }
-       // Store the pageToken, for when the next page is required.
-       string nextPageToken = singlePage.NextPageToken;
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static void SampleFindRelatedBooks()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        FindRelatedBooksRequest request = new FindRelatedBooksRequest
+        {
+            BookNames =
+            {
+                new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            },
+            ShelvesAsShelfNames =
+            {
+                new ShelfName("[SHELF_ID]"),
+            },
+        };
+        gax::PagedEnumerable<FindRelatedBooksResponse, BookName> response = libraryServiceClient.FindRelatedBooks(request);
+        // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+        int pageSize = 10;
+        Page<BookName> singlePage = response.ReadPage(pageSize);
+        foreach (BookName item in response)
+        {
+            // FIXME: inspect the results
+        }
+        // Store the pageToken, for when the next page is required.
+        string nextPageToken = singlePage.NextPageToken;
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SampleFindRelatedBooks();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SampleFindRelatedBooks();
+    }
 }
 ============== file: Samples/GetBookAsyncFlattenedAsyncTestOnSuccessMap.cs ==============
 // Copyright 2019 Google LLC
@@ -15453,24 +15483,24 @@ class FindRelatedBooksRequestPagedPageSizeOdyssey
 
 // [START sample]
 // FIXME: import everything this sample needs
-class GetBookAsyncFlattenedAsyncTestOnSuccessMap
+public class GetBookAsyncFlattenedAsyncTestOnSuccessMap
 {
     // [START sample_core]
-   public static async Task SampleGetBookAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
-       await stt::Task<Book> response = libraryServiceClient.GetBookAsync(name);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    public static async Task SampleGetBookAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+        Book response = await libraryServiceClient.GetBookAsync(name);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static Task Main(string[] args)
-   {
-   	await SampleGetBook();
-   }
+    // [END sample]
+    public static async Task Main(string[] args)
+    {
+        await SampleGetBookAsync();
+    }
 }
 ============== file: Samples/GetBookAsyncRequestAsyncTestOnSuccessMap.cs ==============
 // Copyright 2019 Google LLC
@@ -15493,27 +15523,27 @@ class GetBookAsyncFlattenedAsyncTestOnSuccessMap
 
 // [START sample]
 // FIXME: import everything this sample needs
-class GetBookAsyncRequestAsyncTestOnSuccessMap
+public class GetBookAsyncRequestAsyncTestOnSuccessMap
 {
     // [START sample_core]
-   public static async Task SampleGetBookAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       GetBookRequest request = new GetBookRequest
-       {
-           BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-       };
-       await stt::Task<Book> response = libraryServiceClient.GetBookAsync(request);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    public static async Task SampleGetBookAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        GetBookRequest request = new GetBookRequest
+        {
+            BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+        };
+        Book response = await libraryServiceClient.GetBookAsync(request);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static Task Main(string[] args)
-   {
-   	await SampleGetBook();
-   }
+    // [END sample]
+    public static async Task Main(string[] args)
+    {
+        await SampleGetBookAsync();
+    }
 }
 ============== file: Samples/GetBookFlattenedTestOnSuccessMap.cs ==============
 // Copyright 2019 Google LLC
@@ -15536,24 +15566,24 @@ class GetBookAsyncRequestAsyncTestOnSuccessMap
 
 // [START sample]
 // FIXME: import everything this sample needs
-class GetBookFlattenedTestOnSuccessMap
+public class GetBookFlattenedTestOnSuccessMap
 {
     // [START sample_core]
-   public static void SampleGetBook()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
-       Book response = libraryServiceClient.GetBook(name);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    public static void SampleGetBook()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+        Book response = libraryServiceClient.GetBook(name);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SampleGetBook();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SampleGetBook();
+    }
 }
 ============== file: Samples/GetBookRequestTestOnSuccessMap.cs ==============
 // Copyright 2019 Google LLC
@@ -15576,27 +15606,27 @@ class GetBookFlattenedTestOnSuccessMap
 
 // [START sample]
 // FIXME: import everything this sample needs
-class GetBookRequestTestOnSuccessMap
+public class GetBookRequestTestOnSuccessMap
 {
     // [START sample_core]
-   public static void SampleGetBook()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       GetBookRequest request = new GetBookRequest
-       {
-           BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-       };
-       Book response = libraryServiceClient.GetBook(request);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    public static void SampleGetBook()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        GetBookRequest request = new GetBookRequest
+        {
+            BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+        };
+        Book response = libraryServiceClient.GetBook(request);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SampleGetBook();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SampleGetBook();
+    }
 }
 ============== file: Samples/PublishSeriesAsyncFlattenedAsyncPiVersion.cs ==============
 // Copyright 2019 Google LLC
@@ -15619,51 +15649,51 @@ class GetBookRequestTestOnSuccessMap
 
 // [START canonical]
 // FIXME: import everything this sample needs
-class PublishSeriesAsyncFlattenedAsyncPiVersion
+public class PublishSeriesAsyncFlattenedAsyncPiVersion
 {
     // [START canonical_core]
-   /// <summary>
-   /// Testing &lt;@calling forms&gt;
-   /// </summary>
-   /// <param name="shelfName">The name of the shelf where books are published to.</param>
-   /// <param name="edition">The edition of the series.</param>
-   public static async Task SamplePublishSeriesAsync(string shelfName, uint edition)
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       // string shelfName = "Math"
-       // uint edition = 123
-       Shelf shelf = new Shelf
-       {
-           Name = "Math",
-       };
-       scg::IEnumerable<Book> books = new scg::List<Book>();
-       uint edition = 123;
-       SeriesUuid seriesUuid = new SeriesUuid
-       {
-           SeriesString = "xyz3141592654",
-       };
-       await stt::Task<PublishSeriesResponse> response = libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid);
-       // FIXME: inspect the results
-   }
-   // [END canonical_core]
-   }
+    /// <summary>
+    /// Testing &lt;@calling forms&gt;
+    /// </summary>
+    /// <param name="shelfName">The name of the shelf where books are published to.</param>
+    /// <param name="edition">The edition of the series.</param>
+    public static async Task SamplePublishSeriesAsync(string shelfName, uint edition)
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        // string shelfName = "Math"
+        // uint edition = 123
+        Shelf shelf = new Shelf
+        {
+            Name = "Math",
+        };
+        scg::IEnumerable<Book> books = new scg::List<Book>();
+        uint edition = 123;
+        SeriesUuid seriesUuid = new SeriesUuid
+        {
+            SeriesString = "xyz3141592654",
+        };
+        PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid);
+        // FIXME: inspect the results
+    }
+    // [END canonical_core]
+    }
 
-   // [END canonical]
-   public static Task Main(string[] args)
-   {
-   	CommandLine.Parser.Default.ParseArguments<Options>(args)
-    	.withParsed<Options>(async opts =>
-    	    await SamplePublishSeries(opts.ShelfName, opts.Edition));
-   }
+    // [END canonical]
+    public static async Task Main(string[] args)
+    {
+        CommandLine.Parser.Default.ParseArguments<Options>(args)
+            .withParsed<Options>(async opts =>
+                await SamplePublishSeriesAsync(opts.ShelfName, opts.Edition));
+    }
 
-   public class Options
-   {
-   	[Option("shelf_name", DEFAULT = "Math")]
+    public class Options
+    {
+        [Option("shelf_name", DEFAULT = "Math")]
         public string ShelfName { get; set; }
 
-   	[Option("edition", DEFAULT = 123)]
+        [Option("edition", DEFAULT = 123)]
         public uint Edition { get; set; }
-   }
+    }
 }
 ============== file: Samples/PublishSeriesAsyncFlattenedAsyncSecondEdition.cs ==============
 // Copyright 2019 Google LLC
@@ -15686,30 +15716,30 @@ class PublishSeriesAsyncFlattenedAsyncPiVersion
 
 // [START canonical]
 // FIXME: import everything this sample needs
-class PublishSeriesAsyncFlattenedAsyncSecondEdition
+public class PublishSeriesAsyncFlattenedAsyncSecondEdition
 {
     // [START canonical_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static async Task SamplePublishSeriesAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       Shelf shelf = new Shelf();
-       scg::IEnumerable<Book> books = new scg::List<Book>();
-       uint edition = 2;
-       SeriesUuid seriesUuid = new SeriesUuid();
-       await stt::Task<PublishSeriesResponse> response = libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid);
-       // FIXME: inspect the results
-   }
-   // [END canonical_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static async Task SamplePublishSeriesAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        Shelf shelf = new Shelf();
+        scg::IEnumerable<Book> books = new scg::List<Book>();
+        uint edition = 2;
+        SeriesUuid seriesUuid = new SeriesUuid();
+        PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid);
+        // FIXME: inspect the results
+    }
+    // [END canonical_core]
+    }
 
-   // [END canonical]
-   public static Task Main(string[] args)
-   {
-   	await SamplePublishSeries();
-   }
+    // [END canonical]
+    public static async Task Main(string[] args)
+    {
+        await SamplePublishSeriesAsync();
+    }
 }
 ============== file: Samples/PublishSeriesAsyncRequestAsyncPiVersion.cs ==============
 // Copyright 2019 Google LLC
@@ -15732,54 +15762,54 @@ class PublishSeriesAsyncFlattenedAsyncSecondEdition
 
 // [START canonical]
 // FIXME: import everything this sample needs
-class PublishSeriesAsyncRequestAsyncPiVersion
+public class PublishSeriesAsyncRequestAsyncPiVersion
 {
     // [START canonical_core]
-   /// <summary>
-   /// Testing &lt;@calling forms&gt;
-   /// </summary>
-   /// <param name="shelfName">The name of the shelf where books are published to.</param>
-   /// <param name="edition">The edition of the series.</param>
-   public static async Task SamplePublishSeriesAsync(string shelfName, uint edition)
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       // string shelfName = "Math"
-       // uint edition = 123
-       PublishSeriesRequest request = new PublishSeriesRequest
-       {
-           Shelf = new Shelf
-                   {
-                       Name = "Math",
-                   },
-           Books = { },
-           SeriesUuid = new SeriesUuid
-                        {
-                            SeriesString = "xyz3141592654",
-                        },
-           Edition = 123,
-       };
-       await stt::Task<PublishSeriesResponse> response = libraryServiceClient.PublishSeriesAsync(request);
-       // FIXME: inspect the results
-   }
-   // [END canonical_core]
-   }
+    /// <summary>
+    /// Testing &lt;@calling forms&gt;
+    /// </summary>
+    /// <param name="shelfName">The name of the shelf where books are published to.</param>
+    /// <param name="edition">The edition of the series.</param>
+    public static async Task SamplePublishSeriesAsync(string shelfName, uint edition)
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        // string shelfName = "Math"
+        // uint edition = 123
+        PublishSeriesRequest request = new PublishSeriesRequest
+        {
+            Shelf = new Shelf
+            {
+                Name = "Math",
+            },
+            Books = { },
+            SeriesUuid = new SeriesUuid
+            {
+                SeriesString = "xyz3141592654",
+            },
+            Edition = 123,
+        };
+        PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(request);
+        // FIXME: inspect the results
+    }
+    // [END canonical_core]
+    }
 
-   // [END canonical]
-   public static Task Main(string[] args)
-   {
-   	CommandLine.Parser.Default.ParseArguments<Options>(args)
-    	.withParsed<Options>(async opts =>
-    	    await SamplePublishSeries(opts.ShelfName, opts.Edition));
-   }
+    // [END canonical]
+    public static async Task Main(string[] args)
+    {
+        CommandLine.Parser.Default.ParseArguments<Options>(args)
+            .withParsed<Options>(async opts =>
+                await SamplePublishSeriesAsync(opts.ShelfName, opts.Edition));
+    }
 
-   public class Options
-   {
-   	[Option("shelf_name", DEFAULT = "Math")]
+    public class Options
+    {
+        [Option("shelf_name", DEFAULT = "Math")]
         public string ShelfName { get; set; }
 
-   	[Option("edition", DEFAULT = 123)]
+        [Option("edition", DEFAULT = 123)]
         public uint Edition { get; set; }
-   }
+    }
 }
 ============== file: Samples/PublishSeriesAsyncRequestAsyncSecondEdition.cs ==============
 // Copyright 2019 Google LLC
@@ -15802,33 +15832,33 @@ class PublishSeriesAsyncRequestAsyncPiVersion
 
 // [START canonical]
 // FIXME: import everything this sample needs
-class PublishSeriesAsyncRequestAsyncSecondEdition
+public class PublishSeriesAsyncRequestAsyncSecondEdition
 {
     // [START canonical_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static async Task SamplePublishSeriesAsync()
-   {
-       LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-       PublishSeriesRequest request = new PublishSeriesRequest
-       {
-           Shelf = new Shelf(),
-           Books = { },
-           SeriesUuid = new SeriesUuid(),
-           Edition = 2,
-       };
-       await stt::Task<PublishSeriesResponse> response = libraryServiceClient.PublishSeriesAsync(request);
-       // FIXME: inspect the results
-   }
-   // [END canonical_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static async Task SamplePublishSeriesAsync()
+    {
+        LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+        PublishSeriesRequest request = new PublishSeriesRequest
+        {
+            Shelf = new Shelf(),
+            Books = { },
+            SeriesUuid = new SeriesUuid(),
+            Edition = 2,
+        };
+        PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(request);
+        // FIXME: inspect the results
+    }
+    // [END canonical_core]
+    }
 
-   // [END canonical]
-   public static Task Main(string[] args)
-   {
-   	await SamplePublishSeries();
-   }
+    // [END canonical]
+    public static async Task Main(string[] args)
+    {
+        await SamplePublishSeriesAsync();
+    }
 }
 ============== file: Samples/PublishSeriesFlattenedPiVersion.cs ==============
 // Copyright 2019 Google LLC
@@ -15851,51 +15881,51 @@ class PublishSeriesAsyncRequestAsyncSecondEdition
 
 // [START canonical]
 // FIXME: import everything this sample needs
-class PublishSeriesFlattenedPiVersion
+public class PublishSeriesFlattenedPiVersion
 {
     // [START canonical_core]
-   /// <summary>
-   /// Testing &lt;@calling forms&gt;
-   /// </summary>
-   /// <param name="shelfName">The name of the shelf where books are published to.</param>
-   /// <param name="edition">The edition of the series.</param>
-   public static void SamplePublishSeries(string shelfName, uint edition)
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       // string shelfName = "Math"
-       // uint edition = 123
-       Shelf shelf = new Shelf
-       {
-           Name = "Math",
-       };
-       scg::IEnumerable<Book> books = new scg::List<Book>();
-       uint edition = 123;
-       SeriesUuid seriesUuid = new SeriesUuid
-       {
-           SeriesString = "xyz3141592654",
-       };
-       PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid);
-       // FIXME: inspect the results
-   }
-   // [END canonical_core]
-   }
+    /// <summary>
+    /// Testing &lt;@calling forms&gt;
+    /// </summary>
+    /// <param name="shelfName">The name of the shelf where books are published to.</param>
+    /// <param name="edition">The edition of the series.</param>
+    public static void SamplePublishSeries(string shelfName, uint edition)
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        // string shelfName = "Math"
+        // uint edition = 123
+        Shelf shelf = new Shelf
+        {
+            Name = "Math",
+        };
+        scg::IEnumerable<Book> books = new scg::List<Book>();
+        uint edition = 123;
+        SeriesUuid seriesUuid = new SeriesUuid
+        {
+            SeriesString = "xyz3141592654",
+        };
+        PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid);
+        // FIXME: inspect the results
+    }
+    // [END canonical_core]
+    }
 
-   // [END canonical]
-   public static void Main(string[] args)
-   {
-   	CommandLine.Parser.Default.ParseArguments<Options>(args)
-    	.withParsed<Options>(opts =>
-    	    SamplePublishSeries(opts.ShelfName, opts.Edition));
-   }
+    // [END canonical]
+    public static void Main(string[] args)
+    {
+        CommandLine.Parser.Default.ParseArguments<Options>(args)
+        \t.withParsed<Options>(opts =>
+        \t\tSamplePublishSeries(opts.ShelfName, opts.Edition));
+    }
 
-   public class Options
-   {
-   	[Option("shelf_name", DEFAULT = "Math")]
+    public class Options
+    {
+        [Option("shelf_name", DEFAULT = "Math")]
         public string ShelfName { get; set; }
 
-   	[Option("edition", DEFAULT = 123)]
+        [Option("edition", DEFAULT = 123)]
         public uint Edition { get; set; }
-   }
+    }
 }
 ============== file: Samples/PublishSeriesFlattenedSecondEdition.cs ==============
 // Copyright 2019 Google LLC
@@ -15918,30 +15948,30 @@ class PublishSeriesFlattenedPiVersion
 
 // [START canonical]
 // FIXME: import everything this sample needs
-class PublishSeriesFlattenedSecondEdition
+public class PublishSeriesFlattenedSecondEdition
 {
     // [START canonical_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static void SamplePublishSeries()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       Shelf shelf = new Shelf();
-       scg::IEnumerable<Book> books = new scg::List<Book>();
-       uint edition = 2;
-       SeriesUuid seriesUuid = new SeriesUuid();
-       PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid);
-       // FIXME: inspect the results
-   }
-   // [END canonical_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static void SamplePublishSeries()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        Shelf shelf = new Shelf();
+        scg::IEnumerable<Book> books = new scg::List<Book>();
+        uint edition = 2;
+        SeriesUuid seriesUuid = new SeriesUuid();
+        PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid);
+        // FIXME: inspect the results
+    }
+    // [END canonical_core]
+    }
 
-   // [END canonical]
-   public static void Main(string[] args)
-   {
-   	SamplePublishSeries();
-   }
+    // [END canonical]
+    public static void Main(string[] args)
+    {
+        SamplePublishSeries();
+    }
 }
 ============== file: Samples/PublishSeriesRequestPiVersion.cs ==============
 // Copyright 2019 Google LLC
@@ -15964,54 +15994,54 @@ class PublishSeriesFlattenedSecondEdition
 
 // [START canonical]
 // FIXME: import everything this sample needs
-class PublishSeriesRequestPiVersion
+public class PublishSeriesRequestPiVersion
 {
     // [START canonical_core]
-   /// <summary>
-   /// Testing &lt;@calling forms&gt;
-   /// </summary>
-   /// <param name="shelfName">The name of the shelf where books are published to.</param>
-   /// <param name="edition">The edition of the series.</param>
-   public static void SamplePublishSeries(string shelfName, uint edition)
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       // string shelfName = "Math"
-       // uint edition = 123
-       PublishSeriesRequest request = new PublishSeriesRequest
-       {
-           Shelf = new Shelf
-                   {
-                       Name = "Math",
-                   },
-           Books = { },
-           SeriesUuid = new SeriesUuid
-                        {
-                            SeriesString = "xyz3141592654",
-                        },
-           Edition = 123,
-       };
-       PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
-       // FIXME: inspect the results
-   }
-   // [END canonical_core]
-   }
+    /// <summary>
+    /// Testing &lt;@calling forms&gt;
+    /// </summary>
+    /// <param name="shelfName">The name of the shelf where books are published to.</param>
+    /// <param name="edition">The edition of the series.</param>
+    public static void SamplePublishSeries(string shelfName, uint edition)
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        // string shelfName = "Math"
+        // uint edition = 123
+        PublishSeriesRequest request = new PublishSeriesRequest
+        {
+            Shelf = new Shelf
+            {
+                Name = "Math",
+            },
+            Books = { },
+            SeriesUuid = new SeriesUuid
+            {
+                SeriesString = "xyz3141592654",
+            },
+            Edition = 123,
+        };
+        PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
+        // FIXME: inspect the results
+    }
+    // [END canonical_core]
+    }
 
-   // [END canonical]
-   public static void Main(string[] args)
-   {
-   	CommandLine.Parser.Default.ParseArguments<Options>(args)
-    	.withParsed<Options>(opts =>
-    	    SamplePublishSeries(opts.ShelfName, opts.Edition));
-   }
+    // [END canonical]
+    public static void Main(string[] args)
+    {
+        CommandLine.Parser.Default.ParseArguments<Options>(args)
+        \t.withParsed<Options>(opts =>
+        \t\tSamplePublishSeries(opts.ShelfName, opts.Edition));
+    }
 
-   public class Options
-   {
-   	[Option("shelf_name", DEFAULT = "Math")]
+    public class Options
+    {
+        [Option("shelf_name", DEFAULT = "Math")]
         public string ShelfName { get; set; }
 
-   	[Option("edition", DEFAULT = 123)]
+        [Option("edition", DEFAULT = 123)]
         public uint Edition { get; set; }
-   }
+    }
 }
 ============== file: Samples/PublishSeriesRequestSecondEdition.cs ==============
 // Copyright 2019 Google LLC
@@ -16034,33 +16064,33 @@ class PublishSeriesRequestPiVersion
 
 // [START canonical]
 // FIXME: import everything this sample needs
-class PublishSeriesRequestSecondEdition
+public class PublishSeriesRequestSecondEdition
 {
     // [START canonical_core]
-   /// <summary>
-   /// Testing calling forms
-   /// </summary>
-   public static void SamplePublishSeries()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       PublishSeriesRequest request = new PublishSeriesRequest
-       {
-           Shelf = new Shelf(),
-           Books = { },
-           SeriesUuid = new SeriesUuid(),
-           Edition = 2,
-       };
-       PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
-       // FIXME: inspect the results
-   }
-   // [END canonical_core]
-   }
+    /// <summary>
+    /// Testing calling forms
+    /// </summary>
+    public static void SamplePublishSeries()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        PublishSeriesRequest request = new PublishSeriesRequest
+        {
+            Shelf = new Shelf(),
+            Books = { },
+            SeriesUuid = new SeriesUuid(),
+            Edition = 2,
+        };
+        PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
+        // FIXME: inspect the results
+    }
+    // [END canonical_core]
+    }
 
-   // [END canonical]
-   public static void Main(string[] args)
-   {
-   	SamplePublishSeries();
-   }
+    // [END canonical]
+    public static void Main(string[] args)
+    {
+        SamplePublishSeries();
+    }
 }
 ============== file: Samples/PublishSeriesRequestTestRequestObjectFieldComments.cs ==============
 // Copyright 2019 Google LLC
@@ -16083,41 +16113,41 @@ class PublishSeriesRequestSecondEdition
 
 // [START sample]
 // FIXME: import everything this sample needs
-class PublishSeriesRequestTestRequestObjectFieldComments
+public class PublishSeriesRequestTestRequestObjectFieldComments
 {
     // [START sample_core]
-   /// <summary>
-   /// Test request object field comments
-   /// </summary>
-   public static void SamplePublishSeries()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       PublishSeriesRequest request = new PublishSeriesRequest
-       {
-           Shelf = new Shelf
-                   {
-                       Name = new ShelfName("math").ToString(),
-                       Theme = "Math",
-                       InternalTheme = "Statistics",
-                   },
-           Books = { },
-           SeriesUuid = new SeriesUuid
-                        {
-                            SeriesBytes = File.ReadAllBytes("xyz3141592654"),
-                        },
-           Edition = 123,
-       };
-       PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Test request object field comments
+    /// </summary>
+    public static void SamplePublishSeries()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        PublishSeriesRequest request = new PublishSeriesRequest
+        {
+            Shelf = new Shelf
+            {
+                Name = new ShelfName("math").ToString(),
+                Theme = "Math",
+                InternalTheme = "Statistics",
+            },
+            Books = { },
+            SeriesUuid = new SeriesUuid
+            {
+                SeriesBytes = File.ReadAllBytes("xyz3141592654"),
+            },
+            Edition = 123,
+        };
+        PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SamplePublishSeries();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SamplePublishSeries();
+    }
 }
 ============== file: Samples/PublishSeriesRequestTestWriteToFile.cs ==============
 // Copyright 2019 Google LLC
@@ -16140,30 +16170,30 @@ class PublishSeriesRequestTestRequestObjectFieldComments
 
 // [START sample]
 // FIXME: import everything this sample needs
-class PublishSeriesRequestTestWriteToFile
+public class PublishSeriesRequestTestWriteToFile
 {
     // [START sample_core]
-   /// <summary>
-   /// Testing write fields to files.
-   /// </summary>
-   public static void SamplePublishSeries()
-   {
-       LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-       PublishSeriesRequest request = new PublishSeriesRequest
-       {
-           Shelf = new Shelf(),
-           Books = { },
-           SeriesUuid = new SeriesUuid(),
-       };
-       PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
-       // FIXME: inspect the results
-   }
-   // [END sample_core]
-   }
+    /// <summary>
+    /// Testing write fields to files.
+    /// </summary>
+    public static void SamplePublishSeries()
+    {
+        LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+        PublishSeriesRequest request = new PublishSeriesRequest
+        {
+            Shelf = new Shelf(),
+            Books = { },
+            SeriesUuid = new SeriesUuid(),
+        };
+        PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
+        // FIXME: inspect the results
+    }
+    // [END sample_core]
+    }
 
-   // [END sample]
-   public static void Main(string[] args)
-   {
-   	SamplePublishSeries();
-   }
+    // [END sample]
+    public static void Main(string[] args)
+    {
+        SamplePublishSeries();
+    }
 }

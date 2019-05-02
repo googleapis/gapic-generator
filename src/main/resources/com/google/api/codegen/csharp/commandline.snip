@@ -2,31 +2,41 @@
 @extends "csharp/common_initcode.snip"
 
 @snippet optionsClass(sample, libraryMethod)
-	public class Options
-	{
-		@join param : sample.sampleInitCode.argDefaultParams on "".add(BREAK).add(BREAK)
-		  	{@optionProperty(param)}
-		@end
-	}
+    public class Options
+    {
+        @join param : sample.sampleInitCode.argDefaultParams on "".add(BREAK).add(BREAK)
+            {@optionProperty(param)}
+        @end
+    }
 @end
 
 @snippet processCliArguments(sample)
-	@if sample.sampleInitCode.argDefaultParams
-		CommandLine.Parser.Default.ParseArguments<Options>(args)
-			.withParsed<Options>({@if(sample.usesAsyncAwaitPattern, "async ", "")}opts =>
-			    {@if(sample.usesAsyncAwaitPattern, "await ", "")}{@sample.sampleFunctionName}({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}));
-	@else
-		{@if(sample.usesAsyncAwaitPattern, "await ", "")}{@sample.sampleFunctionName()}();
-	@end
+    @if sample.sampleInitCode.argDefaultParams
+        @if sample.usesAsyncAwaitPattern
+            CommandLine.Parser.Default.ParseArguments<Options>(args)
+                .withParsed<Options>(async opts =>
+                    await {@sample.sampleFunctionName}Async({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}));
+        @else
+            CommandLine.Parser.Default.ParseArguments<Options>(args)
+            {@"\t"}.withParsed<Options>(opts =>
+            {@"\t\t"}{@sample.sampleFunctionName}({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}));
+        @end
+    @else
+        @if sample.usesAsyncAwaitPattern
+            await {@sample.sampleFunctionName}Async();
+        @else
+            {@sample.sampleFunctionName}();
+        @end
+    @end
 @end
 
 @private optionProperty(param)
-	[Option("{@param.cliFlagName}", DEFAULT = {@renderInitValue(param.initValue, FALSE)})]
-	{@""}    public {@param.typeName} {@param.upperCamelIdentifier} { get; set; }
+    [Option("{@param.cliFlagName}", DEFAULT = {@renderInitValue(param.initValue, FALSE)})]
+    public {@param.typeName} {@param.upperCamelIdentifier} { get; set; }
 @end
 
 @private commaSeparatedOpts(args)
-	@join arg : args on ", "
-	  	opts.{@arg.upperCamelIdentifier}
-	@end
+    @join arg : args on ", "
+        opts.{@arg.upperCamelIdentifier}
+    @end
 @end
