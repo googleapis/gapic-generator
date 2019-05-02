@@ -15,7 +15,6 @@
 
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.MethodConfig;
@@ -76,7 +75,7 @@ public class JavaMethodViewGenerator {
               apiMethods.add(
                   clientMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
             }
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
+            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generatePagedFlattenedMethod(
                       flattenedMethodContext.withResourceNamesInSamplesOnly()));
@@ -137,7 +136,7 @@ public class JavaMethodViewGenerator {
             apiMethods.add(
                 clientMethodTransformer.generateAsyncOperationFlattenedMethod(
                     flattenedMethodContext));
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
+            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generateAsyncOperationFlattenedMethod(
                       flattenedMethodContext.withResourceNamesInSamplesOnly()));
@@ -171,7 +170,7 @@ public class JavaMethodViewGenerator {
                     flattenedMethodContext.withCallingForms(
                         Collections.singletonList(CallingForm.Flattened))));
 
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
+            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generateFlattenedMethod(
                       flattenedMethodContext
@@ -193,13 +192,5 @@ public class JavaMethodViewGenerator {
     }
 
     return apiMethods;
-  }
-
-  private boolean hasAnyResourceNameParameter(FlatteningConfig flatteningGroup) {
-    return flatteningGroup
-        .getFlattenedFieldConfigs()
-        .values()
-        .stream()
-        .anyMatch(FieldConfig::useResourceNameType);
   }
 }
