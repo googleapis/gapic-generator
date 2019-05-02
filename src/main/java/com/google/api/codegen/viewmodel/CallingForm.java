@@ -50,7 +50,7 @@ public enum CallingForm {
   RequestAsyncPagedAll, // used by: csharp nodejs
   RequestAsyncPagedPageSize, // used by: csharp
   RequestPaged, // used by: csharp java php py ruby
-  RequestPagedAll, // used by: csharp java php py ruby
+  RequestPagedAll, // used by: csharp php py ruby
   RequestPagedPageSize, // used by: csharp
   RequestStreamingBidi, // used by: nodejs php py ruby
   RequestStreamingBidiAsync, // used by: php
