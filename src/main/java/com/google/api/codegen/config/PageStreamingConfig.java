@@ -225,9 +225,16 @@ public abstract class PageStreamingConfig {
       DiagCollector diagCollector,
       String defaultPackageName,
       ProtoMethodModel methodModel,
+      MethodConfigProto methodConfigProto,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ProtoParser protoParser) {
+    // Let the GAPIC config define a page streaming config as an override.
+    if (methodConfigProto.hasPageStreaming()) {
+      return createPageStreamingFromGapicConfig(
+          diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
+    }
+
     // Toggle pagination based on presence of paging params.
     // See https://cloud.google.com/apis/design/design_patterns for API pagination pattern.
     ProtoField tokenField = methodModel.getInputField(ProtoPagingParameters.nameForPageToken());
