@@ -2731,6 +2731,44 @@ public class StreamShelvesCallableCallableStreamingServerEmpty {
 // FIXME: Insert here clean-up code.
 
 // [END sample]
+============== file: samples/src/main/java/com/google/example/examples/library/v1/TestDefaultCallingFormForPaging.java ==============
+// DO NOT EDIT! This is a generated sample ("RequestPaged",  "test_default_calling_form_paging")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ListShelvesRequest;
+import com.google.example.library.v1.Shelf;
+
+// [START test_default_calling_form_for_paging]
+/*
+ * Please include the following imports to run this sample.
+ *
+ * import com.google.example.library.v1.LibraryClient;
+ * import com.google.example.library.v1.ListShelvesRequest;
+ * import com.google.example.library.v1.Shelf;
+ */
+public class TestDefaultCallingFormForPaging {
+  /** Test default calling form for paging methods. */
+  public static void sampleListShelves() {
+    // [START test_default_calling_form_for_paging_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
+      for (Shelf responseItem : libraryClient.listShelves(request).iterateAll()) {
+        System.out.printf("shelf name: %s\n", responseItem);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END test_default_calling_form_for_paging_core]
+  }
+
+  public static void main(String[] args) {
+    sampleListShelves();
+  }
+}
+// FIXME: Insert here clean-up code.
+
+// [END test_default_calling_form_for_paging]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/TuringProgCallableStreamingBidi.java ==============
 // DO NOT EDIT! This is a generated sample ("CallableStreamingBidi",  "prog")
 package com.google.example.examples.library.v1;
