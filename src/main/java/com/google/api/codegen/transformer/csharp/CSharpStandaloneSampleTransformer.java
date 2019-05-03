@@ -45,7 +45,7 @@ public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "csharp/standalone_sample.snip";
   private static final String CSHARP_SAMPLE_PACKAGE_NAME = "Samples";
-  private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.Global;
+  private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
   private static final CSharpCommonTransformer csharpCommonTransformer =
       new CSharpCommonTransformer();
 
