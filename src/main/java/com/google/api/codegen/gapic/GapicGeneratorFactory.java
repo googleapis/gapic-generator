@@ -382,13 +382,15 @@ public class GapicGeneratorFactory {
                 .build();
 
         if (devSamples) {
+          GapicCodePathMapper phpSamplePathMapper =
+              PhpGapicCodePathMapper.newBuilder().setPrefix("samples").build();
           CodeGenerator sampleGenerator =
               GapicGenerator.newBuilder()
                   .setModel(model)
                   .setProductConfig(productConfig)
                   .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                   .setModelToViewTransformer(
-                      new PhpGapicSamplesTransformer(phpPathMapper, packageConfig))
+                      new PhpGapicSamplesTransformer(phpSamplePathMapper, packageConfig))
                   .build();
           generators.add(sampleGenerator);
         }
