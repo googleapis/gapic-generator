@@ -187,9 +187,7 @@ public class GapicGeneratorFactory {
                   CSharpBasicPackageTransformer.forUnitTests(unitTestPathMapper)));
         }
       }
-      System.out.println(devSamples);
       if (devSamples) {
-        System.out.println("here");
         generators.add(newCsharpGenerator.apply(new CSharpStandaloneSampleTransformer()));
       }
 
