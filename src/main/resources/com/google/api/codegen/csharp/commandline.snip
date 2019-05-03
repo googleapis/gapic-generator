@@ -14,11 +14,11 @@
     @if sample.sampleInitCode.argDefaultParams
         @if sample.usesAsyncAwaitPattern
             CommandLine.Parser.Default.ParseArguments<Options>(args)
-                .withParsed<Options>(async opts =>
+                .WithParsed<Options>(async opts =>
                     await {@sample.sampleFunctionName}Async({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}));
         @else
             CommandLine.Parser.Default.ParseArguments<Options>(args)
-                .withParsed<Options>(opts =>
+                .WithParsed<Options>(opts =>
                     {@sample.sampleFunctionName}({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}));
         @end
     @else
@@ -31,7 +31,7 @@
 @end
 
 @private optionProperty(param)
-    [Option("{@param.cliFlagName}", DEFAULT = {@renderInitValue(param.initValue, FALSE)})]
+    [Option("{@param.cliFlagName}", Default = {@renderInitValue(param.initValue, FALSE)})]
     public {@param.typeName} {@param.upperCamelIdentifier} { get; set; }
 @end
 
