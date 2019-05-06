@@ -17,9 +17,12 @@ package com.google.api.codegen.gapic;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An implementation of GapicCodePathMapper that generates the output path from a prefix, and/or
@@ -41,25 +44,10 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
 
   @Override
   public String getOutputPath(String elementFullName, ProductConfig config) {
-    return getOutputPath(config, null);
-  }
-
-  @Override
-  public String getSamplesOutputPath(
-      String elementFullName, ProductConfig config, String methodName) {
-    return getOutputPath(config, methodName);
-  }
-
-  private String getOutputPath(ProductConfig config, String methodSample) {
     ArrayList<String> dirs = new ArrayList<>();
-    boolean haveSample = !Strings.isNullOrEmpty(methodSample);
 
     if (!Strings.isNullOrEmpty(prefix)) {
       dirs.add(prefix);
-    }
-
-    if (haveSample) {
-      dirs.add(SAMPLES_DIRECTORY);
     }
 
     if (shouldAppendPackage && !Strings.isNullOrEmpty(config.getPackageName())) {
@@ -71,11 +59,24 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
         }
       }
     }
-
-    if (haveSample) {
-      dirs.add(format(methodSample));
-    }
     return Joiner.on("/").join(dirs);
+  }
+
+  @Override
+  public String getSamplesOutputPath(
+      String elementFullName, ProductConfig config, String methodName) {
+    return String.join("/", new String[] {"samples", getVersion(elementFullName)});
+  }
+
+  private String getVersion(String elementFullName) {
+    String apiVersion = "";
+    List<String> packages = Splitter.on(".").splitToList(elementFullName);
+    for (String p : packages) {
+      if (VersionMatcher.isVersion(p)) {
+        apiVersion = p;
+      }
+    }
+    return apiVersion;
   }
 
   /** Formats the given segment of a file path. */
