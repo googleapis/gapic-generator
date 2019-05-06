@@ -972,7 +972,7 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
   public static void sampleGetBigBook(String shelf) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelf = "Novel";
+      // shelf = "Novel";
       ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
       Book response = libraryClient.getBigBookAsync(name.toString()).get();
       // Testing iterating over map fields when both key and value are specified.
@@ -1063,8 +1063,8 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap2 {
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelf = "Novel";
-      // String bigBookName = "War and Peace";
+      // shelf = "Novel";
+      // bigBookName = "War and Peace";
       ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
       Book response = libraryClient.getBigBookAsync(name.toString()).get();
       System.out.println(response);
@@ -1144,7 +1144,7 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap {
   public static void sampleGetBigBook(String shelf) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelf = "Novel";
+      // shelf = "Novel";
       ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
@@ -1240,8 +1240,8 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap2 {
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelf = "Novel";
-      // String bigBookName = "War and Peace";
+      // shelf = "Novel";
+      // bigBookName = "War and Peace";
       ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
@@ -1326,7 +1326,7 @@ public class GetBigBookCallableCallableWap {
   public static void sampleGetBigBook(String shelf) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelf = "Novel";
+      // shelf = "Novel";
       ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
@@ -1428,8 +1428,8 @@ public class GetBigBookCallableCallableWap2 {
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelf = "Novel";
-      // String bigBookName = "War and Peace";
+      // shelf = "Novel";
+      // bigBookName = "War and Peace";
       ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
@@ -1520,7 +1520,7 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
   public static void sampleGetBigBook(String shelf) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelf = "Novel";
+      // shelf = "Novel";
       ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
@@ -1624,8 +1624,8 @@ public class GetBigBookOperationCallableLongRunningCallableWap2 {
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     // [START hopper_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelf = "Novel";
-      // String bigBookName = "War and Peace";
+      // shelf = "Novel";
+      // bigBookName = "War and Peace";
       ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
@@ -2445,8 +2445,8 @@ public class PublishSeriesCallableCallablePiVersion {
   public static void samplePublishSeries(String shelfName, int edition) {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelfName = "Math";
-      // int edition = 123;
+      // shelfName = "Math";
+      // edition = 123;
       Shelf shelf = Shelf.newBuilder()
         .setName(shelfName)
         .build();
@@ -2648,8 +2648,8 @@ public class PublishSeriesFlattenedPiVersion {
   public static void samplePublishSeries(String shelfName, int edition) {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelfName = "Math";
-      // int edition = 123;
+      // shelfName = "Math";
+      // edition = 123;
       Shelf shelf = Shelf.newBuilder()
         .setName(shelfName)
         .build();
@@ -2829,8 +2829,8 @@ public class PublishSeriesRequestPiVersion {
   public static void samplePublishSeries(String shelfName, int edition) {
     // [START canonical_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // String shelfName = "Math";
-      // int edition = 123;
+      // shelfName = "Math";
+      // edition = 123;
       Shelf shelf = Shelf.newBuilder()
         .setName(shelfName)
         .build();
@@ -3043,8 +3043,7 @@ public class PublishSeriesRequestTestRequestObjectFieldComments {
 
       // Comment on a file input field
       Path path = Paths.get("xyz3141592654");
-      byte[] data = Files.readAllBytes(path);
-      ByteString seriesBytes = ByteString.copyFrom(data);
+      byte[] data = Files.readAllBytes(path);ByteString seriesBytes = ByteString.copyFrom(data);
 
       // Comment on a message
       SeriesUuid seriesUuid = SeriesUuid.newBuilder()
@@ -3381,17 +3380,15 @@ public class TuringProgCallableStreamingBidi {
       BidiStream<DiscussBookRequest, Comment> bidiStream =
           libraryClient.discussBookCallable().call();
 
-      // String imageFileName = "image_file.jpg";
+      // imageFileName = "image_file.jpg";
       ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       Path path = Paths.get("comment_file");
-      byte[] data = Files.readAllBytes(path);
-      ByteString comment = ByteString.copyFrom(data);
+      byte[] data = Files.readAllBytes(path);ByteString comment = ByteString.copyFrom(data);
       Comment comment2 = Comment.newBuilder()
         .setComment(comment)
         .build();
       path = Paths.get(imageFileName);
-      data = Files.readAllBytes(path);
-      ByteString image = ByteString.copyFrom(data);
+      data = Files.readAllBytes(path);ByteString image = ByteString.copyFrom(data);
       DiscussBookRequest request = DiscussBookRequest.newBuilder()
         .setName(name.toString())
         .setComment(comment2)

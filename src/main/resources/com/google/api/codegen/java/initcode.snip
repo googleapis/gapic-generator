@@ -2,7 +2,7 @@
 
 @snippet initCode(initCodeSpec)
   @if initCodeSpec.argDefaultLines
-    @join line : util.pretty(initCodeLines(initCodeSpec.argDefaultLines))
+    @join line : util.pretty(argDefaultLines(initCodeSpec.argDefaultLines))
       // {@line}
     @end
 
@@ -13,9 +13,16 @@
 
 @private initCodeLines(lines)
   @join line : lines
-    {@initCodeLine(line)}
+    {@initCodeLine(TRUE, line)}
   @end
 @end
+
+@private argDefaultLines(lines)
+  @join line : lines
+    {@initCodeLine(FALSE, line)}
+  @end
+@end
+
 
 @private initCodeLinesWithDescriptions(lines)
   @join line : lines
@@ -24,60 +31,81 @@
       {@toComments(line.descriptions)}
 
     @end
-    {@initCodeLine(line)}
+    {@initCodeLine(TRUE, line)}
   @end
 @end
 
-@private initCodeLine(line)
+@private initCodeLine(isNewVariable, line)
   @switch line.lineType.toString
   @case "StructureInitLine"
-    {@initLineStructure(line)}
+    {@initLineStructure(isNewVariable, line)}
   @case "ListInitLine"
-    {@initLineList(line)}
+    {@initLineList(isNewVariable, line)}
   @case "MapInitLine"
-    {@initLineMap(line)}
+    {@initLineMap(isNewVariable, line)}
   @case "SimpleInitLine"
-    {@initLineSimple(line)}
+    {@initLineSimple(isNewVariable, line)}
   @case "ReadFileInitLine"
-    {@initLineReadFile(line)}
+    {@initLineReadFile(isNewVariable, line)}
   @default
     $unhandledCase: {@line.lineType.toString}$
   @end
 @end
 
-@private initLineStructure(line)
-  {@line.typeName} {@line.identifier} = {@line.typeName}.newBuilder()
+@private initLineStructure(isNewVariable, line)
+  @if isNewVariable
+    {@line.typeName} {@line.identifier} = {@line.typeName}.newBuilder()
+  @else
+    {@line.identifier} = {@line.typeName}.newBuilder()
+  @end
+
   @join fieldSetting : line.fieldSettings
     {@EMPTY}  .{@fieldSetting.fieldSetFunction}({@renderFieldSettingValue(fieldSetting)})
   @end
   {@EMPTY}  .build();
 @end
 
-@private initLineList(line)
-  List<{@line.elementTypeName}> {@line.identifier} = \
-      Arrays.asList({@argList(line.elementIdentifiers)});
+@private initLineList(isNewVariable, line)
+  @if isNewVariable
+    List<{@line.elementTypeName}> {@line.identifier} = \
+        Arrays.asList({@argList(line.elementIdentifiers)});
+  @else
+    {@line.identifier} = Arrays.asList({@argList(line.elementIdentifiers)});
+  @end
 @end
 
-@private initLineMap(line)
-  Map<{@line.keyTypeName}, {@line.valueTypeName}> {@line.identifier} = new HashMap<>();
+@private initLineMap(isNewVariable, line)
+  @if isNewVariable
+    Map<{@line.keyTypeName}, {@line.valueTypeName}> {@line.identifier} = new HashMap<>();
+  @else
+    {@line.identifier} = new HashMap<>();
+  @end
+
   @join mapEntry : line.initEntries vertical
     {@line.identifier}.put({@mapEntry.key}, {@mapEntry.valueString});
   @end
 @end
 
-@private initLineSimple(line)
-  {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue)};
+@private initLineSimple(isNewVariable, line)
+  @if isNewVariable
+    {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue)};
+  @else
+    {@line.identifier} = {@renderInitValue(line.initValue)};
+  @end
 @end
 
-@private initLineReadFile(line)
+@private initLineReadFile(isNewVariable, line)
   @if line.isFirstReadFileView
     Path path = Paths.get({@renderInitValue(line.fileName)});
     byte[] data = Files.readAllBytes(path);
-    ByteString {@line.identifier} = ByteString.copyFrom(data);
   @else
     path = Paths.get({@renderInitValue(line.fileName)});
     data = Files.readAllBytes(path);
+  @end
+  @if @isNewVariable
     ByteString {@line.identifier} = ByteString.copyFrom(data);
+  @else
+    {@line.identifier} = ByteString.copyFrom(data);
   @end
 @end
 
