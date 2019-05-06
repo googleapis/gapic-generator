@@ -6,6 +6,7 @@
 @snippet generate(sampleFile)
   @let apiMethod = sampleFile.classView.libraryMethod, \
        sample = apiMethod.samples.get(0)
+    {@license(sampleFile.fileHeader)}
     // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
     package {@sampleFile.fileHeader.examplePackageName};
     
@@ -19,11 +20,12 @@
       {@importList(sample.sampleImports.appImports)}
 
     @end
-    // [START {@sample.regionTag}]
-    @if sample.sampleImports.appImports.size
-      {@commentedImportList(sample.sampleImports.appImports)}
-    @end
     public class {@sampleFile.classView.name} {
+      // [START {@sample.regionTag}]
+      @if sample.sampleImports.appImports.size
+        {@commentedImportList(sample.sampleImports.appImports)}
+
+      @end
       @if not(sample.sampleFunctionDoc.isEmpty)
         {@processDoc(sample.sampleFunctionDoc)}
       @end
@@ -38,6 +40,7 @@
         }
         // [END {@sample.regionTag}_core]
       }
+      // [END {@sample.regionTag}]
 
       @if sample.sampleInitCode.argDefaultParams.size
         public static void main(String[] args) throws Exception {
@@ -51,9 +54,6 @@
         {@sample.sampleFunctionName}({@commaSeparatedArgs(sample.sampleInitCode.argDefaultParams)});
       }
     }
-    // FIXME: Insert here clean-up code.
-
-    // [END {@sample.regionTag}]
   @end
 @end
 
