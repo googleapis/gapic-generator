@@ -34,11 +34,9 @@ public class PhpModelTypeNameConverterTest {
     TypeRef type = ModelTypeNameConverterTestUtil.getTestEnumType(tempDir);
     EnumValue value = type.getEnumType().getValues().get(0);
     PhpModelTypeNameConverter converter = new PhpModelTypeNameConverter(packageName);
-
-    assertThat(
-            converter
-                .getEnumValue(type, value)
-                .getValueAndSaveTypeNicknameIn(new PhpTypeTable(packageName)))
-        .isEqualTo("Book_Rating::GOOD");
+    PhpTypeTable typeTable = new PhpTypeTable(packageName);
+    assertThat(converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(typeTable))
+        .isEqualTo("Rating::GOOD");
+    assertThat(typeTable.getImports()).containsKey("\\Google\\Example\\Library\\V1\\Book\\Rating");
   }
 }

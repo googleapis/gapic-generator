@@ -21,7 +21,6 @@ import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
-import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
@@ -29,6 +28,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import java.util.LinkedList;
 
 public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
 
@@ -140,9 +140,8 @@ public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
   }
 
   /**
-   * This function recursively determines the PHP type name for a proto message. Recursion is
-   * required because in PHP nested messages are handled differently from non-nested messages. For
-   * example, the following proto definition: <code>
+   * This function determines the PHP type name for a proto message. For example, the following
+   * proto definition: <code>
    * package example;
    * message Top {
    *  message Nested {
@@ -153,67 +152,48 @@ public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
    *
    * <ul>
    *   <li>\Example\Top
-   *   <li>\Example\Top_Nested
-   *   <li>\Example\Top_Nested_DeepNested
+   *   <li>\Example\Top\Nested
+   *   <li>\Example\Top\Nested\DeepNested
    * </ul>
-   *
-   * <p>To correctly output these type names, we need to check whether the parent of a proto element
-   * is a message, and if so use '_' as a separator.
    */
   private TypeName getTypeName(ProtoElement elem, int maxDepth) {
-    ProtoElement parent = elem.getParent();
-    if (parent != null && parent instanceof MessageType) {
-      MessageType parentMessage = (MessageType) parent;
-      if (parentMessage.isCyclic()) {
-        throw new IllegalStateException(
-            "Cannot determine type for cyclic message: " + parentMessage);
-      }
-      if (maxDepth == 0) {
-        throw new IllegalStateException("Cannot determine type for deeply nested message");
-      }
-
-      String parentFullName = getTypeName(parent, maxDepth - 1).getFullName();
-      String fullName = String.format("%s_%s", parentFullName, elem.getSimpleName());
-      String nickName = fullName.substring(fullName.lastIndexOf("\\") + 1);
-
-      return new TypeName(fullName, nickName);
-    }
-    return typeNameConverter.getTypeName(getTypeNameString(elem));
-  }
-
-  /**
-   * This function determines the type name as follows: If the proto type name is in TYPE_NAME_MAP,
-   * return that value. Else, split on ".", prepend '\' and capitalize each component of the
-   * namespace except the message name
-   */
-  private static String getTypeNameString(ProtoElement elem) {
     String fullName = elem.getFullName();
     if (TYPE_NAME_MAP.containsKey(fullName)) {
-      return TYPE_NAME_MAP.get(fullName);
+      return typeNameConverter.getTypeName(TYPE_NAME_MAP.get(fullName));
     }
-    String[] components = fullName.split("\\.");
-    String shortName = components[components.length - 1];
 
     StringBuilder builder = new StringBuilder();
+    LinkedList<String> components = new LinkedList<>();
 
-    ProtoElement parentElem = elem.getParent();
-    if (parentElem != null && parentElem instanceof ProtoFile) {
-      ProtoFile protoFile = (ProtoFile) parentElem;
+    while (elem != null && !(elem instanceof ProtoFile)) {
+      components.addFirst(elem.getSimpleName());
+      elem = elem.getParent();
+    }
+
+    // Create the type name based on protobuf PHP namespace
+    if (elem != null && elem instanceof ProtoFile) {
+      ProtoFile protoFile = (ProtoFile) elem;
       String namespace = protoFile.getProto().getOptions().getPhpNamespace();
-      if (Strings.isNullOrEmpty(namespace)) {
-        for (int index = 0; index < components.length - 1; index++) {
-          builder
-              .append('\\')
-              .append(components[index].substring(0, 1).toUpperCase())
-              .append(components[index].substring(1));
-        }
-      } else {
+      if (!Strings.isNullOrEmpty(namespace)) {
         builder.append('\\').append(CharMatcher.is('\\').trimFrom(namespace));
+        for (String component : components) {
+          builder
+              .append("\\")
+              .append(component.substring(0, 1).toUpperCase())
+              .append(component.substring(1));
+          return typeNameConverter.getTypeName(builder.toString());
+        }
       }
     }
 
-    builder.append('\\').append(shortName);
-    return builder.toString();
+    // Create the type name based on the element's full name
+    for (String component : fullName.split("\\.")) {
+      builder
+          .append("\\")
+          .append(component.substring(0, 1).toUpperCase())
+          .append(component.substring(1));
+    }
+    return typeNameConverter.getTypeName(builder.toString());
   }
 
   /**
