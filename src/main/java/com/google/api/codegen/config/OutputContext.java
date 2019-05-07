@@ -34,8 +34,13 @@ public abstract class OutputContext {
   public abstract OutputTransformer.ScopeTable scopeTable();
 
   /**
-   * Used in Python. The enum module needs to be imported to use helper functions in it to convert a
+   * Used in Python and PHP.
+   *
+   * <p>In Python, the enum module needs to be imported to use helper functions in it to convert a
    * protobuf enum type to a descriptive string.
+   *
+   * <p>In PHP, the namespace generated from protobuf enum type needs to be used to convert the enum
+   * type to a descriptive string.
    */
   public abstract List<TypeModel> stringFormattedVariableTypes();
 
