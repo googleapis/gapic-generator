@@ -3043,7 +3043,8 @@ public class PublishSeriesRequestTestRequestObjectFieldComments {
 
       // Comment on a file input field
       Path path = Paths.get("xyz3141592654");
-      byte[] data = Files.readAllBytes(path);ByteString seriesBytes = ByteString.copyFrom(data);
+      byte[] data = Files.readAllBytes(path);
+      ByteString seriesBytes = ByteString.copyFrom(data);
 
       // Comment on a message
       SeriesUuid seriesUuid = SeriesUuid.newBuilder()
@@ -3383,12 +3384,14 @@ public class TuringProgCallableStreamingBidi {
       // imageFileName = "image_file.jpg";
       ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       Path path = Paths.get("comment_file");
-      byte[] data = Files.readAllBytes(path);ByteString comment = ByteString.copyFrom(data);
+      byte[] data = Files.readAllBytes(path);
+      ByteString comment = ByteString.copyFrom(data);
       Comment comment2 = Comment.newBuilder()
         .setComment(comment)
         .build();
       path = Paths.get(imageFileName);
-      data = Files.readAllBytes(path);ByteString image = ByteString.copyFrom(data);
+      data = Files.readAllBytes(path);
+      ByteString image = ByteString.copyFrom(data);
       DiscussBookRequest request = DiscussBookRequest.newBuilder()
         .setName(name.toString())
         .setComment(comment2)
