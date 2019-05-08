@@ -1224,11 +1224,11 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Make the request
-            PagedAsyncEnumerable<ListStringsResponse, string> response =
+            PagedAsyncEnumerable<ListStringsResponse, IResourceName> response =
                 libraryServiceClient.ListStringsAsync();
 
             // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((IResourceName item) =>
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -1239,7 +1239,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -1247,10 +1247,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = await response.ReadPageAsync(pageSize);
+            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -1266,11 +1266,11 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Make the request
-            PagedEnumerable<ListStringsResponse, string> response =
+            PagedEnumerable<ListStringsResponse, IResourceName> response =
                 libraryServiceClient.ListStrings();
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            foreach (IResourceName item in response)
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -1281,7 +1281,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -1289,10 +1289,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = response.ReadPage(pageSize);
+            Page<IResourceName> singlePage = response.ReadPage(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -1304,17 +1304,17 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for ListStringsAsync</summary>
         public async Task ListStringsAsync2()
         {
-            // Snippet: ListStringsAsync(string,string,int?,CallSettings)
+            // Snippet: ListStringsAsync(IResourceName,string,int?,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string name = "";
+            IResourceName name = new ArchiveBookName("[ARCHIVE]", "[BOOK]");
             // Make the request
-            PagedAsyncEnumerable<ListStringsResponse, string> response =
-                libraryServiceClient.ListStringsAsync(name: name);
+            PagedAsyncEnumerable<ListStringsResponse, IResourceName> response =
+                libraryServiceClient.ListStringsAsync(name);
 
             // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((IResourceName item) =>
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -1325,7 +1325,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -1333,10 +1333,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = await response.ReadPageAsync(pageSize);
+            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -1348,17 +1348,17 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for ListStrings</summary>
         public void ListStrings2()
         {
-            // Snippet: ListStrings(string,string,int?,CallSettings)
+            // Snippet: ListStrings(IResourceName,string,int?,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string name = "";
+            IResourceName name = new ArchiveBookName("[ARCHIVE]", "[BOOK]");
             // Make the request
-            PagedEnumerable<ListStringsResponse, string> response =
-                libraryServiceClient.ListStrings(name: name);
+            PagedEnumerable<ListStringsResponse, IResourceName> response =
+                libraryServiceClient.ListStrings(name);
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            foreach (IResourceName item in response)
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -1369,7 +1369,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -1377,10 +1377,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = response.ReadPage(pageSize);
+            Page<IResourceName> singlePage = response.ReadPage(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -1398,11 +1398,11 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             ListStringsRequest request = new ListStringsRequest();
             // Make the request
-            PagedAsyncEnumerable<ListStringsResponse, string> response =
+            PagedAsyncEnumerable<ListStringsResponse, IResourceName> response =
                 libraryServiceClient.ListStringsAsync(request);
 
             // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((IResourceName item) =>
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -1413,7 +1413,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -1421,10 +1421,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = await response.ReadPageAsync(pageSize);
+            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -1442,11 +1442,11 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             ListStringsRequest request = new ListStringsRequest();
             // Make the request
-            PagedEnumerable<ListStringsResponse, string> response =
+            PagedEnumerable<ListStringsResponse, IResourceName> response =
                 libraryServiceClient.ListStrings(request);
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            foreach (IResourceName item in response)
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -1457,7 +1457,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -1465,10 +1465,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = response.ReadPage(pageSize);
+            Page<IResourceName> singlePage = response.ReadPage(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -9235,7 +9235,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             string pageToken = null,
             int? pageSize = null,
             gaxgrpc::CallSettings callSettings = null) => ListStringsAsync(
@@ -9263,7 +9263,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             string pageToken = null,
             int? pageSize = null,
             gaxgrpc::CallSettings callSettings = null) => ListStrings(
@@ -9294,7 +9294,73 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
+            IResourceName name,
+            string pageToken = null,
+            int? pageSize = null,
+            gaxgrpc::CallSettings callSettings = null) => ListStringsAsync(
+                new ListStringsRequest
+                {
+                    AsResourceName = name, // Optional
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
+                },
+                callSettings);
+
+        /// <summary>
+        /// Lists a primitive resource. To test go page streaming.
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable sequence of <see cref="string"/> resources.
+        /// </returns>
+        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
+            IResourceName name,
+            string pageToken = null,
+            int? pageSize = null,
+            gaxgrpc::CallSettings callSettings = null) => ListStrings(
+                new ListStringsRequest
+                {
+                    AsResourceName = name, // Optional
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
+                },
+                callSettings);
+
+        /// <summary>
+        /// Lists a primitive resource. To test go page streaming.
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable asynchronous sequence of <see cref="string"/> resources.
+        /// </returns>
+        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             string name,
             string pageToken = null,
             int? pageSize = null,
@@ -9327,7 +9393,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             string name,
             string pageToken = null,
             int? pageSize = null,
@@ -9352,7 +9418,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             ListStringsRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
@@ -9371,7 +9437,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             ListStringsRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
@@ -14817,12 +14883,12 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public override gax::PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public override gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             ListStringsRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             Modify_ListStringsRequest(ref request, ref callSettings);
-            return new gaxgrpc::GrpcPagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+            return new gaxgrpc::GrpcPagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, IResourceName>(_callListStrings, request, callSettings);
         }
 
         /// <summary>
@@ -14837,12 +14903,12 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public override gax::PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public override gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             ListStringsRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             Modify_ListStringsRequest(ref request, ref callSettings);
-            return new gaxgrpc::GrpcPagedEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+            return new gaxgrpc::GrpcPagedEnumerable<ListStringsRequest, ListStringsResponse, IResourceName>(_callListStrings, request, callSettings);
         }
 
         /// <summary>
@@ -15487,12 +15553,12 @@ namespace Google.Example.Library.V1
     }
 
     public partial class ListStringsRequest : gaxgrpc::IPageRequest { }
-    public partial class ListStringsResponse : gaxgrpc::IPageResponse<string>
+    public partial class ListStringsResponse : gaxgrpc::IPageResponse<IResourceName>
     {
         /// <summary>
         /// Returns an enumerator that iterates through the resources in this response.
         /// </summary>
-        public scg::IEnumerator<string> GetEnumerator() => Strings.GetEnumerator();
+        public scg::IEnumerator<IResourceName> GetEnumerator() => StringsAsResourceNames.GetEnumerator();
 
         /// <inheritdoc/>
         sc::IEnumerator sc::IEnumerable.GetEnumerator() => GetEnumerator();
@@ -16811,6 +16877,30 @@ namespace Google.Example.Library.V1
             get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.ShelfName.Parse(Name); }
             set { Name = value != null ? value.ToString() : ""; }
         }
+
+    }
+
+    public partial class ListStringsRequest
+    {
+        /// <summary>
+        /// <see cref="gax::IResourceName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// </summary>
+        public gax::IResourceName AsResourceName
+        {
+            get { return string.IsNullOrEmpty(Name) ? null : gax::UnknownResourceName.Parse(Name); }
+            set { Name = value != null ? value.ToString() : ""; }
+        }
+
+    }
+
+    public partial class ListStringsResponse
+    {
+        /// <summary>
+        /// <see cref="gax::ResourceNameList{gax::IResourceName}"/>-typed view over the <see cref="Strings"/> resource name property.
+        /// </summary>
+        public gax::ResourceNameList<gax::IResourceName> StringsAsResourceNames =>
+            new gax::ResourceNameList<gax::IResourceName>(Strings,
+                str => gax::UnknownResourceName.Parse(str));
 
     }
 
