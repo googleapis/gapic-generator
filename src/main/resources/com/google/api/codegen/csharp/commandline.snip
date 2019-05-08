@@ -14,8 +14,8 @@
     @if sample.sampleInitCode.argDefaultParams
         @if sample.usesAsyncAwaitPattern
             CommandLine.Parser.Default.ParseArguments<Options>(args)
-                .WithParsed<Options>(async opts =>
-                    await {@sample.sampleFunctionName}Async({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}));
+                .WithParsed<Options>(opts =>
+                    {@sample.sampleFunctionName}Async({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}).Wait());
         @else
             CommandLine.Parser.Default.ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
@@ -23,7 +23,7 @@
         @end
     @else
         @if sample.usesAsyncAwaitPattern
-            await {@sample.sampleFunctionName}Async();
+            {@sample.sampleFunctionName}Async().Wait();
         @else
             {@sample.sampleFunctionName}();
         @end
