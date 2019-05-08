@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-def _set_args(arg, arg_name, args, inputs = None):
+def _set_args(arg, arg_name, args, inputs = None, required=False):
     if not arg:
+        if required:
+            fail("Missing required argument", arg_name)
         return
     args.append("%s%s" % (arg_name, arg.files.to_list()[0].path if hasattr(arg, "files") else arg))
     if inputs != None:
@@ -31,10 +33,11 @@ def _gapic_srcjar_impl(ctx):
         else:
             _set_args(attr.src, "--descriptor_set=", arguments, inputs)
         _set_args(attr.gapic_yaml, "--gapic_yaml=", arguments, inputs)
-        _set_args(attr.language, "--language=", arguments)
+        _set_args(attr.language, "--language=", arguments, required = True)
         _set_args(attr.service_yaml, "--service_yaml=", arguments, inputs)
         _set_args(attr.package_yaml2, "--package_yaml2=", arguments, inputs)
     else:
+        _set_args(attr.language, "--language=", arguments)
         _set_args(attr.src, "--descriptor=", arguments, inputs)
         _set_args(attr.package, "--package=", arguments)
 
