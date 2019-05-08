@@ -2732,12 +2732,12 @@ public class StreamShelvesCallableCallableStreamingServerEmpty {
 
 // [END sample]
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/TestDefaultCallingFormForPaging.java ==============
-// DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_paging")
+// DO NOT EDIT! This is a generated sample ("RequestPaged",  "test_default_calling_form_paging")
 package com.google.example.examples.library.v1;
 
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ListShelvesRequest;
-import com.google.example.library.v1.ListShelvesResponse;
+import com.google.example.library.v1.Shelf;
 
 // [START test_default_calling_form_for_paging]
 /*
@@ -2745,7 +2745,7 @@ import com.google.example.library.v1.ListShelvesResponse;
  *
  * import com.google.example.library.v1.LibraryClient;
  * import com.google.example.library.v1.ListShelvesRequest;
- * import com.google.example.library.v1.ListShelvesResponse;
+ * import com.google.example.library.v1.Shelf;
  */
 public class TestDefaultCallingFormForPaging {
   /** Test default calling form for paging methods. */
@@ -2753,8 +2753,9 @@ public class TestDefaultCallingFormForPaging {
     // [START test_default_calling_form_for_paging_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
       ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
-      ListShelvesResponse response = libraryClient.listShelves(request);
-      System.out.printf("shelf name: %s\n", response);
+      for (Shelf responseItem : libraryClient.listShelves(request).iterateAll()) {
+        System.out.printf("shelf name: %s\n", responseItem);
+      }
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
@@ -3504,13 +3505,14 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *
-   *   ListShelvesResponse response = libraryClient.listShelves();
+   *   for (Shelf element : libraryClient.listShelves().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
    * }
    * </code></pre>
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final ListShelvesResponse listShelves() {
-
+  public final ListShelvesPagedResponse listShelves() {
     ListShelvesRequest request =
         ListShelvesRequest.newBuilder()
 
@@ -3526,15 +3528,18 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
-   *   ListShelvesResponse response = libraryClient.listShelves(request);
+   *   for (Shelf element : libraryClient.listShelves(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
    * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final ListShelvesResponse listShelves(ListShelvesRequest request) {
-    return listShelvesCallable().call(request);
+  public final ListShelvesPagedResponse listShelves(ListShelvesRequest request) {
+    return listShelvesPagedCallable()
+        .call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -3545,9 +3550,38 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
-   *   ApiFuture&lt;ListShelvesResponse&gt; future = libraryClient.listShelvesCallable().futureCall(request);
+   *   ApiFuture&lt;ListShelvesPagedResponse&gt; future = libraryClient.listShelvesPagedCallable().futureCall(request);
    *   // Do something
-   *   ListShelvesResponse response = future.get();
+   *   for (Shelf element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable() {
+    return stub.listShelvesPagedCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
+   *   while (true) {
+   *     ListShelvesResponse response = libraryClient.listShelvesCallable().call(request);
+   *     for (Shelf element : response.getShelvesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
    * }
    * </code></pre>
    */
@@ -6574,6 +6608,94 @@ public class LibraryClient implements BackgroundResource {
     return stub.awaitTermination(duration, unit);
   }
 
+  public static class ListShelvesPagedResponse extends AbstractPagedListResponse<
+      ListShelvesRequest,
+      ListShelvesResponse,
+      Shelf,
+      ListShelvesPage,
+      ListShelvesFixedSizeCollection> {
+
+    public static ApiFuture<ListShelvesPagedResponse> createAsync(
+        PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context,
+        ApiFuture<ListShelvesResponse> futureResponse) {
+      ApiFuture<ListShelvesPage> futurePage =
+          ListShelvesPage.createEmptyPage().createPageAsync(context, futureResponse);
+      return ApiFutures.transform(
+          futurePage,
+          new ApiFunction<ListShelvesPage, ListShelvesPagedResponse>() {
+            @Override
+            public ListShelvesPagedResponse apply(ListShelvesPage input) {
+              return new ListShelvesPagedResponse(input);
+            }
+          },
+          MoreExecutors.directExecutor());
+    }
+
+    private ListShelvesPagedResponse(ListShelvesPage page) {
+      super(page, ListShelvesFixedSizeCollection.createEmptyCollection());
+    }
+
+
+  }
+
+  public static class ListShelvesPage extends AbstractPage<
+      ListShelvesRequest,
+      ListShelvesResponse,
+      Shelf,
+      ListShelvesPage> {
+
+    private ListShelvesPage(
+        PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context,
+        ListShelvesResponse response) {
+      super(context, response);
+    }
+
+    private static ListShelvesPage createEmptyPage() {
+      return new ListShelvesPage(null, null);
+    }
+
+    @Override
+    protected ListShelvesPage createPage(
+        PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context,
+        ListShelvesResponse response) {
+      return new ListShelvesPage(context, response);
+    }
+
+    @Override
+    public ApiFuture<ListShelvesPage> createPageAsync(
+        PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context,
+        ApiFuture<ListShelvesResponse> futureResponse) {
+      return super.createPageAsync(context, futureResponse);
+    }
+
+
+
+
+  }
+
+  public static class ListShelvesFixedSizeCollection extends AbstractFixedSizeCollection<
+      ListShelvesRequest,
+      ListShelvesResponse,
+      Shelf,
+      ListShelvesPage,
+      ListShelvesFixedSizeCollection> {
+
+    private ListShelvesFixedSizeCollection(List<ListShelvesPage> pages, int collectionSize) {
+      super(pages, collectionSize);
+    }
+
+    private static ListShelvesFixedSizeCollection createEmptyCollection() {
+      return new ListShelvesFixedSizeCollection(null, 0);
+    }
+
+    @Override
+    protected ListShelvesFixedSizeCollection createCollection(
+        List<ListShelvesPage> pages, int collectionSize) {
+      return new ListShelvesFixedSizeCollection(pages, collectionSize);
+    }
+
+
+  }
   public static class ListBooksPagedResponse extends AbstractPagedListResponse<
       ListBooksRequest,
       ListBooksResponse,
@@ -6939,6 +7061,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.stub.LibraryServiceStubSettings;
 import com.google.longrunning.Operation;
@@ -7000,7 +7123,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   /**
    * Returns the object with the settings used for calls to listShelves.
    */
-  public UnaryCallSettings<ListShelvesRequest, ListShelvesResponse> listShelvesSettings() {
+  public PagedCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).listShelvesSettings();
   }
 
@@ -7333,7 +7456,7 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     /**
      * Returns the builder for the settings used for calls to listShelves.
      */
-    public UnaryCallSettings.Builder<ListShelvesRequest, ListShelvesResponse> listShelvesSettings() {
+    public PagedCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
       return getStubSettingsBuilder().listShelvesSettings();
     }
 
@@ -8131,6 +8254,7 @@ import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibrarySettings;
 import com.google.example.library.v1.ListBooksRequest;
@@ -8308,6 +8432,7 @@ import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibrarySettings;
 import com.google.example.library.v1.ListBooksRequest;
@@ -8585,6 +8710,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable;
   private final UnaryCallable<GetShelfRequest, Shelf> getShelfCallable;
   private final UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
+  private final UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable;
   private final UnaryCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
   private final UnaryCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
   private final UnaryCallable<CreateBookRequest, Book> createBookCallable;
@@ -8932,6 +9058,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.createShelfCallable = callableFactory.createUnaryCallable(createShelfTransportSettings,settings.createShelfSettings(), clientContext);
     this.getShelfCallable = callableFactory.createUnaryCallable(getShelfTransportSettings,settings.getShelfSettings(), clientContext);
     this.listShelvesCallable = callableFactory.createUnaryCallable(listShelvesTransportSettings,settings.listShelvesSettings(), clientContext);
+    this.listShelvesPagedCallable = callableFactory.createPagedCallable(listShelvesTransportSettings,settings.listShelvesSettings(), clientContext);
     this.deleteShelfCallable = callableFactory.createUnaryCallable(deleteShelfTransportSettings,settings.deleteShelfSettings(), clientContext);
     this.mergeShelvesCallable = callableFactory.createUnaryCallable(mergeShelvesTransportSettings,settings.mergeShelvesSettings(), clientContext);
     this.createBookCallable = callableFactory.createUnaryCallable(createBookTransportSettings,settings.createBookSettings(), clientContext);
@@ -8979,6 +9106,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public UnaryCallable<GetShelfRequest, Shelf> getShelfCallable() {
     return getShelfCallable;
+  }
+
+  public UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable() {
+    return listShelvesPagedCallable;
   }
 
   public UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
@@ -9447,6 +9578,7 @@ import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
@@ -9518,6 +9650,10 @@ public abstract class LibraryServiceStub implements BackgroundResource {
 
   public UnaryCallable<GetShelfRequest, Shelf> getShelfCallable() {
     throw new UnsupportedOperationException("Not implemented: getShelfCallable()");
+  }
+
+  public UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable() {
+    throw new UnsupportedOperationException("Not implemented: listShelvesPagedCallable()");
   }
 
   public UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
@@ -9740,6 +9876,7 @@ import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibraryServiceGrpc;
 import com.google.example.library.v1.ListBooksRequest;
@@ -9812,7 +9949,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
   private final UnaryCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
   private final UnaryCallSettings<GetShelfRequest, Shelf> getShelfSettings;
-  private final UnaryCallSettings<ListShelvesRequest, ListShelvesResponse> listShelvesSettings;
+  private final PagedCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
   private final UnaryCallSettings<DeleteShelfRequest, Empty> deleteShelfSettings;
   private final UnaryCallSettings<MergeShelvesRequest, Shelf> mergeShelvesSettings;
   private final UnaryCallSettings<CreateBookRequest, Book> createBookSettings;
@@ -9859,7 +9996,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   /**
    * Returns the object with the settings used for calls to listShelves.
    */
-  public UnaryCallSettings<ListShelvesRequest, ListShelvesResponse> listShelvesSettings() {
+  public PagedCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
     return listShelvesSettings;
   }
 
@@ -10179,6 +10316,38 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     privateListShelvesSettings = settingsBuilder.privateListShelvesSettings().build();
   }
 
+  private static final PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
+      new PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf>() {
+        @Override
+        public String emptyToken() {
+          return "";
+        }
+        @Override
+        public ListShelvesRequest injectToken(ListShelvesRequest payload, String token) {
+          return ListShelvesRequest
+            .newBuilder(payload)
+            .setPageToken(token)
+            .build();
+        }
+        @Override
+        public ListShelvesRequest injectPageSize(ListShelvesRequest payload, int pageSize) {
+          throw new UnsupportedOperationException("page size is not supported by this API method");
+        }
+        @Override
+        public Integer extractPageSize(ListShelvesRequest payload) {
+          throw new UnsupportedOperationException("page size is not supported by this API method");
+        }
+        @Override
+        public String extractNextToken(ListShelvesResponse payload) {
+          return payload.getNextPageToken();
+        }
+        @Override
+        public Iterable<Shelf> extractResources(ListShelvesResponse payload) {
+          return payload.getShelvesList() != null ? payload.getShelvesList() :
+            ImmutableList.<Shelf>of();
+        }
+      };
+
   private static final PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_STR_DESC =
       new PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book>() {
         @Override
@@ -10281,6 +10450,20 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
         public Iterable<String> extractResources(FindRelatedBooksResponse payload) {
           return payload.getNamesList() != null ? payload.getNamesList() :
             ImmutableList.<String>of();
+        }
+      };
+
+  private static final PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> LIST_SHELVES_PAGE_STR_FACT =
+      new PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse>() {
+        @Override
+        public ApiFuture<ListShelvesPagedResponse> getFuturePagedResponse(
+            UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
+            ListShelvesRequest request,
+            ApiCallContext context,
+            ApiFuture<ListShelvesResponse> futureResponse) {
+          PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> pageContext =
+              PageContext.create(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
+          return ListShelvesPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
@@ -10456,7 +10639,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
     private final UnaryCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings;
     private final UnaryCallSettings.Builder<GetShelfRequest, Shelf> getShelfSettings;
-    private final UnaryCallSettings.Builder<ListShelvesRequest, ListShelvesResponse> listShelvesSettings;
+    private final PagedCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
     private final UnaryCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings;
     private final UnaryCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings;
     private final UnaryCallSettings.Builder<CreateBookRequest, Book> createBookSettings;
@@ -10492,7 +10675,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       ImmutableMap.Builder<String, ImmutableSet<StatusCode.Code>> definitions = ImmutableMap.builder();
       definitions.put(
           "idempotent",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
+          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.UNAVAILABLE)));
       definitions.put(
           "non_idempotent",
           ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
@@ -10528,7 +10711,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       getShelfSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
-      listShelvesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+      listShelvesSettings = PagedCallSettings.newBuilder(
+          LIST_SHELVES_PAGE_STR_FACT);
 
       deleteShelfSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
@@ -10896,7 +11080,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     /**
      * Returns the builder for the settings used for calls to listShelves.
      */
-    public UnaryCallSettings.Builder<ListShelvesRequest, ListShelvesResponse> listShelvesSettings() {
+    public PagedCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
       return listShelvesSettings;
     }
 
@@ -11350,7 +11534,7 @@ public class MyProtoStubSettings extends StubSettings<MyProtoStubSettings> {
       ImmutableMap.Builder<String, ImmutableSet<StatusCode.Code>> definitions = ImmutableMap.builder();
       definitions.put(
           "idempotent",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
+          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.UNAVAILABLE)));
       definitions.put(
           "non_idempotent",
           ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
@@ -11482,6 +11666,7 @@ import com.google.common.collect.Lists;
 import com.google.example.library.v1.Comment;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
+import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.SomeMessage2;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
@@ -11758,17 +11943,22 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void listShelvesTest() {
-    String nextPageToken = "nextPageToken-1530815211";
+    String nextPageToken = "";
+    Shelf shelvesElement = Shelf.newBuilder().build();
+    List<Shelf> shelves = Arrays.asList(shelvesElement);
     ListShelvesResponse expectedResponse = ListShelvesResponse.newBuilder()
       .setNextPageToken(nextPageToken)
+      .addAllShelves(shelves)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
 
 
-    ListShelvesResponse actualResponse =
-        client.listShelves();
-    Assert.assertEquals(expectedResponse, actualResponse);
+    ListShelvesPagedResponse pagedListResponse = client.listShelves();
+
+    List<Shelf> resources = Lists.newArrayList(pagedListResponse.iterateAll());
+    Assert.assertEquals(1, resources.size());
+    Assert.assertEquals(expectedResponse.getShelvesList().get(0), resources.get(0));
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());

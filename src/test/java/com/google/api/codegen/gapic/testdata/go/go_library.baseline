@@ -258,7 +258,6 @@ func defaultCallOptions() *CallOptions {
         {"default", "idempotent"}: {
             gax.WithRetry(func() gax.Retryer {
                 return gax.OnCodes([]codes.Code{
-                    codes.DeadlineExceeded,
                     codes.Unavailable,
                 }, gax.Backoff{
                     Initial: 100*time.Millisecond,
@@ -423,19 +422,41 @@ func (c *LibClient) GetShelf(ctx context.Context, req *librarypb.GetShelfRequest
 }
 
 // ListShelves lists shelves.
-func (c *LibClient) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequest, opts ...gax.CallOption) (*librarypb.ListShelvesResponse, error) {
+func (c *LibClient) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequest, opts ...gax.CallOption) *ShelfIterator {
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.ListShelves[0:len(c.CallOptions.ListShelves):len(c.CallOptions.ListShelves)], opts...)
-    var resp *librarypb.ListShelvesResponse
-    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
-        var err error
-        resp, err = c.client.ListShelves(ctx, req, settings.GRPC...)
-        return err
-    }, opts...)
-    if err != nil {
-        return nil, err
+    it := &ShelfIterator{}
+    req = proto.Clone(req).(*librarypb.ListShelvesRequest)
+    it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Shelf, string, error) {
+        var resp *librarypb.ListShelvesResponse
+        req.PageToken = pageToken
+        if pageSize > math.MaxInt32 {
+            req.PageSize = math.MaxInt32
+        } else {
+            req.PageSize = int32(pageSize)
+        }
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+            var err error
+            resp, err = c.client.ListShelves(ctx, req, settings.GRPC...)
+            return err
+        }, opts...)
+        if err != nil {
+            return nil, "", err
+        }
+        return resp.Shelves, resp.NextPageToken, nil
     }
-    return resp, nil
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
+        if err != nil {
+            return "", err
+        }
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
+    }
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
+    it.pageInfo.MaxSize = int(req.PageSize)
+    it.pageInfo.Token = req.PageToken
+    return it
 }
 
 // DeleteShelf deletes a shelf.
@@ -956,6 +977,48 @@ func (it *BookIterator) takeBuf() interface{} {
     return b
 }
 
+// ShelfIterator manages a stream of *librarypb.Shelf.
+type ShelfIterator struct {
+    items    []*librarypb.Shelf
+    pageInfo *iterator.PageInfo
+    nextFunc func() error
+
+    // InternalFetch is for use by the Google Cloud Libraries only.
+    // It is not part of the stable interface of this package.
+    //
+    // InternalFetch returns results from a single call to the underlying RPC.
+    // The number of results is no greater than pageSize.
+    // If there are no more results, nextPageToken is empty and err is nil.
+    InternalFetch func(pageSize int, pageToken string) (results []*librarypb.Shelf, nextPageToken string, err error)
+}
+
+// PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
+func (it *ShelfIterator) PageInfo() *iterator.PageInfo {
+    return it.pageInfo
+}
+
+// Next returns the next result. Its second return value is iterator.Done if there are no more
+// results. Once Next returns Done, all subsequent calls will return Done.
+func (it *ShelfIterator) Next() (*librarypb.Shelf, error) {
+    var item *librarypb.Shelf
+    if err := it.nextFunc(); err != nil {
+        return item, err
+    }
+    item = it.items[0]
+    it.items = it.items[1:]
+    return item, nil
+}
+
+func (it *ShelfIterator) bufLen() int {
+    return len(it.items)
+}
+
+func (it *ShelfIterator) takeBuf() interface{} {
+    b := it.items
+    it.items = nil
+    return b
+}
+
 // StringIterator manages a stream of string.
 type StringIterator struct {
     items    []string
@@ -1208,12 +1271,18 @@ func ExampleClient_ListShelves() {
     req := &librarypb.ListShelvesRequest{
         // TODO: Fill request struct fields.
     }
-    resp, err := c.ListShelves(ctx, req)
-    if err != nil {
-        // TODO: Handle error.
+    it := c.ListShelves(ctx, req)
+    for {
+        resp, err := it.Next()
+        if err == iterator.Done {
+            break
+        }
+        if err != nil {
+            // TODO: Handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
     }
-    // TODO: Use resp.
-    _ = resp
 }
 
 func ExampleClient_DeleteShelf() {
@@ -2365,9 +2434,12 @@ func TestLibraryServiceGetShelfError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceListShelves(t *testing.T) {
-    var nextPageToken string = "nextPageToken-1530815211"
+    var nextPageToken string = ""
+    var shelvesElement *librarypb.Shelf = &librarypb.Shelf{}
+    var shelves = []*librarypb.Shelf{shelvesElement}
     var expectedResponse = &librarypb.ListShelvesResponse{
         NextPageToken: nextPageToken,
+        Shelves: shelves,
     }
 
     mockLibrary.err = nil
@@ -2382,7 +2454,7 @@ func TestLibraryServiceListShelves(t *testing.T) {
         t.Fatal(err)
     }
 
-    resp, err := c.ListShelves(context.Background(), request)
+    resp, err := c.ListShelves(context.Background(), request).Next()
 
     if err != nil {
         t.Fatal(err)
@@ -2392,7 +2464,17 @@ func TestLibraryServiceListShelves(t *testing.T) {
         t.Errorf("wrong request %q, want %q", got, want)
     }
 
-    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+    want := (interface{})(expectedResponse.Shelves[0])
+    got := (interface{})(resp)
+    var ok bool
+
+    switch want := (want).(type) {
+    case proto.Message:
+        ok = proto.Equal(want, got.(proto.Message))
+    default:
+        ok = want == got
+    }
+    if !ok {
         t.Errorf("wrong response %q, want %q)", got, want)
     }
 }
@@ -2408,7 +2490,7 @@ func TestLibraryServiceListShelvesError(t *testing.T) {
         t.Fatal(err)
     }
 
-    resp, err := c.ListShelves(context.Background(), request)
+    resp, err := c.ListShelves(context.Background(), request).Next()
 
     if st, ok := gstatus.FromError(err); !ok {
         t.Errorf("got error %v, expected grpc error", err)
