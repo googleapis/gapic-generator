@@ -44,7 +44,6 @@ interfaces:
       - name: idempotent
         retry_codes:
           - UNAVAILABLE
-          - DEADLINE_EXCEEDED
       - name: non_idempotent
         retry_codes: []
     retry_params_def:
@@ -90,6 +89,12 @@ interfaces:
           - region_tag: sample_get_shelf
             value_sets: test_default_calling_form_unary
       - name: ListShelves
+        page_streaming:
+          request:
+            token_field: page_token
+          response:
+            token_field: next_page_token
+            resources_field: shelves
         retry_params_name: default
         timeout_millis: 3000
         sample_value_sets:

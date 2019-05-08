@@ -165,7 +165,12 @@ message MethodConfigProto {
   // The fully qualified name of the method.
   string name = 1;
 
-  reserved 2, 3, 7, 8, 9, 14, 15;
+  // Specifies the configuration for paging. Overrides the default behavior in
+  // https://cloud.google.com/apis/design/design_patterns#list_pagination.
+  // See https://github.com/googleapis/gapic-generator/issues/2738.
+  PageStreamingConfigProto page_streaming = 3;
+
+  reserved 2, 7, 8, 9, 14, 15;
 
   // Specifies the configuration for gRPC-streaming responses.
   // Note that this is for configuring paged gRPC-streaming responses.
@@ -389,10 +394,22 @@ enum ResourceNameTreatment {
 // `PageStreamingConfigProto` describes information for generating a method which
 // transforms a paging list rpc into a stream of resources.
 message PageStreamingConfigProto {
-  reserved 1;
+  // Specifies request information of the list method.
+  PageStreamingRequestProto request = 1;
 
   // Specifies response information of the list method.
   PageStreamingResponseProto response = 2;
+}
+
+// `PageStreamingRequestProto` defines which fields match the paging pattern in
+// the request.
+message PageStreamingRequestProto {
+  // The name of the field in the request containing the page token.
+  string token_field = 1;
+
+  // Optional. The name of the field, if present, specifying the maximum number
+  // of elements to be returned in the response.
+  string page_size_field = 2;
 }
 
 // `PageStreamingResponseProto` defines which fields match the paging pattern in

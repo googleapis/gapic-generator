@@ -2865,6 +2865,10 @@ module Library
       DEFAULT_TIMEOUT = 30
 
       PAGE_DESCRIPTORS = {
+        "list_shelves" => Google::Gax::PageDescriptor.new(
+          "page_token",
+          "next_page_token",
+          "shelves"),
         "list_books" => Google::Gax::PageDescriptor.new(
           "page_token",
           "next_page_token",
@@ -3388,33 +3392,38 @@ module Library
 
       # Lists shelves.
       #
-      # @param page_token [String]
-      #   A token identifying a page of results the server should return.
-      #   Typically, this is the value of
-      #   {Google::Example::Library::V1::ListShelvesResponse#next_page_token ListShelvesResponse#next_page_token}
-      #   returned from the previous call to `ListShelves` method.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
       # @yield [result, operation] Access the result along with the RPC operation
-      # @yieldparam result [Google::Example::Library::V1::ListShelvesResponse]
+      # @yieldparam result [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Shelf>]
       # @yieldparam operation [GRPC::ActiveCall::Operation]
-      # @return [Google::Example::Library::V1::ListShelvesResponse]
+      # @return [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Shelf>]
+      #   An enumerable of Google::Example::Library::V1::Shelf instances.
+      #   See Google::Gax::PagedEnumerable documentation for other
+      #   operations such as per-page iteration or access to the response
+      #   object.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   response = library_client.list_shelves
+      #
+      #   # Iterate over all results.
+      #   library_client.list_shelves.each do |element|
+      #     # Process element.
+      #   end
+      #
+      #   # Or iterate over results one page at a time.
+      #   library_client.list_shelves.each_page do |page|
+      #     # Process each page at a time.
+      #     page.each do |element|
+      #       # Process element.
+      #     end
+      #   end
 
-      def list_shelves \
-          page_token: nil,
-          options: nil,
-          &block
-        req = {
-          page_token: page_token
-        }.delete_if { |_, v| v.nil? }
-        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListShelvesRequest)
+      def list_shelves options: nil, &block
+        req = Google::Example::Library::V1::ListShelvesRequest.new
         @list_shelves.call(req, options, &block)
       end
 
@@ -4904,7 +4913,6 @@ end
     "google.example.library.v1.LibraryService": {
       "retry_codes": {
         "idempotent": [
-          "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
         "non_idempotent": []
@@ -5297,7 +5305,6 @@ end
     "google.example.library.v1.MyProto": {
       "retry_codes": {
         "idempotent": [
-          "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
         "non_idempotent": []
@@ -5357,7 +5364,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "yard", "~> 0.9"
 end
 
-============== file: samples/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.rb ==============
+============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5403,7 +5410,7 @@ require "optparse"
 if $0 == __FILE__
   sample_babble_about_book
 end
-============== file: samples/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb ==============
+============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5446,7 +5453,7 @@ require "optparse"
 if $0 == __FILE__
   sample_babble_about_book
 end
-============== file: samples/delete_shelf_request_empty_response_type_with_response_handling.rb ==============
+============== file: samples/v1/delete_shelf_request_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5490,7 +5497,7 @@ require "optparse"
 if $0 == __FILE__
   sample_delete_shelf
 end
-============== file: samples/delete_shelf_request_empty_response_type_without_response_handling.rb ==============
+============== file: samples/v1/delete_shelf_request_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5531,7 +5538,7 @@ require "optparse"
 if $0 == __FILE__
   sample_delete_shelf
 end
-============== file: samples/find_related_books_request_paged_all_odyssey.rb ==============
+============== file: samples/v1/find_related_books_request_paged_all_odyssey.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5579,7 +5586,7 @@ require "optparse"
 if $0 == __FILE__
   sample_find_related_books
 end
-============== file: samples/find_related_books_request_paged_odyssey.rb ==============
+============== file: samples/v1/find_related_books_request_paged_odyssey.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5630,7 +5637,7 @@ require "optparse"
 if $0 == __FILE__
   sample_find_related_books
 end
-============== file: samples/get_big_book_long_running_request_async_wap.rb ==============
+============== file: samples/v1/get_big_book_long_running_request_async_wap.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5707,7 +5714,7 @@ if $0 == __FILE__
 
   sample_get_big_book(shelf)
 end
-============== file: samples/get_big_book_long_running_request_async_wap2.rb ==============
+============== file: samples/v1/get_big_book_long_running_request_async_wap2.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5775,7 +5782,7 @@ if $0 == __FILE__
 
   sample_get_big_book(shelf, big_book_name)
 end
-============== file: samples/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb ==============
+============== file: samples/v1/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5827,7 +5834,7 @@ require "optparse"
 if $0 == __FILE__
   sample_get_big_nothing
 end
-============== file: samples/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb ==============
+============== file: samples/v1/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5876,7 +5883,7 @@ require "optparse"
 if $0 == __FILE__
   sample_get_big_nothing
 end
-============== file: samples/get_book_request_test_on_success_map.rb ==============
+============== file: samples/v1/get_book_request_test_on_success_map.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5921,7 +5928,7 @@ require "optparse"
 if $0 == __FILE__
   sample_get_book
 end
-============== file: samples/lovelace.rb ==============
+============== file: samples/v1/lovelace.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5964,7 +5971,7 @@ require "optparse"
 if $0 == __FILE__
   sample_stream_books
 end
-============== file: samples/monolog_about_book_request_streaming_client_prog.rb ==============
+============== file: samples/v1/monolog_about_book_request_streaming_client_prog.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6009,7 +6016,7 @@ require "optparse"
 if $0 == __FILE__
   sample_monolog_about_book
 end
-============== file: samples/publish_series_request_pi_version.rb ==============
+============== file: samples/v1/publish_series_request_pi_version.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6089,7 +6096,7 @@ if $0 == __FILE__
 
   sample_publish_series(shelf_name, edition)
 end
-============== file: samples/publish_series_request_second_edition.rb ==============
+============== file: samples/v1/publish_series_request_second_edition.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6134,7 +6141,7 @@ require "optparse"
 if $0 == __FILE__
   sample_publish_series
 end
-============== file: samples/publish_series_request_test_request_object_field_comments.rb ==============
+============== file: samples/v1/publish_series_request_test_request_object_field_comments.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6202,7 +6209,7 @@ require "optparse"
 if $0 == __FILE__
   sample_publish_series
 end
-============== file: samples/publish_series_request_test_write_to_file.rb ==============
+============== file: samples/v1/publish_series_request_test_write_to_file.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6253,7 +6260,7 @@ require "optparse"
 if $0 == __FILE__
   sample_publish_series
 end
-============== file: samples/sample_get_shelf.rb ==============
+============== file: samples/v1/sample_get_shelf.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6296,7 +6303,7 @@ require "optparse"
 if $0 == __FILE__
   sample_get_shelf
 end
-============== file: samples/stream_shelves_request_streaming_server_empty.rb ==============
+============== file: samples/v1/stream_shelves_request_streaming_server_empty.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6339,7 +6346,7 @@ require "optparse"
 if $0 == __FILE__
   sample_stream_shelves
 end
-============== file: samples/test_default_calling_form_for_paging.rb ==============
+============== file: samples/v1/test_default_calling_form_for_paging.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6354,7 +6361,7 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_paging")
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_paging")
 
 require "library"
 
@@ -6366,8 +6373,10 @@ def sample_list_shelves
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  response = library_client.list_shelves
-  puts "shelf name: #{response}"
+  # Iterate over all results.
+  library_client.list_shelves.each do |element|
+    puts "shelf name: #{element}"
+  end
 
   # [END test_default_calling_form_for_paging_core]
 end
@@ -6379,7 +6388,7 @@ require "optparse"
 if $0 == __FILE__
   sample_list_shelves
 end
-============== file: samples/this_tag_should_be_the_name_of_the_file.rb ==============
+============== file: samples/v1/this_tag_should_be_the_name_of_the_file.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6456,7 +6465,7 @@ if $0 == __FILE__
 
   sample_get_big_book(shelf)
 end
-============== file: samples/turing_prog_request_streaming_bidi.rb ==============
+============== file: samples/v1/turing_prog_request_streaming_bidi.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6759,8 +6768,10 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes list_shelves without error' do
       # Create expected grpc response
-      next_page_token = "nextPageToken-1530815211"
-      expected_response = { next_page_token: next_page_token }
+      next_page_token = ""
+      shelves_element = {}
+      shelves = [shelves_element]
+      expected_response = { next_page_token: next_page_token, shelves: shelves }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::ListShelvesResponse)
 
       # Mock Grpc layer
@@ -6780,14 +6791,10 @@ describe Library::V1::LibraryServiceClient do
           response = client.list_shelves
 
           # Verify the response
-          assert_equal(expected_response, response)
-
-          # Call method with block
-          client.list_shelves do |response, operation|
-            # Verify the response
-            assert_equal(expected_response, response)
-            refute_nil(operation)
-          end
+          assert(response.instance_of?(Google::Gax::PagedEnumerable))
+          assert_equal(expected_response, response.page.response)
+          assert_nil(response.next_page)
+          assert_equal(expected_response.shelves.to_a, response.to_a)
         end
       end
     end
