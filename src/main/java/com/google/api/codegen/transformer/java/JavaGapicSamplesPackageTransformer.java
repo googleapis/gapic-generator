@@ -18,6 +18,7 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.java.JavaUtil;
 import com.google.api.codegen.packagegen.java.JavaPackageTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -35,7 +36,11 @@ public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
   private final PackageMetadataConfig packageConfig;
 
   public JavaGapicSamplesPackageTransformer(PackageMetadataConfig packageConfig) {
-    super(ImmutableMap.of("java/build_gapic_samples.gradle.snip", "samples/build.gradle"), null);
+    super(
+        ImmutableMap.of(
+            "java/build_gapic_samples.gradle.snip",
+            JavaUtil.getSampleArtifactDirectoryName(packageConfig.packageName()) + "/build.gradle"),
+        null);
     this.packageConfig = packageConfig;
   }
 

@@ -51,20 +51,11 @@ public abstract class JavaGapicCodePathMapper implements GapicCodePathMapper {
     ArrayList<String> dirs = new ArrayList<>();
     boolean hasSample = !Strings.isNullOrEmpty(methodName);
     if (hasSample) {
-      dirs.add(SAMPLES_DIRECTORY);
       dirs.add(prefix());
       for (String seg :
           JavaSurfaceNamer.getExamplePackageName(config.getPackageName()).split(PACKAGE_SPLITTER)) {
         dirs.add(seg.toLowerCase());
       }
-
-      // The Java package name at the top of each sample file must match the output path for
-      // that file. This means that since we want the output path to eventually be of the form
-      // `samples/src/main/java/com/google/cloud/examples/API_NAME/VER/METHOD_NAME/SAMPLE_NAME.java`,
-      // we need to make `methodName` be the last element of the Java package name at the top of the
-      // sample file. This is non-trivial to do, so we'll do it separately. Once we do it, we can
-      // then make `methodName` be the final path element for this output path so that they continue
-      // to match by calling `dirs.add(methodName)` here.
     } else {
       dirs.add(prefix());
       for (String seg : config.getPackageName().split(PACKAGE_SPLITTER)) {

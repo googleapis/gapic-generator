@@ -32,6 +32,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.java.JavaGapicCodePathMapper;
+import com.google.api.codegen.java.JavaUtil;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -224,17 +225,26 @@ public class GapicGeneratorFactory {
                   .setModelToViewTransformer(transformer)
                   .build();
 
+      String gapicArtifactDir = JavaUtil.getGapicArtifactDirectoryName(packageConfig.packageName());
       if (artifactFlags.surfaceGeneratorEnabled()) {
         GapicCodePathMapper javaPathMapper =
-            JavaGapicCodePathMapper.newBuilder().prefix("src/main/java").build();
-
+            JavaGapicCodePathMapper.newBuilder()
+                .prefix(gapicArtifactDir + "/src/main/java")
+                .build();
         if (artifactFlags.codeFilesEnabled()) {
           generators.add(newJavaGenerator.apply(new JavaGapicSurfaceTransformer(javaPathMapper)));
-          if (devSamples) {
-            generators.add(newJavaGenerator.apply(new JavaGapicSamplesTransformer(javaPathMapper)));
-            generators.add(
-                newJavaGenerator.apply(new JavaGapicSamplesPackageTransformer(packageConfig)));
-          }
+        }
+
+        if (devSamples) {
+          String sampleArtifactDir =
+              JavaUtil.getSampleArtifactDirectoryName(packageConfig.packageName());
+          javaPathMapper =
+              JavaGapicCodePathMapper.newBuilder()
+                  .prefix(sampleArtifactDir + "/src/main/java")
+                  .build();
+          generators.add(newJavaGenerator.apply(new JavaGapicSamplesTransformer(javaPathMapper)));
+          generators.add(
+              newJavaGenerator.apply(new JavaGapicSamplesPackageTransformer(packageConfig)));
         }
 
         if (artifactFlags.packagingFilesEnabled()) {
@@ -243,18 +253,18 @@ public class GapicGeneratorFactory {
           CodeGenerator staticResourcesGenerator =
               new StaticResourcesGenerator(
                   ImmutableMap.<String, String>builder()
-                      .put("java/static/build.gradle", "../build.gradle")
-                      .put("java/static/settings.gradle", "../settings.gradle")
-                      .put("java/static/gradlew", "../gradlew")
-                      .put("java/static/gradlew.bat", "../gradlew.bat")
+                      .put("java/static/build.gradle", "build.gradle")
+                      .put("java/static/settings.gradle", "settings.gradle")
+                      .put("java/static/gradlew", "gradlew")
+                      .put("java/static/gradlew.bat", "gradlew.bat")
                       .put(
                           "java/static/gradle/wrapper/gradle-wrapper.jar",
-                          "../gradle/wrapper/gradle-wrapper.jar")
+                          "gradle/wrapper/gradle-wrapper.jar")
                       .put(
                           "java/static/gradle/wrapper/gradle-wrapper.properties",
-                          "../gradle/wrapper/gradle-wrapper.properties")
+                          "gradle/wrapper/gradle-wrapper.properties")
                       .build(),
-                  ImmutableSet.of("../gradlew"));
+                  ImmutableSet.of("gradlew"));
           generators.add(staticResourcesGenerator);
         }
       }
@@ -262,7 +272,9 @@ public class GapicGeneratorFactory {
       if (artifactFlags.testGeneratorEnabled()) {
         if (artifactFlags.codeFilesEnabled()) {
           GapicCodePathMapper javaTestPathMapper =
-              JavaGapicCodePathMapper.newBuilder().prefix("src/test/java").build();
+              JavaGapicCodePathMapper.newBuilder()
+                  .prefix(gapicArtifactDir + "/src/test/java")
+                  .build();
           generators.add(
               newJavaGenerator.apply(
                   new JavaSurfaceTestTransformer<>(
