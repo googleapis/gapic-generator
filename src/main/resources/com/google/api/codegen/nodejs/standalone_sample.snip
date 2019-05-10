@@ -119,7 +119,11 @@
     @join param : sample.sampleInitCode.argDefaultParams
       .option('{@param.cliFlagName}', {
         default: {@renderInitValue(param.initValue)},
-        {@param.typeName}: true
+        @if param.isEnum
+          string: true
+        @else
+          {@param.typeName}: true
+        @end
       })
     @end
     .argv;
