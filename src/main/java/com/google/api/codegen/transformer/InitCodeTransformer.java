@@ -442,6 +442,7 @@ public class InitCodeTransformer {
               .initValue(simpleInitLine.initValue())
               .identifier(simpleInitLine.identifier())
               .typeName(simpleInitLine.typeName())
+              .isEnum(simpleInitLine.isEnum())
               .cliFlagName(param.getIdentifier().toLowerUnderscore())
               .description(param.getDescription())
               .build());
@@ -521,7 +522,7 @@ public class InitCodeTransformer {
     } else {
       surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
     }
-
+    surfaceLine.isEnum(item.getType().isEnum());
     surfaceLine.identifier(getVariableName(context, item));
     setInitValueAndComments(surfaceLine, context, item, isFirstItem);
 

@@ -22,6 +22,8 @@ public abstract class SampleFunctionParameterView {
 
   public abstract String typeName();
 
+  public abstract boolean isEnum();
+
   public abstract String identifier();
 
   public abstract InitValueView initValue();
@@ -39,6 +41,8 @@ public abstract class SampleFunctionParameterView {
   public abstract static class Builder {
 
     public abstract Builder typeName(String val);
+
+    public abstract Builder isEnum(boolean val);
 
     public abstract Builder identifier(String val);
 
