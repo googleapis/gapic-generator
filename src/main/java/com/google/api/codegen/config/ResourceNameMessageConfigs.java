@@ -85,9 +85,15 @@ public abstract class ResourceNameMessageConfigs {
               || field.getSimpleName().equals(resourceFieldName)) {
             continue;
           }
+
           ResourceReference reference = parser.getResourceReference(field);
           boolean isChildReference = !Strings.isNullOrEmpty(reference.getChildType());
           String type = isChildReference ? reference.getChildType() : reference.getType();
+          if (type.equals("*")) {
+            // This is an AnyResourceNameConfig.
+            fieldEntityMapBuilder.put(field.getSimpleName(), "*");
+            continue;
+          }
           String entityName =
               getResourceDescriptorTypeForField(
                   isChildReference, diagCollector, descriptorConfigMap, type, message, field);
