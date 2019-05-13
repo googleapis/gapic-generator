@@ -12,37 +12,41 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+def _set_args(arg, arg_name, args, inputs = None, required=False):
+    if not arg:
+        if required:
+            fail("Missing required argument", arg_name)
+        return
+    args.append("%s%s" % (arg_name, arg.files.to_list()[0].path if hasattr(arg, "files") else arg))
+    if inputs != None:
+        inputs.append(arg.files.to_list()[0])
+
 def _gapic_srcjar_impl(ctx):
-    output = ctx.outputs.output
-    optional_arguments = []
-    optional_action_inputs = []
+    arguments = []
+    inputs = []
 
-    if ctx.file.service_yaml:
-        optional_arguments.append("--service_yaml=%s" % ctx.file.service_yaml.path)
-        optional_action_inputs.append(ctx.file.service_yaml)
-    if ctx.attr.package_yaml2:
-        optional_arguments.append("--package_yaml2=%s" % ctx.file.package_yaml2.path)
-        optional_action_inputs.append(ctx.file.package_yaml2)
-
-    if ctx.attr.artifact_type.find("DISCOGAPIC") >= 0:
-        optional_arguments.append("--discovery_doc=%s" % ctx.file.src.path)
+    attr = ctx.attr
+    if attr.artifact_type:
+        _set_args(attr.artifact_type, "", arguments)
+        if ctx.attr.artifact_type.find("DISCOGAPIC") >= 0:
+            _set_args(attr.src, "--discovery_doc=", arguments, inputs)
+        else:
+            _set_args(attr.src, "--descriptor_set=", arguments, inputs)
+        _set_args(attr.gapic_yaml, "--gapic_yaml=", arguments, inputs)
+        _set_args(attr.language, "--language=", arguments, required = True)
+        _set_args(attr.service_yaml, "--service_yaml=", arguments, inputs)
+        _set_args(attr.package_yaml2, "--package_yaml2=", arguments, inputs)
     else:
-        if not ctx.attr.service_yaml:
-            fail("Missing mandatory attribute `service_yaml`")
-        optional_arguments.append("--descriptor_set=%s" % ctx.file.src.path)
+        _set_args(attr.language, "--language=", arguments)
+        _set_args(attr.src, "--descriptor=", arguments, inputs)
+        _set_args(attr.package, "--package=", arguments)
 
-    arguments = [
-        ctx.attr.artifact_type,
-        "--language=%s" % ctx.attr.language,
-        "--gapic_yaml=%s" % ctx.file.gapic_yaml.path,
-        "--output=%s" % output.path,
-    ] + optional_arguments
 
     gapic_generator = ctx.executable.gapic_generator
     ctx.actions.run(
-        inputs = [ctx.file.src, ctx.file.gapic_yaml] + optional_action_inputs,
-        outputs = [output],
-        arguments = arguments,
+        inputs = inputs,
+        outputs = [ctx.outputs.output],
+        arguments = arguments + ["--output=%s" % ctx.outputs.output.path],
         progress_message = "%s: `%s %s`" % (ctx.label, gapic_generator.path, " ".join(arguments)),
         executable = gapic_generator,
     )
@@ -56,11 +60,13 @@ gapic_srcjar = rule(
             allow_single_file = True,
             mandatory = True,
         ),
-        "gapic_yaml": attr.label(mandatory = True, allow_single_file = True),
-        "artifact_type": attr.string(mandatory = False, default = "GAPIC_CODE"),
-        "language": attr.string(mandatory = True),
+        "artifact_type": attr.string(mandatory = False), #default = "GAPIC_CODE"
+        "gapic_yaml": attr.label(mandatory = False, allow_single_file = True),
+        "language": attr.string(mandatory = False),
         "service_yaml": attr.label(mandatory = False, allow_single_file = True),
         "package_yaml2": attr.label(mandatory = False),
+        "package": attr.string(mandatory = False),
+        "output_suffix": attr.string(mandatory = False, default = ".srcjar"),
         "gapic_generator": attr.label(
             default = Label("//:gapic_generator"),
             executable = True,
@@ -68,7 +74,7 @@ gapic_srcjar = rule(
         ),
     },
     outputs = {
-        "output": "%{name}.srcjar",
+        "output": "%{name}%{output_suffix}",
     },
     implementation = _gapic_srcjar_impl,
 )
