@@ -1,4 +1,5 @@
 @extends "common.snip"
+@extends "csharp/commandline.snip"
 @extends "csharp/common.snip"
 @extends "csharp/common_initcode.snip"
 
@@ -6,24 +7,22 @@
 @snippet generate(sampleFile)
     @let sampleClass = sampleFile.classView
         @let apiMethod = sampleClass.libraryMethod, sample = sampleClass.sample
-        	{@initialComments(sampleFile.fileHeader)}
+            {@initialComments(sampleFile.fileHeader)}
 
-        // This is a generated sample ("{@sample.callingForm}", "{@sample.valueSet.id}")
+            // This is a generated sample ("{@sample.callingForm}", "{@sample.valueSet.id}")
 
-        // [START {@sample.regionTag}]
-        // FIXME: import everything this sample needs
-        @if sample.sampleImports
-            {@imports(sample.sampleImports)}
+            // [START {@sample.regionTag}]
+            // FIXME: import everything this sample needs
+            @if sample.sampleImports
+                {@imports(sample.sampleImports)}
 
-        @end
-        class {@sampleClass.name}
-        {
-             // [START {@sample.regionTag}_core]
-            @if not(sample.sampleFunctionDoc.isEmpty)
-                {@processDoc(sample.sampleFunctionDoc)}
             @end
-            public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)})
+            public class {@sampleClass.name}
             {
+                // [START {@sample.regionTag}_core]
+                @if not(sample.sampleFunctionDoc.isEmpty)
+                    {@processDoc(sample.sampleFunctionDoc)}
+                @end
                 @switch sample.callingForm
                 #
                 # Unary Methods
@@ -97,15 +96,17 @@
                     Unrecognized callingForm: {@sample.callingForm}
                 @end
                 // [END {@sample.regionTag}_core]
-            }
 
-            // [END {@sample.regionTag}]
-            public static void Main(String[] args)
-            {
-            	// FIXME: pass in commandline arguments
-            	// FIXME: call the sample function
+                // [END {@sample.regionTag}]
+                public static void Main(string[] args)
+                {
+                    {@processCliArguments(sample)}
+                }
+                @if sample.sampleInitCode.argDefaultParams
+
+                    {@optionsClass(sample, apiMethod)}
+                @end
             }
-        }
         @end
     @end
 @end
@@ -126,7 +127,7 @@
     {
         {@asyncClient(apiMethod)}
         {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@methodCall(apiMethod, sample)}
+        {@asyncMethodCall(apiMethod, sample)}
         // FIXME: inspect the results
     }
 @end
@@ -136,7 +137,7 @@
     {
         {@asyncClient(apiMethod)}
         {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@methodCall(apiMethod, sample)}
+        {@asyncMethodCall(apiMethod, sample)}
         // FIXME: inspect the results
     }
 @end
@@ -182,9 +183,9 @@
     {
         {@asyncClient(apiMethod)}
         {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        {@apiMethod.callerResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
             {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-        {@paging(apiMethod, sample)}
+        {@pagingAsync(apiMethod, sample)}
     }
 @end
 
@@ -193,9 +194,9 @@
     {
         {@asyncClient(apiMethod)}
         {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        {@apiMethod.callerResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
             {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-        {@pagingAll(apiMethod, sample)}
+        {@pagingAllAsync(apiMethod, sample)}
     }
 @end
 
@@ -204,9 +205,9 @@
     {
         {@asyncClient(apiMethod)}
         {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        {@apiMethod.callerResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
             {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-        {@pagingPageSize(apiMethod, sample)}
+        {@pagingPageSizeAsync(apiMethod, sample)}
     }
 @end
 
@@ -272,25 +273,25 @@
         // Create task to do something with responses from server
         Task responseHandlerTask = Task.Run(async () =>
                 {
-                        IAsyncEnumerator<{@apiMethod.serviceResponseTypeName}> responseStream = duplexStream.ResponseStream;
-                        while (await responseStream.MoveNext())
-                        {
-                                {@apiMethod.serviceResponseTypeName} response = responseStream.Current;
-                                // FIXME: inspect the results
-                        }
-                        // The response stream has completed
+                    IAsyncEnumerator<{@apiMethod.serviceResponseTypeName}> responseStream = duplexStream.ResponseStream;
+                    while (await responseStream.MoveNext())
+                    {
+                            {@apiMethod.serviceResponseTypeName} response = responseStream.Current;
+                            // FIXME: inspect the results
+                    }
+                    // The response stream has completed
                 });
                 
                 // Send requests to the server
                 bool done = false;
                 while (!done)
                 {
-                        // Initialize a request
-                        {@standaloneSampleInitCode(sample.sampleInitCode)}
-                        // Stream a request to the server
-                        await duplexStream.WriteAsync(request);
-                        
-                        // Set "done" to true when sending requests is complete
+                    // Initialize a request
+                    {@standaloneSampleInitCode(sample.sampleInitCode)}
+                    // Stream a request to the server
+                    await duplexStream.WriteAsync(request);
+                    
+                    // Set "done" to true when sending requests is complete
                 }
                 // Complete writing requests to the stream
                 await duplexStream.WriteCompleteAsync();
@@ -314,8 +315,8 @@
         IAsyncEnumerator<{@snippetMethod.method.serviceResponseTypeName}> responseStream = streamingResponse.ResponseStream;
         while (await responseStream.MoveNext())
         {
-                {@snippetMethod.method.serviceResponseTypeName} response = responseStream.Current;
-                // FIXME: inspect the results
+            {@snippetMethod.method.serviceResponseTypeName} response = responseStream.Current;
+            // FIXME: inspect the results
         }
         // The response stream has completed
     }
@@ -337,12 +338,12 @@
 
 @private syncClient(apiMethod)
     {@apiMethod.apiClassName} {@apiMethod.apiVariableName} = \
-            {@apiMethod.apiClassName}.Create();
+        {@apiMethod.apiClassName}.Create();
 @end
 
 @private asyncClient(apiMethod)
     {@apiMethod.apiClassName} {@apiMethod.apiVariableName} = await \
-            {@apiMethod.apiClassName}.CreateAsync();
+        {@apiMethod.apiClassName}.CreateAsync();
 @end
 
 @private methodCall(apiMethod, sample)
@@ -351,6 +352,16 @@
             {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
     @else
         {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+    @end
+@end
+
+@private asyncMethodCall(apiMethod, sample)
+    @if apiMethod.hasReturnValue
+        {@apiMethod.serviceResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+    @else
+        await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
             {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
     @end
 @end

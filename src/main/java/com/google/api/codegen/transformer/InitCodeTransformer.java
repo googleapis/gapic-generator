@@ -441,6 +441,7 @@ public class InitCodeTransformer {
           SampleFunctionParameterView.newBuilder()
               .initValue(simpleInitLine.initValue())
               .identifier(simpleInitLine.identifier())
+              .upperCamelIdentifier(param.getIdentifier().toUpperCamel())
               .typeName(simpleInitLine.typeName())
               .cliFlagName(param.getIdentifier().toLowerUnderscore())
               .description(param.getDescription())
