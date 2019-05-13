@@ -705,11 +705,6 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<CallingForm> getCallingForms(MethodContext context) {
-    return CallingForm.getCallingForms(context, TargetLanguage.CSHARP);
-  }
-
-  @Override
   public CallingForm getDefaultCallingForm(MethodContext context) {
     return CallingForm.getDefaultCallingForm(context, TargetLanguage.CSHARP);
   }
