@@ -186,9 +186,9 @@ public class GapicGeneratorFactory {
               newCsharpGenerator.apply(
                   CSharpBasicPackageTransformer.forUnitTests(unitTestPathMapper)));
         }
-        if (devSamples) {
-          generators.add(newCsharpGenerator.apply(new CSharpStandaloneSampleTransformer()));
-        }
+      }
+      if (devSamples) {
+        generators.add(newCsharpGenerator.apply(new CSharpStandaloneSampleTransformer()));
       }
 
     } else if (language.equals(GO)) {

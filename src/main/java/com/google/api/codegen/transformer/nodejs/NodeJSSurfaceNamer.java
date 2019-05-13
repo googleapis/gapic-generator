@@ -643,4 +643,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   public CallingForm getDefaultCallingForm(MethodContext context) {
     return CallingForm.getDefaultCallingForm(context, TargetLanguage.NODEJS);
   }
+
+  @Override
+  public boolean usesAsyncAwaitPattern(CallingForm form) {
+    return form == CallingForm.LongRunningPromiseAwait;
+  }
 }
