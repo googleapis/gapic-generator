@@ -119,7 +119,6 @@ public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer
                     context.getInterfaceModel().getFullName(), context.getProductConfig()),
                 sampleFileName)
             .toString();
-    System.out.println(sampleOutputPath);
     StaticLangSampleClassView sampleClassView =
         StaticLangSampleClassView.newBuilder()
             .name(sampleClassName)
