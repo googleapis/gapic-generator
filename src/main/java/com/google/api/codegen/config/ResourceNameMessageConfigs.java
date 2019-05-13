@@ -60,8 +60,8 @@ public abstract class ResourceNameMessageConfigs {
       for (MessageType message : protoFile.getMessages()) {
         ImmutableMap.Builder<String, String> fieldEntityMapBuilder = ImmutableMap.builder();
 
-        ResourceDescriptor resourceDescriptor = parser.getResourceDescriptor(message);
         String resourceFieldName = null;
+        ResourceDescriptor resourceDescriptor = parser.getResourceDescriptor(message);
         if (resourceDescriptor != null) {
           resourceFieldName = resourceDescriptor.getNameField();
           if (Strings.isNullOrEmpty(resourceFieldName)) {
@@ -81,8 +81,11 @@ public abstract class ResourceNameMessageConfigs {
         }
 
         for (Field field : message.getFields()) {
-          if (!parser.hasResourceReference(field)
-              || field.getSimpleName().equals(resourceFieldName)) {
+          if (!parser.hasResourceReference(field)) {
+            continue;
+          }
+          if (field.getSimpleName().equals(resourceFieldName)) {
+            // We've already processed the Resource message's "name" field above.
             continue;
           }
 
@@ -108,16 +111,7 @@ public abstract class ResourceNameMessageConfigs {
         }
       }
     }
-    ImmutableMap<String, ResourceNameMessageConfig> map;
-    try {
-      map = builder.build();
-    } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException(
-          "The field '%s' of Resource message type '%s' "
-              + "was assigned a different resource_reference than the Resource message's "
-              + "resource descriptor type. They must be the same.",
-          e);
-    }
+    ImmutableMap<String, ResourceNameMessageConfig> map = builder.build();
     return new AutoValue_ResourceNameMessageConfigs(map, createFieldsByMessage(protoFiles, map));
   }
 
