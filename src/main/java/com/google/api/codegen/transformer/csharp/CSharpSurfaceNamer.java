@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.AnyResourceNameConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -701,5 +702,10 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
             CallingForm.FlattenedAsyncPagedPageSize,
             CallingForm.LongRunningPromiseAwait)
         .contains(form);
+  }
+
+  @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.CSHARP);
   }
 }

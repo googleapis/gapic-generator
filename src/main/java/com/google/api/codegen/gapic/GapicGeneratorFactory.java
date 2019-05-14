@@ -188,7 +188,9 @@ public class GapicGeneratorFactory {
         }
       }
       if (devSamples) {
-        generators.add(newCsharpGenerator.apply(new CSharpStandaloneSampleTransformer()));
+        GapicCodePathMapper samplePathMapper = newCodePathMapper.apply(".Samples");
+        generators.add(
+            newCsharpGenerator.apply(new CSharpStandaloneSampleTransformer(samplePathMapper)));
       }
 
     } else if (language.equals(GO)) {
