@@ -88,7 +88,6 @@ $ npm install --save @google-cloud/library
   "dependencies": {
     "google-gax": "^0.25.3",
     "google-some-other-package-v1": "^0.2.1",
-    "lodash.merge": "^4.6.0",
     "protobufjs": "^6.8.0"
   },
   "devDependencies": {
@@ -3758,7 +3757,6 @@ module.exports.LibraryServiceClient = LibraryServiceClient;
 
 const gapicConfig = require('./library_service_client_config.json');
 const gax = require('google-gax');
-const merge = require('lodash.merge');
 const path = require('path');
 const protobuf = require('protobufjs');
 
@@ -3844,7 +3842,7 @@ class LibraryServiceClient {
     }
 
     // Load the applicable protos.
-    const protos = merge(
+    const protos = Object.assign(
       {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
