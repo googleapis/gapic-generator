@@ -15,7 +15,6 @@
 
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.MethodConfig;
@@ -27,6 +26,7 @@ import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,16 +63,19 @@ public class JavaMethodViewGenerator {
       MethodConfig methodConfig = context.getMethodConfig(method);
       MethodContext requestMethodContext = context.asRequestMethodContext(method);
 
+      // Paged streaming methods.
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
+                context
+                    .asFlattenedMethodContext(requestMethodContext, flatteningGroup)
+                    .withCallingForms(ImmutableList.of(CallingForm.FlattenedPaged));
             if (!FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
             }
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
+            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generatePagedFlattenedMethod(
                       flattenedMethodContext.withResourceNamesInSamplesOnly()));
@@ -80,12 +83,20 @@ public class JavaMethodViewGenerator {
           }
         }
         apiMethods.add(
-            clientMethodTransformer.generatePagedRequestObjectMethod(requestMethodContext));
-        apiMethods.add(clientMethodTransformer.generatePagedCallableMethod(requestMethodContext));
+            clientMethodTransformer.generatePagedRequestObjectMethod(
+                requestMethodContext.withCallingForms(ImmutableList.of(CallingForm.RequestPaged))));
+        apiMethods.add(
+            clientMethodTransformer.generatePagedCallableMethod(
+                requestMethodContext.withCallingForms(
+                    ImmutableList.of(CallingForm.CallablePaged))));
 
         apiMethods.add(
-            clientMethodTransformer.generateUnpagedListCallableMethod(requestMethodContext));
+            clientMethodTransformer.generateUnpagedListCallableMethod(
+                requestMethodContext.withCallingForms(
+                    Collections.singletonList(CallingForm.CallableList))));
       } else if (methodConfig.isGrpcStreaming()) {
+
+        // gRPC streaming methods.
         List<CallingForm> callingForms;
         ImportTypeTable typeTable = context.getImportTypeTable();
         switch (methodConfig.getGrpcStreamingType()) {
@@ -106,20 +117,26 @@ public class JavaMethodViewGenerator {
                 "Invalid streaming type: " + methodConfig.getGrpcStreamingType());
         }
         apiMethods.add(
-            clientMethodTransformer.generateCallableMethod(requestMethodContext, callingForms));
+            clientMethodTransformer.generateCallableMethod(
+                requestMethodContext.withCallingForms(callingForms)));
       } else if (requestMethodContext.isLongRunningMethodContext()) {
+
+        // LRO methods
         context.getImportTypeTable().saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
+                context
+                    .asFlattenedMethodContext(requestMethodContext, flatteningGroup)
+                    .withCallingForms(
+                        Collections.singletonList(CallingForm.LongRunningFlattenedAsync));
             if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
             }
             apiMethods.add(
                 clientMethodTransformer.generateAsyncOperationFlattenedMethod(
                     flattenedMethodContext));
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
+            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generateAsyncOperationFlattenedMethod(
                       flattenedMethodContext.withResourceNamesInSamplesOnly()));
@@ -128,11 +145,19 @@ public class JavaMethodViewGenerator {
         }
         apiMethods.add(
             clientMethodTransformer.generateAsyncOperationRequestObjectMethod(
-                requestMethodContext));
+                requestMethodContext.withCallingForms(
+                    Collections.singletonList(CallingForm.LongRunningRequestAsync))));
         apiMethods.add(
-            clientMethodTransformer.generateOperationCallableMethod(requestMethodContext));
-        apiMethods.add(clientMethodTransformer.generateCallableMethod(requestMethodContext));
+            clientMethodTransformer.generateOperationCallableMethod(
+                requestMethodContext.withCallingForms(
+                    Collections.singletonList(CallingForm.LongRunningCallable))));
+        apiMethods.add(
+            clientMethodTransformer.generateCallableMethod(
+                requestMethodContext.withCallingForms(
+                    Collections.singletonList(CallingForm.Callable))));
       } else {
+
+        // Unary Methods.
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =
@@ -140,29 +165,32 @@ public class JavaMethodViewGenerator {
             if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
               flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
             }
-            apiMethods.add(clientMethodTransformer.generateFlattenedMethod(flattenedMethodContext));
+            apiMethods.add(
+                clientMethodTransformer.generateFlattenedMethod(
+                    flattenedMethodContext.withCallingForms(
+                        Collections.singletonList(CallingForm.Flattened))));
 
-            if (hasAnyResourceNameParameter(flatteningGroup)) {
+            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
               apiMethods.add(
                   clientMethodTransformer.generateFlattenedMethod(
-                      flattenedMethodContext.withResourceNamesInSamplesOnly()));
+                      flattenedMethodContext
+                          .withResourceNamesInSamplesOnly()
+                          .withCallingForms(Collections.singletonList(CallingForm.Flattened))));
             }
           }
         }
-        apiMethods.add(clientMethodTransformer.generateRequestObjectMethod(requestMethodContext));
+        apiMethods.add(
+            clientMethodTransformer.generateRequestObjectMethod(
+                requestMethodContext.withCallingForms(
+                    Collections.singletonList(CallingForm.Request))));
 
-        apiMethods.add(clientMethodTransformer.generateCallableMethod(requestMethodContext));
+        apiMethods.add(
+            clientMethodTransformer.generateCallableMethod(
+                requestMethodContext.withCallingForms(
+                    Collections.singletonList(CallingForm.Callable))));
       }
     }
 
     return apiMethods;
-  }
-
-  private boolean hasAnyResourceNameParameter(FlatteningConfig flatteningGroup) {
-    return flatteningGroup
-        .getFlattenedFieldConfigs()
-        .values()
-        .stream()
-        .anyMatch(FieldConfig::useResourceNameType);
   }
 }

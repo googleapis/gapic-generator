@@ -50,7 +50,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -94,13 +93,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getFormatFunctionName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
+    return staticFunctionName(resourceNameConfig.getEntityName().join("path"));
   }
 
   @Override
   public String getParseFunctionName(String var, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(
-        Name.from("match", var, "from", resourceNameConfig.getEntityName(), "name"));
+        Name.from("match", var, "from").join(resourceNameConfig.getEntityName()).join("name"));
   }
 
   @Override
@@ -470,22 +469,28 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getPrintSpecs(String spec, List<String> args) {
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.RUBY);
+  }
+
+  @Override
+  public ImmutableList<String> getInterpolatedFormatAndArgs(String spec, List<String> args) {
     spec =
         spec.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("\"", "\\\"");
     if (args.isEmpty()) {
-      return Collections.singletonList(spec);
+      return ImmutableList.of(spec);
     }
     if (args.size() == 1 && "%s".equals(spec)) {
       return ImmutableList.of(spec, args.get(0));
     }
     Object[] formattedArgs =
         args.stream().map(a -> String.format("#{%s}", a)).toArray(Object[]::new);
-    return Collections.singletonList(String.format(spec, formattedArgs));
+    return ImmutableList.of(String.format(spec, formattedArgs));
   }
 
   @Override
-  public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
+  public String getFormattedPrintArgName(
+      ImportTypeTable typeTable, TypeModel type, String variable, List<String> accessors) {
     if (accessors.isEmpty()) {
       return variable;
     }
@@ -505,6 +510,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getMapKeyAccessorName(TypeModel keyType, String key) {
     return String.format("[%s]", getModelTypeFormatter().renderPrimitiveValue(keyType, key));
+  }
+
+  @Override
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toLowerUnderscore() + ".rb";
   }
 
   public String getSampleResponseVarName(MethodContext context, CallingForm form) {

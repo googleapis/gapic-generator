@@ -22,8 +22,10 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -112,40 +114,76 @@ public class SampleSpec {
   }
 
   /**
-   * Returns the SampleValueSets that were specified for this methodForm and sampleType.
-   *
-   * @param methodForm The calling form for which value sets are requested
-   * @param sampleType The sample type for which value sets are requested
-   * @return A set of SampleValueSets for methodForm andSampleType
+   * Matches all the IDs within `targets` that match one or more elements of `expressions`. The IDs
+   * are extracted from elements of targets via `targetToId`."
    */
-  public List<ValueSetAndTags> getMatchingValueSets(CallingForm methodForm, SampleType sampleType) {
-    String methodFormString = Name.anyCamel(methodForm.toString()).toLowerUnderscore();
+  private static <T> List<T> expressionsMatchIds(
+      List<String> expressions, List<T> targets, Function<T, String> targetToId) {
+    return targets
+        .stream()
+        .filter(
+            t ->
+                expressions.stream().anyMatch(exp -> expressionMatchesId(exp, targetToId.apply(t))))
+        .collect(Collectors.toList());
+  }
 
-    // Get the `SampleTypeConfigs` configured for this `methodForm`.
-    List<SampleTypeConfiguration> matchingSamples =
-        getConfigFor(sampleType)
-            .stream()
-            .filter(
-                sampleConfig ->
-                    sampleConfig
-                        .getCallingFormsList()
-                        .stream()
-                        .anyMatch(expression -> expressionMatchesId(expression, methodFormString)))
-            .collect(Collectors.toList());
+  /**
+   * Returns all the valid combinations of calling forms of value sets.
+   *
+   * <p>We match calling forms specified by users with `allValidCallingForms`. If users did not
+   * specify any calling forms, we match `defaultCallingForm` with `allValidCallingForms`. If we
+   * found no matching calling forms, an empty list will be returned. Note this implies that
+   * `defaultCallingForm` can match none of the calling forms in `allValidCallingForms`. For
+   * example, the `defaultCallingForm` for a C# unary call is `Request`, but it's not a valid
+   * calling form when generating asynchronous samples using the generated asynchonous public
+   * method. In this case we will not generate samples for this method.
+   *
+   * <p>We match value sets specified by users with `this.values`. If we find no matching value
+   * sets, we use the default one. For incode samples, we always use the default value set derived
+   * from sample_code_init_fields for backward compatibility.
+   *
+   * <p>We should probably disable default value sets after incode samples stop using
+   * `sample_code_init_fields`.
+   */
+  public List<SampleConfig> getSampleConfigs(
+      List<CallingForm> allValidCallingForms,
+      CallingForm defaultCallingForm,
+      SampleValueSet defaultValueSet,
+      SampleType type) {
+    List<SampleConfig> sampleConfigs = new ArrayList<>();
+    if (type == SampleType.EXPLORER) {
+      throw new UnsupportedOperationException("API Explorer samples unimplemented yet.");
+    } else if (type == SampleType.IN_CODE) {
+      for (CallingForm form : allValidCallingForms) {
+        sampleConfigs.add(SampleConfig.create("", form, defaultValueSet, type));
+      }
+    } else {
+      for (SampleTypeConfiguration config : getConfigFor(type)) {
+        List<CallingForm> matchingCallingForms = null;
+        List<SampleValueSet> matchingValueSets = null;
 
-    // Construct a `ValueSetAndTags` for each sample specified in each element of `matchingSamples`.
-    List<ValueSetAndTags> result = new ArrayList<>();
-    for (SampleValueSet vset : valueSets) {
-      for (SampleTypeConfiguration sample : matchingSamples) {
-        for (String valueSetExpression : sample.getValueSetsList()) {
-          if (expressionMatchesId(valueSetExpression, vset.getId())) {
-            result.add(
-                ValueSetAndTags.newBuilder().values(vset).regionTag(sample.getRegionTag()).build());
+        List<String> callingFormNames =
+            config.getCallingFormsList().isEmpty()
+                ? Collections.singletonList(
+                    Name.anyCamel(defaultCallingForm.toString()).toLowerUnderscore())
+                : config.getCallingFormsList();
+        matchingCallingForms =
+            expressionsMatchIds(
+                callingFormNames, allValidCallingForms, CallingForm::toLowerUnderscore);
+
+        matchingValueSets =
+            expressionsMatchIds(config.getValueSetsList(), valueSets, v -> v.getId());
+
+        for (CallingForm form : matchingCallingForms) {
+          for (SampleValueSet matchingValueSet : matchingValueSets) {
+            sampleConfigs.add(
+                SampleConfig.create(config.getRegionTag(), form, matchingValueSet, type));
           }
         }
       }
     }
-    return result;
+
+    return sampleConfigs;
   }
 
   /** Returns the single {@code SampleTypeConfiguration} for the specified {@code sampleType}. */

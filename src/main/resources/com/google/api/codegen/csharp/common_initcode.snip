@@ -18,6 +18,24 @@
     @end
 @end
 
+# initCodeSpec: InitCodeView
+@snippet standaloneSampleInitCode(initCodeSpec)
+    @if initCodeSpec.argDefaultLines
+        @join line : initCodeSpec.argDefaultLines
+          // {@initCode(TRUE, line)}
+        @end
+
+
+    @end
+    @if initCodeSpec.lines
+        @join line : initCodeSpec.topLevelLines
+            {@initCode(TRUE, line)};
+        @end
+
+    @end
+@end
+
+
 # includeAssignment: Boolean, line: InitCodeLineView
 @private initCode(includeAssignment, line)
     @switch line.lineType.toString
@@ -31,7 +49,20 @@
 
         {
             @join fieldSetting : line.fieldSettings
-                {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
+                @switch fieldSetting.initCodeLine.lineType
+                @case "StructureInitLine"
+                    {@fieldSetting.fieldSetFunction} = new {@fieldSetting.initCodeLine.typeName}
+                    {@innerStructureInitLine(fieldSetting.initCodeLine)},
+                # For correct indentation, the line has to be split here
+                @case "ListInitLine"
+                    {@fieldSetting.fieldSetFunction} = 
+                    {@innerListInitLine(fieldSetting.initCodeLine)},
+                @case "MapInitLine"
+                    {@fieldSetting.fieldSetFunction} =
+                    {@innerMapInitLine(fieldSetting.initCodeLine)},
+                @default
+                    {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
+                @end
             @end
         }
     @case "ListInitLine"
@@ -41,7 +72,17 @@
         @end
         {
             @join child : line.elements
-                {@initCode(FALSE, child)},
+                @switch child.lineType
+                @case "StructureInitLine"
+                    new {@child.typeName}
+                    {@innerStructureInitLine(child)},
+                @case "ListInitLine"
+                    {@innerListInitLine(child)},
+                @case "MapInitLine"
+                    {@innerMapInitLine(child)},
+                @default
+                    {@initCode(FALSE, child)},
+                @end
             @end
         }
     @case "MapInitLine"
@@ -52,7 +93,18 @@
         @end
         {
             @join mapEntry : line.initEntries
-                { {@mapEntry.key}, {@initCode(FALSE, mapEntry.value)} },
+                @switch mapEntry.value.lineType
+                @case "StructureInitLine"
+                    { {@mapEntry.key}, 
+                      new {@fieldSetting.initCodeLine.typeName}
+                      {@innerStructureInitLine(mapEntry.value)} },
+                @case "ListInitLine"
+                    { {@mapEntry.key}, {@innerListInitLine(mapEntry.value)} },
+                @case "MapInitLine"
+                    { {@mapEntry.key}, {@innerMapInitLine(mapEntry.value)} },
+                @default
+                    { {@mapEntry.key}, {@initCode(FALSE, mapEntry.value)} },
+                @end
             @end
         }
     @case "SimpleInitLine"
@@ -61,13 +113,44 @@
         @else
             {@renderInitValue(line.initValue, TRUE)}
         @end
+    @case "ReadFileInitLine"
+        @if includeAssignment
+            ByteString {@line.identifier} = File.ReadAllBytes({@renderInitValue(line.fileName, FALSE)})
+        @else
+            File.ReadAllBytes({@renderInitValue(line.fileName, TRUE)})
+        @end
     @default
         $unhandledCase: {@line.lineType.toString}$
     @end
 @end
 
+@private innerStructureInitLine(line)
+    {
+        @join fieldSetting : line.fieldSettings
+            {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
+        @end
+    }
+@end
+
+
+@private innerListInitLine(line)
+    {
+        @join child : line.elements
+            {@initCode(FALSE, child)},
+        @end
+    }
+@end
+
+@private innerMapInitLine(line)
+    {
+        @join mapEntry : line.initEntries
+            { {@mapEntry.key}, {@initCode(FALSE, mapEntry.value)} },
+        @end
+    }
+@end
+
 #initValue: InitValueView, isObjectInitializer: Boolean
-@private renderInitValue(initValue, isObjectInitializer)
+@snippet renderInitValue(initValue, isObjectInitializer)
     @switch initValue.type
     @case "SimpleInitValueView"
         @if isObjectInitializer

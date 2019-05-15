@@ -5,6 +5,8 @@ syntax = "proto3";
 
 package google.example.library.v1;
 
+import "google/api/resource.proto";
+
 option go_package = "google.golang.org/genproto/googleapis/example/library/v1;library";
 option java_multiple_files = true;
 option java_outer_classname = "BookFromAnywhereProto";
@@ -15,7 +17,8 @@ message BookFromAnywhere {
   // The resource name of the book.
   // Book names have the form `bookShelves/{shelf_id}/books/{book_id}` or
   // `archives/{archive_id}/books/{book_id}`.
-  string name = 1;
+  string name = 1 [
+    (google.api.resource_reference).type = "library.googleapis.com/Book"];
 
   // The name of the book author.
   string author = 2;

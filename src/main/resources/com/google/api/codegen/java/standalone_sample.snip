@@ -6,6 +6,7 @@
 @snippet generate(sampleFile)
   @let apiMethod = sampleFile.classView.libraryMethod, \
        sample = apiMethod.samples.get(0)
+    {@license(sampleFile.fileHeader)}
     // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
     package {@sampleFile.fileHeader.examplePackageName};
     
@@ -19,11 +20,12 @@
       {@importList(sample.sampleImports.appImports)}
 
     @end
-    // [START {@sample.regionTag}]
-    @if sample.sampleImports.appImports.size
-      {@commentedImportList(sample.sampleImports.appImports)}
-    @end
     public class {@sampleFile.classView.name} {
+      // [START {@sample.regionTag}]
+      @if sample.sampleImports.appImports.size
+        {@commentedImportList(sample.sampleImports.appImports)}
+
+      @end
       @if not(sample.sampleFunctionDoc.isEmpty)
         {@processDoc(sample.sampleFunctionDoc)}
       @end
@@ -38,6 +40,7 @@
         }
         // [END {@sample.regionTag}_core]
       }
+      // [END {@sample.regionTag}]
 
       @if sample.sampleInitCode.argDefaultParams.size
         public static void main(String[] args) throws Exception {
@@ -51,9 +54,6 @@
         {@sample.sampleFunctionName}({@commaSeparatedArgs(sample.sampleInitCode.argDefaultParams)});
       }
     }
-    // FIXME: Insert here clean-up code.
-
-    // [END {@sample.regionTag}]
   @end
 @end
 
@@ -343,6 +343,8 @@
         {@processMapLoopView(view)}
       @case "PRINT"
         {@processPrintView(view)}
+      @case "WRITE_FILE"
+        {@processWriteFileView(view)}
       @default
         $unhandledResponseForm: {@view}
     @end
@@ -354,21 +356,17 @@
 @end
 
 @private processDefineView(view)
-  {@view.variableType} {@view.variableName} = {@variableField(view.reference)};
+  {@view.variableTypeName} {@view.variableName} = {@variableField(view.reference)};
 @end
 
 @private processPrintView(view)
-  @if not(view.args.size)
-    System.out.println("{@view.format}");
+  @if view.interpolatedString.args.isEmpty
+    System.out.println("{@view.interpolatedString.format}");
   @else
-    @if view.format == ""
-      System.out.println({@view.args.get(0).formattedName});
+    @if view.interpolatedString.format == "%s"
+      System.out.println({@view.interpolatedString.args.get(0)});
     @else
-      @if view.format == "%s"
-        System.out.println({@view.args.get(0).formattedName});
-      @else
-        System.out.printf("{@view.format}\n", {@commaSeparatedFields(view.args)});
-      @end
+      System.out.printf("{@view.interpolatedString.format}\n", {@commaSeparatedFields(view.interpolatedString.args)});
     @end
   @end
 @end
@@ -403,9 +401,45 @@
 
 @end
 
+@private processWriteFileView(view)
+  @if view.contents.type.isStringType
+    try (FileWriter writer = new FileWriter({@formattedFileName(view.fileName)})) {
+      writer.write({@variableField(view.contents)});
+    }
+  @else
+    @if view.contents.type.isBytesType
+      try (OutputStream out = new FileOutputStream({@formattedFileName(view.fileName)})) {
+        @if view.contents.type.isStringType
+          out.write({@variableField(view.contents)});
+        @else
+          @if view.contents.type.isBytesType
+            out.write({@variableField(view.contents)}.toByteArray());
+          @else
+            $unhandled type: {@view.contents.type}
+          @end
+        @end
+      }
+    @else
+      $unhandled type: {@view.contents.type}
+    @end
+  @end
+@end
+
+@private formattedFileName(fileName)
+  @if fileName.args.isEmpty
+    "{@fileName.format}"
+  @else
+    @if fileName.format == "%s"
+      {@fileName.args.get(0)}.toString()
+    @else
+      String.format("{@fileName.format}", {@commaSeparatedFields(fileName.args)})
+    @end
+  @end
+@end
+
 @private commaSeparatedFields(args)
   @join arg : args on ", "
-    {@arg.formattedName}
+    {@arg}
   @end
 @end
 

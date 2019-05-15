@@ -29,7 +29,6 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
@@ -48,8 +47,6 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "ruby/standalone_sample.snip";
   private static final SampleSpec.SampleType sampleType = SampleSpec.SampleType.STANDALONE;
-
-  private static final String RUBY_SAMPLE_PACKAGE_NAME = "samples";
 
   private final RubyImportSectionTransformer importSectionTransformer =
       new RubyImportSectionTransformer();
@@ -92,12 +89,20 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
                     GapicInterfaceContext.create(
                         i, productConfig, typeTable, namer, new RubyFeatureConfig()))
             .collect(ImmutableList.toImmutableList());
+    List<MethodSampleView> allSamples =
+        interfaceContexts
+            .stream()
+            .flatMap(c -> apiMethodTransformer.generateApiMethods(c).stream())
+            .flatMap(m -> m.samples().stream())
+            .collect(ImmutableList.toImmutableList());
+    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
     ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
     for (InterfaceContext context : interfaceContexts) {
       List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
       for (OptionalArrayMethodView method : methods) {
         for (MethodSampleView sample : method.samples()) {
-          sampleFileViews.add(newSampleFileView(context, method, sample, namer));
+          sampleFileViews.add(
+              newSampleFileView(productConfig, context, method, sample, namer, registry));
         }
       }
     }
@@ -105,26 +110,23 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
   }
 
   private DynamicLangSampleView newSampleFileView(
+      GapicProductConfig productConfig,
       InterfaceContext context,
       OptionalArrayMethodView method,
       MethodSampleView sample,
-      SurfaceNamer namer) {
-    SampleFileRegistry registry = new SampleFileRegistry();
-    String callingForm = sample.callingForm().toLowerUnderscore();
-    String valueSet = sample.valueSet().id();
-    String regionTag = sample.regionTag();
-    String sampleOutputPath =
+      SurfaceNamer namer,
+      SampleFileRegistry registry) {
+    String sampleFileName = registry.getSampleFileName(sample, method.name());
+    String outputPath =
         Paths.get(
-                RUBY_SAMPLE_PACKAGE_NAME,
-                Name.anyLower(method.name(), callingForm, valueSet).toLowerUnderscore() + ".rb")
+                pathMapper.getSamplesOutputPath(
+                    context.getInterfaceModel().getFullName(), productConfig, method.name()),
+                sampleFileName)
             .toString();
-
-    registry.addFile(sampleOutputPath, method.name(), callingForm, valueSet, regionTag);
-
     return DynamicLangSampleView.newBuilder()
         .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
         .fileHeader(fileHeaderTransformer.generateFileHeader(context))
-        .outputPath(sampleOutputPath)
+        .outputPath(outputPath)
         .libraryMethod(method)
         .sample(sample)
         .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))

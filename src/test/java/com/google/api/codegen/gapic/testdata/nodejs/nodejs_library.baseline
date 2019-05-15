@@ -1,5 +1,5 @@
 ============== file: README.md ==============
-# Node.js Client for Google Example Library API ([Production/Stable](https://github.com/GoogleCloudPlatform/google-cloud-node#versioning))
+# Node.js Clients for Google Example Library API ([Production/Stable](https://github.com/GoogleCloudPlatform/google-cloud-node#versioning))
 
 [Google Example Library API][Product Documentation]:
 A simple Google Example Library API.
@@ -88,6 +88,7 @@ $ npm install --save @google-cloud/library
   "dependencies": {
     "google-gax": "^0.25.3",
     "google-some-other-package-v1": "^0.2.1",
+    "lodash.union": "^4.6.0",
     "protobufjs": "^6.8.0"
   },
   "devDependencies": {
@@ -105,6 +106,1319 @@ $ npm install --save @google-cloud/library
   }
 }
 
+============== file: samples/package.json ==============
+{
+  "name": "nodejs-docs-sampleslibrary",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "files": [
+    "*.js"
+  ],
+  "dependencies": {
+    "yargs": "^13.1.0",
+    "@google-cloud/library": "file:.."
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  }
+}
+============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.js ==============
+// DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_with_response_handling")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test response handling for methods that return empty */
+function sampleBabbleAboutBook() {
+  const client = new library.LibraryServiceClient();
+  const stream = client.babbleAboutBook((err, response) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    // No one replied
+    console.log(`No one replied.`);
+  });
+  const request = {};
+  // Write request objects.
+  stream.write(request);
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleBabbleAboutBook();
+============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.js ==============
+// DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test default response handling is turned off for methods that return empty */
+function sampleBabbleAboutBook() {
+  const client = new library.LibraryServiceClient();
+  const stream = client.babbleAboutBook((err, response) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+  });
+  const request = {};
+  // Write request objects.
+  stream.write(request);
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleBabbleAboutBook();
+============== file: samples/v1/delete_shelf_request_empty_response_type_with_response_handling.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test response handling for methods that return empty */
+function sampleDeleteShelf() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.shelfPath('[SHELF_ID]');
+  client.deleteShelf({name: formattedName}).catch(err => {
+    console.error(err);
+  });
+  // Shelf deleted
+  console.log(`Shelf deleted.`);
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleDeleteShelf();
+============== file: samples/v1/delete_shelf_request_empty_response_type_without_response_handling.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test default response handling is turned off for methods that return empty */
+function sampleDeleteShelf() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.shelfPath('[SHELF_ID]');
+  client.deleteShelf({name: formattedName}).catch(err => {
+    console.error(err);
+  });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleDeleteShelf();
+============== file: samples/v1/find_related_books_request_async_paged_all_odyssey.js ==============
+// DO NOT EDIT! This is a generated sample ("RequestAsyncPagedAll",  "odyssey")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Testing calling forms */
+function sampleFindRelatedBooks() {
+  const client = new library.LibraryServiceClient();
+  // Iterate over all elements.
+  const namesElement = 'Odyssey';
+  const names = [namesElement];
+  const shelvesElement = 'Classics';
+  const shelves = [shelvesElement];
+  const request = {
+    names: formattedNames,
+    shelves: formattedShelves,
+  };
+
+  client.findRelatedBooks(request)
+    .then(responses => {
+      const resources = responses[0];
+      for (const resource of resources) {
+        const book = resource;
+        console.log(`Here's a related book: ${book}`);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleFindRelatedBooks();
+============== file: samples/v1/find_related_books_request_async_paged_odyssey.js ==============
+// DO NOT EDIT! This is a generated sample ("RequestAsyncPaged",  "odyssey")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Testing calling forms */
+function sampleFindRelatedBooks() {
+  const client = new library.LibraryServiceClient();
+  // Or obtain the paged response.
+  const namesElement = 'Odyssey';
+  const names = [namesElement];
+  const shelvesElement = 'Classics';
+  const shelves = [shelvesElement];
+  const request = {
+    names: formattedNames,
+    shelves: formattedShelves,
+  };
+
+
+  const options = {autoPaginate: false};
+  const callback = responses => {
+    // The actual resources in a response.
+    const resources = responses[0];
+    // The next request if the response shows that there are more responses.
+    const nextRequest = responses[1];
+    // The actual response object, if necessary.
+    // const rawResponse = responses[2];
+    for (const resource of resources) {
+      const book = resource;
+      console.log(`Here's a related book: ${book}`);
+    }
+    if (nextRequest) {
+      // Fetch the next page.
+      return client.findRelatedBooks(nextRequest, options).then(callback);
+    }
+  }
+  client.findRelatedBooks(request, options)
+    .then(callback)
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleFindRelatedBooks();
+============== file: samples/v1/get_big_book_long_running_event_emitter_wap.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningEventEmitter",  "wap")
+'use strict';
+
+// [START hopper]
+// [START hopper_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Testing calling forms */
+function sampleGetBigBook(shelf) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  const formattedName = client.bookPath(shelf, 'War and Peace');
+
+  // Handle the operation using the event emitter pattern.
+  client.getBigBook({name: formattedName})
+    .then(responses => {
+      const [operation, initApiResponse] = responses;
+
+      // Adding a listener for the "complete" event starts polling for the
+      // completion of the operation.
+      operation.on('complete', (result, metadata, finalApiResponse) => {
+        // Testing iterating over map fields when both key and value are specified.
+        for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
+          console.log(`key: ${myKey}, value: ${myValue}`);
+        }
+
+        // Testing iterating over map fields when only key is specified.
+        for (const anotherKey of Object.keys(result.mapListValueValue)) {
+          console.log(`key: ${anotherKey}`);
+        }
+
+        // Testing iterating over map fields when only value is specified.
+        for (const anotherValue of Object.values(result.mapListValueValue)) {
+          console.log(`value: ${anotherValue}`);
+        }
+
+        console.log(`name: ${result.name}`);
+        console.log(`author: ${result.author}`);
+      });
+
+      // Adding a listener for the "progress" event causes the callback to be
+      // called on any change in metadata when the operation is polled.
+      operation.on('progress', (metadata, apiResponse) => {
+        // doSomethingWith(metadata)
+      });
+
+      // Adding a listener for the "error" event handles any errors found during polling.
+      operation.on('error', err => {
+        // throw(err);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END hopper_core]
+// [END hopper]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .option('shelf', {
+    default: 'Novel',
+    string: true
+  })
+  .argv;
+
+sampleGetBigBook(argv.shelf);
+============== file: samples/v1/get_big_book_long_running_event_emitter_wap2.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningEventEmitter",  "wap2")
+'use strict';
+
+// [START hopper]
+// [START hopper_core]
+
+const library = require('@google-cloud/library').v1;
+
+/**
+ * Testing resource name overlap
+ *
+ * @param shelf {string} Test word wrapping for long lines. This is a long comment. The name of the
+ * shelf to retrieve the big book from.
+ * @param bigBookName {string} The name of the book.
+ */
+function sampleGetBigBook(shelf, bigBookName) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  // const bigBookName = 'War and Peace';
+  const formattedName = client.bookPath(shelf, bigBookName);
+
+  // Handle the operation using the event emitter pattern.
+  client.getBigBook({name: formattedName})
+    .then(responses => {
+      const [operation, initApiResponse] = responses;
+
+      // Adding a listener for the "complete" event starts polling for the
+      // completion of the operation.
+      operation.on('complete', (result, metadata, finalApiResponse) => {
+        console.log(result);
+      });
+
+      // Adding a listener for the "progress" event causes the callback to be
+      // called on any change in metadata when the operation is polled.
+      operation.on('progress', (metadata, apiResponse) => {
+        // doSomethingWith(metadata)
+      });
+
+      // Adding a listener for the "error" event handles any errors found during polling.
+      operation.on('error', err => {
+        // throw(err);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END hopper_core]
+// [END hopper]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .option('shelf', {
+    default: 'Novel',
+    string: true
+  })
+  .option('big_book_name', {
+    default: 'War and Peace',
+    string: true
+  })
+  .argv;
+
+sampleGetBigBook(argv.shelf, argv.big_book_name);
+============== file: samples/v1/get_big_book_long_running_promise_await_wap.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap")
+'use strict';
+
+// [START hopper]
+// [START hopper_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Testing calling forms */
+async function sampleGetBigBook(shelf) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  const formattedName = client.bookPath(shelf, 'War and Peace');
+
+  // Create a job whose results you can either wait for now, or get later
+  const [operation] = await client.getBigBook({name: formattedName});
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+
+  // Testing iterating over map fields when both key and value are specified.
+  for (const [myKey, myValue] of Object.entries(response.mapListValueValue)) {
+    console.log(`key: ${myKey}, value: ${myValue}`);
+  }
+
+  // Testing iterating over map fields when only key is specified.
+  for (const anotherKey of Object.keys(response.mapListValueValue)) {
+    console.log(`key: ${anotherKey}`);
+  }
+
+  // Testing iterating over map fields when only value is specified.
+  for (const anotherValue of Object.values(response.mapListValueValue)) {
+    console.log(`value: ${anotherValue}`);
+  }
+
+  console.log(`name: ${response.name}`);
+  console.log(`author: ${response.author}`);
+}
+
+
+// [END hopper_core]
+// [END hopper]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .option('shelf', {
+    default: 'Novel',
+    string: true
+  })
+  .argv;
+
+sampleGetBigBook(argv.shelf).catch(console.error);
+============== file: samples/v1/get_big_book_long_running_promise_await_wap2.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap2")
+'use strict';
+
+// [START hopper]
+// [START hopper_core]
+
+const library = require('@google-cloud/library').v1;
+
+/**
+ * Testing resource name overlap
+ *
+ * @param shelf {string} Test word wrapping for long lines. This is a long comment. The name of the
+ * shelf to retrieve the big book from.
+ * @param bigBookName {string} The name of the book.
+ */
+async function sampleGetBigBook(shelf, bigBookName) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  // const bigBookName = 'War and Peace';
+  const formattedName = client.bookPath(shelf, bigBookName);
+
+  // Create a job whose results you can either wait for now, or get later
+  const [operation] = await client.getBigBook({name: formattedName});
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+
+  console.log(response);
+}
+
+
+// [END hopper_core]
+// [END hopper]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .option('shelf', {
+    default: 'Novel',
+    string: true
+  })
+  .option('big_book_name', {
+    default: 'War and Peace',
+    string: true
+  })
+  .argv;
+
+sampleGetBigBook(argv.shelf, argv.big_book_name).catch(console.error);
+============== file: samples/v1/get_big_book_long_running_promise_wap.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
+'use strict';
+
+// [START hopper]
+// [START hopper_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Testing calling forms */
+function sampleGetBigBook(shelf) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  const formattedName = client.bookPath(shelf, 'War and Peace');
+
+  // Handle the operation using the promise pattern.
+  client.getBigBook({name: formattedName})
+    .then(responses => {
+      const [operation, initialApiResponse] = responses;
+
+      // Operation#promise starts polling for the completion of the LRO.
+      return operation.promise();
+    })
+    .then(responses => {
+      const result = responses[0];
+      const metadata = responses[1];
+      const finalApiResponse = responses[2];
+
+      // Testing iterating over map fields when both key and value are specified.
+      for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
+        console.log(`key: ${myKey}, value: ${myValue}`);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (const anotherKey of Object.keys(result.mapListValueValue)) {
+        console.log(`key: ${anotherKey}`);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (const anotherValue of Object.values(result.mapListValueValue)) {
+        console.log(`value: ${anotherValue}`);
+      }
+
+      console.log(`name: ${result.name}`);
+      console.log(`author: ${result.author}`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END hopper_core]
+// [END hopper]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .option('shelf', {
+    default: 'Novel',
+    string: true
+  })
+  .argv;
+
+sampleGetBigBook(argv.shelf);
+============== file: samples/v1/get_big_book_long_running_promise_wap2.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap2")
+'use strict';
+
+// [START hopper]
+// [START hopper_core]
+
+const library = require('@google-cloud/library').v1;
+
+/**
+ * Testing resource name overlap
+ *
+ * @param shelf {string} Test word wrapping for long lines. This is a long comment. The name of the
+ * shelf to retrieve the big book from.
+ * @param bigBookName {string} The name of the book.
+ */
+function sampleGetBigBook(shelf, bigBookName) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  // const bigBookName = 'War and Peace';
+  const formattedName = client.bookPath(shelf, bigBookName);
+
+  // Handle the operation using the promise pattern.
+  client.getBigBook({name: formattedName})
+    .then(responses => {
+      const [operation, initialApiResponse] = responses;
+
+      // Operation#promise starts polling for the completion of the LRO.
+      return operation.promise();
+    })
+    .then(responses => {
+      const result = responses[0];
+      const metadata = responses[1];
+      const finalApiResponse = responses[2];
+
+      console.log(result);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END hopper_core]
+// [END hopper]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .option('shelf', {
+    default: 'Novel',
+    string: true
+  })
+  .option('big_book_name', {
+    default: 'War and Peace',
+    string: true
+  })
+  .argv;
+
+sampleGetBigBook(argv.shelf, argv.big_book_name);
+============== file: samples/v1/get_big_nothing_long_running_event_emitter_empty_response_type_with_response_handling.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningEventEmitter",  "empty_response_type_with_response_handling")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test response handling for methods that return empty */
+function sampleGetBigNothing() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+
+  // Handle the operation using the event emitter pattern.
+  client.getBigNothing({name: formattedName})
+    .then(responses => {
+      const [operation, initApiResponse] = responses;
+
+      // Adding a listener for the "complete" event starts polling for the
+      // completion of the operation.
+      operation.on('complete', (result, metadata, finalApiResponse) => {
+        // Got nothing
+        console.log(`Got nothing.`);
+      });
+
+      // Adding a listener for the "progress" event causes the callback to be
+      // called on any change in metadata when the operation is polled.
+      operation.on('progress', (metadata, apiResponse) => {
+        // doSomethingWith(metadata)
+      });
+
+      // Adding a listener for the "error" event handles any errors found during polling.
+      operation.on('error', err => {
+        // throw(err);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleGetBigNothing();
+============== file: samples/v1/get_big_nothing_long_running_event_emitter_empty_response_type_without_response_handling.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningEventEmitter",  "empty_response_type_without_response_handling")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test default response handling is turned off for methods that return empty */
+function sampleGetBigNothing() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+
+  // Handle the operation using the event emitter pattern.
+  client.getBigNothing({name: formattedName})
+    .then(responses => {
+      const [operation, initApiResponse] = responses;
+
+      // Adding a listener for the "complete" event starts polling for the
+      // completion of the operation.
+      operation.on('complete', (result, metadata, finalApiResponse) => {
+      });
+
+      // Adding a listener for the "progress" event causes the callback to be
+      // called on any change in metadata when the operation is polled.
+      operation.on('progress', (metadata, apiResponse) => {
+        // doSomethingWith(metadata)
+      });
+
+      // Adding a listener for the "error" event handles any errors found during polling.
+      operation.on('error', err => {
+        // throw(err);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleGetBigNothing();
+============== file: samples/v1/get_big_nothing_long_running_promise_await_empty_response_type_with_response_handling.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "empty_response_type_with_response_handling")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test response handling for methods that return empty */
+async function sampleGetBigNothing() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+
+  // Create a job whose results you can either wait for now, or get later
+  const [operation] = await client.getBigNothing({name: formattedName});
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+
+  // Got nothing
+  console.log(`Got nothing.`);
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleGetBigNothing().catch(console.error);
+============== file: samples/v1/get_big_nothing_long_running_promise_await_empty_response_type_without_response_handling.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "empty_response_type_without_response_handling")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test default response handling is turned off for methods that return empty */
+async function sampleGetBigNothing() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+
+  // Create a job whose results you can either wait for now, or get later
+  const [operation] = await client.getBigNothing({name: formattedName});
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleGetBigNothing().catch(console.error);
+============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_with_response_handling")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test response handling for methods that return empty */
+function sampleGetBigNothing() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+
+  // Handle the operation using the promise pattern.
+  client.getBigNothing({name: formattedName})
+    .then(responses => {
+      const [operation, initialApiResponse] = responses;
+
+      // Operation#promise starts polling for the completion of the LRO.
+      return operation.promise();
+    })
+    .then(responses => {
+      const result = responses[0];
+      const metadata = responses[1];
+      const finalApiResponse = responses[2];
+
+      // Got nothing
+      console.log(`Got nothing.`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleGetBigNothing();
+============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_without_response_handling")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test default response handling is turned off for methods that return empty */
+function sampleGetBigNothing() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+
+  // Handle the operation using the promise pattern.
+  client.getBigNothing({name: formattedName})
+    .then(responses => {
+      const [operation, initialApiResponse] = responses;
+
+      // Operation#promise starts polling for the completion of the LRO.
+      return operation.promise();
+    })
+    .then(responses => {
+      const result = responses[0];
+      const metadata = responses[1];
+      const finalApiResponse = responses[2];
+
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleGetBigNothing();
+============== file: samples/v1/get_book_request_test_on_success_map.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+function sampleGetBook() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  client.getBook({name: formattedName})
+    .then(responses => {
+      const response = responses[0];
+      const intKeyVal = response.mapStringValue[123];
+      const booleanKeyVal = response.mapBoolKey[true];
+      const mapValueField = response.mapMessageValue['key'].field;
+      console.log(`Test printing map fields: ${response.mapListValueValue['quoted_key']}`);
+      console.log(`Test printing enum fields of a map value: ${response.mapMessageValue['key'].alignment}`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleGetBook();
+============== file: samples/v1/lovelace.js ==============
+// DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
+'use strict';
+
+// [START lovelace]
+// [START lovelace_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Testing calling forms */
+function sampleStreamBooks() {
+  const client = new library.LibraryServiceClient();
+  const name = 'BASIC';
+    client.streamBooks({name: name}).on('data', response => {
+      console.log(response);
+    });
+}
+
+
+// [END lovelace_core]
+// [END lovelace]
+// tslint:disable-next-line:no-any
+
+sampleStreamBooks();
+============== file: samples/v1/monolog_about_book_request_streaming_client_prog.js ==============
+// DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Testing calling forms */
+function sampleMonologAboutBook() {
+  const client = new library.LibraryServiceClient();
+  const stream = client.monologAboutBook((err, response) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log(`The stage of the comment is: ${response.stage}`);
+  });
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const request = {
+    name: formattedName,
+  };
+  // Write request objects.
+  stream.write(request);
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleMonologAboutBook();
+============== file: samples/v1/publish_series_request_pi_version.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
+'use strict';
+
+// [START canonical]
+// [START canonical_core]
+
+const library = require('@google-cloud/library').v1;
+
+/**
+ * Testing <@calling forms>
+ *
+ * @param shelfName {string} The name of the shelf where books are published to.
+ * @param edition {number} The edition of the series.
+ */
+function samplePublishSeries(shelfName, edition) {
+  const client = new library.LibraryServiceClient();
+  // const shelfName = 'Math';
+  // const edition = 123;
+  const shelf = {
+    name: shelfName,
+  };
+  const books = [];
+  const seriesString = 'xyz3141592654';
+  const seriesUuid = {
+    seriesString: seriesString,
+  };
+  const request = {
+    shelf: shelf,
+    books: books,
+    seriesUuid: seriesUuid,
+    edition: edition,
+  };
+  client.publishSeries(request)
+    .then(responses => {
+      const response = responses[0];
+      // % % % output handling % % % %
+      // fourScoreAndSevenYears ago
+      //
+      // our fathers brought forth upon this continent
+      //
+      // a new nation
+      // conceived in liberty
+      //
+      // and dedicated to the proposition that allMenAreCreatedEqual.
+      //
+      // Do something with bookNames one by one
+      const bookNames = response.bookNames;
+      for (const title of response.bookNames) {
+        // Now we deal with thisSingleBook!
+        console.log(`\t%\`\` The book's title: "${title}", \\\nand the book costs $50.00 \`\`%`);
+      }
+      console.log(`The first book is: ${response.bookNames[0]}`);
+      console.log(`The author of the first book is: ${response.books[0].author}`);
+      console.log(`That's all!`);
+      console.log(`series_uuid: ${response.seriesUuid.seriesBytes}`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END canonical_core]
+// [END canonical]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .option('shelf_name', {
+    default: 'Math',
+    string: true
+  })
+  .option('edition', {
+    default: 123,
+    number: true
+  })
+  .argv;
+
+samplePublishSeries(argv.shelf_name, argv.edition);
+============== file: samples/v1/publish_series_request_second_edition.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
+'use strict';
+
+// [START canonical]
+// [START canonical_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Testing calling forms */
+function samplePublishSeries() {
+  const client = new library.LibraryServiceClient();
+  const shelf = {};
+  const books = [];
+  const seriesUuid = {};
+  const edition = 2;
+  const request = {
+    shelf: shelf,
+    books: books,
+    seriesUuid: seriesUuid,
+    edition: edition,
+  };
+  client.publishSeries(request)
+    .then(responses => {
+      const response = responses[0];
+      console.log(response);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END canonical_core]
+// [END canonical]
+// tslint:disable-next-line:no-any
+
+samplePublishSeries();
+============== file: samples/v1/publish_series_request_test_request_object_field_comments.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+const fs = require('fs');
+/** Test request object field comments */
+function samplePublishSeries() {
+  const client = new library.LibraryServiceClient();
+
+  // Comment on a resource name
+  const formattedName = client.shelfPath('math');
+
+  // A super long comment
+  // wraps words at newline characters
+  // as well
+  const theme = 'Math';
+
+  // Comment on a primitive field
+  const internalTheme = 'Statistics';
+  const shelf = {
+    name: formattedName,
+    theme: theme,
+    internalTheme: internalTheme,
+  };
+  const books = [];
+
+  // Comment on a file input field
+  const seriesBytes = fs.readFileSync('xyz3141592654').toString('base64');
+
+  // Comment on a message
+  const seriesUuid = {
+    seriesBytes: seriesBytes,
+  };
+
+  // A super long long long long long long long long long long long long long long comment that tests
+  // word wrapping
+  const edition = 123;
+  const request = {
+    shelf: shelf,
+    books: books,
+    seriesUuid: seriesUuid,
+    edition: edition,
+  };
+  client.publishSeries(request)
+    .then(responses => {
+      const response = responses[0];
+      console.log(response);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+samplePublishSeries();
+============== file: samples/v1/publish_series_request_test_write_to_file.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_write_to_file")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+const util = require('util');
+const fs = require('fs');
+/** Testing write fields to files. */
+function samplePublishSeries() {
+  const client = new library.LibraryServiceClient();
+  const shelf = {};
+  const books = [];
+  const seriesUuid = {};
+  const request = {
+    shelf: shelf,
+    books: books,
+    seriesUuid: seriesUuid,
+  };
+  client.publishSeries(request)
+    .then(responses => {
+      const response = responses[0];
+      // testing writing bytes field.
+      var writeFile = util.promisify(fs.writeFile);
+      writeFile(`uuid_of_series_with_book_${response.bookNames[0]}.raw`, response.seriesUuid.seriesBytes, 'binary');
+      // testing writing string field.
+      writeFile('series_uuid_in_plain_text.txt', response.seriesUuid.seriesString);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+samplePublishSeries();
+============== file: samples/v1/sample_get_shelf.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
+'use strict';
+
+// [START sample_get_shelf]
+// [START sample_get_shelf_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test default calling forms for unary methods. */
+function sampleGetShelf() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.shelfPath('my-shelf');
+  const options = '';
+  const request = {
+    name: formattedName,
+    options: options,
+  };
+  client.getShelf(request)
+    .then(responses => {
+      const response = responses[0];
+      console.log(`The theme of the shelf is: ${response.theme}`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END sample_get_shelf_core]
+// [END sample_get_shelf]
+// tslint:disable-next-line:no-any
+
+sampleGetShelf();
+============== file: samples/v1/stream_shelves_request_streaming_server_empty.js ==============
+// DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
+'use strict';
+
+// [START sample]
+// [START sample_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Testing calling forms */
+function sampleStreamShelves() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.shelfPath('[SHELF_ID]');
+    client.streamShelves({name: formattedName}).on('data', response => {
+      console.log(response);
+    });
+}
+
+
+// [END sample_core]
+// [END sample]
+// tslint:disable-next-line:no-any
+
+sampleStreamShelves();
+============== file: samples/v1/test_default_calling_form_for_paging.js ==============
+// DO NOT EDIT! This is a generated sample ("RequestAsyncPagedAll",  "test_default_calling_form_paging")
+'use strict';
+
+// [START test_default_calling_form_for_paging]
+// [START test_default_calling_form_for_paging_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test default calling form for paging methods. */
+function sampleListShelves() {
+  const client = new library.LibraryServiceClient();
+  // Iterate over all elements.
+  client.listShelves({})
+    .then(responses => {
+      const resources = responses[0];
+      for (const resource of resources) {
+        console.log(`shelf name: ${resource}`);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END test_default_calling_form_for_paging_core]
+// [END test_default_calling_form_for_paging]
+// tslint:disable-next-line:no-any
+
+sampleListShelves();
+============== file: samples/v1/this_tag_should_be_the_name_of_the_file.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap")
+'use strict';
+
+// [START this_tag_should_be_the_name_of_the_file]
+// [START this_tag_should_be_the_name_of_the_file_core]
+
+const library = require('@google-cloud/library').v1;
+
+/** Testing calling forms */
+async function sampleGetBigBook(shelf) {
+  const client = new library.LibraryServiceClient();
+  // const shelf = 'Novel';
+  const formattedName = client.bookPath(shelf, 'War and Peace');
+
+  // Create a job whose results you can either wait for now, or get later
+  const [operation] = await client.getBigBook({name: formattedName});
+
+  // Get a Promise representation of the final result of the job
+  const [response] = await operation.promise();
+
+  // Testing iterating over map fields when both key and value are specified.
+  for (const [myKey, myValue] of Object.entries(response.mapListValueValue)) {
+    console.log(`key: ${myKey}, value: ${myValue}`);
+  }
+
+  // Testing iterating over map fields when only key is specified.
+  for (const anotherKey of Object.keys(response.mapListValueValue)) {
+    console.log(`key: ${anotherKey}`);
+  }
+
+  // Testing iterating over map fields when only value is specified.
+  for (const anotherValue of Object.values(response.mapListValueValue)) {
+    console.log(`value: ${anotherValue}`);
+  }
+
+  console.log(`name: ${response.name}`);
+  console.log(`author: ${response.author}`);
+}
+
+
+// [END this_tag_should_be_the_name_of_the_file_core]
+// [END this_tag_should_be_the_name_of_the_file]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .option('shelf', {
+    default: 'Novel',
+    string: true
+  })
+  .argv;
+
+sampleGetBigBook(argv.shelf).catch(console.error);
+============== file: samples/v1/turing_prog_request_streaming_bidi.js ==============
+// DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+'use strict';
+
+// [START turing_prog_request_streaming_bidi]
+// [START turing_prog_request_streaming_bidi_core]
+
+const library = require('@google-cloud/library').v1;
+
+const fs = require('fs');
+/** Testing calling forms */
+function sampleDiscussBook(imageFileName) {
+  const client = new library.LibraryServiceClient();
+  const stream = client.discussBook().on('data', response => {
+    console.log(response);
+  });
+  // const imageFileName = 'image_file.jpg';
+  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const comment = fs.readFileSync('comment_file').toString('base64');
+  const comment2 = {
+    comment: comment,
+  };
+  const image = fs.readFileSync(imageFileName).toString('base64');
+  const request = {
+    name: formattedName,
+    comment: comment2,
+    image: image,
+  };
+  // Write request objects.
+  stream.write(request);
+}
+
+
+// [END turing_prog_request_streaming_bidi_core]
+// [END turing_prog_request_streaming_bidi]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .option('image_file_name', {
+    default: 'image_file.jpg',
+    string: true
+  })
+  .argv;
+
+sampleDiscussBook(argv.image_file_name);
 ============== file: smoke-test/library_service_smoke_test.js ==============
 // Copyright 2019 Google LLC
 //
@@ -194,10 +1508,14 @@ const gapic = Object.freeze({
  *
  * - `LibraryServiceClient` - Reference to
  *   {@link v1.LibraryServiceClient}
+ * - `MyProtoClient` - Reference to
+ *   {@link v1.MyProtoClient}
  * - `v1` - This is used for selecting or pinning a
  *   particular backend service version. It exports:
  *     - `LibraryServiceClient` - Reference to
  *       {@link v1.LibraryServiceClient}
+ *     - `MyProtoClient` - Reference to
+ *       {@link v1.MyProtoClient}
  *
  * @module {object} @google-cloud/library
  * @alias nodejs-library
@@ -222,6 +1540,8 @@ const gapic = Object.freeze({
  * @type {object}
  * @property {constructor} LibraryServiceClient
  *   Reference to {@link v1.LibraryServiceClient}
+ * @property {constructor} MyProtoClient
+ *   Reference to {@link v1.MyProtoClient}
  */
 module.exports = gapic.v1;
 
@@ -229,1148 +1549,73 @@ module.exports = gapic.v1;
  * @type {object}
  * @property {constructor} LibraryServiceClient
  *   Reference to {@link v1.LibraryServiceClient}
+ * @property {constructor} MyProtoClient
+ *   Reference to {@link v1.MyProtoClient}
  */
 module.exports.v1 = gapic.v1;
 
 // Alias `module.exports` as `module.exports.default`, for future-proofing.
 module.exports.default = Object.assign({}, module.exports);
 
-============== file: src/samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.js ==============
-// DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_with_response_handling")
-'use strict';
+============== file: src/v1/doc/google/example/library/v1/doc_another_service.js ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Test response handling for methods that return empty */
-function sampleBabbleAboutBook() {
-  const client = new library.LibraryServiceClient();
-  const stream = client.babbleAboutBook((err, response) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    // No one replied
-    console.log(`No one replied.`);
-  });
-  const request = {};
-  // Write request objects.
-  stream.write(request);
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleBabbleAboutBook();
-============== file: src/samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.js ==============
-// DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Test default response handling is turned off for methods that return empty */
-function sampleBabbleAboutBook() {
-  const client = new library.LibraryServiceClient();
-  const stream = client.babbleAboutBook((err, response) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-  });
-  const request = {};
-  // Write request objects.
-  stream.write(request);
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleBabbleAboutBook();
-============== file: src/samples/v1/delete_shelf_request_empty_response_type_with_response_handling.js ==============
-// DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Test response handling for methods that return empty */
-function sampleDeleteShelf() {
-  const client = new library.LibraryServiceClient();
-  const formattedName = client.shelfPath('[SHELF_ID]');
-  client.deleteShelf({name: formattedName}).catch(err => {
-    console.error(err);
-  });
-  // Shelf deleted
-  console.log(`Shelf deleted.`);
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleDeleteShelf();
-============== file: src/samples/v1/delete_shelf_request_empty_response_type_without_response_handling.js ==============
-// DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Test default response handling is turned off for methods that return empty */
-function sampleDeleteShelf() {
-  const client = new library.LibraryServiceClient();
-  const formattedName = client.shelfPath('[SHELF_ID]');
-  client.deleteShelf({name: formattedName}).catch(err => {
-    console.error(err);
-  });
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleDeleteShelf();
-============== file: src/samples/v1/discuss_book_request_streaming_bidi_prog.js ==============
-// DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
-'use strict';
-
-// [START turing_prog_request_streaming_bidi]
-// [START turing_prog_request_streaming_bidi_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-function sampleDiscussBook(imageFileName) {
-  const client = new library.LibraryServiceClient();
-  const stream = client.discussBook().on('data', response => {
-    console.log(response);
-  });
-  // const imageFileName = 'image_file.jpg';
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-  const fileName = 'comment_file';
-  const comment = fs.readFileSync(fileName).toString('base64');
-  const comment2 = {
-    comment: comment,
-  };
-  const image = fs.readFileSync(imageFileName).toString('base64');
-  const request = {
-    name: formattedName,
-    comment: comment2,
-    image: image,
-  };
-  // Write request objects.
-  stream.write(request);
-}
-
-
-// [END turing_prog_request_streaming_bidi_core]
-// [END turing_prog_request_streaming_bidi]
-// tslint:disable-next-line:no-any
-
-const argv = require(`yargs`)
-  .option('image_file_name', {
-    default: 'image_file.jpg',
-    string: true
-  })
-  .argv;
-
-sampleDiscussBook(argv.image_file_name);
-============== file: src/samples/v1/find_related_books_request_async_paged_all_odyssey.js ==============
-// DO NOT EDIT! This is a generated sample ("RequestAsyncPagedAll",  "odyssey")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-function sampleFindRelatedBooks() {
-  const client = new library.LibraryServiceClient();
-  // Iterate over all elements.
-  const namesElement = 'Odyssey';
-  const names = [namesElement];
-  const shelvesElement = 'Classics';
-  const shelves = [shelvesElement];
-  const request = {
-    names: names,
-    shelves: shelves,
-  };
-
-  client.findRelatedBooks(request)
-    .then(responses => {
-      const resources = responses[0];
-      for (const resource of resources) {
-        const book = resource;
-        console.log(`Here's a related book: ${book}`);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleFindRelatedBooks();
-============== file: src/samples/v1/find_related_books_request_async_paged_odyssey.js ==============
-// DO NOT EDIT! This is a generated sample ("RequestAsyncPaged",  "odyssey")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-function sampleFindRelatedBooks() {
-  const client = new library.LibraryServiceClient();
-  // Or obtain the paged response.
-  const namesElement = 'Odyssey';
-  const names = [namesElement];
-  const shelvesElement = 'Classics';
-  const shelves = [shelvesElement];
-  const request = {
-    names: names,
-    shelves: shelves,
-  };
-
-
-  const options = {autoPaginate: false};
-  const callback = responses => {
-    // The actual resources in a response.
-    const resources = responses[0];
-    // The next request if the response shows that there are more responses.
-    const nextRequest = responses[1];
-    // The actual response object, if necessary.
-    // const rawResponse = responses[2];
-    for (const resource of resources) {
-      const book = resource;
-      console.log(`Here's a related book: ${book}`);
-    }
-    if (nextRequest) {
-      // Fetch the next page.
-      return client.findRelatedBooks(nextRequest, options).then(callback);
-    }
-  }
-  client.findRelatedBooks(request, options)
-    .then(callback)
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleFindRelatedBooks();
-============== file: src/samples/v1/get_big_book_long_running_event_emitter_wap.js ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningEventEmitter",  "wap")
-'use strict';
-
-// [START hopper]
-// [START hopper_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-function sampleGetBigBook(shelf) {
-  const client = new library.LibraryServiceClient();
-  // const shelf = 'Novel';
-  const formattedName = client.bookPath(shelf, 'War and Peace');
-
-  // Handle the operation using the event emitter pattern.
-  client.getBigBook({name: formattedName})
-    .then(responses => {
-      const [operation, initApiResponse] = responses;
-
-      // Adding a listener for the "complete" event starts polling for the
-      // completion of the operation.
-      operation.on('complete', (result, metadata, finalApiResponse) => {
-        // Testing iterating over map fields when both key and value are specified.
-        for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
-          console.log(`key: ${myKey}, value: ${myValue}`);
-        }
-
-        // Testing iterating over map fields when only key is specified.
-        for (const anotherKey of Object.keys(result.mapListValueValue)) {
-          console.log(`key: ${anotherKey}`);
-        }
-
-        // Testing iterating over map fields when only value is specified.
-        for (const anotherValue of Object.values(result.mapListValueValue)) {
-          console.log(`value: ${anotherValue}`);
-        }
-
-        console.log(`name: ${result.name}`);
-        console.log(`author: ${result.author}`);
-      });
-
-      // Adding a listener for the "progress" event causes the callback to be
-      // called on any change in metadata when the operation is polled.
-      operation.on('progress', (metadata, apiResponse) => {
-        // doSomethingWith(metadata)
-      });
-
-      // Adding a listener for the "error" event handles any errors found during polling.
-      operation.on('error', err => {
-        // throw(err);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END hopper_core]
-// [END hopper]
-// tslint:disable-next-line:no-any
-
-const argv = require(`yargs`)
-  .option('shelf', {
-    default: 'Novel',
-    string: true
-  })
-  .argv;
-
-sampleGetBigBook(argv.shelf);
-============== file: src/samples/v1/get_big_book_long_running_event_emitter_wap2.js ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningEventEmitter",  "wap2")
-'use strict';
-
-// [START hopper]
-// [START hopper_core]
-
-const library = require('@google-cloud/library').v1;
+// Note: this file is purely for documentation. Any contents are not expected
+// to be loaded as the JS file.
 
 /**
- * Testing resource name overlap
+ * @property {Object[]} mylist
+ *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
  *
- * @param shelf {string} Test word wrapping for long lines. This is a long comment. The name of the
- * shelf to retrieve the big book from.
- * @param bigBookName {string} The name of the book.
+ * @property {Object} myfield
+ *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+ *
+ * @property {Object} secondfield
+ *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+ *
+ * @typedef MethodRequest
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.MethodRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/another_service.proto}
  */
-function sampleGetBigBook(shelf, bigBookName) {
-  const client = new library.LibraryServiceClient();
-  // const shelf = 'Novel';
-  // const bigBookName = 'War and Peace';
-  const formattedName = client.bookPath(shelf, bigBookName);
-
-  // Handle the operation using the event emitter pattern.
-  client.getBigBook({name: formattedName})
-    .then(responses => {
-      const [operation, initApiResponse] = responses;
-
-      // Adding a listener for the "complete" event starts polling for the
-      // completion of the operation.
-      operation.on('complete', (result, metadata, finalApiResponse) => {
-        console.log(result);
-      });
-
-      // Adding a listener for the "progress" event causes the callback to be
-      // called on any change in metadata when the operation is polled.
-      operation.on('progress', (metadata, apiResponse) => {
-        // doSomethingWith(metadata)
-      });
-
-      // Adding a listener for the "error" event handles any errors found during polling.
-      operation.on('error', err => {
-        // throw(err);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END hopper_core]
-// [END hopper]
-// tslint:disable-next-line:no-any
-
-const argv = require(`yargs`)
-  .option('shelf', {
-    default: 'Novel',
-    string: true
-  })
-  .option('big_book_name', {
-    default: 'War and Peace',
-    string: true
-  })
-  .argv;
-
-sampleGetBigBook(argv.shelf, argv.big_book_name);
-============== file: src/samples/v1/get_big_book_long_running_promise_await_wap.js ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap")
-'use strict';
-
-// [START hopper]
-// [START hopper_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-async function sampleGetBigBook(shelf) {
-  const client = new library.LibraryServiceClient();
-  // const shelf = 'Novel';
-  const formattedName = client.bookPath(shelf, 'War and Peace');
-
-  // Create a job whose results you can either wait for now, or get later
-  const [operation] = await client.getBigBook({name: formattedName});
-
-  // Get a Promise representation of the final result of the job
-  const [response] = await operation.promise();
-
-  // Testing iterating over map fields when both key and value are specified.
-  for (const [myKey, myValue] of Object.entries(response.mapListValueValue)) {
-    console.log(`key: ${myKey}, value: ${myValue}`);
-  }
-
-  // Testing iterating over map fields when only key is specified.
-  for (const anotherKey of Object.keys(response.mapListValueValue)) {
-    console.log(`key: ${anotherKey}`);
-  }
-
-  // Testing iterating over map fields when only value is specified.
-  for (const anotherValue of Object.values(response.mapListValueValue)) {
-    console.log(`value: ${anotherValue}`);
-  }
-
-  console.log(`name: ${response.name}`);
-  console.log(`author: ${response.author}`);
-}
-
-
-// [END hopper_core]
-// [END hopper]
-// tslint:disable-next-line:no-any
-
-const argv = require(`yargs`)
-  .option('shelf', {
-    default: 'Novel',
-    string: true
-  })
-  .argv;
-
-sampleGetBigBook(argv.shelf).catch(console.error);
-============== file: src/samples/v1/get_big_book_long_running_promise_await_wap2.js ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap2")
-'use strict';
-
-// [START hopper]
-// [START hopper_core]
-
-const library = require('@google-cloud/library').v1;
+const MethodRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
 /**
- * Testing resource name overlap
+ * @property {string} subfield
  *
- * @param shelf {string} Test word wrapping for long lines. This is a long comment. The name of the
- * shelf to retrieve the big book from.
- * @param bigBookName {string} The name of the book.
+ * @property {string} subsecondfield
+ *
+ * @typedef SubMessage
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.SubMessage definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/another_service.proto}
  */
-async function sampleGetBigBook(shelf, bigBookName) {
-  const client = new library.LibraryServiceClient();
-  // const shelf = 'Novel';
-  // const bigBookName = 'War and Peace';
-  const formattedName = client.bookPath(shelf, bigBookName);
-
-  // Create a job whose results you can either wait for now, or get later
-  const [operation] = await client.getBigBook({name: formattedName});
-
-  // Get a Promise representation of the final result of the job
-  const [response] = await operation.promise();
-
-  console.log(response);
-}
-
-
-// [END hopper_core]
-// [END hopper]
-// tslint:disable-next-line:no-any
-
-const argv = require(`yargs`)
-  .option('shelf', {
-    default: 'Novel',
-    string: true
-  })
-  .option('big_book_name', {
-    default: 'War and Peace',
-    string: true
-  })
-  .argv;
-
-sampleGetBigBook(argv.shelf, argv.big_book_name).catch(console.error);
-============== file: src/samples/v1/get_big_book_long_running_promise_wap.js ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
-'use strict';
-
-// [START hopper]
-// [START hopper_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-function sampleGetBigBook(shelf) {
-  const client = new library.LibraryServiceClient();
-  // const shelf = 'Novel';
-  const formattedName = client.bookPath(shelf, 'War and Peace');
-
-  // Handle the operation using the promise pattern.
-  client.getBigBook({name: formattedName})
-    .then(responses => {
-      const [operation, initialApiResponse] = responses;
-
-      // Operation#promise starts polling for the completion of the LRO.
-      return operation.promise();
-    })
-    .then(responses => {
-      const result = responses[0];
-      const metadata = responses[1];
-      const finalApiResponse = responses[2];
-
-      // Testing iterating over map fields when both key and value are specified.
-      for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
-        console.log(`key: ${myKey}, value: ${myValue}`);
-      }
-
-      // Testing iterating over map fields when only key is specified.
-      for (const anotherKey of Object.keys(result.mapListValueValue)) {
-        console.log(`key: ${anotherKey}`);
-      }
-
-      // Testing iterating over map fields when only value is specified.
-      for (const anotherValue of Object.values(result.mapListValueValue)) {
-        console.log(`value: ${anotherValue}`);
-      }
-
-      console.log(`name: ${result.name}`);
-      console.log(`author: ${result.author}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END hopper_core]
-// [END hopper]
-// tslint:disable-next-line:no-any
-
-const argv = require(`yargs`)
-  .option('shelf', {
-    default: 'Novel',
-    string: true
-  })
-  .argv;
-
-sampleGetBigBook(argv.shelf);
-============== file: src/samples/v1/get_big_book_long_running_promise_wap2.js ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap2")
-'use strict';
-
-// [START hopper]
-// [START hopper_core]
-
-const library = require('@google-cloud/library').v1;
+const SubMessage = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
 /**
- * Testing resource name overlap
+ * @property {string} myfield
  *
- * @param shelf {string} Test word wrapping for long lines. This is a long comment. The name of the
- * shelf to retrieve the big book from.
- * @param bigBookName {string} The name of the book.
+ * @typedef MethodResponse
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.MethodResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/another_service.proto}
  */
-function sampleGetBigBook(shelf, bigBookName) {
-  const client = new library.LibraryServiceClient();
-  // const shelf = 'Novel';
-  // const bigBookName = 'War and Peace';
-  const formattedName = client.bookPath(shelf, bigBookName);
-
-  // Handle the operation using the promise pattern.
-  client.getBigBook({name: formattedName})
-    .then(responses => {
-      const [operation, initialApiResponse] = responses;
-
-      // Operation#promise starts polling for the completion of the LRO.
-      return operation.promise();
-    })
-    .then(responses => {
-      const result = responses[0];
-      const metadata = responses[1];
-      const finalApiResponse = responses[2];
-
-      console.log(result);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END hopper_core]
-// [END hopper]
-// tslint:disable-next-line:no-any
-
-const argv = require(`yargs`)
-  .option('shelf', {
-    default: 'Novel',
-    string: true
-  })
-  .option('big_book_name', {
-    default: 'War and Peace',
-    string: true
-  })
-  .argv;
-
-sampleGetBigBook(argv.shelf, argv.big_book_name);
-============== file: src/samples/v1/get_big_nothing_long_running_event_emitter_empty_response_type_with_response_handling.js ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningEventEmitter",  "empty_response_type_with_response_handling")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Test response handling for methods that return empty */
-function sampleGetBigNothing() {
-  const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-
-  // Handle the operation using the event emitter pattern.
-  client.getBigNothing({name: formattedName})
-    .then(responses => {
-      const [operation, initApiResponse] = responses;
-
-      // Adding a listener for the "complete" event starts polling for the
-      // completion of the operation.
-      operation.on('complete', (result, metadata, finalApiResponse) => {
-        // Got nothing
-        console.log(`Got nothing.`);
-      });
-
-      // Adding a listener for the "progress" event causes the callback to be
-      // called on any change in metadata when the operation is polled.
-      operation.on('progress', (metadata, apiResponse) => {
-        // doSomethingWith(metadata)
-      });
-
-      // Adding a listener for the "error" event handles any errors found during polling.
-      operation.on('error', err => {
-        // throw(err);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBigNothing();
-============== file: src/samples/v1/get_big_nothing_long_running_event_emitter_empty_response_type_without_response_handling.js ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningEventEmitter",  "empty_response_type_without_response_handling")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Test default response handling is turned off for methods that return empty */
-function sampleGetBigNothing() {
-  const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-
-  // Handle the operation using the event emitter pattern.
-  client.getBigNothing({name: formattedName})
-    .then(responses => {
-      const [operation, initApiResponse] = responses;
-
-      // Adding a listener for the "complete" event starts polling for the
-      // completion of the operation.
-      operation.on('complete', (result, metadata, finalApiResponse) => {
-      });
-
-      // Adding a listener for the "progress" event causes the callback to be
-      // called on any change in metadata when the operation is polled.
-      operation.on('progress', (metadata, apiResponse) => {
-        // doSomethingWith(metadata)
-      });
-
-      // Adding a listener for the "error" event handles any errors found during polling.
-      operation.on('error', err => {
-        // throw(err);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBigNothing();
-============== file: src/samples/v1/get_big_nothing_long_running_promise_await_empty_response_type_with_response_handling.js ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "empty_response_type_with_response_handling")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Test response handling for methods that return empty */
-async function sampleGetBigNothing() {
-  const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-
-  // Create a job whose results you can either wait for now, or get later
-  const [operation] = await client.getBigNothing({name: formattedName});
-
-  // Get a Promise representation of the final result of the job
-  const [response] = await operation.promise();
-
-  // Got nothing
-  console.log(`Got nothing.`);
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBigNothing().catch(console.error);
-============== file: src/samples/v1/get_big_nothing_long_running_promise_await_empty_response_type_without_response_handling.js ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "empty_response_type_without_response_handling")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Test default response handling is turned off for methods that return empty */
-async function sampleGetBigNothing() {
-  const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-
-  // Create a job whose results you can either wait for now, or get later
-  const [operation] = await client.getBigNothing({name: formattedName});
-
-  // Get a Promise representation of the final result of the job
-  const [response] = await operation.promise();
-
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBigNothing().catch(console.error);
-============== file: src/samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.js ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_with_response_handling")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Test response handling for methods that return empty */
-function sampleGetBigNothing() {
-  const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-
-  // Handle the operation using the promise pattern.
-  client.getBigNothing({name: formattedName})
-    .then(responses => {
-      const [operation, initialApiResponse] = responses;
-
-      // Operation#promise starts polling for the completion of the LRO.
-      return operation.promise();
-    })
-    .then(responses => {
-      const result = responses[0];
-      const metadata = responses[1];
-      const finalApiResponse = responses[2];
-
-      // Got nothing
-      console.log(`Got nothing.`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBigNothing();
-============== file: src/samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.js ==============
-// DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_without_response_handling")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Test default response handling is turned off for methods that return empty */
-function sampleGetBigNothing() {
-  const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-
-  // Handle the operation using the promise pattern.
-  client.getBigNothing({name: formattedName})
-    .then(responses => {
-      const [operation, initialApiResponse] = responses;
-
-      // Operation#promise starts polling for the completion of the LRO.
-      return operation.promise();
-    })
-    .then(responses => {
-      const result = responses[0];
-      const metadata = responses[1];
-      const finalApiResponse = responses[2];
-
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBigNothing();
-============== file: src/samples/v1/get_book_request_test_on_success_map.js ==============
-// DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-function sampleGetBook() {
-  const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-  client.getBook({name: formattedName})
-    .then(responses => {
-      const response = responses[0];
-      const intKeyVal = response.mapStringValue[123];
-      const booleanKeyVal = response.mapBoolKey[true];
-      const mapValueField = response.mapMessageValue['key'].field;
-      console.log(`Test printing map fields: ${response.mapListValueValue['quoted_key']}`);
-      console.log(`Test printing enum fields of a map value: ${response.mapMessageValue['key'].alignment}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBook();
-============== file: src/samples/v1/monolog_about_book_request_streaming_client_prog.js ==============
-// DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-function sampleMonologAboutBook() {
-  const client = new library.LibraryServiceClient();
-  const stream = client.monologAboutBook((err, response) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log(`The stage of the comment is: ${response.stage}`);
-  });
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-  const request = {
-    name: formattedName,
-  };
-  // Write request objects.
-  stream.write(request);
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleMonologAboutBook();
-============== file: src/samples/v1/publish_series_request_pi_version.js ==============
-// DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
-'use strict';
-
-// [START canonical]
-// [START canonical_core]
-
-const library = require('@google-cloud/library').v1;
-
-/**
- * Testing <@calling forms>
- *
- * @param shelfName {string} The name of the shelf where books are published to.
- * @param edition {number} The edition of the series.
- */
-function samplePublishSeries(shelfName, edition) {
-  const client = new library.LibraryServiceClient();
-  // const shelfName = 'Math';
-  // const edition = 123;
-  const shelf = {
-    name: shelfName,
-  };
-  const books = [];
-  const seriesString = 'xyz3141592654';
-  const seriesUuid = {
-    seriesString: seriesString,
-  };
-  const request = {
-    shelf: shelf,
-    books: books,
-    seriesUuid: seriesUuid,
-    edition: edition,
-  };
-  client.publishSeries(request)
-    .then(responses => {
-      const response = responses[0];
-      // % % % output handling % % % %
-      // fourScoreAndSevenYears ago
-      //
-      // our fathers brought forth upon this continent
-      //
-      // a new nation
-      // conceived in liberty
-      //
-      // and dedicated to the proposition that allMenAreCreatedEqual.
-      //
-      // Do something with bookNames one by one
-      const bookNames = response.bookNames;
-      for (const title of response.bookNames) {
-        // Now we deal with thisSingleBook!
-        console.log(`\t%\`\` The book's title: "${title}", \\\nand the book costs $50.00 \`\`%`);
-      }
-      console.log(`The first book is: ${response.bookNames[0]}`);
-      console.log(`The author of the first book is: ${response.books[0].author}`);
-      console.log(`That's all!`);
-      console.log(`series_uuid: ${response.seriesUuid.seriesBytes}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END canonical_core]
-// [END canonical]
-// tslint:disable-next-line:no-any
-
-const argv = require(`yargs`)
-  .option('shelf_name', {
-    default: 'Math',
-    string: true
-  })
-  .option('edition', {
-    default: 123,
-    number: true
-  })
-  .argv;
-
-samplePublishSeries(argv.shelf_name, argv.edition);
-============== file: src/samples/v1/publish_series_request_second_edition.js ==============
-// DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
-'use strict';
-
-// [START canonical]
-// [START canonical_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-function samplePublishSeries() {
-  const client = new library.LibraryServiceClient();
-  const shelf = {};
-  const books = [];
-  const seriesUuid = {};
-  const edition = 2;
-  const request = {
-    shelf: shelf,
-    books: books,
-    seriesUuid: seriesUuid,
-    edition: edition,
-  };
-  client.publishSeries(request)
-    .then(responses => {
-      const response = responses[0];
-      console.log(response);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END canonical_core]
-// [END canonical]
-// tslint:disable-next-line:no-any
-
-samplePublishSeries();
-============== file: src/samples/v1/publish_series_request_test_request_object_field_comments.js ==============
-// DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Test request object field comments */
-function samplePublishSeries() {
-  const client = new library.LibraryServiceClient();
-
-  // Comment on a resource name
-  const formattedName = client.shelfPath('math');
-
-  // A super long comment
-  // wraps words at newline characters
-  // as well
-  const theme = 'Math';
-
-  // Comment on a primitive field
-  const internalTheme = 'Statistics';
-  const shelf = {
-    name: formattedName,
-    theme: theme,
-    internalTheme: internalTheme,
-  };
-  const books = [];
-
-  // Comment on a file input field
-  const fileName = 'xyz3141592654';
-  const seriesBytes = fs.readFileSync(fileName).toString('base64');
-
-  // Comment on a message
-  const seriesUuid = {
-    seriesBytes: seriesBytes,
-  };
-
-  // A super long long long long long long long long long long long long long long comment that tests
-  // word wrapping
-  const edition = 123;
-  const request = {
-    shelf: shelf,
-    books: books,
-    seriesUuid: seriesUuid,
-    edition: edition,
-  };
-  client.publishSeries(request)
-    .then(responses => {
-      const response = responses[0];
-      console.log(response);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-samplePublishSeries();
-============== file: src/samples/v1/stream_books_request_streaming_server_prog.js ==============
-// DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
-'use strict';
-
-// [START lovelace]
-// [START lovelace_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-function sampleStreamBooks() {
-  const client = new library.LibraryServiceClient();
-  const name = 'BASIC';
-    client.streamBooks({name: name}).on('data', response => {
-      console.log(response);
-    });
-}
-
-
-// [END lovelace_core]
-// [END lovelace]
-// tslint:disable-next-line:no-any
-
-sampleStreamBooks();
-============== file: src/samples/v1/stream_shelves_request_streaming_server_empty.js ==============
-// DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
-'use strict';
-
-// [START sample]
-// [START sample_core]
-
-const library = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-function sampleStreamShelves() {
-  const client = new library.LibraryServiceClient();
-  const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-    client.streamShelves({name: formattedName}).on('data', response => {
-      console.log(response);
-    });
-}
-
-
-// [END sample_core]
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleStreamShelves();
+const MethodResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 ============== file: src/v1/doc/google/example/library/v1/doc_book_from_anywhere.js ==============
 // Copyright 2019 Google LLC
 //
@@ -2624,7 +2869,7 @@ const TestOptionalRequiredFlatteningParamsResponse = {
  *
  * @property {boolean} done
  *   If the value is `false`, it means the operation is still in progress.
- *   If true, the operation is completed, and either `error` or `response` is
+ *   If `true`, the operation is completed, and either `error` or `response` is
  *   available.
  *
  * @property {Object} error
@@ -2752,7 +2997,8 @@ const Operation = {
  *
  * @property {string} typeUrl
  *   A URL/resource name that uniquely identifies the type of the serialized
- *   protocol buffer message. The last segment of the URL's path must represent
+ *   protocol buffer message. This string must contain at least
+ *   one "/" character. The last segment of the URL's path must represent
  *   the fully qualified name of the type (as in
  *   `path/google.protobuf.Duration`). The name should be in a canonical form
  *   (e.g., leading "." is not accepted).
@@ -3008,57 +3254,49 @@ const Empty = {
  * describe the updated values, the API ignores the values of all
  * fields not covered by the mask.
  *
- * If a repeated field is specified for an update operation, the existing
- * repeated values in the target resource will be overwritten by the new values.
- * Note that a repeated field is only allowed in the last position of a `paths`
- * string.
+ * If a repeated field is specified for an update operation, new values will
+ * be appended to the existing repeated field in the target resource. Note that
+ * a repeated field is only allowed in the last position of a `paths` string.
  *
  * If a sub-message is specified in the last position of the field mask for an
- * update operation, then the existing sub-message in the target resource is
- * overwritten. Given the target message:
+ * update operation, then new value will be merged into the existing sub-message
+ * in the target resource.
+ *
+ * For example, given the target message:
  *
  *     f {
  *       b {
- *         d : 1
- *         x : 2
+ *         d: 1
+ *         x: 2
  *       }
- *       c : 1
+ *       c: [1]
  *     }
  *
  * And an update message:
  *
  *     f {
  *       b {
- *         d : 10
+ *         d: 10
  *       }
+ *       c: [2]
  *     }
  *
  * then if the field mask is:
  *
- *  paths: "f.b"
+ *  paths: ["f.b", "f.c"]
  *
  * then the result will be:
  *
  *     f {
  *       b {
- *         d : 10
+ *         d: 10
+ *         x: 2
  *       }
- *       c : 1
+ *       c: [1, 2]
  *     }
  *
- * However, if the update mask was:
- *
- *  paths: "f.b.d"
- *
- * then the result would be:
- *
- *     f {
- *       b {
- *         d : 10
- *         x : 2
- *       }
- *       c : 1
- *     }
+ * An implementation may provide options to override this default behavior for
+ * repeated and message fields.
  *
  * In order to reset a field's value to the default, the field must
  * be in the mask and set to the default value in the provided resource.
@@ -3290,17 +3528,19 @@ const NullValue = {
 // to be loaded as the JS file.
 
 /**
- * A Timestamp represents a point in time independent of any time zone
- * or calendar, represented as seconds and fractions of seconds at
- * nanosecond resolution in UTC Epoch time. It is encoded using the
- * Proleptic Gregorian Calendar which extends the Gregorian calendar
- * backwards to year one. It is encoded assuming all minutes are 60
- * seconds long, i.e. leap seconds are "smeared" so that no leap second
- * table is needed for interpretation. Range is from
- * 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z.
- * By restricting to that range, we ensure that we can convert to
- * and from  RFC 3339 date strings.
- * See [https://www.ietf.org/rfc/rfc3339.txt](https://www.ietf.org/rfc/rfc3339.txt).
+ * A Timestamp represents a point in time independent of any time zone or local
+ * calendar, encoded as a count of seconds and fractions of seconds at
+ * nanosecond resolution. The count is relative to an epoch at UTC midnight on
+ * January 1, 1970, in the proleptic Gregorian calendar which extends the
+ * Gregorian calendar backwards to year one.
+ *
+ * All minutes are 60 seconds long. Leap seconds are "smeared" so that no leap
+ * second table is needed for interpretation, using a [24-hour linear
+ * smear](https://developers.google.com/time/smear).
+ *
+ * The range is from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z. By
+ * restricting to that range, we ensure that we can convert to and from [RFC
+ * 3339](https://www.ietf.org/rfc/rfc3339.txt) date strings.
  *
  * # Examples
  *
@@ -3361,12 +3601,12 @@ const NullValue = {
  * 01:30 UTC on January 15, 2017.
  *
  * In JavaScript, one can convert a Date object to this format using the
- * standard [toISOString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString]
+ * standard [toISOString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)
  * method. In Python, a standard `datetime.datetime` object can be converted
  * to this format using [`strftime`](https://docs.python.org/2/library/time.html#time.strftime)
  * with the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one
  * can use the Joda Time's [`ISODateTimeFormat.dateTime()`](https://cloud.google.com
- * http://www.joda.org/joda-time/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime--
+ * http://www.joda.org/joda-time/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime%2D%2D
  * ) to obtain a formatter capable of generating timestamps in this format.
  *
  * @property {number} seconds
@@ -3567,24 +3807,25 @@ const BytesValue = {
 // to be loaded as the JS file.
 
 /**
- * The `Status` type defines a logical error model that is suitable for different
- * programming environments, including REST APIs and RPC APIs. It is used by
- * [gRPC](https://github.com/grpc). The error model is designed to be:
+ * The `Status` type defines a logical error model that is suitable for
+ * different programming environments, including REST APIs and RPC APIs. It is
+ * used by [gRPC](https://github.com/grpc). The error model is designed to be:
  *
  * - Simple to use and understand for most users
  * - Flexible enough to meet unexpected needs
  *
  * # Overview
  *
- * The `Status` message contains three pieces of data: error code, error message,
- * and error details. The error code should be an enum value of
- * google.rpc.Code, but it may accept additional error codes if needed.  The
- * error message should be a developer-facing English message that helps
- * developers *understand* and *resolve* the error. If a localized user-facing
- * error message is needed, put the localized message in the error details or
- * localize it in the client. The optional error details may contain arbitrary
- * information about the error. There is a predefined set of error detail types
- * in the package `google.rpc` that can be used for common error conditions.
+ * The `Status` message contains three pieces of data: error code, error
+ * message, and error details. The error code should be an enum value of
+ * google.rpc.Code, but it may accept additional error codes
+ * if needed.  The error message should be a developer-facing English message
+ * that helps developers *understand* and *resolve* the error. If a localized
+ * user-facing error message is needed, put the localized message in the error
+ * details or localize it in the client. The optional error details may contain
+ * arbitrary information about the error. There is a predefined set of error
+ * detail types in the package `google.rpc` that can be used for common error
+ * conditions.
  *
  * # Language mapping
  *
@@ -3621,12 +3862,14 @@ const BytesValue = {
  *     be used directly after any stripping needed for security/privacy reasons.
  *
  * @property {number} code
- *   The status code, which should be an enum value of google.rpc.Code.
+ *   The status code, which should be an enum value of
+ *   google.rpc.Code.
  *
  * @property {string} message
  *   A developer-facing error message, which should be in English. Any
  *   user-facing error message should be localized and sent in the
- *   google.rpc.Status.details field, or localized by the client.
+ *   google.rpc.Status.details field, or localized
+ *   by the client.
  *
  * @property {Object[]} details
  *   A list of messages that carry the error details.  There is a common set of
@@ -3662,8 +3905,7 @@ const Status = {
 /**
  * @property {string} resource
  *   REQUIRED: The resource which the tag is being added to.
- *   Resource is usually specified as a path, such as,
- *   projects/{project}/zones/{zone}/disks/{disk}.
+ *   In the form "shelves/{shelf_id}/books/{book_id}".
  *
  * @property {string} tag
  *   REQUIRED: The tag to add.
@@ -3735,8 +3977,10 @@ const Used = {
 'use strict';
 
 const LibraryServiceClient = require('./library_service_client');
+const MyProtoClient = require('./my_proto_client');
 
 module.exports.LibraryServiceClient = LibraryServiceClient;
+module.exports.MyProtoClient = MyProtoClient;
 
 ============== file: src/v1/library_service_client.js ==============
 // Copyright 2019 Google LLC
@@ -3858,20 +4102,17 @@ class LibraryServiceClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this._pathTemplates = {
-      shelfPathTemplate: new gax.PathTemplate(
-        'shelves/{shelf_id}'
+      archivedBookPathTemplate: new gax.PathTemplate(
+        'archives/{archive_path}/books/{book_id=**}'
       ),
       bookPathTemplate: new gax.PathTemplate(
         'shelves/{shelf_id}/books/{book_id}'
       ),
-      returnPathTemplate: new gax.PathTemplate(
-        'shelves/{shelf}/books/{book}/returns/{return}'
-      ),
       projectPathTemplate: new gax.PathTemplate(
         'projects/{project}'
       ),
-      archivedBookPathTemplate: new gax.PathTemplate(
-        'archives/{archive_path}/books/{book_id=**}'
+      shelfPathTemplate: new gax.PathTemplate(
+        'shelves/{shelf_id}'
       ),
     };
 
@@ -4027,7 +4268,7 @@ class LibraryServiceClient {
       'getBigBook',
       'getBigNothing',
       'testOptionalRequiredFlatteningParams',
-      'privateGetBook',
+      'privateListShelves',
     ];
     for (const methodName of libraryServiceStubMethods) {
       this._innerApiCalls[methodName] = gax.createApiCall(
@@ -5451,7 +5692,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedName = client.shelfPath('[SHELF_ID]');
    * client.streamShelves({name: formattedName}).on('data', response => {
    *   // doThingsWith(response)
    * });
@@ -5526,12 +5767,6 @@ class LibraryServiceClient {
    */
   discussBook(options) {
     options = options || {};
-    options.otherArgs = options.otherArgs || {};
-    options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers['x-goog-request-params'] =
-      gax.routingHeader.fromParams({
-        'name': request.name
-      });
 
     return this._innerApiCalls.discussBook(options);
   }
@@ -5577,12 +5812,6 @@ class LibraryServiceClient {
       options = {};
     }
     options = options || {};
-    options.otherArgs = options.otherArgs || {};
-    options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers['x-goog-request-params'] =
-      gax.routingHeader.fromParams({
-        'name': request.name
-      });
 
     return this._innerApiCalls.monologAboutBook(null, options, callback);
   }
@@ -5673,10 +5902,10 @@ class LibraryServiceClient {
    * // Iterate over all elements.
    * const namesElement = '';
    * const names = [namesElement];
-   * const shelves = [];
+   * const formattedShelves = [];
    * const request = {
-   *   names: names,
-   *   shelves: shelves,
+   *   names: formattedNames,
+   *   shelves: formattedShelves,
    * };
    *
    * client.findRelatedBooks(request)
@@ -5693,10 +5922,10 @@ class LibraryServiceClient {
    * // Or obtain the paged response.
    * const namesElement = '';
    * const names = [namesElement];
-   * const shelves = [];
+   * const formattedShelves = [];
    * const request = {
-   *   names: names,
-   *   shelves: shelves,
+   *   names: formattedNames,
+   *   shelves: formattedShelves,
    * };
    *
    *
@@ -5771,10 +6000,10 @@ class LibraryServiceClient {
    *
    * const namesElement = '';
    * const names = [namesElement];
-   * const shelves = [];
+   * const formattedShelves = [];
    * const request = {
-   *   names: names,
-   *   shelves: shelves,
+   *   names: formattedNames,
+   *   shelves: formattedShelves,
    * };
    * client.findRelatedBooksStream(request)
    *   .on('data', element => {
@@ -5800,8 +6029,7 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.resource
    *   REQUIRED: The resource which the label is being added to.
-   *   Resource is usually specified as a path, such as,
-   *   projects/{project}/zones/{zone}/disks/{disk}.
+   *   In the form "shelves/{shelf_id}/books/{book_id}".
    * @param {string} request.label
    *   REQUIRED: The label to add.
    * @param {Object} [options]
@@ -6209,9 +6437,9 @@ class LibraryServiceClient {
    * const requiredSingularString = '';
    * const requiredSingularBytes = '';
    * const requiredSingularMessage = {};
-   * const requiredSingularResourceName = '';
-   * const requiredSingularResourceNameOneof = '';
-   * const requiredSingularResourceNameCommon = '';
+   * const formattedRequiredSingularResourceName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedRequiredSingularResourceNameCommon = client.projectPath('[PROJECT]');
    * const requiredSingularFixed32 = 0;
    * const requiredSingularFixed64 = 0;
    * const requiredRepeatedInt32 = [];
@@ -6225,7 +6453,7 @@ class LibraryServiceClient {
    * const requiredRepeatedMessage = [];
    * const formattedRequiredRepeatedResourceName = [];
    * const formattedRequiredRepeatedResourceNameOneof = [];
-   * const requiredRepeatedResourceNameCommon = [];
+   * const formattedRequiredRepeatedResourceNameCommon = [];
    * const requiredRepeatedFixed32 = [];
    * const requiredRepeatedFixed64 = [];
    * const requiredMap = {};
@@ -6239,9 +6467,9 @@ class LibraryServiceClient {
    *   requiredSingularString: requiredSingularString,
    *   requiredSingularBytes: requiredSingularBytes,
    *   requiredSingularMessage: requiredSingularMessage,
-   *   requiredSingularResourceName: requiredSingularResourceName,
-   *   requiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
-   *   requiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
+   *   requiredSingularResourceName: formattedRequiredSingularResourceName,
+   *   requiredSingularResourceNameOneof: formattedRequiredSingularResourceNameOneof,
+   *   requiredSingularResourceNameCommon: formattedRequiredSingularResourceNameCommon,
    *   requiredSingularFixed32: requiredSingularFixed32,
    *   requiredSingularFixed64: requiredSingularFixed64,
    *   requiredRepeatedInt32: requiredRepeatedInt32,
@@ -6255,7 +6483,7 @@ class LibraryServiceClient {
    *   requiredRepeatedMessage: requiredRepeatedMessage,
    *   requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
    *   requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
-   *   requiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
+   *   requiredRepeatedResourceNameCommon: formattedRequiredRepeatedResourceNameCommon,
    *   requiredRepeatedFixed32: requiredRepeatedFixed32,
    *   requiredRepeatedFixed64: requiredRepeatedFixed64,
    *   requiredMap: requiredMap,
@@ -6284,8 +6512,11 @@ class LibraryServiceClient {
    *
    * @param {Object} request
    *   The request object that will be sent.
-   * @param {string} [request.name]
-   *   The name of the book to retrieve.
+   * @param {string} [request.pageToken]
+   *   A token identifying a page of results the server should return.
+   *   Typically, this is the value of
+   *   ListShelvesResponse.next_page_token
+   *   returned from the previous call to `ListShelves` method.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -6306,7 +6537,7 @@ class LibraryServiceClient {
    * });
    *
    *
-   * client.privateGetBook({})
+   * client.privateListShelves({})
    *   .then(responses => {
    *     const response = responses[0];
    *     // doThingsWith(response)
@@ -6315,20 +6546,14 @@ class LibraryServiceClient {
    *     console.error(err);
    *   });
    */
-  privateGetBook(request, options, callback) {
+  privateListShelves(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
       callback = options;
       options = {};
     }
     options = options || {};
-    options.otherArgs = options.otherArgs || {};
-    options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers['x-goog-request-params'] =
-      gax.routingHeader.fromParams({
-        'name': request.name
-      });
 
-    return this._innerApiCalls.privateGetBook(request, options, callback);
+    return this._innerApiCalls.privateListShelves(request, options, callback);
   }
 
   // --------------------
@@ -6336,14 +6561,16 @@ class LibraryServiceClient {
   // --------------------
 
   /**
-   * Return a fully-qualified shelf resource name string.
+   * Return a fully-qualified archived_book resource name string.
    *
-   * @param {String} shelfId
+   * @param {String} archivePath
+   * @param {String} bookId
    * @returns {String}
    */
-  shelfPath(shelfId) {
-    return this._pathTemplates.shelfPathTemplate.render({
-      shelf_id: shelfId,
+  archivedBookPath(archivePath, bookId) {
+    return this._pathTemplates.archivedBookPathTemplate.render({
+      archive_path: archivePath,
+      book_id: bookId,
     });
   }
 
@@ -6362,22 +6589,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * Return a fully-qualified return resource name string.
-   *
-   * @param {String} shelf
-   * @param {String} book
-   * @param {String} return_
-   * @returns {String}
-   */
-  returnPath(shelf, book, return_) {
-    return this._pathTemplates.returnPathTemplate.render({
-      shelf: shelf,
-      book: book,
-      return: return_,
-    });
-  }
-
-  /**
    * Return a fully-qualified project resource name string.
    *
    * @param {String} project
@@ -6390,30 +6601,41 @@ class LibraryServiceClient {
   }
 
   /**
-   * Return a fully-qualified archived_book resource name string.
+   * Return a fully-qualified shelf resource name string.
    *
-   * @param {String} archivePath
-   * @param {String} bookId
+   * @param {String} shelfId
    * @returns {String}
    */
-  archivedBookPath(archivePath, bookId) {
-    return this._pathTemplates.archivedBookPathTemplate.render({
-      archive_path: archivePath,
-      book_id: bookId,
+  shelfPath(shelfId) {
+    return this._pathTemplates.shelfPathTemplate.render({
+      shelf_id: shelfId,
     });
   }
 
   /**
-   * Parse the shelfName from a shelf resource.
+   * Parse the archivedBookName from a archived_book resource.
    *
-   * @param {String} shelfName
-   *   A fully-qualified path representing a shelf resources.
-   * @returns {String} - A string representing the shelf_id.
+   * @param {String} archivedBookName
+   *   A fully-qualified path representing a archived_book resources.
+   * @returns {String} - A string representing the archive_path.
    */
-  matchShelfIdFromShelfName(shelfName) {
-    return this._pathTemplates.shelfPathTemplate
-      .match(shelfName)
-      .shelf_id;
+  matchArchivePathFromArchivedBookName(archivedBookName) {
+    return this._pathTemplates.archivedBookPathTemplate
+      .match(archivedBookName)
+      .archive_path;
+  }
+
+  /**
+   * Parse the archivedBookName from a archived_book resource.
+   *
+   * @param {String} archivedBookName
+   *   A fully-qualified path representing a archived_book resources.
+   * @returns {String} - A string representing the book_id.
+   */
+  matchBookIdFromArchivedBookName(archivedBookName) {
+    return this._pathTemplates.archivedBookPathTemplate
+      .match(archivedBookName)
+      .book_id;
   }
 
   /**
@@ -6443,45 +6665,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * Parse the returnName from a return resource.
-   *
-   * @param {String} returnName
-   *   A fully-qualified path representing a return resources.
-   * @returns {String} - A string representing the shelf.
-   */
-  matchShelfFromReturnName(returnName) {
-    return this._pathTemplates.returnPathTemplate
-      .match(returnName)
-      .shelf;
-  }
-
-  /**
-   * Parse the returnName from a return resource.
-   *
-   * @param {String} returnName
-   *   A fully-qualified path representing a return resources.
-   * @returns {String} - A string representing the book.
-   */
-  matchBookFromReturnName(returnName) {
-    return this._pathTemplates.returnPathTemplate
-      .match(returnName)
-      .book;
-  }
-
-  /**
-   * Parse the returnName from a return resource.
-   *
-   * @param {String} returnName
-   *   A fully-qualified path representing a return resources.
-   * @returns {String} - A string representing the return.
-   */
-  matchReturnFromReturnName(returnName) {
-    return this._pathTemplates.returnPathTemplate
-      .match(returnName)
-      .return;
-  }
-
-  /**
    * Parse the projectName from a project resource.
    *
    * @param {String} projectName
@@ -6495,29 +6678,16 @@ class LibraryServiceClient {
   }
 
   /**
-   * Parse the archivedBookName from a archived_book resource.
+   * Parse the shelfName from a shelf resource.
    *
-   * @param {String} archivedBookName
-   *   A fully-qualified path representing a archived_book resources.
-   * @returns {String} - A string representing the archive_path.
+   * @param {String} shelfName
+   *   A fully-qualified path representing a shelf resources.
+   * @returns {String} - A string representing the shelf_id.
    */
-  matchArchivePathFromArchivedBookName(archivedBookName) {
-    return this._pathTemplates.archivedBookPathTemplate
-      .match(archivedBookName)
-      .archive_path;
-  }
-
-  /**
-   * Parse the archivedBookName from a archived_book resource.
-   *
-   * @param {String} archivedBookName
-   *   A fully-qualified path representing a archived_book resources.
-   * @returns {String} - A string representing the book_id.
-   */
-  matchBookIdFromArchivedBookName(archivedBookName) {
-    return this._pathTemplates.archivedBookPathTemplate
-      .match(archivedBookName)
-      .book_id;
+  matchShelfIdFromShelfName(shelfName) {
+    return this._pathTemplates.shelfPathTemplate
+      .match(shelfName)
+      .shelf_id;
   }
 }
 
@@ -6530,7 +6700,6 @@ module.exports = LibraryServiceClient;
     "google.example.library.v1.LibraryService": {
       "retry_codes": {
         "idempotent": [
-          "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
         "non_idempotent": []
@@ -6699,9 +6868,340 @@ module.exports = LibraryServiceClient;
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
-        "PrivateGetBook": {
+        "PrivateListShelves": {
           "timeout_millis": 60000,
           "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        }
+      }
+    }
+  }
+}
+
+============== file: src/v1/my_proto_client.js ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+'use strict';
+
+const gapicConfig = require('./my_proto_client_config.json');
+const gax = require('google-gax');
+const merge = require('lodash.merge');
+const path = require('path');
+
+const VERSION = require('../../package.json').version;
+
+/**
+ * @class
+ * @memberof v1
+ */
+class MyProtoClient {
+  /**
+   * Construct an instance of MyProtoClient.
+   *
+   * @param {object} [options] - The configuration object. See the subsequent
+   *   parameters for more details.
+   * @param {object} [options.credentials] - Credentials object.
+   * @param {string} [options.credentials.client_email]
+   * @param {string} [options.credentials.private_key]
+   * @param {string} [options.email] - Account email address. Required when
+   *     using a .pem or .p12 keyFilename.
+   * @param {string} [options.keyFilename] - Full path to the a .json, .pem, or
+   *     .p12 key downloaded from the Google Developers Console. If you provide
+   *     a path to a JSON file, the projectId option below is not necessary.
+   *     NOTE: .pem and .p12 require you to specify options.email as well.
+   * @param {number} [options.port] - The port on which to connect to
+   *     the remote host.
+   * @param {string} [options.projectId] - The project ID from the Google
+   *     Developer's Console, e.g. 'grape-spaceship-123'. We will also check
+   *     the environment variable GCLOUD_PROJECT for your project ID. If your
+   *     app is running in an environment which supports
+   *     {@link https://developers.google.com/identity/protocols/application-default-credentials Application Default Credentials},
+   *     your project ID will be detected automatically.
+   * @param {function} [options.promise] - Custom promise module to use instead
+   *     of native Promises.
+   * @param {string} [options.servicePath] - The domain name of the
+   *     API remote host.
+   */
+  constructor(opts) {
+    this._descriptors = {};
+
+    // Ensure that options include the service address and port.
+    opts = Object.assign(
+      {
+        clientConfig: {},
+        port: this.constructor.port,
+        servicePath: this.constructor.servicePath,
+      },
+      opts
+    );
+
+    // Create a `gaxGrpc` object, with any grpc-specific options
+    // sent to the client.
+    opts.scopes = this.constructor.scopes;
+    const gaxGrpc = new gax.GrpcClient(opts);
+
+    // Save the auth object to the client, for use by other methods.
+    this.auth = gaxGrpc.auth;
+
+    // Determine the client header string.
+    const clientHeader = [
+      `gl-node/${process.version}`,
+      `grpc/${gaxGrpc.grpcVersion}`,
+      `gax/${gax.version}`,
+      `gapic/${VERSION}`,
+    ];
+    if (opts.libName && opts.libVersion) {
+      clientHeader.push(`${opts.libName}/${opts.libVersion}`);
+    }
+
+    // Load the applicable protos.
+    const protos = merge(
+      {},
+      gaxGrpc.loadProto(
+        path.join(__dirname, '..', '..', 'protos'),
+        'another_service.proto'
+      )
+    );
+
+    // This API contains "path templates"; forward-slash-separated
+    // identifiers to uniquely identify resources within the API.
+    // Create useful helper objects for these.
+    this._pathTemplates = {
+      returnPathTemplate: new gax.PathTemplate(
+        'shelves/{shelf}/books/{book}/returns/{return}'
+      ),
+    };
+
+    // Put together the default options sent with requests.
+    const defaults = gaxGrpc.constructSettings(
+      'google.example.library.v1.MyProto',
+      gapicConfig,
+      opts.clientConfig,
+      {'x-goog-api-client': clientHeader.join(' ')}
+    );
+
+    // Set up a dictionary of "inner API calls"; the core implementation
+    // of calling the API is handled in `google-gax`, with this code
+    // merely providing the destination and request information.
+    this._innerApiCalls = {};
+
+    // Put together the "service stub" for
+    // google.example.library.v1.MyProto.
+    const myProtoStub = gaxGrpc.createStub(
+      protos.google.example.library.v1.MyProto,
+      opts
+    );
+
+    // Iterate over each of the methods that the service provides
+    // and create an API call method for each.
+    const myProtoStubMethods = [
+      'myMethod',
+    ];
+    for (const methodName of myProtoStubMethods) {
+      this._innerApiCalls[methodName] = gax.createApiCall(
+        myProtoStub.then(
+          stub =>
+            function() {
+              const args = Array.prototype.slice.call(arguments, 0);
+              return stub[methodName].apply(stub, args);
+            },
+          err =>
+            function() {
+              throw err;
+            }
+        ),
+        defaults[methodName],
+        null
+      );
+    }
+  }
+
+  /**
+   * The DNS address for this API service.
+   */
+  static get servicePath() {
+    return 'library-example.googleapis.com';
+  }
+
+  /**
+   * The port for this API service.
+   */
+  static get port() {
+    return 1234;
+  }
+
+  /**
+   * The scopes needed to make gRPC calls for every method defined
+   * in this service.
+   */
+  static get scopes() {
+    return [
+      'https://www.googleapis.com/auth/cloud-platform',
+      'https://www.googleapis.com/auth/library',
+    ];
+  }
+
+  /**
+   * Return the project ID used by this class.
+   * @param {function(Error, string)} callback - the callback to
+   *   be called with the current project Id.
+   */
+  getProjectId(callback) {
+    return this.auth.getProjectId(callback);
+  }
+
+  // -------------------
+  // -- Service calls --
+  // -------------------
+
+  /**
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {Object[]} [request.mylist]
+   *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+   * @param {Object} [request.myfield]
+   *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+   * @param {Object} [request.secondfield]
+   *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing [MethodResponse]{@link google.example.library.v1.MethodResponse}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [MethodResponse]{@link google.example.library.v1.MethodResponse}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.MyProtoClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.myMethod({})
+   *   .then(responses => {
+   *     const response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
+   */
+  myMethod(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    options = options || {};
+
+    return this._innerApiCalls.myMethod(request, options, callback);
+  }
+
+  // --------------------
+  // -- Path templates --
+  // --------------------
+
+  /**
+   * Return a fully-qualified return resource name string.
+   *
+   * @param {String} shelf
+   * @param {String} book
+   * @param {String} return_
+   * @returns {String}
+   */
+  returnPath(shelf, book, return_) {
+    return this._pathTemplates.returnPathTemplate.render({
+      shelf: shelf,
+      book: book,
+      return: return_,
+    });
+  }
+
+  /**
+   * Parse the returnName from a return resource.
+   *
+   * @param {String} returnName
+   *   A fully-qualified path representing a return resources.
+   * @returns {String} - A string representing the shelf.
+   */
+  matchShelfFromReturnName(returnName) {
+    return this._pathTemplates.returnPathTemplate
+      .match(returnName)
+      .shelf;
+  }
+
+  /**
+   * Parse the returnName from a return resource.
+   *
+   * @param {String} returnName
+   *   A fully-qualified path representing a return resources.
+   * @returns {String} - A string representing the book.
+   */
+  matchBookFromReturnName(returnName) {
+    return this._pathTemplates.returnPathTemplate
+      .match(returnName)
+      .book;
+  }
+
+  /**
+   * Parse the returnName from a return resource.
+   *
+   * @param {String} returnName
+   *   A fully-qualified path representing a return resources.
+   * @returns {String} - A string representing the return.
+   */
+  matchReturnFromReturnName(returnName) {
+    return this._pathTemplates.returnPathTemplate
+      .match(returnName)
+      .return;
+  }
+}
+
+
+module.exports = MyProtoClient;
+
+============== file: src/v1/my_proto_client_config.json ==============
+{
+  "interfaces": {
+    "google.example.library.v1.MyProto": {
+      "retry_codes": {
+        "idempotent": [
+          "UNAVAILABLE"
+        ],
+        "non_idempotent": []
+      },
+      "retry_params": {
+        "default": {
+          "initial_retry_delay_millis": 100,
+          "retry_delay_multiplier": 1.3,
+          "max_retry_delay_millis": 60000,
+          "initial_rpc_timeout_millis": 20000,
+          "rpc_timeout_multiplier": 1.0,
+          "max_rpc_timeout_millis": 20000,
+          "total_timeout_millis": 600000
+        }
+      },
+      "methods": {
+        "MyMethod": {
+          "timeout_millis": 1000,
+          "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         }
       }
@@ -7904,7 +8404,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.shelfPath('[SHELF_ID]');
       const request = {
         name: formattedName,
       };
@@ -7938,7 +8438,7 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedName = client.shelfPath('[SHELF_ID]');
       const request = {
         name: formattedName,
       };
@@ -8100,10 +8600,10 @@ describe('LibraryServiceClient', () => {
       // Mock request
       const namesElement = 'namesElement-249113339';
       const names = [namesElement];
-      const shelves = [];
+      const formattedShelves = [];
       const request = {
-        names: names,
-        shelves: shelves,
+        names: formattedNames,
+        shelves: formattedShelves,
       };
 
       // Mock response
@@ -8137,10 +8637,10 @@ describe('LibraryServiceClient', () => {
       // Mock request
       const namesElement = 'namesElement-249113339';
       const names = [namesElement];
-      const shelves = [];
+      const formattedShelves = [];
       const request = {
-        names: names,
-        shelves: shelves,
+        names: formattedNames,
+        shelves: formattedShelves,
       };
 
       // Mock Grpc layer
@@ -8380,9 +8880,9 @@ describe('LibraryServiceClient', () => {
       const requiredSingularString = 'requiredSingularString-1949894503';
       const requiredSingularBytes = '-29';
       const requiredSingularMessage = {};
-      const requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
-      const requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
-      const requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
+      const formattedRequiredSingularResourceName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedRequiredSingularResourceNameCommon = client.projectPath('[PROJECT]');
       const requiredSingularFixed32 = 720656715;
       const requiredSingularFixed64 = 720656810;
       const requiredRepeatedInt32 = [];
@@ -8396,7 +8896,7 @@ describe('LibraryServiceClient', () => {
       const requiredRepeatedMessage = [];
       const formattedRequiredRepeatedResourceName = [];
       const formattedRequiredRepeatedResourceNameOneof = [];
-      const requiredRepeatedResourceNameCommon = [];
+      const formattedRequiredRepeatedResourceNameCommon = [];
       const requiredRepeatedFixed32 = [];
       const requiredRepeatedFixed64 = [];
       const requiredMap = {};
@@ -8410,9 +8910,9 @@ describe('LibraryServiceClient', () => {
         requiredSingularString: requiredSingularString,
         requiredSingularBytes: requiredSingularBytes,
         requiredSingularMessage: requiredSingularMessage,
-        requiredSingularResourceName: requiredSingularResourceName,
-        requiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
-        requiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
+        requiredSingularResourceName: formattedRequiredSingularResourceName,
+        requiredSingularResourceNameOneof: formattedRequiredSingularResourceNameOneof,
+        requiredSingularResourceNameCommon: formattedRequiredSingularResourceNameCommon,
         requiredSingularFixed32: requiredSingularFixed32,
         requiredSingularFixed64: requiredSingularFixed64,
         requiredRepeatedInt32: requiredRepeatedInt32,
@@ -8426,7 +8926,7 @@ describe('LibraryServiceClient', () => {
         requiredRepeatedMessage: requiredRepeatedMessage,
         requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
         requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
-        requiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
+        requiredRepeatedResourceNameCommon: formattedRequiredRepeatedResourceNameCommon,
         requiredRepeatedFixed32: requiredRepeatedFixed32,
         requiredRepeatedFixed64: requiredRepeatedFixed64,
         requiredMap: requiredMap,
@@ -8464,9 +8964,9 @@ describe('LibraryServiceClient', () => {
       const requiredSingularString = 'requiredSingularString-1949894503';
       const requiredSingularBytes = '-29';
       const requiredSingularMessage = {};
-      const requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
-      const requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
-      const requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
+      const formattedRequiredSingularResourceName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedRequiredSingularResourceNameCommon = client.projectPath('[PROJECT]');
       const requiredSingularFixed32 = 720656715;
       const requiredSingularFixed64 = 720656810;
       const requiredRepeatedInt32 = [];
@@ -8480,7 +8980,7 @@ describe('LibraryServiceClient', () => {
       const requiredRepeatedMessage = [];
       const formattedRequiredRepeatedResourceName = [];
       const formattedRequiredRepeatedResourceNameOneof = [];
-      const requiredRepeatedResourceNameCommon = [];
+      const formattedRequiredRepeatedResourceNameCommon = [];
       const requiredRepeatedFixed32 = [];
       const requiredRepeatedFixed64 = [];
       const requiredMap = {};
@@ -8494,9 +8994,9 @@ describe('LibraryServiceClient', () => {
         requiredSingularString: requiredSingularString,
         requiredSingularBytes: requiredSingularBytes,
         requiredSingularMessage: requiredSingularMessage,
-        requiredSingularResourceName: requiredSingularResourceName,
-        requiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
-        requiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
+        requiredSingularResourceName: formattedRequiredSingularResourceName,
+        requiredSingularResourceNameOneof: formattedRequiredSingularResourceNameOneof,
+        requiredSingularResourceNameCommon: formattedRequiredSingularResourceNameCommon,
         requiredSingularFixed32: requiredSingularFixed32,
         requiredSingularFixed64: requiredSingularFixed64,
         requiredRepeatedInt32: requiredRepeatedInt32,
@@ -8510,7 +9010,7 @@ describe('LibraryServiceClient', () => {
         requiredRepeatedMessage: requiredRepeatedMessage,
         requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
         requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
-        requiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
+        requiredRepeatedResourceNameCommon: formattedRequiredRepeatedResourceNameCommon,
         requiredRepeatedFixed32: requiredRepeatedFixed32,
         requiredRepeatedFixed64: requiredRepeatedFixed64,
         requiredMap: requiredMap,
@@ -8532,8 +9032,8 @@ describe('LibraryServiceClient', () => {
     });
   });
 
-  describe('privateGetBook', () => {
-    it('invokes privateGetBook without error', done => {
+  describe('privateListShelves', () => {
+    it('invokes privateListShelves without error', done => {
       const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
@@ -8555,19 +9055,19 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.privateGetBook = mockSimpleGrpcMethod(
+      client._innerApiCalls.privateListShelves = mockSimpleGrpcMethod(
         request,
         expectedResponse
       );
 
-      client.privateGetBook(request, (err, response) => {
+      client.privateListShelves(request, (err, response) => {
         assert.ifError(err);
         assert.deepStrictEqual(response, expectedResponse);
         done();
       });
     });
 
-    it('invokes privateGetBook with error', done => {
+    it('invokes privateListShelves with error', done => {
       const client = new libraryModule.v1.LibraryServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
@@ -8577,13 +9077,69 @@ describe('LibraryServiceClient', () => {
       const request = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.privateGetBook = mockSimpleGrpcMethod(
+      client._innerApiCalls.privateListShelves = mockSimpleGrpcMethod(
         request,
         null,
         error
       );
 
-      client.privateGetBook(request, (err, response) => {
+      client.privateListShelves(request, (err, response) => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
+        done();
+      });
+    });
+  });
+
+});
+describe('MyProtoClient', () => {
+  describe('myMethod', () => {
+    it('invokes myMethod without error', done => {
+      const client = new libraryModule.v1.MyProtoClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock response
+      const myfield = 'myfield1515208398';
+      const expectedResponse = {
+        myfield: myfield,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.myMethod = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
+
+      client.myMethod(request, (err, response) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes myMethod with error', done => {
+      const client = new libraryModule.v1.MyProtoClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.myMethod = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.myMethod(request, (err, response) => {
         assert(err instanceof Error);
         assert.strictEqual(err.code, FAKE_STATUS_CODE);
         assert(typeof response === 'undefined');

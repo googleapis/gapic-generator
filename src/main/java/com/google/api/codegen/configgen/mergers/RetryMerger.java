@@ -53,7 +53,7 @@ public class RetryMerger {
   public static final Map<String, ImmutableList<String>> DEFAULT_RETRY_CODES =
       ImmutableMap.of(
           RETRY_CODES_IDEMPOTENT_NAME,
-          ImmutableList.of(Status.Code.DEADLINE_EXCEEDED.name(), Status.Code.UNAVAILABLE.name()),
+          ImmutableList.of(Status.Code.UNAVAILABLE.name()),
           RETRY_CODES_NON_IDEMPOTENT_NAME,
           ImmutableList.of());
 

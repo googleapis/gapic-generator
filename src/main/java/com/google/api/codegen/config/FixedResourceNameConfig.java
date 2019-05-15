@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -31,6 +30,7 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
 
   public abstract String getFixedValue();
 
+  @Nullable
   @Override
   public abstract ProtoFile getAssignedProtoFile();
 
@@ -47,12 +47,7 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
 
   @Nullable
   public static FixedResourceNameConfig createFixedResourceNameConfig(
-      DiagCollector diagCollector,
-      FixedResourceNameValueProto fixedResourceNameValueProto,
-      @Nullable ProtoFile file) {
-
-    String entityName = fixedResourceNameValueProto.getEntityName();
-    String fixedValue = fixedResourceNameValueProto.getFixedValue();
+      DiagCollector diagCollector, String entityName, String fixedValue, @Nullable ProtoFile file) {
 
     if (entityName == null || fixedValue == null) {
       diagCollector.addDiag(
@@ -65,6 +60,15 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
       return null;
     }
 
-    return new AutoValue_FixedResourceNameConfig(entityName, entityName, fixedValue, file);
+    return new AutoValue_FixedResourceNameConfig(
+        entityName, ResourceNameMessageConfig.entityNameToName(entityName), fixedValue, file);
+  }
+
+  /**
+   * Returns if the pathPattern is a fixed name resource. This primitively returns true iff the
+   * pathPattern contains a '{' char.
+   */
+  public static boolean isFixedResourceNameConfig(String pathPattern) {
+    return !(pathPattern.contains("{") || pathPattern.contains("*"));
   }
 }
