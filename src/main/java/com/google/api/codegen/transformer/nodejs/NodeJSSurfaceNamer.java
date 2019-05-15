@@ -426,7 +426,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       }
     } else if (methodContext.isLongRunningMethodContext()) {
       returnTypeDoc =
-          "a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object";
+          "a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/classes/Operation.html} object";
     } else {
       returnTypeDoc =
           getTypeNameDoc(typeTable, ProtoTypeRef.create(methodContext.getMethod().getOutputType()));
