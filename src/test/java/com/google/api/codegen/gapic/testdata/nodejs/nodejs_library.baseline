@@ -3842,16 +3842,12 @@ class LibraryServiceClient {
     }
 
     // Load the applicable protos.
-    const protos = Object.assign(
-      {},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
-        'library.proto'
-      ),
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
+    const protos = gaxGrpc.loadProto(
+      path.join(__dirname, '..', '..', 'protos'),
+      [
+        'library.proto',
         'tagger.proto'
-      )
+      ]
     );
 
     // This API contains "path templates"; forward-slash-separated
