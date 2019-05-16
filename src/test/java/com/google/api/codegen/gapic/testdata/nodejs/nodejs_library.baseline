@@ -6893,7 +6893,6 @@ module.exports = LibraryServiceClient;
 
 const gapicConfig = require('./my_proto_client_config.json');
 const gax = require('google-gax');
-const merge = require('lodash.merge');
 const path = require('path');
 
 const VERSION = require('../../package.json').version;
@@ -6963,12 +6962,11 @@ class MyProtoClient {
     }
 
     // Load the applicable protos.
-    const protos = merge(
-      {},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
+    const protos = gaxGrpc.loadProto(
+      path.join(__dirname, '..', '..', 'protos'),
+      [
         'another_service.proto'
-      )
+      ]
     );
 
     // This API contains "path templates"; forward-slash-separated
