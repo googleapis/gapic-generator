@@ -288,7 +288,7 @@ $ gem install library
 ```rb
 require "library"
 
-library_client = Library.new
+library_client = Library::Library.new
 formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
 rating = :GOOD
 book = { rating: rating }
@@ -566,7 +566,7 @@ describe "LibraryServiceSmokeTest v1" do
     end
     project_id = ENV["LIBRARY_TEST_PROJECT"].freeze
 
-    library_client = Library.new(version: :v1)
+    library_client = Library::Library.new(version: :v1)
     formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
     rating = :GOOD
     book = { rating: rating }
@@ -620,7 +620,7 @@ require "pathname"
 # ```rb
 # require "library"
 #
-# library_client = Library.new
+# library_client = Library::Library.new
 # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
 # rating = :GOOD
 # book = { rating: rating }
@@ -672,67 +672,119 @@ module Library
     .select { |dir| File.exist?(dir + ".rb") }
     .map { |dir| File.basename(dir) }
 
-  ##
-  # This API represents a simple digital library.  It lets you manage Shelf
-  # resources and Book resources in the library. It defines the following
-  # resource model:
-  #
-  # * The API has a collection of {Google::Example::Library::V1::Shelf Shelf}
-  #   resources, named ``bookShelves/*``
-  #
-  # * Each Shelf has a collection of {Google::Example::Library::V1::Book Book}
-  #   resources, named `bookShelves/*/books/*`
-  #
-  # Check out [cloud docs!](https://cloud.google.com/library/example/link).
-  # This is [not a cloud link](http://www.google.com).
-  #
-  # Service comment may include special characters: <>&"`'@.
-  #
-  # @param version [Symbol, String]
-  #   The major version of the service to be used. By default :v1
-  #   is used.
-  # @overload new(version:, credentials:, scopes:, client_config:, timeout:)
-  #   @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
-  #     Provides the means for authenticating requests made by the client. This parameter can
-  #     be many types.
-  #     A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
-  #     authenticating requests made by this client.
-  #     A `String` will be treated as the path to the keyfile to be used for the construction of
-  #     credentials for this client.
-  #     A `Hash` will be treated as the contents of a keyfile to be used for the construction of
-  #     credentials for this client.
-  #     A `GRPC::Core::Channel` will be used to make calls through.
-  #     A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
-  #     should already be composed with a `GRPC::Core::CallCredentials` object.
-  #     A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
-  #     metadata for requests, generally, to give OAuth credentials.
-  #   @param scopes [Array<String>]
-  #     The OAuth scopes for this service. This parameter is ignored if
-  #     an updater_proc is supplied.
-  #   @param client_config [Hash]
-  #     A Hash for call options for each method. See
-  #     Google::Gax#construct_settings for the structure of
-  #     this data. Falls back to the default config if not specified
-  #     or the specified config is missing data points.
-  #   @param timeout [Numeric]
-  #     The default timeout, in seconds, for calls made through this client.
-  #   @param metadata [Hash]
-  #     Default metadata to be sent with each request. This can be overridden on a per call basis.
-  #   @param exception_transformer [Proc]
-  #     An optional proc that intercepts any exceptions raised during an API call to inject
-  #     custom error handling.
-  def self.new(*args, version: :v1, **kwargs)
-    unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
-      raise "The version: #{version} is not available. The available versions " \
-        "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
-    end
+  module Library
+    ##
+    # This API represents a simple digital library.  It lets you manage Shelf
+    # resources and Book resources in the library. It defines the following
+    # resource model:
+    #
+    # * The API has a collection of {Google::Example::Library::V1::Shelf Shelf}
+    #   resources, named ``bookShelves/*``
+    #
+    # * Each Shelf has a collection of {Google::Example::Library::V1::Book Book}
+    #   resources, named `bookShelves/*/books/*`
+    #
+    # Check out [cloud docs!](https://cloud.google.com/library/example/link).
+    # This is [not a cloud link](http://www.google.com).
+    #
+    # Service comment may include special characters: <>&"`'@.
+    #
+    # @param version [Symbol, String]
+    #   The major version of the service to be used. By default :v1
+    #   is used.
+    # @overload new(version:, credentials:, scopes:, client_config:, timeout:)
+    #   @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+    #     Provides the means for authenticating requests made by the client. This parameter can
+    #     be many types.
+    #     A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+    #     authenticating requests made by this client.
+    #     A `String` will be treated as the path to the keyfile to be used for the construction of
+    #     credentials for this client.
+    #     A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+    #     credentials for this client.
+    #     A `GRPC::Core::Channel` will be used to make calls through.
+    #     A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+    #     should already be composed with a `GRPC::Core::CallCredentials` object.
+    #     A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+    #     metadata for requests, generally, to give OAuth credentials.
+    #   @param scopes [Array<String>]
+    #     The OAuth scopes for this service. This parameter is ignored if
+    #     an updater_proc is supplied.
+    #   @param client_config [Hash]
+    #     A Hash for call options for each method. See
+    #     Google::Gax#construct_settings for the structure of
+    #     this data. Falls back to the default config if not specified
+    #     or the specified config is missing data points.
+    #   @param timeout [Numeric]
+    #     The default timeout, in seconds, for calls made through this client.
+    #   @param metadata [Hash]
+    #     Default metadata to be sent with each request. This can be overridden on a per call basis.
+    #   @param exception_transformer [Proc]
+    #     An optional proc that intercepts any exceptions raised during an API call to inject
+    #     custom error handling.
+    def self.new(*args, version: :v1, **kwargs)
+      unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
+        raise "The version: #{version} is not available. The available versions " \
+          "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
+      end
 
-    require "#{FILE_DIR}/#{version.to_s.downcase}"
-    version_module = Library
-      .constants
-      .select {|sym| sym.to_s.downcase == version.to_s.downcase}
-      .first
-    Library.const_get(version_module).new(*args, **kwargs)
+      require "#{FILE_DIR}/#{version.to_s.downcase}"
+      version_module = Library
+        .constants
+        .select {|sym| sym.to_s.downcase == version.to_s.downcase}
+        .first
+      Library.const_get(version_module)::Library.new(*args, **kwargs)
+    end
+  end
+
+  module MyProto
+    ##
+    # @param version [Symbol, String]
+    #   The major version of the service to be used. By default :v1
+    #   is used.
+    # @overload new(version:, credentials:, scopes:, client_config:, timeout:)
+    #   @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+    #     Provides the means for authenticating requests made by the client. This parameter can
+    #     be many types.
+    #     A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+    #     authenticating requests made by this client.
+    #     A `String` will be treated as the path to the keyfile to be used for the construction of
+    #     credentials for this client.
+    #     A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+    #     credentials for this client.
+    #     A `GRPC::Core::Channel` will be used to make calls through.
+    #     A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+    #     should already be composed with a `GRPC::Core::CallCredentials` object.
+    #     A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+    #     metadata for requests, generally, to give OAuth credentials.
+    #   @param scopes [Array<String>]
+    #     The OAuth scopes for this service. This parameter is ignored if
+    #     an updater_proc is supplied.
+    #   @param client_config [Hash]
+    #     A Hash for call options for each method. See
+    #     Google::Gax#construct_settings for the structure of
+    #     this data. Falls back to the default config if not specified
+    #     or the specified config is missing data points.
+    #   @param timeout [Numeric]
+    #     The default timeout, in seconds, for calls made through this client.
+    #   @param metadata [Hash]
+    #     Default metadata to be sent with each request. This can be overridden on a per call basis.
+    #   @param exception_transformer [Proc]
+    #     An optional proc that intercepts any exceptions raised during an API call to inject
+    #     custom error handling.
+    def self.new(*args, version: :v1, **kwargs)
+      unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
+        raise "The version: #{version} is not available. The available versions " \
+          "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
+      end
+
+      require "#{FILE_DIR}/#{version.to_s.downcase}"
+      version_module = Library
+        .constants
+        .select {|sym| sym.to_s.downcase == version.to_s.downcase}
+        .first
+      Library.const_get(version_module)::MyProto.new(*args, **kwargs)
+    end
   end
 end
 
@@ -752,6 +804,7 @@ end
 # limitations under the License.
 
 require "library/v1/library_service_client"
+require "library/v1/my_proto_client"
 require "errors_pb"
 
 module Library
@@ -783,7 +836,7 @@ module Library
   # ```rb
   # require "library"
   #
-  # library_client = Library.new(version: :v1)
+  # library_client = Library::Library.new(version: :v1)
   # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
   # rating = :GOOD
   # book = { rating: rating }
@@ -827,71 +880,127 @@ module Library
   module V1
     # rubocop:enable LineLength
 
-    ##
-    # This API represents a simple digital library.  It lets you manage Shelf
-    # resources and Book resources in the library. It defines the following
-    # resource model:
-    #
-    # * The API has a collection of {Google::Example::Library::V1::Shelf Shelf}
-    #   resources, named ``bookShelves/*``
-    #
-    # * Each Shelf has a collection of {Google::Example::Library::V1::Book Book}
-    #   resources, named `bookShelves/*/books/*`
-    #
-    # Check out [cloud docs!](https://cloud.google.com/library/example/link).
-    # This is [not a cloud link](http://www.google.com).
-    #
-    # Service comment may include special characters: <>&"`'@.
-    #
-    # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
-    #   Provides the means for authenticating requests made by the client. This parameter can
-    #   be many types.
-    #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
-    #   authenticating requests made by this client.
-    #   A `String` will be treated as the path to the keyfile to be used for the construction of
-    #   credentials for this client.
-    #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
-    #   credentials for this client.
-    #   A `GRPC::Core::Channel` will be used to make calls through.
-    #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
-    #   should already be composed with a `GRPC::Core::CallCredentials` object.
-    #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
-    #   metadata for requests, generally, to give OAuth credentials.
-    # @param scopes [Array<String>]
-    #   The OAuth scopes for this service. This parameter is ignored if
-    #   an updater_proc is supplied.
-    # @param client_config [Hash]
-    #   A Hash for call options for each method. See
-    #   Google::Gax#construct_settings for the structure of
-    #   this data. Falls back to the default config if not specified
-    #   or the specified config is missing data points.
-    # @param timeout [Numeric]
-    #   The default timeout, in seconds, for calls made through this client.
-    # @param metadata [Hash]
-    #   Default metadata to be sent with each request. This can be overridden on a per call basis.
-    # @param exception_transformer [Proc]
-    #   An optional proc that intercepts any exceptions raised during an API call to inject
-    #   custom error handling.
-    def self.new \
-        credentials: nil,
-        scopes: nil,
-        client_config: nil,
-        timeout: nil,
-        metadata: nil,
-        exception_transformer: nil,
-        lib_name: nil,
-        lib_version: nil
-      kwargs = {
-        credentials: credentials,
-        scopes: scopes,
-        client_config: client_config,
-        timeout: timeout,
-        metadata: metadata,
-        exception_transformer: exception_transformer,
-        lib_name: lib_name,
-        lib_version: lib_version
-      }.select { |_, v| v != nil }
-      Library::V1::LibraryServiceClient.new(**kwargs)
+    module Library
+      ##
+      # This API represents a simple digital library.  It lets you manage Shelf
+      # resources and Book resources in the library. It defines the following
+      # resource model:
+      #
+      # * The API has a collection of {Google::Example::Library::V1::Shelf Shelf}
+      #   resources, named ``bookShelves/*``
+      #
+      # * Each Shelf has a collection of {Google::Example::Library::V1::Book Book}
+      #   resources, named `bookShelves/*/books/*`
+      #
+      # Check out [cloud docs!](https://cloud.google.com/library/example/link).
+      # This is [not a cloud link](http://www.google.com).
+      #
+      # Service comment may include special characters: <>&"`'@.
+      #
+      # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      #   Provides the means for authenticating requests made by the client. This parameter can
+      #   be many types.
+      #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+      #   authenticating requests made by this client.
+      #   A `String` will be treated as the path to the keyfile to be used for the construction of
+      #   credentials for this client.
+      #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+      #   credentials for this client.
+      #   A `GRPC::Core::Channel` will be used to make calls through.
+      #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+      #   should already be composed with a `GRPC::Core::CallCredentials` object.
+      #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+      #   metadata for requests, generally, to give OAuth credentials.
+      # @param scopes [Array<String>]
+      #   The OAuth scopes for this service. This parameter is ignored if
+      #   an updater_proc is supplied.
+      # @param client_config [Hash]
+      #   A Hash for call options for each method. See
+      #   Google::Gax#construct_settings for the structure of
+      #   this data. Falls back to the default config if not specified
+      #   or the specified config is missing data points.
+      # @param timeout [Numeric]
+      #   The default timeout, in seconds, for calls made through this client.
+      # @param metadata [Hash]
+      #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+      # @param exception_transformer [Proc]
+      #   An optional proc that intercepts any exceptions raised during an API call to inject
+      #   custom error handling.
+      def self.new \
+          credentials: nil,
+          scopes: nil,
+          client_config: nil,
+          timeout: nil,
+          metadata: nil,
+          exception_transformer: nil,
+          lib_name: nil,
+          lib_version: nil
+        kwargs = {
+          credentials: credentials,
+          scopes: scopes,
+          client_config: client_config,
+          timeout: timeout,
+          metadata: metadata,
+          exception_transformer: exception_transformer,
+          lib_name: lib_name,
+          lib_version: lib_version
+        }.select { |_, v| v != nil }
+        Library::V1::LibraryServiceClient.new(**kwargs)
+      end
+    end
+
+    module MyProto
+      ##
+      # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      #   Provides the means for authenticating requests made by the client. This parameter can
+      #   be many types.
+      #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+      #   authenticating requests made by this client.
+      #   A `String` will be treated as the path to the keyfile to be used for the construction of
+      #   credentials for this client.
+      #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+      #   credentials for this client.
+      #   A `GRPC::Core::Channel` will be used to make calls through.
+      #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+      #   should already be composed with a `GRPC::Core::CallCredentials` object.
+      #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+      #   metadata for requests, generally, to give OAuth credentials.
+      # @param scopes [Array<String>]
+      #   The OAuth scopes for this service. This parameter is ignored if
+      #   an updater_proc is supplied.
+      # @param client_config [Hash]
+      #   A Hash for call options for each method. See
+      #   Google::Gax#construct_settings for the structure of
+      #   this data. Falls back to the default config if not specified
+      #   or the specified config is missing data points.
+      # @param timeout [Numeric]
+      #   The default timeout, in seconds, for calls made through this client.
+      # @param metadata [Hash]
+      #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+      # @param exception_transformer [Proc]
+      #   An optional proc that intercepts any exceptions raised during an API call to inject
+      #   custom error handling.
+      def self.new \
+          credentials: nil,
+          scopes: nil,
+          client_config: nil,
+          timeout: nil,
+          metadata: nil,
+          exception_transformer: nil,
+          lib_name: nil,
+          lib_version: nil
+        kwargs = {
+          credentials: credentials,
+          scopes: scopes,
+          client_config: client_config,
+          timeout: timeout,
+          metadata: metadata,
+          exception_transformer: exception_transformer,
+          lib_name: lib_name,
+          lib_version: lib_version
+        }.select { |_, v| v != nil }
+        Library::V1::MyProtoClient.new(**kwargs)
+      end
     end
   end
 end
@@ -935,6 +1044,46 @@ module Library
   end
 end
 
+============== file: lib/library/v1/doc/another_service.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+module Google
+  module Example
+    module Library
+      module V1
+        # @!attribute [rw] mylist
+        #   @return [Array<Google::Example::Library::V1::SubMessage>]
+        # @!attribute [rw] myfield
+        #   @return [Google::Example::Library::V1::SubMessage]
+        # @!attribute [rw] secondfield
+        #   @return [Google::Example::Library::V1::SubMessage]
+        class MethodRequest; end
+
+        # @!attribute [rw] subfield
+        #   @return [String]
+        # @!attribute [rw] subsecondfield
+        #   @return [String]
+        class SubMessage; end
+
+        # @!attribute [rw] myfield
+        #   @return [String]
+        class MethodResponse; end
+      end
+    end
+  end
+end
 ============== file: lib/library/v1/doc/book_from_anywhere.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -1045,7 +1194,7 @@ module Google
     # @!attribute [rw] done
     #   @return [true, false]
     #     If the value is `false`, it means the operation is still in progress.
-    #     If true, the operation is completed, and either `error` or `response` is
+    #     If `true`, the operation is completed, and either `error` or `response` is
     #     available.
     # @!attribute [rw] error
     #   @return [Google::Rpc::Status]
@@ -1162,7 +1311,8 @@ module Google
     # @!attribute [rw] type_url
     #   @return [String]
     #     A URL/resource name that uniquely identifies the type of the serialized
-    #     protocol buffer message. The last segment of the URL's path must represent
+    #     protocol buffer message. This string must contain at least
+    #     one "/" character. The last segment of the URL's path must represent
     #     the fully qualified name of the type (as in
     #     `path/google.protobuf.Duration`). The name should be in a canonical form
     #     (e.g., leading "." is not accepted).
@@ -1398,57 +1548,49 @@ module Google
     # describe the updated values, the API ignores the values of all
     # fields not covered by the mask.
     #
-    # If a repeated field is specified for an update operation, the existing
-    # repeated values in the target resource will be overwritten by the new values.
-    # Note that a repeated field is only allowed in the last position of a `paths`
-    # string.
+    # If a repeated field is specified for an update operation, new values will
+    # be appended to the existing repeated field in the target resource. Note that
+    # a repeated field is only allowed in the last position of a `paths` string.
     #
     # If a sub-message is specified in the last position of the field mask for an
-    # update operation, then the existing sub-message in the target resource is
-    # overwritten. Given the target message:
+    # update operation, then new value will be merged into the existing sub-message
+    # in the target resource.
+    #
+    # For example, given the target message:
     #
     #     f {
     #       b {
-    #         d : 1
-    #         x : 2
+    #         d: 1
+    #         x: 2
     #       }
-    #       c : 1
+    #       c: [1]
     #     }
     #
     # And an update message:
     #
     #     f {
     #       b {
-    #         d : 10
+    #         d: 10
     #       }
+    #       c: [2]
     #     }
     #
     # then if the field mask is:
     #
-    #  paths: "f.b"
+    #  paths: ["f.b", "f.c"]
     #
     # then the result will be:
     #
     #     f {
     #       b {
-    #         d : 10
+    #         d: 10
+    #         x: 2
     #       }
-    #       c : 1
+    #       c: [1, 2]
     #     }
     #
-    # However, if the update mask was:
-    #
-    #  paths: "f.b.d"
-    #
-    # then the result would be:
-    #
-    #     f {
-    #       b {
-    #         d : 10
-    #         x : 2
-    #       }
-    #       c : 1
-    #     }
+    # An implementation may provide options to override this default behavior for
+    # repeated and message fields.
     #
     # In order to reset a field's value to the default, the field must
     # be in the mask and set to the default value in the provided resource.
@@ -1634,17 +1776,19 @@ end
 
 module Google
   module Protobuf
-    # A Timestamp represents a point in time independent of any time zone
-    # or calendar, represented as seconds and fractions of seconds at
-    # nanosecond resolution in UTC Epoch time. It is encoded using the
-    # Proleptic Gregorian Calendar which extends the Gregorian calendar
-    # backwards to year one. It is encoded assuming all minutes are 60
-    # seconds long, i.e. leap seconds are "smeared" so that no leap second
-    # table is needed for interpretation. Range is from
-    # 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z.
-    # By restricting to that range, we ensure that we can convert to
-    # and from  RFC 3339 date strings.
-    # See [https://www.ietf.org/rfc/rfc3339.txt](https://www.ietf.org/rfc/rfc3339.txt).
+    # A Timestamp represents a point in time independent of any time zone or local
+    # calendar, encoded as a count of seconds and fractions of seconds at
+    # nanosecond resolution. The count is relative to an epoch at UTC midnight on
+    # January 1, 1970, in the proleptic Gregorian calendar which extends the
+    # Gregorian calendar backwards to year one.
+    #
+    # All minutes are 60 seconds long. Leap seconds are "smeared" so that no leap
+    # second table is needed for interpretation, using a [24-hour linear
+    # smear](https://developers.google.com/time/smear).
+    #
+    # The range is from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z. By
+    # restricting to that range, we ensure that we can convert to and from [RFC
+    # 3339](https://www.ietf.org/rfc/rfc3339.txt) date strings.
     #
     # = Examples
     #
@@ -1705,12 +1849,12 @@ module Google
     # 01:30 UTC on January 15, 2017.
     #
     # In JavaScript, one can convert a Date object to this format using the
-    # standard [toISOString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString]
+    # standard [toISOString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)
     # method. In Python, a standard `datetime.datetime` object can be converted
     # to this format using [`strftime`](https://docs.python.org/2/library/time.html#time.strftime)
     # with the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one
     # can use the Joda Time's [`ISODateTimeFormat.dateTime()`](
-    # http://www.joda.org/joda-time/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime--
+    # http://www.joda.org/joda-time/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime%2D%2D
     # ) to obtain a formatter capable of generating timestamps in this format.
     # @!attribute [rw] seconds
     #   @return [Integer]
@@ -1833,24 +1977,25 @@ end
 
 module Google
   module Rpc
-    # The `Status` type defines a logical error model that is suitable for different
-    # programming environments, including REST APIs and RPC APIs. It is used by
-    # [gRPC](https://github.com/grpc). The error model is designed to be:
+    # The `Status` type defines a logical error model that is suitable for
+    # different programming environments, including REST APIs and RPC APIs. It is
+    # used by [gRPC](https://github.com/grpc). The error model is designed to be:
     #
     # * Simple to use and understand for most users
     # * Flexible enough to meet unexpected needs
     #
     # = Overview
     #
-    # The `Status` message contains three pieces of data: error code, error message,
-    # and error details. The error code should be an enum value of
-    # {Google::Rpc::Code}, but it may accept additional error codes if needed.  The
-    # error message should be a developer-facing English message that helps
-    # developers *understand* and *resolve* the error. If a localized user-facing
-    # error message is needed, put the localized message in the error details or
-    # localize it in the client. The optional error details may contain arbitrary
-    # information about the error. There is a predefined set of error detail types
-    # in the package `google.rpc` that can be used for common error conditions.
+    # The `Status` message contains three pieces of data: error code, error
+    # message, and error details. The error code should be an enum value of
+    # {Google::Rpc::Code}, but it may accept additional error codes
+    # if needed.  The error message should be a developer-facing English message
+    # that helps developers *understand* and *resolve* the error. If a localized
+    # user-facing error message is needed, put the localized message in the error
+    # details or localize it in the client. The optional error details may contain
+    # arbitrary information about the error. There is a predefined set of error
+    # detail types in the package `google.rpc` that can be used for common error
+    # conditions.
     #
     # = Language mapping
     #
@@ -1887,12 +2032,14 @@ module Google
     #   be used directly after any stripping needed for security/privacy reasons.
     # @!attribute [rw] code
     #   @return [Integer]
-    #     The status code, which should be an enum value of {Google::Rpc::Code}.
+    #     The status code, which should be an enum value of
+    #     {Google::Rpc::Code}.
     # @!attribute [rw] message
     #   @return [String]
     #     A developer-facing error message, which should be in English. Any
     #     user-facing error message should be localized and sent in the
-    #     {Google::Rpc::Status#details} field, or localized by the client.
+    #     {Google::Rpc::Status#details} field, or localized
+    #     by the client.
     # @!attribute [rw] details
     #   @return [Array<Google::Protobuf::Any>]
     #     A list of messages that carry the error details.  There is a common set of
@@ -2641,8 +2788,7 @@ module Google
       # @!attribute [rw] resource
       #   @return [String]
       #     REQUIRED: The resource which the tag is being added to.
-      #     Resource is usually specified as a path, such as,
-      #     projects/{project}/zones/{zone}/disks/{disk}.
+      #     In the form "shelves/{shelf_id}/books/{book_id}".
       # @!attribute [rw] tag
       #   @return [String]
       #     REQUIRED: The tag to add.
@@ -2772,11 +2918,11 @@ module Library
         self::GRPC_INTERCEPTORS = LibraryServiceClient::GRPC_INTERCEPTORS
       end
 
-      SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf_id}"
+      ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "archives/{archive_path}/books/{book_id=**}"
       )
 
-      private_constant :SHELF_PATH_TEMPLATE
+      private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
 
       BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf_id}/books/{book_id}"
@@ -2784,30 +2930,26 @@ module Library
 
       private_constant :BOOK_PATH_TEMPLATE
 
-      RETURN_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf}/books/{book}/returns/{return}"
-      )
-
-      private_constant :RETURN_PATH_TEMPLATE
-
       PROJECT_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "projects/{project}"
       )
 
       private_constant :PROJECT_PATH_TEMPLATE
 
-      ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "archives/{archive_path}/books/{book_id=**}"
+      SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf_id}"
       )
 
-      private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
+      private_constant :SHELF_PATH_TEMPLATE
 
-      # Returns a fully-qualified shelf resource name string.
-      # @param shelf_id [String]
+      # Returns a fully-qualified archived_book resource name string.
+      # @param archive_path [String]
+      # @param book_id [String]
       # @return [String]
-      def self.shelf_path shelf_id
-        SHELF_PATH_TEMPLATE.render(
-          :"shelf_id" => shelf_id
+      def self.archived_book_path archive_path, book_id
+        ARCHIVED_BOOK_PATH_TEMPLATE.render(
+          :"archive_path" => archive_path,
+          :"book_id" => book_id
         )
       end
 
@@ -2822,19 +2964,6 @@ module Library
         )
       end
 
-      # Returns a fully-qualified return resource name string.
-      # @param shelf [String]
-      # @param book [String]
-      # @param return_ [String]
-      # @return [String]
-      def self.return_path shelf, book, return_
-        RETURN_PATH_TEMPLATE.render(
-          :"shelf" => shelf,
-          :"book" => book,
-          :"return" => return_
-        )
-      end
-
       # Returns a fully-qualified project resource name string.
       # @param project [String]
       # @return [String]
@@ -2844,14 +2973,12 @@ module Library
         )
       end
 
-      # Returns a fully-qualified archived_book resource name string.
-      # @param archive_path [String]
-      # @param book_id [String]
+      # Returns a fully-qualified shelf resource name string.
+      # @param shelf_id [String]
       # @return [String]
-      def self.archived_book_path archive_path, book_id
-        ARCHIVED_BOOK_PATH_TEMPLATE.render(
-          :"archive_path" => archive_path,
-          :"book_id" => book_id
+      def self.shelf_path shelf_id
+        SHELF_PATH_TEMPLATE.render(
+          :"shelf_id" => shelf_id
         )
       end
 
@@ -3127,18 +3254,12 @@ module Library
         @discuss_book = Google::Gax.create_api_call(
           @library_service_stub.method(:discuss_book),
           defaults["discuss_book"],
-          exception_transformer: exception_transformer,
-          params_extractor: proc do |request|
-            {'name' => request.name}
-          end
+          exception_transformer: exception_transformer
         )
         @monolog_about_book = Google::Gax.create_api_call(
           @library_service_stub.method(:monolog_about_book),
           defaults["monolog_about_book"],
-          exception_transformer: exception_transformer,
-          params_extractor: proc do |request|
-            {'name' => request.name}
-          end
+          exception_transformer: exception_transformer
         )
         @babble_about_book = Google::Gax.create_api_call(
           @library_service_stub.method(:babble_about_book),
@@ -3179,13 +3300,10 @@ module Library
           defaults["test_optional_required_flattening_params"],
           exception_transformer: exception_transformer
         )
-        @private_get_book = Google::Gax.create_api_call(
-          @library_service_stub.method(:private_get_book),
-          defaults["private_get_book"],
-          exception_transformer: exception_transformer,
-          params_extractor: proc do |request|
-            {'name' => request.name}
-          end
+        @private_list_shelves = Google::Gax.create_api_call(
+          @library_service_stub.method(:private_list_shelves),
+          defaults["private_list_shelves"],
+          exception_transformer: exception_transformer
         )
       end
 
@@ -3209,7 +3327,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #
       #   # TODO: Initialize `shelf`:
       #   shelf = {}
@@ -3250,7 +3368,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #
       #   # TODO: Initialize `options_`:
@@ -3291,7 +3409,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #
       #   # Iterate over all results.
       #   library_client.list_shelves.each do |element|
@@ -3325,7 +3443,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   library_client.delete_shelf(formatted_name)
 
@@ -3360,7 +3478,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   response = library_client.merge_shelves(formatted_name, formatted_other_shelf_name)
@@ -3397,7 +3515,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #
       #   # TODO: Initialize `book`:
@@ -3446,7 +3564,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #
       #   # TODO: Initialize `shelf`:
       #   shelf = {}
@@ -3491,7 +3609,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   response = library_client.get_book(formatted_name)
 
@@ -3533,7 +3651,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   filter = "book-filter-string"
       #
@@ -3579,7 +3697,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   library_client.delete_book(formatted_name)
 
@@ -3624,7 +3742,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # TODO: Initialize `book`:
@@ -3667,7 +3785,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   response = library_client.move_book(formatted_name, formatted_other_shelf_name)
@@ -3709,7 +3827,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #
       #   # Iterate over all results.
       #   library_client.list_strings.each do |element|
@@ -3753,7 +3871,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   comment = ''
       #   stage = :UNSET
@@ -3795,7 +3913,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
       #   response = library_client.get_book_from_archive(formatted_name)
 
@@ -3828,7 +3946,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   response = library_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
@@ -3864,7 +3982,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   response = library_client.get_book_from_absolutely_anywhere(formatted_name)
 
@@ -3899,7 +4017,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   index_name = "default index"
       #
@@ -3939,8 +4057,8 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   library_client = Library::Library.new(version: :v1)
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   library_client.stream_shelves(formatted_name).each do |element|
       #     # Process element.
       #   end
@@ -3970,7 +4088,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #
       #   # TODO: Initialize `name`:
       #   name = ''
@@ -4008,7 +4126,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   request = { name: formatted_name }
       #   requests = [request]
@@ -4041,7 +4159,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   request = { name: formatted_name }
       #   requests = [request]
@@ -4072,7 +4190,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   request = {}
       #   requests = [request]
       #   library_client.babble_about_book(requests)
@@ -4108,22 +4226,22 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #
       #   # TODO: Initialize `names_element`:
       #   names_element = ''
       #   names = [names_element]
       #
-      #   # TODO: Initialize `shelves`:
-      #   shelves = []
+      #   # TODO: Initialize `formatted_shelves`:
+      #   formatted_shelves = []
       #
       #   # Iterate over all results.
-      #   library_client.find_related_books(names, shelves).each do |element|
+      #   library_client.find_related_books(formatted_names, formatted_shelves).each do |element|
       #     # Process element.
       #   end
       #
       #   # Or iterate over results one page at a time.
-      #   library_client.find_related_books(names, shelves).each_page do |page|
+      #   library_client.find_related_books(formatted_names, formatted_shelves).each_page do |page|
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
@@ -4149,8 +4267,7 @@ module Library
       #
       # @param resource [String]
       #   REQUIRED: The resource which the label is being added to.
-      #   Resource is usually specified as a path, such as,
-      #   projects/{project}/zones/{zone}/disks/{disk}.
+      #   In the form "shelves/{shelf_id}/books/{book_id}".
       # @param label [String]
       #   REQUIRED: The label to add.
       # @param options [Google::Gax::CallOptions]
@@ -4164,7 +4281,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # TODO: Initialize `label`:
@@ -4196,7 +4313,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # Register a callback during the method call.
@@ -4256,7 +4373,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # Register a callback during the method call.
@@ -4479,7 +4596,7 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
+      #   library_client = Library::Library.new(version: :v1)
       #
       #   # TODO: Initialize `required_singular_int32`:
       #   required_singular_int32 = 0
@@ -4507,15 +4624,9 @@ module Library
       #
       #   # TODO: Initialize `required_singular_message`:
       #   required_singular_message = {}
-      #
-      #   # TODO: Initialize `required_singular_resource_name`:
-      #   required_singular_resource_name = ''
-      #
-      #   # TODO: Initialize `required_singular_resource_name_oneof`:
-      #   required_singular_resource_name_oneof = ''
-      #
-      #   # TODO: Initialize `required_singular_resource_name_common`:
-      #   required_singular_resource_name_common = ''
+      #   formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_required_singular_resource_name_common = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
       #
       #   # TODO: Initialize `required_singular_fixed32`:
       #   required_singular_fixed32 = 0
@@ -4556,8 +4667,8 @@ module Library
       #   # TODO: Initialize `formatted_required_repeated_resource_name_oneof`:
       #   formatted_required_repeated_resource_name_oneof = []
       #
-      #   # TODO: Initialize `required_repeated_resource_name_common`:
-      #   required_repeated_resource_name_common = []
+      #   # TODO: Initialize `formatted_required_repeated_resource_name_common`:
+      #   formatted_required_repeated_resource_name_common = []
       #
       #   # TODO: Initialize `required_repeated_fixed32`:
       #   required_repeated_fixed32 = []
@@ -4567,7 +4678,7 @@ module Library
       #
       #   # TODO: Initialize `required_map`:
       #   required_map = {}
-      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
+      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, formatted_required_singular_resource_name, formatted_required_singular_resource_name_oneof, formatted_required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, formatted_required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
       def test_optional_required_flattening_params \
           required_singular_int32,
@@ -4760,8 +4871,11 @@ module Library
 
       # This method is not exposed in the GAPIC config. It should be generated.
       #
-      # @param name [String]
-      #   The name of the book to retrieve.
+      # @param page_token [String]
+      #   A token identifying a page of results the server should return.
+      #   Typically, this is the value of
+      #   {Google::Example::Library::V1::ListShelvesResponse#next_page_token ListShelvesResponse#next_page_token}
+      #   returned from the previous call to `ListShelves` method.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -4773,18 +4887,18 @@ module Library
       # @example
       #   require "library"
       #
-      #   library_client = Library.new(version: :v1)
-      #   response = library_client.private_get_book
+      #   library_client = Library::Library.new(version: :v1)
+      #   response = library_client.private_list_shelves
 
-      def private_get_book \
-          name: nil,
+      def private_list_shelves \
+          page_token: nil,
           options: nil,
           &block
         req = {
-          name: name
+          page_token: page_token
         }.delete_if { |_, v| v.nil? }
-        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookRequest)
-        @private_get_book.call(req, options, &block)
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListShelvesRequest)
+        @private_list_shelves.call(req, options, &block)
       end
     end
   end
@@ -4796,7 +4910,6 @@ end
     "google.example.library.v1.LibraryService": {
       "retry_codes": {
         "idempotent": [
-          "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
         "non_idempotent": []
@@ -4965,9 +5078,268 @@ end
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
-        "PrivateGetBook": {
+        "PrivateListShelves": {
           "timeout_millis": 60000,
           "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        }
+      }
+    }
+  }
+}
+
+============== file: lib/library/v1/my_proto_client.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# EDITING INSTRUCTIONS
+# This file was generated from the file
+# https://github.com/googleapis/googleapis/blob/master/another_service.proto,
+# and updates to that file get reflected here through a refresh process.
+# For the short term, the refresh process will only be runnable by Google
+# engineers.
+
+require "json"
+require "pathname"
+
+require "google/gax"
+
+require "another_service_pb"
+require "library/v1/credentials"
+
+module Library
+  module V1
+    # @!attribute [r] my_proto_stub
+    #   @return [Google::Example::Library::V1::MyProto::Stub]
+    class MyProtoClient
+      attr_reader :my_proto_stub
+
+      # The default address of the service.
+      SERVICE_ADDRESS = "library-example.googleapis.com".freeze
+
+      # The default port of the service.
+      DEFAULT_SERVICE_PORT = 1234
+
+      # The default set of gRPC interceptors.
+      GRPC_INTERCEPTORS = []
+
+      DEFAULT_TIMEOUT = 30
+
+      # The scopes needed to make gRPC calls to all of the methods defined in
+      # this service.
+      ALL_SCOPES = [
+        "https://www.googleapis.com/auth/cloud-platform",
+        "https://www.googleapis.com/auth/library"
+      ].freeze
+
+
+      RETURN_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf}/books/{book}/returns/{return}"
+      )
+
+      private_constant :RETURN_PATH_TEMPLATE
+
+      # Returns a fully-qualified return resource name string.
+      # @param shelf [String]
+      # @param book [String]
+      # @param return_ [String]
+      # @return [String]
+      def self.return_path shelf, book, return_
+        RETURN_PATH_TEMPLATE.render(
+          :"shelf" => shelf,
+          :"book" => book,
+          :"return" => return_
+        )
+      end
+
+      # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      #   Provides the means for authenticating requests made by the client. This parameter can
+      #   be many types.
+      #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
+      #   authenticating requests made by this client.
+      #   A `String` will be treated as the path to the keyfile to be used for the construction of
+      #   credentials for this client.
+      #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+      #   credentials for this client.
+      #   A `GRPC::Core::Channel` will be used to make calls through.
+      #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+      #   should already be composed with a `GRPC::Core::CallCredentials` object.
+      #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+      #   metadata for requests, generally, to give OAuth credentials.
+      # @param scopes [Array<String>]
+      #   The OAuth scopes for this service. This parameter is ignored if
+      #   an updater_proc is supplied.
+      # @param client_config [Hash]
+      #   A Hash for call options for each method. See
+      #   Google::Gax#construct_settings for the structure of
+      #   this data. Falls back to the default config if not specified
+      #   or the specified config is missing data points.
+      # @param timeout [Numeric]
+      #   The default timeout, in seconds, for calls made through this client.
+      # @param metadata [Hash]
+      #   Default metadata to be sent with each request. This can be overridden on a per call basis.
+      # @param exception_transformer [Proc]
+      #   An optional proc that intercepts any exceptions raised during an API call to inject
+      #   custom error handling.
+      def initialize \
+          credentials: nil,
+          scopes: ALL_SCOPES,
+          client_config: {},
+          timeout: DEFAULT_TIMEOUT,
+          metadata: nil,
+          exception_transformer: nil,
+          lib_name: nil,
+          lib_version: ""
+        # These require statements are intentionally placed here to initialize
+        # the gRPC module only when it's required.
+        # See https://github.com/googleapis/toolkit/issues/446
+        require "google/gax/grpc"
+        require "another_service_services_pb"
+
+        credentials ||= Library::V1::Credentials.default
+
+        if credentials.is_a?(String) || credentials.is_a?(Hash)
+          updater_proc = Library::V1::Credentials.new(credentials).updater_proc
+        end
+        if credentials.is_a?(GRPC::Core::Channel)
+          channel = credentials
+        end
+        if credentials.is_a?(GRPC::Core::ChannelCredentials)
+          chan_creds = credentials
+        end
+        if credentials.is_a?(Proc)
+          updater_proc = credentials
+        end
+        if credentials.is_a?(Google::Auth::Credentials)
+          updater_proc = credentials.updater_proc
+        end
+
+        package_version = Gem.loaded_specs['library'].version.version
+
+        google_api_client = "gl-ruby/#{RUBY_VERSION}"
+        google_api_client << " #{lib_name}/#{lib_version}" if lib_name
+        google_api_client << " gapic/#{package_version} gax/#{Google::Gax::VERSION}"
+        google_api_client << " grpc/#{GRPC::VERSION}"
+        google_api_client.freeze
+
+        headers = { :"x-goog-api-client" => google_api_client }
+        headers.merge!(metadata) unless metadata.nil?
+        client_config_file = Pathname.new(__dir__).join(
+          "my_proto_client_config.json"
+        )
+        defaults = client_config_file.open do |f|
+          Google::Gax.construct_settings(
+            "google.example.library.v1.MyProto",
+            JSON.parse(f.read),
+            client_config,
+            Google::Gax::Grpc::STATUS_CODE_NAMES,
+            timeout,
+            errors: Google::Gax::Grpc::API_ERRORS,
+            metadata: headers
+          )
+        end
+
+        # Allow overriding the service path/port in subclasses.
+        service_path = self.class::SERVICE_ADDRESS
+        port = self.class::DEFAULT_SERVICE_PORT
+        interceptors = self.class::GRPC_INTERCEPTORS
+        @my_proto_stub = Google::Gax::Grpc.create_stub(
+          service_path,
+          port,
+          chan_creds: chan_creds,
+          channel: channel,
+          updater_proc: updater_proc,
+          scopes: scopes,
+          interceptors: interceptors,
+          &Google::Example::Library::V1::MyProto::Stub.method(:new)
+        )
+
+        @my_method = Google::Gax.create_api_call(
+          @my_proto_stub.method(:my_method),
+          defaults["my_method"],
+          exception_transformer: exception_transformer
+        )
+      end
+
+      # Service calls
+
+      # @param mylist [Array<Google::Example::Library::V1::SubMessage | Hash>]
+      #   A hash of the same form as `Google::Example::Library::V1::SubMessage`
+      #   can also be provided.
+      # @param myfield [Google::Example::Library::V1::SubMessage | Hash]
+      #   A hash of the same form as `Google::Example::Library::V1::SubMessage`
+      #   can also be provided.
+      # @param secondfield [Google::Example::Library::V1::SubMessage | Hash]
+      #   A hash of the same form as `Google::Example::Library::V1::SubMessage`
+      #   can also be provided.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::MethodResponse]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @return [Google::Example::Library::V1::MethodResponse]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   my_proto_client = Library::MyProto.new(version: :v1)
+      #   response = my_proto_client.my_method
+
+      def my_method \
+          mylist: nil,
+          myfield: nil,
+          secondfield: nil,
+          options: nil,
+          &block
+        req = {
+          mylist: mylist,
+          myfield: myfield,
+          secondfield: secondfield
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::MethodRequest)
+        @my_method.call(req, options, &block)
+      end
+    end
+  end
+end
+
+============== file: lib/library/v1/my_proto_client_config.json ==============
+{
+  "interfaces": {
+    "google.example.library.v1.MyProto": {
+      "retry_codes": {
+        "idempotent": [
+          "UNAVAILABLE"
+        ],
+        "non_idempotent": []
+      },
+      "retry_params": {
+        "default": {
+          "initial_retry_delay_millis": 100,
+          "retry_delay_multiplier": 1.3,
+          "max_retry_delay_millis": 60000,
+          "initial_rpc_timeout_millis": 20000,
+          "rpc_timeout_multiplier": 1.0,
+          "max_rpc_timeout_millis": 20000,
+          "total_timeout_millis": 600000
+        }
+      },
+      "methods": {
+        "MyMethod": {
+          "timeout_millis": 1000,
+          "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         }
       }
@@ -5008,7 +5380,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "yard", "~> 0.9"
 end
 
-============== file: samples/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.rb ==============
+============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5033,7 +5405,7 @@ require "library"
 def sample_babble_about_book
   # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   request = {}
 
@@ -5053,7 +5425,7 @@ require "optparse"
 if $0 == __FILE__
   sample_babble_about_book
 end
-============== file: samples/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb ==============
+============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5078,7 +5450,7 @@ require "library"
 def sample_babble_about_book
   # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   request = {}
 
@@ -5095,7 +5467,7 @@ require "optparse"
 if $0 == __FILE__
   sample_babble_about_book
 end
-============== file: samples/delete_shelf_request_empty_response_type_with_response_handling.rb ==============
+============== file: samples/v1/delete_shelf_request_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5120,7 +5492,7 @@ require "library"
 def sample_delete_shelf
   # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   formatted_name = library_client.class.shelf_path("[SHELF_ID]")
 
@@ -5139,7 +5511,7 @@ require "optparse"
 if $0 == __FILE__
   sample_delete_shelf
 end
-============== file: samples/delete_shelf_request_empty_response_type_without_response_handling.rb ==============
+============== file: samples/v1/delete_shelf_request_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5164,7 +5536,7 @@ require "library"
 def sample_delete_shelf
   # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   formatted_name = library_client.class.shelf_path("[SHELF_ID]")
 
@@ -5180,70 +5552,7 @@ require "optparse"
 if $0 == __FILE__
   sample_delete_shelf
 end
-============== file: samples/discuss_book_request_streaming_bidi_prog.rb ==============
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
-
-require "library"
-
-# [START turing_prog_request_streaming_bidi]
-
-# Testing calling forms
-def sample_discuss_book(image_file_name)
-  # [START turing_prog_request_streaming_bidi_core]
-  # Instantiate a client
-  library_client = Library.new version: :v1
-
-  # image_file_name = "image_file.jpg"
-  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
-  file_name = "comment_file"
-  comment = File.binread file_name
-  comment_2 = { comment: comment }
-  image = File.binread image_file_name
-  request = {
-    name: formatted_name,
-    comment: comment_2,
-    image: image
-  }
-
-  requests = [request]
-  library_client.discuss_book(requests).each do |element|
-    puts element
-  end
-
-  # [END turing_prog_request_streaming_bidi_core]
-end
-# [END turing_prog_request_streaming_bidi]
-
-
-require "optparse"
-
-if $0 == __FILE__
-
-  image_file_name = "image_file.jpg"
-
-  ARGV.options do |opts|
-    opts.on("--image_file_name=val") { |val| image_file_name = val }
-    opts.parse!
-  end
-
-
-  sample_discuss_book(image_file_name)
-end
-============== file: samples/find_related_books_request_paged_all_odyssey.rb ==============
+============== file: samples/v1/find_related_books_request_paged_all_odyssey.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5268,7 +5577,7 @@ require "library"
 def sample_find_related_books
   # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   names_element = "Odyssey"
   names = [names_element]
@@ -5276,7 +5585,7 @@ def sample_find_related_books
   shelves = [shelves_element]
 
   # Iterate over all results.
-  library_client.find_related_books(names, shelves).each do |element|
+  library_client.find_related_books(formatted_names, formatted_shelves).each do |element|
     book = element
     puts "Here's a related book: #{book}"
   end
@@ -5291,7 +5600,7 @@ require "optparse"
 if $0 == __FILE__
   sample_find_related_books
 end
-============== file: samples/find_related_books_request_paged_odyssey.rb ==============
+============== file: samples/v1/find_related_books_request_paged_odyssey.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5316,7 +5625,7 @@ require "library"
 def sample_find_related_books
   # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   names_element = "Odyssey"
   names = [names_element]
@@ -5324,7 +5633,7 @@ def sample_find_related_books
   shelves = [shelves_element]
 
   # Iterate over results one page at a time.
-  library_client.find_related_books(names, shelves).each_page do |page|
+  library_client.find_related_books(formatted_names, formatted_shelves).each_page do |page|
     # Process each page at a time.
     page.each do |element|
       book = element
@@ -5342,7 +5651,7 @@ require "optparse"
 if $0 == __FILE__
   sample_find_related_books
 end
-============== file: samples/get_big_book_long_running_request_async_wap.rb ==============
+============== file: samples/v1/get_big_book_long_running_request_async_wap.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5367,7 +5676,7 @@ require "library"
 def sample_get_big_book(shelf)
   # [START hopper_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   # shelf = "Novel"
   formatted_name = library_client.class.book_path(shelf, "War and Peace")
@@ -5419,7 +5728,7 @@ if $0 == __FILE__
 
   sample_get_big_book(shelf)
 end
-============== file: samples/get_big_book_long_running_request_async_wap2.rb ==============
+============== file: samples/v1/get_big_book_long_running_request_async_wap2.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5448,7 +5757,7 @@ require "library"
 def sample_get_big_book(shelf, big_book_name)
   # [START hopper_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   # shelf = "Novel"
   # big_book_name = "War and Peace"
@@ -5487,7 +5796,7 @@ if $0 == __FILE__
 
   sample_get_big_book(shelf, big_book_name)
 end
-============== file: samples/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb ==============
+============== file: samples/v1/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5512,7 +5821,7 @@ require "library"
 def sample_get_big_nothing
   # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
 
@@ -5539,7 +5848,7 @@ require "optparse"
 if $0 == __FILE__
   sample_get_big_nothing
 end
-============== file: samples/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb ==============
+============== file: samples/v1/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5564,7 +5873,7 @@ require "library"
 def sample_get_big_nothing
   # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
 
@@ -5588,7 +5897,7 @@ require "optparse"
 if $0 == __FILE__
   sample_get_big_nothing
 end
-============== file: samples/get_book_request_test_on_success_map.rb ==============
+============== file: samples/v1/get_book_request_test_on_success_map.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5612,7 +5921,7 @@ require "library"
 def sample_get_book
   # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
 
@@ -5633,7 +5942,50 @@ require "optparse"
 if $0 == __FILE__
   sample_get_book
 end
-============== file: samples/monolog_about_book_request_streaming_client_prog.rb ==============
+============== file: samples/v1/lovelace.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
+
+require "library"
+
+# [START lovelace]
+
+# Testing calling forms
+def sample_stream_books
+  # [START lovelace_core]
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  name = "BASIC"
+
+  library_client.stream_books(name).each do |element|
+    puts element
+  end
+
+  # [END lovelace_core]
+end
+# [END lovelace]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_stream_books
+end
+============== file: samples/v1/monolog_about_book_request_streaming_client_prog.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5658,7 +6010,7 @@ require "library"
 def sample_monolog_about_book
   # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
   request = { name: formatted_name }
@@ -5678,7 +6030,7 @@ require "optparse"
 if $0 == __FILE__
   sample_monolog_about_book
 end
-============== file: samples/publish_series_request_pi_version.rb ==============
+============== file: samples/v1/publish_series_request_pi_version.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5706,7 +6058,7 @@ require "library"
 def sample_publish_series(shelf_name, edition)
   # [START canonical_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   # shelf_name = "Math"
   # edition = 123
@@ -5758,7 +6110,7 @@ if $0 == __FILE__
 
   sample_publish_series(shelf_name, edition)
 end
-============== file: samples/publish_series_request_second_edition.rb ==============
+============== file: samples/v1/publish_series_request_second_edition.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5783,7 +6135,7 @@ require "library"
 def sample_publish_series
   # [START canonical_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
   shelf = {}
   books = []
@@ -5803,7 +6155,7 @@ require "optparse"
 if $0 == __FILE__
   sample_publish_series
 end
-============== file: samples/publish_series_request_test_request_object_field_comments.rb ==============
+============== file: samples/v1/publish_series_request_test_request_object_field_comments.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5828,7 +6180,7 @@ require "library"
 def sample_publish_series
   # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
 
   # Comment on a resource name
@@ -5849,8 +6201,7 @@ def sample_publish_series
   books = []
 
   # Comment on a file input field
-  file_name = "xyz3141592654"
-  series_bytes = File.binread file_name
+  series_bytes = File.binread "xyz3141592654"
 
   # Comment on a message
   series_uuid = { series_bytes: series_bytes }
@@ -5872,7 +6223,7 @@ require "optparse"
 if $0 == __FILE__
   sample_publish_series
 end
-============== file: samples/stream_books_request_streaming_server_prog.rb ==============
+============== file: samples/v1/publish_series_request_test_write_to_file.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5887,35 +6238,86 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
+# DO NOT EDIT! This is a generated sample ("Request",  "test_write_to_file")
 
 require "library"
 
-# [START lovelace]
+# [START sample]
 
-# Testing calling forms
-def sample_stream_books
-  # [START lovelace_core]
+# Testing write fields to files.
+def sample_publish_series
+  # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
-  name = "BASIC"
+  shelf = {}
+  books = []
+  series_uuid = {}
 
-  library_client.stream_books(name).each do |element|
-    puts element
+  response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
+  # testing writing bytes field.
+  File.open("uuid_of_series_with_book_#{response.book_names[0]}.raw", "wb") do |file|
+    file.write(response.series_uuid.series_bytes)
   end
 
-  # [END lovelace_core]
+  # testing writing string field.
+  File.write "series_uuid_in_plain_text.txt", response.series_uuid.series_string
+
+
+  # [END sample_core]
 end
-# [END lovelace]
+# [END sample]
 
 
 require "optparse"
 
 if $0 == __FILE__
-  sample_stream_books
+  sample_publish_series
 end
-============== file: samples/stream_shelves_request_streaming_server_empty.rb ==============
+============== file: samples/v1/sample_get_shelf.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
+
+require "library"
+
+# [START sample_get_shelf]
+
+# Test default calling forms for unary methods.
+def sample_get_shelf
+  # [START sample_get_shelf_core]
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  formatted_name = library_client.class.shelf_path("my-shelf")
+  options_ = ''
+
+  response = library_client.get_shelf(formatted_name, options_)
+  puts "The theme of the shelf is: #{response.theme}"
+
+  # [END sample_get_shelf_core]
+end
+# [END sample_get_shelf]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_get_shelf
+end
+============== file: samples/v1/stream_shelves_request_streaming_server_empty.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5940,9 +6342,9 @@ require "library"
 def sample_stream_shelves
   # [START sample_core]
   # Instantiate a client
-  library_client = Library.new version: :v1
+  library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_name = library_client.class.shelf_path("[SHELF_ID]")
 
   library_client.stream_shelves(formatted_name).each do |element|
     puts element
@@ -5957,6 +6359,187 @@ require "optparse"
 
 if $0 == __FILE__
   sample_stream_shelves
+end
+============== file: samples/v1/test_default_calling_form_for_paging.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_paging")
+
+require "library"
+
+# [START test_default_calling_form_for_paging]
+
+# Test default calling form for paging methods.
+def sample_list_shelves
+  # [START test_default_calling_form_for_paging_core]
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  # Iterate over all results.
+  library_client.list_shelves.each do |element|
+    puts "shelf name: #{element}"
+  end
+
+  # [END test_default_calling_form_for_paging_core]
+end
+# [END test_default_calling_form_for_paging]
+
+
+require "optparse"
+
+if $0 == __FILE__
+  sample_list_shelves
+end
+============== file: samples/v1/this_tag_should_be_the_name_of_the_file.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
+
+require "library"
+
+# [START this_tag_should_be_the_name_of_the_file]
+
+# Testing calling forms
+def sample_get_big_book(shelf)
+  # [START this_tag_should_be_the_name_of_the_file_core]
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  # shelf = "Novel"
+  formatted_name = library_client.class.book_path(shelf, "War and Peace")
+
+  # Make the long-running operation request
+  operation = library_client.get_big_book(formatted_name)
+
+  # Block until operation complete
+  operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  results = operation.response.results
+
+  # Testing iterating over map fields when both key and value are specified.
+  response.map_list_value_value.each do |my_key, my_value|
+    puts "key: #{my_key}, value: #{my_value}"
+  end
+
+  # Testing iterating over map fields when only key is specified.
+  response.map_list_value_value.keys.each do |another_key|
+    puts "key: #{another_key}"
+  end
+
+  # Testing iterating over map fields when only value is specified.
+  response.map_list_value_value.values.each do |another_value|
+    puts "value: #{another_value}"
+  end
+
+  puts "name: #{response.name}"
+  puts "author: #{response.author}"
+
+  # [END this_tag_should_be_the_name_of_the_file_core]
+end
+# [END this_tag_should_be_the_name_of_the_file]
+
+
+require "optparse"
+
+if $0 == __FILE__
+
+  shelf = "Novel"
+
+  ARGV.options do |opts|
+    opts.on("--shelf=val") { |val| shelf = val }
+    opts.parse!
+  end
+
+
+  sample_get_big_book(shelf)
+end
+============== file: samples/v1/turing_prog_request_streaming_bidi.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+
+require "library"
+
+# [START turing_prog_request_streaming_bidi]
+
+# Testing calling forms
+def sample_discuss_book(image_file_name)
+  # [START turing_prog_request_streaming_bidi_core]
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  # image_file_name = "image_file.jpg"
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  comment = File.binread "comment_file"
+  comment_2 = { comment: comment }
+  image = File.binread image_file_name
+  request = {
+    name: formatted_name,
+    comment: comment_2,
+    image: image
+  }
+
+  requests = [request]
+  library_client.discuss_book(requests).each do |element|
+    puts element
+  end
+
+  # [END turing_prog_request_streaming_bidi_core]
+end
+# [END turing_prog_request_streaming_bidi]
+
+
+require "optparse"
+
+if $0 == __FILE__
+
+  image_file_name = "image_file.jpg"
+
+  ARGV.options do |opts|
+    opts.on("--image_file_name=val") { |val| image_file_name = val }
+    opts.parse!
+  end
+
+
+  sample_discuss_book(image_file_name)
 end
 ============== file: test/library/v1/library_service_client_test.rb ==============
 # Copyright 2019 Google LLC
@@ -6061,7 +6644,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.create_shelf(shelf)
@@ -6096,7 +6679,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -6143,7 +6726,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.get_shelf(formatted_name, options_)
@@ -6180,7 +6763,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -6216,7 +6799,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.list_shelves
@@ -6242,7 +6825,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -6276,7 +6859,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.delete_shelf(formatted_name)
@@ -6311,7 +6894,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -6358,7 +6941,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.merge_shelves(formatted_name, formatted_other_shelf_name)
@@ -6395,7 +6978,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -6444,7 +7027,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.create_book(formatted_name, book)
@@ -6481,7 +7064,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -6529,7 +7112,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.publish_series(
@@ -6580,7 +7163,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -6631,7 +7214,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.get_book(formatted_name)
@@ -6666,7 +7249,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -6708,7 +7291,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.list_books(formatted_name, filter: filter)
@@ -6740,7 +7323,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -6774,7 +7357,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.delete_book(formatted_name)
@@ -6809,7 +7392,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -6858,7 +7441,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.update_book(formatted_name, book)
@@ -6895,7 +7478,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -6944,7 +7527,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.move_book(formatted_name, formatted_other_shelf_name)
@@ -6981,7 +7564,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -7017,7 +7600,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.list_strings
@@ -7043,7 +7626,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -7090,7 +7673,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.add_comments(formatted_name, comments)
@@ -7138,7 +7721,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -7185,7 +7768,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.get_book_from_archive(formatted_name)
@@ -7220,7 +7803,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -7269,7 +7852,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
@@ -7306,7 +7889,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -7353,7 +7936,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.get_book_from_absolutely_anywhere(formatted_name)
@@ -7388,7 +7971,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -7427,7 +8010,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.update_book_index(
@@ -7475,7 +8058,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -7498,7 +8081,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes stream_shelves without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
 
       # Create expected grpc response
       shelves_element = {}
@@ -7519,7 +8102,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.stream_shelves(formatted_name)
@@ -7533,7 +8116,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes stream_shelves with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -7548,7 +8131,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -7595,7 +8178,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.stream_books(name)
@@ -7624,7 +8207,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -7666,7 +8249,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.discuss_book([request])
@@ -7697,7 +8280,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -7739,7 +8322,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.monolog_about_book([request])
@@ -7769,7 +8352,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -7802,7 +8385,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           client.babble_about_book([request])
@@ -7828,7 +8411,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -7849,7 +8432,7 @@ describe Library::V1::LibraryServiceClient do
       # Create request parameters
       names_element = ''
       names = [names_element]
-      shelves = []
+      formatted_shelves = []
 
       # Create expected grpc response
       next_page_token = ""
@@ -7861,8 +8444,8 @@ describe Library::V1::LibraryServiceClient do
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::FindRelatedBooksRequest, request)
-        assert_equal(names, request.names)
-        assert_equal(shelves, request.shelves)
+        assert_equal(formatted_names, request.names)
+        assert_equal(formatted_shelves, request.shelves)
         OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub_v1.new(:find_related_books, mock_method)
@@ -7872,10 +8455,10 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
-          response = client.find_related_books(names, shelves)
+          response = client.find_related_books(formatted_names, formatted_shelves)
 
           # Verify the response
           assert(response.instance_of?(Google::Gax::PagedEnumerable))
@@ -7890,13 +8473,13 @@ describe Library::V1::LibraryServiceClient do
       # Create request parameters
       names_element = ''
       names = [names_element]
-      shelves = []
+      formatted_shelves = []
 
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::FindRelatedBooksRequest, request)
-        assert_equal(names, request.names)
-        assert_equal(shelves, request.shelves)
+        assert_equal(formatted_names, request.names)
+        assert_equal(formatted_shelves, request.shelves)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:find_related_books, mock_method)
@@ -7906,11 +8489,11 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
-            client.find_related_books(names, shelves)
+            client.find_related_books(formatted_names, formatted_shelves)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
@@ -7946,7 +8529,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.add_label(formatted_resource, label)
@@ -7983,7 +8566,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -8037,7 +8620,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.get_big_book(formatted_name)
@@ -8075,7 +8658,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.get_big_book(formatted_name)
@@ -8104,7 +8687,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -8149,7 +8732,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.get_big_nothing(formatted_name)
@@ -8187,7 +8770,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.get_big_nothing(formatted_name)
@@ -8216,7 +8799,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -8244,9 +8827,9 @@ describe Library::V1::LibraryServiceClient do
       required_singular_string = ''
       required_singular_bytes = ''
       required_singular_message = {}
-      required_singular_resource_name = ''
-      required_singular_resource_name_oneof = ''
-      required_singular_resource_name_common = ''
+      formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_required_singular_resource_name_common = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
       required_repeated_int32 = []
@@ -8260,7 +8843,7 @@ describe Library::V1::LibraryServiceClient do
       required_repeated_message = []
       formatted_required_repeated_resource_name = []
       formatted_required_repeated_resource_name_oneof = []
-      required_repeated_resource_name_common = []
+      formatted_required_repeated_resource_name_common = []
       required_repeated_fixed32 = []
       required_repeated_fixed64 = []
       required_map = {}
@@ -8281,9 +8864,9 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_singular_string, request.required_singular_string)
         assert_equal(required_singular_bytes, request.required_singular_bytes)
         assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
-        assert_equal(required_singular_resource_name, request.required_singular_resource_name)
-        assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
-        assert_equal(required_singular_resource_name_common, request.required_singular_resource_name_common)
+        assert_equal(formatted_required_singular_resource_name, request.required_singular_resource_name)
+        assert_equal(formatted_required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
+        assert_equal(formatted_required_singular_resource_name_common, request.required_singular_resource_name_common)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
         assert_equal(required_singular_fixed64, request.required_singular_fixed64)
         assert_equal(required_repeated_int32, request.required_repeated_int32)
@@ -8300,7 +8883,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_message, request.required_repeated_message)
         assert_equal(formatted_required_repeated_resource_name, request.required_repeated_resource_name)
         assert_equal(formatted_required_repeated_resource_name_oneof, request.required_repeated_resource_name_oneof)
-        assert_equal(required_repeated_resource_name_common, request.required_repeated_resource_name_common)
+        assert_equal(formatted_required_repeated_resource_name_common, request.required_repeated_resource_name_common)
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
         assert_equal(required_map, request.required_map)
@@ -8313,7 +8896,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           response = client.test_optional_required_flattening_params(
@@ -8326,9 +8909,9 @@ describe Library::V1::LibraryServiceClient do
             required_singular_string,
             required_singular_bytes,
             required_singular_message,
-            required_singular_resource_name,
-            required_singular_resource_name_oneof,
-            required_singular_resource_name_common,
+            formatted_required_singular_resource_name,
+            formatted_required_singular_resource_name_oneof,
+            formatted_required_singular_resource_name_common,
             required_singular_fixed32,
             required_singular_fixed64,
             required_repeated_int32,
@@ -8342,7 +8925,7 @@ describe Library::V1::LibraryServiceClient do
             required_repeated_message,
             formatted_required_repeated_resource_name,
             formatted_required_repeated_resource_name_oneof,
-            required_repeated_resource_name_common,
+            formatted_required_repeated_resource_name_common,
             required_repeated_fixed32,
             required_repeated_fixed64,
             required_map
@@ -8362,9 +8945,9 @@ describe Library::V1::LibraryServiceClient do
             required_singular_string,
             required_singular_bytes,
             required_singular_message,
-            required_singular_resource_name,
-            required_singular_resource_name_oneof,
-            required_singular_resource_name_common,
+            formatted_required_singular_resource_name,
+            formatted_required_singular_resource_name_oneof,
+            formatted_required_singular_resource_name_common,
             required_singular_fixed32,
             required_singular_fixed64,
             required_repeated_int32,
@@ -8378,7 +8961,7 @@ describe Library::V1::LibraryServiceClient do
             required_repeated_message,
             formatted_required_repeated_resource_name,
             formatted_required_repeated_resource_name_oneof,
-            required_repeated_resource_name_common,
+            formatted_required_repeated_resource_name_common,
             required_repeated_fixed32,
             required_repeated_fixed64,
             required_map
@@ -8402,9 +8985,9 @@ describe Library::V1::LibraryServiceClient do
       required_singular_string = ''
       required_singular_bytes = ''
       required_singular_message = {}
-      required_singular_resource_name = ''
-      required_singular_resource_name_oneof = ''
-      required_singular_resource_name_common = ''
+      formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_required_singular_resource_name_common = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
       required_repeated_int32 = []
@@ -8418,7 +9001,7 @@ describe Library::V1::LibraryServiceClient do
       required_repeated_message = []
       formatted_required_repeated_resource_name = []
       formatted_required_repeated_resource_name_oneof = []
-      required_repeated_resource_name_common = []
+      formatted_required_repeated_resource_name_common = []
       required_repeated_fixed32 = []
       required_repeated_fixed64 = []
       required_map = {}
@@ -8435,9 +9018,9 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_singular_string, request.required_singular_string)
         assert_equal(required_singular_bytes, request.required_singular_bytes)
         assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
-        assert_equal(required_singular_resource_name, request.required_singular_resource_name)
-        assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
-        assert_equal(required_singular_resource_name_common, request.required_singular_resource_name_common)
+        assert_equal(formatted_required_singular_resource_name, request.required_singular_resource_name)
+        assert_equal(formatted_required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
+        assert_equal(formatted_required_singular_resource_name_common, request.required_singular_resource_name_common)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
         assert_equal(required_singular_fixed64, request.required_singular_fixed64)
         assert_equal(required_repeated_int32, request.required_repeated_int32)
@@ -8454,7 +9037,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_message, request.required_repeated_message)
         assert_equal(formatted_required_repeated_resource_name, request.required_repeated_resource_name)
         assert_equal(formatted_required_repeated_resource_name_oneof, request.required_repeated_resource_name_oneof)
-        assert_equal(required_repeated_resource_name_common, request.required_repeated_resource_name_common)
+        assert_equal(formatted_required_repeated_resource_name_common, request.required_repeated_resource_name_common)
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
         assert_equal(required_map, request.required_map)
@@ -8467,7 +9050,7 @@ describe Library::V1::LibraryServiceClient do
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
@@ -8481,9 +9064,9 @@ describe Library::V1::LibraryServiceClient do
               required_singular_string,
               required_singular_bytes,
               required_singular_message,
-              required_singular_resource_name,
-              required_singular_resource_name_oneof,
-              required_singular_resource_name_common,
+              formatted_required_singular_resource_name,
+              formatted_required_singular_resource_name_oneof,
+              formatted_required_singular_resource_name_common,
               required_singular_fixed32,
               required_singular_fixed64,
               required_repeated_int32,
@@ -8497,7 +9080,7 @@ describe Library::V1::LibraryServiceClient do
               required_repeated_message,
               formatted_required_repeated_resource_name,
               formatted_required_repeated_resource_name_oneof,
-              required_repeated_resource_name_common,
+              formatted_required_repeated_resource_name_common,
               required_repeated_fixed32,
               required_repeated_fixed64,
               required_map
@@ -8511,10 +9094,10 @@ describe Library::V1::LibraryServiceClient do
     end
   end
 
-  describe 'private_get_book' do
-    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#private_get_book."
+  describe 'private_list_shelves' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#private_list_shelves."
 
-    it 'invokes private_get_book without error' do
+    it 'invokes private_list_shelves without error' do
       # Create expected grpc response
       name = "name3373707"
       author = "author-1406328437"
@@ -8532,23 +9115,23 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do
         OpenStruct.new(execute: expected_response)
       end
-      mock_stub = MockGrpcClientStub_v1.new(:private_get_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:private_list_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials_v1.new("private_get_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("private_list_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
-          response = client.private_get_book
+          response = client.private_list_shelves
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.private_get_book do |response, operation|
+          client.private_list_shelves do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -8557,23 +9140,157 @@ describe Library::V1::LibraryServiceClient do
       end
     end
 
-    it 'invokes private_get_book with error' do
+    it 'invokes private_list_shelves with error' do
       # Mock Grpc layer
       mock_method = proc do
         raise custom_error
       end
-      mock_stub = MockGrpcClientStub_v1.new(:private_get_book, mock_method)
+      mock_stub = MockGrpcClientStub_v1.new(:private_list_shelves, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials_v1.new("private_get_book")
+      mock_credentials = MockLibraryServiceCredentials_v1.new("private_list_shelves")
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
         Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library.new(version: :v1)
+          client = Library::Library.new(version: :v1)
 
           # Call method
           err = assert_raises Google::Gax::GaxError do
-            client.private_get_book
+            client.private_list_shelves
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+end
+============== file: test/library/v1/my_proto_client_test.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "minitest/autorun"
+require "minitest/spec"
+
+require "google/gax"
+
+require "library"
+require "library/v1/my_proto_client"
+require "another_service_services_pb"
+
+class CustomTestError_v1 < StandardError; end
+
+# Mock for the GRPC::ClientStub class.
+class MockGrpcClientStub_v1
+
+  # @param expected_symbol [Symbol] the symbol of the grpc method to be mocked.
+  # @param mock_method [Proc] The method that is being mocked.
+  def initialize(expected_symbol, mock_method)
+    @expected_symbol = expected_symbol
+    @mock_method = mock_method
+  end
+
+  # This overrides the Object#method method to return the mocked method when the mocked method
+  # is being requested. For methods that aren't being tested, this method returns a proc that
+  # will raise an error when called. This is to assure that only the mocked grpc method is being
+  # called.
+  #
+  # @param symbol [Symbol] The symbol of the method being requested.
+  # @return [Proc] The proc of the requested method. If the requested method is not being mocked
+  #   the proc returned will raise when called.
+  def method(symbol)
+    return @mock_method if symbol == @expected_symbol
+
+    # The requested method is not being tested, raise if it called.
+    proc do
+      raise "The method #{symbol} was unexpectedly called during the " \
+        "test for #{@expected_symbol}."
+    end
+  end
+end
+
+class MockMyProtoCredentials_v1 < Library::V1::Credentials
+  def initialize(method_name)
+    @method_name = method_name
+  end
+
+  def updater_proc
+    proc do
+      raise "The method `#{@method_name}` was trying to make a grpc request. This should not " \
+          "happen since the grpc layer is being mocked."
+    end
+  end
+end
+
+describe Library::V1::MyProtoClient do
+
+  describe 'my_method' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::MyProtoClient#my_method."
+
+    it 'invokes my_method without error' do
+      # Create expected grpc response
+      myfield = "myfield1515208398"
+      expected_response = { myfield: myfield }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::MethodResponse)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        OpenStruct.new(execute: expected_response)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:my_method, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockMyProtoCredentials_v1.new("my_method")
+
+      Google::Example::Library::V1::MyProto::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::MyProto.new(version: :v1)
+
+          # Call method
+          response = client.my_method
+
+          # Verify the response
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.my_method do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes my_method with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:my_method, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockMyProtoCredentials_v1.new("my_method")
+
+      Google::Example::Library::V1::MyProto::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::MyProto.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.my_method
           end
 
           # Verify the GaxError wrapped the custom error that was raised.

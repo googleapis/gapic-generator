@@ -19,6 +19,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -45,7 +46,7 @@ public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "csharp/standalone_sample.snip";
   private static final String CSHARP_SAMPLE_PACKAGE_NAME = "Samples";
-  private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.Global;
+  private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
   private static final CSharpCommonTransformer csharpCommonTransformer =
       new CSharpCommonTransformer();
 
@@ -54,6 +55,12 @@ public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer
           SampleTransformer.newBuilder().sampleType(SampleSpec.SampleType.STANDALONE).build());
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
+
+  private final GapicCodePathMapper pathMapper;
+
+  public CSharpStandaloneSampleTransformer(GapicCodePathMapper pathMapper) {
+    this.pathMapper = pathMapper;
+  }
 
   @Override
   public List<String> getTemplateFileNames() {
@@ -75,13 +82,20 @@ public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer
                     GapicInterfaceContext.create(
                         i, productConfig, typeTable, namer, new CSharpFeatureConfig()))
             .collect(ImmutableList.toImmutableList());
+    List<MethodSampleView> allSamples =
+        interfaceContexts
+            .stream()
+            .flatMap(c -> csharpApiMethodTransformer.generateApiMethods(c).stream())
+            .flatMap(m -> m.samples().stream())
+            .collect(ImmutableList.toImmutableList());
+    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
     ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
     for (InterfaceContext interfaceContext : interfaceContexts) {
       List<StaticLangApiMethodView> methods =
           csharpApiMethodTransformer.generateApiMethods(interfaceContext);
       for (StaticLangApiMethodView method : methods) {
         for (MethodSampleView sample : method.samples()) {
-          sampleFileViews.add(newSampleFileView(interfaceContext, method, sample, namer));
+          sampleFileViews.add(newSampleFileView(interfaceContext, method, sample, namer, registry));
         }
       }
     }
@@ -92,17 +106,19 @@ public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer
       InterfaceContext context,
       StaticLangApiMethodView method,
       MethodSampleView sample,
-      SurfaceNamer namer) {
-    SampleFileRegistry registry = new SampleFileRegistry();
-    String callingForm = sample.callingForm().toLowerUnderscore();
-    String valueSet = sample.valueSet().id();
+      SurfaceNamer namer,
+      SampleFileRegistry registry) {
     String regionTag = sample.regionTag();
-    String sampleClassName = method.name() + Name.anyLower(callingForm, valueSet).toUpperCamel();
+    String sampleClassName =
+        registry.getSampleClassName(sample, Name.upperCamel(method.name()).toLowerUnderscore());
+    String sampleFileName =
+        registry.getSampleFileName(sample, Name.upperCamel(method.name()).toLowerUnderscore());
     String sampleOutputPath =
-        Paths.get(CSHARP_SAMPLE_PACKAGE_NAME, sampleClassName + ".cs").toString();
-
-    registry.addFile(sampleOutputPath, method.name(), callingForm, valueSet, regionTag);
-
+        Paths.get(
+                pathMapper.getOutputPath(
+                    context.getInterfaceModel().getFullName(), context.getProductConfig()),
+                sampleFileName)
+            .toString();
     StaticLangSampleClassView sampleClassView =
         StaticLangSampleClassView.newBuilder()
             .name(sampleClassName)

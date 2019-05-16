@@ -73,7 +73,7 @@ message ConfigProto {
   reserved 5;
 
   // The configuration for the license header to put on generated files.
-  LicenseHeaderProto license_header = 7;
+  LicenseHeaderProto license_header = 7; // DEPRECATED
 
   // A list of API interface configurations.
   repeated InterfaceConfigProto interfaces = 10;
@@ -85,7 +85,7 @@ message ConfigProto {
   // A list of resource name oneof configs.
   repeated CollectionOneofProto collection_oneofs = 16;
 
-  repeated FixedResourceNameValueProto fixed_resource_name_values = 17;
+  repeated FixedResourceNameValueProto fixed_resource_name_values = 17; // DEPRECATED.
 
   // Set this value to toggle String format functions for resource name
   // entities. If this is not set, it will fallback to default behavior.
@@ -100,7 +100,8 @@ message ConfigProto {
 
   // A required field to specify the version of GAPIC config schema.
   // It is versioned using Semantic Versioning 2.0.0 (semver) and follows the
-  // semver specification. Currently, the only valid value is "1.0.0".
+  // semver specification. Currently, the only valid value is "1.0.0" and "2.0.0"
+  // Those following "2.0.0" should also follow the config_v2.proto schema.
   string config_schema_version = 21;
 }
 
@@ -119,7 +120,7 @@ message LanguageSettingsProto {
   map<string, string> interface_names = 4;
 
   // Overrides ConfigProto::license_header.
-  LicenseHeaderProto license_header_override = 5;
+  LicenseHeaderProto license_header_override = 5; // DEPRECATED.
 
   // The release level of the client in the language
   ReleaseLevel release_level = 6;
@@ -138,13 +139,13 @@ enum ReleaseLevel {
   DEPRECATED = 4;
 }
 
+// DEPRECATED.
 message LicenseHeaderProto {
   // The file containing the copyright line(s).
   string copyright_file = 1; // DEPRECATED. The Google copyright will always be used.
 
   // The file containing the raw license header without any copyright line(s).
-  // OPTIONAL. If value is not given, the Apache 2.0 license will be used.
-  string license_file = 2;
+  string license_file = 2; // DEPRECATED. The Apache 2.0 license will always be used.
 }
 
 message InterfaceConfigProto {
@@ -222,6 +223,7 @@ message CollectionOneofProto {
   repeated string collection_names = 2;
 }
 
+// DEPRECATED. Use CollectionConfigProto instead.
 message FixedResourceNameValueProto {
   // Name to be used as a basis for generated methods and classes.
   string entity_name = 1;
@@ -256,7 +258,7 @@ message MethodConfigProto {
 
   // Specifies the default timeout for a non-retrying call. If the call is
   // retrying, refer to `retry_params_name` instead.
-  uint64 timeout_millis = 11; // UNSUPPORTED.
+  uint64 timeout_millis = 11; // UNSUPPORTED in Java, PHP, C#, Go.
 
   // Specifies the configuration for batching.
   BatchingConfigProto batching = 6;
@@ -362,7 +364,7 @@ message SampleInitAttribute {
   // should be accepted as a parameter, with the given name, to the sample function.
   string sample_argument_name = 2;
 
-  // If `read_file` is true, then during sample initialization, the value of this 
+  // If `read_file` is true, then during sample initialization, the value of this
   // attribute gets replaced by the contents of the local file with the given name.
   // This is only allowed when this parameter is a bytes field.
   // If this parameter is required or optional, the original value of this parameter
@@ -666,10 +668,10 @@ message LongRunningConfigProto {
   string metadata_type = 2;
 
   // Whether or not the server implements delete.
-  bool implements_delete = 3;
+  bool implements_delete = 3; // DEPRECATED.
 
   // Whether or not the server implements cancel.
-  bool implements_cancel = 4;
+  bool implements_cancel = 4; // DEPRECATED.
 
   // Initial delay after which first poll request will be made.
   uint64 initial_poll_delay_millis = 5;
@@ -699,7 +701,7 @@ message OutputSpec {
     repeated OutputSpec body = 3;
 
     // The map over which to iterate.
-    // Exactly one of `map` and `collection` should be specified. 
+    // Exactly one of `map` and `collection` should be specified.
     string map = 4;
 
     // The iteration variable for key.
@@ -711,6 +713,26 @@ message OutputSpec {
     // Can only be specified when `map` is specified.
     // At least one of `key` and `value` should be specified if `map` is specified.
     string value = 6;
+  }
+
+  message WriteFileStatement {
+    // The name of the file to write to.
+    //
+    // Similar to `print`, the elements of `file_name` consists of a printf-like
+    // format string followed by variables to be interpolated in the string,
+    // for example, ["file_name_%s.txt", thing.field]. These
+    // variables must either be `$resp` or have been previously defined
+    // by `loop` or `define`.
+    repeated string file_name = 1;
+
+    // The content to write to the local file, of the pattern
+    // `var[.field...]`. Similar to the right hand side of `define`.
+    // `var` is either `$resp` or a variable that was
+    // previously defined by `loop` or `define`, and everything to the
+    // right of the period is any valid sequence of subfield or
+    // bracketed list subscripts or map keys to dereference a descendant
+    // of `var`.
+    string contents = 2;
   }
 
   // Exactly one of the following should be set.
@@ -746,4 +768,7 @@ message OutputSpec {
   //
   // Like `print`, a newline will be automatically appended to the comment.
   repeated string comment = 4;
+
+  // An output-to-local-file construct. 
+  WriteFileStatement write_file = 5;
 }

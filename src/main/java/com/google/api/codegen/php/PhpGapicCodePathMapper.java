@@ -39,18 +39,8 @@ public abstract class PhpGapicCodePathMapper implements GapicCodePathMapper {
 
   @Override
   public String getOutputPath(String elementFullName, ProductConfig config) {
-    return getOutputPath(config, null);
-  }
-
-  @Override
-  public String getSamplesOutputPath(String elementFullName, ProductConfig config, String method) {
-    return getOutputPath(config, method);
-  }
-
-  private String getOutputPath(ProductConfig config, String methodSample) {
     ArrayList<String> dirs = new ArrayList<>();
     String prefix = getPrefix();
-    boolean haveSample = !Strings.isNullOrEmpty(methodSample);
 
     if (!Strings.isNullOrEmpty(prefix)) {
       dirs.add(prefix);
@@ -61,19 +51,17 @@ public abstract class PhpGapicCodePathMapper implements GapicCodePathMapper {
       dirs.addAll(Arrays.asList(PhpPackageUtil.splitPackageName(shortenedPackageName)));
     }
 
-    if (haveSample) {
-      dirs.add(SAMPLES_DIRECTORY);
-    }
-
     String suffix = getSuffix();
     if (!Strings.isNullOrEmpty(suffix)) {
       dirs.add(suffix);
     }
 
-    if (haveSample) {
-      dirs.add(methodSample);
-    }
     return Joiner.on("/").join(dirs);
+  }
+
+  @Override
+  public String getSamplesOutputPath(String elementFullName, ProductConfig config, String method) {
+    return getOutputPath(elementFullName, config);
   }
 
   public static Builder newBuilder() {

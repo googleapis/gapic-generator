@@ -30,8 +30,9 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
 
-  private final String apiName;
   private final String testName;
+
+  private final String[] baseNames;
 
   public GapicCodeGeneratorAnnotationsTest(
       TargetLanguage language,
@@ -51,14 +52,15 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
         protoPackage,
         clientPackage);
 
-    this.apiName = baseNames[0];
+    String apiName = baseNames[0];
 
     String gapicConfigStatus = "_gapic_config";
     if (gapicConfigFileNames == null || gapicConfigFileNames.length == 0) {
       gapicConfigStatus = "_no" + gapicConfigStatus;
     }
+    this.baseNames = baseNames;
 
-    this.testName = this.apiName + gapicConfigStatus;
+    this.testName = apiName + gapicConfigStatus;
 
     getTestDataLocator().addTestDataSource(getClass(), "testdata");
 
@@ -78,11 +80,76 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library_pkg2.yaml",
             "library",
             "google.example.library.v1",
-            "com.google.example.library.v1"));
+            "com.google.example.library.v1",
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.RUBY,
+            null,
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "Library::V1",
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA,
+            new String[] {"library_v2_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "google.cloud.example.library_v1.gapic",
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.PYTHON,
+            new String[] {"library_v2_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "google.cloud.example.library_v1.gapic",
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.CSHARP,
+            new String[] {"library_v2_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "Google.Example.Library.V1",
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.GO,
+            new String[] {"library_v2_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "cloud.google.com/go/library/apiv1",
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.RUBY,
+            new String[] {"library_v2_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "Library::V1",
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.PHP,
+            new String[] {"library_v2_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            null,
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.NODEJS,
+            new String[] {"library_v2_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "library.v1",
+            "another_service"));
   }
 
   @Test
   public void test() throws Exception {
-    test(apiName);
+    test(baseNames);
   }
 }

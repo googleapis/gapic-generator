@@ -32,10 +32,8 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.OutputTransformer;
 import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SampleTransformer;
-import com.google.api.codegen.transformer.StandardSampleImportTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
@@ -66,9 +64,7 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
           SampleTransformer.newBuilder()
               .initCodeTransformer(new InitCodeTransformer(importSectionTransformer, false))
               .sampleType(sampleType)
-              .outputTransformer(new OutputTransformer(new PythonSampleOutputImportTransformer()))
-              .sampleImportTransformer(
-                  new StandardSampleImportTransformer(importSectionTransformer))
+              .sampleImportTransformer(new PythonSampleImportTransformer())
               .build());
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
@@ -151,28 +147,27 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
   private List<ViewModel> generateSampleClasses(GapicInterfaceContext context) {
     ImmutableList.Builder<ViewModel> viewModels = new ImmutableList.Builder<>();
     SurfaceNamer namer = context.getNamer();
-    SampleFileRegistry generatedSamples = new SampleFileRegistry();
-
-    List<OptionalArrayMethodView> allmethods = apiMethodTransformer.generateApiMethods(context);
-
+    List<OptionalArrayMethodView> allMethods = apiMethodTransformer.generateApiMethods(context);
+    List<MethodSampleView> allSamples =
+        allMethods
+            .stream()
+            .flatMap(m -> m.samples().stream())
+            .collect(ImmutableList.toImmutableList());
+    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
     DynamicLangSampleView.Builder sampleClassBuilder = DynamicLangSampleView.newBuilder();
-    for (OptionalArrayMethodView method : allmethods) {
+    for (OptionalArrayMethodView method : allMethods) {
       String subPath =
           pathMapper.getSamplesOutputPath(
               context.getInterfaceModel().getFullName(), context.getProductConfig(), method.name());
       for (MethodSampleView methodSample : method.samples()) {
-        String callingForm = methodSample.callingForm().toLowerCamel();
-        String valueSet = methodSample.valueSet().id();
-        String className = namer.getApiSampleClassName(method.name(), callingForm, valueSet);
-        String sampleOutputPath = subPath + File.separator + namer.getApiSampleFileName(className);
-        generatedSamples.addFile(
-            sampleOutputPath, method.name(), callingForm, valueSet, methodSample.regionTag());
+        String sampleFileName = registry.getSampleFileName(methodSample, method.name());
+        String sampleOutputPath = subPath + File.separator + sampleFileName;
+
         viewModels.add(
             sampleClassBuilder
                 .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
                 .fileHeader(fileHeaderTransformer.generateFileHeader(context))
                 .outputPath(sampleOutputPath)
-                .className(className)
                 .libraryMethod(
                     method.toBuilder().samples(Collections.singletonList(methodSample)).build())
                 .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))

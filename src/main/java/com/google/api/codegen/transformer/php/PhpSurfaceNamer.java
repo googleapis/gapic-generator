@@ -38,6 +38,7 @@ import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,13 +99,14 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFormatFunctionName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return publicMethodName(Name.from(resourceNameConfig.getEntityName(), "name"));
+    return publicMethodName(resourceNameConfig.getEntityName().join("name"));
   }
 
   @Override
   public String getPathTemplateName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "name", "template"));
+    return inittedConstantName(
+        resourceNameConfig.getEntityName().join(Name.from("name", "template")));
   }
 
   @Override
@@ -279,8 +281,8 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSampleFileName(String className) {
-    return className + ".php";
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toUpperCamel() + ".php";
   }
 
   @Override
@@ -299,16 +301,32 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFormattedPrintArgName(TypeModel type, String variable, List<String> accessors) {
+  public String getFormattedPrintArgName(
+      ImportTypeTable typeTable, TypeModel type, String variable, List<String> accessors) {
+    Preconditions.checkArgument(
+        !type.isRepeated() && !type.isMap(),
+        "Expected non-repeated fields in print statement, found %s",
+        type.getTypeName());
     String arg = "$" + variable + String.join("", accessors);
-    if (type != null && type instanceof ProtoTypeRef && type.isMessage()) {
+    if (type == null || !(type instanceof ProtoTypeRef) || type.isPrimitive()) {
+      return arg;
+    }
+    if (type.isMessage()) {
       return String.format("print_r(%s, true)", arg);
     }
-    return arg;
+    if (type.isEnum()) {
+      return String.format("%s::name(%s)", getAndSaveTypeName(typeTable, type), arg);
+    }
+    throw new IllegalArgumentException("Unhandled type: " + type.getTypeName());
   }
 
   @Override
   public List<CallingForm> getCallingForms(MethodContext context) {
     return CallingForm.getCallingForms(context, TargetLanguage.PHP);
+  }
+
+  @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.PHP);
   }
 }

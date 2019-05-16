@@ -55,7 +55,6 @@ import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -119,8 +118,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSampleFileName(String className) {
-    return Name.anyCamel(className).toLowerUnderscore() + ".js";
+  public String getApiSampleFileName(String... pieces) {
+    return Name.anyLower(pieces).toLowerUnderscore() + ".js";
   }
 
   @Override
@@ -173,19 +172,23 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPathTemplateName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return publicFieldName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
+    return publicFieldName(resourceNameConfig.getEntityName().join(Name.from("path", "template")));
   }
 
   @Override
   public String getParseFunctionName(String var, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(
-        Name.from("match", var, "from", resourceNameConfig.getEntityName(), "name"));
+        Name.from("match")
+            .join(var)
+            .join("from")
+            .join(resourceNameConfig.getEntityName())
+            .join("name"));
   }
 
   @Override
   public String getFormatFunctionName(
       InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
-    return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
+    return staticFunctionName(resourceNameConfig.getEntityName().join("path"));
   }
 
   @Override
@@ -595,17 +598,20 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getPrintSpecs(String spec, List<String> args) {
+  public ImmutableList<String> getInterpolatedFormatAndArgs(String spec, List<String> args) {
     spec = spec.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("`", "\\`");
     if (args.isEmpty()) {
-      return Collections.singletonList(spec);
+      return ImmutableList.of(spec);
     }
     if (args.size() == 1 && "%s".equals(spec)) {
       return ImmutableList.of(spec, args.get(0));
     }
     Object[] formattedArgs =
         args.stream().map(a -> String.format("${%s}", a)).toArray(Object[]::new);
-    return Collections.singletonList(String.format(spec, formattedArgs));
+    return ImmutableList.<String>builder()
+        .add(String.format(spec, formattedArgs))
+        .addAll(args)
+        .build();
   }
 
   @Override
@@ -631,5 +637,15 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public List<CallingForm> getCallingForms(MethodContext context) {
     return CallingForm.getCallingForms(context, TargetLanguage.NODEJS);
+  }
+
+  @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.NODEJS);
+  }
+
+  @Override
+  public boolean usesAsyncAwaitPattern(CallingForm form) {
+    return form == CallingForm.LongRunningPromiseAwait;
   }
 }

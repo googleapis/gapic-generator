@@ -16,8 +16,8 @@
     // [START {@sample.regionTag}]
     require {@sampleFile.extraInfo.autoloadPath};
 
-    @if sample.sampleInitCode.importSection.appImports
-        {@importList(sample.sampleInitCode.importSection.appImports)}
+    @if sample.sampleImports.appImports
+        {@importList(sample.sampleImports.appImports)}
 
     @end
     @if not(sample.sampleFunctionDoc.isEmpty)
@@ -430,6 +430,8 @@
             {@processMapLoopView(view)}
         @case "PRINT"
             {@processPrintView(view)}
+        @case "WRITE_FILE"
+            {@processWriteFileView(view)}
         @default
             $unhandledResponseForm: {@view}
         @end
@@ -437,10 +439,10 @@
 @end
 
 @private processPrintView(view)
-    @if not(view.args.size)
-        printf("{@view.format}" . PHP_EOL);
+    @if not(view.interpolatedString.args.size)
+        printf("{@view.interpolatedString.format}" . PHP_EOL);
     @else
-        printf("{@view.format}" . PHP_EOL, {@commaSeparatedFields(view.args)});
+        printf("{@view.interpolatedString.format}" . PHP_EOL, {@commaSeparatedFields(view.interpolatedString.args)});
     @end
 @end
 
@@ -480,13 +482,24 @@
     {@variable(view.variableName)} = {@variableField(view.reference)};
 @end
 
+@private processWriteFileView(view)
+    file_put_contents({@stringFormattedFileName(view.fileName)}, {@variableField(view.contents)});
+@end
+
+@private stringFormattedFileName(fileName)
+    @if fileName.args.isEmpty
+        '{@fileName.format}'
+    @else
+        sprintf('{@fileName.format}', {@commaSeparatedFields(fileName.args)})
+    @end
+@end
 
 @private commaSeparatedFields(args)
     @join arg : args on ", "
         # FIXME(hzyi): print enums directly will just get us an int
         # Fix this by creating a mapping between enums and meaningful display names
         # until https://github.com/protocolbuffers/protobuf/pull/4534 is merged
-        {@arg.formattedName}
+        {@arg}
     @end
 @end
 
