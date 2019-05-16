@@ -88,7 +88,6 @@ $ npm install --save @google-cloud/library
   "dependencies": {
     "google-gax": "^0.25.3",
     "google-some-other-package-v1": "^0.2.1",
-    "lodash.merge": "^4.6.0",
     "lodash.union": "^4.6.0",
     "protobufjs": "^6.8.0"
   },
@@ -4003,7 +4002,6 @@ module.exports.MyProtoClient = MyProtoClient;
 
 const gapicConfig = require('./library_service_client_config.json');
 const gax = require('google-gax');
-const merge = require('lodash.merge');
 const path = require('path');
 const protobuf = require('protobufjs');
 
@@ -4089,16 +4087,12 @@ class LibraryServiceClient {
     }
 
     // Load the applicable protos.
-    const protos = merge(
-      {},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
-        'library.proto'
-      ),
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
+    const protos = gaxGrpc.loadProto(
+      path.join(__dirname, '..', '..', 'protos'),
+      [
+        'library.proto',
         'tagger.proto'
-      )
+      ]
     );
 
     // This API contains "path templates"; forward-slash-separated
@@ -6918,7 +6912,6 @@ module.exports = LibraryServiceClient;
 
 const gapicConfig = require('./my_proto_client_config.json');
 const gax = require('google-gax');
-const merge = require('lodash.merge');
 const path = require('path');
 
 const VERSION = require('../../package.json').version;
@@ -6988,12 +6981,11 @@ class MyProtoClient {
     }
 
     // Load the applicable protos.
-    const protos = merge(
-      {},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
+    const protos = gaxGrpc.loadProto(
+      path.join(__dirname, '..', '..', 'protos'),
+      [
         'another_service.proto'
-      )
+      ]
     );
 
     // Put together the default options sent with requests.
