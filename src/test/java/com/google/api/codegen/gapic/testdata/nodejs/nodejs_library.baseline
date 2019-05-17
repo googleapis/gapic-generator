@@ -86,9 +86,8 @@ $ npm install --save @google-cloud/library
     "Google Example Library API"
   ],
   "dependencies": {
-    "google-gax": "^0.25.3",
+    "google-gax": "^1.1.0",
     "google-some-other-package-v1": "^0.2.1",
-    "lodash.merge": "^4.6.0",
     "lodash.union": "^4.6.0",
     "protobufjs": "^6.8.0"
   },
@@ -103,7 +102,7 @@ $ npm install --save @google-cloud/library
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.10.0"
   }
 }
 
@@ -121,7 +120,7 @@ $ npm install --save @google-cloud/library
     "@google-cloud/library": "file:.."
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.10.0"
   }
 }
 ============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.js ==============
@@ -4002,7 +4001,6 @@ module.exports.MyProtoClient = MyProtoClient;
 
 const gapicConfig = require('./library_service_client_config.json');
 const gax = require('google-gax');
-const merge = require('lodash.merge');
 const path = require('path');
 const protobuf = require('protobufjs');
 
@@ -4088,16 +4086,12 @@ class LibraryServiceClient {
     }
 
     // Load the applicable protos.
-    const protos = merge(
-      {},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
-        'library.proto'
-      ),
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
+    const protos = gaxGrpc.loadProto(
+      path.join(__dirname, '..', '..', 'protos'),
+      [
+        'library.proto',
         'tagger.proto'
-      )
+      ]
     );
 
     // This API contains "path templates"; forward-slash-separated
@@ -4371,7 +4365,7 @@ class LibraryServiceClient {
    *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -4425,7 +4419,7 @@ class LibraryServiceClient {
    *   This object should have the same structure as [StringBuilder]{@link google.example.library.v1.StringBuilder}
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -4480,7 +4474,7 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Array, ?Object, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -4574,7 +4568,7 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @returns {Stream}
    *   An object stream which emits an object representing [Shelf]{@link google.example.library.v1.Shelf} on 'data' event.
    *
@@ -4615,7 +4609,7 @@ class LibraryServiceClient {
    *   The name of the shelf to delete.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error)} [callback]
    *   The function which will be called with the result of the API call.
    * @returns {Promise} - The promise which resolves when API call finishes.
@@ -4663,7 +4657,7 @@ class LibraryServiceClient {
    *   The name of the shelf we're removing books from and deleting.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -4724,7 +4718,7 @@ class LibraryServiceClient {
    *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -4795,7 +4789,7 @@ class LibraryServiceClient {
    *   If the book is in a pre-publish state
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -4857,7 +4851,7 @@ class LibraryServiceClient {
    *   The name of the book to retrieve.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -4917,7 +4911,7 @@ class LibraryServiceClient {
    *   To test python built-in wrapping.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Array, ?Object, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -5039,7 +5033,7 @@ class LibraryServiceClient {
    *   To test python built-in wrapping.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @returns {Stream}
    *   An object stream which emits an object representing [Book]{@link google.example.library.v1.Book} on 'data' event.
    *
@@ -5083,7 +5077,7 @@ class LibraryServiceClient {
    *   The name of the book to delete.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error)} [callback]
    *   The function which will be called with the result of the API call.
    * @returns {Promise} - The promise which resolves when API call finishes.
@@ -5141,7 +5135,7 @@ class LibraryServiceClient {
    *   This object should have the same structure as [FieldMask]{@link google.example.library.v1.FieldMask}
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -5200,7 +5194,7 @@ class LibraryServiceClient {
    *   The name of the destination shelf.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -5262,7 +5256,7 @@ class LibraryServiceClient {
    *   resources in a page.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Array, ?Object, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -5361,7 +5355,7 @@ class LibraryServiceClient {
    *   resources in a page.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @returns {Stream}
    *   An object stream which emits a string on 'data' event.
    *
@@ -5401,7 +5395,7 @@ class LibraryServiceClient {
    *   This object should have the same structure as [Comment]{@link google.example.library.v1.Comment}
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error)} [callback]
    *   The function which will be called with the result of the API call.
    * @returns {Promise} - The promise which resolves when API call finishes.
@@ -5458,7 +5452,7 @@ class LibraryServiceClient {
    *   The name of the book to retrieve.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -5513,7 +5507,7 @@ class LibraryServiceClient {
    *   single resource name type in a oneof.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -5573,7 +5567,7 @@ class LibraryServiceClient {
    *   within additional bindings.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -5629,7 +5623,7 @@ class LibraryServiceClient {
    *   The index to update the book with
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error)} [callback]
    *   The function which will be called with the result of the API call.
    * @returns {Promise} - The promise which resolves when API call finishes.
@@ -5682,7 +5676,7 @@ class LibraryServiceClient {
    *   The name of the shelf to stream.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @returns {Stream}
    *   An object stream which emits [StreamShelvesResponse]{@link google.example.library.v1.StreamShelvesResponse} on 'data' event.
    *
@@ -5715,7 +5709,7 @@ class LibraryServiceClient {
    *   The name of the shelf whose books we'd like to list.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @returns {Stream}
    *   An object stream which emits [Book]{@link google.example.library.v1.Book} on 'data' event.
    *
@@ -5743,7 +5737,7 @@ class LibraryServiceClient {
    *
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @returns {Stream}
    *   An object stream which is both readable and writable. It accepts objects
    *   representing [DiscussBookRequest]{@link google.example.library.v1.DiscussBookRequest} for write() method, and
@@ -5778,7 +5772,7 @@ class LibraryServiceClient {
    *
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -5824,7 +5818,7 @@ class LibraryServiceClient {
    *
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error)} [callback]
    *   The function which will be called with the result of the API call.
    * @returns {Stream} - A writable stream which accepts objects representing
@@ -5872,7 +5866,7 @@ class LibraryServiceClient {
    *   resources in a page.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Array, ?Object, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -5988,7 +5982,7 @@ class LibraryServiceClient {
    *   resources in a page.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @returns {Stream}
    *   An object stream which emits a string on 'data' event.
    *
@@ -6036,7 +6030,7 @@ class LibraryServiceClient {
    *   REQUIRED: The label to add.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -6093,13 +6087,13 @@ class LibraryServiceClient {
    *   The name of the book to retrieve.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
-   *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
+   *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/classes/Operation.html} object.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
+   *   The first element of the array is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/classes/Operation.html} object.
    *   The promise has a method named "cancel" which cancels the ongoing API call.
    *
    * @example
@@ -6189,13 +6183,13 @@ class LibraryServiceClient {
    *   The name of the book to retrieve.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
-   *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
+   *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/classes/Operation.html} object.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
+   *   The first element of the array is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/classes/Operation.html} object.
    *   The promise has a method named "cancel" which cancels the ongoing API call.
    *
    * @example
@@ -6413,7 +6407,7 @@ class LibraryServiceClient {
    *   This object should have the same structure as [BytesValue]{@link google.protobuf.BytesValue}
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -6521,7 +6515,7 @@ class LibraryServiceClient {
    *   returned from the previous call to `ListShelves` method.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -6702,6 +6696,7 @@ module.exports = LibraryServiceClient;
     "google.example.library.v1.LibraryService": {
       "retry_codes": {
         "idempotent": [
+          "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
         "non_idempotent": []
@@ -6899,7 +6894,6 @@ module.exports = LibraryServiceClient;
 
 const gapicConfig = require('./my_proto_client_config.json');
 const gax = require('google-gax');
-const merge = require('lodash.merge');
 const path = require('path');
 
 const VERSION = require('../../package.json').version;
@@ -6969,12 +6963,11 @@ class MyProtoClient {
     }
 
     // Load the applicable protos.
-    const protos = merge(
-      {},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
+    const protos = gaxGrpc.loadProto(
+      path.join(__dirname, '..', '..', 'protos'),
+      [
         'another_service.proto'
-      )
+      ]
     );
 
     // This API contains "path templates"; forward-slash-separated
@@ -7079,7 +7072,7 @@ class MyProtoClient {
    *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
@@ -7185,6 +7178,7 @@ module.exports = MyProtoClient;
     "google.example.library.v1.MyProto": {
       "retry_codes": {
         "idempotent": [
+          "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
         "non_idempotent": []
@@ -9213,4 +9207,3 @@ function mockLongRunningGrpcMethod(expectedRequest, response, error) {
     return Promise.resolve([mockOperation]);
   };
 }
-

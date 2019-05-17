@@ -1698,6 +1698,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return CallingForm.Generic;
   }
 
+  public boolean usesAsyncAwaitPattern(CallingForm form) {
+    return false;
+  }
+
   /////////////////////////////////// Transport Protocol /////////////////////////////////////////
 
   public Name getTransportProtocolName(TransportProtocol protocol) {

@@ -186,9 +186,9 @@ public enum CallingForm {
       ImmutableTable.<TargetLanguage, RpcType, CallingForm>builder()
           // TODO(hzyi): Change C# calling forms to appropriate ones after C# LRO and streaming are
           // done
-          .put(CSHARP, RpcType.UNARY, Generic)
+          .put(CSHARP, RpcType.UNARY, Request)
           .put(CSHARP, RpcType.LRO, Generic)
-          .put(CSHARP, RpcType.PAGED_STREAMING, Generic)
+          .put(CSHARP, RpcType.PAGED_STREAMING, RequestPagedAll)
           .put(CSHARP, RpcType.CLIENT_STREAMING, Generic)
           .put(CSHARP, RpcType.SERVER_STREAMING, Generic)
           .put(CSHARP, RpcType.BIDI_STREAMING, Generic)

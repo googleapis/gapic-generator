@@ -26,6 +26,9 @@ public abstract class SampleFunctionParameterView {
 
   public abstract String identifier();
 
+  /** Used by CSharp CLI. Same as `identifier`, but in upper cammel case. */
+  public abstract String upperCamelIdentifier();
+
   public abstract InitValueView initValue();
 
   /** We need to keep the cli flag names in the same case (snake_case) across all languages. */
@@ -45,6 +48,8 @@ public abstract class SampleFunctionParameterView {
     public abstract Builder isEnum(boolean val);
 
     public abstract Builder identifier(String val);
+
+    public abstract Builder upperCamelIdentifier(String val);
 
     public abstract Builder initValue(InitValueView val);
 
