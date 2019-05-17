@@ -49,9 +49,7 @@ public class PythonSampleImportTransformer implements SampleImportTransformer {
     appImports.addAll(initCodeAppImports);
     boolean addEnumImports =
         outputContext.stringFormattedVariableTypes().stream().anyMatch(TypeModel::isEnum)
-            || Streams.stream(nodes)
-                .map(InitCodeNode::getType)
-                .anyMatch(TypeModel::isEnum);
+            || Streams.stream(nodes).map(InitCodeNode::getType).anyMatch(TypeModel::isEnum);
     if (addEnumImports) {
       ImportTypeView importTypeView =
           ImportTypeView.newBuilder()
