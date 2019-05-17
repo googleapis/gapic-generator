@@ -60,7 +60,6 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
     String configModule = context.getNamer().getClientConfigPath(interfaceConfig);
     imports.add(createImport("gapicConfig", "./" + configModule + ".json"));
     imports.add(createImport("gax", "google-gax"));
-    imports.add(createImport("merge", "lodash.merge"));
     imports.add(createImport("path", "path"));
     if (context.getInterfaceConfig().hasLongRunningOperations()
         || context.getInterfaceConfig().hasBatchingMethods()) {

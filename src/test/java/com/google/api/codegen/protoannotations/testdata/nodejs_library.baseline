@@ -86,9 +86,8 @@ $ npm install --save @google-cloud/library
     "Google Example Library API"
   ],
   "dependencies": {
-    "google-gax": "^0.25.3",
+    "google-gax": "^1.1.0",
     "google-some-other-package-v1": "^0.2.1",
-    "lodash.merge": "^4.6.0",
     "lodash.union": "^4.6.0",
     "protobufjs": "^6.8.0"
   },
@@ -103,7 +102,7 @@ $ npm install --save @google-cloud/library
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.10.0"
   }
 }
 
@@ -121,7 +120,7 @@ $ npm install --save @google-cloud/library
     "@google-cloud/library": "file:.."
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.10.0"
   }
 }
 ============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.js ==============
@@ -4003,7 +4002,6 @@ module.exports.MyProtoClient = MyProtoClient;
 
 const gapicConfig = require('./library_service_client_config.json');
 const gax = require('google-gax');
-const merge = require('lodash.merge');
 const path = require('path');
 const protobuf = require('protobufjs');
 
@@ -4089,16 +4087,12 @@ class LibraryServiceClient {
     }
 
     // Load the applicable protos.
-    const protos = merge(
-      {},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
-        'library.proto'
-      ),
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
+    const protos = gaxGrpc.loadProto(
+      path.join(__dirname, '..', '..', 'protos'),
+      [
+        'library.proto',
         'tagger.proto'
-      )
+      ]
     );
 
     // This API contains "path templates"; forward-slash-separated
@@ -6721,6 +6715,7 @@ module.exports = LibraryServiceClient;
     "google.example.library.v1.LibraryService": {
       "retry_codes": {
         "idempotent": [
+          "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
         "non_idempotent": []
@@ -6918,7 +6913,6 @@ module.exports = LibraryServiceClient;
 
 const gapicConfig = require('./my_proto_client_config.json');
 const gax = require('google-gax');
-const merge = require('lodash.merge');
 const path = require('path');
 
 const VERSION = require('../../package.json').version;
@@ -6988,12 +6982,11 @@ class MyProtoClient {
     }
 
     // Load the applicable protos.
-    const protos = merge(
-      {},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
+    const protos = gaxGrpc.loadProto(
+      path.join(__dirname, '..', '..', 'protos'),
+      [
         'another_service.proto'
-      )
+      ]
     );
 
     // Put together the default options sent with requests.
@@ -7136,6 +7129,7 @@ module.exports = MyProtoClient;
     "google.example.library.v1.MyProto": {
       "retry_codes": {
         "idempotent": [
+          "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
         "non_idempotent": []

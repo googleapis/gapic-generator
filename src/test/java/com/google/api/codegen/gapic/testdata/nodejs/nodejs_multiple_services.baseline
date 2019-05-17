@@ -59,9 +59,8 @@ $ npm install --save @google-cloud/multiple-services
     "Google Example API"
   ],
   "dependencies": {
-    "google-gax": "^0.25.3",
+    "google-gax": "^1.1.0",
     "google-some-other-package-v1": "^0.2.1",
-    "lodash.merge": "^4.6.0",
     "lodash.union": "^4.6.0"
   },
   "devDependencies": {
@@ -75,7 +74,7 @@ $ npm install --save @google-cloud/multiple-services
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.10.0"
   }
 }
 
@@ -187,7 +186,6 @@ module.exports.default = Object.assign({}, module.exports);
 
 const gapicConfig = require('./decrementer_service_client_config.json');
 const gax = require('google-gax');
-const merge = require('lodash.merge');
 const path = require('path');
 
 const VERSION = require('../../package.json').version;
@@ -257,12 +255,11 @@ class DecrementerServiceClient {
     }
 
     // Load the applicable protos.
-    const protos = merge(
-      {},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
+    const protos = gaxGrpc.loadProto(
+      path.join(__dirname, '..', '..', 'protos'),
+      [
         'multiple_services.proto'
-      )
+      ]
     );
 
     // Some of the methods on this service provide streaming responses.
@@ -393,6 +390,7 @@ module.exports = DecrementerServiceClient;
     "google.cloud.example.v1.foo.DecrementerService": {
       "retry_codes": {
         "idempotent": [
+          "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
         "non_idempotent": []
@@ -508,7 +506,6 @@ const Empty = {
 
 const gapicConfig = require('./incrementer_service_client_config.json');
 const gax = require('google-gax');
-const merge = require('lodash.merge');
 const path = require('path');
 
 const VERSION = require('../../package.json').version;
@@ -578,12 +575,11 @@ class IncrementerServiceClient {
     }
 
     // Load the applicable protos.
-    const protos = merge(
-      {},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
+    const protos = gaxGrpc.loadProto(
+      path.join(__dirname, '..', '..', 'protos'),
+      [
         'multiple_services.proto'
-      )
+      ]
     );
 
     // Put together the default options sent with requests.
@@ -714,6 +710,7 @@ module.exports = IncrementerServiceClient;
     "google.cloud.example.v1.foo.IncrementerService": {
       "retry_codes": {
         "idempotent": [
+          "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
         "non_idempotent": []

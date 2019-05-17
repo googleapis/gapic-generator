@@ -58,9 +58,8 @@ $ npm install --save example
     "Google Fake API"
   ],
   "dependencies": {
-    "google-gax": "^0.25.3",
-    "google-some-other-package-v1": "^0.2.1",
-    "lodash.merge": "^4.6.0"
+    "google-gax": "^1.1.0",
+    "google-some-other-package-v1": "^0.2.1"
   },
   "devDependencies": {
     "mocha": "^5.2.0",
@@ -73,7 +72,7 @@ $ npm install --save example
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.10.0"
   }
 }
 
@@ -178,7 +177,6 @@ module.exports.NoTemplatesApiServiceClient = NoTemplatesApiServiceClient;
 
 const gapicConfig = require('./no_templates_api_service_client_config.json');
 const gax = require('google-gax');
-const merge = require('lodash.merge');
 const path = require('path');
 
 const VERSION = require('../package.json').version;
@@ -247,12 +245,11 @@ class NoTemplatesApiServiceClient {
     }
 
     // Load the applicable protos.
-    const protos = merge(
-      {},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', 'protos'),
+    const protos = gaxGrpc.loadProto(
+      path.join(__dirname, '..', '..', 'protos'),
+      [
         'no_path_templates.proto'
-      )
+      ]
     );
 
     // Put together the default options sent with requests.
@@ -388,6 +385,7 @@ module.exports = NoTemplatesApiServiceClient;
     "google.cloud.example.v1.NoTemplatesAPIService": {
       "retry_codes": {
         "idempotent": [
+          "DEADLINE_EXCEEDED",
           "UNAVAILABLE"
         ],
         "non_idempotent": []

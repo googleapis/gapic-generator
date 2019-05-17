@@ -110,7 +110,9 @@ public class DiscoConfigTransformer {
               ownerName, model.getDocument().name(), model.getDocument().version(), resourceName));
 
       retryTransformer.generateRetryDefinitions(
-          interfaceView, ImmutableList.of("UNAVAILABLE"), ImmutableList.<String>of());
+          interfaceView,
+          ImmutableList.of("UNAVAILABLE", "DEADLINE_EXCEEDED"),
+          ImmutableList.<String>of());
       interfaceView.collections(collectionTransformer.generateCollections(collectionNameMap));
       interfaceView.methods(
           methodTransformer.generateMethods(
