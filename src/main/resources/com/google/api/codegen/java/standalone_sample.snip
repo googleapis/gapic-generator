@@ -270,7 +270,7 @@
     @if param.isEnum
       {@param.typeName} {@param.identifier} =
         cl.getOptionValue("{@param.cliFlagName}") != null
-            ? {@param.typeName}.forNumber({@param.typeName}.getDescriptor().findValueByName(cl.getOptionValue("{@param.cliFlagName}")).getNumber())
+            ? {@param.typeName}.valueOf(cl.getOptionValue("{@param.cliFlagName}"))
             : {@renderInitValue(param.initValue)};
     @else  
       @switch param.typeName

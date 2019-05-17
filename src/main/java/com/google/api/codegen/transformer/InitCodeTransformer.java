@@ -137,12 +137,12 @@ public class InitCodeTransformer {
       // Remove the request object for flattened method
       orderedItems.remove(orderedItems.size() - 1);
     }
-    for (InitCodeNode param :
-        sampleFuncParams(
-            root, initCodeContext.sampleArgStrings(), initCodeContext.sampleParamConfigMap())) {
-      List<InitCodeNode> paramInits = param.listInInitializationOrder();
-      orderedItems.removeAll(paramInits);
-    }
+    // for (InitCodeNode param :
+    //     sampleFuncParams(
+    //         root, initCodeContext.sampleArgStrings(), initCodeContext.sampleParamConfigMap())) {
+    //   List<InitCodeNode> paramInits = param.listInInitializationOrder();
+    //   orderedItems.removeAll(paramInits);
+    // }
     return orderedItems;
   }
 
