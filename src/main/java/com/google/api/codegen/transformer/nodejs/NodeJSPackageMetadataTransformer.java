@@ -204,8 +204,6 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
       dependencies.add(
           PackageDependencyView.create("lodash.union", VersionBound.create("4.6.0", "")));
     }
-    dependencies.add(
-        PackageDependencyView.create("lodash.merge", VersionBound.create("4.6.0", "")));
     if (hasLongrunning(model, productConfig) || hasBatching(model, productConfig)) {
       dependencies.add(
           PackageDependencyView.create("protobufjs", VersionBound.create("6.8.0", "")));

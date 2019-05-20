@@ -366,8 +366,7 @@ message Book {
   // Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
   // Message field comment may include special characters: <>&"`'@.
   string name = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "library.googleapis.com/Book"
+    (google.api.field_behavior) = REQUIRED
   ];
 
   // The name of the book author.
@@ -753,13 +752,17 @@ message MoveBookRequest {
 }
 
 message ListStringsRequest {
-  string name = 1;
+  string name = 1 [
+    (google.api.resource_reference).type = "*"
+  ];
   int32 page_size = 2;
   string page_token = 3;
 }
 
 message ListStringsResponse {
-  repeated string strings = 1;
+  repeated string strings = 1 [
+    (google.api.resource_reference).type = "*"
+  ];
   string next_page_token = 2;
 }
 
