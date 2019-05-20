@@ -22,6 +22,7 @@ import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.common.collect.ImmutableList;
+import java.util.HashSet;
 import java.util.Map;
 
 public class StandardImportSectionTransformer implements ImportSectionTransformer {
@@ -38,20 +39,27 @@ public class StandardImportSectionTransformer implements ImportSectionTransforme
 
   public ImportSectionView generateImportSection(
       Map<String, TypeAlias> typeImports, String className) {
+    HashSet<String> allFullNames = new HashSet<>();
     ImmutableList.Builder<ImportFileView> appImports = ImmutableList.builder();
     for (TypeAlias alias : typeImports.values()) {
       if (excludeAppImport(alias, className)) {
         continue;
       }
       ImportTypeView.Builder imp = ImportTypeView.newBuilder();
+      String fullName;
       switch (alias.getImportType()) {
         case OuterImport:
-          imp.fullName(alias.getParentFullName());
+          fullName = alias.getParentFullName();
           break;
         default:
-          imp.fullName(alias.getFullName());
+          fullName = alias.getFullName();
           break;
       }
+      if (allFullNames.contains(fullName)) {
+        continue;
+      }
+      allFullNames.add(fullName);
+      imp.fullName(fullName);
       imp.nickname(alias.getNickname());
       imp.type(alias.getImportType());
 
