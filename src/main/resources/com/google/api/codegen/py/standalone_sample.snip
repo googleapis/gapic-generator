@@ -1,3 +1,4 @@
+@extends "metadatagen/samplegen.snip"
 @extends "py/common.snip"
 @extends "py/sample_init.snip"
 
@@ -11,6 +12,10 @@
       @# To install the latest published package dependency, execute the following:
       @#   pip install {@sampleFile.gapicPackageName}
 
+      @# sample-metadata
+      @#   title: {@sample.title}
+      @#   description: {@sample.description}
+      @#   usage: python3 {@sampleFile.outputPath} {@commandlineArgmentList(sample.sampleInitCode.argDefaultParams)}
       {@standaloneSample(apiMethod, sample)}
     @end
   @end

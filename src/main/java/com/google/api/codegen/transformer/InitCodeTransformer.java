@@ -444,6 +444,7 @@ public class InitCodeTransformer {
               .upperCamelIdentifier(param.getIdentifier().toUpperCamel())
               .typeName(simpleInitLine.typeName())
               .cliFlagName(param.getIdentifier().toLowerUnderscore())
+              .cliFlagDefaultValue(getCliFlagDefaultValue(param))
               .description(param.getDescription())
               .build());
 
@@ -935,5 +936,26 @@ public class InitCodeTransformer {
       return context.getNamer().getFormattedVariableName(item.getIdentifier());
     }
     return context.getNamer().localVarName(item.getIdentifier());
+  }
+
+  private static String getCliFlagDefaultValue(InitCodeNode item) {
+    checkArgument(
+        !item.getType().isMessage(), "Only enums and primitive types are supported for now.");
+
+    String value = item.getInitValueConfig().getInitialValue().getValue();
+
+    if (item.getType().isStringType()) {
+      // the string value needs to be quoted when it contains '\'' or ' '
+      if (value.indexOf(' ') != -1 || value.indexOf('\'') != -1) {
+        return "\"" + value + "\"";
+      }
+
+      // the string value needs to be quoted and escaped when it contains '"'
+      if (value.indexOf('"') != -1) {
+        return "\"" + value.replaceAll("\"", "\\\"") + "\"";
+      }
+    }
+
+    return value;
   }
 }
