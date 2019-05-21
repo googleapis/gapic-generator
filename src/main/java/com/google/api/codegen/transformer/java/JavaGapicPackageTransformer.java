@@ -35,7 +35,7 @@ public class JavaGapicPackageTransformer<ApiModelT extends ApiModel> extends Jav
     super(
         ImmutableMap.of(
             "java/build_gapic.gradle.snip",
-            JavaUtil.getGapicArtifactDirectoryName(packageConfig.packageName()) + "/build.gradle"),
+            JavaUtil.getGapicArtifactDirectoryName(packageConfig) + "build.gradle"),
         null);
     this.packageConfig = packageConfig;
   }

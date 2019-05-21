@@ -225,22 +225,19 @@ public class GapicGeneratorFactory {
                   .setModelToViewTransformer(transformer)
                   .build();
 
-      String gapicArtifactDir = JavaUtil.getGapicArtifactDirectoryName(packageConfig.packageName());
+      String gapicArtifactDir = JavaUtil.getGapicArtifactDirectoryName(packageConfig);
       if (artifactFlags.surfaceGeneratorEnabled()) {
         GapicCodePathMapper javaPathMapper =
-            JavaGapicCodePathMapper.newBuilder()
-                .prefix(gapicArtifactDir + "/src/main/java")
-                .build();
+            JavaGapicCodePathMapper.newBuilder().prefix(gapicArtifactDir + "src/main/java").build();
         if (artifactFlags.codeFilesEnabled()) {
           generators.add(newJavaGenerator.apply(new JavaGapicSurfaceTransformer(javaPathMapper)));
         }
 
         if (devSamples) {
-          String sampleArtifactDir =
-              JavaUtil.getSampleArtifactDirectoryName(packageConfig.packageName());
+          String sampleArtifactDir = JavaUtil.getSampleArtifactDirectoryName(packageConfig);
           javaPathMapper =
               JavaGapicCodePathMapper.newBuilder()
-                  .prefix(sampleArtifactDir + "/src/main/java")
+                  .prefix(sampleArtifactDir + "src/main/java")
                   .build();
           generators.add(newJavaGenerator.apply(new JavaGapicSamplesTransformer(javaPathMapper)));
           generators.add(

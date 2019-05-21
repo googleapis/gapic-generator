@@ -39,7 +39,7 @@ public class JavaGapicSamplesPackageTransformer extends JavaPackageTransformer
     super(
         ImmutableMap.of(
             "java/build_gapic_samples.gradle.snip",
-            JavaUtil.getSampleArtifactDirectoryName(packageConfig.packageName()) + "/build.gradle"),
+            JavaUtil.getSampleArtifactDirectoryName(packageConfig) + "build.gradle"),
         null);
     this.packageConfig = packageConfig;
   }

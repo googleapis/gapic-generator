@@ -14,7 +14,10 @@
  */
 package com.google.api.codegen.java;
 
+import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.packagegen.PackagingArtifactType;
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Strings;
 
 public class JavaUtil {
 
@@ -22,11 +25,20 @@ public class JavaUtil {
     // Utility class
   }
 
-  public static String getGapicArtifactDirectoryName(String packageName) {
-    return "gapic-" + CharMatcher.is('.').replaceFrom(packageName, '-');
+  public static String getGapicArtifactDirectoryName(PackageMetadataConfig packageConfig) {
+    if (packageConfig == null || Strings.isNullOrEmpty(packageConfig.packageName())) {
+      return "gapic/";
+    }
+    if (packageConfig.artifactType() == PackagingArtifactType.DISCOGAPIC) {
+      return "";
+    }
+    return "gapic-" + CharMatcher.is('.').replaceFrom(packageConfig.packageName(), "-/");
   }
 
-  public static String getSampleArtifactDirectoryName(String packageName) {
-    return "sample-" + CharMatcher.is('.').replaceFrom(packageName, '-');
+  public static String getSampleArtifactDirectoryName(PackageMetadataConfig packageConfig) {
+    if (packageConfig == null || Strings.isNullOrEmpty(packageConfig.packageName())) {
+      return "sample/";
+    }
+    return "sample-" + CharMatcher.is('.').replaceFrom(packageConfig.packageName(), "-/");
   }
 }
