@@ -84,6 +84,7 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'application'
 
 description = 'GAPIC samples for google-cloud-library-v1'
 group = 'com.google.cloud'
@@ -118,6 +119,10 @@ task fatJar(type: Jar) {
 
 clean {
   delete 'all-jars'
+}
+
+task run {
+  mainClassName = getProperty('mainClass')
 }
 
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/Babbage.java ==============
