@@ -12,7 +12,11 @@
     // sample-metadata:
     //   title: {@sample.title}
     //   description: {@sample.description}
-    //   usage: gradle run -PmainClass={@sampleFile.fileHeader.examplePackageName}.{@sampleFile.classView.name} [--args='{@commandlineArgmentList(sample.sampleInitCode.argDefaultParams)}']
+    @if sample.sampleInitCode.argDefaultParams 
+      //   usage: gradle run -PmainClass={@sampleFile.fileHeader.examplePackageName}.{@sampleFile.classView.name} [--args='{@commandlineArgmentList(sample.sampleInitCode.argDefaultParams)}']
+    @else
+      //   usage: gradle run -PmainClass={@sampleFile.fileHeader.examplePackageName}.{@sampleFile.classView.name}
+    @end
 
     package {@sampleFile.fileHeader.examplePackageName};
     
