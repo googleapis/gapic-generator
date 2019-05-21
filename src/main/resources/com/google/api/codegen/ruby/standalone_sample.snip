@@ -1,3 +1,4 @@
+@extends "metadatagen/samplegen.snip"
 @extends "ruby/common.snip"
 @extends "ruby/response.snip"
 
@@ -8,6 +9,11 @@
 
       @# DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
       
+      # sample-metadata
+      #   title: {@sample.title}
+      #   description: {@sample.description}
+      #   bundle exec ruby {@sampleFile.outputPath} {@commandlineArgmentList(sample.sampleInitCode.argDefaultParams)}
+
       require "{@apiMethod.initCode.topLevelIndexFileImportName}"
 
       {@standaloneSample(apiMethod, sample)}
