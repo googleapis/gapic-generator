@@ -51,9 +51,13 @@ public class PhpTypeTableTest {
     assertThat(imports.size()).isEqualTo(1);
 
     assertThat(typeTable.getAndSaveNicknameFor("baz\\bar\\Baz")).isEqualTo("baz\\bar\\Baz");
-
     imports = typeTable.getImports();
     assertThat(imports.size()).isEqualTo(1);
+
+    assertThat(typeTable.getAndSaveNicknameFor("baz\\Bar\\Baz")).isEqualTo("baz\\Bar\\Baz");
+    imports = typeTable.getImports();
+    assertThat(imports.size()).isEqualTo(1);
+
     assertThat(imports.containsKey("baz\\foo\\Baz"));
   }
 }
