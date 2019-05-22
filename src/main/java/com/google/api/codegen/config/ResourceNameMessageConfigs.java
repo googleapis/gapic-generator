@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.ResourceDescriptor;
 import com.google.api.ResourceReference;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
@@ -58,48 +59,48 @@ public abstract class ResourceNameMessageConfigs {
     for (ProtoFile protoFile : protoFiles) {
       for (MessageType message : protoFile.getMessages()) {
         ImmutableMap.Builder<String, String> fieldEntityMapBuilder = ImmutableMap.builder();
+
+        String resourceFieldName = null;
+        ResourceDescriptor resourceDescriptor = parser.getResourceDescriptor(message);
+        if (resourceDescriptor != null) {
+          resourceFieldName = resourceDescriptor.getNameField();
+          if (Strings.isNullOrEmpty(resourceFieldName)) {
+            resourceFieldName = "name"; // Default field containing the resource path.
+          }
+          Field resourceField = message.lookupField(resourceFieldName);
+          String entityName =
+              getResourceDescriptorTypeForField(
+                  false,
+                  diagCollector,
+                  descriptorConfigMap,
+                  resourceDescriptor.getType(),
+                  message,
+                  resourceField);
+          if (Strings.isNullOrEmpty(entityName)) continue;
+          fieldEntityMapBuilder.put(resourceField.getSimpleName(), entityName);
+        }
+
         for (Field field : message.getFields()) {
           if (!parser.hasResourceReference(field)) {
             continue;
           }
-          ResourceReference reference = parser.getResourceReference(field);
-          boolean isChildReference = !Strings.isNullOrEmpty(reference.getChildType());
-          String type = isChildReference ? reference.getChildType() : reference.getType();
-          ResourceDescriptorConfig config = descriptorConfigMap.get(type);
-          if (config == null) {
-            diagCollector.addDiag(
-                Diag.error(
-                    SimpleLocation.TOPLEVEL,
-                    "Reference to unknown type \"%s\" on field %s.%s",
-                    type,
-                    message.getFullName(),
-                    field.getFullName()));
+          if (field.getSimpleName().equals(resourceFieldName)) {
+            // We've already processed the Resource message's "name" field above.
             continue;
           }
 
-          String entityName;
-          if (isChildReference) {
-            // Attempt to resolve the reference to an existing type. If we can't, mark this
-            // type as having a child reference, and resolve the reference to the derived
-            // parent type.
-            List<String> parentPatterns = config.getParentPatterns();
-            Optional<ResourceDescriptorConfig> parentConfig =
-                descriptorConfigMap
-                    .values()
-                    .stream()
-                    .filter(
-                        c ->
-                            parentPatterns.size() == c.getPatterns().size()
-                                && parentPatterns.containsAll(c.getPatterns()))
-                    .findFirst();
-            if (parentConfig.isPresent()) {
-              entityName = parentConfig.get().getDerivedEntityName();
-            } else {
-              entityName = config.getDerivedParentEntityName();
-            }
-          } else {
-            entityName = config.getDerivedEntityName();
+          ResourceReference reference = parser.getResourceReference(field);
+          boolean isChildReference = !Strings.isNullOrEmpty(reference.getChildType());
+          String type = isChildReference ? reference.getChildType() : reference.getType();
+          if (type.equals("*")) {
+            // This is an AnyResourceNameConfig.
+            fieldEntityMapBuilder.put(field.getSimpleName(), "*");
+            continue;
           }
+          String entityName =
+              getResourceDescriptorTypeForField(
+                  isChildReference, diagCollector, descriptorConfigMap, type, message, field);
+          if (Strings.isNullOrEmpty(entityName)) continue;
           fieldEntityMapBuilder.put(field.getSimpleName(), entityName);
         }
         ImmutableMap<String, String> fieldEntityMap = fieldEntityMapBuilder.build();
@@ -112,6 +113,51 @@ public abstract class ResourceNameMessageConfigs {
     }
     ImmutableMap<String, ResourceNameMessageConfig> map = builder.build();
     return new AutoValue_ResourceNameMessageConfigs(map, createFieldsByMessage(protoFiles, map));
+  }
+
+  private static String getResourceDescriptorTypeForField(
+      boolean isChildReference,
+      DiagCollector diagCollector,
+      Map<String, ResourceDescriptorConfig> descriptorConfigMap,
+      String type,
+      MessageType message,
+      Field field) {
+    ResourceDescriptorConfig config = descriptorConfigMap.get(type);
+    if (config == null) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Reference to unknown type \"%s\" on field %s.%s",
+              type,
+              message.getFullName(),
+              field.getFullName()));
+      return null;
+    }
+
+    String entityName;
+    if (isChildReference) {
+      // Attempt to resolve the reference to an existing type. If we can't, mark this
+      // type as having a child reference, and resolve the reference to the derived
+      // parent type.
+      List<String> parentPatterns = config.getParentPatterns();
+      Optional<ResourceDescriptorConfig> parentConfig =
+          descriptorConfigMap
+              .values()
+              .stream()
+              .filter(
+                  c ->
+                      parentPatterns.size() == c.getPatterns().size()
+                          && parentPatterns.containsAll(c.getPatterns()))
+              .findFirst();
+      if (parentConfig.isPresent()) {
+        entityName = parentConfig.get().getDerivedEntityName();
+      } else {
+        entityName = config.getDerivedParentEntityName();
+      }
+    } else {
+      entityName = config.getDerivedEntityName();
+    }
+    return entityName;
   }
 
   @VisibleForTesting

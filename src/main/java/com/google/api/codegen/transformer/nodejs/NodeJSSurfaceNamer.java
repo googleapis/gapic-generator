@@ -426,7 +426,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       }
     } else if (methodContext.isLongRunningMethodContext()) {
       returnTypeDoc =
-          "a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object";
+          "a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/classes/Operation.html} object";
     } else {
       returnTypeDoc =
           getTypeNameDoc(typeTable, ProtoTypeRef.create(methodContext.getMethod().getOutputType()));
@@ -642,5 +642,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public CallingForm getDefaultCallingForm(MethodContext context) {
     return CallingForm.getDefaultCallingForm(context, TargetLanguage.NODEJS);
+  }
+
+  @Override
+  public boolean usesAsyncAwaitPattern(CallingForm form) {
+    return form == CallingForm.LongRunningPromiseAwait;
   }
 }

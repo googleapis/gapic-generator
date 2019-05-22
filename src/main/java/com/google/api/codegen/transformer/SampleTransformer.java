@@ -267,8 +267,8 @@ public abstract class SampleTransformer {
         .sampleInitCode(initCodeView)
         .outputs(outputViews)
         .hasMultipleFileOutputs(outputContext.hasMultipleFileOutputs())
-        .isAsyncMethod(
-            form == CallingForm.LongRunningPromiseAwait) // Currently used by Node.js only.
+        .usesAsyncAwaitPattern(
+            methodContext.getNamer().usesAsyncAwaitPattern(form)) // Used by C# and Node.js
         .sampleImports(sampleImportSectionView)
         .regionTag(
             regionTagFromSpec(
