@@ -270,7 +270,7 @@ public class GapicGeneratorFactory {
         if (artifactFlags.codeFilesEnabled()) {
           GapicCodePathMapper javaTestPathMapper =
               JavaGapicCodePathMapper.newBuilder()
-                  .prefix(gapicArtifactDir + "/src/test/java")
+                  .prefix(gapicArtifactDir + "src/test/java")
                   .build();
           generators.add(
               newJavaGenerator.apply(

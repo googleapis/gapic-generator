@@ -32,13 +32,13 @@ public class JavaUtil {
     if (packageConfig.artifactType() == PackagingArtifactType.DISCOGAPIC) {
       return "";
     }
-    return "gapic-" + CharMatcher.is('.').replaceFrom(packageConfig.packageName(), "-/");
+    return "gapic-" + CharMatcher.is('.').replaceFrom(packageConfig.packageName(), "-") + "/";
   }
 
   public static String getSampleArtifactDirectoryName(PackageMetadataConfig packageConfig) {
     if (packageConfig == null || Strings.isNullOrEmpty(packageConfig.packageName())) {
       return "sample/";
     }
-    return "sample-" + CharMatcher.is('.').replaceFrom(packageConfig.packageName(), "-/");
+    return "sample-" + CharMatcher.is('.').replaceFrom(packageConfig.packageName(), "-") + "/";
   }
 }
