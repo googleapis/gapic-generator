@@ -6,6 +6,7 @@
   }
 
   apply plugin: 'java'
+  apply plugin: 'application'
 
   description = 'GAPIC samples for {@metadata.identifier}'
   group = 'com.google.cloud'
@@ -43,7 +44,7 @@
     delete 'all-jars'
   }
 
-  application {
-    mainClassName = project.getProperty("mainClass")
+  task run {
+    mainClassName = getProperty('mainClass')
   }
 @end

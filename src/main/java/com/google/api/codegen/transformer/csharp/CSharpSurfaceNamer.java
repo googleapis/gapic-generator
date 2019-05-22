@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.AnyResourceNameConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -43,6 +44,7 @@ import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.util.csharp.CSharpCommentReformatter;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -685,5 +687,25 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getParamDocText(String paramName, String paramTypeName, String text) {
     return String.format("<param name=\"%s\">%s</param>", paramName, text);
+  }
+
+  @Override
+  public boolean usesAsyncAwaitPattern(CallingForm form) {
+    return ImmutableSet.of(
+            CallingForm.RequestAsync,
+            CallingForm.RequestAsyncPaged,
+            CallingForm.RequestAsyncPagedAll,
+            CallingForm.RequestAsyncPagedPageSize,
+            CallingForm.FlattenedAsync,
+            CallingForm.FlattenedAsyncPaged,
+            CallingForm.FlattenedAsyncPagedAll,
+            CallingForm.FlattenedAsyncPagedPageSize,
+            CallingForm.LongRunningPromiseAwait)
+        .contains(form);
+  }
+
+  @Override
+  public CallingForm getDefaultCallingForm(MethodContext context) {
+    return CallingForm.getDefaultCallingForm(context, TargetLanguage.CSHARP);
   }
 }
