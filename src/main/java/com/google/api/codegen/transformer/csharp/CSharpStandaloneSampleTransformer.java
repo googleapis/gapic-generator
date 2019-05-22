@@ -52,7 +52,10 @@ public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer
 
   private static final StaticLangApiMethodTransformer csharpApiMethodTransformer =
       new CSharpApiMethodTransformer(
-          SampleTransformer.newBuilder().sampleType(SampleSpec.SampleType.STANDALONE).build());
+          SampleTransformer.newBuilder()
+              .sampleType(SampleSpec.SampleType.STANDALONE)
+              .sampleImportTransformer(new CSharpSampleImportTransformer())
+              .build());
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
 
@@ -72,7 +75,8 @@ public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer
     String packageName = productConfig.getPackageName();
     CSharpSurfaceNamer namer = new CSharpSurfaceNamer(packageName, ALIAS_MODE);
     ModelTypeTable typeTable =
-        csharpCommonTransformer.createTypeTable(productConfig.getPackageName(), ALIAS_MODE);
+        csharpCommonTransformer.createTypeTable(
+            productConfig.getPackageName() + ".Samples", ALIAS_MODE);
 
     List<InterfaceContext> interfaceContexts =
         Streams.stream(model.getInterfaces(productConfig))
