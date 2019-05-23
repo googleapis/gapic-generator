@@ -3380,19 +3380,21 @@ public class TuringProgCallableStreamingBidi {
    */
 
   /** Testing calling forms */
-  public static void sampleDiscussBook(String imageFileName) {
+  public static void sampleDiscussBook(String imageFileName, Comment.Stage stage) {
     // [START turing_prog_callable_streaming_bidi_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
       BidiStream<DiscussBookRequest, Comment> bidiStream =
           libraryClient.discussBookCallable().call();
 
       // imageFileName = "image_file.jpg";
+      // stage = Comment.Stage.DRAFT;
       ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       Path path = Paths.get("comment_file");
       byte[] data = Files.readAllBytes(path);
       ByteString comment = ByteString.copyFrom(data);
       Comment comment2 = Comment.newBuilder()
         .setComment(comment)
+        .setStage(stage)
         .build();
       path = Paths.get(imageFileName);
       data = Files.readAllBytes(path);
@@ -3421,11 +3423,21 @@ public class TuringProgCallableStreamingBidi {
           .hasArg(true)
           .longOpt("image_file_name")
           .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("stage")
+          .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     String imageFileName = cl.getOptionValue("image_file_name", "image_file.jpg");
+    Comment.Stage stage =
+      cl.getOptionValue("stage") != null
+          ? Comment.Stage.valueOf(cl.getOptionValue("stage"))
+          : Comment.Stage.DRAFT;
 
-    sampleDiscussBook(imageFileName);
+    sampleDiscussBook(imageFileName, stage);
   }
 }
 ============== file: src/main/java/com/google/example/library/v1/LibraryClient.java ==============
