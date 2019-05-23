@@ -44,12 +44,12 @@ public class PythonSampleImportTransformer implements SampleImportTransformer {
       Iterable<InitCodeNode> nodes) {
     ImportSectionView.Builder imports = ImportSectionView.newBuilder();
     ImmutableList.Builder<ImportFileView> appImports = ImmutableList.builder();
-    
+
     // First get all the imports generated from InitCodeTransformer
     List<ImportFileView> initCodeAppImports =
         importSectionTransformer.generateImportSection(context, nodes).appImports();
     appImports.addAll(initCodeAppImports);
-    
+
     // Then add more imports that other parts of the sample need
     // For now we only need to special-case `enums`
     boolean addEnumImports =
