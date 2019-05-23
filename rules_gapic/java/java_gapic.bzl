@@ -32,8 +32,8 @@ def _java_gapic_srcjar_impl(ctx):
     {formatter} --replace $(find {output_dir_path} -type f -printf "%p ")
     pushd .
     cd {output_dir_path}
-    cd src/main/java && zip -q -r ../../../{output_dir_name}.srcjar ./* && cd -
-    cd src/test/java && zip -q -r ../../../{output_dir_name}-tests.srcjar ./* && cd -
+    cd gapic/src/main/java && zip -q -r ../../../../{output_dir_name}.srcjar ./* && cd -
+    cd gapic/src/test/java && zip -q -r ../../../../{output_dir_name}-tests.srcjar ./* && cd -
     popd
     mv {output_dir_path}/{output_dir_name}.srcjar {output_main}
     mv {output_dir_path}/{output_dir_name}-tests.srcjar {output_test}

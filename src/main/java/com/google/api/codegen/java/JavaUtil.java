@@ -26,19 +26,21 @@ public class JavaUtil {
   }
 
   public static String getGapicArtifactDirectoryName(PackageMetadataConfig packageConfig) {
-    if (packageConfig == null || Strings.isNullOrEmpty(packageConfig.packageName())) {
-      return "gapic/";
-    }
-    if (packageConfig.artifactType() == PackagingArtifactType.DISCOGAPIC) {
-      return "";
-    }
-    return "gapic-" + CharMatcher.is('.').replaceFrom(packageConfig.packageName(), "-") + "/";
+    // if (packageConfig == null || Strings.isNullOrEmpty(packageConfig.packageName())) {
+    //   return "gapic/";
+    // }
+    // if (packageConfig.artifactType() == PackagingArtifactType.DISCOGAPIC) {
+    //   return "";
+    // }
+    // return "gapic-" + CharMatcher.is('.').replaceFrom(packageConfig.packageName(), "-") + "/";
+    return "gapic/";
   }
 
   public static String getSampleArtifactDirectoryName(PackageMetadataConfig packageConfig) {
-    if (packageConfig == null || Strings.isNullOrEmpty(packageConfig.packageName())) {
-      return "sample/";
-    }
-    return "sample-" + CharMatcher.is('.').replaceFrom(packageConfig.packageName(), "-") + "/";
+    // if (packageConfig == null || Strings.isNullOrEmpty(packageConfig.packageName())) {
+    //   return "sample/";
+    // }
+    // return "sample-" + CharMatcher.is('.').replaceFrom(packageConfig.packageName(), "-") + "/";
+    return "samples/";
   }
 }
