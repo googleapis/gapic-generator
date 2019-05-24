@@ -68,7 +68,7 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
     # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
     # https://github.com/googleapis/gapic-generator/issues/2237
     - image: googleapis/nox:0.17.0
-    - image: gcr.io/gapic-images/gapic-showcase:0.1.2
+    - image: gcr.io/gapic-images/gapic-showcase:0.2.0
   steps:
     - attach_workspace:
         at: workspace
@@ -124,7 +124,7 @@ anchor_run_ruby: &anchor_run_ruby
   working_directory: /tmp/
   docker:
     - image: circleci/ruby:2.4-node
-    - image: gcr.io/gapic-images/gapic-showcase:0.1.2
+    - image: gcr.io/gapic-images/gapic-showcase:0.2.0
   environment:
     LANGUAGE: ruby
     RUBY_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/
@@ -173,7 +173,7 @@ anchor_run_ruby: &anchor_run_ruby
          git add .
          git commit -m "init"
          gem build google-showcase.gemspec
-         gem install google-showcase-0.1.2.gem
+         gem install google-showcase-0.1.0.gem
     - run:
        name: Run Showcase Integration Tests
        command: |
@@ -303,7 +303,7 @@ jobs:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
     environment:
-      SHOWCASE_VERSION: 0.1.2
+      SHOWCASE_VERSION: 0.2.0
     steps:
       - checkout:
           path: gapic-generator
@@ -511,7 +511,7 @@ jobs:
       <<: *anchor_artman_vars
     docker:
       - image: circleci/openjdk:8-jdk
-      - image: gcr.io/gapic-images/gapic-showcase:0.1.2
+      - image: gcr.io/gapic-images/gapic-showcase:0.2.0
     steps:
       - attach_workspace:
           at: workspace
@@ -585,7 +585,7 @@ jobs:
       <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
-      - image: gcr.io/gapic-images/gapic-showcase:0.1.2
+      - image: gcr.io/gapic-images/gapic-showcase:0.2.0
   php-7.2-system-test:
     <<: *anchor_run_php
     environment:
@@ -604,7 +604,7 @@ jobs:
       <<: *anchor_artman_vars
     docker:
       - image: circleci/node:8-stretch-browsers
-      - image: gcr.io/gapic-images/gapic-showcase:0.1.2
+      - image: gcr.io/gapic-images/gapic-showcase:0.2.0
     steps:
       - attach_workspace:
           at: workspace
@@ -659,7 +659,7 @@ jobs:
       GOPATH: /tmp/go
     docker:
       - image: circleci/golang:1.10
-      - image: gcr.io/gapic-images/gapic-showcase:0.1.2
+      - image: gcr.io/gapic-images/gapic-showcase:0.2.0
     steps:
       - attach_workspace:
           at: workspace
