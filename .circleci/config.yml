@@ -68,7 +68,7 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
     # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
     # https://github.com/googleapis/gapic-generator/issues/2237
     - image: googleapis/nox:0.17.0
-    - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+    - image: gcr.io/gapic-images/gapic-showcase:0.2.0
   steps:
     - attach_workspace:
         at: workspace
@@ -77,24 +77,22 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
     - run:
         <<: *anchor_check_generation
     # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
-    # Disabling showcase tests until annotations are supported, see:
-    # https://github.com/googleapis/gapic-generator/issues/2735
-    #- run:
-    #    name: Run Showcase Generated Unit Tests.
-    #    command: |
-    #      nox --session "unit(py='2.7')" \
-    #          --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
-    #      nox --session "unit(py='3.6')" \
-    #          --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
-    #    when: always
-    #- run:
-    #    name: Run Showcase Integration Tests.
-    #    command: |
-    #      nox --session "showcase(py='2.7')" \
-    #          --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
-    #      nox --session "showcase(py='3.6')" \
-    #          --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
-    #    when: always
+    - run:
+       name: Run Showcase Generated Unit Tests.
+       command: |
+         nox --session "unit(py='2.7')" \
+             --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
+         nox --session "unit(py='3.6')" \
+             --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
+       when: always
+    - run:
+       name: Run Showcase Integration Tests.
+       command: |
+         nox --session "showcase(py='2.7')" \
+             --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
+         nox --session "showcase(py='3.6')" \
+             --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
+       when: always
     - run:
         name: Prepare for Pubsub testing.
         command: echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
@@ -126,7 +124,7 @@ anchor_run_ruby: &anchor_run_ruby
   working_directory: /tmp/
   docker:
     - image: circleci/ruby:2.4-node
-    - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+    - image: gcr.io/gapic-images/gapic-showcase:0.2.0
   environment:
     LANGUAGE: ruby
     RUBY_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/
@@ -158,32 +156,30 @@ anchor_run_ruby: &anchor_run_ruby
     - run:
         name: Test Logging.
         <<: *anchor_test_ruby_client
-    # Disabling showcase tests until annotations are supported, see:
-    # https://github.com/googleapis/gapic-generator/issues/2735
-    #- run:
-    #    name: Prepare to test Showcase.
-    #    command: echo 'export TEST_API="showcase"' >> $BASH_ENV
-    #- run:
-    #    name: Test Showcase Generated Unit Tests.
-    #    <<: *anchor_test_ruby_client
-    #- run:
-    #    name: Setup Showcase Integration Tests
-    #    # Git needs to be initialized since the gemspec tracks the packaged files using git.
-    #    command: |
-    #      cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/google-cloud-showcase
-    #      git config --global user.email "googleapis@google.com"
-    #      git config --global user.name "googleapis"
-    #      git init
-    #      git add .
-    #      git commit -m "init"
-    #      gem build google-showcase.gemspec
-    #      gem install google-showcase-0.1.0.gem
-    #- run:
-    #    name: Run Showcase Integration Tests
-    #    command: |
-    #      cd workspace/gapic-generator/showcase/ruby
-    #      bundle install
-    #      bundle exec ruby showcase_integration_test.rb
+    - run:
+       name: Prepare to test Showcase.
+       command: echo 'export TEST_API="showcase"' >> $BASH_ENV
+    - run:
+       name: Test Showcase Generated Unit Tests.
+       <<: *anchor_test_ruby_client
+    - run:
+       name: Setup Showcase Integration Tests
+       # Git needs to be initialized since the gemspec tracks the packaged files using git.
+       command: |
+         cd workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/google-cloud-showcase
+         git config --global user.email "googleapis@google.com"
+         git config --global user.name "googleapis"
+         git init
+         git add .
+         git commit -m "init"
+         gem build google-showcase.gemspec
+         gem install google-showcase-0.1.0.gem
+    - run:
+       name: Run Showcase Integration Tests
+       command: |
+         cd workspace/gapic-generator/showcase/ruby
+         bundle install
+         bundle exec ruby showcase_integration_test.rb
 
 anchor_test_php: &anchor_test_php
   command: |
@@ -268,22 +264,20 @@ anchor_run_php: &anchor_run_php
     - run:
         name: Test PHP Logging client
         <<: *anchor_test_php
-    # Disabling showcase tests until annotations are supported, see:
-    # https://github.com/googleapis/gapic-generator/issues/2735
-    #- run:
-    #    name: Prepare to test Showcase.
-    #    command: |
-    #      echo 'export TEST_API="showcase-v1alpha2"' >> $BASH_ENV
-    #      echo 'export KEY_REQUIRED=false' >> $BASH_ENV
-    #- run:
-    #    name: Test Showcase Generated Unit Tests.
-    #    <<: *anchor_test_php
-    #- run:
-    #    name: Run Showcase Integration Tests
-    #    command: |
-    #      cd workspace/gapic-generator/showcase/php
-    #      composer update
-    #      vendor/bin/phpunit
+    - run:
+        name: Prepare to test Showcase.
+        command: |
+          echo 'export TEST_API="showcase-v1beta1"' >> $BASH_ENV
+          echo 'export KEY_REQUIRED=false' >> $BASH_ENV
+    - run:
+        name: Test Showcase Generated Unit Tests.
+        <<: *anchor_test_php
+    - run:
+        name: Run Showcase Integration Tests
+        command: |
+          cd workspace/gapic-generator/showcase/php
+          composer update
+          vendor/bin/phpunit
 
 # Test a NodeJS client if generation succeeded.
 anchor_test_nodejs_client: &anchor_test_nodejs_client
@@ -309,7 +303,7 @@ jobs:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
     environment:
-      SHOWCASE_VERSION: 0.0.7
+      SHOWCASE_VERSION: 0.2.0
     steps:
       - checkout:
           path: gapic-generator
@@ -324,24 +318,8 @@ jobs:
             curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-${SHOWCASE_VERSION}-protos.tar.gz | tar -C showcase-protos -xz
             TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc/showcase"
             cp ${TEST_SRC}/showcase.yaml showcase-protos/google/showcase/
-            cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos/google/showcase/v1alpha2/
+            cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos/google/showcase/v1beta1/
             cp ${TEST_SRC}/artman_showcase.yaml showcase-protos/google/showcase/
-      # The following showcase protos are used for java showcase tests. The
-      # common protos that google-gax depends on does not have the new client
-      # annotations so any protos that are using them will not compile. This
-      # step uses a patched version of echo.proto that does not have those
-      # annoations.
-      - run:
-          name: Setup patched showcase protos.
-          command: |
-            mkdir showcase-protos-patched
-            curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-${SHOWCASE_VERSION}-protos.tar.gz | tar -C showcase-protos-patched -xz
-            TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc/showcase"
-            cp ${TEST_SRC}/showcase.yaml showcase-protos-patched/google/showcase/
-            cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos-patched/google/showcase/v1alpha2/
-            cp ${TEST_SRC}/artman_showcase.yaml showcase-protos-patched/google/showcase/
-            cp ${TEST_SRC}/echo.proto showcase-protos-patched/google/showcase/v1alpha2
-            rm showcase-protos-patched/google/showcase/v1alpha2/testing.proto
 
       - run:
           name: Build and install local toolkit
@@ -356,7 +334,6 @@ jobs:
             - gapic-generator
             - googleapis
             - showcase-protos
-            - showcase-protos-patched
   test-baselines:
     docker:
       - image: circleci/golang:1.11
@@ -460,36 +437,25 @@ jobs:
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
           when: always
-      # Disabling showcase tests until annotations are supported, see:
-      # https://github.com/googleapis/gapic-generator/issues/2735
-      #- run:
-      #    name: Generate Showcase Libraries
-      #    command: |
-      #      cd workspace/gapic-generator
-      #      python generate_clients.py \
-      #          google/showcase/artman_showcase.yaml \
-      #          --user-config=.circleci/artman_config.yaml \
-      #          --log-dir=${ARTMAN_REPORTS_DIR} \
-      #          --languages go nodejs php python ruby \
-      #          --root-dir=/tmp/workspace/showcase-protos
-      #    when: always
-      # Java needs to use the patched showcase dir since showcase contains
-      # the new annotations. Protos using those new annotations will not
-      # compile. This lets us use a patched version of the echo.proto that
-      # does not contain the new client annotations.
-      #
-      # TODO(landrito): remove this once the new annotations are released
-      # and depended upon by google-gax.
-      #- run:
-      #    name: Generate Java Showcase Library
-      #    command: |
-      #      cd workspace/gapic-generator
-      #      python generate_clients.py \
-      #          google/showcase/artman_showcase.yaml \
-      #          --user-config=.circleci/artman_config.yaml \
-      #          --log-dir=${ARTMAN_REPORTS_DIR} \
-      #          --languages java \
-      #          --root-dir=/tmp/workspace/showcase-protos-patched
+      - run:
+         name: Generate Showcase Libraries
+         command: |
+           cd workspace/gapic-generator
+           python generate_clients.py \
+               google/showcase/artman_showcase.yaml \
+               --user-config=.circleci/artman_config.yaml \
+               --log-dir=${ARTMAN_REPORTS_DIR} \
+               --root-dir=/tmp/workspace/showcase-protos
+         when: always
+      # This step is also required so long as Java's clients rely on a different
+      # version of google-common-protos compared to gapic-generator.
+      - run:
+          name: Patch in pre-release version of google-common-protos
+          command: |
+            cd workspace/gapic-generator/artman-genfiles/java
+            JAVA_COMMON_PROTOS_VERSION=proto-google-common-protos:1.13.0-pre3
+            sed -i "s/proto-google-common-protos:[0-9\.]\+/${JAVA_COMMON_PROTOS_VERSION}/g" \
+                proto-google-showcase-v1beta1/build.gradle
       - store_artifacts:
           path: /tmp/workspace/reports
       - store_artifacts:
@@ -545,7 +511,7 @@ jobs:
       <<: *anchor_artman_vars
     docker:
       - image: circleci/openjdk:8-jdk
-      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+      - image: gcr.io/gapic-images/gapic-showcase:0.2.0
     steps:
       - attach_workspace:
           at: workspace
@@ -563,20 +529,18 @@ jobs:
           command: |
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} /tmp/workspace/reports/ \;
           when: always
-      # Disabling showcase tests until annotations are supported, see:
-      # https://github.com/googleapis/gapic-generator/issues/2735
-      #- run:
-      #    name: Install the generated showcase library
-      #    command: |
-      #      cd workspace/gapic-generator/artman-genfiles/java
-      #      ./gradlew install -p gapic-google-cloud-showcase-v1alpha2
-      #      ./gradlew install -p proto-google-showcase-v1alpha2
-      #      ./gradlew install -p grpc-google-showcase-v1alpha2
-      #- run:
-      #    name: Run Showcase Integration Tests
-      #    command: |
-      #      cd workspace/gapic-generator/showcase/java
-      #      ./gradlew cleanTest check
+      - run:
+          name: Install the generated showcase library
+          command: |
+            cd workspace/gapic-generator/artman-genfiles/java
+            ./gradlew install -p gapic-google-cloud-showcase-v1beta1
+            ./gradlew install -p proto-google-showcase-v1beta1
+            ./gradlew install -p grpc-google-showcase-v1beta1
+      - run:
+          name: Run Showcase Integration Tests
+          command: |
+            cd workspace/gapic-generator/showcase/java
+            ./gradlew cleanTest check
       - store_test_results:
           path: /tmp/workspace/reports
       - store_artifacts:
@@ -621,7 +585,7 @@ jobs:
       <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
-      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+      - image: gcr.io/gapic-images/gapic-showcase:0.2.0
   php-7.2-system-test:
     <<: *anchor_run_php
     environment:
@@ -640,30 +604,28 @@ jobs:
       <<: *anchor_artman_vars
     docker:
       - image: circleci/node:8-stretch-browsers
-      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+      - image: gcr.io/gapic-images/gapic-showcase:0.2.0
     steps:
       - attach_workspace:
           at: workspace
       - run:
           name: Verify all NodeJS generation succeeded
           <<: *anchor_check_generation
-      # Disabling showcase tests until annotations are supported, see:
-      # https://github.com/googleapis/gapic-generator/issues/2735
-      #- run:
-      #    name: Test Showcase
-      #    command: |
-      #      cd ${NODEJS_GEN_DIR}/showcase-v1alpha2
-      #      npm install
-      #      # The following step must be done since the new api annotations are not
-      #      # in the nodejs proto files repository.
-      #      cp -rf /tmp/workspace/showcase-protos/* node_modules/google-proto-files
-      #      npm test
-      #- run:
-      #    name: Run Showcase integration tests
-      #    command: |
-      #      cd workspace/gapic-generator/showcase/nodejs
-      #      npm install
-      #      npm test
+      - run:
+          name: Test Showcase
+          command: |
+            cd ${NODEJS_GEN_DIR}/showcase-v1beta1
+            npm install
+            # The following step must be done since the new api annotations are not
+            # in the nodejs proto files repository.
+            cp -rf /tmp/workspace/showcase-protos/* node_modules/google-proto-files
+            npm test
+      - run:
+          name: Run Showcase integration tests
+          command: |
+            cd workspace/gapic-generator/showcase/nodejs
+            npm install
+            npm test
       - run:
           name: Prepare to test Pubsub
           command: |
@@ -697,7 +659,7 @@ jobs:
       GOPATH: /tmp/go
     docker:
       - image: circleci/golang:1.10
-      - image: gcr.io/gapic-showcase/gapic-showcase:0.0.7
+      - image: gcr.io/gapic-images/gapic-showcase:0.2.0
     steps:
       - attach_workspace:
           at: workspace
@@ -740,17 +702,15 @@ jobs:
           name: Test Speech
           command: go test cloud.google.com/go/speech/apiv1
           when: always
-      # Disabling showcase tests until annotations are supported, see:
-      # https://github.com/googleapis/gapic-generator/issues/2735
-      #- run:
-      #    name: Test Showcase
-      #    command: go test cloud.google.com/go/showcase/apiv1alpha2
-      #    when: always
-      #- run:
-      #    name: Run Showcase Integration Tests
-      #    command: |
-      #      cd /tmp/workspace/gapic-generator/showcase/go
-      #      go test .
+      - run:
+          name: Test Showcase
+          command: go test cloud.google.com/go/showcase/apiv1beta1
+          when: always
+      - run:
+          name: Run Showcase Integration Tests
+          command: |
+            cd /tmp/workspace/gapic-generator/showcase/go
+            go test .
   # TODO: test other language clients.
 
   artman_smoke_tests:
