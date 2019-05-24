@@ -24,11 +24,12 @@ import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
 
@@ -130,15 +131,6 @@ public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
     }
   }
 
-  @Override
-  public TypeName getTypeName(ProtoElement elem) {
-    try {
-      return getTypeName(elem, MAX_NESTED_DEPTH);
-    } catch (IllegalStateException e) {
-      throw new IllegalStateException("Could not determine type name for elem: " + elem, e);
-    }
-  }
-
   /**
    * This function determines the PHP type name for a proto message. For example, the following
    * proto definition: <code>
@@ -156,13 +148,13 @@ public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
    *   <li>\Example\Top\Nested\DeepNested
    * </ul>
    */
-  private TypeName getTypeName(ProtoElement elem, int maxDepth) {
+  @Override
+  public TypeName getTypeName(ProtoElement elem) {
     String fullName = elem.getFullName();
     if (TYPE_NAME_MAP.containsKey(fullName)) {
       return typeNameConverter.getTypeName(TYPE_NAME_MAP.get(fullName));
     }
 
-    StringBuilder builder = new StringBuilder();
     LinkedList<String> components = new LinkedList<>();
 
     while (elem != null && !(elem instanceof ProtoFile)) {
@@ -175,25 +167,22 @@ public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
       ProtoFile protoFile = (ProtoFile) elem;
       String namespace = protoFile.getProto().getOptions().getPhpNamespace();
       if (!Strings.isNullOrEmpty(namespace)) {
-        builder.append('\\').append(CharMatcher.is('\\').trimFrom(namespace));
-        for (String component : components) {
-          builder
-              .append("\\")
-              .append(component.substring(0, 1).toUpperCase())
-              .append(component.substring(1));
-        }
-        return typeNameConverter.getTypeName(builder.toString());
+        components.addFirst(namespace);
+        fullName =
+            components
+                .stream()
+                .map(PhpModelTypeNameConverter::makeNamespacePieces)
+                .collect(Collectors.joining(""));
+        return typeNameConverter.getTypeName(fullName);
       }
     }
 
     // Create the type name based on the element's full name
-    for (String component : fullName.split("\\.")) {
-      builder
-          .append("\\")
-          .append(component.substring(0, 1).toUpperCase())
-          .append(component.substring(1));
-    }
-    return typeNameConverter.getTypeName(builder.toString());
+    fullName =
+        Arrays.stream(fullName.split("\\."))
+            .map(PhpModelTypeNameConverter::makeNamespacePieces)
+            .collect(Collectors.joining(""));
+    return typeNameConverter.getTypeName(fullName);
   }
 
   /**
@@ -264,5 +253,9 @@ public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
   @Override
   public TypedValue getEnumValue(TypeRef type, EnumValue value) {
     return TypedValue.create(getTypeName(type), "%s::" + value.getSimpleName());
+  }
+
+  private static String makeNamespacePieces(String piece) {
+    return "\\" + piece.substring(0, 1).toUpperCase() + piece.substring(1);
   }
 }
