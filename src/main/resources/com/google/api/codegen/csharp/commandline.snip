@@ -13,11 +13,11 @@
 @snippet processCliArguments(sample)
     @if sample.sampleInitCode.argDefaultParams
         @if sample.usesAsyncAwaitPattern
-            CommandLine.Parser.Default.ParseArguments<Options>(args)
+            new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
                     {@sample.sampleFunctionName}Async({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}).Wait());
         @else
-            CommandLine.Parser.Default.ParseArguments<Options>(args)
+            new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
                     {@sample.sampleFunctionName}({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}));
         @end

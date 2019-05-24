@@ -25,18 +25,13 @@ import com.google.api.gax.rpc.BidiStreamObserver;
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ServerStream;
 import com.google.api.gax.rpc.StreamController;
-import com.google.common.collect.Lists;
-import com.google.protobuf.Duration;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
-import com.google.showcase.v1alpha2.EchoClient;
-import com.google.showcase.v1alpha2.EchoRequest;
-import com.google.showcase.v1alpha2.EchoResponse;
-import com.google.showcase.v1alpha2.EchoSettings;
-import com.google.showcase.v1alpha2.ExpandRequest;
-import com.google.showcase.v1alpha2.PaginationRequest;
-import com.google.showcase.v1alpha2.WaitRequest;
-import com.google.showcase.v1alpha2.WaitResponse;
+import com.google.showcase.v1beta1.EchoClient;
+import com.google.showcase.v1beta1.EchoRequest;
+import com.google.showcase.v1beta1.EchoResponse;
+import com.google.showcase.v1beta1.EchoSettings;
+import com.google.showcase.v1beta1.ExpandRequest;
 import io.grpc.StatusRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
@@ -232,60 +227,5 @@ public class ShowcaseTest {
     latch.await(2, TimeUnit.SECONDS);
 
     assertThat(responses).containsExactlyElementsIn(inputs).inOrder();
-  }
-
-  @Test
-  public void retries() {
-    WaitResponse response =
-        client.wait(
-            WaitRequest.newBuilder()
-                .setResponseDelay(Duration.newBuilder().setSeconds(2).build())
-                .setSuccess(WaitResponse.newBuilder().setContent("I waited!").build())
-                .build());
-
-    assertThat(response.getContent()).isEqualTo("I waited!");
-  }
-
-  @Test
-  public void pagesChucksOfResponses() {
-    List<Integer> numbers = new ArrayList<>();
-    int pageCount = 0;
-
-    EchoClient.PaginationPagedResponse pager =
-        client.pagination(
-            PaginationRequest.newBuilder()
-                .setPageSize(10)
-                .setPageToken("0")
-                .setMaxResponse(39)
-                .build());
-
-    for (EchoClient.PaginationPage page : pager.iteratePages()) {
-      for (Integer x : page.getValues()) {
-        numbers.add(x);
-      }
-      pageCount++;
-    }
-
-    assertThat(pageCount).isEqualTo(4);
-    assertThat(numbers).containsExactlyElementsIn(IntStream.range(0, 39).boxed().toArray());
-  }
-
-  @Test
-  public void pagesChucksOfResponsesWithoutPreFetching() {
-    EchoClient.PaginationPagedResponse pager =
-        client.pagination(
-            PaginationRequest.newBuilder()
-                .setPageSize(20)
-                .setPageToken("0")
-                .setMaxResponse(100)
-                .build());
-
-    assertThat(pager.getNextPageToken()).isNotEmpty();
-
-    EchoClient.PaginationPage page = pager.getPage();
-
-    assertThat(Lists.newArrayList(page.getValues()))
-        .containsExactlyElementsIn(IntStream.range(0, 20).boxed().toArray());
-    assertThat(page.getNextPageToken()).isNotEmpty();
   }
 }
