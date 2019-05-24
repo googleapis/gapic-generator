@@ -58,6 +58,6 @@ public class PhpTypeTableTest {
     imports = typeTable.getImports();
     assertThat(imports.size()).isEqualTo(1);
 
-    assertThat(imports.containsKey("baz\\foo\\Baz"));
+    assertThat(imports).containsKey("baz\\foo\\Baz");
   }
 }
