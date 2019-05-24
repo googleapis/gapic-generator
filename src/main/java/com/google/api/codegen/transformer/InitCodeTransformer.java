@@ -137,12 +137,6 @@ public class InitCodeTransformer {
       // Remove the request object for flattened method
       orderedItems.remove(orderedItems.size() - 1);
     }
-    for (InitCodeNode param :
-        sampleFuncParams(
-            root, initCodeContext.sampleArgStrings(), initCodeContext.sampleParamConfigMap())) {
-      List<InitCodeNode> paramInits = param.listInInitializationOrder();
-      orderedItems.removeAll(paramInits);
-    }
     return orderedItems;
   }
 
@@ -441,7 +435,9 @@ public class InitCodeTransformer {
           SampleFunctionParameterView.newBuilder()
               .initValue(simpleInitLine.initValue())
               .identifier(simpleInitLine.identifier())
+              .upperCamelIdentifier(param.getIdentifier().toUpperCamel())
               .typeName(simpleInitLine.typeName())
+              .isEnum(simpleInitLine.isEnum())
               .cliFlagName(param.getIdentifier().toLowerUnderscore())
               .description(param.getDescription())
               .build());
@@ -521,7 +517,7 @@ public class InitCodeTransformer {
     } else {
       surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
     }
-
+    surfaceLine.isEnum(item.getType().isEnum());
     surfaceLine.identifier(getVariableName(context, item));
     setInitValueAndComments(surfaceLine, context, item, isFirstItem);
 

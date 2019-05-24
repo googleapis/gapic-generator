@@ -186,6 +186,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
                     diagCollector,
                     defaultPackageName,
                     methodModel,
+                    methodConfigProto,
                     messageConfigs,
                     resourceNameConfigs,
                     protoParser))

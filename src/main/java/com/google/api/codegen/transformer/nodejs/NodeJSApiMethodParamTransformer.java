@@ -97,7 +97,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
         ImmutableList.of(
             "Optional parameters. You can override the default settings for this call, e.g, timeout,",
             "retries, paginations, etc. See [gax.CallOptions]{@link "
-                + "https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details."));
+                + "https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details."));
     return paramDoc.build();
   }
 

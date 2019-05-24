@@ -22,7 +22,12 @@ public abstract class SampleFunctionParameterView {
 
   public abstract String typeName();
 
+  public abstract boolean isEnum();
+
   public abstract String identifier();
+
+  /** Used by CSharp CLI. Same as `identifier`, but in upper cammel case. */
+  public abstract String upperCamelIdentifier();
 
   public abstract InitValueView initValue();
 
@@ -40,7 +45,11 @@ public abstract class SampleFunctionParameterView {
 
     public abstract Builder typeName(String val);
 
+    public abstract Builder isEnum(boolean val);
+
     public abstract Builder identifier(String val);
+
+    public abstract Builder upperCamelIdentifier(String val);
 
     public abstract Builder initValue(InitValueView val);
 

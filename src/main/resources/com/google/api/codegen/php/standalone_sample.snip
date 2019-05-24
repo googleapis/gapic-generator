@@ -16,8 +16,8 @@
     // [START {@sample.regionTag}]
     require {@sampleFile.extraInfo.autoloadPath};
 
-    @if sample.sampleInitCode.importSection.appImports
-        {@importList(sample.sampleInitCode.importSection.appImports)}
+    @if sample.sampleImports.appImports
+        {@importList(sample.sampleImports.appImports)}
 
     @end
     @if not(sample.sampleFunctionDoc.isEmpty)
@@ -123,7 +123,11 @@
 
         @if sample.sampleInitCode.argDefaultParams
             @join param : sample.sampleInitCode.argDefaultParams
-                {@variable(param.identifier)} = $options['{@param.cliFlagName}'];
+                @if param.isEnum
+                    {@variable(param.identifier)} = {@param.typeName}::value($options['{@param.cliFlagName}']);
+                @else
+                    {@variable(param.identifier)} = $options['{@param.cliFlagName}'];
+                @end
             @end
 
 

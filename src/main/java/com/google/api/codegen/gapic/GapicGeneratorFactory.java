@@ -69,6 +69,7 @@ import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceDocTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.ruby.RubyPackageMetadataTransformer;
+import com.google.api.codegen.transformer.ruby.RubySamplePackageMetadataTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpRenderingUtil;
@@ -186,9 +187,11 @@ public class GapicGeneratorFactory {
               newCsharpGenerator.apply(
                   CSharpBasicPackageTransformer.forUnitTests(unitTestPathMapper)));
         }
-        if (devSamples) {
-          generators.add(newCsharpGenerator.apply(new CSharpStandaloneSampleTransformer()));
-        }
+      }
+      if (devSamples) {
+        GapicCodePathMapper samplePathMapper = newCodePathMapper.apply(".Samples");
+        generators.add(
+            newCsharpGenerator.apply(new CSharpStandaloneSampleTransformer(samplePathMapper)));
       }
 
     } else if (language.equals(GO)) {
@@ -382,13 +385,15 @@ public class GapicGeneratorFactory {
                 .build();
 
         if (devSamples) {
+          GapicCodePathMapper phpSamplePathMapper =
+              PhpGapicCodePathMapper.newBuilder().setPrefix("samples").build();
           CodeGenerator sampleGenerator =
               GapicGenerator.newBuilder()
                   .setModel(model)
                   .setProductConfig(productConfig)
                   .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                   .setModelToViewTransformer(
-                      new PhpGapicSamplesTransformer(phpPathMapper, packageConfig))
+                      new PhpGapicSamplesTransformer(phpSamplePathMapper, packageConfig))
                   .build();
           generators.add(sampleGenerator);
         }
@@ -432,13 +437,18 @@ public class GapicGeneratorFactory {
         generators.add(clientConfigGenerator);
 
         if (devSamples) {
+          GapicCodePathMapper pythonSamplePathMapper =
+              CommonGapicCodePathMapper.newBuilder()
+                  .setPrefix("samples")
+                  .setShouldAppendPackage(false)
+                  .build();
           CodeGenerator sampleGenerator =
               GapicGenerator.newBuilder()
                   .setModel(model)
                   .setProductConfig(productConfig)
                   .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
                   .setModelToViewTransformer(
-                      new PythonGapicSamplesTransformer(pythonPathMapper, packageConfig))
+                      new PythonGapicSamplesTransformer(pythonSamplePathMapper, packageConfig))
                   .build();
           generators.add(sampleGenerator);
         }
@@ -502,15 +512,30 @@ public class GapicGeneratorFactory {
                 .setModelToViewTransformer(new RubyPackageMetadataTransformer(packageConfig))
                 .build();
         if (devSamples) {
+          GapicCodePathMapper rubySamplePathMapper =
+              CommonGapicCodePathMapper.newBuilder()
+                  .setPrefix("samples")
+                  .setShouldAppendPackage(true)
+                  .setPackageFilePathNameFormatter(new RubyNameFormatter())
+                  .build();
           CodeGenerator sampleGenerator =
               GapicGenerator.newBuilder()
                   .setModel(model)
                   .setProductConfig(productConfig)
                   .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                   .setModelToViewTransformer(
-                      new RubyGapicSamplesTransformer(rubyPathMapper, packageConfig))
+                      new RubyGapicSamplesTransformer(rubySamplePathMapper, packageConfig))
+                  .build();
+          CodeGenerator sampleMetadataGenerator =
+              GapicGenerator.newBuilder()
+                  .setModel(model)
+                  .setProductConfig(productConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(
+                      new RubySamplePackageMetadataTransformer(packageConfig))
                   .build();
           generators.add(sampleGenerator);
+          generators.add(sampleMetadataGenerator);
         }
         generators.add(mainGenerator);
         generators.add(clientConfigGenerator);

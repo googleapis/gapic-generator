@@ -282,7 +282,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiSampleFileName(String... pieces) {
-    return Name.anyLower(pieces).toLowerUnderscore() + ".php";
+    return Name.anyLower(pieces).toUpperCamel() + ".php";
   }
 
   @Override
@@ -308,7 +308,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         "Expected non-repeated fields in print statement, found %s",
         type.getTypeName());
     String arg = "$" + variable + String.join("", accessors);
-    if (type == null || !(type instanceof ProtoTypeRef) || type.isPrimitive()) {
+    if (!(type instanceof ProtoTypeRef) || type.isPrimitive()) {
       return arg;
     }
     if (type.isMessage()) {

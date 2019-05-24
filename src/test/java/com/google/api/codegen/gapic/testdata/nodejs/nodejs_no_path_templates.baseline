@@ -58,9 +58,8 @@ $ npm install --save example
     "Google Fake API"
   ],
   "dependencies": {
-    "google-gax": "^0.25.3",
-    "google-some-other-package-v1": "^0.2.1",
-    "lodash.merge": "^4.6.0"
+    "google-gax": "^1.1.0",
+    "google-some-other-package-v1": "^0.2.1"
   },
   "devDependencies": {
     "mocha": "^5.2.0",
@@ -73,7 +72,7 @@ $ npm install --save example
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.10.0"
   }
 }
 
@@ -178,7 +177,6 @@ module.exports.NoTemplatesApiServiceClient = NoTemplatesApiServiceClient;
 
 const gapicConfig = require('./no_templates_api_service_client_config.json');
 const gax = require('google-gax');
-const merge = require('lodash.merge');
 const path = require('path');
 
 const VERSION = require('../package.json').version;
@@ -247,12 +245,11 @@ class NoTemplatesApiServiceClient {
     }
 
     // Load the applicable protos.
-    const protos = merge(
-      {},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', 'protos'),
+    const protos = gaxGrpc.loadProto(
+      path.join(__dirname, '..', '..', 'protos'),
+      [
         'no_path_templates.proto'
-      )
+      ]
     );
 
     // Put together the default options sent with requests.
@@ -347,7 +344,7 @@ class NoTemplatesApiServiceClient {
    *   The request object that will be sent.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
    * @param {function(?Error)} [callback]
    *   The function which will be called with the result of the API call.
    * @returns {Promise} - The promise which resolves when API call finishes.
@@ -498,4 +495,3 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
     }
   };
 }
-

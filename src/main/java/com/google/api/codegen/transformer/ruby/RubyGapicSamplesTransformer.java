@@ -48,8 +48,6 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "ruby/standalone_sample.snip";
   private static final SampleSpec.SampleType sampleType = SampleSpec.SampleType.STANDALONE;
 
-  private static final String RUBY_SAMPLE_PACKAGE_NAME = "samples";
-
   private final RubyImportSectionTransformer importSectionTransformer =
       new RubyImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -103,7 +101,8 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
       List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
       for (OptionalArrayMethodView method : methods) {
         for (MethodSampleView sample : method.samples()) {
-          sampleFileViews.add(newSampleFileView(context, method, sample, namer, registry));
+          sampleFileViews.add(
+              newSampleFileView(productConfig, context, method, sample, namer, registry));
         }
       }
     }
@@ -111,17 +110,23 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
   }
 
   private DynamicLangSampleView newSampleFileView(
+      GapicProductConfig productConfig,
       InterfaceContext context,
       OptionalArrayMethodView method,
       MethodSampleView sample,
       SurfaceNamer namer,
       SampleFileRegistry registry) {
     String sampleFileName = registry.getSampleFileName(sample, method.name());
-    String sampleOutputPath = Paths.get(RUBY_SAMPLE_PACKAGE_NAME, sampleFileName).toString();
+    String outputPath =
+        Paths.get(
+                pathMapper.getSamplesOutputPath(
+                    context.getInterfaceModel().getFullName(), productConfig, method.name()),
+                sampleFileName)
+            .toString();
     return DynamicLangSampleView.newBuilder()
         .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
         .fileHeader(fileHeaderTransformer.generateFileHeader(context))
-        .outputPath(sampleOutputPath)
+        .outputPath(outputPath)
         .libraryMethod(method)
         .sample(sample)
         .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))

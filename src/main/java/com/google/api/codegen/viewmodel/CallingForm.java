@@ -147,8 +147,7 @@ public enum CallingForm {
           .put(
               JAVA,
               RpcType.LRO,
-              ImmutableList.of(
-                  LongRunningRequest, LongRunningFlattenedAsync, LongRunningRequestAsync))
+              ImmutableList.of(LongRunningFlattenedAsync, LongRunningRequestAsync))
           .put(
               JAVA,
               RpcType.PAGED_STREAMING,
@@ -186,15 +185,15 @@ public enum CallingForm {
       ImmutableTable.<TargetLanguage, RpcType, CallingForm>builder()
           // TODO(hzyi): Change C# calling forms to appropriate ones after C# LRO and streaming are
           // done
-          .put(CSHARP, RpcType.UNARY, Generic)
+          .put(CSHARP, RpcType.UNARY, Request)
           .put(CSHARP, RpcType.LRO, Generic)
-          .put(CSHARP, RpcType.PAGED_STREAMING, Generic)
+          .put(CSHARP, RpcType.PAGED_STREAMING, RequestPagedAll)
           .put(CSHARP, RpcType.CLIENT_STREAMING, Generic)
           .put(CSHARP, RpcType.SERVER_STREAMING, Generic)
           .put(CSHARP, RpcType.BIDI_STREAMING, Generic)
           .put(JAVA, RpcType.UNARY, Request)
-          .put(JAVA, RpcType.LRO, LongRunningRequest)
-          .put(JAVA, RpcType.PAGED_STREAMING, RequestPagedAll)
+          .put(JAVA, RpcType.LRO, LongRunningRequestAsync)
+          .put(JAVA, RpcType.PAGED_STREAMING, RequestPaged)
           .put(JAVA, RpcType.CLIENT_STREAMING, CallableStreamingClient)
           .put(JAVA, RpcType.SERVER_STREAMING, CallableStreamingServer)
           .put(JAVA, RpcType.BIDI_STREAMING, CallableStreamingBidi)
@@ -212,7 +211,7 @@ public enum CallingForm {
           .put(PHP, RpcType.BIDI_STREAMING, RequestStreamingBidi)
           .put(NODEJS, RpcType.UNARY, Request)
           .put(NODEJS, RpcType.LRO, LongRunningPromiseAwait)
-          .put(NODEJS, RpcType.PAGED_STREAMING, RequestPagedAll)
+          .put(NODEJS, RpcType.PAGED_STREAMING, RequestAsyncPagedAll)
           .put(NODEJS, RpcType.CLIENT_STREAMING, RequestStreamingClient)
           .put(NODEJS, RpcType.SERVER_STREAMING, RequestStreamingServer)
           .put(NODEJS, RpcType.BIDI_STREAMING, RequestStreamingBidi)

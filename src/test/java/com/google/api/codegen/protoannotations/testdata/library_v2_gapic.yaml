@@ -90,6 +90,12 @@ interfaces:
           - region_tag: sample_get_shelf
             value_sets: test_default_calling_form_unary
       - name: ListShelves
+        page_streaming:
+          request:
+            token_field: page_token
+          response:
+            token_field: next_page_token
+            resources_field: shelves
         retry_params_name: default
         timeout_millis: 3000
         sample_value_sets:
@@ -432,15 +438,18 @@ interfaces:
             description: "Testing calling forms"
             parameters:
               defaults:
-                - name=BASIC
-                - comment.comment = comment_file
-                - image= "image_file.jpg"
+              - name=BASIC
+              - comment.comment = comment_file
+              - image= "image_file.jpg"
+              - comment.stage=DRAFT
               attributes:
-                - parameter: comment.comment
-                  read_file: true
-                - parameter: image
-                  read_file: true
-                  sample_argument_name: image_file_name
+              - parameter: comment.comment
+                read_file: true
+              - parameter: image
+                read_file: true
+                sample_argument_name: image_file_name
+              - parameter: comment.stage
+                sample_argument_name: stage
         samples:
           in_code:
             - calling_forms: ".*"

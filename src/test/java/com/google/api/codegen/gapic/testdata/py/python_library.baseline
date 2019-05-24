@@ -1409,7 +1409,6 @@ class LibraryServiceClient(object):
 
     def list_shelves(
             self,
-            page_token=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -1421,13 +1420,21 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> response = client.list_shelves()
+            >>> # Iterate over all results
+            >>> for element in client.list_shelves():
+            ...     # process element
+            ...     pass
+            >>>
+            >>>
+            >>> # Alternatively:
+            >>>
+            >>> # Iterate over results one page at a time
+            >>> for page in client.list_shelves().pages:
+            ...     for element in page:
+            ...         # process element
+            ...         pass
 
         Args:
-            page_token (str): A token identifying a page of results the server should return.
-                Typically, this is the value of
-                [ListShelvesResponse.next_page_token][google.example.library.v1.ListShelvesResponse.next_page_token]
-                returned from the previous call to `ListShelves` method.
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will not
                 be retried.
@@ -1438,14 +1445,16 @@ class LibraryServiceClient(object):
                 that is provided to the method.
 
         Returns:
-            A :class:`~google.cloud.example.library_v1.types.ListShelvesResponse` instance.
+            A :class:`~google.gax.PageIterator` instance. By default, this
+            is an iterable of :class:`~google.cloud.example.library_v1.types.Shelf` instances.
+            This object can also be configured to iterate over the pages
+            of the response through the `options` parameter.
 
         Raises:
             google.api_core.exceptions.GoogleAPICallError: If the request
                     failed for any reason.
             google.api_core.exceptions.RetryError: If the request failed due
                     to a retryable error and retry attempts failed.
-            ValueError: If the parameters are invalid.
         """
         # Wrap the transport method to add retry and timeout logic.
         if 'list_shelves' not in self._inner_api_calls:
@@ -1456,10 +1465,16 @@ class LibraryServiceClient(object):
                 client_info=self._client_info,
             )
 
-        request = library_pb2.ListShelvesRequest(
-            page_token=page_token,
+        request = library_pb2.ListShelvesRequest()
+        iterator = google.api_core.page_iterator.GRPCIterator(
+            client=None,
+            method=functools.partial(self._inner_api_calls['list_shelves'], retry=retry, timeout=timeout, metadata=metadata),
+            request=request,
+            items_field='shelves',
+            request_token_field='page_token',
+            response_token_field='next_page_token',
         )
-        return self._inner_api_calls['list_shelves'](request, retry=retry, timeout=timeout, metadata=metadata)
+        return iterator
 
     def delete_shelf(
             self,
@@ -4844,7 +4859,7 @@ _local_modules = [
 
 names = []
 
-for module in _shared_modules:
+for module in _shared_modules:  # pragma: NO COVER
     for name, message in get_messages(module).items():
         setattr(sys.modules[__name__], name, message)
         names.append(name)
@@ -4941,7 +4956,7 @@ def lint_setup_py(session):
     session.install('docutils', 'pygments')
     session.run(
         'python', 'setup.py', 'check', '--restructuredtext', '--strict')
-============== file: samples/google/cloud/example/library_v1/gapic/babble_about_book/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.py ==============
+============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -4990,7 +5005,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/babble_about_book/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py ==============
+============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5037,7 +5052,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/delete_shelf/delete_shelf_request_empty_response_type_with_response_handling.py ==============
+============== file: samples/v1/delete_shelf_request_empty_response_type_with_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5085,7 +5100,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/delete_shelf/delete_shelf_request_empty_response_type_without_response_handling.py ==============
+============== file: samples/v1/delete_shelf_request_empty_response_type_without_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5131,73 +5146,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/discuss_book/turing_prog_request_streaming_bidi.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-import sys
-
-# [START turing_prog_request_streaming_bidi]
-
-from google.cloud.example import library_v1
-import io
-import six
-
-def sample_discuss_book(image_file_name):
-  """Testing calling forms"""
-  # [START turing_prog_request_streaming_bidi_core]
-
-  client = library_v1.LibraryServiceClient()
-
-  # image_file_name = 'image_file.jpg'
-
-  if isinstance(image_file_name, six.binary_type):
-    image_file_name = image_file_name.decode('utf-8')
-  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-  with io.open('comment_file', 'rb') as f:
-    comment = f.read()
-  comment_2 = {'comment': comment}
-  with io.open(image_file_name, 'rb') as f:
-    image = f.read()
-  request = {'name': name, 'comment': comment_2, 'image': image}
-
-  requests = [request]
-  for response_item in client.discuss_book(requests):
-    print(response_item)
-
-  # [END turing_prog_request_streaming_bidi_core]
-# [END turing_prog_request_streaming_bidi]
-
-def main():
-  import argparse
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--image_file_name', type=str, default='image_file.jpg')
-  args = parser.parse_args()
-
-  sample_discuss_book(args.image_file_name)
-
-if __name__ == '__main__':
-  main()
-============== file: samples/google/cloud/example/library_v1/gapic/find_related_books/find_related_books_request_paged_all_odyssey.py ==============
+============== file: samples/v1/find_related_books_request_paged_all_odyssey.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5249,7 +5198,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/find_related_books/find_related_books_request_paged_odyssey.py ==============
+============== file: samples/v1/find_related_books_request_paged_odyssey.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5302,7 +5251,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/get_big_book/get_big_book_long_running_promise_wap.py ==============
+============== file: samples/v1/get_big_book_long_running_promise_wap.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5377,7 +5326,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/get_big_book/get_big_book_long_running_promise_wap2.py ==============
+============== file: samples/v1/get_big_book_long_running_promise_wap2.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5450,82 +5399,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/get_big_book/this_tag_should_be_the_name_of_the_file.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-import sys
-
-# [START this_tag_should_be_the_name_of_the_file]
-
-from google.cloud.example import library_v1
-import six
-
-def sample_get_big_book(shelf):
-  """Testing calling forms"""
-  # [START this_tag_should_be_the_name_of_the_file_core]
-
-  client = library_v1.LibraryServiceClient()
-
-  # shelf = 'Novel'
-
-  if isinstance(shelf, six.binary_type):
-    shelf = shelf.decode('utf-8')
-  name = client.book_path(shelf, 'War and Peace')
-
-  operation = client.get_big_book(name)
-
-  print('Waiting for operation to complete...')
-  response = operation.result()
-
-  # Testing iterating over map fields when both key and value are specified.
-  for my_key, my_value in response.map_list_value_value.items():
-    print('key: {}, value: {}'.format(my_key, my_value))
-
-  # Testing iterating over map fields when only key is specified.
-  for another_key, _ in response.map_list_value_value.items():
-    print('key: {}'.format(another_key))
-
-  # Testing iterating over map fields when only value is specified.
-  for _, another_value in response.map_list_value_value.items():
-    print('value: {}'.format(another_value))
-
-  print('name: {}'.format(response.name))
-  print('author: {}'.format(response.author))
-
-  # [END this_tag_should_be_the_name_of_the_file_core]
-# [END this_tag_should_be_the_name_of_the_file]
-
-def main():
-  import argparse
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default='Novel')
-  args = parser.parse_args()
-
-  sample_get_big_book(args.shelf)
-
-if __name__ == '__main__':
-  main()
-============== file: samples/google/cloud/example/library_v1/gapic/get_big_nothing/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.py ==============
+============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5577,7 +5451,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/get_big_nothing/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py ==============
+============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5627,7 +5501,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/get_book/get_book_request_test_on_success_map.py ==============
+============== file: samples/v1/get_book_request_test_on_success_map.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5678,7 +5552,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/get_shelf/sample_get_shelf.py ==============
+============== file: samples/v1/lovelace.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5695,83 +5569,37 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 import sys
 
-# [START sample_get_shelf]
+# [START lovelace]
 
 from google.cloud.example import library_v1
 
-def sample_get_shelf():
-  """Test default calling forms for unary methods."""
-  # [START sample_get_shelf_core]
+def sample_stream_books():
+  """Testing calling forms"""
+  # [START lovelace_core]
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.shelf_path('my-shelf')
-  options_ = ''
+  name = 'BASIC'
 
-  response = client.get_shelf(name, options_)
-  print('The theme of the shelf is: {}'.format(response.theme))
+  for response_item in client.stream_books(name):
+    print(response_item)
 
-  # [END sample_get_shelf_core]
-# [END sample_get_shelf]
+  # [END lovelace_core]
+# [END lovelace]
 
 def main():
-  sample_get_shelf()
+  sample_stream_books()
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/list_shelves/test_default_calling_form_for_paging.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_paging")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-import sys
-
-# [START test_default_calling_form_for_paging]
-
-from google.cloud.example import library_v1
-
-def sample_list_shelves():
-  """Test default calling form for paging methods."""
-  # [START test_default_calling_form_for_paging_core]
-
-  client = library_v1.LibraryServiceClient()
-
-  response = client.list_shelves()
-  print('shelf name: {}'.format(response))
-
-  # [END test_default_calling_form_for_paging_core]
-# [END test_default_calling_form_for_paging]
-
-def main():
-  sample_list_shelves()
-
-if __name__ == '__main__':
-  main()
-============== file: samples/google/cloud/example/library_v1/gapic/monolog_about_book/monolog_about_book_request_streaming_client_prog.py ==============
+============== file: samples/v1/monolog_about_book_request_streaming_client_prog.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5821,7 +5649,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_request_pi_version.py ==============
+============== file: samples/v1/publish_series_request_pi_version.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5909,7 +5737,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_request_second_edition.py ==============
+============== file: samples/v1/publish_series_request_second_edition.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5959,7 +5787,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_request_test_request_object_field_comments.py ==============
+============== file: samples/v1/publish_series_request_test_request_object_field_comments.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -6030,7 +5858,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/publish_series/publish_series_request_test_write_to_file.py ==============
+============== file: samples/v1/publish_series_request_test_write_to_file.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -6084,7 +5912,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/stream_books/lovelace.py ==============
+============== file: samples/v1/sample_get_shelf.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -6101,37 +5929,38 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
+# DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 import sys
 
-# [START lovelace]
+# [START sample_get_shelf]
 
 from google.cloud.example import library_v1
 
-def sample_stream_books():
-  """Testing calling forms"""
-  # [START lovelace_core]
+def sample_get_shelf():
+  """Test default calling forms for unary methods."""
+  # [START sample_get_shelf_core]
 
   client = library_v1.LibraryServiceClient()
 
-  name = 'BASIC'
+  name = client.shelf_path('my-shelf')
+  options_ = ''
 
-  for response_item in client.stream_books(name):
-    print(response_item)
+  response = client.get_shelf(name, options_)
+  print('The theme of the shelf is: {}'.format(response.theme))
 
-  # [END lovelace_core]
-# [END lovelace]
+  # [END sample_get_shelf_core]
+# [END sample_get_shelf]
 
 def main():
-  sample_stream_books()
+  sample_get_shelf()
 
 if __name__ == '__main__':
   main()
-============== file: samples/google/cloud/example/library_v1/gapic/stream_shelves/stream_shelves_request_streaming_server_empty.py ==============
+============== file: samples/v1/stream_shelves_request_streaming_server_empty.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -6175,6 +6004,197 @@ def sample_stream_shelves():
 
 def main():
   sample_stream_shelves()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/test_default_calling_form_for_paging.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_paging")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+import sys
+
+# [START test_default_calling_form_for_paging]
+
+from google.cloud.example import library_v1
+
+def sample_list_shelves():
+  """Test default calling form for paging methods."""
+  # [START test_default_calling_form_for_paging_core]
+
+  client = library_v1.LibraryServiceClient()
+
+  # Iterate over all results
+  for response_item in client.list_shelves():
+    print('shelf name: {}'.format(response_item))
+
+  # [END test_default_calling_form_for_paging_core]
+# [END test_default_calling_form_for_paging]
+
+def main():
+  sample_list_shelves()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/this_tag_should_be_the_name_of_the_file.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+import sys
+
+# [START this_tag_should_be_the_name_of_the_file]
+
+from google.cloud.example import library_v1
+import six
+
+def sample_get_big_book(shelf):
+  """Testing calling forms"""
+  # [START this_tag_should_be_the_name_of_the_file_core]
+
+  client = library_v1.LibraryServiceClient()
+
+  # shelf = 'Novel'
+
+  if isinstance(shelf, six.binary_type):
+    shelf = shelf.decode('utf-8')
+  name = client.book_path(shelf, 'War and Peace')
+
+  operation = client.get_big_book(name)
+
+  print('Waiting for operation to complete...')
+  response = operation.result()
+
+  # Testing iterating over map fields when both key and value are specified.
+  for my_key, my_value in response.map_list_value_value.items():
+    print('key: {}, value: {}'.format(my_key, my_value))
+
+  # Testing iterating over map fields when only key is specified.
+  for another_key, _ in response.map_list_value_value.items():
+    print('key: {}'.format(another_key))
+
+  # Testing iterating over map fields when only value is specified.
+  for _, another_value in response.map_list_value_value.items():
+    print('value: {}'.format(another_value))
+
+  print('name: {}'.format(response.name))
+  print('author: {}'.format(response.author))
+
+  # [END this_tag_should_be_the_name_of_the_file_core]
+# [END this_tag_should_be_the_name_of_the_file]
+
+def main():
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--shelf', type=str, default='Novel')
+  args = parser.parse_args()
+
+  sample_get_big_book(args.shelf)
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/turing_prog_request_streaming_bidi.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+import sys
+
+# [START turing_prog_request_streaming_bidi]
+
+from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
+import io
+import six
+
+def sample_discuss_book(image_file_name, stage):
+  """Testing calling forms"""
+  # [START turing_prog_request_streaming_bidi_core]
+
+  client = library_v1.LibraryServiceClient()
+
+  # image_file_name = 'image_file.jpg'
+  # stage = enums.Comment.Stage.DRAFT
+
+  if isinstance(image_file_name, six.binary_type):
+    image_file_name = image_file_name.decode('utf-8')
+
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  with io.open('comment_file', 'rb') as f:
+    comment = f.read()
+  comment_2 = {'comment': comment, 'stage': stage}
+  with io.open(image_file_name, 'rb') as f:
+    image = f.read()
+  request = {'name': name, 'comment': comment_2, 'image': image}
+
+  requests = [request]
+  for response_item in client.discuss_book(requests):
+    print(response_item)
+
+  # [END turing_prog_request_streaming_bidi_core]
+# [END turing_prog_request_streaming_bidi]
+
+def main():
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--image_file_name', type=str, default='image_file.jpg')
+  parser.add_argument('--stage', type=str, default=enums.Comment.Stage.DRAFT)
+  args = parser.parse_args()
+
+  sample_discuss_book(args.image_file_name, args.stage)
 
 if __name__ == '__main__':
   main()
@@ -6468,8 +6488,10 @@ class TestLibraryServiceClient(object):
 
     def test_list_shelves(self):
         # Setup Expected Response
-        next_page_token = 'nextPageToken-1530815211'
-        expected_response = {'next_page_token': next_page_token}
+        next_page_token = ''
+        shelves_element = {}
+        shelves = [shelves_element]
+        expected_response = {'next_page_token': next_page_token, 'shelves': shelves}
         expected_response = library_pb2.ListShelvesResponse(**expected_response)
 
         # Mock the API response
@@ -6479,8 +6501,11 @@ class TestLibraryServiceClient(object):
             create_channel.return_value = channel
             client = library_v1.LibraryServiceClient()
 
-        response = client.list_shelves()
-        assert expected_response == response
+        paged_list_response = client.list_shelves()
+        resources = list(paged_list_response)
+        assert len(resources) == 1
+
+        assert expected_response.shelves[0] == resources[0]
 
         assert len(channel.requests) == 1
         expected_request = library_pb2.ListShelvesRequest()
@@ -6488,15 +6513,15 @@ class TestLibraryServiceClient(object):
         assert expected_request == actual_request
 
     def test_list_shelves_exception(self):
-        # Mock the API response
         channel = ChannelStub(responses = [CustomException()])
         patch = mock.patch('google.api_core.grpc_helpers.create_channel')
         with patch as create_channel:
             create_channel.return_value = channel
             client = library_v1.LibraryServiceClient()
 
+        paged_list_response = client.list_shelves()
         with pytest.raises(CustomException):
-            client.list_shelves()
+            list(paged_list_response)
 
     def test_delete_shelf(self):
         channel = ChannelStub()
