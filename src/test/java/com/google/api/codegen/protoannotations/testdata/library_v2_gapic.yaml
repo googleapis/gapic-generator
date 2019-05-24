@@ -438,15 +438,18 @@ interfaces:
             description: "Testing calling forms"
             parameters:
               defaults:
-                - name=BASIC
-                - comment.comment = comment_file
-                - image= "image_file.jpg"
+              - name=BASIC
+              - comment.comment = comment_file
+              - image= "image_file.jpg"
+              - comment.stage=DRAFT
               attributes:
-                - parameter: comment.comment
-                  read_file: true
-                - parameter: image
-                  read_file: true
-                  sample_argument_name: image_file_name
+              - parameter: comment.comment
+                read_file: true
+              - parameter: image
+                read_file: true
+                sample_argument_name: image_file_name
+              - parameter: comment.stage
+                sample_argument_name: stage
         samples:
           in_code:
             - calling_forms: ".*"

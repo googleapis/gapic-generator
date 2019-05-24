@@ -17,12 +17,12 @@ require "minitest/spec"
 
 require "grpc"
 
-require "google/showcase/v1alpha2/echo_client"
-require "google/showcase/v1alpha2/echo_services_pb"
+require "google/showcase/v1beta1/echo_client"
+require "google/showcase/v1beta1/echo_services_pb"
 
-describe Google::Showcase::V1alpha2::EchoClient do
+describe Google::Showcase::V1beta1::EchoClient do
   before(:all) do
-    @client = Google::Showcase::V1alpha2::EchoClient.new(
+    @client = Google::Showcase::V1beta1::EchoClient.new(
       credentials: GRPC::Core::Channel.new(
         "localhost:7469", nil, :this_channel_is_insecure))
   end
@@ -33,7 +33,7 @@ describe Google::Showcase::V1alpha2::EchoClient do
       content = "Echo Content"
       expected_response = { content: content }
       expected_response = Google::Gax::to_proto(
-        expected_response, Google::Showcase::V1alpha2::EchoResponse)
+        expected_response, Google::Showcase::V1beta1::EchoResponse)
 
       # Call method
       response = @client.echo(content: content)
@@ -103,40 +103,18 @@ describe Google::Showcase::V1alpha2::EchoClient do
       response_delay = {seconds: 2}
       success = { content: "wait Content" }
       expected_response = Google::Gax::to_proto(
-        success, Google::Showcase::V1alpha2::WaitResponse)
+        success, Google::Showcase::V1beta1::WaitResponse)
 
       # Call method
-      response = @client.wait(response_delay, success: success)
+      operation = @client.wait(ttl: response_delay, success: success)
 
       # Verify the response
-      assert_equal(expected_response, response)
-    end
-  end
+      operation.on_done do |op|
+        raise op.results.message if op.error?
 
-  describe 'pagination' do
-    it 'invokes pagination for each element' do
-      page_size = 5
-      max_response = 20
-      expected = 0
-      @client.pagination(max_response, page_size: 5).each do |element|
-        assert_equal(expected, element)
-        expected = expected + 1
+        assert_equal(expected_response, op.results)
       end
-    end
-
-    it 'invokes pagination for each page' do
-      page_size = 5
-      max_response = 20
-      expected = 0
-      pages = 0
-      @client.pagination(max_response, page_size: 5).each_page do |page|
-        pages = pages + 1
-        page.each do |element|
-          assert_equal(expected, element)
-          expected = expected + 1
-        end
-      end
-      assert_equal(4, pages)
+      operation.wait_until_done!
     end
   end
 end

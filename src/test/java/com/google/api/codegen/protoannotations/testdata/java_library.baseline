@@ -15105,6 +15105,102 @@ public class TestDefaultCallingFormForPaging {
     sampleListShelves();
   }
 }
+============== file: samples/src/main/java/com/google/example/examples/library/v1/ThisTagShouldBeTheNameOfTheFile.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
+package com.google.example.examples.library.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.BookName;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.ListValue;
+import java.util.Map;
+
+public class ThisTagShouldBeTheNameOfTheFile {
+  // [START this_tag_should_be_the_name_of_the_file]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.BookName;
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.protobuf.ListValue;
+   * import java.util.Map;
+   */
+
+  /** Testing calling forms */
+  public static void sampleGetBigBook(String shelf) {
+    // [START this_tag_should_be_the_name_of_the_file_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // shelf = "Novel";
+      BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      Book response = libraryClient.getBigBookAsync(request).get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END this_tag_should_be_the_name_of_the_file_core]
+  }
+  // [END this_tag_should_be_the_name_of_the_file]
+
+  public static void main(String[] args) throws Exception {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+
+    sampleGetBigBook(shelf);
+  }
+}
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/TuringProgCallableStreamingBidi.java ==============
 /*
  * Copyright 2019 Google LLC
@@ -15157,19 +15253,21 @@ public class TuringProgCallableStreamingBidi {
    */
 
   /** Testing calling forms */
-  public static void sampleDiscussBook(String imageFileName) {
+  public static void sampleDiscussBook(String imageFileName, Comment.Stage stage) {
     // [START turing_prog_callable_streaming_bidi_core]
     try (LibraryClient libraryClient = LibraryClient.create()) {
       BidiStream<DiscussBookRequest, Comment> bidiStream =
           libraryClient.discussBookCallable().call();
 
       // imageFileName = "image_file.jpg";
+      // stage = Comment.Stage.DRAFT;
       BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
       Path path = Paths.get("comment_file");
       byte[] data = Files.readAllBytes(path);
       ByteString comment = ByteString.copyFrom(data);
       Comment comment2 = Comment.newBuilder()
         .setComment(comment)
+        .setStage(stage)
         .build();
       path = Paths.get(imageFileName);
       data = Files.readAllBytes(path);
@@ -15198,11 +15296,21 @@ public class TuringProgCallableStreamingBidi {
           .hasArg(true)
           .longOpt("image_file_name")
           .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("stage")
+          .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     String imageFileName = cl.getOptionValue("image_file_name", "image_file.jpg");
+    Comment.Stage stage =
+      cl.getOptionValue("stage") != null
+          ? Comment.Stage.valueOf(cl.getOptionValue("stage"))
+          : Comment.Stage.DRAFT;
 
-    sampleDiscussBook(imageFileName);
+    sampleDiscussBook(imageFileName, stage);
   }
 }
 ============== file: settings.gradle ==============

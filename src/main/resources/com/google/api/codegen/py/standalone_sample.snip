@@ -86,7 +86,11 @@
 
       parser = argparse.ArgumentParser()
       @join param : sample.sampleInitCode.argDefaultParams
-        parser.add_argument('--{@param.cliFlagName}', type={@param.typeName}, default={@renderInitValue(param.initValue)})
+        @if param.isEnum
+          parser.add_argument('--{@param.cliFlagName}', type=str, default={@renderInitValue(param.initValue)})
+        @else
+          parser.add_argument('--{@param.cliFlagName}', type={@param.typeName}, default={@renderInitValue(param.initValue)})
+        @end
       @end
       args = parser.parse_args()
 
