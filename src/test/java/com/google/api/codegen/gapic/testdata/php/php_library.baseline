@@ -1777,7 +1777,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\Example\Library\V1\Comment;
-use Google\Example\Library\V1\Comment_Stage;
+use Google\Example\Library\V1\Comment\Stage;
 use Google\Example\Library\V1\DiscussBookRequest;
 
 /** Testing calling forms */
@@ -1788,7 +1788,7 @@ function sampleDiscussBook($imageFileName, $stage)
     $libraryServiceClient = new LibraryServiceClient();
 
     // $imageFileName = 'image_file.jpg';
-    // $stage = Comment_Stage::DRAFT;
+    // $stage = Stage::DRAFT;
     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
     $comment = file_get_contents('comment_file');
     $comment2 = new Comment();
@@ -1824,14 +1824,14 @@ $opts = [
 
 $defaultOptions = [
     'image_file_name' => 'image_file.jpg',
-    'stage' => Comment_Stage::DRAFT,
+    'stage' => Stage::DRAFT,
 ];
 
 $options = getopt('', $opts);
 $options += $defaultOptions;
 
 $imageFileName = $options['image_file_name'];
-$stage = Comment_Stage::value($options['stage']);
+$stage = Stage::value($options['stage']);
 
 sampleDiscussBook($imageFileName, $stage);
 ============== file: samples/V1/TuringProgRequestStreamingBidiAsync.php ==============
@@ -1861,7 +1861,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\Example\Library\V1\Comment;
-use Google\Example\Library\V1\Comment_Stage;
+use Google\Example\Library\V1\Comment\Stage;
 use Google\Example\Library\V1\DiscussBookRequest;
 
 /** Testing calling forms */
@@ -1872,7 +1872,7 @@ function sampleDiscussBook($imageFileName, $stage)
     $libraryServiceClient = new LibraryServiceClient();
 
     // $imageFileName = 'image_file.jpg';
-    // $stage = Comment_Stage::DRAFT;
+    // $stage = Stage::DRAFT;
     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
     $comment = file_get_contents('comment_file');
     $comment2 = new Comment();
@@ -1917,14 +1917,14 @@ $opts = [
 
 $defaultOptions = [
     'image_file_name' => 'image_file.jpg',
-    'stage' => Comment_Stage::DRAFT,
+    'stage' => Stage::DRAFT,
 ];
 
 $options = getopt('', $opts);
 $options += $defaultOptions;
 
 $imageFileName = $options['image_file_name'];
-$stage = Comment_Stage::value($options['stage']);
+$stage = Stage::value($options['stage']);
 
 sampleDiscussBook($imageFileName, $stage);
 ============== file: src/V1/Gapic/LibraryServiceGapicClient.php ==============
