@@ -55,4 +55,20 @@ public class PhpModelTypeNameConverterTest {
     assertThat(typeTable.getImports())
         .containsKey("\\Google\\Example\\Library\\V1\\SomeMessage2\\SomeMessage3");
   }
+
+  @Test
+  public void testNestedMessageFullNameWithPhpNamespace() {
+    String packageName = "Google\\Example\\Library\\V1";
+    TypeRef type =
+        ModelTypeNameConverterTestUtil.getTestType(
+            "myproto", tempDir, "TopLevelMessage", "AnotherSubMessage");
+    PhpModelTypeNameConverter converter = new PhpModelTypeNameConverter(packageName);
+    PhpTypeTable typeTable = new PhpTypeTable(packageName);
+    TypeName typeName = converter.getTypeName(type);
+    assertThat(typeName.getFullName())
+        .isEqualTo("\\Google\\Example\\MyProto\\V1\\TopLevelMessage\\AnotherSubMessage");
+    typeTable.getAndSaveNicknameFor(typeName);
+    assertThat(typeTable.getImports())
+        .containsKey("\\Google\\Example\\MyProto\\V1\\TopLevelMessage\\AnotherSubMessage");
+  }
 }

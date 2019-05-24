@@ -181,8 +181,8 @@ public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
               .append("\\")
               .append(component.substring(0, 1).toUpperCase())
               .append(component.substring(1));
-          return typeNameConverter.getTypeName(builder.toString());
         }
+        return typeNameConverter.getTypeName(builder.toString());
       }
     }
 
