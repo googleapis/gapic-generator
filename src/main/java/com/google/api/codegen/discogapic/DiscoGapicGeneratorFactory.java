@@ -58,7 +58,7 @@ public class DiscoGapicGeneratorFactory {
         if (artifactFlags.codeFilesEnabled()) {
           GapicCodePathMapper javaPathMapper =
               CommonGapicCodePathMapper.newBuilder()
-                  .setPrefix("src/main/java")
+                  .setPrefix("gapic/src/main/java")
                   .setShouldAppendPackage(true)
                   .build();
           List<ModelToViewTransformer<DiscoApiModel>> transformers =
@@ -94,7 +94,7 @@ public class DiscoGapicGeneratorFactory {
       if (artifactFlags.testGeneratorEnabled()) {
         GapicCodePathMapper javaTestPathMapper =
             CommonGapicCodePathMapper.newBuilder()
-                .setPrefix("src/test/java")
+                .setPrefix("gapic/src/test/java")
                 .setShouldAppendPackage(true)
                 .build();
         CodeGenerator<?> testGenerator =
