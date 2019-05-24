@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.java.JavaUtil;
 import com.google.api.codegen.packagegen.java.JavaPackageTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -32,11 +31,7 @@ public class JavaGapicPackageTransformer<ApiModelT extends ApiModel> extends Jav
   private final PackageMetadataConfig packageConfig;
 
   public JavaGapicPackageTransformer(PackageMetadataConfig packageConfig) {
-    super(
-        ImmutableMap.of(
-            "java/build_gapic.gradle.snip",
-            JavaUtil.getGapicArtifactDirectoryName(packageConfig) + "build.gradle"),
-        null);
+    super(ImmutableMap.of("java/build_gapic.gradle.snip", "gapic/build.gradle"), null);
     this.packageConfig = packageConfig;
   }
 
