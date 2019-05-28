@@ -249,6 +249,7 @@ type CallOptions struct {
 func defaultClientOptions() []option.ClientOption {
     return []option.ClientOption{
         option.WithEndpoint("library-example.googleapis.com:1234"),
+        option.WithGRPCDialOption(grpc.WithDisableServiceConfig()),
         option.WithScopes(DefaultAuthScopes()...),
     }
 }
@@ -4423,6 +4424,7 @@ type MyProtoCallOptions struct {
 func defaultMyProtoClientOptions() []option.ClientOption {
     return []option.ClientOption{
         option.WithEndpoint("library-example.googleapis.com:1234"),
+        option.WithGRPCDialOption(grpc.WithDisableServiceConfig()),
         option.WithScopes(DefaultAuthScopes()...),
     }
 }
