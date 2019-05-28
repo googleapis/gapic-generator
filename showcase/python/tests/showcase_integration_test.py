@@ -16,17 +16,17 @@
 import grpc
 import pytest
 
-from google import showcase_v1alpha2
+from google import showcase_v1beta1
 from google.api_core import exceptions
 from google.rpc import status_pb2
-from google.showcase_v1alpha2.proto import echo_pb2
-from google.showcase_v1alpha2.gapic.transports import echo_grpc_transport
+from google.showcase_v1beta1.proto import echo_pb2
+from google.showcase_v1beta1.gapic.transports import echo_grpc_transport
 
 
 class TestEchoClient(object):
     channel = grpc.insecure_channel('localhost:7469')
     transport = echo_grpc_transport.EchoGrpcTransport(channel=channel)
-    client = showcase_v1alpha2.EchoClient(transport=transport)
+    client = showcase_v1beta1.EchoClient(transport=transport)
 
     def test_echo(self):
         content = 'hello world'
@@ -66,11 +66,7 @@ class TestEchoClient(object):
     def test_wait(self):
         content = 'hello world'
         response = self.client.wait(
-            response_delay={'nanos': 500 }, success={'content': content})
-        assert content == response.content
-
-    def test_pagination(self):
-        expected = 0
-        for element in self.client.pagination(20, page_size=5):
-            assert element == expected
-            expected = expected + 1
+            ttl={'nanos': 500 },
+            success={'content': content},
+        )
+        assert content == response.result().content

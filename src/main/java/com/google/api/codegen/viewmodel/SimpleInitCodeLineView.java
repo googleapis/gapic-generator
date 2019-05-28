@@ -41,6 +41,8 @@ public abstract class SimpleInitCodeLineView implements InitCodeLineView {
 
   public abstract InitValueView initValue();
 
+  public abstract boolean isEnum();
+
   public static Builder newBuilder() {
     return new AutoValue_SimpleInitCodeLineView.Builder();
   }
@@ -60,6 +62,8 @@ public abstract class SimpleInitCodeLineView implements InitCodeLineView {
     public abstract Builder doc(List<String> val);
 
     public abstract Builder needsLeadingNewline(boolean val);
+
+    public abstract Builder isEnum(boolean val);
 
     public abstract SimpleInitCodeLineView build();
   }

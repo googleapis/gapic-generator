@@ -27,7 +27,9 @@ import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Streams;
 import java.util.Collections;
+import java.util.List;
 
 public class PythonSampleImportTransformer implements SampleImportTransformer {
 
@@ -42,9 +44,17 @@ public class PythonSampleImportTransformer implements SampleImportTransformer {
       Iterable<InitCodeNode> nodes) {
     ImportSectionView.Builder imports = ImportSectionView.newBuilder();
     ImmutableList.Builder<ImportFileView> appImports = ImmutableList.builder();
-    appImports.addAll(importSectionTransformer.generateImportSection(context, nodes).appImports());
+
+    // First get all the imports generated from InitCodeTransformer
+    List<ImportFileView> initCodeAppImports =
+        importSectionTransformer.generateImportSection(context, nodes).appImports();
+    appImports.addAll(initCodeAppImports);
+
+    // Then add more imports that other parts of the sample need
+    // For now we only need to special-case `enums`
     boolean addEnumImports =
-        outputContext.stringFormattedVariableTypes().stream().anyMatch(TypeModel::isEnum);
+        outputContext.stringFormattedVariableTypes().stream().anyMatch(TypeModel::isEnum)
+            || Streams.stream(nodes).map(InitCodeNode::getType).anyMatch(TypeModel::isEnum);
     if (addEnumImports) {
       ImportTypeView importTypeView =
           ImportTypeView.newBuilder()
@@ -52,11 +62,14 @@ public class PythonSampleImportTransformer implements SampleImportTransformer {
               .type(ImportType.SimpleImport)
               .nickname("")
               .build();
-      appImports.add(
+      ImportFileView enumImportView =
           ImportFileView.newBuilder()
               .moduleName(context.getNamer().getVersionedDirectoryNamespace())
               .types(Collections.singletonList(importTypeView))
-              .build());
+              .build();
+      if (!initCodeAppImports.contains(enumImportView)) {
+        appImports.add(enumImportView);
+      }
     }
     return imports.appImports(appImports.build()).build();
   }
