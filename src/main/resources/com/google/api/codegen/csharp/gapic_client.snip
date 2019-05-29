@@ -8,6 +8,8 @@
     {
         {@settings(common.api, common.settings)}
 
+        {@clientBuilder(common.api, common.settings)}
+
         {@abstractClient(common, common.api, common.settings)}
 
         {@implClient(common.api, common.settings)}
@@ -230,6 +232,45 @@
     }
 @end
 
+# api: StaticLangApiView, settings: StaticLangSettingsView
+@private clientBuilder(api, settings)
+    /// <summary>
+    /// Builder class for <see cref="{@api.name}"/> to provide simple configuration of credentials, endpoint etc.
+    /// </summary>
+    public sealed partial class {@api.name}Builder : gaxgrpc::ClientBuilderBase<{@api.name}>
+    {
+        /// <summary>
+        /// The settings to use for RPCs, or null for the default settings.
+        /// </summary>
+        public {@settings.name} Settings { get; set; }
+
+        /// <inheritdoc/>
+        public override {@api.name} Build()
+        {
+            Validate();
+            grpccore::CallInvoker callInvoker = CreateCallInvoker();
+            return {@api.name}.Create(callInvoker, Settings);
+        }
+
+        /// <inheritdoc />
+        public override async stt::Task<{@api.name}> BuildAsync(st::CancellationToken cancellationToken = default)
+        {
+            Validate();
+            grpccore::CallInvoker callInvoker = await CreateCallInvokerAsync(cancellationToken).ConfigureAwait(false);
+            return {@api.name}.Create(callInvoker, Settings);
+        }
+
+        /// <inheritdoc />
+        protected override gaxgrpc::ServiceEndpoint GetDefaultEndpoint() => {@api.name}.DefaultEndpoint;
+
+        /// <inheritdoc />
+        protected override scg::IReadOnlyList<string> GetDefaultScopes() => {@api.name}.DefaultScopes;
+
+        /// <inheritdoc />
+        protected override gaxgrpc::ChannelPool GetChannelPool() => {@api.name}.ChannelPool;
+    }
+@end
+
 # common: api: StaticLangApiView, settings: StaticLangSettingsView
 @private abstractClient(common, api, settings)
     /// <summary>
@@ -260,6 +301,8 @@
         });
 
         private static readonly gaxgrpc::ChannelPool s_channelPool = new gaxgrpc::ChannelPool(DefaultScopes);
+
+        internal static gaxgrpc::ChannelPool ChannelPool => s_channelPool;
 
         /// <summary>
         /// Asynchronously creates a <see cref="{@api.name}"/>, applying defaults for all unspecified settings,
