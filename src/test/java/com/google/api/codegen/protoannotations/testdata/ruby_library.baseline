@@ -5693,7 +5693,7 @@ end
 # sample-metadata
 #   title: GetBigBook: 'War and Peace'
 #   description: Testing calling forms
-#   bundle exec ruby samples/v1/get_big_book_long_running_request_async_wap.rb [--shelf Novel]
+#   bundle exec ruby samples/v1/get_big_book_long_running_request_async_wap.rb [--shelf "Novel\\\"\`\b\t\n\r"]
 
 require "library"
 
@@ -5705,7 +5705,8 @@ def sample_get_big_book(shelf)
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  # shelf = "Novel"
+  # shelf = "Novel\"`	
+  # "
   formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
 
   # Make the long-running operation request
@@ -5745,7 +5746,8 @@ require "optparse"
 
 if $0 == __FILE__
 
-  shelf = "Novel"
+  shelf = "Novel\"`	
+"
 
   ARGV.options do |opts|
     opts.on("--shelf=val") { |val| shelf = val }
@@ -6514,7 +6516,7 @@ end
 # sample-metadata
 #   title: GetBigBook: 'War and Peace'
 #   description: Testing calling forms
-#   bundle exec ruby samples/v1/this_tag_should_be_the_name_of_the_file.rb [--shelf Novel]
+#   bundle exec ruby samples/v1/this_tag_should_be_the_name_of_the_file.rb [--shelf "Novel\\\"\`\b\t\n\r"]
 
 require "library"
 
@@ -6526,7 +6528,8 @@ def sample_get_big_book(shelf)
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  # shelf = "Novel"
+  # shelf = "Novel\"`	
+  # "
   formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
 
   # Make the long-running operation request
@@ -6566,7 +6569,8 @@ require "optparse"
 
 if $0 == __FILE__
 
-  shelf = "Novel"
+  shelf = "Novel\"`	
+"
 
   ARGV.options do |opts|
     opts.on("--shelf=val") { |val| shelf = val }
@@ -6596,7 +6600,7 @@ end
 # sample-metadata
 #   title: Programming Books
 #   description: Testing calling forms
-#   bundle exec ruby samples/v1/turing_prog_request_streaming_bidi.rb [--image_file_name "image_file.jpg"]
+#   bundle exec ruby samples/v1/turing_prog_request_streaming_bidi.rb [--image_file_name "image_file.jpg"] [--stage DRAFT]
 
 require "library"
 

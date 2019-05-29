@@ -20,18 +20,12 @@ import com.google.common.escape.Escapers;
 /** The factory class that creates escapers for different languages. */
 public class EscaperFactory {
 
-  private static final Escapers.Builder baseBuilder =
-      Escapers.builder()
-          .addEscape('\\', "\\\\")
-          .addEscape('\b', "\\b")
-          .addEscape('\n', "\\n")
-          .addEscape('\r', "\\r")
-          .addEscape('\t', "\\t");
-
-  private static final Escaper doubleQuoteEscaper = baseBuilder.addEscape('"', "\"").build();
-  private static final Escaper singleQuoteEscaper = baseBuilder.addEscape('\'', "'").build();
+  private static final Escaper doubleQuoteEscaper =
+      newBaseEscapersBuilder().addEscape('"', "\\\"").build();
+  private static final Escaper singleQuoteEscaper =
+      newBaseEscapersBuilder().addEscape('\'', "\\'").build();
   private static final Escaper cliEscaper =
-      baseBuilder.addEscape('`', "\\`").addEscape('"', "\\").build();
+      newBaseEscapersBuilder().addEscape('`', "\\`").addEscape('"', "\\\"").build();
 
   public static Escaper getSingleQuoteEscaper() {
     return singleQuoteEscaper;
@@ -43,5 +37,14 @@ public class EscaperFactory {
 
   public static Escaper getCliEscaper() {
     return cliEscaper;
+  }
+
+  private static Escapers.Builder newBaseEscapersBuilder() {
+    return Escapers.builder()
+        .addEscape('\\', "\\\\")
+        .addEscape('\b', "\\b")
+        .addEscape('\n', "\\n")
+        .addEscape('\r', "\\r")
+        .addEscape('\t', "\\t");
   }
 }
