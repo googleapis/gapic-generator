@@ -451,6 +451,22 @@ const error = new Error();
 error.code = FAKE_STATUS_CODE;
 
 describe('NoTemplatesApiServiceClient', () => {
+  it('has servicePath', () => {
+    const servicePath = exampleModule.NoTemplatesApiServiceClient.servicePath;
+    assert(servicePath);
+  });
+
+  it('has apiEndpoint', () => {
+    const apiEndpoint = exampleModule.NoTemplatesApiServiceClient.apiEndpoint;
+    assert(apiEndpoint);
+  });
+
+  it('has port', () => {
+    const port = exampleModule.NoTemplatesApiServiceClient.port;
+    assert(port);
+    assert(typeof port === 'number');
+  });
+
   describe('increment', () => {
     it('invokes increment without error', done => {
       const client = new exampleModule.NoTemplatesApiServiceClient({
