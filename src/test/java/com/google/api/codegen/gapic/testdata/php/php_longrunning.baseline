@@ -751,14 +751,22 @@ class OperationsClientTest extends GeneratedTest
     }
 
     /**
+     * @return CredentialsWrapper
+     */
+    private function createCredentials()
+    {
+        return $this->getMockBuilder(CredentialsWrapper::class)
+     ->disableOriginalConstructor()
+     ->getMock();
+    }
+
+    /**
      * @return OperationsClient
      */
     private function createClient(array $options = [])
     {
         $options += [
-            'credentials' => $this->getMockBuilder(CredentialsWrapper::class)
-                ->disableOriginalConstructor()
-                ->getMock(),
+            'credentials' => $this->createCredentials(),
             'serviceAddress' => '',
             'credentialsConfig' => [
                 'scopes' => [],
