@@ -1901,20 +1901,23 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\Example\Library\V1\Comment;
+use Google\Example\Library\V1\Comment_Stage;
 use Google\Example\Library\V1\DiscussBookRequest;
 
 /** Testing calling forms */
-function sampleDiscussBook($imageFileName)
+function sampleDiscussBook($imageFileName, $stage)
 {
     // [START turing_prog_request_streaming_bidi_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
     // $imageFileName = 'image_file.jpg';
+    // $stage = Comment_Stage::DRAFT;
     $formattedName = $libraryServiceClient->bookName('[BOOK_SHELF]', '[BOOK]');
     $comment = file_get_contents('comment_file');
     $comment2 = new Comment();
     $comment2->setComment($comment);
+    $comment2->setStage($stage);
     $image = file_get_contents($imageFileName);
     $request = new DiscussBookRequest();
     $request->setName($formattedName);
@@ -1940,18 +1943,21 @@ function sampleDiscussBook($imageFileName)
 
 $opts = [
     'image_file_name::',
+    'stage::',
 ];
 
 $defaultOptions = [
     'image_file_name' => 'image_file.jpg',
+    'stage' => Comment_Stage::DRAFT,
 ];
 
 $options = getopt('', $opts);
 $options += $defaultOptions;
 
 $imageFileName = $options['image_file_name'];
+$stage = Comment_Stage::value($options['stage']);
 
-sampleDiscussBook($imageFileName);
+sampleDiscussBook($imageFileName, $stage);
 ============== file: samples/V1/TuringProgRequestStreamingBidiAsync.php ==============
 <?php
 /*
@@ -1983,20 +1989,23 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\Example\Library\V1\Comment;
+use Google\Example\Library\V1\Comment_Stage;
 use Google\Example\Library\V1\DiscussBookRequest;
 
 /** Testing calling forms */
-function sampleDiscussBook($imageFileName)
+function sampleDiscussBook($imageFileName, $stage)
 {
     // [START turing_prog_request_streaming_bidi_async_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
     // $imageFileName = 'image_file.jpg';
+    // $stage = Comment_Stage::DRAFT;
     $formattedName = $libraryServiceClient->bookName('[BOOK_SHELF]', '[BOOK]');
     $comment = file_get_contents('comment_file');
     $comment2 = new Comment();
     $comment2->setComment($comment);
+    $comment2->setStage($stage);
     $image = file_get_contents($imageFileName);
     $request = new DiscussBookRequest();
     $request->setName($formattedName);
@@ -2031,18 +2040,21 @@ function sampleDiscussBook($imageFileName)
 
 $opts = [
     'image_file_name::',
+    'stage::',
 ];
 
 $defaultOptions = [
     'image_file_name' => 'image_file.jpg',
+    'stage' => Comment_Stage::DRAFT,
 ];
 
 $options = getopt('', $opts);
 $options += $defaultOptions;
 
 $imageFileName = $options['image_file_name'];
+$stage = Comment_Stage::value($options['stage']);
 
-sampleDiscussBook($imageFileName);
+sampleDiscussBook($imageFileName, $stage);
 ============== file: src/V1/Gapic/LibraryServiceGapicClient.php ==============
 <?php
 /*

@@ -128,7 +128,11 @@
 
         @if sample.sampleInitCode.argDefaultParams
             @join param : sample.sampleInitCode.argDefaultParams
-                {@variable(param.identifier)} = $options['{@param.cliFlagName}'];
+                @if param.isEnum
+                    {@variable(param.identifier)} = {@param.typeName}::value($options['{@param.cliFlagName}']);
+                @else
+                    {@variable(param.identifier)} = $options['{@param.cliFlagName}'];
+                @end
             @end
 
 
