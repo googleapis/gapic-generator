@@ -168,9 +168,7 @@ public class Pubsub {
 
     Thread resetter =
         new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
+            () -> {
                 try {
                   Thread.sleep(settings.warmDurNano() / MILLION);
                 } catch (InterruptedException e) {
@@ -180,8 +178,7 @@ public class Pubsub {
                 numCalls.set(0);
                 numErrs.set(0);
                 resetTime.set(System.nanoTime());
-              }
-            });
+              });
     resetter.start();
 
     while (System.nanoTime() < endTime) {
