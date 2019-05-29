@@ -70,6 +70,18 @@ public class FieldStructureParser {
     return valueConfig;
   }
 
+  // Parses `config` to construct the `InitCodeNode` it specifies. `config` must be a valid
+  // config satisfying the eBNF grammar below:
+  //
+  // config = path ['%' ident] ['=' value];
+  // path = ident pathElem*
+  // pathElem = ('.' ident) | ('[' int ']') | ('{' value '}');
+  // value = int | string | ident;
+  //
+  // For compatibility with the previous parser, when ident is used as a value, the value is
+  // the name of the ident. Eg, if the ident is "x", the value is simply "x", not the content
+  // of the variable named "x".
+  //
   private static InitCodeNode parseConfig(
       InitCodeNode root, String config, Map<String, InitValueConfig> initValueConfigMap) {
     Scanner scanner = new Scanner(config);
@@ -171,14 +183,6 @@ public class FieldStructureParser {
       }
     }
   }
-
-  // **
-  //  * Parses the path found in {@code scanner} and descend the tree rooted at {@code root}. If
-  //  * children specified by the path do not exist, throw an {@code IllegalArgumentException}.
-  //  */
-  // public static InitCodeNode findPath(InitCodeNode root, Scanner scanner) {
-
-  // }
 
   /** Returns the entity name specified by `path` or null if `path` does not contain `%`. */
   public static String parseEntityName(String path) {
