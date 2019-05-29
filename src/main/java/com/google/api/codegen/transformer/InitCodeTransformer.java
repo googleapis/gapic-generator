@@ -33,6 +33,7 @@ import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValueConfig;
+import com.google.api.codegen.util.EscaperFactory;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.util.SymbolTable;
@@ -943,19 +944,22 @@ public class InitCodeTransformer {
         !item.getType().isMessage(), "Only enums and primitive types are supported for now.");
 
     String value = item.getInitValueConfig().getInitialValue().getValue();
-
     if (item.getType().isStringType()) {
-      // the string value needs to be quoted when it contains '\'' or ' '
-      if (value.indexOf(' ') != -1 || value.indexOf('\'') != -1) {
-        return "\"" + value + "\"";
-      }
-
-      // the string value needs to be quoted and escaped when it contains '"'
-      if (value.indexOf('"') != -1) {
-        return "\"" + value.replaceAll("\"", "\\\"") + "\"";
-      }
+      return getEscapedCliFlagDefaultValue(value);
     }
-
     return value;
+  }
+
+  @VisibleForTesting
+  static String getEscapedCliFlagDefaultValue(String unescapedValue) {
+    String escapedValue = EscaperFactory.getCliEscaper().escape(unescapedValue);
+    // It's much harder to accurately determine whether it's necessary to quote the
+    // string. But it is a reasonable compromise to not quote only when the string
+    // is pure alphabets or digits.
+    if (!escapedValue.equals(unescapedValue)
+        || !escapedValue.chars().allMatch(Character::isLetterOrDigit)) {
+      return "\"" + escapedValue + "\"";
+    }
+    return unescapedValue;
   }
 }

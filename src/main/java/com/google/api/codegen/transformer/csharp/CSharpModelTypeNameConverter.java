@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
+import com.google.api.codegen.util.EscaperFactory;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
@@ -266,10 +267,13 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
       case TYPE_UINT64:
         return value + "L";
       case TYPE_STRING:
-        return "\"" + value + "\"";
+        return "\"" + EscaperFactory.getDoubleQuoteEscaper().escape(value) + "\"";
       case TYPE_BYTES:
         String clsName = typeNameConverter.getAndSaveNicknameFor("Google.Protobuf.ByteString");
-        return clsName + ".CopyFromUtf8(\"" + value + "\")";
+        return clsName
+            + ".CopyFromUtf8(\""
+            + EscaperFactory.getDoubleQuoteEscaper().escape(value)
+            + "\")";
       default:
         // Types that do not need to be modified (e.g. TYPE_INT32) are handled here
         return value;
