@@ -5382,6 +5382,10 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "yard", "~> 0.9"
 end
 
+============== file: samples/Gemfile ==============
+source "https://rubygems.org"
+
+gem "google-cloud-library", path: "../../"
 ============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6613,15 +6617,16 @@ require "library"
 # [START turing_prog_request_streaming_bidi]
 
 # Testing calling forms
-def sample_discuss_book(image_file_name)
+def sample_discuss_book(image_file_name, stage)
   # [START turing_prog_request_streaming_bidi_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
   # image_file_name = "image_file.jpg"
+  # stage = :DRAFT
   formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
   comment = File.binread "comment_file"
-  comment_2 = { comment: comment }
+  comment_2 = { comment: comment, stage: stage }
   image = File.binread image_file_name
   request = {
     name: formatted_name,
@@ -6644,14 +6649,16 @@ require "optparse"
 if $0 == __FILE__
 
   image_file_name = "image_file.jpg"
+  stage = :DRAFT
 
   ARGV.options do |opts|
     opts.on("--image_file_name=val") { |val| image_file_name = val }
+    opts.on("--stage=val") { |val| stage = val.to_sym }
     opts.parse!
   end
 
 
-  sample_discuss_book(image_file_name)
+  sample_discuss_book(image_file_name, stage)
 end
 ============== file: test/library/v1/library_service_client_test.rb ==============
 # Copyright 2019 Google LLC

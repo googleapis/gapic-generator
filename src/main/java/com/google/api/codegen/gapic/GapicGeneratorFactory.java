@@ -69,6 +69,7 @@ import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceDocTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.ruby.RubyPackageMetadataTransformer;
+import com.google.api.codegen.transformer.ruby.RubySamplePackageMetadataTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpRenderingUtil;
@@ -525,7 +526,16 @@ public class GapicGeneratorFactory {
                   .setModelToViewTransformer(
                       new RubyGapicSamplesTransformer(rubySamplePathMapper, packageConfig))
                   .build();
+          CodeGenerator sampleMetadataGenerator =
+              GapicGenerator.newBuilder()
+                  .setModel(model)
+                  .setProductConfig(productConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(
+                      new RubySamplePackageMetadataTransformer(packageConfig))
+                  .build();
           generators.add(sampleGenerator);
+          generators.add(sampleMetadataGenerator);
         }
         generators.add(mainGenerator);
         generators.add(clientConfigGenerator);

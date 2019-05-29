@@ -147,8 +147,7 @@ public enum CallingForm {
           .put(
               JAVA,
               RpcType.LRO,
-              ImmutableList.of(
-                  LongRunningRequest, LongRunningFlattenedAsync, LongRunningRequestAsync))
+              ImmutableList.of(LongRunningFlattenedAsync, LongRunningRequestAsync))
           .put(
               JAVA,
               RpcType.PAGED_STREAMING,
@@ -193,7 +192,7 @@ public enum CallingForm {
           .put(CSHARP, RpcType.SERVER_STREAMING, Generic)
           .put(CSHARP, RpcType.BIDI_STREAMING, Generic)
           .put(JAVA, RpcType.UNARY, Request)
-          .put(JAVA, RpcType.LRO, LongRunningRequest)
+          .put(JAVA, RpcType.LRO, LongRunningRequestAsync)
           .put(JAVA, RpcType.PAGED_STREAMING, RequestPaged)
           .put(JAVA, RpcType.CLIENT_STREAMING, CallableStreamingClient)
           .put(JAVA, RpcType.SERVER_STREAMING, CallableStreamingServer)

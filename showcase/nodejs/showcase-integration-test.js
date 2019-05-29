@@ -21,7 +21,7 @@ const showcase = require('showcase');
 describe('EchoClient', () => {
   var client;
   before(() => {
-    client = new showcase.v1alpha2.EchoClient({
+    client = new showcase.v1beta1.EchoClient({
       grpc: grpc,
       sslCreds: grpc.credentials.createInsecure(),
       port: '7469',

@@ -1541,16 +1541,18 @@ const library = require('@google-cloud/library').v1;
 
 const fs = require('fs');
 /** Testing calling forms */
-function sampleDiscussBook(imageFileName) {
+function sampleDiscussBook(imageFileName, stage) {
   const client = new library.LibraryServiceClient();
   const stream = client.discussBook().on('data', response => {
     console.log(response);
   });
   // const imageFileName = 'image_file.jpg';
+  // const stage = 'DRAFT';
   const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
   const comment = fs.readFileSync('comment_file').toString('base64');
   const comment2 = {
     comment: comment,
+    stage: stage,
   };
   const image = fs.readFileSync(imageFileName).toString('base64');
   const request = {
@@ -1572,9 +1574,13 @@ const argv = require(`yargs`)
     default: 'image_file.jpg',
     string: true
   })
+  .option('stage', {
+    default: 'DRAFT',
+    string: true
+  })
   .argv;
 
-sampleDiscussBook(argv.image_file_name);
+sampleDiscussBook(argv.image_file_name, argv.stage);
 ============== file: smoke-test/library_service_smoke_test.js ==============
 // Copyright 2019 Google LLC
 //

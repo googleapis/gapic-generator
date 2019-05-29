@@ -6243,23 +6243,26 @@ import sys
 # [START turing_prog_request_streaming_bidi]
 
 from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
 import io
 import six
 
-def sample_discuss_book(image_file_name):
+def sample_discuss_book(image_file_name, stage):
   """Testing calling forms"""
   # [START turing_prog_request_streaming_bidi_core]
 
   client = library_v1.LibraryServiceClient()
 
   # image_file_name = 'image_file.jpg'
+  # stage = enums.Comment.Stage.DRAFT
 
   if isinstance(image_file_name, six.binary_type):
     image_file_name = image_file_name.decode('utf-8')
+
   name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
   with io.open('comment_file', 'rb') as f:
     comment = f.read()
-  comment_2 = {'comment': comment}
+  comment_2 = {'comment': comment, 'stage': stage}
   with io.open(image_file_name, 'rb') as f:
     image = f.read()
   request = {'name': name, 'comment': comment_2, 'image': image}
@@ -6276,9 +6279,10 @@ def main():
 
   parser = argparse.ArgumentParser()
   parser.add_argument('--image_file_name', type=str, default='image_file.jpg')
+  parser.add_argument('--stage', type=str, default=enums.Comment.Stage.DRAFT)
   args = parser.parse_args()
 
-  sample_discuss_book(args.image_file_name)
+  sample_discuss_book(args.image_file_name, args.stage)
 
 if __name__ == '__main__':
   main()

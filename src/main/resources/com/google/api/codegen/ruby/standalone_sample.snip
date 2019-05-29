@@ -216,7 +216,11 @@
 
   ARGV.options do |opts|
     @join param: params
-      opts.on("--{@param.identifier}=val") { |val| {@param.identifier} = val }
+      @if param.isEnum
+        opts.on("--{@param.identifier}=val") { |val| {@param.identifier} = val.to_sym }
+      @else        
+        opts.on("--{@param.identifier}=val") { |val| {@param.identifier} = val }
+      @end
     @end
     opts.parse!
   end

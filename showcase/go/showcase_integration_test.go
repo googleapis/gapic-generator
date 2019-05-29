@@ -1,4 +1,4 @@
-// Copyright 2018 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,10 +24,9 @@ import (
 	"testing"
 	"time"
 
-	showcase "cloud.google.com/go/showcase/apiv1alpha2"
+	showcase "cloud.google.com/go/showcase/apiv1beta1"
 	durationpb "github.com/golang/protobuf/ptypes/duration"
 	genprotopb "github.com/googleapis/gapic-showcase/server/genproto"
-	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc"
@@ -170,12 +169,18 @@ func TestWait(t *testing.T) {
 	t.Parallel()
 	content := "hello world!"
 	req := &genprotopb.WaitRequest{
-		ResponseDelay: &durationpb.Duration{Nanos: 100},
+		End: &genprotopb.WaitRequest_Ttl{
+			Ttl: &durationpb.Duration{Nanos: 100},
+		},
 		Response: &genprotopb.WaitRequest_Success{
 			Success: &genprotopb.WaitResponse{Content: content},
 		},
 	}
-	resp, err := client.Wait(context.Background(), req)
+	op, err := client.Wait(context.Background(), req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp, err := op.Wait(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -188,40 +193,17 @@ func TestWait_timeout(t *testing.T) {
 	t.Parallel()
 	content := "hello world!"
 	req := &genprotopb.WaitRequest{
-		ResponseDelay: &durationpb.Duration{Seconds: 1},
+		End: &genprotopb.WaitRequest_Ttl{
+			Ttl: &durationpb.Duration{Seconds: 1},
+		},
 		Response: &genprotopb.WaitRequest_Success{
 			Success: &genprotopb.WaitResponse{Content: content},
 		},
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 20*time.Millisecond)
+	ctx, _ := context.WithTimeout(context.Background(), 1*time.Millisecond)
 	resp, err := client.Wait(ctx, req)
 
 	if err == nil {
 		t.Errorf("Wait() = %v, want error", resp)
-	}
-}
-
-
-func TestPagination(t *testing.T) {
-	t.Parallel()
-	req := &genprotopb.PaginationRequest{PageSize: 5, MaxResponse: 20}
-	iter := client.Pagination(context.Background(), req)
-
-	expected := int32(0)
-	for {
-		i, err := iter.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			t.Fatal(err)
-		}
-		if i != expected {
-			t.Errorf("Chat() = %d, want %d", i, expected)
-		}
-		expected++
-	}
-	if expected != 20 {
-		t.Errorf("Pagination expected to see 20 vals")
 	}
 }
