@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.php;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.codegen.transformer.ModelTypeNameConverterTestUtil;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.TypeRef;
@@ -34,11 +35,40 @@ public class PhpModelTypeNameConverterTest {
     TypeRef type = ModelTypeNameConverterTestUtil.getTestEnumType(tempDir);
     EnumValue value = type.getEnumType().getValues().get(0);
     PhpModelTypeNameConverter converter = new PhpModelTypeNameConverter(packageName);
+    PhpTypeTable typeTable = new PhpTypeTable(packageName);
+    assertThat(converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(typeTable))
+        .isEqualTo("Rating::GOOD");
+    assertThat(typeTable.getImports()).containsKey("\\Google\\Example\\Library\\V1\\Book\\Rating");
+  }
 
-    assertThat(
-            converter
-                .getEnumValue(type, value)
-                .getValueAndSaveTypeNicknameIn(new PhpTypeTable(packageName)))
-        .isEqualTo("Book_Rating::GOOD");
+  @Test
+  public void testNestedMessageFullName() {
+    String packageName = "Google\\Example\\Library\\V1";
+    TypeRef type =
+        ModelTypeNameConverterTestUtil.getTestType(tempDir, "SomeMessage2", "SomeMessage3");
+    PhpModelTypeNameConverter converter = new PhpModelTypeNameConverter(packageName);
+    PhpTypeTable typeTable = new PhpTypeTable(packageName);
+    TypeName typeName = converter.getTypeName(type);
+    assertThat(typeName.getFullName())
+        .isEqualTo("\\Google\\Example\\Library\\V1\\SomeMessage2\\SomeMessage3");
+    typeTable.getAndSaveNicknameFor(typeName);
+    assertThat(typeTable.getImports())
+        .containsKey("\\Google\\Example\\Library\\V1\\SomeMessage2\\SomeMessage3");
+  }
+
+  @Test
+  public void testNestedMessageFullNameWithPhpNamespace() {
+    String packageName = "Google\\Example\\Library\\V1";
+    TypeRef type =
+        ModelTypeNameConverterTestUtil.getTestType(
+            "myproto", tempDir, "TopLevelMessage", "AnotherSubMessage");
+    PhpModelTypeNameConverter converter = new PhpModelTypeNameConverter(packageName);
+    PhpTypeTable typeTable = new PhpTypeTable(packageName);
+    TypeName typeName = converter.getTypeName(type);
+    assertThat(typeName.getFullName())
+        .isEqualTo("\\Google\\Example\\MyProto\\V1\\TopLevelMessage\\AnotherSubMessage");
+    typeTable.getAndSaveNicknameFor(typeName);
+    assertThat(typeTable.getImports())
+        .containsKey("\\Google\\Example\\MyProto\\V1\\TopLevelMessage\\AnotherSubMessage");
   }
 }
