@@ -5548,14 +5548,22 @@ class LibraryServiceClientTest extends GeneratedTest
     }
 
     /**
+     * @return CredentialsWrapper
+     */
+    private function createCredentials()
+    {
+        return $this->getMockBuilder(CredentialsWrapper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
      * @return LibraryServiceClient
      */
     private function createClient(array $options = [])
     {
         $options += [
-            'credentials' => $this->getMockBuilder(CredentialsWrapper::class)
-                ->disableOriginalConstructor()
-                ->getMock(),
+            'credentials' => $this->createCredentials(),
         ];
         return new LibraryServiceClient($options);
     }
@@ -7492,7 +7500,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'transport' => $operationsTransport
+            'transport' => $operationsTransport,
+            'credentials' => $this->createCredentials(),
         ]);
         $transport = $this->createTransport();
         $client = $this->createClient([
@@ -7573,7 +7582,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'transport' => $operationsTransport
+            'transport' => $operationsTransport,
+            'credentials' => $this->createCredentials(),
         ]);
         $transport = $this->createTransport();
         $client = $this->createClient([
@@ -7638,7 +7648,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'transport' => $operationsTransport
+            'transport' => $operationsTransport,
+            'credentials' => $this->createCredentials(),
         ]);
         $transport = $this->createTransport();
         $client = $this->createClient([
@@ -7711,7 +7722,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'transport' => $operationsTransport
+            'transport' => $operationsTransport,
+            'credentials' => $this->createCredentials(),
         ]);
         $transport = $this->createTransport();
         $client = $this->createClient([
@@ -8108,14 +8120,22 @@ class MyProtoClientTest extends GeneratedTest
     }
 
     /**
+     * @return CredentialsWrapper
+     */
+    private function createCredentials()
+    {
+        return $this->getMockBuilder(CredentialsWrapper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
      * @return MyProtoClient
      */
     private function createClient(array $options = [])
     {
         $options += [
-            'credentials' => $this->getMockBuilder(CredentialsWrapper::class)
-                ->disableOriginalConstructor()
-                ->getMock(),
+            'credentials' => $this->createCredentials(),
         ];
         return new MyProtoClient($options);
     }

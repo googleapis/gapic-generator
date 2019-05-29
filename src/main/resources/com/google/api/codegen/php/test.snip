@@ -28,14 +28,22 @@
     }
 
     /**
+     * @@return CredentialsWrapper
+     */
+    private function createCredentials()
+    {
+        return $this->getMockBuilder(CredentialsWrapper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
      * @@return {@testClass.apiClassName}
      */
     private function createClient(array $options = [])
     {
         $options += [
-            'credentials' => $this->getMockBuilder(CredentialsWrapper::class)
-                ->disableOriginalConstructor()
-                ->getMock(),
+            'credentials' => $this->createCredentials(),
             @if testClass.hasMissingDefaultOptions
                 @if testClass.missingDefaultServiceAddress
                     'serviceAddress' => '',
@@ -358,7 +366,8 @@
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'transport' => $operationsTransport
+            'transport' => $operationsTransport,
+            'credentials' => $this->createCredentials(),
         ]);
         $transport = $this->createTransport();
         $client = $this->createClient([
@@ -430,7 +439,8 @@
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'transport' => $operationsTransport
+            'transport' => $operationsTransport,
+            'credentials' => $this->createCredentials(),
         ]);
         $transport = $this->createTransport();
         $client = $this->createClient([
