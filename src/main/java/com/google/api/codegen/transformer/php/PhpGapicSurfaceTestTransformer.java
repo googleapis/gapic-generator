@@ -22,7 +22,6 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -55,11 +54,15 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Responsible for producing testing related views for PHP. */
 public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String SMOKE_TEST_TEMPLATE_FILE = "php/smoke_test.snip";
   private static final String UNIT_TEST_TEMPLATE_FILE = "php/test.snip";
+  private static final Pattern API_NAME_PATTERN =
+      Pattern.compile("(?<apiName>\\w+)(\\\\[Vv]\\d+\\w*)*$");
 
   private final PhpImportSectionTransformer importSectionTransformer =
       new PhpImportSectionTransformer();
@@ -73,11 +76,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
   private final PhpFeatureConfig featureConfig = new PhpFeatureConfig();
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
 
-  private final PackageMetadataConfig packageConfig;
-
-  public PhpGapicSurfaceTestTransformer(PackageMetadataConfig packageConfig) {
-    this.packageConfig = packageConfig;
-  }
+  public PhpGapicSurfaceTestTransformer() {}
 
   @Override
   public List<String> getTemplateFileNames() {
@@ -133,7 +132,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
             "PhpGapicSurfaceTestTransformer.generateTestView - apiSettingsClassName"));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
-    testClass.apiName(packageConfig.shortName());
+    testClass.apiName(getApiName(context.getProductConfig().getPackageName()));
     testClass.testCases(createTestCaseViews(context));
     // Add gRPC client imports.
     for (InterfaceModel grpcInterface :
@@ -249,7 +248,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
     testClass.apiSettingsClassName(
         context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(context.getNamer().getApiWrapperClassName(context.getInterfaceConfig()));
-    testClass.apiName(packageConfig.shortName());
+    testClass.apiName(getApiName(context.getProductConfig().getPackageName()));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     testClass.apiMethod(apiMethod);
     testClass.requireProjectId(
@@ -302,5 +301,10 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
 
   private void addSmokeTestImports(ModelTypeTable typeTable) {
     typeTable.saveNicknameFor("\\Google\\ApiCore\\Testing\\GeneratedTest");
+  }
+
+  private String getApiName(String packageName) {
+    Matcher m = API_NAME_PATTERN.matcher(packageName);
+    return m.find() ? m.group("apiName").toLowerCase() : null;
   }
 }
