@@ -63,10 +63,17 @@ public class CSharpSampleImportTransformer extends StandardSampleImportTransform
   protected void addInitCodeImports(
       MethodContext context, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes) {
     ImportTypeTable typeTable = context.getTypeTable();
-
-    Streams.stream(nodes).forEach(n -> typeTable.getAndSaveNicknameFor(n.getType()));
+    typeTable.saveNicknameFor(
+        context.getNamer().getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
+    Streams.stream(nodes).map(InitCodeNode::getType).forEach(typeTable::getAndSaveNicknameFor);
     if (Streams.stream(nodes).anyMatch(n -> n.getLineType() == InitCodeLineType.ReadFileInitLine)) {
       typeTable.saveNicknameFor("System.IO.File");
+    }
+    if (Streams.stream(nodes).anyMatch(n -> n.getLineType() == InitCodeLineType.ListInitLine)) {
+      typeTable.saveNicknameFor("System.Collections.Generic.IEnumerable");
+    }
+    if (Streams.stream(nodes).anyMatch(n -> n.getLineType() == InitCodeLineType.MapInitLine)) {
+      typeTable.saveNicknameFor("System.Collections.Generic.IDictionary");
     }
   }
 }

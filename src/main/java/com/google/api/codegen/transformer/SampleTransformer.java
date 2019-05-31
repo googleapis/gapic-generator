@@ -237,11 +237,10 @@ public abstract class SampleTransformer {
     OutputContext outputContext = OutputContext.create();
     ImmutableList<OutputView> outputViews =
         outputTransformer().toViews(outputs, methodContext, valueSet, form, outputContext);
-    methodContext = methodContext.cloneWithEmptyTypeTable();
     ImportSectionView sampleImportSectionView =
         sampleImportTransformer()
             .generateImportSection(
-                methodContext,
+                methodContext.cloneWithEmptyTypeTable(),
                 form,
                 outputContext,
                 methodContext.getTypeTable(),
