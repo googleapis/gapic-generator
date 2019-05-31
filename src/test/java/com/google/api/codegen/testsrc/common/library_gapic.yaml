@@ -603,6 +603,18 @@ interfaces:
     header_request_params:
       - name
       - alt_book_name
+    sample_value_sets:
+    - id: test_resource_name_oneof
+      parameters:
+        defaults:
+        - name%archive_path="The archive to search for the book"
+        - name%book_id="The ID of the book"
+      on_success:
+      - print: ["Book found."]
+    samples:
+      standalone:
+      - region_tag: test_resource_name_oneof
+        value_sets: [test_resource_name_oneof]
   - name: UpdateBookIndex
     flattening:
       groups:
