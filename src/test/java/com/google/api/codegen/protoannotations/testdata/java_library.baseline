@@ -3435,13 +3435,70 @@ public class TestResourceNameOneof {
         .setName(name.toString())
         .build();
       BookFromAnywhere response = libraryClient.getBookFromAbsolutelyAnywhere(request);
-      System.out.println("Book found.");
+      System.out.println("Archived book found.");
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
     // [END test_resource_name_oneof_core]
   }
   // [END test_resource_name_oneof]
+
+  public static void main(String[] args) {
+    sampleGetBookFromAbsolutelyAnywhere();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/TestResourceNameOneof2.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof_2")
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.BookFromAnywhere;
+import com.google.example.library.v1.BookName;
+import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class TestResourceNameOneof2 {
+  // [START test_resource_name_oneof_2]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.BookFromAnywhere;
+   * import com.google.example.library.v1.BookName;
+   * import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   */
+
+  public static void sampleGetBookFromAbsolutelyAnywhere() {
+    // [START test_resource_name_oneof_2_core]
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
+      GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      BookFromAnywhere response = libraryClient.getBookFromAbsolutelyAnywhere(request);
+      System.out.println("Book on shelf found.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+    // [END test_resource_name_oneof_2_core]
+  }
+  // [END test_resource_name_oneof_2]
 
   public static void main(String[] args) {
     sampleGetBookFromAbsolutelyAnywhere();

@@ -1342,7 +1342,7 @@ function sampleGetBookFromAbsolutelyAnywhere() {
   client.getBookFromAbsolutelyAnywhere({name: formattedName})
     .then(responses => {
       const response = responses[0];
-      console.log(`Book found.`);
+      console.log(`Archived book found.`);
     })
     .catch(err => {
       console.error(err);
@@ -1352,6 +1352,34 @@ function sampleGetBookFromAbsolutelyAnywhere() {
 
 // [END test_resource_name_oneof_core]
 // [END test_resource_name_oneof]
+// tslint:disable-next-line:no-any
+
+sampleGetBookFromAbsolutelyAnywhere();
+============== file: samples/v1/test_resource_name_oneof_2.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof_2")
+'use strict';
+
+// [START test_resource_name_oneof_2]
+// [START test_resource_name_oneof_2_core]
+
+const library = require('@google-cloud/library').v1;
+
+function sampleGetBookFromAbsolutelyAnywhere() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+  client.getBookFromAbsolutelyAnywhere({name: formattedName})
+    .then(responses => {
+      const response = responses[0];
+      console.log(`Book on shelf found.`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+
+// [END test_resource_name_oneof_2_core]
+// [END test_resource_name_oneof_2]
 // tslint:disable-next-line:no-any
 
 sampleGetBookFromAbsolutelyAnywhere();
