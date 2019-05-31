@@ -403,7 +403,7 @@
         {@initClient(testClass, test)}
 
         @# Call method
-        err = assert_raises Google::Gax::GaxError do
+        err = assert_raises Google::Gax::GaxError, CustomTestError_{@apiVersion} do
           {@methodCall(test)}
         end
 
@@ -431,7 +431,7 @@
         {@initClient(testClass, test)}
 
         @# Call method
-        err = assert_raises Google::Gax::GaxError do
+        err = assert_raises Google::Gax::GaxError, CustomTestError_{@apiVersion} do
           client.{@test.clientMethodName}([request])
         end
 
