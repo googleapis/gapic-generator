@@ -961,7 +961,7 @@ public class InitCodeTransformer {
                         .vars()
                         .equals(node.getInitValueConfig().getResourceNameBindingValues().keySet()))
             .collect(Collectors.toList());
-    // Return the first one to not break incode samples and unit tests when
+    // Return the first one to not break in-code samples and unit tests when
     // there are no matching resource name binding values
     if (matchingConfigs.isEmpty()) {
       return oneofConfig.getSingleResourceNameConfigs().get(0);
