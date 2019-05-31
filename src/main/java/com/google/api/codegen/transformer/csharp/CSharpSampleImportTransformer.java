@@ -16,12 +16,14 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StandardSampleImportTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.viewmodel.CallingForm;
+import com.google.common.collect.Streams;
 
 public class CSharpSampleImportTransformer extends StandardSampleImportTransformer {
 
@@ -60,22 +62,11 @@ public class CSharpSampleImportTransformer extends StandardSampleImportTransform
   @Override
   protected void addInitCodeImports(
       MethodContext context, ImportTypeTable initCodeTypeTable, Iterable<InitCodeNode> nodes) {
-    super.addInitCodeImports(context, initCodeTypeTable, nodes);
     ImportTypeTable typeTable = context.getTypeTable();
-    for (InitCodeNode node : nodes) {
-      typeTable.getAndSaveNicknameFor(node.getType());
-      switch (node.getLineType()) {
-        case ReadFileInitLine:
-          typeTable.saveNicknameFor("System.IO.File");
-          break;
-        case SimpleInitLine:
-        case StructureInitLine:
-        case ListInitLine:
-        case MapInitLine:
-          break; // fall through
-        default:
-          throw new IllegalArgumentException("Unrecognized line type: " + node.getLineType());
-      }
+
+    Streams.stream(nodes).forEach(n -> typeTable.getAndSaveNicknameFor(n.getType()));
+    if (Streams.stream(nodes).anyMatch(n -> n.getLineType() == InitCodeLineType.ReadFileInitLine)) {
+      typeTable.saveNicknameFor("System.IO.File");
     }
   }
 }
