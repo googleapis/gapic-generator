@@ -31,12 +31,17 @@ public class ModelTypeNameConverterTestUtil {
   }
 
   public static TypeRef getTestType(TemporaryFolder tempDir, String... path) {
-    String fileName = "library.proto";
+    return getTestType("library", tempDir, path);
+  }
+
+  public static TypeRef getTestType(String fileName, TemporaryFolder tempDir, String... path) {
+    String yamlFileName = fileName + ".yaml";
+    fileName = fileName + ".proto";
     TestDataLocator locator = TestDataLocator.create(CodegenTestUtil.class);
     locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
     Model model =
         CodegenTestUtil.readModel(
-            locator, tempDir, new String[] {fileName}, new String[] {"library.yaml"});
+            locator, tempDir, new String[] {fileName}, new String[] {yamlFileName});
     ProtoContainerElement container = getElementWithName(model.getFiles(), fileName);
     if (container == null) {
       throw new IllegalStateException("file not found: " + fileName);

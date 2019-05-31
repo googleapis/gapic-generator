@@ -1041,7 +1041,7 @@ sampleGetBigNothing();
 require __DIR__ . '/../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
-use Google\Example\Library\V1\SomeMessage_Alignment;
+use Google\Example\Library\V1\SomeMessage\Alignment;
 
 function sampleGetBook()
 {
@@ -1057,7 +1057,7 @@ function sampleGetBook()
         $booleanKeyVal = $response->getMapBoolKey()[true];
         $mapValueField = $response->getMapMessageValue()['key']->getField();
         printf("Test printing map fields: %s" . PHP_EOL, print_r($response->getMapListValueValue()['quoted_key'], true));
-        printf("Test printing enum fields of a map value: %s" . PHP_EOL, SomeMessage_Alignment::name($response->getMapMessageValue()['key']->getAlignment()));
+        printf("Test printing enum fields of a map value: %s" . PHP_EOL, Alignment::name($response->getMapMessageValue()['key']->getAlignment()));
     } finally {
         $libraryServiceClient->close();
     }
@@ -1144,7 +1144,7 @@ sampleStreamBooks();
 require __DIR__ . '/../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
-use Google\Example\Library\V1\Comment_Stage;
+use Google\Example\Library\V1\Comment\Stage;
 use Google\Example\Library\V1\DiscussBookRequest;
 
 /** Testing calling forms */
@@ -1166,7 +1166,7 @@ function sampleMonologAboutBook()
             $stream->write($request);
         }
         $response = $stream->readResponse();
-        printf("The stage of the comment is: %s" . PHP_EOL, Comment_Stage::name($response->getStage()));
+        printf("The stage of the comment is: %s" . PHP_EOL, Stage::name($response->getStage()));
     } finally {
         $libraryServiceClient->close();
     }
@@ -1202,7 +1202,7 @@ sampleMonologAboutBook();
 require __DIR__ . '/../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
-use Google\Example\Library\V1\Comment_Stage;
+use Google\Example\Library\V1\Comment\Stage;
 use Google\Example\Library\V1\DiscussBookRequest;
 
 /** Testing calling forms */
@@ -1221,7 +1221,7 @@ function sampleMonologAboutBook()
         $requests = [$request];
         $stream = $libraryServiceClient->monologAboutBook();
         $response = $stream->writeAllAndReadResponse($requests);
-        printf("The stage of the comment is: %s" . PHP_EOL, Comment_Stage::name($response->getStage()));
+        printf("The stage of the comment is: %s" . PHP_EOL, Stage::name($response->getStage()));
     } finally {
         $libraryServiceClient->close();
     }
@@ -1777,20 +1777,23 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\Example\Library\V1\Comment;
+use Google\Example\Library\V1\Comment\Stage;
 use Google\Example\Library\V1\DiscussBookRequest;
 
 /** Testing calling forms */
-function sampleDiscussBook($imageFileName)
+function sampleDiscussBook($imageFileName, $stage)
 {
     // [START turing_prog_request_streaming_bidi_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
     // $imageFileName = 'image_file.jpg';
+    // $stage = Stage::DRAFT;
     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
     $comment = file_get_contents('comment_file');
     $comment2 = new Comment();
     $comment2->setComment($comment);
+    $comment2->setStage($stage);
     $image = file_get_contents($imageFileName);
     $request = new DiscussBookRequest();
     $request->setName($formattedName);
@@ -1816,18 +1819,21 @@ function sampleDiscussBook($imageFileName)
 
 $opts = [
     'image_file_name::',
+    'stage::',
 ];
 
 $defaultOptions = [
     'image_file_name' => 'image_file.jpg',
+    'stage' => Stage::DRAFT,
 ];
 
 $options = getopt('', $opts);
 $options += $defaultOptions;
 
 $imageFileName = $options['image_file_name'];
+$stage = Stage::value($options['stage']);
 
-sampleDiscussBook($imageFileName);
+sampleDiscussBook($imageFileName, $stage);
 ============== file: samples/V1/TuringProgRequestStreamingBidiAsync.php ==============
 <?php
 /*
@@ -1855,20 +1861,23 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\Example\Library\V1\Comment;
+use Google\Example\Library\V1\Comment\Stage;
 use Google\Example\Library\V1\DiscussBookRequest;
 
 /** Testing calling forms */
-function sampleDiscussBook($imageFileName)
+function sampleDiscussBook($imageFileName, $stage)
 {
     // [START turing_prog_request_streaming_bidi_async_core]
 
     $libraryServiceClient = new LibraryServiceClient();
 
     // $imageFileName = 'image_file.jpg';
+    // $stage = Stage::DRAFT;
     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
     $comment = file_get_contents('comment_file');
     $comment2 = new Comment();
     $comment2->setComment($comment);
+    $comment2->setStage($stage);
     $image = file_get_contents($imageFileName);
     $request = new DiscussBookRequest();
     $request->setName($formattedName);
@@ -1903,18 +1912,21 @@ function sampleDiscussBook($imageFileName)
 
 $opts = [
     'image_file_name::',
+    'stage::',
 ];
 
 $defaultOptions = [
     'image_file_name' => 'image_file.jpg',
+    'stage' => Stage::DRAFT,
 ];
 
 $options = getopt('', $opts);
 $options += $defaultOptions;
 
 $imageFileName = $options['image_file_name'];
+$stage = Stage::value($options['stage']);
 
-sampleDiscussBook($imageFileName);
+sampleDiscussBook($imageFileName, $stage);
 ============== file: src/V1/Gapic/LibraryServiceGapicClient.php ==============
 <?php
 /*
@@ -1993,13 +2005,13 @@ use Google\Example\Library\V1\StreamShelvesRequest;
 use Google\Example\Library\V1\StreamShelvesResponse;
 use Google\Example\Library\V1\StringBuilder;
 use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest;
-use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerEnum;
-use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerMessage;
-use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_OptionalMapEntry;
-use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_RequiredMapEntry;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\InnerMessage;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\OptionalMapEntry;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\RequiredMapEntry;
 use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsResponse;
 use Google\Example\Library\V1\UpdateBookIndexRequest;
-use Google\Example\Library\V1\UpdateBookIndexRequest_IndexMapEntry;
+use Google\Example\Library\V1\UpdateBookIndexRequest\IndexMapEntry;
 use Google\Example\Library\V1\UpdateBookRequest;
 use Google\LongRunning\Operation;
 use Google\Protobuf\Any;
@@ -3128,8 +3140,8 @@ class LibraryServiceGapicClient
      * try {
      *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $comment = '';
-     *     $stage = Comment_Stage::UNSET;
-     *     $alignment = SomeMessage2_SomeMessage3_Alignment::CHAR;
+     *     $stage = Stage::UNSET;
+     *     $alignment = Alignment::CHAR;
      *     $commentsElement = new Comment();
      *     $commentsElement->setComment($comment);
      *     $commentsElement->setStage($stage);
@@ -3944,10 +3956,10 @@ class LibraryServiceGapicClient
      *     $requiredSingularFloat = 0.0;
      *     $requiredSingularDouble = 0.0;
      *     $requiredSingularBool = false;
-     *     $requiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest_InnerEnum::ZERO;
+     *     $requiredSingularEnum = InnerEnum::ZERO;
      *     $requiredSingularString = '';
      *     $requiredSingularBytes = '';
-     *     $requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest_InnerMessage();
+     *     $requiredSingularMessage = new InnerMessage();
      *     $formattedRequiredSingularResourceName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $formattedRequiredSingularResourceNameOneof = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
      *     $formattedRequiredSingularResourceNameCommon = $libraryServiceClient->projectName('[PROJECT]');
@@ -3979,10 +3991,10 @@ class LibraryServiceGapicClient
      * @param float $requiredSingularFloat
      * @param float $requiredSingularDouble
      * @param bool $requiredSingularBool
-     * @param int $requiredSingularEnum For allowed values, use constants defined on {@see \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerEnum}
+     * @param int $requiredSingularEnum For allowed values, use constants defined on {@see \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum}
      * @param string $requiredSingularString
      * @param string $requiredSingularBytes
-     * @param TestOptionalRequiredFlatteningParamsRequest_InnerMessage $requiredSingularMessage
+     * @param InnerMessage $requiredSingularMessage
      * @param string $requiredSingularResourceName
      * @param string $requiredSingularResourceNameOneof
      * @param string $requiredSingularResourceNameCommon
@@ -3993,10 +4005,10 @@ class LibraryServiceGapicClient
      * @param float[] $requiredRepeatedFloat
      * @param float[] $requiredRepeatedDouble
      * @param bool[] $requiredRepeatedBool
-     * @param int[] $requiredRepeatedEnum For allowed values, use constants defined on {@see \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerEnum}
+     * @param int[] $requiredRepeatedEnum For allowed values, use constants defined on {@see \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum}
      * @param string[] $requiredRepeatedString
      * @param string[] $requiredRepeatedBytes
-     * @param TestOptionalRequiredFlatteningParamsRequest_InnerMessage[] $requiredRepeatedMessage
+     * @param InnerMessage[] $requiredRepeatedMessage
      * @param string[] $requiredRepeatedResourceName
      * @param string[] $requiredRepeatedResourceNameOneof
      * @param string[] $requiredRepeatedResourceNameCommon
@@ -4011,10 +4023,10 @@ class LibraryServiceGapicClient
      *     @type float $optionalSingularDouble
      *     @type bool $optionalSingularBool
      *     @type int $optionalSingularEnum
-     *          For allowed values, use constants defined on {@see \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerEnum}
+     *          For allowed values, use constants defined on {@see \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum}
      *     @type string $optionalSingularString
      *     @type string $optionalSingularBytes
-     *     @type TestOptionalRequiredFlatteningParamsRequest_InnerMessage $optionalSingularMessage
+     *     @type InnerMessage $optionalSingularMessage
      *     @type string $optionalSingularResourceName
      *     @type string $optionalSingularResourceNameOneof
      *     @type string $optionalSingularResourceNameCommon
@@ -4026,10 +4038,10 @@ class LibraryServiceGapicClient
      *     @type float[] $optionalRepeatedDouble
      *     @type bool[] $optionalRepeatedBool
      *     @type int[] $optionalRepeatedEnum
-     *          For allowed values, use constants defined on {@see \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerEnum}
+     *          For allowed values, use constants defined on {@see \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum}
      *     @type string[] $optionalRepeatedString
      *     @type string[] $optionalRepeatedBytes
-     *     @type TestOptionalRequiredFlatteningParamsRequest_InnerMessage[] $optionalRepeatedMessage
+     *     @type InnerMessage[] $optionalRepeatedMessage
      *     @type string[] $optionalRepeatedResourceName
      *     @type string[] $optionalRepeatedResourceNameOneof
      *     @type string[] $optionalRepeatedResourceNameCommon
@@ -5360,7 +5372,7 @@ namespace Google\Cloud\Example\Library\Tests\System\V1;
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\ApiCore\Testing\GeneratedTest;
 use Google\Example\Library\V1\Book;
-use Google\Example\Library\V1\Book_Rating;
+use Google\Example\Library\V1\Book\Rating;
 use Google\Example\Library\V1\UpdateBookRequest;
 use Google\Protobuf\FieldMask;
 
@@ -5382,7 +5394,7 @@ class LibraryServiceSmokeTest extends GeneratedTest
 
         $libraryServiceClient = new LibraryServiceClient();
         $formattedName = $libraryServiceClient->bookName('testShelf-'. time(), $projectId);
-        $rating = Book_Rating::GOOD;
+        $rating = Rating::GOOD;
         $book = new Book();
         $book->setRating($rating);
         $libraryServiceClient->updateBook($formattedName, $book);
@@ -5426,7 +5438,7 @@ use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\BookFromAnywhere;
 use Google\Example\Library\V1\BookFromArchive;
 use Google\Example\Library\V1\Comment;
-use Google\Example\Library\V1\Comment_Stage;
+use Google\Example\Library\V1\Comment\Stage;
 use Google\Example\Library\V1\CreateBookRequest;
 use Google\Example\Library\V1\CreateShelfRequest;
 use Google\Example\Library\V1\DeleteBookRequest;
@@ -5452,13 +5464,13 @@ use Google\Example\Library\V1\PublishSeriesRequest;
 use Google\Example\Library\V1\PublishSeriesResponse;
 use Google\Example\Library\V1\SeriesUuid;
 use Google\Example\Library\V1\Shelf;
-use Google\Example\Library\V1\SomeMessage2_SomeMessage3_Alignment;
+use Google\Example\Library\V1\SomeMessage2\SomeMessage3\Alignment;
 use Google\Example\Library\V1\StreamBooksRequest;
 use Google\Example\Library\V1\StreamShelvesRequest;
 use Google\Example\Library\V1\StreamShelvesResponse;
 use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest;
-use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerEnum;
-use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerMessage;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\InnerMessage;
 use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsResponse;
 use Google\Example\Library\V1\UpdateBookIndexRequest;
 use Google\Example\Library\V1\UpdateBookRequest;
@@ -5488,14 +5500,22 @@ class LibraryServiceClientTest extends GeneratedTest
     }
 
     /**
+     * @return CredentialsWrapper
+     */
+    private function createCredentials()
+    {
+        return $this->getMockBuilder(CredentialsWrapper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
      * @return LibraryServiceClient
      */
     private function createClient(array $options = [])
     {
         $options += [
-            'credentials' => $this->getMockBuilder(CredentialsWrapper::class)
-                ->disableOriginalConstructor()
-                ->getMock(),
+            'credentials' => $this->createCredentials(),
         ];
         return new LibraryServiceClient($options);
     }
@@ -6537,8 +6557,8 @@ class LibraryServiceClientTest extends GeneratedTest
         // Mock request
         $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $comment = '95';
-        $stage = Comment_Stage::UNSET;
-        $alignment = SomeMessage2_SomeMessage3_Alignment::CHAR;
+        $stage = Stage::UNSET;
+        $alignment = Alignment::CHAR;
         $commentsElement = new Comment();
         $commentsElement->setComment($comment);
         $commentsElement->setStage($stage);
@@ -6587,8 +6607,8 @@ class LibraryServiceClientTest extends GeneratedTest
         // Mock request
         $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $comment = '95';
-        $stage = Comment_Stage::UNSET;
-        $alignment = SomeMessage2_SomeMessage3_Alignment::CHAR;
+        $stage = Stage::UNSET;
+        $alignment = Alignment::CHAR;
         $commentsElement = new Comment();
         $commentsElement->setComment($comment);
         $commentsElement->setStage($stage);
@@ -7432,7 +7452,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'transport' => $operationsTransport
+            'transport' => $operationsTransport,
+            'credentials' => $this->createCredentials(),
         ]);
         $transport = $this->createTransport();
         $client = $this->createClient([
@@ -7513,7 +7534,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'transport' => $operationsTransport
+            'transport' => $operationsTransport,
+            'credentials' => $this->createCredentials(),
         ]);
         $transport = $this->createTransport();
         $client = $this->createClient([
@@ -7578,7 +7600,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'transport' => $operationsTransport
+            'transport' => $operationsTransport,
+            'credentials' => $this->createCredentials(),
         ]);
         $transport = $this->createTransport();
         $client = $this->createClient([
@@ -7651,7 +7674,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport = $this->createTransport();
         $operationsClient = new OperationsClient([
             'serviceAddress' => '',
-            'transport' => $operationsTransport
+            'transport' => $operationsTransport,
+            'credentials' => $this->createCredentials(),
         ]);
         $transport = $this->createTransport();
         $client = $this->createClient([
@@ -7728,10 +7752,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredSingularFloat = -7514705.0;
         $requiredSingularDouble = 1.9111005E8;
         $requiredSingularBool = true;
-        $requiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest_InnerEnum::ZERO;
+        $requiredSingularEnum = InnerEnum::ZERO;
         $requiredSingularString = 'requiredSingularString-1949894503';
         $requiredSingularBytes = '-29';
-        $requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest_InnerMessage();
+        $requiredSingularMessage = new InnerMessage();
         $formattedRequiredSingularResourceName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $formattedRequiredSingularResourceNameOneof = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $formattedRequiredSingularResourceNameCommon = $client->projectName('[PROJECT]');
@@ -7880,10 +7904,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredSingularFloat = -7514705.0;
         $requiredSingularDouble = 1.9111005E8;
         $requiredSingularBool = true;
-        $requiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest_InnerEnum::ZERO;
+        $requiredSingularEnum = InnerEnum::ZERO;
         $requiredSingularString = 'requiredSingularString-1949894503';
         $requiredSingularBytes = '-29';
-        $requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest_InnerMessage();
+        $requiredSingularMessage = new InnerMessage();
         $formattedRequiredSingularResourceName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $formattedRequiredSingularResourceNameOneof = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
         $formattedRequiredSingularResourceNameCommon = $client->projectName('[PROJECT]');
@@ -8048,14 +8072,22 @@ class MyProtoClientTest extends GeneratedTest
     }
 
     /**
+     * @return CredentialsWrapper
+     */
+    private function createCredentials()
+    {
+        return $this->getMockBuilder(CredentialsWrapper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
      * @return MyProtoClient
      */
     private function createClient(array $options = [])
     {
         $options += [
-            'credentials' => $this->getMockBuilder(CredentialsWrapper::class)
-                ->disableOriginalConstructor()
-                ->getMock(),
+            'credentials' => $this->createCredentials(),
         ];
         return new MyProtoClient($options);
     }

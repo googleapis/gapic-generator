@@ -1391,16 +1391,18 @@ const library = require('@google-cloud/library').v1;
 
 const fs = require('fs');
 /** Testing calling forms */
-function sampleDiscussBook(imageFileName) {
+function sampleDiscussBook(imageFileName, stage) {
   const client = new library.LibraryServiceClient();
   const stream = client.discussBook().on('data', response => {
     console.log(response);
   });
   // const imageFileName = 'image_file.jpg';
+  // const stage = 'DRAFT';
   const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
   const comment = fs.readFileSync('comment_file').toString('base64');
   const comment2 = {
     comment: comment,
+    stage: stage,
   };
   const image = fs.readFileSync(imageFileName).toString('base64');
   const request = {
@@ -1422,9 +1424,13 @@ const argv = require(`yargs`)
     default: 'image_file.jpg',
     string: true
   })
+  .option('stage', {
+    default: 'DRAFT',
+    string: true
+  })
   .argv;
 
-sampleDiscussBook(argv.image_file_name);
+sampleDiscussBook(argv.image_file_name, argv.stage);
 ============== file: smoke-test/library_service_smoke_test.js ==============
 // Copyright 2019 Google LLC
 //
@@ -4057,12 +4063,17 @@ class LibraryServiceClient {
   constructor(opts) {
     this._descriptors = {};
 
+    const servicePath =
+      opts.servicePath ||
+      opts.apiEndpoint ||
+      this.constructor.servicePath;
+
     // Ensure that options include the service address and port.
     opts = Object.assign(
       {
         clientConfig: {},
         port: this.constructor.port,
-        servicePath: this.constructor.servicePath,
+        servicePath,
       },
       opts
     );
@@ -4320,6 +4331,14 @@ class LibraryServiceClient {
    * The DNS address for this API service.
    */
   static get servicePath() {
+    return 'library-example.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service - same as servicePath(),
+   * exists for compatibility reasons.
+   */
+  static get apiEndpoint() {
     return 'library-example.googleapis.com';
   }
 
@@ -6952,12 +6971,17 @@ class MyProtoClient {
   constructor(opts) {
     this._descriptors = {};
 
+    const servicePath =
+      opts.servicePath ||
+      opts.apiEndpoint ||
+      this.constructor.servicePath;
+
     // Ensure that options include the service address and port.
     opts = Object.assign(
       {
         clientConfig: {},
         port: this.constructor.port,
-        servicePath: this.constructor.servicePath,
+        servicePath,
       },
       opts
     );
@@ -7037,6 +7061,14 @@ class MyProtoClient {
    * The DNS address for this API service.
    */
   static get servicePath() {
+    return 'library-example.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service - same as servicePath(),
+   * exists for compatibility reasons.
+   */
+  static get apiEndpoint() {
     return 'library-example.googleapis.com';
   }
 
@@ -7183,6 +7215,22 @@ const error = new Error();
 error.code = FAKE_STATUS_CODE;
 
 describe('LibraryServiceClient', () => {
+  it('has servicePath', () => {
+    const servicePath = libraryModule.v1.LibraryServiceClient.servicePath;
+    assert(servicePath);
+  });
+
+  it('has apiEndpoint', () => {
+    const apiEndpoint = libraryModule.v1.LibraryServiceClient.apiEndpoint;
+    assert(apiEndpoint);
+  });
+
+  it('has port', () => {
+    const port = libraryModule.v1.LibraryServiceClient.port;
+    assert(port);
+    assert(typeof port === 'number');
+  });
+
   describe('createShelf', () => {
     it('invokes createShelf without error', done => {
       const client = new libraryModule.v1.LibraryServiceClient({
@@ -9041,6 +9089,22 @@ describe('LibraryServiceClient', () => {
 
 });
 describe('MyProtoClient', () => {
+  it('has servicePath', () => {
+    const servicePath = libraryModule.v1.MyProtoClient.servicePath;
+    assert(servicePath);
+  });
+
+  it('has apiEndpoint', () => {
+    const apiEndpoint = libraryModule.v1.MyProtoClient.apiEndpoint;
+    assert(apiEndpoint);
+  });
+
+  it('has port', () => {
+    const port = libraryModule.v1.MyProtoClient.port;
+    assert(port);
+    assert(typeof port === 'number');
+  });
+
   describe('myMethod', () => {
     it('invokes myMethod without error', done => {
       const client = new libraryModule.v1.MyProtoClient({
@@ -9158,3 +9222,4 @@ function mockLongRunningGrpcMethod(expectedRequest, response, error) {
     return Promise.resolve([mockOperation]);
   };
 }
+
