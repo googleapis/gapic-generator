@@ -4213,12 +4213,17 @@ class LibraryServiceClient {
   constructor(opts) {
     this._descriptors = {};
 
+    const servicePath =
+      opts.servicePath ||
+      opts.apiEndpoint ||
+      this.constructor.servicePath;
+
     // Ensure that options include the service address and port.
     opts = Object.assign(
       {
         clientConfig: {},
         port: this.constructor.port,
-        servicePath: this.constructor.servicePath,
+        servicePath,
       },
       opts
     );
@@ -4476,6 +4481,14 @@ class LibraryServiceClient {
    * The DNS address for this API service.
    */
   static get servicePath() {
+    return 'library-example.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service - same as servicePath(),
+   * exists for compatibility reasons.
+   */
+  static get apiEndpoint() {
     return 'library-example.googleapis.com';
   }
 
@@ -7108,12 +7121,17 @@ class MyProtoClient {
   constructor(opts) {
     this._descriptors = {};
 
+    const servicePath =
+      opts.servicePath ||
+      opts.apiEndpoint ||
+      this.constructor.servicePath;
+
     // Ensure that options include the service address and port.
     opts = Object.assign(
       {
         clientConfig: {},
         port: this.constructor.port,
-        servicePath: this.constructor.servicePath,
+        servicePath,
       },
       opts
     );
@@ -7193,6 +7211,14 @@ class MyProtoClient {
    * The DNS address for this API service.
    */
   static get servicePath() {
+    return 'library-example.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service - same as servicePath(),
+   * exists for compatibility reasons.
+   */
+  static get apiEndpoint() {
     return 'library-example.googleapis.com';
   }
 
@@ -7339,6 +7365,22 @@ const error = new Error();
 error.code = FAKE_STATUS_CODE;
 
 describe('LibraryServiceClient', () => {
+  it('has servicePath', () => {
+    const servicePath = libraryModule.v1.LibraryServiceClient.servicePath;
+    assert(servicePath);
+  });
+
+  it('has apiEndpoint', () => {
+    const apiEndpoint = libraryModule.v1.LibraryServiceClient.apiEndpoint;
+    assert(apiEndpoint);
+  });
+
+  it('has port', () => {
+    const port = libraryModule.v1.LibraryServiceClient.port;
+    assert(port);
+    assert(typeof port === 'number');
+  });
+
   describe('createShelf', () => {
     it('invokes createShelf without error', done => {
       const client = new libraryModule.v1.LibraryServiceClient({
@@ -9197,6 +9239,22 @@ describe('LibraryServiceClient', () => {
 
 });
 describe('MyProtoClient', () => {
+  it('has servicePath', () => {
+    const servicePath = libraryModule.v1.MyProtoClient.servicePath;
+    assert(servicePath);
+  });
+
+  it('has apiEndpoint', () => {
+    const apiEndpoint = libraryModule.v1.MyProtoClient.apiEndpoint;
+    assert(apiEndpoint);
+  });
+
+  it('has port', () => {
+    const port = libraryModule.v1.MyProtoClient.port;
+    assert(port);
+    assert(typeof port === 'number');
+  });
+
   describe('myMethod', () => {
     it('invokes myMethod without error', done => {
       const client = new libraryModule.v1.MyProtoClient({

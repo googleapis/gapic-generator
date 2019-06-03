@@ -39,4 +39,25 @@ public class PhpTypeTableTest {
     assertThat(imports.size()).isEqualTo(1);
     assertThat(imports.get(implicitPackage + "\\qux\\Corge").getNickname()).isEqualTo("Corge");
   }
+
+  @Test
+  public void testTypeNameClash() {
+    String implicitPackage = "foo\\bar";
+    Map<String, TypeAlias> imports;
+    PhpTypeTable typeTable = new PhpTypeTable(implicitPackage);
+    assertThat(typeTable.getAndSaveNicknameFor("baz\\foo\\Baz")).isEqualTo("Baz");
+
+    imports = typeTable.getImports();
+    assertThat(imports.size()).isEqualTo(1);
+
+    assertThat(typeTable.getAndSaveNicknameFor("baz\\bar\\Baz")).isEqualTo("baz\\bar\\Baz");
+    imports = typeTable.getImports();
+    assertThat(imports.size()).isEqualTo(1);
+
+    assertThat(typeTable.getAndSaveNicknameFor("baz\\Bar\\Baz")).isEqualTo("baz\\Bar\\Baz");
+    imports = typeTable.getImports();
+    assertThat(imports.size()).isEqualTo(1);
+
+    assertThat(imports).containsKey("baz\\foo\\Baz");
+  }
 }

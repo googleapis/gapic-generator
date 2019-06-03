@@ -130,6 +130,8 @@ public class CSharpTypeTable implements TypeTable {
           }
         }
         break;
+      case Off:
+        break;
       default:
         throw new UnsupportedOperationException("Unrecognised aliasMode: " + aliasMode);
     }
@@ -226,6 +228,9 @@ public class CSharpTypeTable implements TypeTable {
               } else {
                 result.put(using, TypeAlias.create(using, "")); // Value isn't used
               }
+              break;
+            case Off:
+              result.put(using, TypeAlias.create(using, ""));
               break;
             default:
               throw new UnsupportedOperationException("Unrecognised aliasMode: " + aliasMode);

@@ -4,6 +4,8 @@ syntax = "proto3";
 
 package google.example.myproto.v1;
 
+option php_namespace = "Google\\Example\\MyProto\\V1";
+
 service MyProto {
   rpc MyMethod(MethodRequest) returns (MethodResponse);
 }
@@ -22,4 +24,13 @@ message SubMessage {
 
 message MethodResponse {
   string myfield = 1;
+}
+
+message TopLevelMessage {
+
+	message AnotherSubMessage {
+		string field = 1;
+	}
+
+	AnotherSubMessage subfield = 1;
 }
