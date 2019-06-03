@@ -27,58 +27,46 @@
   @if sample.sampleImports.appImports.size
     {@importList(sample.sampleImports.appImports)}
   @end
-  @let convertTextCode = convertText(sample)
-    @if convertTextCode
-      import six
 
+  def {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}):
+    @if not(sample.sampleFunctionDoc.isEmpty)
+      {@processDoc(sample.sampleFunctionDoc)}
+    @end
+    @# [START {@sample.regionTag}_core]
 
-    @else
+    client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
 
+    @if sample.sampleInitCode.argDefaultLines
+      @join line : util.pretty(initCode(sample.sampleInitCode.argDefaultLines))
+        @# {@line}
+      @end
 
     @end
-    def {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}):
-      @if not(sample.sampleFunctionDoc.isEmpty)
-        {@processDoc(sample.sampleFunctionDoc)}
-      @end
-      @# [START {@sample.regionTag}_core]
+    @if sample.sampleInitCode.lines
+      {@initCodeWithDescriptions(sample.sampleInitCode.lines)}
 
-      client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
+    @end
+    @switch sample.callingForm
+    @case "Request"
+      {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)}
+    @case "RequestPaged"
+      {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)}
+    @case "RequestPagedAll"
+      {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)}
+    @case "RequestStreamingBidi"
+      {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)}
+    @case "RequestStreamingClient"
+      {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)}
+    @case "RequestStreamingServer"
+      {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)}
+    @case "LongRunningPromise"
+      {@lroSampleCode(apiMethod, sample)}
+    @default
+      $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
+    @end
 
-      @if sample.sampleInitCode.argDefaultLines
-        @join line : util.pretty(initCode(sample.sampleInitCode.argDefaultLines))
-          @# {@line}
-        @end
-
-
-        # FIXME(hzyi): handle ListInitType, MapInitType and StructInitType correctly
-        {@convertTextCode}
-      @end
-      @if sample.sampleInitCode.lines
-        {@initCodeWithDescriptions(sample.sampleInitCode.lines)}
-
-      @end
-      @switch sample.callingForm
-      @case "Request"
-        {@optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)}
-      @case "RequestPaged"
-        {@pagedOptionalArrayMethodSampleCodePaged(apiMethod, sample)}
-      @case "RequestPagedAll"
-        {@pagedOptionalArrayMethodSampleCodeAll(apiMethod, sample)}
-      @case "RequestStreamingBidi"
-        {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod, sample)}
-      @case "RequestStreamingClient"
-        {@optionalArrayMethodSampleCodeClientStreaming(apiMethod, sample)}
-      @case "RequestStreamingServer"
-        {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)}
-      @case "LongRunningPromise"
-        {@lroSampleCode(apiMethod, sample)}
-      @default
-        $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
-      @end
-
-      @# [END {@sample.regionTag}_core]
-    @# [END {@sample.regionTag}]
-  @end
+    @# [END {@sample.regionTag}_core]
+  @# [END {@sample.regionTag}]
 
   def main():
     @if sample.sampleInitCode.argDefaultParams
@@ -138,15 +126,6 @@
   @end
 @end
 
-@private convertText(sample)
-  @join line : sample.sampleInitCode.argDefaultParams
-    @if line.typeName == "str"
-      if isinstance({@line.identifier}, six.binary_type):
-        {@line.identifier} = {@line.identifier}.decode('utf-8')
-    @end
-  @end
-@end
-
 @private optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)
   {@singularResponseSampleCode(apiMethod, sample.sampleInitCode)}
   @if sample.outputs
@@ -187,7 +166,7 @@
 @private lroSampleCode(apiMethod, sample)
   operation = {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}
 
-  print('Waiting for operation to complete...')
+  print(u'Waiting for operation to complete...')
   response = operation.result()
 
   @if sample.outputs
@@ -274,12 +253,12 @@
 @private processPrintView(view)
   # Since numeric comparison seems to not work, we use explicit zero tests
   @if not(view.interpolatedString.args.size)
-    print('{@view.interpolatedString.format}')
+    print(u'{@view.interpolatedString.format}')
   @else
     @if view.interpolatedString.format == "{}"
       print({@view.interpolatedString.args.get(0)})
     @else
-      print('{@view.interpolatedString.format}'.format({@commaSeparatedFields(view.interpolatedString.args)}))
+      print(u'{@view.interpolatedString.format}'.format({@commaSeparatedFields(view.interpolatedString.args)}))
     @end
   @end
 @end
