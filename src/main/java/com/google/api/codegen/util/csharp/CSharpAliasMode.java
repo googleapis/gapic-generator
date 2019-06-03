@@ -18,4 +18,5 @@ package com.google.api.codegen.util.csharp;
 public enum CSharpAliasMode {
   Global,
   MessagesOnly,
+  Off
 }

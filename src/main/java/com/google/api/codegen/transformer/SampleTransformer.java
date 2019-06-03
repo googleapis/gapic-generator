@@ -240,7 +240,7 @@ public abstract class SampleTransformer {
     ImportSectionView sampleImportSectionView =
         sampleImportTransformer()
             .generateImportSection(
-                methodContext,
+                methodContext.cloneWithEmptyTypeTable(),
                 form,
                 outputContext,
                 methodContext.getTypeTable(),
