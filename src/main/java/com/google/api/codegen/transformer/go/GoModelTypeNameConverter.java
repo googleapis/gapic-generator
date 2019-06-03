@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
+import com.google.api.codegen.util.EscaperFactory;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.EnumValue;
@@ -181,9 +182,9 @@ public class GoModelTypeNameConverter extends ModelTypeNameConverter {
     }
     switch (primitiveType) {
       case TYPE_STRING:
-        return "\"" + value + "\"";
+        return "\"" + EscaperFactory.getDoubleQuoteEscaper().escape(value) + "\"";
       case TYPE_BYTES:
-        return "[]byte(\"" + value + "\")";
+        return "[]byte(\"" + EscaperFactory.getDoubleQuoteEscaper().escape(value) + "\")";
       default:
         // Types that do not need to be modified (e.g. TYPE_INT32) are handled here
         return value;

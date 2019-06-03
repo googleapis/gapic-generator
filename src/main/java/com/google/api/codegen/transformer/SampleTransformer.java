@@ -276,6 +276,8 @@ public abstract class SampleTransformer {
         .sampleFunctionName(
             methodContext.getNamer().getSampleFunctionName(methodContext.getMethodModel()))
         .sampleFunctionDoc(sampleFunctionDocView)
+        .title(config.valueSet().getTitle())
+        .description(config.valueSet().getDescription())
         .build();
   }
 

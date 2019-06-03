@@ -2,6 +2,7 @@
 @extends "csharp/commandline.snip"
 @extends "csharp/common.snip"
 @extends "csharp/common_initcode.snip"
+@extends "metadatagen/samplegen.snip"
 
 # StaticLangFileView
 @snippet generate(sampleFile)
@@ -11,6 +12,12 @@
 
             // This is a generated sample ("{@sample.callingForm}", "{@sample.valueSet.id}")
 
+            // sample-metadata
+            //   title: {@sample.title}
+            //   description: {@sample.description}
+            //   usage: dotnet run {@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}
+
+            // [START {@sample.regionTag}]
             namespace {@sampleFile.fileHeader.packageName}.Samples
             {
                 // [START {@sample.regionTag}]
