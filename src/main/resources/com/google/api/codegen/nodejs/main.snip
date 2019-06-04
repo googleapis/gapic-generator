@@ -58,10 +58,12 @@
     constructor(opts) {
       this._descriptors = {};
 
-      const servicePath =
-        opts.servicePath ||
-        opts.apiEndpoint ||
-        this.constructor.servicePath;
+      let servicePath = this.constructor.servicePath;
+      if (opts && opts.servicePath) {
+        servicePath = opts.servicePath;
+      } else if (opts && opts.apiEndpoint) {
+        servicePath = opts.apiEndpoint;
+      }
 
       // Ensure that options include the service address and port.
       opts = Object.assign(

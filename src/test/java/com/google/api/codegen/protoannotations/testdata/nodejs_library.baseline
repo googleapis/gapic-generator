@@ -4213,10 +4213,12 @@ class LibraryServiceClient {
   constructor(opts) {
     this._descriptors = {};
 
-    const servicePath =
-      opts.servicePath ||
-      opts.apiEndpoint ||
-      this.constructor.servicePath;
+    let servicePath = this.constructor.servicePath;
+    if (opts && opts.servicePath) {
+      servicePath = opts.servicePath;
+    } else if (opts && opts.apiEndpoint) {
+      servicePath = opts.apiEndpoint;
+    }
 
     // Ensure that options include the service address and port.
     opts = Object.assign(
@@ -7121,10 +7123,12 @@ class MyProtoClient {
   constructor(opts) {
     this._descriptors = {};
 
-    const servicePath =
-      opts.servicePath ||
-      opts.apiEndpoint ||
-      this.constructor.servicePath;
+    let servicePath = this.constructor.servicePath;
+    if (opts && opts.servicePath) {
+      servicePath = opts.servicePath;
+    } else if (opts && opts.apiEndpoint) {
+      servicePath = opts.apiEndpoint;
+    }
 
     // Ensure that options include the service address and port.
     opts = Object.assign(
@@ -7379,6 +7383,11 @@ describe('LibraryServiceClient', () => {
     const port = libraryModule.v1.LibraryServiceClient.port;
     assert(port);
     assert(typeof port === 'number');
+  });
+
+  it('should create a client with no options', () => {
+    const client = new libraryModule.v1.LibraryServiceClient();
+    assert(client);
   });
 
   describe('createShelf', () => {
@@ -9253,6 +9262,11 @@ describe('MyProtoClient', () => {
     const port = libraryModule.v1.MyProtoClient.port;
     assert(port);
     assert(typeof port === 'number');
+  });
+
+  it('should create a client with no options', () => {
+    const client = new libraryModule.v1.MyProtoClient();
+    assert(client);
   });
 
   describe('myMethod', () => {

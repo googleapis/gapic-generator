@@ -225,10 +225,12 @@ class DecrementerServiceClient {
   constructor(opts) {
     this._descriptors = {};
 
-    const servicePath =
-      opts.servicePath ||
-      opts.apiEndpoint ||
-      this.constructor.servicePath;
+    let servicePath = this.constructor.servicePath;
+    if (opts && opts.servicePath) {
+      servicePath = opts.servicePath;
+    } else if (opts && opts.apiEndpoint) {
+      servicePath = opts.apiEndpoint;
+    }
 
     // Ensure that options include the service address and port.
     opts = Object.assign(
@@ -558,10 +560,12 @@ class IncrementerServiceClient {
   constructor(opts) {
     this._descriptors = {};
 
-    const servicePath =
-      opts.servicePath ||
-      opts.apiEndpoint ||
-      this.constructor.servicePath;
+    let servicePath = this.constructor.servicePath;
+    if (opts && opts.servicePath) {
+      servicePath = opts.servicePath;
+    } else if (opts && opts.apiEndpoint) {
+      servicePath = opts.apiEndpoint;
+    }
 
     // Ensure that options include the service address and port.
     opts = Object.assign(
@@ -829,6 +833,11 @@ describe('IncrementerServiceClient', () => {
     assert(typeof port === 'number');
   });
 
+  it('should create a client with no options', () => {
+    const client = new multipleServicesModule.v1.IncrementerServiceClient();
+    assert(client);
+  });
+
   describe('increment', () => {
     it('invokes increment without error', done => {
       const client = new multipleServicesModule.v1.IncrementerServiceClient({
@@ -888,6 +897,11 @@ describe('DecrementerServiceClient', () => {
     const port = multipleServicesModule.v1.DecrementerServiceClient.port;
     assert(port);
     assert(typeof port === 'number');
+  });
+
+  it('should create a client with no options', () => {
+    const client = new multipleServicesModule.v1.DecrementerServiceClient();
+    assert(client);
   });
 
   describe('decrement', () => {
