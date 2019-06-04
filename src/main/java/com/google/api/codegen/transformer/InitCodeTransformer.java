@@ -33,6 +33,7 @@ import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValueConfig;
+import com.google.api.codegen.util.EscaperFactory;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.util.SymbolTable;
@@ -439,6 +440,7 @@ public class InitCodeTransformer {
               .typeName(simpleInitLine.typeName())
               .isEnum(simpleInitLine.isEnum())
               .cliFlagName(param.getIdentifier().toLowerUnderscore())
+              .cliFlagDefaultValue(getCliFlagDefaultValue(param))
               .description(param.getDescription())
               .build());
 
@@ -967,5 +969,27 @@ public class InitCodeTransformer {
       return oneofConfig.getSingleResourceNameConfigs().get(0);
     }
     return matchingConfigs.get(0);
+
+  private static String getCliFlagDefaultValue(InitCodeNode item) {
+    checkArgument(
+        !item.getType().isMessage(), "Only enums and primitive types are supported for now.");
+
+    String value = item.getInitValueConfig().getInitialValue().getValue();
+    if (item.getType().isStringType()) {
+      return getEscapedCliFlagDefaultValue(value);
+    }
+    return value;
+  }
+
+  static String getEscapedCliFlagDefaultValue(String unescapedValue) {
+    String escapedValue = EscaperFactory.getCliEscaper().escape(unescapedValue);
+    // It's much harder to accurately determine whether it's necessary to quote the
+    // string. But it is a reasonable compromise to not quote only when the string
+    // is pure alphabets or digits.
+    if (!escapedValue.equals(unescapedValue)
+        || !escapedValue.chars().allMatch(Character::isLetterOrDigit)) {
+      return "\"" + escapedValue + "\"";
+    }
+    return unescapedValue;
   }
 }

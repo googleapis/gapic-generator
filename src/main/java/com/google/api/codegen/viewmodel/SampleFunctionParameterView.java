@@ -31,6 +31,8 @@ public abstract class SampleFunctionParameterView {
 
   public abstract InitValueView initValue();
 
+  public abstract String cliFlagDefaultValue();
+
   /** We need to keep the cli flag names in the same case (snake_case) across all languages. */
   public abstract String cliFlagName();
 
@@ -54,6 +56,8 @@ public abstract class SampleFunctionParameterView {
     public abstract Builder initValue(InitValueView val);
 
     public abstract Builder cliFlagName(String val);
+
+    public abstract Builder cliFlagDefaultValue(String val);
 
     public abstract Builder description(String val);
 
