@@ -4211,14 +4211,12 @@ class LibraryServiceClient {
    *     API remote host.
    */
   constructor(opts) {
+    opts = opts || {};
     this._descriptors = {};
 
-    let servicePath = this.constructor.servicePath;
-    if (opts && opts.servicePath) {
-      servicePath = opts.servicePath;
-    } else if (opts && opts.apiEndpoint) {
-      servicePath = opts.apiEndpoint;
-    }
+    const servicePath = opts.servicePath ||
+                        opts.apiEndpoint ||
+                        this.constructor.servicePath;
 
     // Ensure that options include the service address and port.
     opts = Object.assign(
@@ -7121,14 +7119,12 @@ class MyProtoClient {
    *     API remote host.
    */
   constructor(opts) {
+    opts = opts || {};
     this._descriptors = {};
 
-    let servicePath = this.constructor.servicePath;
-    if (opts && opts.servicePath) {
-      servicePath = opts.servicePath;
-    } else if (opts && opts.apiEndpoint) {
-      servicePath = opts.apiEndpoint;
-    }
+    const servicePath = opts.servicePath ||
+                        opts.apiEndpoint ||
+                        this.constructor.servicePath;
 
     // Ensure that options include the service address and port.
     opts = Object.assign(
