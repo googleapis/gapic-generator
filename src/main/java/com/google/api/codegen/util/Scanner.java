@@ -92,7 +92,6 @@ public class Scanner {
       while (true) {
         Preconditions.checkArgument(loc < input.length(), "unclosed string literal: %s", input);
         codePoint = input.codePointAt(loc);
-
         if (!escaped && codePoint == '"') {
           loc += Character.charCount(codePoint);
           tokenStr = sb.toString();
@@ -100,17 +99,16 @@ public class Scanner {
         }
         if (!escaped && codePoint == '\\') {
           escaped = true;
+          loc += Character.charCount(codePoint);
           continue;
         }
         if (escaped) {
           Integer esc = ESCAPES.get(codePoint);
-          if (esc != null) {
-            sb.appendCodePoint(esc);
-          } else {
-            throw new IllegalArgumentException(
-                String.format("unrecognized escape '\\%c': %s", codePoint, input));
-          }
+          Preconditions.checkArgument(
+              esc != null, "unrecognized escape '\\%c': %s", (char) codePoint, input);
           escaped = false;
+          sb.appendCodePoint(esc);
+          loc += Character.charCount(esc);
           continue;
         }
         sb.appendCodePoint(codePoint);

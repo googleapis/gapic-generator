@@ -223,6 +223,7 @@ class DecrementerServiceClient {
    *     API remote host.
    */
   constructor(opts) {
+    opts = opts || {};
     this._descriptors = {};
 
     const servicePath =
@@ -556,6 +557,7 @@ class IncrementerServiceClient {
    *     API remote host.
    */
   constructor(opts) {
+    opts = opts || {};
     this._descriptors = {};
 
     const servicePath =
@@ -829,6 +831,11 @@ describe('IncrementerServiceClient', () => {
     assert(typeof port === 'number');
   });
 
+  it('should create a client with no options', () => {
+    const client = new multipleServicesModule.v1.IncrementerServiceClient();
+    assert(client);
+  });
+
   describe('increment', () => {
     it('invokes increment without error', done => {
       const client = new multipleServicesModule.v1.IncrementerServiceClient({
@@ -888,6 +895,11 @@ describe('DecrementerServiceClient', () => {
     const port = multipleServicesModule.v1.DecrementerServiceClient.port;
     assert(port);
     assert(typeof port === 'number');
+  });
+
+  it('should create a client with no options', () => {
+    const client = new multipleServicesModule.v1.DecrementerServiceClient();
+    assert(client);
   });
 
   describe('decrement', () => {
