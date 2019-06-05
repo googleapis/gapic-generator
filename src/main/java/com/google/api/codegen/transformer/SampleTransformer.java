@@ -240,7 +240,7 @@ public abstract class SampleTransformer {
     ImportSectionView sampleImportSectionView =
         sampleImportTransformer()
             .generateImportSection(
-                methodContext,
+                methodContext.cloneWithEmptyTypeTable(),
                 form,
                 outputContext,
                 methodContext.getTypeTable(),
@@ -276,6 +276,8 @@ public abstract class SampleTransformer {
         .sampleFunctionName(
             methodContext.getNamer().getSampleFunctionName(methodContext.getMethodModel()))
         .sampleFunctionDoc(sampleFunctionDocView)
+        .title(config.valueSet().getTitle())
+        .description(config.valueSet().getDescription())
         .build();
   }
 

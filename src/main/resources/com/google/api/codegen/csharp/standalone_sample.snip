@@ -2,6 +2,7 @@
 @extends "csharp/commandline.snip"
 @extends "csharp/common.snip"
 @extends "csharp/common_initcode.snip"
+@extends "metadatagen/samplegen.snip"
 
 # StaticLangFileView
 @snippet generate(sampleFile)
@@ -11,13 +12,13 @@
 
             // This is a generated sample ("{@sample.callingForm}", "{@sample.valueSet.id}")
 
-            // [START {@sample.regionTag}]
-            // FIXME: import everything this sample needs
-            @if sample.sampleImports
-                {@imports(sample.sampleImports)}
+            // sample-metadata
+            //   title: {@sample.title}
+            //   description: {@sample.description}
+            //   usage: dotnet run {@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}
 
-            @end
-            public class {@sampleClass.name}
+            // [START {@sample.regionTag}]
+            namespace {@sampleFile.fileHeader.packageName}.Samples
             {
                 @if not(sample.sampleFunctionDoc.isEmpty)
                     {@processDoc(sample.sampleFunctionDoc)}
@@ -95,7 +96,6 @@
                     Unrecognized callingForm: {@sample.callingForm}
                 @end
                 // [END {@sample.regionTag}]
-
                 public static void Main(string[] args)
                 {
                     {@processCliArguments(sample)}
