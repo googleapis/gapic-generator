@@ -20,90 +20,96 @@
             // [START {@sample.regionTag}]
             namespace {@sampleFile.fileHeader.packageName}.Samples
             {
-                @if not(sample.sampleFunctionDoc.isEmpty)
-                    {@processDoc(sample.sampleFunctionDoc)}
+                @if sample.sampleImports.appImports
+                    {@imports(sample.sampleImports)}
                 @end
-                @switch sample.callingForm
-                #
-                # Unary Methods
-                #
-                @case "Request"
-                    {@unaryMethod(apiMethod, sample)}
-                @case"Flattened"
-                    {@unaryMethod(apiMethod, sample)}
-                @case "RequestAsync"
-                    {@unaryAsyncMethod(apiMethod, sample)}
-                @case "FlattenedAsync"
-                    {@unaryAsyncMethod(apiMethod, sample)}
-                #
-                # Pagination
-                #
-                @case "RequestPaged"
-                    {@pagedMethod(apiMethod, sample)}
-                @case "FlattenedPaged"
-                    {@pagedMethod(apiMethod, sample)}
-                @case "RequestPagedAll"
-                    {@pagedAllMethod(apiMethod, sample)}
-                @case "FlattenedPagedAll"
-                    {@pagedAllMethod(apiMethod, sample)}
-                @case "RequestPagedPageSize"
-                    {@pagedPageSizeMethod(apiMethod, sample)}
-                @case "FlattenedPagedPageSize"
-                    {@pagedPageSizeMethod(apiMethod, sample)}
-                @case "RequestAsyncPaged"
-                    {@pagedAsyncMethod(apiMethod, sample)}
-                @case "FlattenedAsyncPaged"
-                    {@pagedAsyncMethod(apiMethod, sample)}
-                @case "RequestAsyncPagedAll"
-                    {@pagedAllAsyncMethod(apiMethod, sample)}
-                @case "FlattenedAsyncPagedAll"
-                    {@pagedAllAsyncMethod(apiMethod, sample)}
-                @case "RequestAsyncPagedPageSize"
-                    {@pagedPageSizeAsyncMethod(apiMethod, sample)}
-                @case "FlattenedAsyncPagedPageSize"
-                    {@pagedPageSizeAsyncMethod(apiMethod, sample)}
-                #
-                # LRO
-                #
-                @case "LongRunningRequestPollUntilComplete"
-                    {@longRunningPollUntilCompleteMethod(apiMethod, sample)}
-                @case "LongRunningFlattenedPollUntilComplete"
-                    {@longRunningPollUntilCompleteMethod(apiMethod, sample)}
-                @case "LongRunningRequestPollLater"
-                    {@longRunningPollLaterMethod(apiMethod, sample)}
-                @case "LongRunningFlattenedPollLater"
-                    {@longRunningPollLaterMethod(apiMethod, sample)}
-                @case "LongRunningRequestAsyncPollUntilComplete"
-                    {@longRunningAsyncPollUntilCompleteMethod(apiMethod, sample)}
-                @case "LongRunningFlattenedAsycPollUntilComplete"
-                    {@longRunningAsyncPollUntilCompleteMethod(apiMethod, sample)}
-                @case "LongRunningRequestAsyncPollLater"
-                    {@longRunningAsyncPollLaterMethod(apiMethod, sample)}
-                @case "LongRunningFlattenedAsycPollLater"
-                    {@longRunningAsyncPollLaterMethod(apiMethod, sample)}
-                #
-                # gRPC streaming
-                #
-                @case "RequestStreamingBidi"
-                    {@streamingBidiMethod(apiMethod, sample)}
-                @case "FlattenedStreamingBidi"
-                    {@streamingBidiMethod(apiMethod, sample)}
-                @case "RequestStreamingServer"
-                    {@streamingServerMethod(apiMethod, sample)}
-                @case "FlattenedStreamingServer"
-                    {@streamingServerMethod(apiMethod, sample)}
-                @default
-                    Unrecognized callingForm: {@sample.callingForm}
-                @end
-                // [END {@sample.regionTag}]
-                public static void Main(string[] args)
+                public class {@sampleClass.name}
                 {
-                    {@processCliArguments(sample)}
-                }
-                @if sample.sampleInitCode.argDefaultParams
+                    @if not(sample.sampleFunctionDoc.isEmpty)
+                        {@processDoc(sample.sampleFunctionDoc)}
+                    @end
+                    @switch sample.callingForm
+                    #
+                    # Unary Methods
+                    #
+                    @case "Request"
+                        {@unaryMethod(apiMethod, sample)}
+                    @case"Flattened"
+                        {@unaryMethod(apiMethod, sample)}
+                    @case "RequestAsync"
+                        {@unaryAsyncMethod(apiMethod, sample)}
+                    @case "FlattenedAsync"
+                        {@unaryAsyncMethod(apiMethod, sample)}
+                    #
+                    # Pagination
+                    #
+                    @case "RequestPaged"
+                        {@pagedMethod(apiMethod, sample)}
+                    @case "FlattenedPaged"
+                        {@pagedMethod(apiMethod, sample)}
+                    @case "RequestPagedAll"
+                        {@pagedAllMethod(apiMethod, sample)}
+                    @case "FlattenedPagedAll"
+                        {@pagedAllMethod(apiMethod, sample)}
+                    @case "RequestPagedPageSize"
+                        {@pagedPageSizeMethod(apiMethod, sample)}
+                    @case "FlattenedPagedPageSize"
+                        {@pagedPageSizeMethod(apiMethod, sample)}
+                    @case "RequestAsyncPaged"
+                        {@pagedAsyncMethod(apiMethod, sample)}
+                    @case "FlattenedAsyncPaged"
+                        {@pagedAsyncMethod(apiMethod, sample)}
+                    @case "RequestAsyncPagedAll"
+                        {@pagedAllAsyncMethod(apiMethod, sample)}
+                    @case "FlattenedAsyncPagedAll"
+                        {@pagedAllAsyncMethod(apiMethod, sample)}
+                    @case "RequestAsyncPagedPageSize"
+                        {@pagedPageSizeAsyncMethod(apiMethod, sample)}
+                    @case "FlattenedAsyncPagedPageSize"
+                        {@pagedPageSizeAsyncMethod(apiMethod, sample)}
+                    #
+                    # LRO
+                    #
+                    @case "LongRunningRequestPollUntilComplete"
+                        {@longRunningPollUntilCompleteMethod(apiMethod, sample)}
+                    @case "LongRunningFlattenedPollUntilComplete"
+                        {@longRunningPollUntilCompleteMethod(apiMethod, sample)}
+                    @case "LongRunningRequestPollLater"
+                        {@longRunningPollLaterMethod(apiMethod, sample)}
+                    @case "LongRunningFlattenedPollLater"
+                        {@longRunningPollLaterMethod(apiMethod, sample)}
+                    @case "LongRunningRequestAsyncPollUntilComplete"
+                        {@longRunningAsyncPollUntilCompleteMethod(apiMethod, sample)}
+                    @case "LongRunningFlattenedAsycPollUntilComplete"
+                        {@longRunningAsyncPollUntilCompleteMethod(apiMethod, sample)}
+                    @case "LongRunningRequestAsyncPollLater"
+                        {@longRunningAsyncPollLaterMethod(apiMethod, sample)}
+                    @case "LongRunningFlattenedAsycPollLater"
+                        {@longRunningAsyncPollLaterMethod(apiMethod, sample)}
+                    #
+                    # gRPC streaming
+                    #
+                    @case "RequestStreamingBidi"
+                        {@streamingBidiMethod(apiMethod, sample)}
+                    @case "FlattenedStreamingBidi"
+                        {@streamingBidiMethod(apiMethod, sample)}
+                    @case "RequestStreamingServer"
+                        {@streamingServerMethod(apiMethod, sample)}
+                    @case "FlattenedStreamingServer"
+                        {@streamingServerMethod(apiMethod, sample)}
+                    @default
+                        Unrecognized callingForm: {@sample.callingForm}
+                    @end
+                    // [END {@sample.regionTag}]
+                    public static void Main(string[] args)
+                    {
+                        {@processCliArguments(sample)}
+                    }
+                    @if sample.sampleInitCode.argDefaultParams
 
-                    {@optionsClass(sample, apiMethod)}
-                @end
+                        {@optionsClass(sample, apiMethod)}
+                    @end
+                }
             }
         @end
     @end
