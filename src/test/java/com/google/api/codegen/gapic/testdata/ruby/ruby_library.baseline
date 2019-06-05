@@ -5414,7 +5414,6 @@ require "library"
 
 # Test response handling for methods that return empty
 def sample_babble_about_book
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5425,8 +5424,6 @@ def sample_babble_about_book
 
   # No one replied
   puts "No one replied."
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -5464,7 +5461,6 @@ require "library"
 
 # Test default response handling is turned off for methods that return empty
 def sample_babble_about_book
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5472,8 +5468,6 @@ def sample_babble_about_book
 
   requests = [request]
   library_client.babble_about_book(requests)
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -5511,7 +5505,6 @@ require "library"
 
 # Test response handling for methods that return empty
 def sample_delete_shelf
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5521,8 +5514,6 @@ def sample_delete_shelf
 
   # Shelf deleted
   puts "Shelf deleted."
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -5560,15 +5551,12 @@ require "library"
 
 # Test default response handling is turned off for methods that return empty
 def sample_delete_shelf
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
   formatted_name = library_client.class.shelf_path("[SHELF_ID]")
 
   library_client.delete_shelf(formatted_name)
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -5606,7 +5594,6 @@ require "library"
 
 # Testing calling forms
 def sample_find_related_books
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5620,8 +5607,6 @@ def sample_find_related_books
     book = element
     puts "Here's a related book: #{book}"
   end
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -5659,7 +5644,6 @@ require "library"
 
 # Testing calling forms
 def sample_find_related_books
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5676,8 +5660,6 @@ def sample_find_related_books
       puts "Here's a related book: #{book}"
     end
   end
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -5715,7 +5697,6 @@ require "library"
 
 # Testing calling forms
 def sample_get_big_book(shelf)
-  # [START hopper_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5750,8 +5731,6 @@ def sample_get_big_book(shelf)
 
   puts "name: #{response.name}"
   puts "author: #{response.author}"
-
-  # [END hopper_core]
 end
 # [END hopper]
 
@@ -5803,7 +5782,6 @@ require "library"
  # shelf to retrieve the big book from.
  # @param big_book_name {String} The name of the book.
 def sample_get_big_book(shelf, big_book_name)
-  # [START hopper_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5822,8 +5800,6 @@ def sample_get_big_book(shelf, big_book_name)
   response = operation.response
 
   puts response.inspect
-
-  # [END hopper_core]
 end
 # [END hopper]
 
@@ -5872,7 +5848,6 @@ require "library"
 
 # Test response handling for methods that return empty
 def sample_get_big_nothing
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5890,8 +5865,6 @@ def sample_get_big_nothing
 
   # Got nothing
   puts "Got nothing."
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -5929,7 +5902,6 @@ require "library"
 
 # Test default response handling is turned off for methods that return empty
 def sample_get_big_nothing
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5944,8 +5916,6 @@ def sample_get_big_nothing
   raise operation.results.message if operation.error?
 
   response = operation.response
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -5982,7 +5952,6 @@ require "library"
 # [START sample]
 
 def sample_get_book
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5994,8 +5963,6 @@ def sample_get_book
   map_value_field = response.map_message_value["key"].field
   puts "Test printing map fields: #{response.map_list_value_value["quoted_key"].inspect}"
   puts "Test printing enum fields of a map value: #{response.map_message_value["key"].alignment}"
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -6033,7 +6000,6 @@ require "library"
 
 # Testing calling forms
 def sample_stream_books
-  # [START lovelace_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6042,8 +6008,6 @@ def sample_stream_books
   library_client.stream_books(name).each do |element|
     puts element.inspect
   end
-
-  # [END lovelace_core]
 end
 # [END lovelace]
 
@@ -6081,7 +6045,6 @@ require "library"
 
 # Testing calling forms
 def sample_monolog_about_book
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6092,8 +6055,6 @@ def sample_monolog_about_book
   response = library_client.monolog_about_book(requests, sample)
 
   puts "The stage of the comment is: #{response.stage}"
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -6134,7 +6095,6 @@ require "library"
  # @param shelf_name {String} The name of the shelf where books are published to.
  # @param edition {Integer} The edition of the series.
 def sample_publish_series(shelf_name, edition)
-  # [START canonical_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6166,8 +6126,6 @@ def sample_publish_series(shelf_name, edition)
   puts "The author of the first book is: #{response.books[0].author}"
   puts "That's all!"
   puts "series_uuid: #{response.series_uuid.series_bytes}"
-
-  # [END canonical_core]
 end
 # [END canonical]
 
@@ -6216,7 +6174,6 @@ require "library"
 
 # Testing calling forms
 def sample_publish_series
-  # [START canonical_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6227,8 +6184,6 @@ def sample_publish_series
 
   response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
   puts response.inspect
-
-  # [END canonical_core]
 end
 # [END canonical]
 
@@ -6266,7 +6221,6 @@ require "library"
 
 # Test request object field comments
 def sample_publish_series
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6300,8 +6254,6 @@ def sample_publish_series
 
   response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
   puts response.inspect
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -6339,7 +6291,6 @@ require "library"
 
 # Testing write fields to files.
 def sample_publish_series
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6356,8 +6307,6 @@ def sample_publish_series
   # testing writing string field.
   File.write "series_uuid_in_plain_text.txt", response.series_uuid.series_string
 
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -6395,7 +6344,6 @@ require "library"
 
 # Test default calling forms for unary methods.
 def sample_get_shelf
-  # [START sample_get_shelf_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6404,8 +6352,6 @@ def sample_get_shelf
 
   response = library_client.get_shelf(formatted_name, options_)
   puts "The theme of the shelf is: #{response.theme}"
-
-  # [END sample_get_shelf_core]
 end
 # [END sample_get_shelf]
 
@@ -6443,7 +6389,6 @@ require "library"
 
 # Testing calling forms
 def sample_stream_shelves
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6452,8 +6397,6 @@ def sample_stream_shelves
   library_client.stream_shelves(formatted_name).each do |element|
     puts element.inspect
   end
-
-  # [END sample_core]
 end
 # [END sample]
 
@@ -6491,7 +6434,6 @@ require "library"
 
 # Test default calling form for paging methods.
 def sample_list_shelves
-  # [START test_default_calling_form_for_paging_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6499,8 +6441,6 @@ def sample_list_shelves
   library_client.list_shelves.each do |element|
     puts "shelf name: #{element.inspect}"
   end
-
-  # [END test_default_calling_form_for_paging_core]
 end
 # [END test_default_calling_form_for_paging]
 
@@ -6538,7 +6478,6 @@ require "library"
 
 # Testing calling forms
 def sample_get_big_book(shelf)
-  # [START this_tag_should_be_the_name_of_the_file_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6573,8 +6512,6 @@ def sample_get_big_book(shelf)
 
   puts "name: #{response.name}"
   puts "author: #{response.author}"
-
-  # [END this_tag_should_be_the_name_of_the_file_core]
 end
 # [END this_tag_should_be_the_name_of_the_file]
 
@@ -6622,7 +6559,6 @@ require "library"
 
 # Testing calling forms
 def sample_discuss_book(image_file_name, stage)
-  # [START turing_prog_request_streaming_bidi_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6642,8 +6578,6 @@ def sample_discuss_book(image_file_name, stage)
   library_client.discuss_book(requests).each do |element|
     puts element.inspect
   end
-
-  # [END turing_prog_request_streaming_bidi_core]
 end
 # [END turing_prog_request_streaming_bidi]
 
