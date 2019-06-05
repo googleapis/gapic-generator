@@ -1,5 +1,6 @@
 @extends "nodejs/common.snip"
 @extends "nodejs/init_code.snip"
+@extends "metadatagen/samplegen.snip"
 
 @snippet generate(sampleFile)
   @let apiMethod = sampleFile.libraryMethod
@@ -7,11 +8,13 @@
       // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
       'use strict';
 
-      // [START {@sample.regionTag}]
-      // [START {@sample.regionTag}_core]
-      {@standaloneSample(apiMethod, sample)}
+      // sample-metadata:
+      //   title: {@sample.title}
+      //   description: {@sample.description}
+      //   usage: node {@sampleFile.outputPath} {@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}
 
-      // [END {@sample.regionTag}_core]
+      // [START {@sample.regionTag}]
+      {@standaloneSample(apiMethod, sample)}
       // [END {@sample.regionTag}]
       // tslint:disable-next-line:no-any
 
