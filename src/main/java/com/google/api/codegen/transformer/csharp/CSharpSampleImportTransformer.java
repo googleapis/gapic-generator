@@ -107,6 +107,10 @@ public class CSharpSampleImportTransformer extends StandardSampleImportTransform
   }
 
   private void saveResourceTypeName(MethodContext context) {
+    // TODO(hzyi): The only case where we have a resource name in the response handling part
+    // is paged streaming methods, so this logic works.
+    // However, we should make this more general by storing the actual resource name
+    // type in `OutputTransformer.ScopeTable` rather than null for resource names
     FieldConfig resourceFieldConfig =
         context.getMethodConfig().getPageStreaming().getResourcesFieldConfig();
     if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {

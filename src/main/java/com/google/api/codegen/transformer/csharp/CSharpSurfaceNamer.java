@@ -726,10 +726,10 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
             .addEscape('}', "}}")
             .build()
             .escape(spec);
-    Object[] formattedArgs =
-        args.stream().map(a -> String.format("{%s}", a)).toArray(Object[]::new);
+    String[] formattedArgs =
+        args.stream().map(a -> String.format("{%s}", a)).toArray(String[]::new);
     return ImmutableList.<String>builder()
-        .add(String.format(spec, formattedArgs))
+        .add(String.format(spec, (Object[]) formattedArgs))
         .addAll(args)
         .build();
   }
