@@ -5414,7 +5414,6 @@ require "library"
 
 # Test response handling for methods that return empty
 def sample_babble_about_book
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5425,17 +5424,16 @@ def sample_babble_about_book
 
   # No one replied
   puts "No one replied."
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_babble_about_book
 end
+
 ============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5464,7 +5462,6 @@ require "library"
 
 # Test default response handling is turned off for methods that return empty
 def sample_babble_about_book
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5472,17 +5469,16 @@ def sample_babble_about_book
 
   requests = [request]
   library_client.babble_about_book(requests)
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_babble_about_book
 end
+
 ============== file: samples/v1/delete_shelf_request_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5511,7 +5507,6 @@ require "library"
 
 # Test response handling for methods that return empty
 def sample_delete_shelf
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5521,17 +5516,16 @@ def sample_delete_shelf
 
   # Shelf deleted
   puts "Shelf deleted."
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_delete_shelf
 end
+
 ============== file: samples/v1/delete_shelf_request_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5560,24 +5554,22 @@ require "library"
 
 # Test default response handling is turned off for methods that return empty
 def sample_delete_shelf
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
   formatted_name = library_client.class.shelf_path("[SHELF_ID]")
 
   library_client.delete_shelf(formatted_name)
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_delete_shelf
 end
+
 ============== file: samples/v1/find_related_books_request_paged_all_odyssey.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5606,7 +5598,6 @@ require "library"
 
 # Testing calling forms
 def sample_find_related_books
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5620,17 +5611,16 @@ def sample_find_related_books
     book = element
     puts "Here's a related book: #{book}"
   end
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_find_related_books
 end
+
 ============== file: samples/v1/find_related_books_request_paged_odyssey.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5659,7 +5649,6 @@ require "library"
 
 # Testing calling forms
 def sample_find_related_books
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5676,17 +5665,16 @@ def sample_find_related_books
       puts "Here's a related book: #{book}"
     end
   end
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_find_related_books
 end
+
 ============== file: samples/v1/get_big_book_long_running_request_async_wap.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5714,8 +5702,7 @@ require "library"
 # [START hopper]
 
 # Testing calling forms
-def sample_get_big_book(shelf)
-  # [START hopper_core]
+def sample_get_big_book shelf
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5750,15 +5737,13 @@ def sample_get_big_book(shelf)
 
   puts "name: #{response.name}"
   puts "author: #{response.author}"
-
-  # [END hopper_core]
 end
 # [END hopper]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
 
   shelf = "Novel\"`	
 "
@@ -5771,6 +5756,7 @@ if $0 == __FILE__
 
   sample_get_big_book(shelf)
 end
+
 ============== file: samples/v1/get_big_book_long_running_request_async_wap2.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5797,13 +5783,12 @@ require "library"
 
 # [START hopper]
 
- # Testing resource name overlap
- #
- # @param shelf {String} Test word wrapping for long lines. This is a long comment. The name of the
- # shelf to retrieve the big book from.
- # @param big_book_name {String} The name of the book.
-def sample_get_big_book(shelf, big_book_name)
-  # [START hopper_core]
+# Testing resource name overlap
+#
+# @param shelf {String} Test word wrapping for long lines. This is a long comment. The name of the
+# shelf to retrieve the big book from.
+# @param big_book_name {String} The name of the book.
+def sample_get_big_book shelf, big_book_name
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5822,15 +5807,13 @@ def sample_get_big_book(shelf, big_book_name)
   response = operation.response
 
   puts response.inspect
-
-  # [END hopper_core]
 end
 # [END hopper]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
 
   shelf = "Novel"
   big_book_name = "War and Peace"
@@ -5844,6 +5827,7 @@ if $0 == __FILE__
 
   sample_get_big_book(shelf, big_book_name)
 end
+
 ============== file: samples/v1/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5872,7 +5856,6 @@ require "library"
 
 # Test response handling for methods that return empty
 def sample_get_big_nothing
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5890,17 +5873,16 @@ def sample_get_big_nothing
 
   # Got nothing
   puts "Got nothing."
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_get_big_nothing
 end
+
 ============== file: samples/v1/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5929,7 +5911,6 @@ require "library"
 
 # Test default response handling is turned off for methods that return empty
 def sample_get_big_nothing
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5944,17 +5925,16 @@ def sample_get_big_nothing
   raise operation.results.message if operation.error?
 
   response = operation.response
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_get_big_nothing
 end
+
 ============== file: samples/v1/get_book_request_test_on_success_map.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5982,7 +5962,6 @@ require "library"
 # [START sample]
 
 def sample_get_book
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5994,17 +5973,16 @@ def sample_get_book
   map_value_field = response.map_message_value["key"].field
   puts "Test printing map fields: #{response.map_list_value_value["quoted_key"].inspect}"
   puts "Test printing enum fields of a map value: #{response.map_message_value["key"].alignment}"
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_get_book
 end
+
 ============== file: samples/v1/lovelace.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6033,7 +6011,6 @@ require "library"
 
 # Testing calling forms
 def sample_stream_books
-  # [START lovelace_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6042,17 +6019,16 @@ def sample_stream_books
   library_client.stream_books(name).each do |element|
     puts element.inspect
   end
-
-  # [END lovelace_core]
 end
 # [END lovelace]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_stream_books
 end
+
 ============== file: samples/v1/monolog_about_book_request_streaming_client_prog.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6081,7 +6057,6 @@ require "library"
 
 # Testing calling forms
 def sample_monolog_about_book
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6092,17 +6067,16 @@ def sample_monolog_about_book
   response = library_client.monolog_about_book(requests, sample)
 
   puts "The stage of the comment is: #{response.stage}"
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_monolog_about_book
 end
+
 ============== file: samples/v1/publish_series_request_pi_version.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6129,12 +6103,11 @@ require "library"
 
 # [START canonical]
 
- # Testing <@calling forms>
- #
- # @param shelf_name {String} The name of the shelf where books are published to.
- # @param edition {Integer} The edition of the series.
-def sample_publish_series(shelf_name, edition)
-  # [START canonical_core]
+# Testing <@calling forms>
+#
+# @param shelf_name {String} The name of the shelf where books are published to.
+# @param edition {Integer} The edition of the series.
+def sample_publish_series shelf_name, edition
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6166,15 +6139,13 @@ def sample_publish_series(shelf_name, edition)
   puts "The author of the first book is: #{response.books[0].author}"
   puts "That's all!"
   puts "series_uuid: #{response.series_uuid.series_bytes}"
-
-  # [END canonical_core]
 end
 # [END canonical]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
 
   shelf_name = "Math"
   edition = 123
@@ -6188,6 +6159,7 @@ if $0 == __FILE__
 
   sample_publish_series(shelf_name, edition)
 end
+
 ============== file: samples/v1/publish_series_request_second_edition.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6216,7 +6188,6 @@ require "library"
 
 # Testing calling forms
 def sample_publish_series
-  # [START canonical_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6227,17 +6198,16 @@ def sample_publish_series
 
   response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
   puts response.inspect
-
-  # [END canonical_core]
 end
 # [END canonical]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_publish_series
 end
+
 ============== file: samples/v1/publish_series_request_test_request_object_field_comments.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6266,7 +6236,6 @@ require "library"
 
 # Test request object field comments
 def sample_publish_series
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6300,17 +6269,16 @@ def sample_publish_series
 
   response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
   puts response.inspect
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_publish_series
 end
+
 ============== file: samples/v1/publish_series_request_test_write_to_file.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6339,7 +6307,6 @@ require "library"
 
 # Testing write fields to files.
 def sample_publish_series
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6356,17 +6323,16 @@ def sample_publish_series
   # testing writing string field.
   File.write "series_uuid_in_plain_text.txt", response.series_uuid.series_string
 
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_publish_series
 end
+
 ============== file: samples/v1/sample_get_shelf.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6395,7 +6361,6 @@ require "library"
 
 # Test default calling forms for unary methods.
 def sample_get_shelf
-  # [START sample_get_shelf_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6404,17 +6369,16 @@ def sample_get_shelf
 
   response = library_client.get_shelf(formatted_name, options_)
   puts "The theme of the shelf is: #{response.theme}"
-
-  # [END sample_get_shelf_core]
 end
 # [END sample_get_shelf]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_get_shelf
 end
+
 ============== file: samples/v1/stream_shelves_request_streaming_server_empty.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6443,7 +6407,6 @@ require "library"
 
 # Testing calling forms
 def sample_stream_shelves
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6452,17 +6415,16 @@ def sample_stream_shelves
   library_client.stream_shelves(formatted_name).each do |element|
     puts element.inspect
   end
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_stream_shelves
 end
+
 ============== file: samples/v1/test_default_calling_form_for_paging.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6491,7 +6453,6 @@ require "library"
 
 # Test default calling form for paging methods.
 def sample_list_shelves
-  # [START test_default_calling_form_for_paging_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6499,17 +6460,16 @@ def sample_list_shelves
   library_client.list_shelves.each do |element|
     puts "shelf name: #{element.inspect}"
   end
-
-  # [END test_default_calling_form_for_paging_core]
 end
 # [END test_default_calling_form_for_paging]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_list_shelves
 end
+
 ============== file: samples/v1/test_resource_name_oneof.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6527,12 +6487,16 @@ end
 
 # DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof")
 
+# sample-metadata
+#   title:
+#   description:
+#   bundle exec ruby samples/v1/test_resource_name_oneof.rb
+
 require "library"
 
 # [START test_resource_name_oneof]
 
 def sample_get_book_from_absolutely_anywhere
-  # [START test_resource_name_oneof_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6540,17 +6504,16 @@ def sample_get_book_from_absolutely_anywhere
 
   response = library_client.get_book_from_absolutely_anywhere(formatted_name)
   puts "Archived book found."
-
-  # [END test_resource_name_oneof_core]
 end
 # [END test_resource_name_oneof]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_get_book_from_absolutely_anywhere
 end
+
 ============== file: samples/v1/test_resource_name_oneof_2.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6568,12 +6531,16 @@ end
 
 # DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof_2")
 
+# sample-metadata
+#   title:
+#   description:
+#   bundle exec ruby samples/v1/test_resource_name_oneof_2.rb
+
 require "library"
 
 # [START test_resource_name_oneof_2]
 
 def sample_get_book_from_absolutely_anywhere
-  # [START test_resource_name_oneof_2_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6581,17 +6548,16 @@ def sample_get_book_from_absolutely_anywhere
 
   response = library_client.get_book_from_absolutely_anywhere(formatted_name)
   puts "Book on shelf found."
-
-  # [END test_resource_name_oneof_2_core]
 end
 # [END test_resource_name_oneof_2]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_get_book_from_absolutely_anywhere
 end
+
 ============== file: samples/v1/this_tag_should_be_the_name_of_the_file.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6619,8 +6585,7 @@ require "library"
 # [START this_tag_should_be_the_name_of_the_file]
 
 # Testing calling forms
-def sample_get_big_book(shelf)
-  # [START this_tag_should_be_the_name_of_the_file_core]
+def sample_get_big_book shelf
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6655,15 +6620,13 @@ def sample_get_big_book(shelf)
 
   puts "name: #{response.name}"
   puts "author: #{response.author}"
-
-  # [END this_tag_should_be_the_name_of_the_file_core]
 end
 # [END this_tag_should_be_the_name_of_the_file]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
 
   shelf = "Novel\"`	
 "
@@ -6676,6 +6639,7 @@ if $0 == __FILE__
 
   sample_get_big_book(shelf)
 end
+
 ============== file: samples/v1/turing_prog_request_streaming_bidi.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6703,8 +6667,7 @@ require "library"
 # [START turing_prog_request_streaming_bidi]
 
 # Testing calling forms
-def sample_discuss_book(image_file_name, stage)
-  # [START turing_prog_request_streaming_bidi_core]
+def sample_discuss_book image_file_name, stage
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6724,15 +6687,13 @@ def sample_discuss_book(image_file_name, stage)
   library_client.discuss_book(requests).each do |element|
     puts element.inspect
   end
-
-  # [END turing_prog_request_streaming_bidi_core]
 end
 # [END turing_prog_request_streaming_bidi]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
 
   image_file_name = "image_file.jpg"
   stage = :DRAFT
@@ -6746,6 +6707,7 @@ if $0 == __FILE__
 
   sample_discuss_book(image_file_name, stage)
 end
+
 ============== file: test/library/v1/library_service_client_test.rb ==============
 # Copyright 2019 Google LLC
 #

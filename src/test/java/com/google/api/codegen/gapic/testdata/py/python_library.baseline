@@ -4990,7 +4990,6 @@ from google.cloud.example import library_v1
 
 def sample_babble_about_book():
   """Test response handling for methods that return empty"""
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -4999,9 +4998,7 @@ def sample_babble_about_book():
   requests = [request]
   client.babble_about_book(requests)
   # No one replied
-  print('No one replied.')
-
-  # [END sample_core]
+  print(u'No one replied.')
 # [END sample]
 
 def main():
@@ -5043,7 +5040,6 @@ from google.cloud.example import library_v1
 
 def sample_babble_about_book():
   """Test default response handling is turned off for methods that return empty"""
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -5051,8 +5047,6 @@ def sample_babble_about_book():
 
   requests = [request]
   client.babble_about_book(requests)
-
-  # [END sample_core]
 # [END sample]
 
 def main():
@@ -5094,7 +5088,6 @@ from google.cloud.example import library_v1
 
 def sample_delete_shelf():
   """Test response handling for methods that return empty"""
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -5102,9 +5095,7 @@ def sample_delete_shelf():
 
   client.delete_shelf(name)
   # Shelf deleted
-  print('Shelf deleted.')
-
-  # [END sample_core]
+  print(u'Shelf deleted.')
 # [END sample]
 
 def main():
@@ -5146,15 +5137,12 @@ from google.cloud.example import library_v1
 
 def sample_delete_shelf():
   """Test default response handling is turned off for methods that return empty"""
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
   name = client.shelf_path('[SHELF_ID]')
 
   client.delete_shelf(name)
-
-  # [END sample_core]
 # [END sample]
 
 def main():
@@ -5196,7 +5184,6 @@ from google.cloud.example import library_v1
 
 def sample_find_related_books():
   """Testing calling forms"""
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -5208,9 +5195,7 @@ def sample_find_related_books():
   # Iterate over all results
   for response_item in client.find_related_books(names, shelves):
     book = response_item
-    print('Here\'s a related book: {}'.format(book))
-
-  # [END sample_core]
+    print(u'Here\'s a related book: {}'.format(book))
 # [END sample]
 
 def main():
@@ -5252,7 +5237,6 @@ from google.cloud.example import library_v1
 
 def sample_find_related_books():
   """Testing calling forms"""
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -5265,9 +5249,7 @@ def sample_find_related_books():
   for page in client.find_related_books(names, shelves).pages:
     for response_item in page:
       book = response_item
-      print('Here\'s a related book: {}'.format(book))
-
-  # [END sample_core]
+      print(u'Here\'s a related book: {}'.format(book))
 # [END sample]
 
 def main():
@@ -5306,41 +5288,34 @@ import sys
 # [START hopper]
 
 from google.cloud.example import library_v1
-import six
 
 def sample_get_big_book(shelf):
   """Testing calling forms"""
-  # [START hopper_core]
 
   client = library_v1.LibraryServiceClient()
 
   # shelf = 'Novel\\"`\b\t\n\r'
-
-  if isinstance(shelf, six.binary_type):
-    shelf = shelf.decode('utf-8')
   name = client.book_path(shelf, 'War and Peace')
 
   operation = client.get_big_book(name)
 
-  print('Waiting for operation to complete...')
+  print(u'Waiting for operation to complete...')
   response = operation.result()
 
   # Testing iterating over map fields when both key and value are specified.
   for my_key, my_value in response.map_list_value_value.items():
-    print('key: {}, value: {}'.format(my_key, my_value))
+    print(u'key: {}, value: {}'.format(my_key, my_value))
 
   # Testing iterating over map fields when only key is specified.
   for another_key, _ in response.map_list_value_value.items():
-    print('key: {}'.format(another_key))
+    print(u'key: {}'.format(another_key))
 
   # Testing iterating over map fields when only value is specified.
   for _, another_value in response.map_list_value_value.items():
-    print('value: {}'.format(another_value))
+    print(u'value: {}'.format(another_value))
 
-  print('name: {}'.format(response.name))
-  print('author: {}'.format(response.author))
-
-  # [END hopper_core]
+  print(u'name: {}'.format(response.name))
+  print(u'author: {}'.format(response.author))
 # [END hopper]
 
 def main():
@@ -5385,7 +5360,6 @@ import sys
 # [START hopper]
 
 from google.cloud.example import library_v1
-import six
 
 def sample_get_big_book(shelf, big_book_name):
   """
@@ -5396,27 +5370,19 @@ def sample_get_big_book(shelf, big_book_name):
       the shelf to retrieve the big book from.
       big_book_name The name of the book.
     """
-  # [START hopper_core]
 
   client = library_v1.LibraryServiceClient()
 
   # shelf = 'Novel'
   # big_book_name = 'War and Peace'
-
-  if isinstance(shelf, six.binary_type):
-    shelf = shelf.decode('utf-8')
-  if isinstance(big_book_name, six.binary_type):
-    big_book_name = big_book_name.decode('utf-8')
   name = client.book_path(shelf, big_book_name)
 
   operation = client.get_big_book(name)
 
-  print('Waiting for operation to complete...')
+  print(u'Waiting for operation to complete...')
   response = operation.result()
 
   print(response)
-
-  # [END hopper_core]
 # [END hopper]
 
 def main():
@@ -5465,7 +5431,6 @@ from google.cloud.example import library_v1
 
 def sample_get_big_nothing():
   """Test response handling for methods that return empty"""
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -5473,13 +5438,11 @@ def sample_get_big_nothing():
 
   operation = client.get_big_nothing(name)
 
-  print('Waiting for operation to complete...')
+  print(u'Waiting for operation to complete...')
   response = operation.result()
 
   # Got nothing
-  print('Got nothing.')
-
-  # [END sample_core]
+  print(u'Got nothing.')
 # [END sample]
 
 def main():
@@ -5521,7 +5484,6 @@ from google.cloud.example import library_v1
 
 def sample_get_big_nothing():
   """Test default response handling is turned off for methods that return empty"""
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -5529,11 +5491,9 @@ def sample_get_big_nothing():
 
   operation = client.get_big_nothing(name)
 
-  print('Waiting for operation to complete...')
+  print(u'Waiting for operation to complete...')
   response = operation.result()
 
-
-  # [END sample_core]
 # [END sample]
 
 def main():
@@ -5575,7 +5535,6 @@ from google.cloud.example import library_v1
 from google.cloud.example.library_v1 import enums
 
 def sample_get_book():
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -5585,10 +5544,8 @@ def sample_get_book():
   int_key_val = response.map_string_value[123]
   boolean_key_val = response.map_bool_key[True]
   map_value_field = response.map_message_value['key'].field
-  print('Test printing map fields: {}'.format(response.map_list_value_value['quoted_key']))
-  print('Test printing enum fields of a map value: {}'.format(enums.SomeMessage.Alignment(response.map_message_value['key'].alignment).name))
-
-  # [END sample_core]
+  print(u'Test printing map fields: {}'.format(response.map_list_value_value['quoted_key']))
+  print(u'Test printing enum fields of a map value: {}'.format(enums.SomeMessage.Alignment(response.map_message_value['key'].alignment).name))
 # [END sample]
 
 def main():
@@ -5630,7 +5587,6 @@ from google.cloud.example import library_v1
 
 def sample_stream_books():
   """Testing calling forms"""
-  # [START lovelace_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -5638,8 +5594,6 @@ def sample_stream_books():
 
   for response_item in client.stream_books(name):
     print(response_item)
-
-  # [END lovelace_core]
 # [END lovelace]
 
 def main():
@@ -5682,7 +5636,6 @@ from google.cloud.example.library_v1 import enums
 
 def sample_monolog_about_book():
   """Testing calling forms"""
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -5691,9 +5644,7 @@ def sample_monolog_about_book():
 
   requests = [request]
   response = client.monolog_about_book(requests)
-  print('The stage of the comment is: {}'.format(enums.Comment.Stage(response.stage).name))
-
-  # [END sample_core]
+  print(u'The stage of the comment is: {}'.format(enums.Comment.Stage(response.stage).name))
 # [END sample]
 
 def main():
@@ -5732,7 +5683,6 @@ import sys
 # [START canonical]
 
 from google.cloud.example import library_v1
-import six
 
 def sample_publish_series(shelf_name, edition):
   """
@@ -5742,16 +5692,11 @@ def sample_publish_series(shelf_name, edition):
       shelf_name The name of the shelf where books are published to.
       edition The edition of the series.
     """
-  # [START canonical_core]
 
   client = library_v1.LibraryServiceClient()
 
   # shelf_name = 'Math'
   # edition = 123
-
-  if isinstance(shelf_name, six.binary_type):
-    shelf_name = shelf_name.decode('utf-8')
-
   shelf = {'name': shelf_name}
   books = []
   series_string = 'xyz3141592654'
@@ -5772,13 +5717,11 @@ def sample_publish_series(shelf_name, edition):
   book_names = response.book_names
   for title in response.book_names:
     # Now we deal with this_single_book!
-    print('\t%`` The book\'s title: "{}", \\\nand the book costs $50.00 ``%'.format(title))
-  print('The first book is: {}'.format(response.book_names[0]))
-  print('The author of the first book is: {}'.format(response.books[0].author))
-  print('That\'s all!')
-  print('series_uuid: {}'.format(response.series_uuid.series_bytes))
-
-  # [END canonical_core]
+    print(u'\t%`` The book\'s title: "{}", \\\nand the book costs $50.00 ``%'.format(title))
+  print(u'The first book is: {}'.format(response.book_names[0]))
+  print(u'The author of the first book is: {}'.format(response.books[0].author))
+  print(u'That\'s all!')
+  print(u'series_uuid: {}'.format(response.series_uuid.series_bytes))
 # [END canonical]
 
 def main():
@@ -5827,7 +5770,6 @@ from google.cloud.example import library_v1
 
 def sample_publish_series():
   """Testing calling forms"""
-  # [START canonical_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -5838,8 +5780,6 @@ def sample_publish_series():
 
   response = client.publish_series(shelf, books, series_uuid, edition=edition)
   print(response)
-
-  # [END canonical_core]
 # [END canonical]
 
 def main():
@@ -5882,7 +5822,6 @@ import io
 
 def sample_publish_series():
   """Test request object field comments"""
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -5913,8 +5852,6 @@ def sample_publish_series():
 
   response = client.publish_series(shelf, books, series_uuid, edition=edition)
   print(response)
-
-  # [END sample_core]
 # [END sample]
 
 def main():
@@ -5956,7 +5893,6 @@ from google.cloud.example import library_v1
 
 def sample_publish_series():
   """Testing write fields to files."""
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -5971,8 +5907,6 @@ def sample_publish_series():
   # testing writing string field.
   with open('series_uuid_in_plain_text.txt', 'w') as out:
     out.write(response.series_uuid.series_string)
-
-  # [END sample_core]
 # [END sample]
 
 def main():
@@ -6014,7 +5948,6 @@ from google.cloud.example import library_v1
 
 def sample_get_shelf():
   """Test default calling forms for unary methods."""
-  # [START sample_get_shelf_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -6022,9 +5955,7 @@ def sample_get_shelf():
   options_ = ''
 
   response = client.get_shelf(name, options_)
-  print('The theme of the shelf is: {}'.format(response.theme))
-
-  # [END sample_get_shelf_core]
+  print(u'The theme of the shelf is: {}'.format(response.theme))
 # [END sample_get_shelf]
 
 def main():
@@ -6066,7 +5997,6 @@ from google.cloud.example import library_v1
 
 def sample_stream_shelves():
   """Testing calling forms"""
-  # [START sample_core]
 
   client = library_v1.LibraryServiceClient()
 
@@ -6074,8 +6004,6 @@ def sample_stream_shelves():
 
   for response_item in client.stream_shelves(name):
     print(response_item)
-
-  # [END sample_core]
 # [END sample]
 
 def main():
@@ -6117,15 +6045,12 @@ from google.cloud.example import library_v1
 
 def sample_list_shelves():
   """Test default calling form for paging methods."""
-  # [START test_default_calling_form_for_paging_core]
 
   client = library_v1.LibraryServiceClient()
 
   # Iterate over all results
   for response_item in client.list_shelves():
-    print('shelf name: {}'.format(response_item))
-
-  # [END test_default_calling_form_for_paging_core]
+    print(u'shelf name: {}'.format(response_item))
 # [END test_default_calling_form_for_paging]
 
 def main():
@@ -6155,6 +6080,10 @@ if __name__ == '__main__':
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
+# sample-metadata
+#   title:
+#   description:
+#   usage: python3 samples/v1/test_resource_name_oneof.py
 import sys
 
 # [START test_resource_name_oneof]
@@ -6162,16 +6091,13 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_get_book_from_absolutely_anywhere():
-  # [START test_resource_name_oneof_core]
 
   client = library_v1.LibraryServiceClient()
 
   name = client.archived_book_path('The archive to search for the book', 'The ID of the book')
 
   response = client.get_book_from_absolutely_anywhere(name)
-  print('Archived book found.')
-
-  # [END test_resource_name_oneof_core]
+  print(u'Archived book found.')
 # [END test_resource_name_oneof]
 
 def main():
@@ -6201,6 +6127,10 @@ if __name__ == '__main__':
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
+# sample-metadata
+#   title:
+#   description:
+#   usage: python3 samples/v1/test_resource_name_oneof_2.py
 import sys
 
 # [START test_resource_name_oneof_2]
@@ -6208,16 +6138,13 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_get_book_from_absolutely_anywhere():
-  # [START test_resource_name_oneof_2_core]
 
   client = library_v1.LibraryServiceClient()
 
   name = client.book_path('The Shelf to search for the book', 'The ID of the book')
 
   response = client.get_book_from_absolutely_anywhere(name)
-  print('Book on shelf found.')
-
-  # [END test_resource_name_oneof_2_core]
+  print(u'Book on shelf found.')
 # [END test_resource_name_oneof_2]
 
 def main():
@@ -6256,41 +6183,34 @@ import sys
 # [START this_tag_should_be_the_name_of_the_file]
 
 from google.cloud.example import library_v1
-import six
 
 def sample_get_big_book(shelf):
   """Testing calling forms"""
-  # [START this_tag_should_be_the_name_of_the_file_core]
 
   client = library_v1.LibraryServiceClient()
 
   # shelf = 'Novel\\"`\b\t\n\r'
-
-  if isinstance(shelf, six.binary_type):
-    shelf = shelf.decode('utf-8')
   name = client.book_path(shelf, 'War and Peace')
 
   operation = client.get_big_book(name)
 
-  print('Waiting for operation to complete...')
+  print(u'Waiting for operation to complete...')
   response = operation.result()
 
   # Testing iterating over map fields when both key and value are specified.
   for my_key, my_value in response.map_list_value_value.items():
-    print('key: {}, value: {}'.format(my_key, my_value))
+    print(u'key: {}, value: {}'.format(my_key, my_value))
 
   # Testing iterating over map fields when only key is specified.
   for another_key, _ in response.map_list_value_value.items():
-    print('key: {}'.format(another_key))
+    print(u'key: {}'.format(another_key))
 
   # Testing iterating over map fields when only value is specified.
   for _, another_value in response.map_list_value_value.items():
-    print('value: {}'.format(another_value))
+    print(u'value: {}'.format(another_value))
 
-  print('name: {}'.format(response.name))
-  print('author: {}'.format(response.author))
-
-  # [END this_tag_should_be_the_name_of_the_file_core]
+  print(u'name: {}'.format(response.name))
+  print(u'author: {}'.format(response.author))
 # [END this_tag_should_be_the_name_of_the_file]
 
 def main():
@@ -6337,20 +6257,14 @@ import sys
 from google.cloud.example import library_v1
 from google.cloud.example.library_v1 import enums
 import io
-import six
 
 def sample_discuss_book(image_file_name, stage):
   """Testing calling forms"""
-  # [START turing_prog_request_streaming_bidi_core]
 
   client = library_v1.LibraryServiceClient()
 
   # image_file_name = 'image_file.jpg'
   # stage = enums.Comment.Stage.DRAFT
-
-  if isinstance(image_file_name, six.binary_type):
-    image_file_name = image_file_name.decode('utf-8')
-
   name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
   with io.open('comment_file', 'rb') as f:
     comment = f.read()
@@ -6362,8 +6276,6 @@ def sample_discuss_book(image_file_name, stage):
   requests = [request]
   for response_item in client.discuss_book(requests):
     print(response_item)
-
-  # [END turing_prog_request_streaming_bidi_core]
 # [END turing_prog_request_streaming_bidi]
 
 def main():

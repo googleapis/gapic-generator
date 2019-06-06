@@ -213,6 +213,7 @@ class NoTemplatesApiServiceClient {
    *     API remote host.
    */
   constructor(opts) {
+    opts = opts || {};
     this._descriptors = {};
 
     const servicePath =
@@ -465,6 +466,11 @@ describe('NoTemplatesApiServiceClient', () => {
     const port = exampleModule.NoTemplatesApiServiceClient.port;
     assert(port);
     assert(typeof port === 'number');
+  });
+
+  it('should create a client with no options', () => {
+    const client = new exampleModule.NoTemplatesApiServiceClient();
+    assert(client);
   });
 
   describe('increment', () => {

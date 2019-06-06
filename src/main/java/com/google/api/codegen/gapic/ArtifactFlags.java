@@ -21,12 +21,15 @@ public class ArtifactFlags {
   public static final String ARTIFACT_SURFACE = "surface";
   public static final String ARTIFACT_TEST = "test";
 
-  private List<String> enabledArtifacts;
-  private ArtifactType artifactType;
+  private final List<String> enabledArtifacts;
+  private final ArtifactType artifactType;
+  private final boolean devSamples;
 
-  public ArtifactFlags(List<String> enabledArtifacts, ArtifactType artifactType) {
+  public ArtifactFlags(
+      List<String> enabledArtifacts, ArtifactType artifactType, boolean devSamples) {
     this.enabledArtifacts = enabledArtifacts;
     this.artifactType = artifactType;
+    this.devSamples = devSamples;
   }
 
   public boolean surfaceGeneratorEnabled() {
@@ -48,5 +51,9 @@ public class ArtifactFlags {
     return artifactType == ArtifactType.LEGACY_GAPIC_AND_PACKAGE
         || artifactType == ArtifactType.GAPIC_PACKAGE
         || artifactType == ArtifactType.LEGACY_DISCOGAPIC_AND_PACKAGE;
+  }
+
+  public boolean devSamplesEnabled() {
+    return devSamples;
   }
 }

@@ -969,6 +969,7 @@ public class InitCodeTransformer {
       return oneofConfig.getSingleResourceNameConfigs().get(0);
     }
     return matchingConfigs.get(0);
+  }
 
   private static String getCliFlagDefaultValue(InitCodeNode item) {
     checkArgument(
