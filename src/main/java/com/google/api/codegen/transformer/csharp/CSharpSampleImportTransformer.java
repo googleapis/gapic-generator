@@ -87,7 +87,7 @@ public class CSharpSampleImportTransformer extends StandardSampleImportTransform
     OutputTransformer.ScopeTable scopeTable = outputContext.scopeTable();
     for (TypeModel type : scopeTable.allTypes()) {
       if (type == null) {
-        // saveResourceTypeName(context);
+        saveResourceTypeName(context);
       } else {
         typeTable.getAndSaveNicknameFor(type);
       }
