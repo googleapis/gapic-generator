@@ -8630,6 +8630,42 @@ namespace Google.Example.Library.V1
     }
 
     /// <summary>
+    /// Builder class for <see cref="LibraryServiceClient"/> to provide simple configuration of credentials, endpoint etc.
+    /// </summary>
+    public sealed partial class LibraryServiceClientBuilder : gaxgrpc::ClientBuilderBase<LibraryServiceClient>
+    {
+        /// <summary>
+        /// The settings to use for RPCs, or null for the default settings.
+        /// </summary>
+        public LibraryServiceSettings Settings { get; set; }
+
+        /// <inheritdoc/>
+        public override LibraryServiceClient Build()
+        {
+            Validate();
+            grpccore::CallInvoker callInvoker = CreateCallInvoker();
+            return LibraryServiceClient.Create(callInvoker, Settings);
+        }
+
+        /// <inheritdoc />
+        public override async stt::Task<LibraryServiceClient> BuildAsync(st::CancellationToken cancellationToken = default)
+        {
+            Validate();
+            grpccore::CallInvoker callInvoker = await CreateCallInvokerAsync(cancellationToken).ConfigureAwait(false);
+            return LibraryServiceClient.Create(callInvoker, Settings);
+        }
+
+        /// <inheritdoc />
+        protected override gaxgrpc::ServiceEndpoint GetDefaultEndpoint() => LibraryServiceClient.DefaultEndpoint;
+
+        /// <inheritdoc />
+        protected override scg::IReadOnlyList<string> GetDefaultScopes() => LibraryServiceClient.DefaultScopes;
+
+        /// <inheritdoc />
+        protected override gaxgrpc::ChannelPool GetChannelPool() => LibraryServiceClient.ChannelPool;
+    }
+
+    /// <summary>
     /// LibraryService client wrapper, for convenient use.
     /// </summary>
     public abstract partial class LibraryServiceClient
@@ -8655,6 +8691,8 @@ namespace Google.Example.Library.V1
         });
 
         private static readonly gaxgrpc::ChannelPool s_channelPool = new gaxgrpc::ChannelPool(DefaultScopes);
+
+        internal static gaxgrpc::ChannelPool ChannelPool => s_channelPool;
 
         /// <summary>
         /// Asynchronously creates a <see cref="LibraryServiceClient"/>, applying defaults for all unspecified settings,
@@ -17996,6 +18034,42 @@ namespace Google.Example.Library.V1
     }
 
     /// <summary>
+    /// Builder class for <see cref="MyProtoClient"/> to provide simple configuration of credentials, endpoint etc.
+    /// </summary>
+    public sealed partial class MyProtoClientBuilder : gaxgrpc::ClientBuilderBase<MyProtoClient>
+    {
+        /// <summary>
+        /// The settings to use for RPCs, or null for the default settings.
+        /// </summary>
+        public MyProtoSettings Settings { get; set; }
+
+        /// <inheritdoc/>
+        public override MyProtoClient Build()
+        {
+            Validate();
+            grpccore::CallInvoker callInvoker = CreateCallInvoker();
+            return MyProtoClient.Create(callInvoker, Settings);
+        }
+
+        /// <inheritdoc />
+        public override async stt::Task<MyProtoClient> BuildAsync(st::CancellationToken cancellationToken = default)
+        {
+            Validate();
+            grpccore::CallInvoker callInvoker = await CreateCallInvokerAsync(cancellationToken).ConfigureAwait(false);
+            return MyProtoClient.Create(callInvoker, Settings);
+        }
+
+        /// <inheritdoc />
+        protected override gaxgrpc::ServiceEndpoint GetDefaultEndpoint() => MyProtoClient.DefaultEndpoint;
+
+        /// <inheritdoc />
+        protected override scg::IReadOnlyList<string> GetDefaultScopes() => MyProtoClient.DefaultScopes;
+
+        /// <inheritdoc />
+        protected override gaxgrpc::ChannelPool GetChannelPool() => MyProtoClient.ChannelPool;
+    }
+
+    /// <summary>
     /// MyProto client wrapper, for convenient use.
     /// </summary>
     public abstract partial class MyProtoClient
@@ -18021,6 +18095,8 @@ namespace Google.Example.Library.V1
         });
 
         private static readonly gaxgrpc::ChannelPool s_channelPool = new gaxgrpc::ChannelPool(DefaultScopes);
+
+        internal static gaxgrpc::ChannelPool ChannelPool => s_channelPool;
 
         /// <summary>
         /// Asynchronously creates a <see cref="MyProtoClient"/>, applying defaults for all unspecified settings,
