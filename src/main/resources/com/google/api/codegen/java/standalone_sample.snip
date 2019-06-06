@@ -1,5 +1,6 @@
 @extends "java/common.snip"
 @extends "java/initcode.snip"
+@extends "metadatagen/samplegen.snip"
 
 #FIXME: currently the variable of output of an api call is hardcoded to "response"
 # and "response_item". We should fix it by saving the variable name in the view model
@@ -8,6 +9,15 @@
        sample = apiMethod.samples.get(0)
     {@license(sampleFile.fileHeader)}
     // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+    // sample-metadata:
+    //   title: {@sample.title}
+    //   description: {@sample.description}
+    @if sample.sampleInitCode.argDefaultParams 
+      //   usage: gradle run -PmainClass={@sampleFile.fileHeader.examplePackageName}.{@sampleFile.classView.name} [--args='{@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}']
+    @else
+      //   usage: gradle run -PmainClass={@sampleFile.fileHeader.examplePackageName}.{@sampleFile.classView.name}
+    @end
+
     package {@sampleFile.fileHeader.examplePackageName};
     
     @if sample.sampleInitCode.argDefaultParams.size
@@ -30,7 +40,6 @@
         {@processDoc(sample.sampleFunctionDoc)}
       @end
       public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)}) {
-        // [START {@sample.regionTag}_core]
         try ({@apiMethod.apiClassName} {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.create()) {
           @let coreSampleCode = generateSample(apiMethod, sample)
             {@methodLines(coreSampleCode)}
@@ -38,7 +47,6 @@
         } catch (Exception exception) {
           System.err.println("Failed to create the client due to: " + exception);
         }
-        // [END {@sample.regionTag}_core]
       }
       // [END {@sample.regionTag}]
 
@@ -290,6 +298,11 @@
         boolean {@param.identifier} =
             cl.getOptionValue("{@param.cliFlagName}") != null
                 ? Boolean.parseBoolean(cl.getOptionValue("{@param.cliFlagName}"))
+                : {@renderInitValue(param.initValue)};
+      @case "float"
+        float {@param.identifier} =
+            cl.getOptionValue("{@param.cliFlagName}") != null
+                ? Float.parseFloat(cl.getOptionValue("{@param.cliFlagName}"))
                 : {@renderInitValue(param.initValue)};
       @default
         $unhandledCase: {@param.typeName}$

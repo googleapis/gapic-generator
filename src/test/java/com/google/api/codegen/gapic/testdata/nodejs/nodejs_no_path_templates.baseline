@@ -213,14 +213,20 @@ class NoTemplatesApiServiceClient {
    *     API remote host.
    */
   constructor(opts) {
+    opts = opts || {};
     this._descriptors = {};
+
+    const servicePath =
+      opts.servicePath ||
+      opts.apiEndpoint ||
+      this.constructor.servicePath;
 
     // Ensure that options include the service address and port.
     opts = Object.assign(
       {
         clientConfig: {},
         port: this.constructor.port,
-        servicePath: this.constructor.servicePath,
+        servicePath,
       },
       opts
     );
@@ -300,6 +306,14 @@ class NoTemplatesApiServiceClient {
    * The DNS address for this API service.
    */
   static get servicePath() {
+    return 'no-path-templates.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service - same as servicePath(),
+   * exists for compatibility reasons.
+   */
+  static get apiEndpoint() {
     return 'no-path-templates.googleapis.com';
   }
 
@@ -438,6 +452,27 @@ const error = new Error();
 error.code = FAKE_STATUS_CODE;
 
 describe('NoTemplatesApiServiceClient', () => {
+  it('has servicePath', () => {
+    const servicePath = exampleModule.NoTemplatesApiServiceClient.servicePath;
+    assert(servicePath);
+  });
+
+  it('has apiEndpoint', () => {
+    const apiEndpoint = exampleModule.NoTemplatesApiServiceClient.apiEndpoint;
+    assert(apiEndpoint);
+  });
+
+  it('has port', () => {
+    const port = exampleModule.NoTemplatesApiServiceClient.port;
+    assert(port);
+    assert(typeof port === 'number');
+  });
+
+  it('should create a client with no options', () => {
+    const client = new exampleModule.NoTemplatesApiServiceClient();
+    assert(client);
+  });
+
   describe('increment', () => {
     it('invokes increment without error', done => {
       const client = new exampleModule.NoTemplatesApiServiceClient({
@@ -495,3 +530,4 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
     }
   };
 }
+

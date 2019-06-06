@@ -223,14 +223,20 @@ class DecrementerServiceClient {
    *     API remote host.
    */
   constructor(opts) {
+    opts = opts || {};
     this._descriptors = {};
+
+    const servicePath =
+      opts.servicePath ||
+      opts.apiEndpoint ||
+      this.constructor.servicePath;
 
     // Ensure that options include the service address and port.
     opts = Object.assign(
       {
         clientConfig: {},
         port: this.constructor.port,
-        servicePath: this.constructor.servicePath,
+        servicePath,
       },
       opts
     );
@@ -316,6 +322,14 @@ class DecrementerServiceClient {
    * The DNS address for this API service.
    */
   static get servicePath() {
+    return 'no-path-templates.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service - same as servicePath(),
+   * exists for compatibility reasons.
+   */
+  static get apiEndpoint() {
     return 'no-path-templates.googleapis.com';
   }
 
@@ -543,14 +557,20 @@ class IncrementerServiceClient {
    *     API remote host.
    */
   constructor(opts) {
+    opts = opts || {};
     this._descriptors = {};
+
+    const servicePath =
+      opts.servicePath ||
+      opts.apiEndpoint ||
+      this.constructor.servicePath;
 
     // Ensure that options include the service address and port.
     opts = Object.assign(
       {
         clientConfig: {},
         port: this.constructor.port,
-        servicePath: this.constructor.servicePath,
+        servicePath,
       },
       opts
     );
@@ -630,6 +650,14 @@ class IncrementerServiceClient {
    * The DNS address for this API service.
    */
   static get servicePath() {
+    return 'no-path-templates.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service - same as servicePath(),
+   * exists for compatibility reasons.
+   */
+  static get apiEndpoint() {
     return 'no-path-templates.googleapis.com';
   }
 
@@ -787,6 +815,27 @@ const error = new Error();
 error.code = FAKE_STATUS_CODE;
 
 describe('IncrementerServiceClient', () => {
+  it('has servicePath', () => {
+    const servicePath = multipleServicesModule.v1.IncrementerServiceClient.servicePath;
+    assert(servicePath);
+  });
+
+  it('has apiEndpoint', () => {
+    const apiEndpoint = multipleServicesModule.v1.IncrementerServiceClient.apiEndpoint;
+    assert(apiEndpoint);
+  });
+
+  it('has port', () => {
+    const port = multipleServicesModule.v1.IncrementerServiceClient.port;
+    assert(port);
+    assert(typeof port === 'number');
+  });
+
+  it('should create a client with no options', () => {
+    const client = new multipleServicesModule.v1.IncrementerServiceClient();
+    assert(client);
+  });
+
   describe('increment', () => {
     it('invokes increment without error', done => {
       const client = new multipleServicesModule.v1.IncrementerServiceClient({
@@ -832,6 +881,27 @@ describe('IncrementerServiceClient', () => {
 
 });
 describe('DecrementerServiceClient', () => {
+  it('has servicePath', () => {
+    const servicePath = multipleServicesModule.v1.DecrementerServiceClient.servicePath;
+    assert(servicePath);
+  });
+
+  it('has apiEndpoint', () => {
+    const apiEndpoint = multipleServicesModule.v1.DecrementerServiceClient.apiEndpoint;
+    assert(apiEndpoint);
+  });
+
+  it('has port', () => {
+    const port = multipleServicesModule.v1.DecrementerServiceClient.port;
+    assert(port);
+    assert(typeof port === 'number');
+  });
+
+  it('should create a client with no options', () => {
+    const client = new multipleServicesModule.v1.DecrementerServiceClient();
+    assert(client);
+  });
+
   describe('decrement', () => {
     it('invokes decrement without error', done => {
       const client = new multipleServicesModule.v1.DecrementerServiceClient({
@@ -911,3 +981,4 @@ function mockBidiStreamingGrpcMethod(expectedRequest, response, error) {
     return mockStream;
   }
 }
+

@@ -378,7 +378,7 @@ use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
- * @group library
+ * @group example
  * @group gapic
  */
 class NoTemplatesApiServiceClientTest extends GeneratedTest
@@ -392,14 +392,22 @@ class NoTemplatesApiServiceClientTest extends GeneratedTest
     }
 
     /**
+     * @return CredentialsWrapper
+     */
+    private function createCredentials()
+    {
+        return $this->getMockBuilder(CredentialsWrapper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
      * @return NoTemplatesApiServiceClient
      */
     private function createClient(array $options = [])
     {
         $options += [
-            'credentials' => $this->getMockBuilder(CredentialsWrapper::class)
-                ->disableOriginalConstructor()
-                ->getMock(),
+            'credentials' => $this->createCredentials(),
             'serviceAddress' => '',
             'credentialsConfig' => [
                 'scopes' => [],

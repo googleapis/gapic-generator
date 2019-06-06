@@ -401,6 +401,10 @@ public class InitCodeNode {
   /** Apply {@code sampleParamConfig} to this node. */
   private void resolveSampleParamConfig(
       InitCodeContext context, SampleParameterConfig sampleParamConfig) {
+    Preconditions.checkArgument(
+        initValueConfig.getInitialValue() != null || !sampleParamConfig.isSampleArgument(),
+        "Cannot configure attributes for parameter \"%s\", default value not set.",
+        sampleParamConfig.identifier());
     if (sampleParamConfig.readFromFile()) {
       setupReadFileNode(context, sampleParamConfig);
       return;
@@ -421,6 +425,11 @@ public class InitCodeNode {
     Preconditions.checkArgument(
         !sampleParamConfig.readFromFile(),
         "cannot configure a resource name entity to read from file");
+    Preconditions.checkArgument(
+        !initValueConfig.getResourceNameBindingValues().isEmpty()
+            || !sampleParamConfig.isSampleArgument(),
+        "Cannot configure attributes for parameter \"%s\", default value not set.",
+        sampleParamConfig.identifier());
     if (!sampleParamConfig.isSampleArgument()) {
       return;
     }
