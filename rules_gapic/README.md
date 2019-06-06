@@ -57,7 +57,7 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 1. **`java/java_gapic_repositories.bzl`** - this file essentially replaces `artman_<service>.yaml`, `dependencies.yaml` and `api_defaults.yaml` by using `bazel` itself for dependencies resolution. Previously the dependencies were handled in a form of yaml config values, when they are not validated to: 1) be correct/exist; 2) match generated code; 3) be sufficient/redundant. To deal with dependencies versions mismatch, the `repo_mapping` feature of Bazel is supposed to be used (enabled by `--experimental_enable_repo_mapping` command line argument).
 
 #### Go
-1. **`go/go_gapic_repositories.bzl`** - this file declares the Go-specific dependencies of the generated output and is supposed to be included in the WORKSPACE file of the consuming workspace (for examples in `googleapis`).
+1. **`go/go_gapic_repositories.bzl`** - this file declares the Go-specific dependencies of the generated output and is supposed to be included in the WORKSPACE file of the consuming workspace (for example in `googleapis`).
 
 #### PHP
-1. **`go/php_gapic_repositories.bzl`** - this file declares the PHP-specific dependencies of the generated output and is supposed to be included in the WORKSPACE file of the consuming workspace (for examples in `googleapis`). This file also declares the `php` repository rule, which downloads and builds from sources PHP interpreter (by using `gcc`, `make` and `autoconf` tools, so they are expected to be installed on the system).
+1. **`php/php_gapic_repositories.bzl`** - this file declares the PHP-specific dependencies of the generated output and is supposed to be included in the WORKSPACE file of the consuming workspace (for example in `googleapis`). This file also declares the `php` repository rule, which downloads and builds from sources the PHP interpreter (by using `gcc`, `make` and `autoconf` tools, so they are expected to be installed on the system).
