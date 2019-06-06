@@ -102,7 +102,7 @@ public class CSharpSampleImportTransformer extends StandardSampleImportTransform
       typeTable.getAndSaveNicknameFor("System.IO.StreamWriter");
     }
     if (outputContext.hasPrints()) {
-      typeTable.getAndSaveNicknameFor("System.IO.Console");
+      typeTable.getAndSaveNicknameFor("System.Console");
     }
   }
 

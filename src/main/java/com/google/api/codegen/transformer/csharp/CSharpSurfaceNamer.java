@@ -18,6 +18,7 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.AnyResourceNameConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
@@ -747,5 +748,21 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getMapKeyAccessorName(TypeModel keyType, String key) {
     return String.format("[%s]", getModelTypeFormatter().renderPrimitiveValue(keyType, key));
+  }
+
+  @Override
+  public String getSampleResponseVarName(MethodContext context, CallingForm form) {
+    MethodConfig config = context.getMethodConfig();
+    if (config.getPageStreaming() != null) {
+      return "item";
+    }
+    if (config.getGrpcStreaming() != null) {
+      GrpcStreamingConfig.GrpcStreamingType type = config.getGrpcStreaming().getType();
+      if (type == GrpcStreamingConfig.GrpcStreamingType.ServerStreaming
+          || type == GrpcStreamingConfig.GrpcStreamingType.BidiStreaming) {
+        return "item";
+      }
+    }
+    return "response";
   }
 }
