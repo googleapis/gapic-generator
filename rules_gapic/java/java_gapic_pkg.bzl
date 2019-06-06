@@ -22,6 +22,7 @@ load(
     "is_proto_dependency",
     "is_source_dependency",
 )
+load("//rules_gapic:gapic_pkg.bzl", "construct_package_dir_paths")
 
 def _java_gapic_build_configs_pkg_impl(ctx):
     expanded_templates = []
@@ -30,7 +31,7 @@ def _java_gapic_build_configs_pkg_impl(ctx):
         ctx.attr.test_deps,
         ctx.attr.artifact_group_overrides,
     )
-    paths = _construct_package_dir_paths(ctx.attr.package_dir, ctx.outputs.pkg, ctx.label.name)
+    paths = construct_package_dir_paths(ctx.attr.package_dir, ctx.outputs.pkg, ctx.label.name)
     for template in ctx.attr.templates.items():
         substitutions = dict(ctx.attr.static_substitutions)
         dynamic_subs_func_name = ctx.attr.dynamic_substitutions.get(template[0])
@@ -110,7 +111,7 @@ def _java_gapic_srcs_pkg_impl(ctx):
         if is_source_dependency(test_src_dep):
             test_srcs.extend(test_src_dep[JavaInfo].source_jars)
 
-    paths = _construct_package_dir_paths(ctx.attr.package_dir, ctx.outputs.pkg, ctx.label.name)
+    paths = construct_package_dir_paths(ctx.attr.package_dir, ctx.outputs.pkg, ctx.label.name)
 
     # Note the script is more complicated than it intuitively should be because of limitations
     # inherent to bazel execution environment: no absolute paths allowed, the generated artifacts
@@ -302,24 +303,6 @@ def java_gapic_assembly_gradle_pkg(
 #
 # Private helper functions
 #
-def _construct_package_dir_paths(attr_package_dir, out_pkg, label_name):
-    if attr_package_dir:
-        package_dir = attr_package_dir
-        package_dir_expr = "../{}/*".format(package_dir)
-    else:
-        package_dir = label_name
-        package_dir_expr = "./*"
-
-    # We need to include label in the path to eliminate possible output files duplicates
-    # (labels are guaranteed to be unique by bazel itself)
-    package_dir_path = "%s/%s/%s" % (out_pkg.dirname, label_name, package_dir)
-    return struct(
-        package_dir = package_dir,
-        package_dir_expr = package_dir_expr,
-        package_dir_path = package_dir_path,
-        package_dir_sibling_parent = out_pkg,
-        package_dir_sibling_basename = label_name,
-    )
 
 def _java_gapic_gradle_pkg(
         name,
