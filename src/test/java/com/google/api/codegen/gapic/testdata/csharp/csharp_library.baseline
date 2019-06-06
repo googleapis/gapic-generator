@@ -26,6 +26,7 @@
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithResponseHandling
@@ -38,7 +39,8 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             ShelfName name = new ShelfName("[SHELF_ID]");
             await libraryServiceClient.DeleteShelfAsync(name);
-            // FIXME: inspect the results
+            // Shelf deleted
+            Console.WriteLine("Shelf deleted.");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -87,7 +89,6 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             ShelfName name = new ShelfName("[SHELF_ID]");
             await libraryServiceClient.DeleteShelfAsync(name);
-            // FIXME: inspect the results
         }
         // [END sample]
         public static void Main(string[] args)
@@ -124,6 +125,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithResponseHandling
@@ -139,7 +141,8 @@ namespace Google.Example.Library.V1.Samples
                 ShelfName = new ShelfName("[SHELF_ID]"),
             };
             await libraryServiceClient.DeleteShelfAsync(request);
-            // FIXME: inspect the results
+            // Shelf deleted
+            Console.WriteLine("Shelf deleted.");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -191,7 +194,6 @@ namespace Google.Example.Library.V1.Samples
                 ShelfName = new ShelfName("[SHELF_ID]"),
             };
             await libraryServiceClient.DeleteShelfAsync(request);
-            // FIXME: inspect the results
         }
         // [END sample]
         public static void Main(string[] args)
@@ -228,6 +230,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System.IO;
 
     public class DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling
     {
@@ -239,7 +242,8 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             ShelfName name = new ShelfName("[SHELF_ID]");
             libraryServiceClient.DeleteShelf(name);
-            // FIXME: inspect the results
+            // Shelf deleted
+            Console.WriteLine("Shelf deleted.");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -287,7 +291,6 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             ShelfName name = new ShelfName("[SHELF_ID]");
             libraryServiceClient.DeleteShelf(name);
-            // FIXME: inspect the results
         }
         // [END sample]
         public static void Main(string[] args)
@@ -324,6 +327,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System.IO;
 
     public class DeleteShelfRequestEmptyResponseTypeWithResponseHandling
     {
@@ -338,7 +342,8 @@ namespace Google.Example.Library.V1.Samples
                 ShelfName = new ShelfName("[SHELF_ID]"),
             };
             libraryServiceClient.DeleteShelf(request);
-            // FIXME: inspect the results
+            // Shelf deleted
+            Console.WriteLine("Shelf deleted.");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -389,7 +394,6 @@ namespace Google.Example.Library.V1.Samples
                 ShelfName = new ShelfName("[SHELF_ID]"),
             };
             libraryServiceClient.DeleteShelf(request);
-            // FIXME: inspect the results
         }
         // [END sample]
         public static void Main(string[] args)
@@ -428,6 +432,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Api.Gax;
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class FindRelatedBooksAsyncFlattenedAsyncPagedAllOdyssey
@@ -450,7 +455,8 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over pages (of server-defined size), performing one RPC per page
             await response.ForEachAsync((BookName item) =>
             {
-                // FIXME: inspect the results
+                BookName book = responseItem;
+                Console.WriteLine("Here's a related book: {book}");
             });
         }
         // [END sample]
@@ -490,6 +496,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Api.Gax;
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class FindRelatedBooksAsyncFlattenedAsyncPagedOdyssey
@@ -514,7 +521,8 @@ namespace Google.Example.Library.V1.Samples
             {
                 foreach (BookName item in page)
                 {
-                    // FIXME: inspect the results
+                    BookName book = responseItem;
+                    Console.WriteLine("Here's a related book: {book}");
                 }
             });
         }
@@ -554,6 +562,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class FindRelatedBooksAsyncFlattenedAsyncPagedPageSizeOdyssey
@@ -578,7 +587,8 @@ namespace Google.Example.Library.V1.Samples
             Page<BookName> singlePage = await response.ReadPageAsync(pageSize);
             foreach (BookName item in response)
             {
-                // FIXME: inspect the results
+                BookName book = responseItem;
+                Console.WriteLine("Here's a related book: {book}");
             }
             // Store the pageToken, for when the next page is required.
             string nextPageToken = singlePage.NextPageToken;
@@ -620,6 +630,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Api.Gax;
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class FindRelatedBooksAsyncRequestAsyncPagedAllOdyssey
@@ -645,7 +656,8 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over pages (of server-defined size), performing one RPC per page
             await response.ForEachAsync((BookName item) =>
             {
-                // FIXME: inspect the results
+                BookName book = responseItem;
+                Console.WriteLine("Here's a related book: {book}");
             });
         }
         // [END sample]
@@ -685,6 +697,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Api.Gax;
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class FindRelatedBooksAsyncRequestAsyncPagedOdyssey
@@ -712,7 +725,8 @@ namespace Google.Example.Library.V1.Samples
             {
                 foreach (BookName item in page)
                 {
-                    // FIXME: inspect the results
+                    BookName book = responseItem;
+                    Console.WriteLine("Here's a related book: {book}");
                 }
             });
         }
@@ -752,6 +766,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class FindRelatedBooksAsyncRequestAsyncPagedPageSizeOdyssey
@@ -779,7 +794,8 @@ namespace Google.Example.Library.V1.Samples
             Page<BookName> singlePage = await response.ReadPageAsync(pageSize);
             foreach (BookName item in response)
             {
-                // FIXME: inspect the results
+                BookName book = responseItem;
+                Console.WriteLine("Here's a related book: {book}");
             }
             // Store the pageToken, for when the next page is required.
             string nextPageToken = singlePage.NextPageToken;
@@ -821,6 +837,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Api.Gax;
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
 
     public class FindRelatedBooksFlattenedPagedAllOdyssey
     {
@@ -842,7 +859,8 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over pages (of server-defined size), performing one RPC per page
             foreach (BookName item in response)
             {
-                // FIXME: inspect the results
+                BookName book = responseItem;
+                Console.WriteLine("Here's a related book: {book}");
             }
         }
         // [END sample]
@@ -882,6 +900,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Api.Gax;
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
 
     public class FindRelatedBooksFlattenedPagedOdyssey
     {
@@ -905,10 +924,12 @@ namespace Google.Example.Library.V1.Samples
             {
                 foreach (BookName item in page)
                 {
-                    // FIXME: inspect the results
+                    BookName book = responseItem;
+                    Console.WriteLine("Here's a related book: {book}");
                 }
             }
-            // FIXME: inspect the results
+            BookName book = responseItem;
+            Console.WriteLine("Here's a related book: {book}");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -947,6 +968,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Api.Gax;
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
 
     public class FindRelatedBooksFlattenedPagedPageSizeOdyssey
     {
@@ -970,7 +992,8 @@ namespace Google.Example.Library.V1.Samples
             Page<BookName> singlePage = response.ReadPage(pageSize);
             foreach (BookName item in response)
             {
-                // FIXME: inspect the results
+                BookName book = responseItem;
+                Console.WriteLine("Here's a related book: {book}");
             }
             // Store the pageToken, for when the next page is required.
             string nextPageToken = singlePage.NextPageToken;
@@ -1012,6 +1035,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Api.Gax;
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
 
     public class FindRelatedBooksRequestPagedAllOdyssey
     {
@@ -1036,7 +1060,8 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over pages (of server-defined size), performing one RPC per page
             foreach (BookName item in response)
             {
-                // FIXME: inspect the results
+                BookName book = responseItem;
+                Console.WriteLine("Here's a related book: {book}");
             }
         }
         // [END sample]
@@ -1076,6 +1101,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Api.Gax;
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
 
     public class FindRelatedBooksRequestPagedOdyssey
     {
@@ -1102,10 +1128,12 @@ namespace Google.Example.Library.V1.Samples
             {
                 foreach (BookName item in page)
                 {
-                    // FIXME: inspect the results
+                    BookName book = responseItem;
+                    Console.WriteLine("Here's a related book: {book}");
                 }
             }
-            // FIXME: inspect the results
+            BookName book = responseItem;
+            Console.WriteLine("Here's a related book: {book}");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -1144,6 +1172,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Api.Gax;
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
 
     public class FindRelatedBooksRequestPagedPageSizeOdyssey
     {
@@ -1170,7 +1199,8 @@ namespace Google.Example.Library.V1.Samples
             Page<BookName> singlePage = response.ReadPage(pageSize);
             foreach (BookName item in response)
             {
-                // FIXME: inspect the results
+                BookName book = responseItem;
+                Console.WriteLine("Here's a related book: {book}");
             }
             // Store the pageToken, for when the next page is required.
             string nextPageToken = singlePage.NextPageToken;
@@ -1210,6 +1240,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class GetBookAsyncFlattenedAsyncTestOnSuccessMap
@@ -1219,7 +1250,11 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             Book response = await libraryServiceClient.GetBookAsync(name);
-            // FIXME: inspect the results
+            string intKeyVal = response.MapStringValue[123];
+            string booleanKeyVal = response.MapBoolKey[true];
+            int mapValueField = response.MapMessageValue["key"].Field;
+            Console.WriteLine("Test printing map fields: {response.MapListValueValue["quoted_key"]}");
+            Console.WriteLine("Test printing enum fields of a map value: {response.MapMessageValue["key"].Alignment}");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -1256,6 +1291,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class GetBookAsyncRequestAsyncTestOnSuccessMap
@@ -1268,7 +1304,11 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             Book response = await libraryServiceClient.GetBookAsync(request);
-            // FIXME: inspect the results
+            string intKeyVal = response.MapStringValue[123];
+            string booleanKeyVal = response.MapBoolKey[true];
+            int mapValueField = response.MapMessageValue["key"].Field;
+            Console.WriteLine("Test printing map fields: {response.MapListValueValue["quoted_key"]}");
+            Console.WriteLine("Test printing enum fields of a map value: {response.MapMessageValue["key"].Alignment}");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -1305,6 +1345,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System.IO;
 
     public class GetBookFlattenedTestOnSuccessMap
     {
@@ -1313,7 +1354,11 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             Book response = libraryServiceClient.GetBook(name);
-            // FIXME: inspect the results
+            string intKeyVal = response.MapStringValue[123];
+            string booleanKeyVal = response.MapBoolKey[true];
+            int mapValueField = response.MapMessageValue["key"].Field;
+            Console.WriteLine("Test printing map fields: {response.MapListValueValue["quoted_key"]}");
+            Console.WriteLine("Test printing enum fields of a map value: {response.MapMessageValue["key"].Alignment}");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -1350,6 +1395,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System.IO;
 
     public class GetBookRequestTestOnSuccessMap
     {
@@ -1361,7 +1407,11 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             Book response = libraryServiceClient.GetBook(request);
-            // FIXME: inspect the results
+            string intKeyVal = response.MapStringValue[123];
+            string booleanKeyVal = response.MapBoolKey[true];
+            int mapValueField = response.MapMessageValue["key"].Field;
+            Console.WriteLine("Test printing map fields: {response.MapListValueValue["quoted_key"]}");
+            Console.WriteLine("Test printing enum fields of a map value: {response.MapMessageValue["key"].Alignment}");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -1399,6 +1449,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class PublishSeriesAsyncFlattenedAsyncPiVersion
@@ -1424,7 +1475,26 @@ namespace Google.Example.Library.V1.Samples
                 SeriesString = "xyz3141592654",
             };
             PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid);
-            // FIXME: inspect the results
+            // % % % output handling % % % %
+            // fourScoreAndSevenYears ago
+            //
+            // our fathers brought forth upon this continent
+            //
+            // a new nation
+            // conceived in liberty
+            //
+            // and dedicated to the proposition that allMenAreCreatedEqual.
+            //
+            // Do something with bookNames one by one
+            IEnumerable<string> bookNames = response.BookNames;
+            foreach (var title in response.BookNames) {
+              // Now we deal with thisSingleBook!
+              Console.WriteLine("\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
+            }
+            Console.WriteLine("The first book is: {response.BookNames[0]}");
+            Console.WriteLine("The author of the first book is: {response.Books[0].Author}");
+            Console.WriteLine("That's all!");
+            Console.WriteLine("series_uuid: {response.SeriesUuid.SeriesBytes}");
         }
         // [END canonical]
         public static void Main(string[] args)
@@ -1473,6 +1543,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class PublishSeriesAsyncFlattenedAsyncSecondEdition
@@ -1488,7 +1559,7 @@ namespace Google.Example.Library.V1.Samples
             uint edition = 2;
             SeriesUuid seriesUuid = new SeriesUuid();
             PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid);
-            // FIXME: inspect the results
+            Console.WriteLine(response);
         }
         // [END canonical]
         public static void Main(string[] args)
@@ -1526,6 +1597,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class PublishSeriesAsyncRequestAsyncPiVersion
@@ -1554,7 +1626,26 @@ namespace Google.Example.Library.V1.Samples
                 Edition = 123,
             };
             PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(request);
-            // FIXME: inspect the results
+            // % % % output handling % % % %
+            // fourScoreAndSevenYears ago
+            //
+            // our fathers brought forth upon this continent
+            //
+            // a new nation
+            // conceived in liberty
+            //
+            // and dedicated to the proposition that allMenAreCreatedEqual.
+            //
+            // Do something with bookNames one by one
+            IEnumerable<string> bookNames = response.BookNames;
+            foreach (var title in response.BookNames) {
+              // Now we deal with thisSingleBook!
+              Console.WriteLine("\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
+            }
+            Console.WriteLine("The first book is: {response.BookNames[0]}");
+            Console.WriteLine("The author of the first book is: {response.Books[0].Author}");
+            Console.WriteLine("That's all!");
+            Console.WriteLine("series_uuid: {response.SeriesUuid.SeriesBytes}");
         }
         // [END canonical]
         public static void Main(string[] args)
@@ -1603,6 +1694,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     public class PublishSeriesAsyncRequestAsyncSecondEdition
@@ -1621,7 +1713,7 @@ namespace Google.Example.Library.V1.Samples
                 Edition = 2,
             };
             PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(request);
-            // FIXME: inspect the results
+            Console.WriteLine(response);
         }
         // [END canonical]
         public static void Main(string[] args)
@@ -1659,6 +1751,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
 
     public class PublishSeriesFlattenedPiVersion
     {
@@ -1683,7 +1776,26 @@ namespace Google.Example.Library.V1.Samples
                 SeriesString = "xyz3141592654",
             };
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid);
-            // FIXME: inspect the results
+            // % % % output handling % % % %
+            // fourScoreAndSevenYears ago
+            //
+            // our fathers brought forth upon this continent
+            //
+            // a new nation
+            // conceived in liberty
+            //
+            // and dedicated to the proposition that allMenAreCreatedEqual.
+            //
+            // Do something with bookNames one by one
+            IEnumerable<string> bookNames = response.BookNames;
+            foreach (var title in response.BookNames) {
+              // Now we deal with thisSingleBook!
+              Console.WriteLine("\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
+            }
+            Console.WriteLine("The first book is: {response.BookNames[0]}");
+            Console.WriteLine("The author of the first book is: {response.Books[0].Author}");
+            Console.WriteLine("That's all!");
+            Console.WriteLine("series_uuid: {response.SeriesUuid.SeriesBytes}");
         }
         // [END canonical]
         public static void Main(string[] args)
@@ -1732,6 +1844,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
 
     public class PublishSeriesFlattenedSecondEdition
     {
@@ -1746,7 +1859,7 @@ namespace Google.Example.Library.V1.Samples
             uint edition = 2;
             SeriesUuid seriesUuid = new SeriesUuid();
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid);
-            // FIXME: inspect the results
+            Console.WriteLine(response);
         }
         // [END canonical]
         public static void Main(string[] args)
@@ -1784,6 +1897,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
 
     public class PublishSeriesRequestPiVersion
     {
@@ -1811,7 +1925,26 @@ namespace Google.Example.Library.V1.Samples
                 Edition = 123,
             };
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
-            // FIXME: inspect the results
+            // % % % output handling % % % %
+            // fourScoreAndSevenYears ago
+            //
+            // our fathers brought forth upon this continent
+            //
+            // a new nation
+            // conceived in liberty
+            //
+            // and dedicated to the proposition that allMenAreCreatedEqual.
+            //
+            // Do something with bookNames one by one
+            IEnumerable<string> bookNames = response.BookNames;
+            foreach (var title in response.BookNames) {
+              // Now we deal with thisSingleBook!
+              Console.WriteLine("\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
+            }
+            Console.WriteLine("The first book is: {response.BookNames[0]}");
+            Console.WriteLine("The author of the first book is: {response.Books[0].Author}");
+            Console.WriteLine("That's all!");
+            Console.WriteLine("series_uuid: {response.SeriesUuid.SeriesBytes}");
         }
         // [END canonical]
         public static void Main(string[] args)
@@ -1860,6 +1993,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
 
     public class PublishSeriesRequestSecondEdition
     {
@@ -1877,7 +2011,7 @@ namespace Google.Example.Library.V1.Samples
                 Edition = 2,
             };
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
-            // FIXME: inspect the results
+            Console.WriteLine(response);
         }
         // [END canonical]
         public static void Main(string[] args)
@@ -1942,7 +2076,7 @@ namespace Google.Example.Library.V1.Samples
                 Edition = 123,
             };
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
-            // FIXME: inspect the results
+            Console.WriteLine(response);
         }
         // [END sample]
         public static void Main(string[] args)
@@ -1980,6 +2114,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
 
     public class PublishSeriesRequestTestWriteToFile
     {
@@ -1996,7 +2131,16 @@ namespace Google.Example.Library.V1.Samples
                 SeriesUuid = new SeriesUuid(),
             };
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
-            // FIXME: inspect the results
+            // testing writing bytes field.
+            using (Stream output = File.Create("uuid_of_series_with_book_{response.BookNames[0]}.raw"))
+            {
+                response.SeriesUuid.SeriesBytes.writeTo(output);
+            }
+            // testing writing string field.
+            using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "WriteLines.txt")))
+            {
+                outputFile.write(@ariableField(view.contents))
+            }
         }
         // [END sample]
         public static void Main(string[] args)
@@ -2033,6 +2177,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System.IO;
 
     public class SampleGetShelf
     {
@@ -2048,7 +2193,7 @@ namespace Google.Example.Library.V1.Samples
                 Options = "",
             };
             Shelf response = libraryServiceClient.GetShelf(request);
-            // FIXME: inspect the results
+            Console.WriteLine("The theme of the shelf is: {response.Theme}");
         }
         // [END sample_get_shelf]
         public static void Main(string[] args)
@@ -2086,6 +2231,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System.IO;
 
     public class TestDefaultCallingFormForPaging
     {
@@ -2100,7 +2246,7 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over pages (of server-defined size), performing one RPC per page
             foreach (Shelf item in response)
             {
-                // FIXME: inspect the results
+                Console.WriteLine("shelf name: {responseItem}");
             }
         }
         // [END test_default_calling_form_for_paging]

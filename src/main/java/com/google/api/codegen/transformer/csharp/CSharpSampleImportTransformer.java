@@ -14,11 +14,15 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.OutputContext;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.OutputTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StandardSampleImportTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -74,6 +78,43 @@ public class CSharpSampleImportTransformer extends StandardSampleImportTransform
     }
     if (Streams.stream(nodes).anyMatch(n -> n.getLineType() == InitCodeLineType.MapInitLine)) {
       typeTable.saveNicknameFor("System.Collections.Generic.IDictionary");
+    }
+  }
+
+  @Override
+  protected void addOutputImports(MethodContext context, OutputContext outputContext) {
+    ImportTypeTable typeTable = context.getTypeTable();
+    OutputTransformer.ScopeTable scopeTable = outputContext.scopeTable();
+    for (TypeModel type : scopeTable.allTypes()) {
+      if (type == null) {
+        // saveResourceTypeName(context);
+      } else {
+        typeTable.getAndSaveNicknameFor(type);
+      }
+    }
+    if (outputContext.hasMaps()) {
+      typeTable.getAndSaveNicknameFor("System.Collections.Generic.KeyValuePair");
+    }
+    if (outputContext.hasBytesFileOutput()) {
+      typeTable.getAndSaveNicknameFor("System.IO.Stream");
+    }
+    if (outputContext.hasStringFileOutput()) {
+      typeTable.getAndSaveNicknameFor("System.IO.StreamWriter");
+    }
+    if (outputContext.hasPrints()) {
+      typeTable.getAndSaveNicknameFor("System.IO.Console");
+    }
+  }
+
+  private void saveResourceTypeName(MethodContext context) {
+    FieldConfig resourceFieldConfig =
+        context.getMethodConfig().getPageStreaming().getResourcesFieldConfig();
+    if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
+      context
+          .getNamer()
+          .getAndSaveElementResourceTypeName(context.getTypeTable(), resourceFieldConfig);
+    } else {
+      context.getTypeTable().getAndSaveNicknameForElementType(resourceFieldConfig.getField());
     }
   }
 }

@@ -44,10 +44,21 @@ public abstract class OutputContext {
    */
   public abstract List<TypeModel> stringFormattedVariableTypes();
 
+  /** In C#, `System.IO.Console` needs to be imported if there are print statements. */
+  public abstract List<List<String>> printSpecs();
+
+  public boolean hasPrints() {
+    return !printSpecs().isEmpty();
+  }
+
   /** Used in Java and Node.js. */
   public abstract List<TypeModel> fileOutputTypes();
 
-  /** In Java, `java.util.Map` needs to be imported if there are map specs. */
+  /**
+   * In Java, `java.util.Map` needs to be imported if there are map specs.
+   *
+   * <p>In C#, `System.Collection.Generic.KeyValuePair` needs to be imported if there are map Specs.
+   */
   public abstract List<OutputSpec.LoopStatement> mapSpecs();
 
   public boolean hasMaps() {
@@ -89,12 +100,17 @@ public abstract class OutputContext {
         new OutputTransformer.ScopeTable(),
         new ArrayList<>(),
         new ArrayList<>(),
+        new ArrayList<>(),
         new ArrayList<>());
   }
 
   /** Creates a new OutputContext, with a new child scope table. */
   public OutputContext createWithNewChildScope() {
     return new AutoValue_OutputContext(
-        scopeTable().newChild(), stringFormattedVariableTypes(), fileOutputTypes(), mapSpecs());
+        scopeTable().newChild(),
+        stringFormattedVariableTypes(),
+        printSpecs(),
+        fileOutputTypes(),
+        mapSpecs());
   }
 }

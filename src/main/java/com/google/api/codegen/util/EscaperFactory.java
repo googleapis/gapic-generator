@@ -39,7 +39,7 @@ public class EscaperFactory {
     return cliEscaper;
   }
 
-  private static Escapers.Builder newBaseEscapersBuilder() {
+  public static Escapers.Builder newBaseEscapersBuilder() {
     return Escapers.builder()
         .addEscape('\\', "\\\\")
         .addEscape('\b', "\\b")

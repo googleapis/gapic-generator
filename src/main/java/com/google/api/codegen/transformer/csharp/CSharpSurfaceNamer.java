@@ -35,6 +35,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.codegen.util.EscaperFactory;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
@@ -707,5 +708,41 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public CallingForm getDefaultCallingForm(MethodContext context) {
     return CallingForm.getDefaultCallingForm(context, TargetLanguage.CSHARP);
+  }
+
+  @Override
+  public ImmutableList<String> getInterpolatedFormatAndArgs(String spec, List<String> args) {
+    if (args.isEmpty()) {
+      spec = EscaperFactory.getDoubleQuoteEscaper().escape(spec);
+      return ImmutableList.of(spec);
+    }
+    if (args.size() == 1 && "%s".equals(spec)) {
+      return ImmutableList.of(spec, args.get(0));
+    }
+    spec =
+        EscaperFactory.newBaseEscapersBuilder()
+            .addEscape('"', "\\\"")
+            .addEscape('{', "{{")
+            .addEscape('}', "}}")
+            .build()
+            .escape(spec);
+    Object[] formattedArgs =
+        args.stream().map(a -> String.format("{%s}", a)).toArray(Object[]::new);
+    return ImmutableList.of(String.format(spec, formattedArgs));
+  }
+
+  @Override
+  public String getIndexAccessorName(int index) {
+    return String.format("[%d]", index);
+  }
+
+  @Override
+  public String getFieldAccessorName(FieldModel field) {
+    return String.format(".%s", getFieldGetFunctionName(field));
+  }
+
+  @Override
+  public String getMapKeyAccessorName(TypeModel keyType, String key) {
+    return String.format("[%s]", getModelTypeFormatter().renderPrimitiveValue(keyType, key));
   }
 }
