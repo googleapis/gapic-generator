@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-def _set_args(arg, arg_name, args, inputs = None, required=False):
+def _set_args(arg, arg_name, args, inputs = None, required = False):
     if not arg:
         if required:
             fail("Missing required argument", arg_name)
@@ -41,7 +41,6 @@ def _gapic_srcjar_impl(ctx):
         _set_args(attr.src, "--descriptor=", arguments, inputs)
         _set_args(attr.package, "--package=", arguments)
 
-
     gapic_generator = ctx.executable.gapic_generator
     ctx.actions.run(
         inputs = inputs,
@@ -60,7 +59,7 @@ gapic_srcjar = rule(
             allow_single_file = True,
             mandatory = True,
         ),
-        "artifact_type": attr.string(mandatory = False), #default = "GAPIC_CODE"
+        "artifact_type": attr.string(mandatory = False),  #default = "GAPIC_CODE"
         "gapic_yaml": attr.label(mandatory = False, allow_single_file = True),
         "language": attr.string(mandatory = False),
         "service_yaml": attr.label(mandatory = False, allow_single_file = True),
@@ -106,7 +105,7 @@ def _proto_custom_library_impl(ctx):
     intermediate_output = output
     if output.extension == "srcjar":
         intermediate_output = ctx.actions.declare_file(
-            "%s.jar" % output.basename,
+            "%s.zip" % output.basename,
             sibling = output,
         )
 
@@ -118,9 +117,12 @@ def _proto_custom_library_impl(ctx):
     plugin = ctx.executable.plugin
 
     if plugin:
-        extra_inputs.extend(ctx.files.plugin_args)
+        extra_inputs.extend(ctx.files.plugin_file_args)
         tools.append(plugin)
-        output_paths = [f.path for f in ctx.files.plugin_args] + output_paths
+        output_paths = \
+            ctx.attr.plugin_args + \
+            [f.path for f in ctx.files.plugin_file_args] + \
+            output_paths
         calculated_args = [
             "--plugin=protoc-gen-%s=%s" % (output_type, plugin.path),
         ]
@@ -170,12 +172,13 @@ proto_custom_library = rule(
     attrs = {
         "deps": attr.label_list(mandatory = True, allow_empty = False, providers = [ProtoInfo]),
         "plugin": attr.label(mandatory = False, executable = True, cfg = "host"),
-        "plugin_args": attr.label_list(
+        "plugin_file_args": attr.label_list(
             mandatory = False,
             allow_empty = True,
             allow_files = True,
             default = [],
         ),
+        "plugin_args": attr.string_list(mandatory = False, allow_empty = True, default = []),
         "extra_args": attr.string_list(mandatory = False, default = []),
         "output_type": attr.string(mandatory = True),
         "output_suffix": attr.string(mandatory = True),
