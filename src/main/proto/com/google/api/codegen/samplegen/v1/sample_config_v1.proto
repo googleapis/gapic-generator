@@ -7,8 +7,8 @@ option java_outer_classname = "ConfigProtoDesc";
 option java_package = "com.google.api.codegen.samplegen.v1";
 
 message SampleConfigProto {
-  string schema_version = 1;  // current version is 1.0
-  
+  string schema_version = 1;  // current version is "1.2"
+
   repeated SampleSpec samples = 2;
 }
 
@@ -30,8 +30,8 @@ message SampleSpec {
   // the value of `id`.
   string region_tag = 2;
 
-  // A description of this sample. Used to generate the documentation
-  // above the sample function.
+  // A description of this sample. This description will appear in the
+  // generated sample files as documentation for the sample functions.
   string description = 3;
 
   // The service name (as specified in the library proto that is being
@@ -58,7 +58,7 @@ message SampleSpec {
   // calling pattern name.
   //
   // Generators SHOULD name their language-specific calling patterns
-  // with a language snake-case prefix, such as "java_".
+  // with a snake-case language prefix, such as "java_".
   //
   // Generators MUST recognize the special expression "default" as
   // explicitly indicating that the default calling pattern must be
@@ -73,8 +73,10 @@ message SampleSpec {
   // previous matches.
   repeated string calling_patterns = 6;
 
-  // Information for constructing the request object passed to `rpc`.
-  repeated Request request = 7;
+  // Information for constructing the request object passed to
+  // `rpc`. Each `request` item specifies a field within the RPC
+  // request object.
+  repeated RequestField request = 7;
 
   // Definition of how to handle the RPC response, specified as an
   // ordered list of statements.
@@ -82,7 +84,7 @@ message SampleSpec {
 
 }
 
-message Request {
+message RequestField {
   // A string representation of the field of the `SampleSpec.rpc`'s
   // request object being specified. This specification must begin
   // with a top-level request field name, and may use dotted notation
@@ -97,13 +99,18 @@ message Request {
   // function's documentation.
   string comment = 2;
 
-  // The default value of this `field`.
+  // A literal containing either the default value for this `field`,
+  // or, if `value_is_file` is set, the location of a local file whose
+  // contents are the default value for this `field`. If
+  // `input_parameter` is set, this default value will be the default
+  // value of the corresponding sample command-line sample argument;
+  // otherwise, this default value will be hard-coded into the sample.
   string value = 3;
 
-  // Whether the value provided for this `field` (through either
-  // `value` or a sample function parameter) ought to be interpreted
-  // as a literal value or as the location of a file whose contents
-  // are the value for this RPC `field`.
+  // Whether the value provided for this `field` (whether the default
+  // `value` or specified through `input_parameter`) ought to be
+  // interpreted as a literal value or as the location of a file whose
+  // contents are the value for this RPC `field`.
   bool value_is_file = 4;
 
   // The name to use as a sample function parameter to populate this
@@ -112,18 +119,14 @@ message Request {
   // function. Otherwise, this `field` can be specified as a parameter
   // to the sample function and as a command-line argument (passed to
   // the sample function) with default value `value`.
-  //
-  // Note when `value_is_file` is set to true, this parameter then
-  // holds the value of the file name.
   bool input_parameter = 5;
-
 }
 
 // A single statement used in handling an RPC response. The statement
 // must be exactly one of the defined statement fields; there is one
 // field per statement type.
 //
-// Some statements accept variable references (e.g.
+// Some statements accept variable references (eg
 // `$resp.names[1].first`), which are defined as sequences of dotted
 // variable names and indexed variable references:
 //
