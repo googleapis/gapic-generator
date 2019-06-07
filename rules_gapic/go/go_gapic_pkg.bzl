@@ -13,6 +13,7 @@
 # limitations under the License.
 
 load("@io_bazel_rules_go//go:def.bzl", "GoLibrary", "GoSource")
+load("//rules_gapic:gapic_pkg.bzl", "construct_package_dir_paths")
 
 def _go_gapic_src_pkg_impl(ctx):
     srcjars = []
@@ -31,7 +32,7 @@ def _go_gapic_src_pkg_impl(ctx):
                 if dep_file.extension == "srcjar":
                     srcjars.append(dep_file)
 
-    paths = _construct_package_dir_paths(ctx.attr.package_dir, ctx.outputs.pkg, ctx.label.name)
+    paths = construct_package_dir_paths(ctx.attr.package_dir, ctx.outputs.pkg, ctx.label.name)
     script = """
     for srcjar in {srcjars}; do
         mkdir -p {package_dir_path}
@@ -83,18 +84,4 @@ def go_gapic_assembly_pkg(name, deps):
         name = name,
         deps = deps,
         package_dir = name,
-    )
-
-def _construct_package_dir_paths(attr_package_dir, out_pkg, label_name):
-    if attr_package_dir:
-        package_dir = attr_package_dir
-        package_dir_expr = "../{}/*".format(package_dir)
-    else:
-        package_dir = label_name
-        package_dir_expr = "./*"
-
-    return struct(
-        package_dir = package_dir,
-        package_dir_expr = package_dir_expr,
-        package_dir_path = "%s/%s/%s" % (out_pkg.dirname, label_name, package_dir),
     )
