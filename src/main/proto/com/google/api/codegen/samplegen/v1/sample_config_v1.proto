@@ -81,7 +81,6 @@ message SampleSpec {
   // Definition of how to handle the RPC response, specified as an
   // ordered list of statements.
   repeated ResponseStatement response = 8;
-
 }
 
 message RequestField {
@@ -171,29 +170,29 @@ message ResponseStatement {
     // both keys and values.
     //
     // Exactly one of `map` and `collection` should be specified.
-    string map = 4;
+    string map = 3;
 
     // The iteration variable for key.
     //
     // At least one of `key` and `value` must be specified if `map` is
     // specified.
-    string key = 5;
+    string key = 4;
 
     // The iteration variable for value.
     //
     // At least one of `key` and `value` must be specified if `map` is
     // specified.
-    string value = 6;
+    string value = 5;
 
     // The contents of the loop.
-    repeated ResponseStatement body = 3;
+    repeated ResponseStatement body = 6;
   }
 
   // A statement that writes to a local file.
   message WriteFileStatement {
     // The name of the file to write to.
     //
-    // Similar to `print`, the elements of `file_name` consists of a
+    // Similar to `print`, the elements of `file_name` consist of a
     // printf-like format string followed by variable references to be
     // interpolated into the string. Example: ["file_name_%s.txt",
     // thing.field].
