@@ -365,6 +365,27 @@ interfaces:
         retry_codes_name: idempotent
         retry_params_name: default
         timeout_millis: 10000
+        sample_value_sets:
+        - id: test_resource_name_oneof
+          parameters:
+            defaults:
+            - name%archive_path="The archive to search for the book"
+            - name%book_id="The ID of the book"
+          on_success:
+          - print: ["Archived book found."]
+        - id: test_resource_name_oneof_2
+          parameters:
+            defaults:
+            - name%shelf_id="The Shelf to search for the book"
+            - name%book_id="The ID of the book"
+          on_success:
+          - print: ["Book on shelf found."]
+        samples:
+          standalone:
+          - region_tag: test_resource_name_oneof
+            value_sets: [test_resource_name_oneof]
+          - region_tag: test_resource_name_oneof_2
+            value_sets: [test_resource_name_oneof_2]
       - name: UpdateBookIndex
         retry_codes_name: idempotent
         retry_params_name: default
