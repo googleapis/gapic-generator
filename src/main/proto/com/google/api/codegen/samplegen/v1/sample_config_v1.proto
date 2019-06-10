@@ -1,0 +1,245 @@
+syntax = "proto3";
+
+package com.google.api.codegen.samplegen.v1;
+
+option java_multiple_files = true;
+option java_outer_classname = "ConfigProtoDesc";
+option java_package = "com.google.api.codegen.samplegen.v1";
+
+message SampleConfigProto {
+  string schema_version = 1;  // current version is "1.2"
+
+  repeated SampleSpec samples = 2;
+}
+
+message SampleSpec {
+  // The unique ID for the sample.
+  //
+  // If not provided, this defaults to the value of `region_tag`, if
+  // provided. If neither is provided, generators SHOULD auto-generate
+  // on the fly a unique ID for this sample.
+  //
+  // Regardless of how this value is obtained, if more than one sample
+  // have the same `id` value, sample generators MUST uniquify this
+  // value in the emitted samples.
+  string id = 1;
+
+  // Name of the region tag to insert in the sample code. If not
+  // provided, the sample generators MUST not insert region tags in
+  // the samples. If provided and `id` is not specified, this becomes
+  // the value of `id`.
+  string region_tag = 2;
+
+  // A description of this sample. This description will appear in the
+  // generated sample files as documentation for the sample functions.
+  string description = 3;
+
+  // The service name (as specified in the library proto that is being
+  // used to generate this sample).
+  string service = 4;
+
+  // The name of the RPC to call with the given `request` object.
+  string rpc = 5;
+
+  // The name of the language-specific calling patterns to use when
+  // generating this sample. If not specified, the generators MUST use
+  // the default calling pattern for this RPC in the language being
+  // generated.
+  //
+  // If specified, the generators MUST see whether any of the
+  // expressions specified (interpreted as regexs) match any of the
+  // calling patterns they implement, and if so, emit a sample using
+  // that calling pattern (and again, taking care to uniquify
+  // `id`). Generators MUST silently ignore any expression provided
+  // here resolving to a calling pattern that they do not implement.
+  //
+  // Generators MUST generate each calling-pattern sample they
+  // implement at most once, even if multiple expression match the
+  // calling pattern name.
+  //
+  // Generators SHOULD name their language-specific calling patterns
+  // with a snake-case language prefix, such as "java_".
+  //
+  // Generators MUST recognize the special expression "default" as
+  // explicitly indicating that the default calling pattern must be
+  // generated.
+  //
+  // Example: ["java_callable", ".*_async", "default"] indicates that
+  // the Java generator should generate the calling pattern
+  // "java_callable", that all generators must generate any calling
+  // patterns they implement whose names end in "_async", and that all
+  // generators should also generate the "default" calling-pattern
+  // sample for this RPC if it was not included by any of the
+  // previous matches.
+  repeated string calling_patterns = 6;
+
+  // Information for constructing the request object passed to
+  // `rpc`. Each `request` item specifies a field within the RPC
+  // request object.
+  repeated RequestField request = 7;
+
+  // Definition of how to handle the RPC response, specified as an
+  // ordered list of statements.
+  repeated ResponseStatement response = 8;
+}
+
+message RequestField {
+  // A string representation of the field of the `SampleSpec.rpc`'s
+  // request object being specified. This specification must begin
+  // with a top-level request field name, and may use dotted notation
+  // for sub-fields, square brackets for list indexing, and curly
+  // brackets for map indexing. For both lists and maps, the index/key
+  // name must be a literal.
+  string field = 1;
+
+  // A comment to emit for this `field` inside the sample function
+  // code or, if this field is a sample function argument (as
+  // determined by `input_parameter`), the comment to include the
+  // function's documentation.
+  string comment = 2;
+
+  // A literal containing either the default value for this `field`,
+  // or, if `value_is_file` is set, the location of a local file whose
+  // contents are the default value for this `field`. If
+  // `input_parameter` is set, this default value will be the default
+  // value of the corresponding sample command-line sample argument;
+  // otherwise, this default value will be hard-coded into the sample.
+  string value = 3;
+
+  // Whether the value provided for this `field` (whether the default
+  // `value` or specified through `input_parameter`) ought to be
+  // interpreted as a literal value or as the location of a file whose
+  // contents are the value for this RPC `field`.
+  bool value_is_file = 4;
+
+  // The name to use as a sample function parameter to populate this
+  // request field. If this is not provided or empty, the `value` of
+  // this `field` is simply hard-coded inside the body of the sample
+  // function. Otherwise, this `field` can be specified as a parameter
+  // to the sample function and as a command-line argument (passed to
+  // the sample function) with default value `value`.
+  bool input_parameter = 5;
+}
+
+// A single statement used in handling an RPC response. The statement
+// must be exactly one of the defined statement fields; there is one
+// field per statement type.
+//
+// Some statements accept variable references (eg
+// `$resp.names[1].first`), which are defined as sequences of dotted
+// variable names and indexed variable references:
+//
+// - a variable name is a sequence of alphanumeric characters
+//   and/or underscores, beginning with an alphabetic character. All
+//   alphabetic characters are case-insensitive and will be correctly
+//   interpreted as protobuf fields when referring to those, and
+//   output, if needed, as properly formatted variables in each target
+//   language. The special variable name `$resp` refers to the
+//   response obtained from the RPC.
+//
+// - the variable name before the first separator character
+//   (dot, bracket, or brace) must refer to a variable within the
+//   current lexical scope: either `$resp`, denoting the RPC response,
+//   or a variable name previously defined in a surrounding
+//   `loop` or `define` statement.
+//
+// - dotted notation is used to refer to subfields square brackets
+//
+// - `[]` are used to index into a list. The index must be a
+//   literal number or variable reference resolving to a number
+//
+// - curly braces `{}` are used to key into a map. The index must
+//   be a literal or variable reference.
+message ResponseStatement {
+
+  // A statement that iterates over lists or maps.
+  message LoopStatement {
+    // A variable reference denoting the list (repeated field) over
+    // which to iterate.
+    //
+    // Exactly one of `map` and `collection` should be specified.
+    string collection = 1;
+
+    // A variable reference denoting the iteration variable.  This
+    // must be specified iff `collection` is specified.
+    string variable = 2;
+
+    // A variable reference to the map over which to iterate. At least
+    // one of the fields `key` or `value` must be specified, and will
+    // cause the loop to iterate over the map keys, the map values, or
+    // both keys and values.
+    //
+    // Exactly one of `map` and `collection` should be specified.
+    string map = 3;
+
+    // The iteration variable for key.
+    //
+    // At least one of `key` and `value` must be specified if `map` is
+    // specified.
+    string key = 4;
+
+    // The iteration variable for value.
+    //
+    // At least one of `key` and `value` must be specified if `map` is
+    // specified.
+    string value = 5;
+
+    // The contents of the loop.
+    repeated ResponseStatement body = 6;
+  }
+
+  // A statement that writes to a local file.
+  message WriteFileStatement {
+    // The name of the file to write to.
+    //
+    // Similar to `print`, the elements of `file_name` consist of a
+    // printf-like format string followed by variable references to be
+    // interpolated into the string. Example: ["file_name_%s.txt",
+    // thing.field].
+    repeated string file_name = 1;
+
+    // A variable reference to the content to write to the local file.
+    string contents = 2;
+  }
+
+
+  // Exactly ONE of the following fields should be set.
+
+  // Defines a new local variable
+  //
+  // This field is of the form `name=reference`,
+  // where `name` is the new variable name being defined, and
+  // `reference` is a variable reference that is currently in scope.
+  string define = 1;
+
+  // Defines a loop.
+  LoopStatement loop = 2;
+
+  // Defines a code comment.
+  //
+  // The first element of `comment` is a printf-like format string,
+  // and subsequent elements are variable references whose
+  // *identifiers* (NOT values) will be interpolated in the
+  // string. These identifiers will be converted to a
+  // language-idiomatic style (snake case or camel case). The
+  // interpolated format string will then be rendered as a comment in
+  // a language-idiomatic style.
+  //
+  // Like `print`, a newline will be automatically appended to the
+  // comment.
+  repeated string comment = 3;
+
+  // Defines a statement to print to stdout.
+  //
+  // The elements of `print` consist of a printf-like format string
+  // followed by variable references to be interpolated in the
+  // string. Example: ["%s=%s", thing.variable, thing.value]).
+  //
+  // Note that this field name is singular because the array
+  // represents a single print statement. A newline will be
+  // automatically appended to the print statement.
+  repeated string print = 4;
+
+  // Defines a structure to write to a local file.
+  WriteFileStatement write_file = 5;
+}
