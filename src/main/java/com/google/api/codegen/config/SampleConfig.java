@@ -131,9 +131,8 @@ public abstract class SampleConfig {
     // First, apply region tag as IDs if IDs are not given
     List<SampleSpecProto> sampleSpecs = new ArrayList<>();
     for (SampleSpecProto spec : sampleSpecs) {
-      String regionTag = spec.getRegionTag();
-      if (spec.getId().isEmpty() && !regionTag.isEmpty()) {
-        sampleSpecs.add(spec.toBuilder().setId(regionTag).build());
+      if (spec.getId().isEmpty()) {
+        sampleSpecs.add(spec.toBuilder().setId(spec.getRegionTag()).build());
       } else {
         sampleSpecs.add(spec);
       }
@@ -161,7 +160,7 @@ public abstract class SampleConfig {
       }
     }
 
-    // We cannot auto-generate IDs for samples without user provided ones here.
+    // We cannot auto-generate IDs for samples without user provided ones at this step.
     // We need to further flat out calling forms at generation time because
     // calling forms support regular expressions, and a single `calling_pattern`
     // string may map to multiple calling forms.

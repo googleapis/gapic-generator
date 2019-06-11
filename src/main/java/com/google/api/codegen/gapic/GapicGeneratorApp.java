@@ -159,7 +159,9 @@ public class GapicGeneratorApp extends ToolDriverBase {
               SampleConfigProto.getDescriptor().getFullName(),
               SampleConfigProto.getDefaultInstance());
 
-      // NOTE: not sure if yamlreader merges repeated fields correctly
+      // TODO(hzyi): Verify this works for repeated fields as well
+      // TODO(hzyi): Allow users to put arbitrary top-level directives not
+      // used by gapic-generator
       sampleConfigProto = (SampleConfigProto) configSource.getConfig();
     }
 
