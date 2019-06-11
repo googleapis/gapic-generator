@@ -9,10 +9,10 @@ option java_package = "com.google.api.codegen.samplegen.v1";
 message SampleConfigProto {
   string schema_version = 1;  // current version is "1.2"
 
-  repeated SampleSpec samples = 2;
+  repeated SampleSpecProto samples = 2;
 }
 
-message SampleSpec {
+message SampleSpecProto {
   // The unique ID for the sample.
   //
   // If not provided, this defaults to the value of `region_tag`, if
@@ -24,22 +24,25 @@ message SampleSpec {
   // value in the emitted samples.
   string id = 1;
 
+  // The title of the sample.
+  string title = 2;
+
   // Name of the region tag to insert in the sample code. If not
   // provided, the sample generators MUST not insert region tags in
   // the samples. If provided and `id` is not specified, this becomes
   // the value of `id`.
-  string region_tag = 2;
+  string region_tag = 3;
 
   // A description of this sample. This description will appear in the
   // generated sample files as documentation for the sample functions.
-  string description = 3;
+  string description = 4;
 
   // The service name (as specified in the library proto that is being
   // used to generate this sample).
-  string service = 4;
+  string service = 5;
 
   // The name of the RPC to call with the given `request` object.
-  string rpc = 5;
+  string rpc = 6;
 
   // The name of the language-specific calling patterns to use when
   // generating this sample. If not specified, the generators MUST use
@@ -71,19 +74,24 @@ message SampleSpec {
   // generators should also generate the "default" calling-pattern
   // sample for this RPC if it was not included by any of the
   // previous matches.
-  repeated string calling_patterns = 6;
+  //
+  // Note: the language prefix and `default` calling patterns are not
+  // supported by gapic-generator at the time of taking sample config
+  // out of gapic YAML config into this config, and thus supporting them
+  // is a non-goal of the config migration project.
+  repeated string calling_patterns = 7;
 
   // Information for constructing the request object passed to
   // `rpc`. Each `request` item specifies a field within the RPC
   // request object.
-  repeated RequestField request = 7;
+  repeated RequestFieldProto request = 8;
 
   // Definition of how to handle the RPC response, specified as an
   // ordered list of statements.
-  repeated ResponseStatement response = 8;
+  repeated ResponseStatementProto response = 9;
 }
 
-message RequestField {
+message RequestFieldProto {
   // A string representation of the field of the `SampleSpec.rpc`'s
   // request object being specified. This specification must begin
   // with a top-level request field name, and may use dotted notation
@@ -150,7 +158,7 @@ message RequestField {
 //
 // - curly braces `{}` are used to key into a map. The index must
 //   be a literal or variable reference.
-message ResponseStatement {
+message ResponseStatementProto {
 
   // A statement that iterates over lists or maps.
   message LoopStatement {
@@ -185,7 +193,7 @@ message ResponseStatement {
     string value = 5;
 
     // The contents of the loop.
-    repeated ResponseStatement body = 6;
+    repeated ResponseStatementProto body = 6;
   }
 
   // A statement that writes to a local file.

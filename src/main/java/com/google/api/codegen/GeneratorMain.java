@@ -134,6 +134,13 @@ public class GeneratorMain {
           .argName("DISCOVERY-DOC")
           .required(true)
           .build();
+  private static final Option SAMPLE_YAML_NONREQUIRED_OPTION =
+      Option.builder()
+          .longOpt("sample_yamls")
+          .desc("The filepath of the sample configuration files.")
+          .hasArgs()
+          .argName("SAMPLES-YAMLS")
+          .build();
 
   public static void printAvailableCommands() {
     System.err.println("  Available artifact types:");
@@ -232,6 +239,7 @@ public class GeneratorMain {
     options.addOption(PACKAGE_YAML2_OPTION);
     options.addOption(TARGET_API_PROTO_PACKAGE);
     options.addOption(OUTPUT_OPTION);
+    options.addOption(SAMPLE_YAML_NONREQUIRED_OPTION);
     Option enabledArtifactsOption =
         Option.builder()
             .longOpt("enabled_artifacts")
@@ -290,6 +298,12 @@ public class GeneratorMain {
           GapicGeneratorApp.GENERATOR_CONFIG_FILES,
           Lists.newArrayList(cl.getOptionValues(GAPIC_YAML_NONREQUIRED_OPTION.getLongOpt())));
       checkFiles(toolOptions.get(GapicGeneratorApp.GENERATOR_CONFIG_FILES));
+    }
+    if (cl.getOptionValues(SAMPLE_YAML_NONREQUIRED_OPTION.getLongOpt()) != null) {
+      toolOptions.set(
+          GapicGeneratorApp.SAMPLE_CONFIG_FILES,
+          Lists.newArrayList(cl.getOptionValues(SAMPLE_YAML_NONREQUIRED_OPTION.getLongOpt())));
+      checkFiles(toolOptions.get(GapicGeneratorApp.SAMPLE_CONFIG_FILES));
     }
     if (!Strings.isNullOrEmpty(toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE))) {
       checkFile(toolOptions.get(GapicGeneratorApp.PACKAGE_CONFIG2_FILE));
