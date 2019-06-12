@@ -2248,6 +2248,102 @@ namespace Google.Example.Library.V1.Samples
         }
     }
 }
+============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/TestResourceNameOneof.cs ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Generated code. DO NOT EDIT!
+
+// This is a generated sample ("Request", "test_resource_name_oneof")
+
+// sample-metadata
+//   title:
+//   description:
+//   usage: dotnet run
+
+// [START test_resource_name_oneof]
+namespace Google.Example.Library.V1.Samples
+{
+    using Google.Example.Library.V1;
+
+    public class TestResourceNameOneof
+    {
+        public static void SampleGetBookFromAbsolutelyAnywhere()
+        {
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            GetBookFromAbsolutelyAnywhereRequest request = new GetBookFromAbsolutelyAnywhereRequest
+            {
+                AsResourceName = BookNameOneof.From(new ArchivedBookName("The archive to search for the book", "The ID of the book")),
+            };
+            BookFromAnywhere response = libraryServiceClient.GetBookFromAbsolutelyAnywhere(request);
+            // FIXME: inspect the results
+        }
+        // [END test_resource_name_oneof]
+        public static void Main(string[] args)
+        {
+            SampleGetBookFromAbsolutelyAnywhere();
+        }
+    }
+}
+============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/TestResourceNameOneof2.cs ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Generated code. DO NOT EDIT!
+
+// This is a generated sample ("Request", "test_resource_name_oneof_2")
+
+// sample-metadata
+//   title:
+//   description:
+//   usage: dotnet run
+
+// [START test_resource_name_oneof_2]
+namespace Google.Example.Library.V1.Samples
+{
+    using Google.Example.Library.V1;
+
+    public class TestResourceNameOneof2
+    {
+        public static void SampleGetBookFromAbsolutelyAnywhere()
+        {
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            GetBookFromAbsolutelyAnywhereRequest request = new GetBookFromAbsolutelyAnywhereRequest
+            {
+                AsResourceName = BookNameOneof.From(new BookName("The Shelf to search for the book", "The ID of the book")),
+            };
+            BookFromAnywhere response = libraryServiceClient.GetBookFromAbsolutelyAnywhere(request);
+            // FIXME: inspect the results
+        }
+        // [END test_resource_name_oneof_2]
+        public static void Main(string[] args)
+        {
+            SampleGetBookFromAbsolutelyAnywhere();
+        }
+    }
+}
 ============== file: Google.Example.Library.V1/Google.Example.Library.V1.SmokeTests/Google.Example.Library.V1.SmokeTests.csproj ==============
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
@@ -8722,6 +8818,42 @@ namespace Google.Example.Library.V1
     }
 
     /// <summary>
+    /// Builder class for <see cref="LibraryServiceClient"/> to provide simple configuration of credentials, endpoint etc.
+    /// </summary>
+    public sealed partial class LibraryServiceClientBuilder : gaxgrpc::ClientBuilderBase<LibraryServiceClient>
+    {
+        /// <summary>
+        /// The settings to use for RPCs, or null for the default settings.
+        /// </summary>
+        public LibraryServiceSettings Settings { get; set; }
+
+        /// <inheritdoc/>
+        public override LibraryServiceClient Build()
+        {
+            Validate();
+            grpccore::CallInvoker callInvoker = CreateCallInvoker();
+            return LibraryServiceClient.Create(callInvoker, Settings);
+        }
+
+        /// <inheritdoc />
+        public override async stt::Task<LibraryServiceClient> BuildAsync(st::CancellationToken cancellationToken = default)
+        {
+            Validate();
+            grpccore::CallInvoker callInvoker = await CreateCallInvokerAsync(cancellationToken).ConfigureAwait(false);
+            return LibraryServiceClient.Create(callInvoker, Settings);
+        }
+
+        /// <inheritdoc />
+        protected override gaxgrpc::ServiceEndpoint GetDefaultEndpoint() => LibraryServiceClient.DefaultEndpoint;
+
+        /// <inheritdoc />
+        protected override scg::IReadOnlyList<string> GetDefaultScopes() => LibraryServiceClient.DefaultScopes;
+
+        /// <inheritdoc />
+        protected override gaxgrpc::ChannelPool GetChannelPool() => LibraryServiceClient.ChannelPool;
+    }
+
+    /// <summary>
     /// LibraryService client wrapper, for convenient use.
     /// </summary>
     public abstract partial class LibraryServiceClient
@@ -8747,6 +8879,8 @@ namespace Google.Example.Library.V1
         });
 
         private static readonly gaxgrpc::ChannelPool s_channelPool = new gaxgrpc::ChannelPool(DefaultScopes);
+
+        internal static gaxgrpc::ChannelPool ChannelPool => s_channelPool;
 
         /// <summary>
         /// Asynchronously creates a <see cref="LibraryServiceClient"/>, applying defaults for all unspecified settings,
@@ -18188,6 +18322,42 @@ namespace Google.Example.Library.V1
     }
 
     /// <summary>
+    /// Builder class for <see cref="MyProtoClient"/> to provide simple configuration of credentials, endpoint etc.
+    /// </summary>
+    public sealed partial class MyProtoClientBuilder : gaxgrpc::ClientBuilderBase<MyProtoClient>
+    {
+        /// <summary>
+        /// The settings to use for RPCs, or null for the default settings.
+        /// </summary>
+        public MyProtoSettings Settings { get; set; }
+
+        /// <inheritdoc/>
+        public override MyProtoClient Build()
+        {
+            Validate();
+            grpccore::CallInvoker callInvoker = CreateCallInvoker();
+            return MyProtoClient.Create(callInvoker, Settings);
+        }
+
+        /// <inheritdoc />
+        public override async stt::Task<MyProtoClient> BuildAsync(st::CancellationToken cancellationToken = default)
+        {
+            Validate();
+            grpccore::CallInvoker callInvoker = await CreateCallInvokerAsync(cancellationToken).ConfigureAwait(false);
+            return MyProtoClient.Create(callInvoker, Settings);
+        }
+
+        /// <inheritdoc />
+        protected override gaxgrpc::ServiceEndpoint GetDefaultEndpoint() => MyProtoClient.DefaultEndpoint;
+
+        /// <inheritdoc />
+        protected override scg::IReadOnlyList<string> GetDefaultScopes() => MyProtoClient.DefaultScopes;
+
+        /// <inheritdoc />
+        protected override gaxgrpc::ChannelPool GetChannelPool() => MyProtoClient.ChannelPool;
+    }
+
+    /// <summary>
     /// MyProto client wrapper, for convenient use.
     /// </summary>
     public abstract partial class MyProtoClient
@@ -18213,6 +18383,8 @@ namespace Google.Example.Library.V1
         });
 
         private static readonly gaxgrpc::ChannelPool s_channelPool = new gaxgrpc::ChannelPool(DefaultScopes);
+
+        internal static gaxgrpc::ChannelPool ChannelPool => s_channelPool;
 
         /// <summary>
         /// Asynchronously creates a <see cref="MyProtoClient"/>, applying defaults for all unspecified settings,

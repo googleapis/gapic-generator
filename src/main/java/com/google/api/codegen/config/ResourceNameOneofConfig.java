@@ -22,9 +22,9 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /** ResourceNameOneofConfig represents the configuration for a oneof set of resource names. */
@@ -45,8 +45,12 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     return null;
   }
 
-  public Iterable<SingleResourceNameConfig> getSingleResourceNameConfigs() {
-    return Iterables.filter(getResourceNameConfigs(), SingleResourceNameConfig.class);
+  public List<SingleResourceNameConfig> getSingleResourceNameConfigs() {
+    return getResourceNameConfigs()
+        .stream()
+        .filter(c -> c.getResourceNameType() == ResourceNameType.SINGLE)
+        .map(c -> (SingleResourceNameConfig) c)
+        .collect(Collectors.toList());
   }
 
   @Nullable

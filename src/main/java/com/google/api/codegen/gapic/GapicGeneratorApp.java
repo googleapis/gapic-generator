@@ -172,10 +172,10 @@ public class GapicGeneratorApp extends ToolDriverBase {
       return;
     }
 
-    ArtifactFlags artifactFlags = new ArtifactFlags(options.get(ENABLED_ARTIFACTS), artifactType);
+    ArtifactFlags artifactFlags =
+        new ArtifactFlags(options.get(ENABLED_ARTIFACTS), artifactType, options.get(DEV_SAMPLES));
     List<CodeGenerator<?>> generators =
-        GapicGeneratorFactory.create(
-            language, model, productConfig, packageConfig, artifactFlags, options.get(DEV_SAMPLES));
+        GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
     ImmutableMap.Builder<String, GeneratedResult<?>> generatedResults = ImmutableMap.builder();
     for (CodeGenerator<?> generator : generators) {
       Map<String, ? extends GeneratedResult<?>> generatorResult = generator.generate();

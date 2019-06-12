@@ -1377,6 +1377,66 @@ function sampleListShelves() {
 // tslint:disable-next-line:no-any
 
 sampleListShelves();
+============== file: samples/v1/test_resource_name_oneof.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof")
+'use strict';
+
+// sample-metadata:
+//   title:
+//   description:
+//   usage: node samples/v1/test_resource_name_oneof.js
+
+// [START test_resource_name_oneof]
+
+const library = require('@google-cloud/library').v1;
+
+function sampleGetBookFromAbsolutelyAnywhere() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.archivedBookPath('The archive to search for the book', 'The ID of the book');
+  client.getBookFromAbsolutelyAnywhere({name: formattedName})
+    .then(responses => {
+      const response = responses[0];
+      console.log(`Archived book found.`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+// [END test_resource_name_oneof]
+// tslint:disable-next-line:no-any
+
+sampleGetBookFromAbsolutelyAnywhere();
+============== file: samples/v1/test_resource_name_oneof_2.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof_2")
+'use strict';
+
+// sample-metadata:
+//   title:
+//   description:
+//   usage: node samples/v1/test_resource_name_oneof_2.js
+
+// [START test_resource_name_oneof_2]
+
+const library = require('@google-cloud/library').v1;
+
+function sampleGetBookFromAbsolutelyAnywhere() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.bookPath('The Shelf to search for the book', 'The ID of the book');
+  client.getBookFromAbsolutelyAnywhere({name: formattedName})
+    .then(responses => {
+      const response = responses[0];
+      console.log(`Book on shelf found.`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+// [END test_resource_name_oneof_2]
+// tslint:disable-next-line:no-any
+
+sampleGetBookFromAbsolutelyAnywhere();
 ============== file: samples/v1/this_tag_should_be_the_name_of_the_file.js ==============
 // DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap")
 'use strict';
@@ -2248,7 +2308,7 @@ const PublishSeriesRequest = {
 };
 
 /**
- * @property {string} seriesBytes
+ * @property {Buffer} seriesBytes
  *
  * @property {string} seriesString
  *
@@ -2470,7 +2530,7 @@ const AddCommentsRequest = {
  * @property {string} userName
  *   won't be filled in by the sample generator
  *
- * @property {string} comment
+ * @property {Buffer} comment
  *   should be filled in by the sample generator
  *
  * @property {number} stage
@@ -2583,7 +2643,7 @@ const UpdateBookIndexRequest = {
  *
  *   This object should have the same structure as [Comment]{@link google.example.library.v1.Comment}
  *
- * @property {string} image
+ * @property {Buffer} image
  *
  * @typedef DiscussBookRequest
  * @memberof google.example.library.v1
@@ -2657,7 +2717,7 @@ const GetBigBookMetadata = {
  *
  * @property {string} requiredSingularString
  *
- * @property {string} requiredSingularBytes
+ * @property {Buffer} requiredSingularBytes
  *
  * @property {Object} requiredSingularMessage
  *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
@@ -2687,7 +2747,7 @@ const GetBigBookMetadata = {
  *
  * @property {string[]} requiredRepeatedString
  *
- * @property {string[]} requiredRepeatedBytes
+ * @property {Buffer[]} requiredRepeatedBytes
  *
  * @property {Object[]} requiredRepeatedMessage
  *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
@@ -2719,7 +2779,7 @@ const GetBigBookMetadata = {
  *
  * @property {string} optionalSingularString
  *
- * @property {string} optionalSingularBytes
+ * @property {Buffer} optionalSingularBytes
  *
  * @property {Object} optionalSingularMessage
  *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
@@ -2749,7 +2809,7 @@ const GetBigBookMetadata = {
  *
  * @property {string[]} optionalRepeatedString
  *
- * @property {string[]} optionalRepeatedBytes
+ * @property {Buffer[]} optionalRepeatedBytes
  *
  * @property {Object[]} optionalRepeatedMessage
  *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
@@ -3090,7 +3150,7 @@ const Operation = {
  *   Schemes other than `http`, `https` (or the empty scheme) might be
  *   used with implementation specific semantics.
  *
- * @property {string} value
+ * @property {Buffer} value
  *   Must be a valid serialized protocol buffer of the above specified type.
  *
  * @typedef Any
@@ -3844,7 +3904,7 @@ const StringValue = {
  *
  * The JSON representation for `BytesValue` is JSON string.
  *
- * @property {string} value
+ * @property {Buffer} value
  *   The bytes value.
  *
  * @typedef BytesValue
@@ -5490,7 +5550,7 @@ class LibraryServiceClient {
    * });
    *
    * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-   * const comment = '';
+   * const comment = Buffer.from('');
    * const stage = 'UNSET';
    * const alignment = 'CHAR';
    * const commentsElement = {
@@ -6363,7 +6423,7 @@ class LibraryServiceClient {
    * @param {number} request.requiredSingularEnum
    *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
    * @param {string} request.requiredSingularString
-   * @param {string} request.requiredSingularBytes
+   * @param {Buffer} request.requiredSingularBytes
    * @param {Object} request.requiredSingularMessage
    *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
    * @param {string} request.requiredSingularResourceName
@@ -6379,7 +6439,7 @@ class LibraryServiceClient {
    * @param {number[]} request.requiredRepeatedEnum
    *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
    * @param {string[]} request.requiredRepeatedString
-   * @param {string[]} request.requiredRepeatedBytes
+   * @param {Buffer[]} request.requiredRepeatedBytes
    * @param {Object[]} request.requiredRepeatedMessage
    *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
    * @param {string[]} request.requiredRepeatedResourceName
@@ -6396,7 +6456,7 @@ class LibraryServiceClient {
    * @param {number} [request.optionalSingularEnum]
    *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
    * @param {string} [request.optionalSingularString]
-   * @param {string} [request.optionalSingularBytes]
+   * @param {Buffer} [request.optionalSingularBytes]
    * @param {Object} [request.optionalSingularMessage]
    *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
    * @param {string} [request.optionalSingularResourceName]
@@ -6412,7 +6472,7 @@ class LibraryServiceClient {
    * @param {number[]} [request.optionalRepeatedEnum]
    *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
    * @param {string[]} [request.optionalRepeatedString]
-   * @param {string[]} [request.optionalRepeatedBytes]
+   * @param {Buffer[]} [request.optionalRepeatedBytes]
    * @param {Object[]} [request.optionalRepeatedMessage]
    *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
    * @param {string[]} [request.optionalRepeatedResourceName]
@@ -6511,7 +6571,7 @@ class LibraryServiceClient {
    * const requiredSingularBool = false;
    * const requiredSingularEnum = 'ZERO';
    * const requiredSingularString = '';
-   * const requiredSingularBytes = '';
+   * const requiredSingularBytes = Buffer.from('');
    * const requiredSingularMessage = {};
    * const formattedRequiredSingularResourceName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
