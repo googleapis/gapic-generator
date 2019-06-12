@@ -97,7 +97,7 @@ public class CSharpSampleImportTransformer extends StandardSampleImportTransform
     }
     if (outputContext.hasBytesFileOutput()) {
       typeTable.getAndSaveNicknameFor("System.Linq.Enumerable");
-      typeTable.getAndSaveNickNameFor("System.IO.File")
+      typeTable.getAndSaveNicknameFor("System.IO.File");
     }
     if (outputContext.hasStringFileOutput()) {
       typeTable.getAndSaveNicknameFor("System.IO.File");

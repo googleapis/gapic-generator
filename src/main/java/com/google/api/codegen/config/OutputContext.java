@@ -44,7 +44,7 @@ public abstract class OutputContext {
    */
   public abstract List<TypeModel> stringFormattedVariableTypes();
 
-  /** In C#, `System.IO.Console` needs to be imported if there are print statements. */
+  /** In C#, `System.Console` needs to be imported if there are print statements. */
   public abstract List<List<String>> printSpecs();
 
   public boolean hasPrints() {

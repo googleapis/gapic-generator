@@ -73,10 +73,10 @@
 
 @private processWriteFileView(view)
     @if view.contents.type.isBytesType
-        File.WriteAllBytes({@formattedFileName(view.fileName)}, @variableField(view.contents).ToArray());
+        File.WriteAllBytes({@formattedFileName(view.fileName)}, {@variableField(view.contents)}.ToArray());
     @else
         @if view.contents.type.isStringType
-            File.WriteAllText(@formattedFileName(view.fileName)}), @variableField(view.contents);
+            File.WriteAllText({@formattedFileName(view.fileName)}, {@variableField(view.contents)});
         @else
             $unhandled type: {@view.contents.type}
         @end

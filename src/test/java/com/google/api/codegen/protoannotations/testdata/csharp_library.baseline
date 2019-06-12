@@ -2112,6 +2112,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Example.Library.V1;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     public class PublishSeriesRequestTestWriteToFile
     {
@@ -2129,15 +2130,9 @@ namespace Google.Example.Library.V1.Samples
             };
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
             // testing writing bytes field.
-            using (Stream output = File.Create($"uuid_of_series_with_book_{response.BookNames[0]}.raw"))
-            {
-                response.SeriesUuid.SeriesBytes.writeTo(output);
-            }
+            File.WriteAllBytes($"uuid_of_series_with_book_{response.BookNames[0]}.raw", response.SeriesUuid.SeriesBytes.ToArray());
             // testing writing string field.
-            using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "WriteLines.txt")))
-            {
-                outputFile.write(response.SeriesUuid.SeriesString)
-            }
+            File.WriteAllText("series_uuid_in_plain_text.txt", response.SeriesUuid.SeriesString);
         }
         // [END sample]
         public static void Main(string[] args)
