@@ -164,9 +164,6 @@
         {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
             {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
         {@paging(apiMethod, sample)}
-        @if sample.outputs
-            {@processOutputViews(sample.outputs)}
-        @end
     }
 @end
 
@@ -290,10 +287,10 @@
                     IAsyncEnumerator<{@apiMethod.serviceResponseTypeName}> responseStream = duplexStream.ResponseStream;
                     while (await responseStream.MoveNext())
                     {
-                            {@apiMethod.serviceResponseTypeName} response = responseStream.Current;
-                            @if sample.outputs
-                                {@processOutputViews(sample.outputs)}
-                            @end
+                        {@apiMethod.serviceResponseTypeName} response = responseStream.Current;
+                        @if sample.outputs
+                            {@processOutputViews(sample.outputs)}
+                        @end
                     }
                     // The response stream has completed
                 });

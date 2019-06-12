@@ -42,30 +42,30 @@
 @end
 
 @private processArrayLoopView(view)
-  foreach (var {@view.variableName} in {@variableField(@view.collection)}) {
-    {@processOutputViews(@view.body)}
-  }
+    foreach (var {@view.variableName} in {@variableField(@view.collection)}) {
+        {@processOutputViews(@view.body)}
+    }
 @end
 
 @private processMapLoopView(view)
-  @if and(view.keyVariableName, view.valueVariableName)
-    foreach (KeyValuePair<{@view.keyType}, {@view.valueType}> entry in {@variableField(@view.map)}.entrySet()) {
-      {@view.keyType} {@view.keyVariableName} = entry.Key;
-      {@view.valueType} {@view.valueVariableName} = entry.Value;
-
-  @else
-    @if view.keyVariableName
-      foreach (var {@view.keyVariableName}: {@variableField(@view.map)}.Keys) {
+    @if and(view.keyVariableName, view.valueVariableName)
+        foreach (KeyValuePair<{@view.keyType}, {@view.valueType}> entry in {@variableField(@view.map)}.entrySet()) {
+            {@view.keyType} {@view.keyVariableName} = entry.Key;
+            {@view.valueType} {@view.valueVariableName} = entry.Value;
 
     @else
-      @if view.valueVariableName
-        for (var {@view.valueVariableName}: {@variableField(@view.map)}.Values) {
+        @if view.keyVariableName
+            foreach (var {@view.keyVariableName}: {@variableField(@view.map)}.Keys) {
 
-      @else
-        $unhandledMapLoopView: {@view}
-      @end
+        @else
+            @if view.valueVariableName
+                for (var {@view.valueVariableName}: {@variableField(@view.map)}.Values) {
+
+            @else
+                $unhandledMapLoopView: {@view}
+            @end
+        @end
     @end
-  @end
     {@processOutputViews(@view.body)}
   }
 
@@ -86,11 +86,11 @@
 
 
 @private formattedFileName(fileName)
-  @if fileName.args.isEmpty
-    "{@fileName.format}"
-  @else
-    $"{@fileName.format}"
-  @end
+    @if fileName.args.isEmpty
+        "{@fileName.format}"
+    @else
+        $"{@fileName.format}"
+    @end
 @end
 
 @private variableField(arg)

@@ -26,7 +26,7 @@
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
-    using System.IO;
+    using System;
     using System.Threading.Tasks;
 
     public class DeleteShelfAsyncFlattenedAsyncEmptyResponseTypeWithResponseHandling
@@ -125,7 +125,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
-    using System.IO;
+    using System;
     using System.Threading.Tasks;
 
     public class DeleteShelfAsyncRequestAsyncEmptyResponseTypeWithResponseHandling
@@ -230,7 +230,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
-    using System.IO;
+    using System;
 
     public class DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling
     {
@@ -327,7 +327,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
-    using System.IO;
+    using System;
 
     public class DeleteShelfRequestEmptyResponseTypeWithResponseHandling
     {
@@ -431,8 +431,8 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     public class FindRelatedBooksAsyncFlattenedAsyncPagedAllOdyssey
@@ -455,7 +455,7 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over pages (of server-defined size), performing one RPC per page
             await response.ForEachAsync((BookNameOneof item) =>
             {
-                BookNameOneof book = responseItem;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             });
         }
@@ -495,8 +495,8 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     public class FindRelatedBooksAsyncFlattenedAsyncPagedOdyssey
@@ -521,7 +521,7 @@ namespace Google.Example.Library.V1.Samples
             {
                 foreach (BookNameOneof item in page)
                 {
-                    BookNameOneof book = responseItem;
+                    BookNameOneof book = item;
                     Console.WriteLine($"Here's a related book: {book}");
                 }
             });
@@ -561,8 +561,8 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     public class FindRelatedBooksAsyncFlattenedAsyncPagedPageSizeOdyssey
@@ -587,7 +587,7 @@ namespace Google.Example.Library.V1.Samples
             Page<BookNameOneof> singlePage = await response.ReadPageAsync(pageSize);
             foreach (BookNameOneof item in response)
             {
-                BookNameOneof book = responseItem;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             }
             // Store the pageToken, for when the next page is required.
@@ -629,8 +629,8 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     public class FindRelatedBooksAsyncRequestAsyncPagedAllOdyssey
@@ -656,7 +656,7 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over pages (of server-defined size), performing one RPC per page
             await response.ForEachAsync((BookNameOneof item) =>
             {
-                BookNameOneof book = responseItem;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             });
         }
@@ -696,8 +696,8 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     public class FindRelatedBooksAsyncRequestAsyncPagedOdyssey
@@ -725,7 +725,7 @@ namespace Google.Example.Library.V1.Samples
             {
                 foreach (BookNameOneof item in page)
                 {
-                    BookNameOneof book = responseItem;
+                    BookNameOneof book = item;
                     Console.WriteLine($"Here's a related book: {book}");
                 }
             });
@@ -765,8 +765,8 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     public class FindRelatedBooksAsyncRequestAsyncPagedPageSizeOdyssey
@@ -794,7 +794,7 @@ namespace Google.Example.Library.V1.Samples
             Page<BookNameOneof> singlePage = await response.ReadPageAsync(pageSize);
             foreach (BookNameOneof item in response)
             {
-                BookNameOneof book = responseItem;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             }
             // Store the pageToken, for when the next page is required.
@@ -836,8 +836,8 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
 
     public class FindRelatedBooksFlattenedPagedAllOdyssey
     {
@@ -859,7 +859,7 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over pages (of server-defined size), performing one RPC per page
             foreach (BookNameOneof item in response)
             {
-                BookNameOneof book = responseItem;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             }
         }
@@ -899,8 +899,8 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
 
     public class FindRelatedBooksFlattenedPagedOdyssey
     {
@@ -924,12 +924,10 @@ namespace Google.Example.Library.V1.Samples
             {
                 foreach (BookNameOneof item in page)
                 {
-                    BookNameOneof book = responseItem;
+                    BookNameOneof book = item;
                     Console.WriteLine($"Here's a related book: {book}");
                 }
             }
-            BookNameOneof book = responseItem;
-            Console.WriteLine($"Here's a related book: {book}");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -967,8 +965,8 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
 
     public class FindRelatedBooksFlattenedPagedPageSizeOdyssey
     {
@@ -992,7 +990,7 @@ namespace Google.Example.Library.V1.Samples
             Page<BookNameOneof> singlePage = response.ReadPage(pageSize);
             foreach (BookNameOneof item in response)
             {
-                BookNameOneof book = responseItem;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             }
             // Store the pageToken, for when the next page is required.
@@ -1034,8 +1032,8 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
 
     public class FindRelatedBooksRequestPagedAllOdyssey
     {
@@ -1060,7 +1058,7 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over pages (of server-defined size), performing one RPC per page
             foreach (BookNameOneof item in response)
             {
-                BookNameOneof book = responseItem;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             }
         }
@@ -1100,8 +1098,8 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
 
     public class FindRelatedBooksRequestPagedOdyssey
     {
@@ -1128,12 +1126,10 @@ namespace Google.Example.Library.V1.Samples
             {
                 foreach (BookNameOneof item in page)
                 {
-                    BookNameOneof book = responseItem;
+                    BookNameOneof book = item;
                     Console.WriteLine($"Here's a related book: {book}");
                 }
             }
-            BookNameOneof book = responseItem;
-            Console.WriteLine($"Here's a related book: {book}");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -1171,8 +1167,8 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
 
     public class FindRelatedBooksRequestPagedPageSizeOdyssey
     {
@@ -1199,7 +1195,7 @@ namespace Google.Example.Library.V1.Samples
             Page<BookNameOneof> singlePage = response.ReadPage(pageSize);
             foreach (BookNameOneof item in response)
             {
-                BookNameOneof book = responseItem;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             }
             // Store the pageToken, for when the next page is required.
@@ -1240,7 +1236,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
-    using System.IO;
+    using System;
     using System.Threading.Tasks;
 
     public class GetBookAsyncFlattenedAsyncTestOnSuccessMap
@@ -1291,7 +1287,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
-    using System.IO;
+    using System;
     using System.Threading.Tasks;
 
     public class GetBookAsyncRequestAsyncTestOnSuccessMap
@@ -1345,7 +1341,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
-    using System.IO;
+    using System;
 
     public class GetBookFlattenedTestOnSuccessMap
     {
@@ -1395,7 +1391,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
-    using System.IO;
+    using System;
 
     public class GetBookRequestTestOnSuccessMap
     {
@@ -1448,8 +1444,8 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     public class PublishSeriesAsyncFlattenedAsyncPiVersion
@@ -1488,8 +1484,8 @@ namespace Google.Example.Library.V1.Samples
             // Do something with bookNames one by one
             IEnumerable<string> bookNames = response.BookNames;
             foreach (var title in response.BookNames) {
-              // Now we deal with thisSingleBook!
-              Console.WriteLine($"\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
+                // Now we deal with thisSingleBook!
+                Console.WriteLine($"\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
             }
             Console.WriteLine($"The first book is: {response.BookNames[0]}");
             Console.WriteLine($"The author of the first book is: {response.Books[0].Author}");
@@ -1542,8 +1538,8 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     public class PublishSeriesAsyncFlattenedAsyncSecondEdition
@@ -1596,8 +1592,8 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     public class PublishSeriesAsyncRequestAsyncPiVersion
@@ -1639,8 +1635,8 @@ namespace Google.Example.Library.V1.Samples
             // Do something with bookNames one by one
             IEnumerable<string> bookNames = response.BookNames;
             foreach (var title in response.BookNames) {
-              // Now we deal with thisSingleBook!
-              Console.WriteLine($"\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
+                // Now we deal with thisSingleBook!
+                Console.WriteLine($"\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
             }
             Console.WriteLine($"The first book is: {response.BookNames[0]}");
             Console.WriteLine($"The author of the first book is: {response.Books[0].Author}");
@@ -1693,8 +1689,8 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     public class PublishSeriesAsyncRequestAsyncSecondEdition
@@ -1750,8 +1746,8 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
 
     public class PublishSeriesFlattenedPiVersion
     {
@@ -1789,8 +1785,8 @@ namespace Google.Example.Library.V1.Samples
             // Do something with bookNames one by one
             IEnumerable<string> bookNames = response.BookNames;
             foreach (var title in response.BookNames) {
-              // Now we deal with thisSingleBook!
-              Console.WriteLine($"\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
+                // Now we deal with thisSingleBook!
+                Console.WriteLine($"\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
             }
             Console.WriteLine($"The first book is: {response.BookNames[0]}");
             Console.WriteLine($"The author of the first book is: {response.Books[0].Author}");
@@ -1843,8 +1839,8 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
 
     public class PublishSeriesFlattenedSecondEdition
     {
@@ -1896,8 +1892,8 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
 
     public class PublishSeriesRequestPiVersion
     {
@@ -1938,8 +1934,8 @@ namespace Google.Example.Library.V1.Samples
             // Do something with bookNames one by one
             IEnumerable<string> bookNames = response.BookNames;
             foreach (var title in response.BookNames) {
-              // Now we deal with thisSingleBook!
-              Console.WriteLine($"\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
+                // Now we deal with thisSingleBook!
+                Console.WriteLine($"\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
             }
             Console.WriteLine($"The first book is: {response.BookNames[0]}");
             Console.WriteLine($"The author of the first book is: {response.Books[0].Author}");
@@ -1992,8 +1988,8 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
-    using System.IO;
 
     public class PublishSeriesRequestSecondEdition
     {
@@ -2049,6 +2045,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using Google.Protobuf;
+    using System;
     using System.Collections.Generic;
     using System.IO;
 
@@ -2139,7 +2136,7 @@ namespace Google.Example.Library.V1.Samples
             // testing writing string field.
             using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "WriteLines.txt")))
             {
-                outputFile.write(@ariableField(view.contents))
+                outputFile.write(response.SeriesUuid.SeriesString)
             }
         }
         // [END sample]
@@ -2177,7 +2174,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
-    using System.IO;
+    using System;
 
     public class SampleGetShelf
     {
@@ -2231,7 +2228,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
-    using System.IO;
+    using System;
 
     public class TestDefaultCallingFormForPaging
     {
@@ -2246,7 +2243,7 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over pages (of server-defined size), performing one RPC per page
             foreach (Shelf item in response)
             {
-                Console.WriteLine($"shelf name: {responseItem}");
+                Console.WriteLine($"shelf name: {item}");
             }
         }
         // [END test_default_calling_form_for_paging]
