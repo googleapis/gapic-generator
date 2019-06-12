@@ -73,16 +73,10 @@
 
 @private processWriteFileView(view)
     @if view.contents.type.isBytesType
-        using (Stream output = File.Create({@formattedFileName(view.fileName)})) 
-        {
-            {@variableField(view.contents)}.writeTo(output);
-        }
+        File.WriteAllBytes({@formattedFileName(view.fileName)}, @variableField(view.contents).ToArray());
     @else
         @if view.contents.type.isStringType
-            using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "WriteLines.txt")))
-            {
-                outputFile.write(@variableField(view.contents))   
-            }
+            File.WriteAllText(@formattedFileName(view.fileName)}), @variableField(view.contents);
         @else
             $unhandled type: {@view.contents.type}
         @end

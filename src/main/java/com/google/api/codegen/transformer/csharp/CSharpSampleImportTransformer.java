@@ -97,12 +97,13 @@ public class CSharpSampleImportTransformer extends StandardSampleImportTransform
     }
     if (outputContext.hasBytesFileOutput()) {
       typeTable.getAndSaveNicknameFor("System.IO.Stream");
+      typeTable.getAndSaveNickNameFor("System.IO.File")
     }
     if (outputContext.hasStringFileOutput()) {
-      typeTable.getAndSaveNicknameFor("System.IO.StreamWriter");
+      typeTable.getAndSaveNicknameFor("System.IO.File");
     }
     if (outputContext.hasPrints()) {
-      typeTable.getAndSaveNicknameFor("System.IO.Console");
+      typeTable.getAndSaveNicknameFor("System.Console");
     }
   }
 
