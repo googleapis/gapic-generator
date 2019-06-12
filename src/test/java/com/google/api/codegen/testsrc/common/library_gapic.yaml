@@ -203,7 +203,18 @@ interfaces:
       description: "Test default response handling is turned off for methods that return empty"
     samples:
       standalone:
-      - calling_forms: ".*"
+      # Behavior change:
+      # old config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # new config: if region_tag (and id is unspecified), generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the old config because there is no `sample value set id` in the 
+      #   new config.
+      #
+      # Change the regex `.*` to request so that we can "predict" the what the filenames would
+      #   be generated for these two value sets in the old config, and hardcode them in the
+      #   new config.
+      - calling_forms: [request]
         value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
   - name: MergeShelves
     flattening:
