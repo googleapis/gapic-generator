@@ -987,11 +987,10 @@ interfaces:
       #   filename as in the old config because there is no `sample value set id` in the 
       #   new config.
       #
-      # Change the regex `.*` to request so that we can "predict" the what the filenames would
-      #   be generated for these two value sets in the old config, and hardcode them in the
-      #   new config.
+      # Remove the regex calling forms to use the default one. Add a unique region tag so
+      #   that the region tag will become the filenames of the samples.
       standalone:
-      - calling_forms: [request]
+      - region_tag: find_related_books_odyssey
         value_sets: odyssey
       # api_explorer:
       # - calling_forms: ".*"
@@ -1126,10 +1125,25 @@ interfaces:
           description: "The name of the book."
     samples:
       standalone:
-      - calling_forms: ".*"
-        value_sets: ".*"
+      # Behavior change:
+      # old config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # new config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the old config because there is no `sample value set id` in the 
+      #   new config.
+      #
+      # Rearrange the samples to use default calling forms, and region tags are unique
+      #   and therefore becomes the filenames.
+      # 
+      # - calling_forms: ".*"
+      #   value_sets: ".*"
+      #   region_tag: hopper
+      # - value_sets: wap
+      #   region_tag: "this_tag_should_be_the_name_of_the_file"
+      - value_sets: [wap]
         region_tag: hopper
-      - value_sets: wap
+      - value_sets: [wap2]
         region_tag: "this_tag_should_be_the_name_of_the_file"
   - name: GetBigNothing
     flattening:
@@ -1162,8 +1176,10 @@ interfaces:
       description: "Test default response handling is turned off for methods that return empty"
     samples:
       standalone:
-      - calling_forms: ".*"
-        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
+      - value_sets: [empty_response_type_with_response_handling]
+        region_tag: empty_response_type_with_response_handling
+      - value_sets: [empty_response_type_without_response_handling]
+        region_tag: empty_response_type_without_response_handling
   - name: TestOptionalRequiredFlatteningParams
     flattening:
       groups:

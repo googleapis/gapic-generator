@@ -1,0 +1,20 @@
+type: com.google.api.codegen.samplegen.SampleConfigProto
+config_schema_version: 1.0.0
+samples:
+- id: find_related_books_odyssey
+  service: google.example.library.v1.LibraryService
+  rpc: FindRelatedBooks
+  title: "The Odyssey"
+  description: "Testing calling forms"
+  region_tag: sample
+  request:
+  - field: names[0]
+    value: Odyssey
+  - field: shelves[0]
+    value: Classics
+  response:
+  - define: book = $resp
+  - print:
+    - 'Here''s a related book: %s'
+    - book
+  
