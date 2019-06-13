@@ -4949,7 +4949,7 @@ def lint_setup_py(session):
     session.install('docutils', 'pygments')
     session.run(
         'python', 'setup.py', 'check', '--restructuredtext', '--strict')
-============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.py ==============
+============== file: samples/v1/babble_about_book_1.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -4974,10 +4974,10 @@ def lint_setup_py(session):
 # sample-metadata
 #   title: Test response handling for methods that return empty
 #   description: Test response handling for methods that return empty
-#   usage: python3 samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.py
+#   usage: python3 samples/v1/babble_about_book_1.py
 import sys
 
-# [START sample]
+# [START babble_about_book_1]
 
 from google.cloud.example import library_v1
 
@@ -4993,14 +4993,14 @@ def sample_babble_about_book():
   client.babble_about_book(requests)
   # No one replied
   print(u'No one replied.')
-# [END sample]
+# [END babble_about_book_1]
 
 def main():
   sample_babble_about_book()
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py ==============
+============== file: samples/v1/babble_about_book_2.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5025,10 +5025,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Test default response handling is turned off for methods that return empty
 #   description: Test default response handling is turned off for methods that return empty
-#   usage: python3 samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py
+#   usage: python3 samples/v1/babble_about_book_2.py
 import sys
 
-# [START sample]
+# [START babble_about_book_2]
 
 from google.cloud.example import library_v1
 
@@ -5042,7 +5042,7 @@ def sample_babble_about_book():
 
   requests = [request]
   client.babble_about_book(requests)
-# [END sample]
+# [END babble_about_book_2]
 
 def main():
   sample_babble_about_book()
@@ -5145,254 +5145,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/find_related_books_request_paged_all_odyssey.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: The Odyssey
-#   description: Testing calling forms
-#   usage: python3 samples/v1/find_related_books_request_paged_all_odyssey.py
-import sys
-
-# [START sample]
-
-from google.cloud.example import library_v1
-
-def sample_find_related_books():
-  """Testing calling forms"""
-
-  client = library_v1.LibraryServiceClient()
-
-  names_element = 'Odyssey'
-  names = [names_element]
-  shelves_element = 'Classics'
-  shelves = [shelves_element]
-
-  # Iterate over all results
-  for response_item in client.find_related_books(names, shelves):
-    book = response_item
-    print(u'Here\'s a related book: {}'.format(book))
-# [END sample]
-
-def main():
-  sample_find_related_books()
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/find_related_books_request_paged_odyssey.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: The Odyssey
-#   description: Testing calling forms
-#   usage: python3 samples/v1/find_related_books_request_paged_odyssey.py
-import sys
-
-# [START sample]
-
-from google.cloud.example import library_v1
-
-def sample_find_related_books():
-  """Testing calling forms"""
-
-  client = library_v1.LibraryServiceClient()
-
-  names_element = 'Odyssey'
-  names = [names_element]
-  shelves_element = 'Classics'
-  shelves = [shelves_element]
-
-  # Iterate over results one page at a time
-  for page in client.find_related_books(names, shelves).pages:
-    for response_item in page:
-      book = response_item
-      print(u'Here\'s a related book: {}'.format(book))
-# [END sample]
-
-def main():
-  sample_find_related_books()
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/get_big_book_long_running_promise_wap.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: GetBigBook: 'War and Peace'
-#   description: Testing calling forms
-#   usage: python3 samples/v1/get_big_book_long_running_promise_wap.py [--shelf "Novel\\\"\`\b\t\n\r"]
-import sys
-
-# [START hopper]
-
-from google.cloud.example import library_v1
-
-def sample_get_big_book(shelf):
-  """Testing calling forms"""
-
-  client = library_v1.LibraryServiceClient()
-
-  # shelf = 'Novel\\"`\b\t\n\r'
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-
-  operation = client.get_big_book(name)
-
-  print(u'Waiting for operation to complete...')
-  response = operation.result()
-
-  # Testing iterating over map fields when both key and value are specified.
-  for my_key, my_value in response.map_list_value_value.items():
-    print(u'key: {}, value: {}'.format(my_key, my_value))
-
-  # Testing iterating over map fields when only key is specified.
-  for another_key, _ in response.map_list_value_value.items():
-    print(u'key: {}'.format(another_key))
-
-  # Testing iterating over map fields when only value is specified.
-  for _, another_value in response.map_list_value_value.items():
-    print(u'value: {}'.format(another_value))
-
-  print(u'name: {}'.format(response.name))
-  print(u'author: {}'.format(response.author))
-# [END hopper]
-
-def main():
-  import argparse
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default='Novel\\"`\b\t\n\r')
-  args = parser.parse_args()
-
-  sample_get_big_book(args.shelf)
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/get_big_book_long_running_promise_wap2.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap2")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: GetBigBook: 'War and Peace'
-#   description: Testing resource name overlap
-#   usage: python3 samples/v1/get_big_book_long_running_promise_wap2.py [--shelf Novel] [--big_book_name "War and Peace"]
-import sys
-
-# [START hopper]
-
-from google.cloud.example import library_v1
-
-def sample_get_big_book(shelf, big_book_name):
-  """
-    Testing resource name overlap
-
-    Args:
-      shelf Test word wrapping for long lines. This is a long comment. The name of
-      the shelf to retrieve the big book from.
-      big_book_name The name of the book.
-    """
-
-  client = library_v1.LibraryServiceClient()
-
-  # shelf = 'Novel'
-  # big_book_name = 'War and Peace'
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-
-  operation = client.get_big_book(name)
-
-  print(u'Waiting for operation to complete...')
-  response = operation.result()
-
-  print(response)
-# [END hopper]
-
-def main():
-  import argparse
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default='Novel')
-  parser.add_argument('--big_book_name', type=str, default='War and Peace')
-  args = parser.parse_args()
-
-  sample_get_big_book(args.shelf, args.big_book_name)
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.py ==============
+============== file: samples/v1/empty_response_type_with_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5417,10 +5170,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Test response handling for methods that return empty
 #   description: Test response handling for methods that return empty
-#   usage: python3 samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.py
+#   usage: python3 samples/v1/empty_response_type_with_response_handling.py
 import sys
 
-# [START sample]
+# [START empty_response_type_with_response_handling]
 
 from google.cloud.example import library_v1
 
@@ -5438,14 +5191,14 @@ def sample_get_big_nothing():
 
   # Got nothing
   print(u'Got nothing.')
-# [END sample]
+# [END empty_response_type_with_response_handling]
 
 def main():
   sample_get_big_nothing()
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py ==============
+============== file: samples/v1/empty_response_type_without_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5470,10 +5223,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Test default response handling is turned off for methods that return empty
 #   description: Test default response handling is turned off for methods that return empty
-#   usage: python3 samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py
+#   usage: python3 samples/v1/empty_response_type_without_response_handling.py
 import sys
 
-# [START sample]
+# [START empty_response_type_without_response_handling]
 
 from google.cloud.example import library_v1
 
@@ -5489,10 +5242,63 @@ def sample_get_big_nothing():
   print(u'Waiting for operation to complete...')
   response = operation.result()
 
-# [END sample]
+# [END empty_response_type_without_response_handling]
 
 def main():
   sample_get_big_nothing()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/find_related_books_odyssey.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: The Odyssey
+#   description: Testing calling forms
+#   usage: python3 samples/v1/find_related_books_odyssey.py
+import sys
+
+# [START find_related_books_odyssey]
+
+from google.cloud.example import library_v1
+
+def sample_find_related_books():
+  """Testing calling forms"""
+
+  client = library_v1.LibraryServiceClient()
+
+  names_element = 'Odyssey'
+  names = [names_element]
+  shelves_element = 'Classics'
+  shelves = [shelves_element]
+
+  # Iterate over all results
+  for response_item in client.find_related_books(names, shelves):
+    book = response_item
+    print(u'Here\'s a related book: {}'.format(book))
+# [END find_related_books_odyssey]
+
+def main():
+  sample_find_related_books()
 
 if __name__ == '__main__':
   main()
@@ -5548,6 +5354,78 @@ def main():
 
 if __name__ == '__main__':
   main()
+============== file: samples/v1/hopper.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: GetBigBook: 'War and Peace'
+#   description: Testing calling forms
+#   usage: python3 samples/v1/hopper.py [--shelf "Novel\\\"\`\b\t\n\r"]
+import sys
+
+# [START hopper]
+
+from google.cloud.example import library_v1
+
+def sample_get_big_book(shelf):
+  """Testing calling forms"""
+
+  client = library_v1.LibraryServiceClient()
+
+  # shelf = 'Novel\\"`\b\t\n\r'
+  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+
+  operation = client.get_big_book(name)
+
+  print(u'Waiting for operation to complete...')
+  response = operation.result()
+
+  # Testing iterating over map fields when both key and value are specified.
+  for my_key, my_value in response.map_list_value_value.items():
+    print(u'key: {}, value: {}'.format(my_key, my_value))
+
+  # Testing iterating over map fields when only key is specified.
+  for another_key, _ in response.map_list_value_value.items():
+    print(u'key: {}'.format(another_key))
+
+  # Testing iterating over map fields when only value is specified.
+  for _, another_value in response.map_list_value_value.items():
+    print(u'value: {}'.format(another_value))
+
+  print(u'name: {}'.format(response.name))
+  print(u'author: {}'.format(response.author))
+# [END hopper]
+
+def main():
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--shelf', type=str, default='Novel\\"`\b\t\n\r')
+  args = parser.parse_args()
+
+  sample_get_big_book(args.shelf)
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/v1/lovelace.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -5593,57 +5471,6 @@ def sample_stream_books():
 
 def main():
   sample_stream_books()
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/monolog_about_book_request_streaming_client_prog.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: Programming Books
-#   description: Testing calling forms
-#   usage: python3 samples/v1/monolog_about_book_request_streaming_client_prog.py
-import sys
-
-# [START sample]
-
-from google.cloud.example import library_v1
-from google.cloud.example.library_v1 import enums
-
-def sample_monolog_about_book():
-  """Testing calling forms"""
-
-  client = library_v1.LibraryServiceClient()
-
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-  request = {'name': name}
-
-  requests = [request]
-  response = client.monolog_about_book(requests)
-  print(u'The stage of the comment is: {}'.format(enums.Comment.Stage(response.stage).name))
-# [END sample]
-
-def main():
-  sample_monolog_about_book()
 
 if __name__ == '__main__':
   main()
@@ -5782,7 +5609,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/publish_series_request_test_request_object_field_comments.py ==============
+============== file: samples/v1/publish_series_test_request_object_field_comments.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5807,10 +5634,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: request object field comments
 #   description: Test request object field comments
-#   usage: python3 samples/v1/publish_series_request_test_request_object_field_comments.py
+#   usage: python3 samples/v1/publish_series_test_request_object_field_comments.py
 import sys
 
-# [START sample]
+# [START publish_series_test_request_object_field_comments]
 
 from google.cloud.example import library_v1
 import io
@@ -5847,14 +5674,14 @@ def sample_publish_series():
 
   response = client.publish_series(shelf, books, series_uuid, edition=edition)
   print(response)
-# [END sample]
+# [END publish_series_test_request_object_field_comments]
 
 def main():
   sample_publish_series()
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/publish_series_request_test_write_to_file.py ==============
+============== file: samples/v1/publish_series_test_write_to_file.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5879,10 +5706,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: test writing fields to files
 #   description: Testing write fields to files.
-#   usage: python3 samples/v1/publish_series_request_test_write_to_file.py
+#   usage: python3 samples/v1/publish_series_test_write_to_file.py
 import sys
 
-# [START sample]
+# [START publish_series_test_write_to_file]
 
 from google.cloud.example import library_v1
 
@@ -5902,7 +5729,7 @@ def sample_publish_series():
   # testing writing string field.
   with open('series_uuid_in_plain_text.txt', 'w') as out:
     out.write(response.series_uuid.series_string)
-# [END sample]
+# [END publish_series_test_write_to_file]
 
 def main():
   sample_publish_series()
@@ -5958,7 +5785,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/stream_shelves_request_streaming_server_empty.py ==============
+============== file: samples/v1/sample_monolog_about_book.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5975,34 +5802,37 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
-#   title: Server streaming
+#   title: Programming Books
 #   description: Testing calling forms
-#   usage: python3 samples/v1/stream_shelves_request_streaming_server_empty.py
+#   usage: python3 samples/v1/sample_monolog_about_book.py
 import sys
 
-# [START sample]
+# [START sample_monolog_about_book]
 
 from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
 
-def sample_stream_shelves():
+def sample_monolog_about_book():
   """Testing calling forms"""
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.shelf_path('[SHELF_ID]')
+  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+  request = {'name': name}
 
-  for response_item in client.stream_shelves(name):
-    print(response_item)
-# [END sample]
+  requests = [request]
+  response = client.monolog_about_book(requests)
+  print(u'The stage of the comment is: {}'.format(enums.Comment.Stage(response.stage).name))
+# [END sample_monolog_about_book]
 
 def main():
-  sample_stream_shelves()
+  sample_monolog_about_book()
 
 if __name__ == '__main__':
   main()
@@ -6246,27 +6076,35 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap2")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
 #   title: GetBigBook: 'War and Peace'
-#   description: Testing calling forms
-#   usage: python3 samples/v1/this_tag_should_be_the_name_of_the_file.py [--shelf "Novel\\\"\`\b\t\n\r"]
+#   description: Testing resource name overlap
+#   usage: python3 samples/v1/this_tag_should_be_the_name_of_the_file.py [--shelf Novel] [--big_book_name "War and Peace"]
 import sys
 
 # [START this_tag_should_be_the_name_of_the_file]
 
 from google.cloud.example import library_v1
 
-def sample_get_big_book(shelf):
-  """Testing calling forms"""
+def sample_get_big_book(shelf, big_book_name):
+  """
+    Testing resource name overlap
+
+    Args:
+      shelf Test word wrapping for long lines. This is a long comment. The name of
+      the shelf to retrieve the big book from.
+      big_book_name The name of the book.
+    """
 
   client = library_v1.LibraryServiceClient()
 
-  # shelf = 'Novel\\"`\b\t\n\r'
+  # shelf = 'Novel'
+  # big_book_name = 'War and Peace'
   name = client.book_path('[BOOK_SHELF]', '[BOOK]')
 
   operation = client.get_big_book(name)
@@ -6274,96 +6112,18 @@ def sample_get_big_book(shelf):
   print(u'Waiting for operation to complete...')
   response = operation.result()
 
-  # Testing iterating over map fields when both key and value are specified.
-  for my_key, my_value in response.map_list_value_value.items():
-    print(u'key: {}, value: {}'.format(my_key, my_value))
-
-  # Testing iterating over map fields when only key is specified.
-  for another_key, _ in response.map_list_value_value.items():
-    print(u'key: {}'.format(another_key))
-
-  # Testing iterating over map fields when only value is specified.
-  for _, another_value in response.map_list_value_value.items():
-    print(u'value: {}'.format(another_value))
-
-  print(u'name: {}'.format(response.name))
-  print(u'author: {}'.format(response.author))
+  print(response)
 # [END this_tag_should_be_the_name_of_the_file]
 
 def main():
   import argparse
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default='Novel\\"`\b\t\n\r')
+  parser.add_argument('--shelf', type=str, default='Novel')
+  parser.add_argument('--big_book_name', type=str, default='War and Peace')
   args = parser.parse_args()
 
-  sample_get_big_book(args.shelf)
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/turing_prog_request_streaming_bidi.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: Programming Books
-#   description: Testing calling forms
-#   usage: python3 samples/v1/turing_prog_request_streaming_bidi.py [--image_file_name "image_file.jpg"] [--stage DRAFT]
-import sys
-
-# [START turing_prog_request_streaming_bidi]
-
-from google.cloud.example import library_v1
-from google.cloud.example.library_v1 import enums
-import io
-
-def sample_discuss_book(image_file_name, stage):
-  """Testing calling forms"""
-
-  client = library_v1.LibraryServiceClient()
-
-  # image_file_name = 'image_file.jpg'
-  # stage = enums.Comment.Stage.DRAFT
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-  with io.open('comment_file', 'rb') as f:
-    comment = f.read()
-  comment_2 = {'comment': comment, 'stage': stage}
-  with io.open(image_file_name, 'rb') as f:
-    image = f.read()
-  request = {'name': name, 'comment': comment_2, 'image': image}
-
-  requests = [request]
-  for response_item in client.discuss_book(requests):
-    print(response_item)
-# [END turing_prog_request_streaming_bidi]
-
-def main():
-  import argparse
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--image_file_name', type=str, default='image_file.jpg')
-  parser.add_argument('--stage', type=str, default=enums.Comment.Stage.DRAFT)
-  args = parser.parse_args()
-
-  sample_discuss_book(args.image_file_name, args.stage)
+  sample_get_big_book(args.shelf, args.big_book_name)
 
 if __name__ == '__main__':
   main()
