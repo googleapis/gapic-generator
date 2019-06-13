@@ -16,7 +16,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 
 def _php_impl(ctx):
-    srcs_dir = "srcs";
+    srcs_dir = "srcs"
     ctx.download_and_extract(
         url = ["https://www.php.net/distributions/php-%s.tar.gz" % ctx.attr.version],
         stripPrefix = "php-%s" % ctx.attr.version,
@@ -24,14 +24,16 @@ def _php_impl(ctx):
     )
     root_path = ctx.path(".")
 
-    ctx.execute(
+    _execute_and_check_result(
+        ctx,
         ["./configure", "--prefix=%s" % root_path.realpath],
         working_directory = srcs_dir,
         quiet = False,
     )
-    ctx.execute(["make", "-j10"], working_directory = srcs_dir, quiet = False)
-    ctx.execute(["make", "install"], working_directory = srcs_dir, quiet = False)
-    ctx.execute(["rm", "-rf", srcs_dir], quiet = False)
+    _execute_and_check_result(ctx, ["make", "-j10"], working_directory = srcs_dir, quiet = False)
+    _execute_and_check_result(ctx, ["make", "install"], working_directory = srcs_dir, quiet = False)
+    _execute_and_check_result(ctx, ["rm", "-rf", srcs_dir], quiet = False)
+
 
     build_bazel = """
 exports_files(glob(include = ["bin/*", "lib/**", "etc/*"], exclude_directories = 0))
@@ -45,7 +47,6 @@ php = repository_rule(
     attrs = {
         "version": attr.string(),
     },
-#    local = True,
 )
 
 def php_gapic_repositories():
@@ -61,6 +62,20 @@ def php_gapic_repositories():
         urls = ["https://github.com/squizlabs/PHP_CodeSniffer/releases/download/3.4.2/phpcbf.phar"],
     )
 
+def _execute_and_check_result(ctx, command, **kwargs):
+    res = ctx.execute(command, **kwargs)
+    if res.return_code != 0:
+        fail("""
+Failed to execute command: `{command}`
+Exit Code: {code}
+STDERR: {stderr}
+        """.format(
+            command = command,
+            code = res.return_code,
+            stderr = res.stderr,
+        ))
+    return res
+
 def _maybe(repo_rule, name, strip_repo_prefix = "", **kwargs):
     if not name.startswith(strip_repo_prefix):
         return
@@ -68,4 +83,3 @@ def _maybe(repo_rule, name, strip_repo_prefix = "", **kwargs):
     if repo_name in native.existing_rules():
         return
     repo_rule(name = repo_name, **kwargs)
-
