@@ -1,7 +1,7 @@
 type: com.google.api.codegen.samplegen.SampleConfigProto
 config_schema_version: 1.0.0
 samples:
-- id: publish_series_request_pi_version
+- id: publish_series_request_pi_edition
   service: google.example.library.v1.LibraryService
   rpc: PublishSeries
   title: "Pi version"
@@ -63,13 +63,14 @@ samples:
   title: "Second edition"
   description: "Testing calling forms"
   region_tag: "canonical"
+  calling_patterns: [request]
   request:
   - field: edition
     value: 2
-- id: publish_series_request_test_request_object_field_comments
+- region_tag: publish_series_test_request_object_field_comments
   title: "request object field comments"
   description: "Test request object field comments"
-  region_tag: sample
+  calling_patterns: [request]
   request:
   - field: shelf.name%shelf_id
     value: "math"
@@ -95,10 +96,19 @@ samples:
   - field: shelf.name
     comment: "Comment on a resource name"
 
-- id: publish_series_request_test_write_to_file
+- region_tag: publish_series_test_write_to_file
   title: "test writing fields to files"
   description: "Testing write fields to files."
-  region_tag: sample
+  # Behavior change:
+  # In old config, region tag defaults to `sample` if unspecified
+  # In new config, region tags are not generated if unspecified
+  #
+  # Add the region_tag here to mimic the old behavior and avoid too much
+  # baseline changes at a time. 
+  #
+  # When we completely switch to the new config remove this field to test 
+  # the new conifg and we should expect that region tag in generated sample 
+  # to disappear
   response:
   - comment: "testing writing bytes field."
   - write_file:

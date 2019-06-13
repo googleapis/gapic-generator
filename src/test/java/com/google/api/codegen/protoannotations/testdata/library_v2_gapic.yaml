@@ -126,7 +126,18 @@ interfaces:
             description: "Test default response handling is turned off for methods that return empty"
         samples:
           standalone:
-            - calling_forms: ".*"
+            # Behavior change:
+            # old config: if region_tag is unspecified or region_tag is not unique, derive the 
+            #   sample filename by concatinating method name, calling form, sample value set id
+            # new config: if region_tag and id are unspecified, generator should auto-generate
+            #   a unique filename for the sample. The generator will be unable to generate the same
+            #   filename as in the old config because there is no `sample value set id` in the 
+            #   new config.
+            #
+            # Change the regex `.*` to request so that we can "predict" the what the filenames would
+            #   be generated for these two value sets in the old config, and hardcode them in the
+            #   new config.
+            - calling_forms: [request]
               value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
       - name: MergeShelves
         retry_params_name: default
@@ -272,15 +283,26 @@ interfaces:
             - calling_forms: callable
               value_sets: [pi_version]
           standalone:
-            - calling_forms: ".*"
-              value_sets: [second_edition, pi_version]
-              region_tag: "canonical"
-            - calling_forms: callable
-              value_sets: ["sample_code_init_fields"]       # implicit, from deprecated field
-            - calling_forms: request
-              value_sets: ["test_request_object_field_comments"]
-            - calling_forms: request
-              value_sets: ["test_write_to_file"]
+          # Behavior change:
+          # old config: if region_tag is unspecified or region_tag is not unique, derive the 
+          #   sample filename by concatinating method name, calling form, sample value set id
+          # new config: if region_tag and id is unspecified, generator should auto-generate
+          #   a unique filename for the sample. The generator will be unable to generate the same
+          #   filename as in the old config because there is no `sample value set id` in the 
+          #   new config.
+          #
+          # Change the regex `.*` to request so that we can "predict" the what the filenames would
+          #   be generated for these two value sets in the old config, and hardcode them in the
+          #   new config.
+          - calling_forms: request
+            value_sets: [second_edition, pi_version]
+            region_tag: "canonical"
+          - calling_forms: request
+            value_sets: ["test_request_object_field_comments"]
+            region_tag: publish_series_test_request_object_field_comments
+          - calling_forms: request
+            value_sets: ["test_write_to_file"]
+            region_tag: publish_series_test_write_to_file
       - name: GetBook
         retry_params_name: default
         timeout_millis: 8000
@@ -307,12 +329,20 @@ interfaces:
                   - "Test printing enum fields of a map value: %s"
                   - $resp.map_message_value{"key"}.alignment
         samples:
-          in_code:
-            - calling_forms: "foo"
-              value_sets: not_here
           standalone:
-            - calling_forms: ".*"
-              value_sets: test_on_success_map
+          # Behavior change:
+          # old config: if region_tag is unspecified or region_tag is not unique, derive the 
+          #   sample filename by concatinating method name, calling form, sample value set id
+          # new config: if region_tag and id are unspecified, generator should auto-generate
+          #   a unique filename for the sample. The generator will be unable to generate the same
+          #   filename as in the old config because there is no `sample value set id` in the 
+          #   new config.
+          #
+          # Change the regex `.*` to request so that we can "predict" the what the filenames would
+          #   be generated for these two value sets in the old config, and hardcode them in the
+          #   new config.
+          - calling_forms: "request"
+            value_sets: test_on_success_map
       - name: ListBooks
         retry_params_name: default
         timeout_millis: 10000
@@ -399,23 +429,32 @@ interfaces:
             resources_field: shelves
         retry_params_name: default
         timeout_millis: 30000
-        sample_value_sets:
-          # callingFormCheck: empty java: CallableStreamingServer
-          # callingFormCheck: empty nodejs: RequestStreamingServer
-          # callingFormCheck: empty py: RequestStreamingServer
-          - id: empty
-            title: "Server streaming"
-            description: "Testing calling forms"
-        samples:
-          in_code:
-            - calling_forms: ".*"
-              value_sets: ".*"
-          standalone:
-            - calling_forms: ".*"
-              value_sets: ".*"
-          api_explorer:
-            - calling_forms: ".*"
-              value_sets: ".*"
+        #
+        # This set of tests were to test that gapic-generator correctly
+        # generates all the valid combinations of value sets and calling forms
+        # Now that we are flattening the config, we won't need to test
+        # this behavior any more.
+        #
+        # They are commented out instead of deleted just for reference.
+        # Once the migration is over delete them.
+        #
+        # sample_value_sets:
+        #   # callingFormCheck: empty java: CallableStreamingServer
+        #   # callingFormCheck: empty nodejs: RequestStreamingServer
+        #   # callingFormCheck: empty py: RequestStreamingServer
+        # - id: empty
+        #   title: "Server streaming"
+        #   description: "Testing calling forms"
+        # samples:
+        #   in_code:
+        #   - calling_forms: ".*"
+        #     value_sets: ".*"
+        #   standalone:
+        #   - calling_forms: ".*"
+        #     value_sets: ".*"
+        #   api_explorer:
+        #   - calling_forms: ".*"
+        #     value_sets: ".*"
       - name: StreamBooks
         retry_codes_name: idempotent
         retry_params_name: default
@@ -431,9 +470,6 @@ interfaces:
               defaults:
                 - name=BASIC
         samples:
-          in_code:
-            - calling_forms: ".*"
-              value_sets: ".*"
           standalone:
             # Python only
             - calling_forms: request_streaming_server
@@ -443,9 +479,6 @@ interfaces:
             - calling_forms: callable_streaming_server
               value_sets: "prog"
               region_tag: babbage
-          api_explorer:
-            - calling_forms: ".*"
-              value_sets: ".*"
       - name: DiscussBook
         retry_codes_name: non_idempotent
         retry_params_name: default
@@ -472,16 +505,34 @@ interfaces:
               - parameter: comment.stage
                 sample_argument_name: stage
         samples:
-          in_code:
-            - calling_forms: ".*"
-              value_sets: ".*"
+        # Behavior change:
+        # old config: %v and %c can be placeholders for value set ids and calling form names
+        #   in region tags.
+        # new config: value set id does not exist any more.
+        #
+        # Change region tag to `turing`.
+        #
+        # Note, technically it's still possible to use %c as placeholders for calling form names,
+        # but this feature is not needed for production use, as existing users don't forsee
+        # the case where they need calling form/calling pattern at all for the moment. Thus to
+        # make the migration easier and faster, we will not support this feature in the new config,
+        # at least for now.
+        #
+        # Behavior change:
+        # old config: if region_tag is unspecified or region_tag is not unique, derive the 
+        #   sample filename by concatinating method name, calling form, sample value set id
+        # new config: if region_tag and id are unspecified, generator should auto-generate
+        #   a unique filename for the sample. The generator will be unable to generate the same
+        #   filename as in the old config because there is no `sample value set id` in the 
+        #   new config.
+        #
+        # Change the regex `.*` to request so that we can "predict" the what the filenames would
+        #   be generated for these two value sets in the old config, and hardcode them in the
+        #   new config.
           standalone:
-            - calling_forms: ".*"
-              value_sets: ".*"
-              region_tag: "turing_%v_%c"
-          api_explorer:
-            - calling_forms: ".*"
-              value_sets: ".*"
+          - calling_forms: "request"
+            value_sets: ".*"
+            region_tag: "turing"
       - name: MonologAboutBook
         retry_params_name: default
         timeout_millis: 30000
@@ -500,15 +551,21 @@ interfaces:
                   - "The stage of the comment is: %s"
                   - $resp.stage
         samples:
-          in_code:
-            - calling_forms: ".*"
-              value_sets: ".*"
+          # Behavior change:
+          # old config: if region_tag is unspecified or region_tag is not unique, derive the 
+          #   sample filename by concatinating method name, calling form, sample value set id
+          # new config: if region_tag and id are unspecified, generator should auto-generate
+          #   a unique filename for the sample. The generator will be unable to generate the same
+          #   filename as in the old config because there is no `sample value set id` in the 
+          #   new config.
+          #
+          # Add a region_tag `sample_monolog_about_book` here. It would be unique as there
+          #   is only one calling form for client-streaming methods in one language, and therefore
+          #   it will be used as the sample filename.
           standalone:
-            - calling_forms: ".*"
-              value_sets: ".*"
-          api_explorer:
-            - calling_forms: ".*"
-              value_sets: ".*"
+          - calling_forms: ".*"
+            value_sets: ".*"
+            region_tag: "sample_monolog_about_book"
       - name: BabbleAboutBook
         sample_value_sets:
           - id: empty_response_type_with_response_handling
@@ -520,10 +577,24 @@ interfaces:
           - id: empty_response_type_without_response_handling
             title: "Test default response handling is turned off for methods that return empty"
             description: "Test default response handling is turned off for methods that return empty"
+        # Behavior change:
+        # old config: if region_tag is unspecified or region_tag is not unique, derive the 
+        #   sample filename by concatinating method name, calling form, sample value set id
+        # new config: if region_tag and id are unspecified, generator should auto-generate
+        #   a unique filename for the sample. The generator will be unable to generate the same
+        #   filename as in the old config because there is no `sample value set id` in the 
+        #   new config.
+        #
+        # Add region_tags here. They are both unique and therefore will be used as the
+        # sample filenames.
         samples:
           standalone:
-            - calling_forms: ".*"
-              value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
+          - calling_forms: ".*"
+            value_sets: [empty_response_type_with_response_handling]
+            region_tag: babble_about_book_1
+          - calling_forms: ".*"
+            value_sets: [empty_response_type_without_response_handling]
+            region_tag: babble_about_book_2
       - name: FindRelatedBooks
         retry_params_name: default
         timeout_millis: 3000
@@ -549,15 +620,19 @@ interfaces:
                   - 'Here''s a related book: %s'
                   - book
         samples:
-          in_code:
-            - calling_forms: ".*"
-              value_sets: odyssey
+          # Behavior change:
+          # old config: if region_tag is unspecified or region_tag is not unique, derive the 
+          #   sample filename by concatinating method name, calling form, sample value set id
+          # new config: if region_tag and id are unspecified, generator should auto-generate
+          #   a unique filename for the sample. The generator will be unable to generate the same
+          #   filename as in the old config because there is no `sample value set id` in the 
+          #   new config.
+          #
+          # Remove the regex calling forms to use the default one. Add a unique region tag so
+          #   that the region tag will become the filenames of the samples.
           standalone:
-            - calling_forms: ".*"
-              value_sets: odyssey
-          api_explorer:
-            - calling_forms: ".*"
-              value_sets: odyssey
+          - region_tag: find_related_books_odyssey
+            value_sets: odyssey
       - name: AddTag
         retry_params_name: default
         timeout_millis: 60000
@@ -656,11 +731,21 @@ interfaces:
                   description: "The name of the book."
         samples:
           standalone:
-            - calling_forms: ".*"
-              value_sets: ".*"
-              region_tag: hopper
-            - value_sets: wap
-              region_tag: "this_tag_should_be_the_name_of_the_file"
+          # Behavior change:
+          # old config: if region_tag is unspecified or region_tag is not unique, derive the 
+          #   sample filename by concatinating method name, calling form, sample value set id
+          # new config: if region_tag and id are unspecified, generator should auto-generate
+          #   a unique filename for the sample. The generator will be unable to generate the same
+          #   filename as in the old config because there is no `sample value set id` in the 
+          #   new config.
+          #
+          # Rearrange the samples to use default calling forms, and region tags are unique
+          #   and therefore becomes the filenames.
+          # 
+          - value_sets: [wap]
+            region_tag: hopper
+          - value_sets: [wap2]
+            region_tag: "this_tag_should_be_the_name_of_the_file"
       - name: GetBigNothing
         retry_codes_name: non_idempotent
         retry_params_name: default
@@ -682,8 +767,10 @@ interfaces:
             description: "Test default response handling is turned off for methods that return empty"
         samples:
           standalone:
-            - calling_forms: ".*"
-              value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
+          - value_sets: [empty_response_type_with_response_handling]
+            region_tag: empty_response_type_with_response_handling
+          - value_sets: [empty_response_type_without_response_handling]
+            region_tag: empty_response_type_without_response_handling
       - name: TestOptionalRequiredFlatteningParams
         samples:
           standalone:

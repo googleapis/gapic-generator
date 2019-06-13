@@ -12,9 +12,9 @@ samples:
   # "Hardcode" the ids here and below to make the samples have generated have the
   # same name as in the old config.
   #
-  # When we move the new config completely we should remove the id field, adding a
-  # `calling_pattern` field whose value is `[.*]`, and expect the generator to generate
-  # samples will all avaiable calling forms, each with a unique filename.
+  # When we move the new config completely we should remove the id field, change the
+  # value of `calling_pattern` field of both samples to `[.*]`, and expect the generator 
+  # to generate samples with all avaiable calling forms, each with a unique filename.
 - id: delete_shelf_request_empty_response_type_with_response_handling
   service: google.example.library.v1.LibraryService
   rpc: DeleteShelf
@@ -34,18 +34,9 @@ samples:
   response:
     - comment: "Shelf deleted"
     - print: "Shelf deleted."
+  calling_pattern: [request]
 - service: LibraryService
   rpc: DeleteShelf
-  # Behavior change:
-  # In old config, region tag defaults to `sample` if unspecified
-  # In new config, region tags are not generated if unspecified
-  #
-  # Add the region_tag here to mimic the old behavior and avoid too much
-  # baseline changes at a time. 
-  #
-  # When we completely switch to the new config remove this field to test 
-  # the new conifg and we should expect that region tag in generated sample 
-  # to disappear
   id: delete_shelf_request_empty_response_type_without_response_handling
   # Behavior change:
   # In old config, region tag defaults to `sample` if unspecified
@@ -59,3 +50,4 @@ samples:
   region_tag: sample
   title: "Test default response handling is turned off for methods that return empty"
   description: "Test default response handling is turned off for methods that return empty"
+  region_tag: [request]
