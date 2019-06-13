@@ -26,6 +26,7 @@
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
 
     public class DeleteShelfRequestEmptyResponseTypeWithResponseHandling
     {
@@ -40,7 +41,8 @@ namespace Google.Example.Library.V1.Samples
                 ShelfName = new ShelfName("[SHELF_ID]"),
             };
             libraryServiceClient.DeleteShelf(request);
-            // FIXME: inspect the results
+            // Shelf deleted
+            Console.WriteLine("Shelf deleted.");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -91,7 +93,6 @@ namespace Google.Example.Library.V1.Samples
                 ShelfName = new ShelfName("[SHELF_ID]"),
             };
             libraryServiceClient.DeleteShelf(request);
-            // FIXME: inspect the results
         }
         // [END sample]
         public static void Main(string[] args)
@@ -129,6 +130,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
 
     public class FindRelatedBooksOdyssey
@@ -154,7 +156,8 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over pages (of server-defined size), performing one RPC per page
             foreach (BookNameOneof item in response)
             {
-                // FIXME: inspect the results
+                BookNameOneof book = item;
+                Console.WriteLine($"Here's a related book: {book}");
             }
         }
         // [END find_related_books_odyssey]
@@ -185,16 +188,22 @@ namespace Google.Example.Library.V1.Samples
 
 // sample-metadata
 //   title: test maps in response handling
-//   description:
+//   description: When there is a very long description for a sample file we can split
+//     the description into multiple lines and the samples will be just fine
 //   usage: dotnet run
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
 
     public class GetBookRequestTestOnSuccessMap
     {
+        /// <summary>
+        /// When there is a very long description for a sample file we can split
+        /// the description into multiple lines and the samples will be just fine
+        /// </summary>
         public static void SampleGetBook()
         {
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
@@ -203,7 +212,11 @@ namespace Google.Example.Library.V1.Samples
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
             };
             Book response = libraryServiceClient.GetBook(request);
-            // FIXME: inspect the results
+            string intKeyVal = response.MapStringValue[123];
+            string booleanKeyVal = response.MapBoolKey[true];
+            int mapValueField = response.MapMessageValue["key"].Field;
+            Console.WriteLine($"Test printing map fields: {response.MapListValueValue["quoted_key"]}");
+            Console.WriteLine($"Test printing enum fields of a map value: {response.MapMessageValue["key"].Alignment}");
         }
         // [END sample]
         public static void Main(string[] args)
@@ -240,6 +253,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
 
     public class PublishSeriesRequestPiVersion
@@ -268,7 +282,26 @@ namespace Google.Example.Library.V1.Samples
                 Edition = 123,
             };
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
-            // FIXME: inspect the results
+            // % % % output handling % % % %
+            // fourScoreAndSevenYears ago
+            //
+            // our fathers brought forth upon this continent
+            //
+            // a new nation
+            // conceived in liberty
+            //
+            // and dedicated to the proposition that allMenAreCreatedEqual.
+            //
+            // Do something with bookNames one by one
+            IEnumerable<string> bookNames = response.BookNames;
+            foreach (var title in response.BookNames) {
+                // Now we deal with thisSingleBook!
+                Console.WriteLine($"\t%`` The book's title: \"{title}\", \\\nand the book costs $50.00 ``%");
+            }
+            Console.WriteLine($"The first book is: {response.BookNames[0]}");
+            Console.WriteLine($"The author of the first book is: {response.Books[0].Author}");
+            Console.WriteLine("That's all!");
+            Console.WriteLine($"series_uuid: {response.SeriesUuid.SeriesBytes}");
         }
         // [END canonical]
         public static void Main(string[] args)
@@ -316,6 +349,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
     using System.Collections.Generic;
 
     public class PublishSeriesRequestSecondEdition
@@ -334,7 +368,7 @@ namespace Google.Example.Library.V1.Samples
                 Edition = 2,
             };
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
-            // FIXME: inspect the results
+            Console.WriteLine(response);
         }
         // [END canonical]
         public static void Main(string[] args)
@@ -372,6 +406,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using Google.Protobuf;
+    using System;
     using System.Collections.Generic;
     using System.IO;
 
@@ -399,7 +434,7 @@ namespace Google.Example.Library.V1.Samples
                 Edition = 123,
             };
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
-            // FIXME: inspect the results
+            Console.WriteLine(response);
         }
         // [END publish_series_test_request_object_field_comments]
         public static void Main(string[] args)
@@ -437,6 +472,8 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
 
     public class PublishSeriesTestWriteToFile
     {
@@ -453,7 +490,10 @@ namespace Google.Example.Library.V1.Samples
                 SeriesUuid = new SeriesUuid(),
             };
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
-            // FIXME: inspect the results
+            // testing writing bytes field.
+            File.WriteAllBytes($"uuid_of_series_with_book_{response.BookNames[0]}.raw", response.SeriesUuid.SeriesBytes.ToArray());
+            // testing writing string field.
+            File.WriteAllText("series_uuid_in_plain_text.txt", response.SeriesUuid.SeriesString);
         }
         // [END publish_series_test_write_to_file]
         public static void Main(string[] args)
@@ -490,6 +530,7 @@ namespace Google.Example.Library.V1.Samples
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
 
     public class SampleGetShelf
     {
@@ -505,7 +546,7 @@ namespace Google.Example.Library.V1.Samples
                 Options = "",
             };
             Shelf response = libraryServiceClient.GetShelf(request);
-            // FIXME: inspect the results
+            Console.WriteLine($"The theme of the shelf is: {response.Theme}");
         }
         // [END sample_get_shelf]
         public static void Main(string[] args)
@@ -543,6 +584,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Api.Gax;
     using Google.Example.Library.V1;
+    using System;
 
     public class TestDefaultCallingFormForPaging
     {
@@ -557,7 +599,7 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over pages (of server-defined size), performing one RPC per page
             foreach (Shelf item in response)
             {
-                // FIXME: inspect the results
+                Console.WriteLine($"shelf name: {item}");
             }
         }
         // [END test_default_calling_form_for_paging]
@@ -588,7 +630,6 @@ namespace Google.Example.Library.V1.Samples
 
 // sample-metadata
 //   title:
-//   description:
 //   usage: dotnet run [--param_float 1.2345]
 
 // [START test_float]
@@ -596,6 +637,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using Google.Protobuf;
+    using System;
     using System.Collections.Generic;
 
     public class TestFloat
@@ -637,7 +679,7 @@ namespace Google.Example.Library.V1.Samples
                 RequiredMap = { },
             };
             TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.TestOptionalRequiredFlatteningParams(request);
-            // FIXME: inspect the results
+            Console.WriteLine(response);
         }
         // [END test_float]
         public static void Main(string[] args)
@@ -675,13 +717,13 @@ namespace Google.Example.Library.V1.Samples
 
 // sample-metadata
 //   title:
-//   description:
 //   usage: dotnet run
 
 // [START test_resource_name_oneof]
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
 
     public class TestResourceNameOneof
     {
@@ -693,7 +735,7 @@ namespace Google.Example.Library.V1.Samples
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
             };
             BookFromAnywhere response = libraryServiceClient.GetBookFromAbsolutelyAnywhere(request);
-            // FIXME: inspect the results
+            Console.WriteLine("Archived book found.");
         }
         // [END test_resource_name_oneof]
         public static void Main(string[] args)
@@ -723,13 +765,13 @@ namespace Google.Example.Library.V1.Samples
 
 // sample-metadata
 //   title:
-//   description:
 //   usage: dotnet run
 
 // [START test_resource_name_oneof_2]
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
+    using System;
 
     public class TestResourceNameOneof2
     {
@@ -741,7 +783,7 @@ namespace Google.Example.Library.V1.Samples
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
             };
             BookFromAnywhere response = libraryServiceClient.GetBookFromAbsolutelyAnywhere(request);
-            // FIXME: inspect the results
+            Console.WriteLine("Book on shelf found.");
         }
         // [END test_resource_name_oneof_2]
         public static void Main(string[] args)

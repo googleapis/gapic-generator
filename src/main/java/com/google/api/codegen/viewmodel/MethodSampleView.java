@@ -52,7 +52,9 @@ public abstract class MethodSampleView {
 
   public abstract String title();
 
-  public abstract String description();
+  public abstract String descriptionLine();
+
+  public abstract ImmutableList<String> additionalDescriptionLines();
 
   public static Builder newBuilder() {
     return new AutoValue_MethodSampleView.Builder();
@@ -82,7 +84,9 @@ public abstract class MethodSampleView {
 
     public abstract Builder title(String val);
 
-    public abstract Builder description(String val);
+    public abstract Builder descriptionLine(String val);
+
+    public abstract Builder additionalDescriptionLines(ImmutableList<String> val);
 
     public abstract MethodSampleView build();
   }

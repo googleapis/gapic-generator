@@ -126,6 +126,7 @@ public class OutputTransformer {
         "%s:%s: print spec cannot be empty",
         context.getMethodModel().getSimpleName(),
         valueSet.getId());
+    outputContext.printSpecs().add(config);
     OutputView.StringInterpolationView interpolatedString =
         stringInterpolationView(context, outputContext, config, valueSet, form);
     return OutputView.PrintView.newBuilder().interpolatedString(interpolatedString).build();

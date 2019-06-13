@@ -11,7 +11,9 @@
       
       @# sample-metadata
       @#   title: {@sample.title}
-      @#   description: {@sample.description}
+      @if sample.descriptionLine
+        {@descriptionLines("#", sample.descriptionLine, sample.additionalDescriptionLines)}
+      @end
       @#   bundle exec ruby {@sampleFile.outputPath} {@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}
 
       require "{@apiMethod.initCode.topLevelIndexFileImportName}"
