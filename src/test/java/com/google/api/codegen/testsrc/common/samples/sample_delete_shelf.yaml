@@ -1,8 +1,6 @@
 type: com.google.api.codegen.samplegen.SampleConfigProto
 config_schema_version: 1.0.0
 samples:
-- service: LibraryService
-  rpc: DeleteShelf
   # Behavior change:
   # old config: if region_tag is unspecified or region_tag is not unique, derive the 
   #   sample filename by concatinating method name, calling form, sample value set id
@@ -17,7 +15,9 @@ samples:
   # When we move the new config completely we should remove the id field, adding a
   # `calling_pattern` field whose value is `[.*]`, and expect the generator to generate
   # samples will all avaiable calling forms, each with a unique filename.
-  id: delete_shelf_request_empty_response_type_with_response_handling
+- id: delete_shelf_request_empty_response_type_with_response_handling
+  service: google.example.library.v1.LibraryService
+  rpc: DeleteShelf
   title: "Test response handling for methods that return empty"
   description: "Test response handling for methods that return empty"
   # Behavior change:

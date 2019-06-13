@@ -1,0 +1,113 @@
+type: com.google.api.codegen.samplegen.SampleConfigProto
+config_schema_version: 1.0.0
+samples:
+- id: publish_series_request_pi_version
+  service: google.example.library.v1.LibraryService
+  rpc: PublishSeries
+  title: "Pi version"
+  description: "Testing <@calling forms>"
+  calling_patterns: [request]
+  region_tag: "canonical"
+  request:
+  - field: shelf.name
+    value: Math
+    input_parameter: shelf_name
+    comment: "The name of the shelf where books are published to."
+  - field: series_uuid.series_string
+    value: xyz3141592654
+    input_parameter: edition
+    comment: "The edition of the series."
+  - field: edition
+    value: 123
+  response:
+  - comment:
+    - "%% %% %% output handling %% %% %% %%"
+  - comment:
+    - "%s ago\n\nour fathers brought forth upon this continent\n"
+    - four_score_and_seven_years
+  - comment:
+    - |+
+      a new nation
+      conceived in liberty
+
+      and dedicated to the proposition that %s.
+    - all_men_are_created_equal
+  - comment:
+    - "Do something with %s one by one"
+    - book_names
+  - define: book_names = $resp.book_names
+  - loop:
+      variable: title
+      collection: $resp.book_names
+      body:
+      - comment:
+          - "Now we deal with %s!"
+          - this_single_book
+      - print:
+          - "\t%%`` The book's title: \"%s\", \\\nand the book costs $50.00 ``%%"
+          - title
+  - print:
+    - "The first book is: %s"
+    - $resp.book_names[0]
+  - print:
+    - "The author of the first book is: %s"
+    - $resp.books[0].author
+  - print:
+    - "That's all!"
+  - print:
+    - "series_uuid: %s"
+    - $resp.series_uuid.series_bytes
+- id: publish_series_request_second_edition
+  service: google.example.library.v1.LibraryService
+  rpc: PublishSeries 
+  title: "Second edition"
+  description: "Testing calling forms"
+  region_tag: "canonical"
+  request:
+  - field: edition
+    value: 2
+- id: publish_series_request_test_request_object_field_comments
+  title: "request object field comments"
+  description: "Test request object field comments"
+  region_tag: sample
+  request:
+  - field: shelf.name%shelf_id
+    value: "math"
+    # TODO(hzyi): this comment is currently not generated because resource name 
+    # entities are inline literals. We need to revisit this issue when we start
+    # looking at making inline literals configurable
+    comment: "Comment on a resource name entity"
+  - field: shelf.theme
+    value: Math
+    comment: "A super long comment\nwraps words at newline characters\nas well"
+  - field: shelf.internal_theme
+    value: Statistics
+    comment: "Comment on a primitive field"
+  - field: series_uuid.series_bytes
+    value: "xyz3141592654"
+    value_is_file: true
+    comment: "Comment on a file input field"
+  - field: edition
+    value: 123
+    comment: "A super long long long long long long long long long long long long long long comment that tests word wrapping"
+  - field: series_uuid
+    comment: "Comment on a message"
+  - field: shelf.name
+    comment: "Comment on a resource name"
+
+- id: publish_series_request_test_write_to_file
+  title: "test writing fields to files"
+  description: "Testing write fields to files."
+  region_tag: sample
+  response:
+  - comment: "testing writing bytes field."
+  - write_file:
+      file_name:
+      - "uuid_of_series_with_book_%s.raw"
+      - $resp.book_names[0]
+      contents: $resp.series_uuid.series_bytes
+  - comment: "testing writing string field."
+  - write_file:
+      file_name:
+      - "series_uuid_in_plain_text.txt"
+      contents: $resp.series_uuid.series_string
