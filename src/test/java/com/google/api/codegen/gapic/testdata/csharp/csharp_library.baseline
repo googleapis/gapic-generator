@@ -2268,6 +2268,97 @@ namespace Google.Example.Library.V1.Samples
         }
     }
 }
+============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/TestFloatAndInt64.cs ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Generated code. DO NOT EDIT!
+
+// This is a generated sample ("Request", "test_float_and_int64")
+
+// sample-metadata
+//   title:
+//   usage: dotnet run [--param_float 1.2345] [--param_long 67890]
+
+// [START test_float_and_int64]
+namespace Google.Example.Library.V1.Samples
+{
+    using Google.Example.Library.V1;
+    using Google.Protobuf;
+    using System;
+    using System.Collections.Generic;
+
+    public class TestFloatAndInt64
+    {
+        public static void SampleTestOptionalRequiredFlatteningParams(float paramFloat, long paramLong)
+        {
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // float paramFloat = 1.2345f
+            // long paramLong = 67890L
+            TestOptionalRequiredFlatteningParamsRequest request = new TestOptionalRequiredFlatteningParamsRequest
+            {
+                RequiredSingularInt32 = 0,
+                RequiredSingularInt64 = 67890L,
+                RequiredSingularFloat = 1.2345f,
+                RequiredSingularDouble = 0.0,
+                RequiredSingularBool = false,
+                RequiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum.Zero,
+                RequiredSingularString = "",
+                RequiredSingularBytes = ByteString.Empty,
+                RequiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
+                RequiredSingularResourceNameAsBookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
+                RequiredSingularResourceNameCommonAsProjectName = new ProjectName("[PROJECT]"),
+                RequiredSingularFixed32 = 0,
+                RequiredSingularFixed64 = 0L,
+                RequiredRepeatedInt32 = { },
+                RequiredRepeatedInt64 = { },
+                RequiredRepeatedFloat = { },
+                RequiredRepeatedDouble = { },
+                RequiredRepeatedBool = { },
+                RequiredRepeatedEnum = { },
+                RequiredRepeatedString = { },
+                RequiredRepeatedBytes = { },
+                RequiredRepeatedMessage = { },
+                RequiredRepeatedResourceNameAsBookNames = { },
+                RequiredRepeatedResourceNameOneofAsBookNameOneofs = { },
+                RequiredRepeatedResourceNameCommonAsProjectNames = { },
+                RequiredRepeatedFixed32 = { },
+                RequiredRepeatedFixed64 = { },
+                RequiredMap = { },
+            };
+            TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.TestOptionalRequiredFlatteningParams(request);
+            Console.WriteLine(response);
+        }
+        // [END test_float_and_int64]
+        public static void Main(string[] args)
+        {
+            new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
+                .WithParsed<Options>(opts =>
+                    SampleTestOptionalRequiredFlatteningParams(opts.ParamFloat, opts.ParamLong));
+        }
+
+        public class Options
+        {
+            [Option("param_float", Default = 1.2345f)]
+            public float ParamFloat { get; set; }
+
+            [Option("param_long", Default = 67890L)]
+            public long ParamLong { get; set; }
+        }
+    }
+}
 ============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/TestResourceNameOneof.cs ==============
 // Copyright 2019 Google LLC
 //
