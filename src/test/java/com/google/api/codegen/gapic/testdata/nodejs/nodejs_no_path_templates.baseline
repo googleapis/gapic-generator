@@ -284,18 +284,16 @@ class NoTemplatesApiServiceClient {
       'increment',
     ];
     for (const methodName of noTemplatesApiServiceStubMethods) {
+      const innerCallPromise = noTemplatesApiServiceStub.then(
+        stub => (...args) => {
+          return stub[methodName].apply(stub, args);
+        },
+        err => () => {
+          throw err;
+        }
+      );
       this._innerApiCalls[methodName] = gax.createApiCall(
-        noTemplatesApiServiceStub.then(
-          stub =>
-            function() {
-              const args = Array.prototype.slice.call(arguments, 0);
-              return stub[methodName].apply(stub, args);
-            },
-          err =>
-            function() {
-              throw err;
-            }
-        ),
+        innerCallPromise,
         defaults[methodName],
         null
       );

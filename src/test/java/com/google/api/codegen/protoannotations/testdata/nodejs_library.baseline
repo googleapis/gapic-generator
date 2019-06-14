@@ -4494,18 +4494,16 @@ class LibraryServiceClient {
       'privateListShelves',
     ];
     for (const methodName of libraryServiceStubMethods) {
+      const innerCallPromise = libraryServiceStub.then(
+        stub => (...args) => {
+          return stub[methodName].apply(stub, args);
+        },
+        err => () => {
+          throw err;
+        }
+      );
       this._innerApiCalls[methodName] = gax.createApiCall(
-        libraryServiceStub.then(
-          stub =>
-            function() {
-              const args = Array.prototype.slice.call(arguments, 0);
-              return stub[methodName].apply(stub, args);
-            },
-          err =>
-            function() {
-              throw err;
-            }
-        ),
+        innerCallPromise,
         defaults[methodName],
         this._descriptors.page[methodName] || this._descriptors.batching[methodName] || this._descriptors.stream[methodName] || this._descriptors.longrunning[methodName]
       );
@@ -4524,18 +4522,16 @@ class LibraryServiceClient {
       'addLabel',
     ];
     for (const methodName of labelerStubMethods) {
+      const innerCallPromise = labelerStub.then(
+        stub => (...args) => {
+          return stub[methodName].apply(stub, args);
+        },
+        err => () => {
+          throw err;
+        }
+      );
       this._innerApiCalls[methodName] = gax.createApiCall(
-        labelerStub.then(
-          stub =>
-            function() {
-              const args = Array.prototype.slice.call(arguments, 0);
-              return stub[methodName].apply(stub, args);
-            },
-          err =>
-            function() {
-              throw err;
-            }
-        ),
+        innerCallPromise,
         defaults[methodName],
         this._descriptors.page[methodName] || this._descriptors.batching[methodName] || this._descriptors.stream[methodName] || this._descriptors.longrunning[methodName]
       );
@@ -7255,18 +7251,16 @@ class MyProtoClient {
       'myMethod',
     ];
     for (const methodName of myProtoStubMethods) {
+      const innerCallPromise = myProtoStub.then(
+        stub => (...args) => {
+          return stub[methodName].apply(stub, args);
+        },
+        err => () => {
+          throw err;
+        }
+      );
       this._innerApiCalls[methodName] = gax.createApiCall(
-        myProtoStub.then(
-          stub =>
-            function() {
-              const args = Array.prototype.slice.call(arguments, 0);
-              return stub[methodName].apply(stub, args);
-            },
-          err =>
-            function() {
-              throw err;
-            }
-        ),
+        innerCallPromise,
         defaults[methodName],
         null
       );
