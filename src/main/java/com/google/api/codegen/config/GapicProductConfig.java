@@ -350,7 +350,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion,
         enableStringFormatFunctionsOverride,
-        SampleConfig.create(sampleConfigProto, interfaceConfigMap));
+        SampleConfig.createSampleConfigs(sampleConfigProto, interfaceConfigMap));
   }
 
   public static GapicProductConfig create(

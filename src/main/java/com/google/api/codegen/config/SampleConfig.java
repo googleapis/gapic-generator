@@ -33,12 +33,12 @@ import javax.annotation.Nullable;
 
 /** SampleConfig represents configurations of a sample. */
 // Note: This class was used as an intermediate data structure to hold some information
-// about samples. Now that we are flattening out sample configuration, this class will
-// mostly likely not be needed any more. However, to conform to the model/config/context
-// style used by gapic-generator, we will reuse this class to hold all the information
-// derived from sample yaml configs.
+// about samples. Now that we are flattening out sample configuration, it's very likely
+// that we will no longer need a class to serve that purpose. However, to conform to
+// the model/config/context style used by gapic-generator, we will reuse this class to
+// hold all the information derived from sample yaml configs.
 //
-// In order for a smooth transition, all new fields added are marked as Nullable to
+// (TODO: hzyi) In order to have a smooth transition, all new fields added are marked as Nullable to
 // not break existing code. Once we finish plumbing the pipeline to take the new configuration for
 // samples, we can remove them.
 @AutoValue
@@ -126,16 +126,15 @@ public abstract class SampleConfig {
     public abstract SampleConfig build();
   }
 
-  public static ImmutableList<SampleConfig> create(
+  public static ImmutableList<SampleConfig> createSampleConfigs(
       SampleConfigProto sampleConfigProto, final Map<String, InterfaceConfig> interfaceConfigMap) {
     // First, apply region tag as IDs if IDs are not given
     List<SampleSpecProto> sampleSpecs = new ArrayList<>();
     for (SampleSpecProto spec : sampleSpecs) {
       if (spec.getId().isEmpty()) {
-        sampleSpecs.add(spec.toBuilder().setId(spec.getRegionTag()).build());
-      } else {
-        sampleSpecs.add(spec);
+        spec = spec.toBuilder().setId(spec.getRegionTag()).build();
       }
+      sampleSpecs.add(spec);
     }
 
     // Then, check user specified sample IDs do not clash
@@ -152,7 +151,7 @@ public abstract class SampleConfig {
         "Found duplicate IDs: %s",
         duplicateIds.stream().collect(Collectors.joining(", ")));
 
-    // Next, flat out calling forms
+    // Next, flatten the calling pattern list so have one per sample
     List<SampleSpecProto> flattenedSampleSpecs = new ArrayList<>();
     for (SampleSpecProto spec : sampleSpecs) {
       for (String pattern : spec.getCallingPatternsList()) {
@@ -160,19 +159,18 @@ public abstract class SampleConfig {
       }
     }
 
-    // We cannot auto-generate IDs for samples without user provided ones at this step.
-    // We need to further flat out calling forms at generation time because
-    // calling forms support regular expressions, and a single `calling_pattern`
-    // string may map to multiple calling forms.
+    // These are not the final calling pattern values, because the
+    // regexes specified in the config need to be matched against
+    // language-specific calling pattern definitions.
 
     // Construct `SampleConfig` objects.
     return flattenedSampleSpecs
         .stream()
-        .map(spec -> create(spec, interfaceConfigMap))
+        .map(spec -> createOneSampleConfig(spec, interfaceConfigMap))
         .collect(ImmutableList.toImmutableList());
   }
 
-  private static SampleConfig create(
+  private static SampleConfig createOneSampleConfig(
       SampleSpecProto sampleSpec, Map<String, InterfaceConfig> interfaceConfigMap) {
     InterfaceConfig interfaceConfig = interfaceConfigMap.get(sampleSpec.getService());
     Preconditions.checkNotNull(

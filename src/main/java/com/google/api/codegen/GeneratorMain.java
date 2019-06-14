@@ -139,7 +139,7 @@ public class GeneratorMain {
           .longOpt("sample_yamls")
           .desc("The filepath of the sample configuration files.")
           .hasArgs()
-          .argName("SAMPLES-YAMLS")
+          .argName("SAMPLE-YAMLS")
           .build();
 
   public static void printAvailableCommands() {
