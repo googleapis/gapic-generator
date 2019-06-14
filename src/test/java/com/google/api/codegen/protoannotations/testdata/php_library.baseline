@@ -1447,6 +1447,90 @@ $shelf = $options['shelf'];
 $bigBookName = $options['big_book_name'];
 
 sampleGetBigBook($shelf, $bigBookName);
+============== file: samples/V1/Turing.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+ */
+
+// sample-metadata
+//   title: Programming Books
+//   description: Testing calling forms
+//   usage: php samples/V1/Turing.php [--image_file_name "image_file.jpg"] [--stage DRAFT]
+// [START turing]
+require __DIR__ . '/../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\Comment;
+use Google\Example\Library\V1\Comment\Stage;
+use Google\Example\Library\V1\DiscussBookRequest;
+
+/** Testing calling forms */
+function sampleDiscussBook($imageFileName, $stage)
+{
+    $libraryServiceClient = new LibraryServiceClient();
+
+    // $imageFileName = 'image_file.jpg';
+    // $stage = Stage::DRAFT;
+    $formattedName = $libraryServiceClient->bookName('[BOOK_SHELF]', '[BOOK]');
+    $comment = file_get_contents('comment_file');
+    $comment2 = new Comment();
+    $comment2->setComment($comment);
+    $comment2->setStage($stage);
+    $image = file_get_contents($imageFileName);
+    $request = new DiscussBookRequest();
+    $request->setName($formattedName);
+    $request->setComment($comment2);
+    $request->setImage($image);
+
+    try {
+        // Write all requests to the server, then read all responses until the
+        // stream is complete
+        $requests = [$request];
+        $stream = $libraryServiceClient->discussBook();
+        $stream->writeAll($requests);
+        foreach ($stream->closeWriteAndReadAll() as $responseItem) {
+            printf("%s" . PHP_EOL, print_r($responseItem, true));
+        }
+    } finally {
+        $libraryServiceClient->close();
+    }
+}
+// [END turing]
+
+$opts = [
+    'image_file_name::',
+    'stage::',
+];
+
+$defaultOptions = [
+    'image_file_name' => 'image_file.jpg',
+    'stage' => Stage::DRAFT,
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$imageFileName = $options['image_file_name'];
+$stage = Stage::value($options['stage']);
+
+sampleDiscussBook($imageFileName, $stage);
 ============== file: src/V1/Gapic/LibraryServiceGapicClient.php ==============
 <?php
 /*

@@ -282,7 +282,7 @@ interfaces:
     sample_code_init_fields:
     - series_uuid.series_string=foobar
     sample_value_sets:
-      # callingFormCheck: pi_version java: Flattened Request Callable
+      # callingFormCheck: pi_version java: Request
       # callingFormCheck: pi_version nodejs: Request
       # callingFormCheck: pi_version py: Request
     - id: pi_version
@@ -338,7 +338,7 @@ interfaces:
       - print:
         - "series_uuid: %s"
         - $resp.series_uuid.series_bytes
-      # callingFormCheck: second_edition java: Flattened Request Callable
+      # callingFormCheck: second_edition java: Request
       # callingFormCheck: second_edition nodejs: Request
       # callingFormCheck: second_edition py: Request
     - id: second_edition
@@ -791,12 +791,10 @@ interfaces:
       #   filename as in the old config because there is no `sample value set id` in the 
       #   new config.
       #
-      # Change the regex `.*` to request so that we can "predict" the what the filenames would
-      #   be generated for these two value sets in the old config, and hardcode them in the
-      #   new config.
+      # Remove the regex `.*` to use the default calling form so that the filenames would
+      #   the same as the region_tag.
       standalone:
-      - calling_forms: "request"
-        value_sets: ".*"
+      - value_sets: ".*"
         region_tag: "turing"
   - name: MonologAboutBook
     # required_fields makes a difference on sample code.
@@ -896,9 +894,9 @@ interfaces:
     #- names[1]%shelf_id=my_shelf
     #- names[1]%book_id=my_first_book
     sample_value_sets:
-      # callingFormCheck: odyssey java: FlattenedPaged RequestPaged CallableList CallablePaged
-      # callingFormCheck: odyssey nodejs: RequestAsyncPaged RequestAsyncPagedAll
-      # callingFormCheck: odyssey py: RequestPaged RequestPagedAll
+      # callingFormCheck: odyssey java: RequestPaged
+      # callingFormCheck: odyssey nodejs: RequestAsyncPagedAll
+      # callingFormCheck: odyssey py: RequestPagedAll
     - id: odyssey
       title: "The Odyssey"
       description: "Testing calling forms"
@@ -990,8 +988,8 @@ interfaces:
       max_poll_delay_millis: 30000
       total_poll_timeout_millis: 86400000
     sample_value_sets:
-      # callingFormCheck: wap java: LongRunningFlattenedAsync LongRunningRequestAsync Callable LongRunningCallable
-      # callingFormCheck: wap nodejs: LongRunningEventEmitter LongRunningPromise
+      # callingFormCheck: wap java: LongRunningRequestAsync
+      # callingFormCheck: wap nodejs: LongRunningPromise
       # callingFormCheck: wap py: LongRunningPromise
     - id: wap
       title: "GetBigBook: 'War and Peace'"

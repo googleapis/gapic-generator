@@ -6457,6 +6457,74 @@ if $PROGRAM_NAME == __FILE__
   sample_get_big_book(shelf, big_book_name)
 end
 
+============== file: samples/v1/turing.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+
+# sample-metadata
+#   title: Programming Books
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/turing.rb [--image_file_name "image_file.jpg"] [--stage DRAFT]
+
+require "library"
+
+# [START turing]
+
+# Testing calling forms
+def sample_discuss_book image_file_name, stage
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  # image_file_name = "image_file.jpg"
+  # stage = :DRAFT
+  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  comment = File.binread "comment_file"
+  comment_2 = { comment: comment, stage: stage }
+  image = File.binread image_file_name
+  request = {
+    name: formatted_name,
+    comment: comment_2,
+    image: image
+  }
+
+  requests = [request]
+  library_client.discuss_book(requests).each do |element|
+    puts element.inspect
+  end
+end
+# [END turing]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+
+  image_file_name = "image_file.jpg"
+  stage = :DRAFT
+
+  ARGV.options do |opts|
+    opts.on("--image_file_name=val") { |val| image_file_name = val }
+    opts.on("--stage=val") { |val| stage = val.to_sym }
+    opts.parse!
+  end
+
+
+  sample_discuss_book(image_file_name, stage)
+end
+
 ============== file: test/library/v1/library_service_client_test.rb ==============
 # Copyright 2019 Google LLC
 #

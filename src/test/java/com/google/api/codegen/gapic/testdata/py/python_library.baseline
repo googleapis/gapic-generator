@@ -6049,6 +6049,72 @@ def main():
 
 if __name__ == '__main__':
   main()
+============== file: samples/v1/turing.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: Programming Books
+#   description: Testing calling forms
+#   usage: python3 samples/v1/turing.py [--image_file_name "image_file.jpg"] [--stage DRAFT]
+import sys
+
+# [START turing]
+
+from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
+import io
+
+def sample_discuss_book(image_file_name, stage):
+  """Testing calling forms"""
+
+  client = library_v1.LibraryServiceClient()
+
+  # image_file_name = 'image_file.jpg'
+  # stage = enums.Comment.Stage.DRAFT
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  with io.open('comment_file', 'rb') as f:
+    comment = f.read()
+  comment_2 = {'comment': comment, 'stage': stage}
+  with io.open(image_file_name, 'rb') as f:
+    image = f.read()
+  request = {'name': name, 'comment': comment_2, 'image': image}
+
+  requests = [request]
+  for response_item in client.discuss_book(requests):
+    print(response_item)
+# [END turing]
+
+def main():
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--image_file_name', type=str, default='image_file.jpg')
+  parser.add_argument('--stage', type=str, default=enums.Comment.Stage.DRAFT)
+  args = parser.parse_args()
+
+  sample_discuss_book(args.image_file_name, args.stage)
+
+if __name__ == '__main__':
+  main()
 ============== file: setup.cfg ==============
 [bdist_wheel]
 universal = 1
