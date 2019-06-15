@@ -154,6 +154,9 @@ public abstract class SampleConfig {
     // Next, flatten the calling pattern list so have one per sample
     List<SampleSpecProto> flattenedSampleSpecs = new ArrayList<>();
     for (SampleSpecProto spec : sampleSpecs) {
+      if (spec.getCallingPatternsList().isEmpty()) {
+        sampleSpecs.add(spec.toBuilder().addCallingPatterns("").build());
+      }
       for (String pattern : spec.getCallingPatternsList()) {
         sampleSpecs.add(spec.toBuilder().addCallingPatterns(pattern).build());
       }
