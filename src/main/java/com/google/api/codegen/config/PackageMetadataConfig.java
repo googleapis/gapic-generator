@@ -293,7 +293,7 @@ public abstract class PackageMetadataConfig {
       builder
           .packageName("")
           .shortName("")
-          .artifactType(PackagingArtifactType.UNKNOWN)
+          .artifactType(PackagingArtifactType.GAPIC) // the most likely case
           .apiVersion("")
           .protoPath("")
           .protoPackageDependencies(ImmutableMap.of())
