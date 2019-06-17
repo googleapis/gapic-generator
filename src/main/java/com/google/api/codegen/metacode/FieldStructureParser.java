@@ -27,6 +27,7 @@ import java.util.Map;
  */
 public class FieldStructureParser {
   private static final String PROJECT_ID_TOKEN = "$PROJECT_ID";
+  private static final String EMPTY_OBJECT = "{}";
 
   /** Update {@code root} with configuration in {@code initFieldConfigString}. */
   public static void parse(InitCodeNode root, String initFieldConfigString) {
@@ -76,7 +77,8 @@ public class FieldStructureParser {
   // config = path ['%' ident] ['=' value];
   // path = ident pathElem*
   // pathElem = ('.' ident) | ('[' int ']') | ('{' value '}');
-  // value = int | string | ident;
+  // value = int | string | ident | emptyObject;
+  // emptyObject = {}
   //
   // For compatibility with the previous parser, when ident is used as a value, the value is
   // the name of the ident. Eg, if the ident is "x", the value is simply "x", not the content
@@ -112,6 +114,9 @@ public class FieldStructureParser {
             PROJECT_ID_TOKEN,
             config);
         initValue = InitValue.createVariable(InitFieldConfig.PROJECT_ID_VARIABLE_NAME);
+      } else if (valueString.equals(EMPTY_OBJECT)) {
+        parent.setLineType(InitCodeLineType.StructureInitLine);
+        return root;
       } else {
         initValue = InitValue.createLiteral(valueString);
       }
@@ -241,8 +246,8 @@ public class FieldStructureParser {
 
   /**
    * Parses the value of configs (i.e. the RHS of the '='). If the value is a double-quoted string
-   * literal we return it unquoted. Otherwise we strip leading spaces and return the rest of value
-   * as a string for backward compatibility.
+   * literal we return it unquoted. If the value is `{}` we return Otherwise we strip leading spaces
+   * and return the rest of value as a string for backward compatibility.
    */
   private static String parseValue(Scanner scanner) {
     int token = scanner.scan();
@@ -252,6 +257,11 @@ public class FieldStructureParser {
       String tokenStr = scanner.tokenStr();
       if (scanner.scan() == Scanner.EOF) {
         return tokenStr;
+      }
+    }
+    if (token == '{') {
+      if (scanner.scan() == '}') {
+        return EMPTY_OBJECT;
       }
     }
     return scanner.tokenStr() + scanner.input().substring(scanner.pos());

@@ -150,10 +150,23 @@ interfaces:
       - print:
           - "The theme of the shelf is: %s"
           - $resp.theme
+    - id: test_setting_up_empty_objects_in_request
+      title: test_setting_up_empty_objects_in_request
+      description: "Test setting up empty objects in the request objects."
+      parameters:
+        defaults:
+        - name%shelf_id="my-shelf"
+        - message={}
+        - string_builder={}
+      on_success:
+      - print:
+        - "Shelf found."
     samples:
       standalone:
       - region_tag: sample_get_shelf
         value_sets: test_default_calling_form_unary
+      - region_tag: test_setting_up_empty_objects_in_request
+        value_sets: test_setting_up_empty_objects_in_request
   - name: ListShelves
     page_streaming:
       request:
