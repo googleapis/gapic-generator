@@ -438,14 +438,19 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   /**
    * Returns the package name of standalone samples.
    *
-   * <p>Currently we assume that package names always start with "com.google.". For example, if
-   * package name is "com.google.foo", the sample package name returned by this method will be
+   * <p>Most of the time package names start with "com.google.". For example, if package name is
+   * "com.google.foo", the sample package name returned by this method will be
    * "com.google.foo.examples.snippets". If package name is "com.google.foo.bar", the sample package
    * name returned by this method will be "com.google.foo.examples.bar.snippets".
    *
    * <p>We structure the example package name in this way because in the case of a package named
    * "com.google.foo.bar", 'foo' is very often the organization name, and this lets us group
    * examples from the same org into a common package. E.g. "com.google.cloud.library.v1"
+   *
+   * <p>If a package name does not start with "com.google.", for example, grafeas (
+   * https://github.com/googleapis/googleapis/blob/master/grafeas/v1/grafeas_gapic.yaml#L6), we
+   * simply append an "example" at the end of it. This might not be optimal, but we can adjust this
+   * when we start to generate samples for non-cloud APIs.
    */
   @Override
   public String getExamplePackageName() {
@@ -453,9 +458,13 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   public static String getExamplePackageName(String packageName) {
-    checkArgument(
-        packageName.startsWith("com.google."),
-        "We currently only support packages beginning with 'com.google'");
+    if (!packageName.startsWith("com.google.")) {
+      return packageName + ".examples";
+    }
+
+    // specical treatment for cloud clients because we anticipate them
+    // to be published in google-cloud-examples:
+    // https://github.com/googleapis/google-cloud-java/tree/master/google-cloud-examples
     packageName = packageName.replaceFirst("com.google.", "");
     checkArgument(
         !packageName.isEmpty(),
