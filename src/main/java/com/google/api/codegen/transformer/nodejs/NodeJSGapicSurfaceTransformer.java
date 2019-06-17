@@ -170,7 +170,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
 
     xapiClass.apiMethods(new ArrayList<>(methods));
 
-    xapiClass.apiVersion(packageConfig.apiVersion());
+    String packageName = context.getProductConfig().getPackageName();
+    xapiClass.apiVersion(packageName.substring(packageName.lastIndexOf('.') + 1));
 
     xapiClass.validDescriptorsNames(generateValidDescriptorsNames(context));
 
