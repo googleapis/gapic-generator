@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class FieldStructureParser {
   private static final String PROJECT_ID_TOKEN = "$PROJECT_ID";
-  private static final String EMPTY_OBJECT = "{}";
+  private static final String EMPTY_OBJECT = "$EMPTY_OBJECT";
 
   /** Update {@code root} with configuration in {@code initFieldConfigString}. */
   public static void parse(InitCodeNode root, String initFieldConfigString) {
@@ -245,9 +245,14 @@ public class FieldStructureParser {
   }
 
   /**
-   * Parses the value of configs (i.e. the RHS of the '='). If the value is a double-quoted string
-   * literal we return it unquoted. If the value is `{}` we return Otherwise we strip leading spaces
-   * and return the rest of value as a string for backward compatibility.
+   * Parses the value of configs (i.e. the RHS of the '=').
+   *
+   * <ul>
+   *   <li>If the value is a double-quoted string literal we return it unquoted.
+   *   <li>If the value is `{}` we return FieldStructureParser.EMPTY_OBJECT.
+   *   <li>Otherwise we strip leading spaces and return the rest of value as a string for backward
+   *       compatibility.
+   * </ul>
    */
   private static String parseValue(Scanner scanner) {
     int token = scanner.scan();
