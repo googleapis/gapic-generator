@@ -46,7 +46,7 @@ public class NodeJSModelTypeNameConverter extends ModelTypeNameConverter {
           .put(Type.TYPE_FIXED32, "number")
           .put(Type.TYPE_SFIXED32, "number")
           .put(Type.TYPE_STRING, "string")
-          .put(Type.TYPE_BYTES, "string")
+          .put(Type.TYPE_BYTES, "Buffer")
           .build();
 
   /** A map from primitive types in proto to zero value in NodeJS */
@@ -66,7 +66,7 @@ public class NodeJSModelTypeNameConverter extends ModelTypeNameConverter {
           .put(Type.TYPE_FIXED32, "0")
           .put(Type.TYPE_SFIXED32, "0")
           .put(Type.TYPE_STRING, "\'\'")
-          .put(Type.TYPE_BYTES, "\'\'")
+          .put(Type.TYPE_BYTES, "Buffer.from(\'\')")
           .build();
 
   private TypeNameConverter typeNameConverter;
