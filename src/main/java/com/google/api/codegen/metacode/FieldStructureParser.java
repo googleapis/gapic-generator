@@ -78,7 +78,7 @@ public class FieldStructureParser {
   // path = ident pathElem*
   // pathElem = ('.' ident) | ('[' int ']') | ('{' value '}');
   // value = int | string | ident | emptyObject;
-  // emptyObject = {}
+  // emptyObject = {};
   //
   // For compatibility with the previous parser, when ident is used as a value, the value is
   // the name of the ident. Eg, if the ident is "x", the value is simply "x", not the content
