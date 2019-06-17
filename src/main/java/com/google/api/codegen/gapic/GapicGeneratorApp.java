@@ -146,15 +146,17 @@ public class GapicGeneratorApp extends ToolDriverBase {
       return;
     }
 
-    PackageMetadataConfig packageConfig = null;
+    ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
+    DependenciesConfig dependenciesConfig = DependenciesConfig.load();
+
+    PackagingConfig packagingConfig = null;
     if (!Strings.isNullOrEmpty(options.get(PACKAGE_CONFIG2_FILE))) {
-      ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
-      DependenciesConfig dependenciesConfig = DependenciesConfig.load();
-      PackagingConfig packagingConfig = PackagingConfig.load(options.get(PACKAGE_CONFIG2_FILE));
-      packageConfig =
-          PackageMetadataConfig.createFromPackaging(
-              apiDefaultsConfig, dependenciesConfig, packagingConfig);
+      packagingConfig = PackagingConfig.load(options.get(PACKAGE_CONFIG2_FILE));
     }
+
+    PackageMetadataConfig packageConfig =
+        PackageMetadataConfig.createFromPackaging(
+            apiDefaultsConfig, dependenciesConfig, packagingConfig);
 
     TargetLanguage language;
     if (!Strings.isNullOrEmpty(options.get(LANGUAGE))) {

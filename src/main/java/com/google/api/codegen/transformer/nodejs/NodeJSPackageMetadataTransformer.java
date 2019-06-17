@@ -109,24 +109,34 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
             ReadmeMetadataView.newBuilder()
                 .moduleName("")
                 .identifier(namer.getMetadataIdentifier())
-                .shortName(packageConfig.shortName())
+                .shortName(getShortNameFromPackage(productConfig.getPackageName()))
                 .fullName(model.getTitle())
                 .apiSummary(model.getDocumentationSummary())
                 .hasMultipleServices(model.hasMultipleServices())
-                .gapicPackageName("gapic-" + packageConfig.packageName())
-                .majorVersion(packageConfig.apiVersion())
+                .gapicPackageName("") // not used
+                .majorVersion("") // not used
                 .developmentStatusTitle(
                     namer.getReleaseAnnotation(
                         metadataTransformer.getMergedReleaseLevel(packageConfig, productConfig)))
                 .targetLanguage("Node.js")
                 .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
-                .libraryDocumentationLink(
-                    GITHUB_DOC_HOST + String.format(LIB_DOC_PATH, packageConfig.shortName()))
+                .libraryDocumentationLink("") // not used
                 .authDocumentationLink(GITHUB_DOC_HOST + AUTH_DOC_PATH)
                 .versioningDocumentationLink(GITHUB_REPO_HOST + VERSIONING_DOC_PATH)
                 .exampleMethods(exampleMethods)
                 .build())
         .build();
+  }
+
+  private String getShortNameFromPackage(String packageName) {
+    // Quick and dirty way to get shortName from <optional>.shortName.<optional> string. This should
+    // be still shorter and faster than using regex.
+    int dotIndex = packageName.lastIndexOf('.');
+    if (dotIndex < 0 || packageName.isEmpty()) {
+      return packageName;
+    }
+    String shortName = packageName.substring(0, dotIndex);
+    return shortName.substring(shortName.lastIndexOf('.') + 1);
   }
 
   // Generates methods used as examples for the README.md file.
@@ -191,15 +201,13 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
         .identifier(namer.getMetadataIdentifier())
         .hasMultipleServices(model.hasMultipleServices())
         .additionalDependencies(generateAdditionalDependencies(model, productConfig))
+        .shortName(getShortNameFromPackage(productConfig.getPackageName()))
         .build();
   }
 
   private List<PackageDependencyView> generateAdditionalDependencies(
       ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
-    dependencies.add(
-        PackageDependencyView.create(
-            "google-gax", packageConfig.gaxVersionBound(TargetLanguage.NODEJS)));
     if (model.hasMultipleServices()) {
       dependencies.add(
           PackageDependencyView.create("lodash.union", VersionBound.create("4.6.0", "")));
