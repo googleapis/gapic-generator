@@ -26,16 +26,16 @@
       "{@metadata.fullName}"
     ],
     "dependencies": {
-      @join packageDep : metadata.dependencies on ",".add(BREAK)
-        "{@packageDep.name}": "^{@packageDep.versionBound.lower}"
+      @join packageDep : metadata.dependencies
+        "{@packageDep.name}": "^{@packageDep.versionBound.lower}",
       @end
+      "google-gax": "^1.1.0"
     },
     "devDependencies": {
       "mocha": "^5.2.0",
       "through2": "^2.0.3"
     },
     "scripts": {
-      "publish-module": "node ../../scripts/publish.js {@metadata.shortName}",
       "smoke-test": "mocha smoke-test/*.js --timeout 5000",
       "test": "mocha test/*.js"
     },
