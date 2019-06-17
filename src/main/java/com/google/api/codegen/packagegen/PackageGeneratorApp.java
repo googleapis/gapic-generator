@@ -98,21 +98,26 @@ public class PackageGeneratorApp extends ToolDriverBase {
     TargetLanguage language = TargetLanguage.fromString(options.get(LANGUAGE));
 
     PackageMetadataConfig config = null;
+
+    ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
+    DependenciesConfig dependenciesConfig;
+    if (dependenciesYamlUrl != null) {
+      dependenciesConfig = DependenciesConfig.loadFromURL(dependenciesYamlUrl);
+    } else {
+      dependenciesConfig = DependenciesConfig.load();
+    }
+
+    PackagingConfig packagingConfig = null;
     if (!Strings.isNullOrEmpty(options.get(PACKAGE_CONFIG2_FILE))) {
-      ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
-      DependenciesConfig dependenciesConfig;
-      if (dependenciesYamlUrl != null) {
-        dependenciesConfig = DependenciesConfig.loadFromURL(dependenciesYamlUrl);
-      } else {
-        dependenciesConfig = DependenciesConfig.load();
-      }
-      PackagingConfig packagingConfig = PackagingConfig.load(options.get(PACKAGE_CONFIG2_FILE));
-      config =
-          PackageMetadataConfig.createFromPackaging(
-              apiDefaultsConfig, dependenciesConfig, packagingConfig);
+      packagingConfig = PackagingConfig.load(options.get(PACKAGE_CONFIG2_FILE));
     } else {
       // TODO(andrealin): Get PackageMetadataConfig from proto annotations.
     }
+
+    config =
+        PackageMetadataConfig.createFromPackaging(
+            apiDefaultsConfig, dependenciesConfig, packagingConfig);
+
     Preconditions.checkNotNull(config);
 
     PackagingArtifactType artifactType = options.get(PackageGeneratorApp.ARTIFACT_TYPE);
