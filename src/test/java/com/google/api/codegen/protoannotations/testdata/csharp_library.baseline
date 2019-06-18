@@ -2455,6 +2455,61 @@ namespace Google.Example.Library.V1.Samples
         }
     }
 }
+============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/TestSettingUpEmptyObjectsInRequest.cs ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Generated code. DO NOT EDIT!
+
+// This is a generated sample ("Request", "test_setting_up_empty_objects_in_request")
+
+// sample-metadata
+//   title: test_setting_up_empty_objects_in_request
+//   description: Test setting up empty objects in the request objects.
+//   usage: dotnet run
+
+// [START test_setting_up_empty_objects_in_request]
+namespace Google.Example.Library.V1.Samples
+{
+    using Google.Example.Library.V1;
+    using System;
+
+    public class TestSettingUpEmptyObjectsInRequest
+    {
+        /// <summary>
+        /// Test setting up empty objects in the request objects.
+        /// </summary>
+        public static void SampleGetShelf()
+        {
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            GetShelfRequest request = new GetShelfRequest
+            {
+                ShelfName = new ShelfName("my-shelf"),
+                Options = "",
+                Message = new SomeMessage(),
+                StringBuilder = new StringBuilder(),
+            };
+            Shelf response = libraryServiceClient.GetShelf(request);
+            Console.WriteLine("Shelf found.");
+        }
+        // [END test_setting_up_empty_objects_in_request]
+        public static void Main(string[] args)
+        {
+            SampleGetShelf();
+        }
+    }
+}
 ============== file: Google.Example.Library.V1/Google.Example.Library.V1.SmokeTests/Google.Example.Library.V1.SmokeTests.csproj ==============
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
@@ -16729,7 +16784,7 @@ namespace Google.Example.Library.V1
                 .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}"));
             _callPublishSeries = clientHelper.BuildApiCall<PublishSeriesRequest, PublishSeriesResponse>(
                 GrpcClient.PublishSeriesAsync, GrpcClient.PublishSeries, effectiveSettings.PublishSeriesSettings)
-                .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"shelf.name={request.Shelf.Name}"));
+                .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"shelf.name={request.Shelf?.Name}"));
             _callGetBook = clientHelper.BuildApiCall<GetBookRequest, Book>(
                 GrpcClient.GetBookAsync, GrpcClient.GetBook, effectiveSettings.GetBookSettings)
                 .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}"));
