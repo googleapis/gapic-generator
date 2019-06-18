@@ -1479,6 +1479,48 @@ function sampleGetBookFromAbsolutelyAnywhere() {
 // tslint:disable-next-line:no-any
 
 sampleGetBookFromAbsolutelyAnywhere();
+============== file: samples/v1/test_setting_up_empty_objects_in_request.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_setting_up_empty_objects_in_request")
+'use strict';
+
+// sample-metadata:
+//   title: test_setting_up_empty_objects_in_request
+//   description: Test setting up empty objects in the request objects.
+//   usage: node samples/v1/test_setting_up_empty_objects_in_request.js
+
+// [START test_setting_up_empty_objects_in_request]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test setting up empty objects in the request objects. */
+function sampleGetShelf() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.shelfPath('my-shelf');
+  const options = '';
+
+  // we can set up this empty nested object now
+  const message = {};
+  const stringBuilder = {};
+  const request = {
+    name: formattedName,
+    options: options,
+    message: message,
+    stringBuilder: stringBuilder,
+  };
+  client.getShelf(request)
+    .then(responses => {
+      const response = responses[0];
+      console.log(`Shelf found.`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+// [END test_setting_up_empty_objects_in_request]
+// tslint:disable-next-line:no-any
+
+sampleGetShelf();
 ============== file: samples/v1/this_tag_should_be_the_name_of_the_file.js ==============
 // DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap")
 'use strict';
