@@ -19,7 +19,9 @@ def _nodejs_gapic_src_pkg_impl(ctx):
     gapic_srcs = []
 
     for dep in ctx.attr.deps:
-        if(hasattr(dep, "proto")):
+        if ProtoInfo in dep:
+            proto_srcs.extend(dep[ProtoInfo].check_deps_sources.to_list())
+        elif(hasattr(dep, "proto")):
             proto_srcs.extend(dep.proto.check_deps_sources.to_list())
         else:
             gapic_srcs.extend(dep.files.to_list())
