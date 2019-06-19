@@ -1674,7 +1674,7 @@ function sampleListShelves()
 // [END test_default_calling_form_for_paging]
 
 sampleListShelves();
-============== file: samples/V1/TestFloat.php ==============
+============== file: samples/V1/TestFloatAndInt64.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -1693,26 +1693,26 @@ sampleListShelves();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("Request",  "test_float")
+ * DO NOT EDIT! This is a generated sample ("Request",  "test_float_and_int64")
  */
 
 // sample-metadata
 //   title:
-//   usage: php samples/V1/TestFloat.php [--param_float 1.2345]
-// [START test_float]
+//   usage: php samples/V1/TestFloatAndInt64.php [--param_float 1.2345] [--param_long 67890]
+// [START test_float_and_int64]
 require __DIR__ . '/../../vendor/autoload.php';
 
 use Google\Cloud\Example\Library\V1\LibraryServiceClient;
 use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum;
 use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\InnerMessage;
 
-function sampleTestOptionalRequiredFlatteningParams($paramFloat)
+function sampleTestOptionalRequiredFlatteningParams($paramFloat, $paramLong)
 {
     $libraryServiceClient = new LibraryServiceClient();
 
     // $paramFloat = 1.2345;
+    // $paramLong = 67890;
     $requiredSingularInt32 = 0;
-    $requiredSingularInt64 = 0;
     $requiredSingularDouble = 0.0;
     $requiredSingularBool = false;
     $requiredSingularEnum = InnerEnum::ZERO;
@@ -1741,28 +1741,31 @@ function sampleTestOptionalRequiredFlatteningParams($paramFloat)
     $requiredMap = [];
 
     try {
-        $response = $libraryServiceClient->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $paramFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $formattedRequiredSingularResourceName, $formattedRequiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
+        $response = $libraryServiceClient->testOptionalRequiredFlatteningParams($requiredSingularInt32, $paramLong, $paramFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $formattedRequiredSingularResourceName, $formattedRequiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
         printf("%s" . PHP_EOL, print_r($response, true));
     } finally {
         $libraryServiceClient->close();
     }
 }
-// [END test_float]
+// [END test_float_and_int64]
 
 $opts = [
     'param_float::',
+    'param_long::',
 ];
 
 $defaultOptions = [
     'param_float' => 1.2345,
+    'param_long' => 67890,
 ];
 
 $options = getopt('', $opts);
 $options += $defaultOptions;
 
 $paramFloat = $options['param_float'];
+$paramLong = $options['param_long'];
 
-sampleTestOptionalRequiredFlatteningParams($paramFloat);
+sampleTestOptionalRequiredFlatteningParams($paramFloat, $paramLong);
 ============== file: samples/V1/TestLongRunningStartThenCancelCallingForm.php ==============
 <?php
 /*

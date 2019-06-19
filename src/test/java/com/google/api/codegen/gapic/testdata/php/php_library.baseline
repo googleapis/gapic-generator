@@ -1666,6 +1666,98 @@ function sampleListShelves()
 // [END test_default_calling_form_for_paging]
 
 sampleListShelves();
+============== file: samples/V1/TestFloatAndInt64.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("Request",  "test_float_and_int64")
+ */
+
+// sample-metadata
+//   title:
+//   usage: php samples/V1/TestFloatAndInt64.php [--param_float 1.2345] [--param_long 67890]
+// [START test_float_and_int64]
+require __DIR__ . '/../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest\InnerMessage;
+
+function sampleTestOptionalRequiredFlatteningParams($paramFloat, $paramLong)
+{
+    $libraryServiceClient = new LibraryServiceClient();
+
+    // $paramFloat = 1.2345;
+    // $paramLong = 67890;
+    $requiredSingularInt32 = 0;
+    $requiredSingularDouble = 0.0;
+    $requiredSingularBool = false;
+    $requiredSingularEnum = InnerEnum::ZERO;
+    $requiredSingularString = '';
+    $requiredSingularBytes = '';
+    $requiredSingularMessage = new InnerMessage();
+    $formattedRequiredSingularResourceName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedRequiredSingularResourceNameOneof = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedRequiredSingularResourceNameCommon = $libraryServiceClient->projectName('[PROJECT]');
+    $requiredSingularFixed32 = 0;
+    $requiredSingularFixed64 = 0;
+    $requiredRepeatedInt32 = [];
+    $requiredRepeatedInt64 = [];
+    $requiredRepeatedFloat = [];
+    $requiredRepeatedDouble = [];
+    $requiredRepeatedBool = [];
+    $requiredRepeatedEnum = [];
+    $requiredRepeatedString = [];
+    $requiredRepeatedBytes = [];
+    $requiredRepeatedMessage = [];
+    $formattedRequiredRepeatedResourceName = [];
+    $formattedRequiredRepeatedResourceNameOneof = [];
+    $formattedRequiredRepeatedResourceNameCommon = [];
+    $requiredRepeatedFixed32 = [];
+    $requiredRepeatedFixed64 = [];
+    $requiredMap = [];
+
+    try {
+        $response = $libraryServiceClient->testOptionalRequiredFlatteningParams($requiredSingularInt32, $paramLong, $paramFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $formattedRequiredSingularResourceName, $formattedRequiredSingularResourceNameOneof, $formattedRequiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $formattedRequiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
+        printf("%s" . PHP_EOL, print_r($response, true));
+    } finally {
+        $libraryServiceClient->close();
+    }
+}
+// [END test_float_and_int64]
+
+$opts = [
+    'param_float::',
+    'param_long::',
+];
+
+$defaultOptions = [
+    'param_float' => 1.2345,
+    'param_long' => 67890,
+];
+
+$options = getopt('', $opts);
+$options += $defaultOptions;
+
+$paramFloat = $options['param_float'];
+$paramLong = $options['param_long'];
+
+sampleTestOptionalRequiredFlatteningParams($paramFloat, $paramLong);
 ============== file: samples/V1/TestLongRunningStartThenCancelCallingForm.php ==============
 <?php
 /*

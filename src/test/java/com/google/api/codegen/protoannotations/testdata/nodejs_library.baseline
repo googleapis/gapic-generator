@@ -1326,23 +1326,23 @@ function sampleListShelves() {
 // tslint:disable-next-line:no-any
 
 sampleListShelves();
-============== file: samples/v1/test_float.js ==============
-// DO NOT EDIT! This is a generated sample ("Request",  "test_float")
+============== file: samples/v1/test_float_and_int64.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_float_and_int64")
 'use strict';
 
 // sample-metadata:
 //   title:
-//   usage: node samples/v1/test_float.js [--param_float 1.2345]
+//   usage: node samples/v1/test_float_and_int64.js [--param_float 1.2345] [--param_long 67890]
 
-// [START test_float]
+// [START test_float_and_int64]
 
 const library = require('@google-cloud/library').v1;
 
-function sampleTestOptionalRequiredFlatteningParams(paramFloat) {
+function sampleTestOptionalRequiredFlatteningParams(paramFloat, paramLong) {
   const client = new library.LibraryServiceClient();
   // const paramFloat = 1.2345;
+  // const paramLong = 67890;
   const requiredSingularInt32 = 0;
-  const requiredSingularInt64 = 0;
   const requiredSingularDouble = 0.0;
   const requiredSingularBool = false;
   const requiredSingularEnum = 'ZERO';
@@ -1371,7 +1371,7 @@ function sampleTestOptionalRequiredFlatteningParams(paramFloat) {
   const requiredMap = {};
   const request = {
     requiredSingularInt32: requiredSingularInt32,
-    requiredSingularInt64: requiredSingularInt64,
+    requiredSingularInt64: paramLong,
     requiredSingularFloat: paramFloat,
     requiredSingularDouble: requiredSingularDouble,
     requiredSingularBool: requiredSingularBool,
@@ -1410,7 +1410,7 @@ function sampleTestOptionalRequiredFlatteningParams(paramFloat) {
     });
 }
 
-// [END test_float]
+// [END test_float_and_int64]
 // tslint:disable-next-line:no-any
 
 const argv = require(`yargs`)
@@ -1418,9 +1418,13 @@ const argv = require(`yargs`)
     default: 1.2345,
     number: true
   })
+  .option('param_long', {
+    default: 67890,
+    number: true
+  })
   .argv;
 
-sampleTestOptionalRequiredFlatteningParams(argv.param_float);
+sampleTestOptionalRequiredFlatteningParams(argv.param_float, argv.param_long);
 ============== file: samples/v1/test_long_running_start_then_cancel_calling_form.js ==============
 // DO NOT EDIT! This is a generated sample ("LongRunningStartThenCancel",  "test_long_running_start_then_cancel_calling_form")
 'use strict';
