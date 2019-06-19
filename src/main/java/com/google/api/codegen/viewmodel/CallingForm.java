@@ -83,7 +83,7 @@ public enum CallingForm {
   LongRunningPromiseAwait, // used by: nodejs
   LongRunningRequest, // used by: php
   LongRunningRequestAsync, // used by: java php ruby
-  LongRunningStartThenCancel, // used by: java, python, php, ruby, nodejs
+  LongRunningStartThenCancel, // used by: java nodejs php py ruby
 
   // TODO: the following calling forms should be added for csharp. They are
   // currently removed to turn off generating samples in these calling forms
