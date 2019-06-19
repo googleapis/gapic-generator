@@ -1436,6 +1436,7 @@ const library = require('@google-cloud/library').v1;
 async function sampleGetBigBook() {
   const client = new library.LibraryServiceClient();
   const formattedName = client.bookPath('Novel', 'War and Peace');
+  const [operation] = await client.getBigBook({name: formattedName});
 
   // You'll want to save this for later to retrieve your completed operation.
   console.log(`Operation Name: ${operation.name}`);

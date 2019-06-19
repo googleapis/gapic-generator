@@ -274,8 +274,9 @@
 
 @private methodCallSampleCodeLongRunningStartThenCancel(apiMethod, sample)
   {@initCode(apiMethod, sample.sampleInitCode)}
-
+  const [operation] = await {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)};
   @if sample.outputs
+
     {@processResponse(sample)}
   @end
   await client.operationsClient.cancelOperation({name: operation.name});

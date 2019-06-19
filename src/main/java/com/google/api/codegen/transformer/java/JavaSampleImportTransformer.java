@@ -79,6 +79,7 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
         typeTable.getAndSaveNicknameFor(namer.getGenericAwareResponseTypeName(context));
         break;
       case LongRunningCallable:
+      case LongRunningStartThenCancel:
         typeTable.saveNicknameFor(OPERATION_FUTURE);
         saveResponseTypeNameForLongRunningMethod(context);
         saveMetadataTypeNameForLongRunningMethod(context);
