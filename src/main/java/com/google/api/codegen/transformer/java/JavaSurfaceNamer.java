@@ -462,7 +462,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
       return packageName + ".examples";
     }
 
-    // specical treatment for cloud clients because we anticipate them
+    // special treatment for cloud clients because we anticipate them
     // to be published in google-cloud-examples:
     // https://github.com/googleapis/google-cloud-java/tree/master/google-cloud-examples
     packageName = packageName.replaceFirst("com.google.", "");
