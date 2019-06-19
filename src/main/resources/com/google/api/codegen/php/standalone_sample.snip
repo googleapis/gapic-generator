@@ -59,6 +59,8 @@
                 {@longRunningSampleCode(sample, apiMethod)}
             @case "LongRunningRequestAsync"
                 {@longRunningAsyncSampleCode(sample, apiMethod)}
+            @case "LongRunningStartThenCancel"
+                {@LongRunningStartThenCancelSampleCode(sample, apiMethod)}
             @case "Request"
                 {@requestSampleCode(sample, apiMethod)}
             @case "RequestPaged"
@@ -212,6 +214,15 @@
       $error = $newOperationResponse->getError();
       // handleError($error)
     }
+@end
+
+@private LongRunningStartThenCancelSampleCode(sample, apiMethod)
+    $operation = {@methodCallSampleCode(apiMethod)};
+    
+    @if sample.outputs
+        {@processResponse(sample)}
+    @end
+    ${@apiMethod.apiVariableName}.getOperationsClient()->cancelOperation($operation->getName());
 @end
 
 @private requestSampleCode(sample, apiMethod)

@@ -6537,6 +6537,58 @@ if $PROGRAM_NAME == __FILE__
   sample_test_optional_required_flattening_params(param_float)
 end
 
+============== file: samples/v1/test_long_running_start_then_cancel_calling_form.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningStartThenCancel",  "test_long_running_start_then_cancel_calling_form")
+
+# sample-metadata
+#   title: kick off, retrieve name, and cancel
+#   description: Kick off the LRO and cancel it.
+#   bundle exec ruby samples/v1/test_long_running_start_then_cancel_calling_form.rb
+
+require "library"
+
+# [START test_long_running_start_then_cancel_calling_form]
+
+# Kick off the LRO and cancel it.
+def sample_get_big_book
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
+
+  # Make the long-running operation request
+  operation = library_client.get_big_book(formatted_name)
+
+
+  # You'll want to save this for later to retrieve your completed operation.
+  puts "Operation Name: #{response.name}"
+  # Cancel the operation to avoid charges when testing.
+
+  operation.cancel
+end
+# [END test_long_running_start_then_cancel_calling_form]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+  sample_get_big_book
+end
+
 ============== file: samples/v1/test_resource_name_oneof.rb ==============
 # Copyright 2019 Google LLC
 #

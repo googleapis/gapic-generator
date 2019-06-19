@@ -62,6 +62,8 @@
       {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)}
     @case "LongRunningRequestAsync"
       {@longRunningAsyncMethodSampleCode(apiMethod, sample)}
+    @case "LongRunningStartThenCancel"
+      {@LongRunningStartThenCancelMethodSampleCode(apiMethod, sample)}
     @default
       $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
@@ -121,6 +123,18 @@
 
     {@processOutputViews(sample.outputs)}
   @end
+@end
+
+@private LongRunningStartThenCancelMethodSampleCode(apiMethod, sample)
+  @# Make the long-running operation request
+  operation = {@methodCallSampleCode(apiMethod, sample)}
+
+  @if sample.outputs
+
+    {@processOutputViews(sample.outputs)}
+
+  @end
+  operation.cancel
 @end
 
 @private optionalArrayMethodSampleCodeNonStreaming(apiMethod, sample)

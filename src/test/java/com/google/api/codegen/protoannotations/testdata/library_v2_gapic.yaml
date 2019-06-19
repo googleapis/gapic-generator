@@ -673,13 +673,36 @@ interfaces:
                 - parameter: name%book_id
                   sample_argument_name: big_book_name
                   description: "The name of the book."
+          - id: test_long_running_start_then_cancel_calling_form
+            title: "kick off, retrieve name, and cancel"
+            description: "Kick off the LRO and cancel it."
+            parameters:
+              defaults:
+              - name%shelf_id=Novel
+              - name%book_id="War and Peace"
+            on_success:
+            - comment: [You'll want to save this for later to retrieve your completed operation.]
+            - print: ["Operation Name: %s", $resp.name]
+            - comment: [Cancel the operation to avoid charges when testing.]
         samples:
           standalone:
-            - calling_forms: ".*"
-              value_sets: ".*"
-              region_tag: hopper
-            - value_sets: wap
-              region_tag: "this_tag_should_be_the_name_of_the_file"
+          - calling_forms: 
+            - long_running_callable
+            - long_running_event_emitter
+            - long_running_flattened
+            - long_running_flattened_async
+            - long_running_promise
+            - long_running_promise_await
+            - long_running_request
+            - long_running_request_async
+            - callable
+            value_sets: [wap, wap2]
+            region_tag: hopper
+          - value_sets: wap
+            region_tag: "this_tag_should_be_the_name_of_the_file"
+          - value_sets: [test_long_running_start_then_cancel_calling_form]
+            calling_forms: [long_running_start_then_cancel]
+            region_tag: test_long_running_start_then_cancel_calling_form
       - name: GetBigNothing
         retry_codes_name: non_idempotent
         retry_params_name: default
@@ -701,8 +724,17 @@ interfaces:
             description: "Test default response handling is turned off for methods that return empty"
         samples:
           standalone:
-            - calling_forms: ".*"
-              value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
+          - calling_forms: 
+            - long_running_callable
+            - long_running_event_emitter
+            - long_running_flattened
+            - long_running_flattened_async
+            - long_running_promise
+            - long_running_promise_await
+            - long_running_request
+            - long_running_request_async
+            - callable
+            value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
       - name: TestOptionalRequiredFlatteningParams
         samples:
           standalone:

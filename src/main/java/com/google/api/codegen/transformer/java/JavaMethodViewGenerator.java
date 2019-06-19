@@ -150,7 +150,8 @@ public class JavaMethodViewGenerator {
         apiMethods.add(
             clientMethodTransformer.generateOperationCallableMethod(
                 requestMethodContext.withCallingForms(
-                    Collections.singletonList(CallingForm.LongRunningCallable))));
+                    ImmutableList.of(
+                        CallingForm.LongRunningCallable, CallingForm.LongRunningStartThenCancel))));
         apiMethods.add(
             clientMethodTransformer.generateCallableMethod(
                 requestMethodContext.withCallingForms(

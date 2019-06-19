@@ -25,6 +25,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -629,14 +630,17 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       case LongRunningEventEmitter:
       case LongRunningPromise:
         return "result";
+      case LongRunningStartThenCancel:
+        return "operation";
       default:
         throw new IllegalArgumentException("illegal calling form for Node.js: " + form);
     }
   }
 
   @Override
-  public List<CallingForm> getCallingForms(MethodContext context) {
-    return CallingForm.getCallingForms(context, TargetLanguage.NODEJS);
+  public List<CallingForm> getCallingForms(
+      MethodContext context, SampleSpec.SampleType sampleType) {
+    return CallingForm.getCallingForms(context, TargetLanguage.NODEJS, sampleType);
   }
 
   @Override
@@ -646,6 +650,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public boolean usesAsyncAwaitPattern(CallingForm form) {
-    return form == CallingForm.LongRunningPromiseAwait;
+    return form == CallingForm.LongRunningPromiseAwait
+        || form == CallingForm.LongRunningStartThenCancel;
   }
 }

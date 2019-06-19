@@ -67,6 +67,8 @@
       {@optionalArrayMethodSampleCodeServerStreaming(apiMethod, sample)}
     @case "LongRunningPromise"
       {@lroSampleCode(apiMethod, sample)}
+    @case "LongRunningStartThenCancel"
+      {@lroCancelSampleCode(apiMethod, sample)}
     @default
       $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
@@ -172,6 +174,14 @@
 
   print(u'Waiting for operation to complete...')
   response = operation.result()
+
+  @if sample.outputs
+    {@processResponse(sample)}
+  @end
+@end
+
+@private lroCancelSampleCode(apiMethod, sample)
+  operation = {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}.operation
 
   @if sample.outputs
     {@processResponse(sample)}

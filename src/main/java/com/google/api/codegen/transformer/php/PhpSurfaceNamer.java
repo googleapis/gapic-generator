@@ -22,6 +22,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -321,8 +322,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<CallingForm> getCallingForms(MethodContext context) {
-    return CallingForm.getCallingForms(context, TargetLanguage.PHP);
+  public List<CallingForm> getCallingForms(
+      MethodContext context, SampleSpec.SampleType sampleType) {
+    return CallingForm.getCallingForms(context, TargetLanguage.PHP, sampleType);
   }
 
   @Override

@@ -85,6 +85,8 @@
       {@methodCallSampleCodeLongrunningPromise(apiMethod, sample)}
     @case "LongRunningPromiseAwait"
       {@methodCallSampleCodeLongRunningPromiseAwait(apiMethod, sample)}
+    @case "LongRunningStartThenCancel"
+      {@methodCallSampleCodeLongRunningStartThenCancel(apiMethod, sample)}
     @default
       $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
@@ -268,6 +270,15 @@
     .catch(err => {
       console.error(err);
     });
+@end
+
+@private methodCallSampleCodeLongRunningStartThenCancel(apiMethod, sample)
+  {@initCode(apiMethod, sample.sampleInitCode)}
+
+  @if sample.outputs
+    {@processResponse(sample)}
+  @end
+  await client.operationsClient.cancelOperation({name: operation.name});
 @end
 
 @private methodCallSampleCodeLongrunningPromise(apiMethod, sample)

@@ -112,6 +112,8 @@
     @if sample.outputs
       {@processResponse(sample)}
     @end
+  @case "LongRunningStartThenCancel"
+    {@LongRunningStartThenCancelMethodSampleCode(apiMethod, sample)}
   @default
     $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
   @end
@@ -211,6 +213,18 @@
   @else
     future.get();
   @end
+@end
+
+@private LongRunningStartThenCancelMethodSampleCode(apiMethod, sample)
+  {@initCode(sample.sampleInitCode)}
+  OperationFuture<{@apiMethod.responseTypeName}, \
+    {@apiMethod.operationMethod.metadataTypeName}> operation = \
+    {@sampleFutureMethodCall(apiMethod)};
+  @if sample.outputs
+    
+    {@processResponse(sample)}
+  @end
+  {@apiMethod.apiVariableName}.getOperationsClient().cancelOperation(operation.getName());
 @end
 
 @private streamingCallableMethodSampleCode(apiMethod, sample)

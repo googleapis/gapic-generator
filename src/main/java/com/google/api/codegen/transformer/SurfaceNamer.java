@@ -28,6 +28,7 @@ import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
@@ -1663,6 +1664,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getSampleResponseVarName(MethodContext context, CallingForm form) {
     MethodConfig config = context.getMethodConfig();
+    if (form == CallingForm.LongRunningStartThenCancel) {
+      return "operation";
+    }
     if (config.getPageStreaming() != null) {
       return "responseItem";
     }
@@ -1690,7 +1694,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   // TODO(hzyi): this method doesn't fit very well in SurfaceNamer. So far we don't have a
   // better place for this logic but consider moving this out when we implement default
   // calling forms.
-  public List<CallingForm> getCallingForms(MethodContext context) {
+  public List<CallingForm> getCallingForms(
+      MethodContext context, SampleSpec.SampleType sampleType) {
     return Collections.singletonList(CallingForm.Generic);
   }
 

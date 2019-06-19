@@ -29,6 +29,7 @@ import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -421,8 +422,9 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<CallingForm> getCallingForms(MethodContext context) {
-    return CallingForm.getCallingForms(context, TargetLanguage.JAVA);
+  public List<CallingForm> getCallingForms(
+      MethodContext context, SampleSpec.SampleType sampleType) {
+    return CallingForm.getCallingForms(context, TargetLanguage.JAVA, sampleType);
   }
 
   @Override

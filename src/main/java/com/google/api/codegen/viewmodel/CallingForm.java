@@ -24,6 +24,7 @@ import static com.google.api.codegen.common.TargetLanguage.RUBY;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.MethodContext;
+import com.google.api.codegen.config.SampleSpec;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -82,6 +83,7 @@ public enum CallingForm {
   LongRunningPromiseAwait, // used by: nodejs
   LongRunningRequest, // used by: php
   LongRunningRequestAsync, // used by: java php ruby
+  LongRunningStartThenCancel, // used by: java, python, php, ruby, nodejs
 
   // TODO: the following calling forms should be added for csharp. They are
   // currently removed to turn off generating samples in these calling forms
@@ -140,6 +142,21 @@ public enum CallingForm {
     }
   }
 
+  // Note: in some languages we generate in-code samples based off calling forms as well.
+  // But we don't always want to generate in-code samples in all calling forms that
+  // we generate standalone samples in.
+  private static final Table<TargetLanguage, RpcType, List<CallingForm>>
+      INCODE_CALLING_FORM_OVERRIDE_TABLE =
+          ImmutableTable.<TargetLanguage, RpcType, List<CallingForm>>builder()
+              .put(
+                  NODEJS,
+                  RpcType.LRO,
+                  ImmutableList.of(
+                      LongRunningPromise, LongRunningEventEmitter, LongRunningPromiseAwait))
+              .put(PYTHON, RpcType.LRO, ImmutableList.of(LongRunningPromise))
+              .put(PHP, RpcType.LRO, ImmutableList.of(LongRunningRequest, LongRunningRequestAsync))
+              .build();
+
   // TODO: Factor this out to a yaml file
   private static final Table<TargetLanguage, RpcType, List<CallingForm>> CALLING_FORM_TABLE =
       ImmutableTable.<TargetLanguage, RpcType, List<CallingForm>>builder()
@@ -147,7 +164,8 @@ public enum CallingForm {
           .put(
               JAVA,
               RpcType.LRO,
-              ImmutableList.of(LongRunningFlattenedAsync, LongRunningRequestAsync))
+              ImmutableList.of(
+                  LongRunningFlattenedAsync, LongRunningRequestAsync, LongRunningStartThenCancel))
           .put(
               JAVA,
               RpcType.PAGED_STREAMING,
@@ -156,25 +174,40 @@ public enum CallingForm {
           .put(JAVA, RpcType.SERVER_STREAMING, ImmutableList.of(CallableStreamingServer))
           .put(JAVA, RpcType.BIDI_STREAMING, ImmutableList.of(CallableStreamingBidi))
           .put(PYTHON, RpcType.UNARY, ImmutableList.of(Request))
-          .put(PYTHON, RpcType.LRO, ImmutableList.of(LongRunningPromise))
+          .put(
+              PYTHON, RpcType.LRO, ImmutableList.of(LongRunningPromise, LongRunningStartThenCancel))
           .put(PYTHON, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPagedAll, RequestPaged))
           .put(PYTHON, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
           .put(PYTHON, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
           .put(PYTHON, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
           .put(PHP, RpcType.UNARY, ImmutableList.of(Request))
-          .put(PHP, RpcType.LRO, ImmutableList.of(LongRunningRequest, LongRunningRequestAsync))
+          .put(
+              PHP,
+              RpcType.LRO,
+              ImmutableList.of(
+                  LongRunningRequest, LongRunningRequestAsync, LongRunningStartThenCancel))
           .put(PHP, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
           .put(PHP, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
           .put(PHP, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
           .put(PHP, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
           .put(NODEJS, RpcType.UNARY, ImmutableList.of(Request))
-          .put(NODEJS, RpcType.LRO, ImmutableList.of(LongRunningEventEmitter, LongRunningPromise))
+          .put(
+              NODEJS,
+              RpcType.LRO,
+              ImmutableList.of(
+                  LongRunningEventEmitter,
+                  LongRunningPromise,
+                  LongRunningStartThenCancel,
+                  LongRunningPromiseAwait))
           .put(NODEJS, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
           .put(NODEJS, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
           .put(NODEJS, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
           .put(NODEJS, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
           .put(RUBY, RpcType.UNARY, ImmutableList.of(Request))
-          .put(RUBY, RpcType.LRO, ImmutableList.of(LongRunningRequestAsync))
+          .put(
+              RUBY,
+              RpcType.LRO,
+              ImmutableList.of(LongRunningRequestAsync, LongRunningStartThenCancel))
           .put(RUBY, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPagedAll, RequestPaged))
           .put(RUBY, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
           .put(RUBY, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
@@ -238,9 +271,18 @@ public enum CallingForm {
   }
 
   public static List<CallingForm> getCallingForms(
-      MethodContext methodContext, TargetLanguage lang) {
+      MethodContext methodContext, TargetLanguage lang, SampleSpec.SampleType sampleType) {
     Preconditions.checkArgument(lang != TargetLanguage.GO, "Go is not supported for now.");
-    return CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
+
+    List<CallingForm> forms = null;
+    if (sampleType == SampleSpec.SampleType.IN_CODE) {
+      forms =
+          INCODE_CALLING_FORM_OVERRIDE_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
+    }
+    if (forms == null) {
+      forms = CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
+    }
+    return forms;
   }
 
   public static CallingForm getDefaultCallingForm(

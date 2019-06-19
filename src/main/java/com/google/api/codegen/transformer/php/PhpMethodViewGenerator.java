@@ -64,7 +64,10 @@ public class PhpMethodViewGenerator {
               methodContext,
               initContext,
               false,
-              Arrays.asList(CallingForm.LongRunningRequest, CallingForm.LongRunningRequestAsync));
+              methodContext
+                  .getNamer()
+                  .getCallingForms(
+                      methodContext, clientMethodTransformer.getSampleTransformer().sampleType()));
     } else {
       List<CallingForm> callingForms;
       GrpcStreamingType streamingType = methodContext.getMethodConfig().getGrpcStreamingType();

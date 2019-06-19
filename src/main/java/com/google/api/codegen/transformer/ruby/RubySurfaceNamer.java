@@ -23,6 +23,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -464,8 +465,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<CallingForm> getCallingForms(MethodContext context) {
-    return CallingForm.getCallingForms(context, TargetLanguage.RUBY);
+  public List<CallingForm> getCallingForms(
+      MethodContext context, SampleSpec.SampleType sampleType) {
+    return CallingForm.getCallingForms(context, TargetLanguage.RUBY, sampleType);
   }
 
   @Override

@@ -1320,6 +1320,34 @@ function sampleListShelves() {
 // tslint:disable-next-line:no-any
 
 sampleListShelves();
+============== file: samples/v1/test_long_running_start_then_cancel_calling_form.js ==============
+// DO NOT EDIT! This is a generated sample ("LongRunningStartThenCancel",  "test_long_running_start_then_cancel_calling_form")
+'use strict';
+
+// sample-metadata:
+//   title: kick off, retrieve name, and cancel
+//   description: Kick off the LRO and cancel it.
+//   usage: node samples/v1/test_long_running_start_then_cancel_calling_form.js
+
+// [START test_long_running_start_then_cancel_calling_form]
+
+const library = require('@google-cloud/library').v1;
+
+/** Kick off the LRO and cancel it. */
+async function sampleGetBigBook() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.bookPath('Novel', 'War and Peace');
+
+  // You'll want to save this for later to retrieve your completed operation.
+  console.log(`Operation Name: ${operation.name}`);
+  // Cancel the operation to avoid charges when testing.
+  await client.operationsClient.cancelOperation({name: operation.name});
+}
+
+// [END test_long_running_start_then_cancel_calling_form]
+// tslint:disable-next-line:no-any
+
+sampleGetBigBook();
 ============== file: samples/v1/test_resource_name_oneof.js ==============
 // DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof")
 'use strict';
