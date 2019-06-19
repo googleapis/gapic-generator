@@ -438,9 +438,9 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   /**
    * Returns the package name of standalone samples.
    *
-   * <p>Most of the time package names start with "com.google.". For example, if the package 
-   * name is "com.google.foo", the sample package name returned by this method will be
-   * "com.google.foo.examples.snippets". If the package name is "com.google.foo.bar", the sample 
+   * <p>Most of the time package names start with "com.google.". For example, if the package name is
+   * "com.google.foo", the sample package name returned by this method will be
+   * "com.google.foo.examples.snippets". If the package name is "com.google.foo.bar", the sample
    * package name returned by this method will be "com.google.foo.examples.bar.snippets".
    *
    * <p>We structure the example package name in this way because in the case of a package named
