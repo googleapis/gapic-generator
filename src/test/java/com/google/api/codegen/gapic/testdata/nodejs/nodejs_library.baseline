@@ -1,63 +1,6 @@
 ============== file: README.md ==============
-# Node.js Clients for Google Example Library API ([Production/Stable](https://github.com/GoogleCloudPlatform/google-cloud-node#versioning))
-
-[Google Example Library API][Product Documentation]:
-A simple Google Example Library API.
-- [Client Library Documentation][]
-- [Product Documentation][]
-
-## Quick Start
-In order to use this library, you first need to go through the following
-steps:
-
-1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-3. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/library/library.googleapis.com)
-4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/master/guides/authentication)
-
-### Installation
-```
-$ npm install --save @google-cloud/library
-```
-
-### Preview
-#### LibraryServiceClient
-```js
- const library = require('@google-cloud/library');
-
- const client = library.LibraryServiceClient({
-   // optional auth parameters.
- });
-
- const formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
- const rating = 'GOOD';
- const book = {
-   rating: rating,
- };
- const request = {
-   name: formattedName,
-   book: book,
- };
- client.updateBook(request)
-   .then(responses => {
-     const response = responses[0];
-     // doThingsWith(response)
-   })
-   .catch(err => {
-     console.error(err);
-   });
-```
-
-### Next Steps
-- Read the [Client Library Documentation][] for Google Example Library API
-  to see other available methods on the client.
-- Read the [Google Example Library API Product documentation][Product Documentation]
-  to learn more about the product and see How-to Guides.
-- View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-node/blob/master/README.md)
-  to see the full list of Cloud APIs that we cover.
-
-[Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-node/#/docs/library
-[Product Documentation]: https://cloud.google.com/library
+# Node.js Clients for Google Example Library API
+This is a generated README.md placeholder. Put your own documentation here.
 ============== file: package.json ==============
 {
   "repository": "GoogleCloudPlatform/google-cloud-node",
@@ -86,17 +29,16 @@ $ npm install --save @google-cloud/library
     "Google Example Library API"
   ],
   "dependencies": {
-    "google-gax": "^1.1.0",
     "google-some-other-package-v1": "^0.2.1",
     "lodash.union": "^4.6.0",
-    "protobufjs": "^6.8.0"
+    "protobufjs": "^6.8.0",
+    "google-gax": "^1.1.0"
   },
   "devDependencies": {
     "mocha": "^5.2.0",
     "through2": "^2.0.3"
   },
   "scripts": {
-    "publish-module": "node ../../scripts/publish.js library",
     "smoke-test": "mocha smoke-test/*.js --timeout 5000",
     "test": "mocha test/*.js"
   },
@@ -962,7 +904,8 @@ sampleGetBigNothing();
 
 // sample-metadata:
 //   title: test maps in response handling
-//   description:
+//   description: When there is a very long description for a sample file we can split
+//     the description into multiple lines and the samples will be just fine
 //   usage: node samples/v1/get_book_request_test_on_success_map.js
 
 // [START sample]
@@ -1377,13 +1320,111 @@ function sampleListShelves() {
 // tslint:disable-next-line:no-any
 
 sampleListShelves();
+============== file: samples/v1/test_float_and_int64.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_float_and_int64")
+'use strict';
+
+// sample-metadata:
+//   title:
+//   usage: node samples/v1/test_float_and_int64.js [--param_float 1.2345] [--param_long 67890]
+
+// [START test_float_and_int64]
+
+const library = require('@google-cloud/library').v1;
+
+function sampleTestOptionalRequiredFlatteningParams(paramFloat, paramLong) {
+  const client = new library.LibraryServiceClient();
+  // const paramFloat = 1.2345;
+  // const paramLong = 67890;
+  const requiredSingularInt32 = 0;
+  const requiredSingularDouble = 0.0;
+  const requiredSingularBool = false;
+  const requiredSingularEnum = 'ZERO';
+  const requiredSingularString = '';
+  const requiredSingularBytes = Buffer.from('');
+  const requiredSingularMessage = {};
+  const formattedRequiredSingularResourceName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+  const formattedRequiredSingularResourceNameCommon = client.projectPath('[PROJECT]');
+  const requiredSingularFixed32 = 0;
+  const requiredSingularFixed64 = 0;
+  const requiredRepeatedInt32 = [];
+  const requiredRepeatedInt64 = [];
+  const requiredRepeatedFloat = [];
+  const requiredRepeatedDouble = [];
+  const requiredRepeatedBool = [];
+  const requiredRepeatedEnum = [];
+  const requiredRepeatedString = [];
+  const requiredRepeatedBytes = [];
+  const requiredRepeatedMessage = [];
+  const formattedRequiredRepeatedResourceName = [];
+  const formattedRequiredRepeatedResourceNameOneof = [];
+  const formattedRequiredRepeatedResourceNameCommon = [];
+  const requiredRepeatedFixed32 = [];
+  const requiredRepeatedFixed64 = [];
+  const requiredMap = {};
+  const request = {
+    requiredSingularInt32: requiredSingularInt32,
+    requiredSingularInt64: paramLong,
+    requiredSingularFloat: paramFloat,
+    requiredSingularDouble: requiredSingularDouble,
+    requiredSingularBool: requiredSingularBool,
+    requiredSingularEnum: requiredSingularEnum,
+    requiredSingularString: requiredSingularString,
+    requiredSingularBytes: requiredSingularBytes,
+    requiredSingularMessage: requiredSingularMessage,
+    requiredSingularResourceName: formattedRequiredSingularResourceName,
+    requiredSingularResourceNameOneof: formattedRequiredSingularResourceNameOneof,
+    requiredSingularResourceNameCommon: formattedRequiredSingularResourceNameCommon,
+    requiredSingularFixed32: requiredSingularFixed32,
+    requiredSingularFixed64: requiredSingularFixed64,
+    requiredRepeatedInt32: requiredRepeatedInt32,
+    requiredRepeatedInt64: requiredRepeatedInt64,
+    requiredRepeatedFloat: requiredRepeatedFloat,
+    requiredRepeatedDouble: requiredRepeatedDouble,
+    requiredRepeatedBool: requiredRepeatedBool,
+    requiredRepeatedEnum: requiredRepeatedEnum,
+    requiredRepeatedString: requiredRepeatedString,
+    requiredRepeatedBytes: requiredRepeatedBytes,
+    requiredRepeatedMessage: requiredRepeatedMessage,
+    requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
+    requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+    requiredRepeatedResourceNameCommon: formattedRequiredRepeatedResourceNameCommon,
+    requiredRepeatedFixed32: requiredRepeatedFixed32,
+    requiredRepeatedFixed64: requiredRepeatedFixed64,
+    requiredMap: requiredMap,
+  };
+  client.testOptionalRequiredFlatteningParams(request)
+    .then(responses => {
+      const response = responses[0];
+      console.log(response);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+// [END test_float_and_int64]
+// tslint:disable-next-line:no-any
+
+const argv = require(`yargs`)
+  .option('param_float', {
+    default: 1.2345,
+    number: true
+  })
+  .option('param_long', {
+    default: 67890,
+    number: true
+  })
+  .argv;
+
+sampleTestOptionalRequiredFlatteningParams(argv.param_float, argv.param_long);
 ============== file: samples/v1/test_resource_name_oneof.js ==============
 // DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof")
 'use strict';
 
 // sample-metadata:
 //   title:
-//   description:
 //   usage: node samples/v1/test_resource_name_oneof.js
 
 // [START test_resource_name_oneof]
@@ -1413,7 +1454,6 @@ sampleGetBookFromAbsolutelyAnywhere();
 
 // sample-metadata:
 //   title:
-//   description:
 //   usage: node samples/v1/test_resource_name_oneof_2.js
 
 // [START test_resource_name_oneof_2]
@@ -1437,6 +1477,48 @@ function sampleGetBookFromAbsolutelyAnywhere() {
 // tslint:disable-next-line:no-any
 
 sampleGetBookFromAbsolutelyAnywhere();
+============== file: samples/v1/test_setting_up_empty_objects_in_request.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_setting_up_empty_objects_in_request")
+'use strict';
+
+// sample-metadata:
+//   title: test_setting_up_empty_objects_in_request
+//   description: Test setting up empty objects in the request objects.
+//   usage: node samples/v1/test_setting_up_empty_objects_in_request.js
+
+// [START test_setting_up_empty_objects_in_request]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test setting up empty objects in the request objects. */
+function sampleGetShelf() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.shelfPath('my-shelf');
+  const options = '';
+
+  // we can set up this empty nested object now
+  const message = {};
+  const stringBuilder = {};
+  const request = {
+    name: formattedName,
+    options: options,
+    message: message,
+    stringBuilder: stringBuilder,
+  };
+  client.getShelf(request)
+    .then(responses => {
+      const response = responses[0];
+      console.log(`Shelf found.`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+// [END test_setting_up_empty_objects_in_request]
+// tslint:disable-next-line:no-any
+
+sampleGetShelf();
 ============== file: samples/v1/this_tag_should_be_the_name_of_the_file.js ==============
 // DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap")
 'use strict';

@@ -97,7 +97,8 @@ public class PackageMetadataTransformer {
    */
   public ReleaseLevel getMergedReleaseLevel(
       PackageMetadataConfig packageConfig, GapicProductConfig productConfig) {
-    return productConfig.getReleaseLevel() == ReleaseLevel.UNSET_RELEASE_LEVEL
+    return packageConfig != null
+            && productConfig.getReleaseLevel() == ReleaseLevel.UNSET_RELEASE_LEVEL
         ? packageConfig.releaseLevel()
         : productConfig.getReleaseLevel();
   }

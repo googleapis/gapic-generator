@@ -11,7 +11,9 @@
     // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
     // sample-metadata:
     //   title: {@sample.title}
-    //   description: {@sample.description}
+    @if sample.descriptionLine
+      {@descriptionLines("//", sample.descriptionLine, sample.additionalDescriptionLines)}
+    @end
     @if sample.sampleInitCode.argDefaultParams 
       //   usage: gradle run -PmainClass={@sampleFile.fileHeader.examplePackageName}.{@sampleFile.classView.name} [--args='{@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}']
     @else
@@ -303,6 +305,11 @@
         float {@param.identifier} =
             cl.getOptionValue("{@param.cliFlagName}") != null
                 ? Float.parseFloat(cl.getOptionValue("{@param.cliFlagName}"))
+                : {@renderInitValue(param.initValue)};
+      @case "long"
+        long {@param.identifier} =
+            cl.getOptionValue("{@param.cliFlagName}") != null
+                ? Long.parseLong(cl.getOptionValue("{@param.cliFlagName}"))
                 : {@renderInitValue(param.initValue)};
       @default
         $unhandledCase: {@param.typeName}$

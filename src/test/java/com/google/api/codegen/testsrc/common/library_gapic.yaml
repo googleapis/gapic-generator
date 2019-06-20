@@ -150,10 +150,26 @@ interfaces:
       - print:
           - "The theme of the shelf is: %s"
           - $resp.theme
+    - id: test_setting_up_empty_objects_in_request
+      title: test_setting_up_empty_objects_in_request
+      description: "Test setting up empty objects in the request objects."
+      parameters:
+        defaults:
+        - name%shelf_id="my-shelf"
+        - message={}
+        - string_builder={}
+        attributes:
+        - parameter: message
+          description: "we can set up this empty nested object now"
+      on_success:
+      - print:
+        - "Shelf found."
     samples:
       standalone:
       - region_tag: sample_get_shelf
         value_sets: test_default_calling_form_unary
+      - region_tag: test_setting_up_empty_objects_in_request
+        value_sets: test_setting_up_empty_objects_in_request
   - name: ListShelves
     page_streaming:
       request:
@@ -420,6 +436,9 @@ interfaces:
         - name="Unreal book"
     - id: test_on_success_map
       title: "test maps in response handling"
+      description: |
+        When there is a very long description for a sample file we can split
+        the description into multiple lines and the samples will be just fine
       parameters:
         defaults:
         - name="test_on_success_map"
@@ -1164,6 +1183,21 @@ interfaces:
       optional_repeated_resource_name_oneof: book_oneof
       optional_repeated_resource_name_common: project
     timeout_millis: 60000
+    samples:
+      standalone:
+      - value_sets: [test_float_and_int64]
+        region_tag: test_float_and_int64
+    sample_value_sets:
+    - id: test_float_and_int64
+      parameters:
+        defaults: 
+        - required_singular_float=1.2345
+        - required_singular_int64=67890
+        attributes:
+        - parameter: required_singular_float
+          sample_argument_name: param_float
+        - parameter: required_singular_int64
+          sample_argument_name: param_long
   # Intentionally leave out PrivateListShelves method from GAPIC config.
 resource_name_generation:
 - message_name: Book

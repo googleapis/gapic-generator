@@ -19,7 +19,6 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.packagegen.PackagingArtifactType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
 import java.util.List;
@@ -268,26 +267,38 @@ public abstract class PackageMetadataConfig {
         .licenseName(apiDefaultsConfig.licenseName());
 
     // packaging config
-    builder
-        .packageName(packagingConfig.packageName())
-        .shortName(packagingConfig.apiName())
-        .artifactType(packagingConfig.artifactType())
-        .apiVersion(packagingConfig.apiVersion())
-        .protoPath(packagingConfig.protoPath());
+    builder.releaseLevel(apiDefaultsConfig.releaseLevel());
+    if (packagingConfig != null) {
+      builder
+          .packageName(packagingConfig.packageName())
+          .shortName(packagingConfig.apiName())
+          .artifactType(packagingConfig.artifactType())
+          .apiVersion(packagingConfig.apiVersion())
+          .protoPath(packagingConfig.protoPath());
 
-    // config depending on multiple sources
-    Map<TargetLanguage, Map<String, VersionBound>> protoPackageDependencies =
-        createProtoPackageDependencies(
-            packagingConfig.protoPackageDependencies(), dependenciesConfig);
-    builder.protoPackageDependencies(protoPackageDependencies);
+      // config depending on multiple sources
+      Map<TargetLanguage, Map<String, VersionBound>> protoPackageDependencies =
+          createProtoPackageDependencies(
+              packagingConfig.protoPackageDependencies(), dependenciesConfig);
+      builder.protoPackageDependencies(protoPackageDependencies);
 
-    Map<TargetLanguage, Map<String, VersionBound>> protoPackageTestDependencies =
-        createProtoPackageDependencies(
-            packagingConfig.protoPackageTestDependencies(), dependenciesConfig);
-    builder.protoPackageTestDependencies(protoPackageTestDependencies);
-
-    builder.releaseLevel(
-        MoreObjects.firstNonNull(packagingConfig.releaseLevel(), apiDefaultsConfig.releaseLevel()));
+      Map<TargetLanguage, Map<String, VersionBound>> protoPackageTestDependencies =
+          createProtoPackageDependencies(
+              packagingConfig.protoPackageTestDependencies(), dependenciesConfig);
+      builder.protoPackageTestDependencies(protoPackageTestDependencies);
+      if (packagingConfig.releaseLevel() != null) {
+        builder.releaseLevel(packagingConfig.releaseLevel());
+      }
+    } else {
+      builder
+          .packageName("")
+          .shortName("")
+          .artifactType(PackagingArtifactType.GAPIC) // the most likely case
+          .apiVersion("")
+          .protoPath("")
+          .protoPackageDependencies(ImmutableMap.of())
+          .protoPackageTestDependencies(ImmutableMap.of());
+    }
 
     return builder.build();
   }
