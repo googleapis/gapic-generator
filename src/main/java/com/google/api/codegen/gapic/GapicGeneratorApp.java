@@ -24,6 +24,7 @@ import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
+import com.google.api.codegen.samplegen.v1.SampleConfigProto;
 import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.ConfigSource;
@@ -73,7 +74,14 @@ public class GapicGeneratorApp extends ToolDriverBase {
       ToolOptions.createOption(
           new TypeLiteral<List<String>>() {},
           "config_files",
-          "The list of YAML configuration files for the code generator.",
+          "The list of library configuration YAML files for the code generator.",
+          ImmutableList.of());
+
+  public static final Option<List<String>> SAMPLE_CONFIG_FILES =
+      ToolOptions.createOption(
+          new TypeLiteral<List<String>>() {},
+          "sample_config_files",
+          "The list of sample configuration YAML files for the code generator.",
           ImmutableList.of());
 
   public static final Option<String> PACKAGE_CONFIG2_FILE =
@@ -121,12 +129,16 @@ public class GapicGeneratorApp extends ToolDriverBase {
 
     String protoPackage = Strings.emptyToNull(options.get(PROTO_PACKAGE));
 
-    // Read the YAML config, it it was given, and convert it to proto.
+    // Read the GAPIC config, if it was given, and convert it to proto.
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
     ConfigProto configProto = null;
     if (configFileNames.size() > 0) {
       // Read the YAML config and convert it to proto.
-      ConfigSource configSource = loadConfigFromFiles(configFileNames);
+      ConfigSource configSource =
+          loadConfigFromFiles(
+              configFileNames,
+              ConfigProto.getDescriptor().getFullName(),
+              ConfigProto.getDefaultInstance());
       if (configSource == null) {
         return;
       }
@@ -135,6 +147,22 @@ public class GapicGeneratorApp extends ToolDriverBase {
       if (configProto == null) {
         return;
       }
+    }
+
+    // Read the sample configs, if they are given, and convert them to protos.
+    SampleConfigProto sampleConfigProto = null;
+    List<String> sampleConfigFileNames = options.get(SAMPLE_CONFIG_FILES);
+    if (sampleConfigFileNames.size() > 0) {
+      ConfigSource configSource =
+          loadConfigFromFiles(
+              sampleConfigFileNames,
+              SampleConfigProto.getDescriptor().getFullName(),
+              SampleConfigProto.getDefaultInstance());
+
+      // TODO(hzyi): Verify this works for repeated fields as well
+      // TODO(hzyi): Allow users to put arbitrary top-level directives not
+      // used by gapic-generator
+      sampleConfigProto = (SampleConfigProto) configSource.getConfig();
     }
 
     model.establishStage(Merged.KEY);
@@ -168,14 +196,18 @@ public class GapicGeneratorApp extends ToolDriverBase {
     String clientPackage = Strings.emptyToNull(options.get(CLIENT_PACKAGE));
 
     GapicProductConfig productConfig =
-        GapicProductConfig.create(model, configProto, protoPackage, clientPackage, language);
+        GapicProductConfig.create(
+            model, configProto, sampleConfigProto, protoPackage, clientPackage, language);
     if (productConfig == null) {
       ToolUtil.reportDiags(model.getDiagReporter().getDiagCollector(), true);
       return;
     }
 
     ArtifactFlags artifactFlags =
-        new ArtifactFlags(options.get(ENABLED_ARTIFACTS), artifactType, options.get(DEV_SAMPLES));
+        new ArtifactFlags(
+            options.get(ENABLED_ARTIFACTS),
+            artifactType,
+            options.get(DEV_SAMPLES) && sampleConfigProto != null);
     List<CodeGenerator<?>> generators =
         GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
     ImmutableMap.Builder<String, GeneratedResult<?>> generatedResults = ImmutableMap.builder();
@@ -190,14 +222,14 @@ public class GapicGeneratorApp extends ToolDriverBase {
         generatedResults.build(), model.getDiagReporter().getDiagCollector());
   }
 
-  private ConfigSource loadConfigFromFiles(List<String> configFileNames) {
+  private ConfigSource loadConfigFromFiles(
+      List<String> configFileNames, String configClassName, Message defaultConfigInstance) {
     List<File> configFiles = pathsToFiles(configFileNames);
     if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
       return null;
     }
     ImmutableMap<String, Message> supportedConfigTypes =
-        ImmutableMap.of(
-            ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
+        ImmutableMap.of(configClassName, defaultConfigInstance);
     return MultiYamlReader.read(
         model.getDiagReporter().getDiagCollector(), configFiles, supportedConfigTypes);
   }

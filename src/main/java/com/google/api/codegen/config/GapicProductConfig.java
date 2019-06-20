@@ -25,6 +25,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
+import com.google.api.codegen.samplegen.v1.SampleConfigProto;
 import com.google.api.codegen.util.ConfigVersionValidator;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
@@ -97,6 +98,9 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public abstract Boolean enableStringFormattingFunctionsOverride();
 
+  @Nullable
+  public abstract ImmutableList<SampleConfig> getSampleConfigs();
+
   public GapicProductConfig withPackageName(String packageName) {
     return new AutoValue_GapicProductConfig(
         getInterfaceConfigMap(),
@@ -111,13 +115,14 @@ public abstract class GapicProductConfig implements ProductConfig {
         getTransportProtocol(),
         getDefaultResourceNameFieldConfigMap(),
         getConfigSchemaVersion(),
-        enableStringFormattingFunctionsOverride());
+        enableStringFormattingFunctionsOverride(),
+        getSampleConfigs());
   }
 
   @Nullable
   public static GapicProductConfig create(
       Model model, ConfigProto configProto, TargetLanguage language) {
-    return create(model, configProto, null, null, language);
+    return create(model, configProto, null, null, null, language);
   }
 
   /**
@@ -126,7 +131,8 @@ public abstract class GapicProductConfig implements ProductConfig {
    * returned, and diagnostics are reported to the model.
    *
    * @param model The protobuf model for which we are creating a config.
-   * @param configProto The parsed set of config files from input
+   * @param configProto The parsed set of library config files from input
+   * @param sampleConfigProto The parsed set of sample config files from the input
    * @param protoPackage The source proto package, as opposed to imported protos, that we will
    *     generate clients for.
    * @param clientPackage The desired package name for the generated client.
@@ -136,6 +142,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   public static GapicProductConfig create(
       Model model,
       @Nullable ConfigProto configProto,
+      @Nullable SampleConfigProto sampleConfigProto,
       @Nullable String protoPackage,
       @Nullable String clientPackage,
       TargetLanguage language) {
@@ -328,6 +335,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (interfaceConfigMap == null || copyrightLines == null || licenseLines == null) {
       return null;
     }
+
     return new AutoValue_GapicProductConfig(
         interfaceConfigMap,
         clientPackageName,
@@ -341,7 +349,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion,
-        enableStringFormatFunctionsOverride);
+        enableStringFormatFunctionsOverride,
+        SampleConfig.createSampleConfigs(sampleConfigProto, interfaceConfigMap));
   }
 
   public static GapicProductConfig create(
@@ -414,7 +423,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion,
-        enableStringFormatFunctionsOverride);
+        enableStringFormatFunctionsOverride,
+        ImmutableList.of());
   }
 
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
@@ -455,7 +465,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         TransportProtocol.GRPC,
         createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),
         configSchemaVersion,
-        false);
+        false,
+        ImmutableList.of());
   }
 
   /** Return the list of information about clients to be generated. */
