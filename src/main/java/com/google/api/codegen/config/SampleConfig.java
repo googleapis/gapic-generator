@@ -38,7 +38,7 @@ import javax.annotation.Nullable;
 // the model/config/context style used by gapic-generator, we will reuse this class to
 // hold all the information derived from sample yaml configs.
 //
-// (TODO: hzyi) In order to have a smooth transition, all new fields added are marked as Nullable to
+// TODO(hzyi): In order to have a smooth transition, all new fields added are marked as Nullable to
 // not break existing code. Once we finish plumbing the pipeline to take the new configuration for
 // samples, we can remove them.
 @AutoValue
@@ -151,7 +151,7 @@ public abstract class SampleConfig {
         "Found duplicate IDs: %s",
         duplicateIds.stream().collect(Collectors.joining(", ")));
 
-    // Next, flatten the calling pattern list so have one per sample
+    // Next, flatten the calling pattern list so we have one per sample
     List<SampleSpecProto> flattenedSampleSpecs = new ArrayList<>();
     for (SampleSpecProto spec : sampleSpecs) {
       if (spec.getCallingPatternsList().isEmpty()) {
