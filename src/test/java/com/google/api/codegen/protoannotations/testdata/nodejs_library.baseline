@@ -1326,23 +1326,23 @@ function sampleListShelves() {
 // tslint:disable-next-line:no-any
 
 sampleListShelves();
-============== file: samples/v1/test_float.js ==============
-// DO NOT EDIT! This is a generated sample ("Request",  "test_float")
+============== file: samples/v1/test_float_and_int64.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_float_and_int64")
 'use strict';
 
 // sample-metadata:
 //   title:
-//   usage: node samples/v1/test_float.js [--param_float 1.2345]
+//   usage: node samples/v1/test_float_and_int64.js [--param_float 1.2345] [--param_long 67890]
 
-// [START test_float]
+// [START test_float_and_int64]
 
 const library = require('@google-cloud/library').v1;
 
-function sampleTestOptionalRequiredFlatteningParams(paramFloat) {
+function sampleTestOptionalRequiredFlatteningParams(paramFloat, paramLong) {
   const client = new library.LibraryServiceClient();
   // const paramFloat = 1.2345;
+  // const paramLong = 67890;
   const requiredSingularInt32 = 0;
-  const requiredSingularInt64 = 0;
   const requiredSingularDouble = 0.0;
   const requiredSingularBool = false;
   const requiredSingularEnum = 'ZERO';
@@ -1371,7 +1371,7 @@ function sampleTestOptionalRequiredFlatteningParams(paramFloat) {
   const requiredMap = {};
   const request = {
     requiredSingularInt32: requiredSingularInt32,
-    requiredSingularInt64: requiredSingularInt64,
+    requiredSingularInt64: paramLong,
     requiredSingularFloat: paramFloat,
     requiredSingularDouble: requiredSingularDouble,
     requiredSingularBool: requiredSingularBool,
@@ -1410,7 +1410,7 @@ function sampleTestOptionalRequiredFlatteningParams(paramFloat) {
     });
 }
 
-// [END test_float]
+// [END test_float_and_int64]
 // tslint:disable-next-line:no-any
 
 const argv = require(`yargs`)
@@ -1418,9 +1418,13 @@ const argv = require(`yargs`)
     default: 1.2345,
     number: true
   })
+  .option('param_long', {
+    default: 67890,
+    number: true
+  })
   .argv;
 
-sampleTestOptionalRequiredFlatteningParams(argv.param_float);
+sampleTestOptionalRequiredFlatteningParams(argv.param_float, argv.param_long);
 ============== file: samples/v1/test_resource_name_oneof.js ==============
 // DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof")
 'use strict';
@@ -1479,6 +1483,48 @@ function sampleGetBookFromAbsolutelyAnywhere() {
 // tslint:disable-next-line:no-any
 
 sampleGetBookFromAbsolutelyAnywhere();
+============== file: samples/v1/test_setting_up_empty_objects_in_request.js ==============
+// DO NOT EDIT! This is a generated sample ("Request",  "test_setting_up_empty_objects_in_request")
+'use strict';
+
+// sample-metadata:
+//   title: test_setting_up_empty_objects_in_request
+//   description: Test setting up empty objects in the request objects.
+//   usage: node samples/v1/test_setting_up_empty_objects_in_request.js
+
+// [START test_setting_up_empty_objects_in_request]
+
+const library = require('@google-cloud/library').v1;
+
+/** Test setting up empty objects in the request objects. */
+function sampleGetShelf() {
+  const client = new library.LibraryServiceClient();
+  const formattedName = client.shelfPath('my-shelf');
+  const options = '';
+
+  // we can set up this empty nested object now
+  const message = {};
+  const stringBuilder = {};
+  const request = {
+    name: formattedName,
+    options: options,
+    message: message,
+    stringBuilder: stringBuilder,
+  };
+  client.getShelf(request)
+    .then(responses => {
+      const response = responses[0];
+      console.log(`Shelf found.`);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+// [END test_setting_up_empty_objects_in_request]
+// tslint:disable-next-line:no-any
+
+sampleGetShelf();
 ============== file: samples/v1/this_tag_should_be_the_name_of_the_file.js ==============
 // DO NOT EDIT! This is a generated sample ("LongRunningPromiseAwait",  "wap")
 'use strict';

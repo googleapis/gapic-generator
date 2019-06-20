@@ -101,9 +101,6 @@ compileJava.options.encoding = 'UTF-8'
 javadoc.options.encoding = 'UTF-8'
 
 dependencies {
-  compile 'com.google.api:gax:1.0.0'
-  compile 'com.google.api:gax-grpc:1.0.0'
-  compile 'io.grpc:grpc-netty-shaded:1.9.0'
   compile 'com.google.api:api-common:0.0.2'
   compile 'commons-cli:commons-cli:1.4'
   compile project(':gapic-google-cloud-library-v1')
@@ -121,7 +118,7 @@ clean {
   delete 'all-jars'
 }
 
-task run {
+run {
   mainClassName = getProperty('mainClass')
 }
 
@@ -3525,7 +3522,7 @@ public class TestDefaultCallingFormForPaging {
     sampleListShelves();
   }
 }
-============== file: samples/src/main/java/com/google/example/examples/library/v1/TestFloat.java ==============
+============== file: samples/src/main/java/com/google/example/examples/library/v1/TestFloatAndInt64.java ==============
 /*
  * Copyright 2019 Google LLC
  *
@@ -3541,10 +3538,10 @@ public class TestDefaultCallingFormForPaging {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// DO NOT EDIT! This is a generated sample ("Request",  "test_float")
+// DO NOT EDIT! This is a generated sample ("Request",  "test_float_and_int64")
 // sample-metadata:
 //   title:
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.TestFloat [--args='[--param_float 1.2345]']
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.TestFloatAndInt64 [--args='[--param_float 1.2345] [--param_long 67890]']
 
 package com.google.example.examples.library.v1;
 
@@ -3564,8 +3561,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestFloat {
-  // [START test_float]
+public class TestFloatAndInt64 {
+  // [START test_float_and_int64]
   /*
    * Please include the following imports to run this sample.
    *
@@ -3582,11 +3579,11 @@ public class TestFloat {
    * import java.util.Map;
    */
 
-  public static void sampleTestOptionalRequiredFlatteningParams(float paramFloat) {
+  public static void sampleTestOptionalRequiredFlatteningParams(float paramFloat, long paramLong) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       // paramFloat = 1.2345F;
+      // paramLong = 67890L;
       int requiredSingularInt32 = 0;
-      long requiredSingularInt64 = 0L;
       double requiredSingularDouble = 0.0;
       boolean requiredSingularBool = false;
       TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO;
@@ -3615,7 +3612,7 @@ public class TestFloat {
       Map<Integer, String> requiredMap = new HashMap<>();
       TestOptionalRequiredFlatteningParamsRequest request = TestOptionalRequiredFlatteningParamsRequest.newBuilder()
         .setRequiredSingularInt32(requiredSingularInt32)
-        .setRequiredSingularInt64(requiredSingularInt64)
+        .setRequiredSingularInt64(paramLong)
         .setRequiredSingularFloat(paramFloat)
         .setRequiredSingularDouble(requiredSingularDouble)
         .setRequiredSingularBool(requiredSingularBool)
@@ -3650,7 +3647,7 @@ public class TestFloat {
       System.err.println("Failed to create the client due to: " + exception);
     }
   }
-  // [END test_float]
+  // [END test_float_and_int64]
 
   public static void main(String[] args) throws Exception {
     Options options = new Options();
@@ -3660,14 +3657,24 @@ public class TestFloat {
           .hasArg(true)
           .longOpt("param_float")
           .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("param_long")
+          .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     float paramFloat =
         cl.getOptionValue("param_float") != null
             ? Float.parseFloat(cl.getOptionValue("param_float"))
             : 1.2345F;
+    long paramLong =
+        cl.getOptionValue("param_long") != null
+            ? Long.parseLong(cl.getOptionValue("param_long"))
+            : 67890L;
 
-    sampleTestOptionalRequiredFlatteningParams(paramFloat);
+    sampleTestOptionalRequiredFlatteningParams(paramFloat, paramLong);
   }
 }
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/TestResourceNameOneof.java ==============
@@ -3786,6 +3793,75 @@ public class TestResourceNameOneof2 {
 
   public static void main(String[] args) {
     sampleGetBookFromAbsolutelyAnywhere();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/TestSettingUpEmptyObjectsInRequest.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Request",  "test_setting_up_empty_objects_in_request")
+// sample-metadata:
+//   title: test_setting_up_empty_objects_in_request
+//   description: Test setting up empty objects in the request objects.
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.TestSettingUpEmptyObjectsInRequest
+
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.GetShelfRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfName;
+import com.google.example.library.v1.SomeMessage;
+
+public class TestSettingUpEmptyObjectsInRequest {
+  // [START test_setting_up_empty_objects_in_request]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.GetShelfRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.Shelf;
+   * import com.google.example.library.v1.ShelfName;
+   * import com.google.example.library.v1.SomeMessage;
+   */
+
+  /** Test setting up empty objects in the request objects. */
+  public static void sampleGetShelf() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("my-shelf");
+      String options = "";
+
+      // we can set up this empty nested object now
+      SomeMessage message = SomeMessage.newBuilder().build();
+      com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
+      GetShelfRequest request = GetShelfRequest.newBuilder()
+        .setName(name.toString())
+        .setOptions(options)
+        .setMessage(message)
+        .setStringBuilder(stringBuilder)
+        .build();
+      Shelf response = libraryClient.getShelf(request);
+      System.out.println("Shelf found.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END test_setting_up_empty_objects_in_request]
+
+  public static void main(String[] args) {
+    sampleGetShelf();
   }
 }
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/ThisTagShouldBeTheNameOfTheFile.java ==============
