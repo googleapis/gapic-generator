@@ -6300,6 +6300,88 @@ if $PROGRAM_NAME == __FILE__
   sample_list_shelves
 end
 
+============== file: samples/v1/test_float_and_int64.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_float_and_int64")
+
+# sample-metadata
+#   title:
+#   bundle exec ruby samples/v1/test_float_and_int64.rb [--param_float 1.2345] [--param_long 67890]
+
+require "library"
+
+# [START test_float_and_int64]
+
+def sample_test_optional_required_flattening_params param_float, param_long
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  # param_float = 1.2345
+  # param_long = 67890
+  required_singular_int32 = 0
+  required_singular_double = 0.0
+  required_singular_bool = false
+  required_singular_enum = :ZERO
+  required_singular_string = ''
+  required_singular_bytes = ''
+  required_singular_message = {}
+  formatted_required_singular_resource_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_required_singular_resource_name_oneof = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_required_singular_resource_name_common = library_client.class.project_path("[PROJECT]")
+  required_singular_fixed32 = 0
+  required_singular_fixed64 = 0
+  required_repeated_int32 = []
+  required_repeated_int64 = []
+  required_repeated_float = []
+  required_repeated_double = []
+  required_repeated_bool = []
+  required_repeated_enum = []
+  required_repeated_string = []
+  required_repeated_bytes = []
+  required_repeated_message = []
+  formatted_required_repeated_resource_name = []
+  formatted_required_repeated_resource_name_oneof = []
+  formatted_required_repeated_resource_name_common = []
+  required_repeated_fixed32 = []
+  required_repeated_fixed64 = []
+  required_map = {}
+
+  response = library_client.test_optional_required_flattening_params(required_singular_int32, param_long, param_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, formatted_required_singular_resource_name, formatted_required_singular_resource_name_oneof, formatted_required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, formatted_required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
+  puts response.inspect
+end
+# [END test_float_and_int64]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+
+  param_float = 1.2345
+  param_long = 67890
+
+  ARGV.options do |opts|
+    opts.on("--param_float=val") { |val| param_float = val }
+    opts.on("--param_long=val") { |val| param_long = val }
+    opts.parse!
+  end
+
+
+  sample_test_optional_required_flattening_params(param_float, param_long)
+end
+
 ============== file: samples/v1/test_resource_name_oneof.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6384,6 +6466,56 @@ require "optparse"
 
 if $PROGRAM_NAME == __FILE__
   sample_get_book_from_absolutely_anywhere
+end
+
+============== file: samples/v1/test_setting_up_empty_objects_in_request.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_setting_up_empty_objects_in_request")
+
+# sample-metadata
+#   title: test_setting_up_empty_objects_in_request
+#   description: Test setting up empty objects in the request objects.
+#   bundle exec ruby samples/v1/test_setting_up_empty_objects_in_request.rb
+
+require "library"
+
+# [START test_setting_up_empty_objects_in_request]
+
+# Test setting up empty objects in the request objects.
+def sample_get_shelf
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  formatted_name = library_client.class.shelf_path("my-shelf")
+  options_ = ''
+
+  # we can set up this empty nested object now
+  message = {}
+  string_builder = {}
+
+  response = library_client.get_shelf(formatted_name, options_)
+  puts "Shelf found."
+end
+# [END test_setting_up_empty_objects_in_request]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+  sample_get_shelf
 end
 
 ============== file: samples/v1/this_tag_should_be_the_name_of_the_file.rb ==============

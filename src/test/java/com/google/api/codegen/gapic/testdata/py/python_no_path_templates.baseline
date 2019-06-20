@@ -1121,7 +1121,8 @@ class NoTemplatesApiServiceGrpcTransport(object):
     def create_channel(
                 cls,
                 address='no-path-templates.googleapis.com:443',
-                credentials=None):
+                credentials=None,
+                **kwargs):
         """Create and return a gRPC channel object.
 
         Args:
@@ -1131,6 +1132,8 @@ class NoTemplatesApiServiceGrpcTransport(object):
                 credentials identify this application to the service. If
                 none are specified, the client will attempt to ascertain
                 the credentials from the environment.
+            kwargs (dict): Keyword arguments, which are passed to the
+                channel creation.
 
         Returns:
             grpc.Channel: A gRPC channel object.
@@ -1139,6 +1142,7 @@ class NoTemplatesApiServiceGrpcTransport(object):
             address,
             credentials=credentials,
             scopes=cls._OAUTH_SCOPES,
+            **kwargs
         )
 
     @property
