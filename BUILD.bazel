@@ -66,10 +66,17 @@ proto_library(
     deps = ["@com_google_protobuf//:wrappers_proto"],
 )
 
+proto_library(
+    name = "sample_config_proto",
+    srcs = ["src/main/proto/com/google/api/codegen/samplegen/v1/sample_config_v1.proto"],
+    deps = ["@com_google_protobuf//:wrappers_proto"],
+)
+
 java_proto_library(
     name = "config_java_proto",
     deps = [":config_proto",
-            ":config_v2_proto"],
+            ":config_v2_proto",
+	    ":sample_config_proto"],
 )
 
 java_binary(
