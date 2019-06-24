@@ -449,7 +449,7 @@
 
 @private mergeMetadata(method)
     @if method.headerRequestParams
-        md := metadata.Pairs("x-goog-request-params", {@headerRequestParamString(method.headerRequestParams)})
+        md := metadata.Pairs("x-goog-request-params", url.QueryEscape({@headerRequestParamString(method.headerRequestParams)}))
         ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     @else
         ctx = insertMetadata(ctx, c.xGoogMetadata)
