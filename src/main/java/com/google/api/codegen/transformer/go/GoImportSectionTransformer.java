@@ -57,11 +57,6 @@ public class GoImportSectionTransformer implements ImportSectionTransformer {
   }
 
   private boolean isStandardImport(String importPath) {
-    // TODO(pongad): Some packages in standard library have slashes,
-    // we might have to special case them.
-    if (importPath.equals("net/http")) {
-      return true;
-    }
-    return !importPath.contains("/");
+    return !importPath.contains(".");
   }
 }
