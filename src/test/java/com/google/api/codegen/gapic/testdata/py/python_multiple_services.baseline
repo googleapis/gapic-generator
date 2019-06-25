@@ -1245,7 +1245,7 @@ class IncrementerServiceClient(object):
         # deserialization and actually sending data to the service.
         if transport:
             if callable(transport):
-                self.transport = transport()
+                self.transport = transport(
                     credentials=credentials,
                     default_class=incrementer_service_grpc_transport.IncrementerServiceGrpcTransport,
                     address=api_endpoint,
