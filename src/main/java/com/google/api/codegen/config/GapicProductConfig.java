@@ -503,7 +503,7 @@ public abstract class GapicProductConfig implements ProductConfig {
             .collect(Collectors.toMap(InterfaceConfigProto::getName, Function.identity())));
   }
 
-  private static List<InterfaceConfigProto> injectRetryPolicyConfig(
+  static List<InterfaceConfigProto> injectRetryPolicyConfig(
       ServiceConfig config,
       ImmutableMap<String, Interface> protoInterfaces,
       List<InterfaceConfigProto> gapicInterfaces) {
@@ -572,7 +572,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         .collect(Collectors.toList());
   }
 
-  private static void addRetryConfigIfAbsent(
+  static void addRetryConfigIfAbsent(
       InterfaceConfigProto.Builder ib,
       RetryCodesDefinitionProto.Builder rcb,
       RetryParamsDefinitionProto.Builder rpb) {
@@ -603,7 +603,7 @@ public abstract class GapicProductConfig implements ProductConfig {
    * finds the named MethodConfigProto, creates one if absent in the GAPIC interface, and sets retry
    * config
    */
-  private static void findAndSetRetry(
+  static void findAndSetRetry(
       InterfaceConfigProto.Builder ib, boolean overwrite, String method, String rc, String rp) {
     int i = findMethod(ib, method);
 
@@ -631,7 +631,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   /** returns the index of the named MethodConfigProto in the GAPIC interface and -1 if not found */
-  private static int findMethod(InterfaceConfigProto.Builder service, String method) {
+  static int findMethod(InterfaceConfigProto.Builder service, String method) {
     List<MethodConfigProto> methods = service.getMethodsList();
     for (int ndx = 0; ndx < methods.size(); ndx++) {
       if (methods.get(ndx).getName().equals(method)) {

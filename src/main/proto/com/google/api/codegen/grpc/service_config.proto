@@ -1,6 +1,16 @@
+// A ServiceConfig is supplied when a service is deployed. It mostly contains
+// parameters for how clients that connect to the service should behave (for
+// example, the load balancing policy to use to pick between service replicas).
+//
+// The configuration options provided here act as overrides to automatically
+// chosen option values. Service owners should be conservative in specifying
+// options as the system is likely to choose better values for these options in
+// the vast majority of cases. In other words, please specify a configuration
+// option only if you really have to, and avoid copy-paste inclusion of configs.
+
 syntax = "proto3";
 
-package com.google.api.codegen;
+package com.google.api.codegen.grpc;
 
 import "google/protobuf/duration.proto";
 import "google/protobuf/wrappers.proto";
@@ -136,7 +146,7 @@ message MethodConfig {
     // RPCs will continue. Otherwise, outstanding requests will be canceled and
     // the error returned to the client application layer.
     //
-    // This field is required and must be non-empty.
+    // This field is optional.
     repeated .google.rpc.Code non_fatal_status_codes = 3;
   }
 
@@ -147,9 +157,147 @@ message MethodConfig {
     HedgingPolicy hedging_policy = 7;
   }
 }
+
+// Configuration for pick_first LB policy.
+message PickFirstConfig {}
+
+// Configuration for round_robin LB policy.
+message RoundRobinConfig {
+  // TODO(dgq): Add parameter for stickiness.
+}
+
+// Configuration for grpclb LB policy.
+message GrpcLbConfig {
+  // Optional.  What LB policy to use for routing between the backend
+  // addresses.  If unset, defaults to round_robin.
+  // Currently, the only supported values are round_robin and pick_first.
+  // Note that this will be used both in balancer mode and in fallback mode.
+  // Multiple LB policies can be specified; clients will iterate through
+  // the list in order and stop at the first policy that they support.
+  repeated LoadBalancingConfig child_policy = 1;
+}
+
+// Configuration for xds LB policy.
+message XdsConfig {
+  // Required.  Name of balancer to connect to.
+  string balancer_name = 1;
+  // Optional.  What LB policy to use for intra-locality routing.
+  // If unset, will use whatever algorithm is specified by the balancer.
+  // Multiple LB policies can be specified; clients will iterate through
+  // the list in order and stop at the first policy that they support.
+  repeated LoadBalancingConfig child_policy = 2;
+  // Optional.  What LB policy to use in fallback mode.  If not
+  // specified, defaults to round_robin.
+  // Multiple LB policies can be specified; clients will iterate through
+  // the list in order and stop at the first policy that they support.
+  repeated LoadBalancingConfig fallback_policy = 3;
+}
+
+// Selects LB policy and provides corresponding configuration.
+//
+// In general, all instances of this field should be repeated.
+// Clients will iterate through the list in order and stop at the first
+// policy that they support.  This allows the service config to specify
+// custom policies that may not be known to all clients.
+message LoadBalancingConfig {
+  // Exactly one LB policy may be configured.
+  oneof policy {
+    // For each new LB policy supported by gRPC, a new field must be added
+    // here.  The field's name must be the LB policy name and its type is a
+    // message that provides whatever configuration parameters are needed
+    // by the LB policy.  The configuration message will be passed to the
+    // LB policy when it is instantiated on the client.
+    //
+    // If the LB policy does not require any configuration parameters, the
+    // message for that LB policy may be empty.
+    //
+    // Note that if an LB policy contains another nested LB policy
+    // (e.g., a gslb policy picks the cluster and then delegates to
+    // a round_robin policy to pick the backend within that cluster), its
+    // configuration message may include a nested instance of the
+    // LoadBalancingConfig message to configure the nested LB policy.
+    PickFirstConfig pick_first = 4 [json_name = "pick_first"];
+    RoundRobinConfig round_robin = 1 [json_name = "round_robin"];
+    // xds field should not be used unless people know what they're
+    // doing.
+    XdsConfig xds = 2;
+    GrpcLbConfig grpclb = 3;
+    // xds_experimental field should only be used for testing the xds
+    // lbpolicy on the gRPC client.
+    // TODO(rekarthik): remove this field after xds migration is done.
+    XdsConfig xds_experimental = 5 [json_name = "xds_experimental"];
+    // Next available ID: 6
+  }
+}
+
 // A ServiceConfig represents information about a service but is not specific to
 // any name resolver.
 message ServiceConfig {
+  // Load balancing policy.
+  //
+  // Note that load_balancing_policy is deprecated in favor of
+  // load_balancing_config; the former will be used only if the latter
+  // is unset.
+  //
+  // If no LB policy is configured here, then the default is pick_first.
+  // If the policy name is set via the client API, that value overrides
+  // the value specified here.
+  //
+  // If the deprecated load_balancing_policy field is used, note that if the
+  // resolver returns at least one balancer address (as opposed to backend
+  // addresses), gRPC will use grpclb (see
+  // https://github.com/grpc/grpc/blob/master/doc/load-balancing.md),
+  // regardless of what policy is configured here.  However, if the resolver
+  // returns at least one backend address in addition to the balancer
+  // address(es), the client may fall back to the requested policy if it
+  // is unable to reach any of the grpclb load balancers.
+  enum LoadBalancingPolicy {
+    UNSPECIFIED = 0;
+    ROUND_ROBIN = 1;
+  }
+  LoadBalancingPolicy load_balancing_policy = 1 [deprecated = true];
+  // Multiple LB policies can be specified; clients will iterate through
+  // the list in order and stop at the first policy that they support. If none
+  // are supported, the service config is considered invalid.
+  repeated LoadBalancingConfig load_balancing_config = 4;
+
   // Per-method configuration.
-  repeated MethodConfig method_config = 1;
+  repeated MethodConfig method_config = 2;
+
+  // If a RetryThrottlingPolicy is provided, gRPC will automatically throttle
+  // retry attempts and hedged RPCs when the client's ratio of failures to
+  // successes exceeds a threshold.
+  //
+  // For each server name, the gRPC client will maintain a token_count which is
+  // initially set to max_tokens. Every outgoing RPC (regardless of service or
+  // method invoked) will change token_count as follows:
+  //
+  //   - Every failed RPC will decrement the token_count by 1.
+  //   - Every successful RPC will increment the token_count by token_ratio.
+  //
+  // If token_count is less than or equal to max_tokens / 2, then RPCs will not
+  // be retried and hedged RPCs will not be sent.
+  message RetryThrottlingPolicy {
+    // The number of tokens starts at max_tokens. The token_count will always be
+    // between 0 and max_tokens.
+    //
+    // This field is required and must be greater than zero.
+    uint32 max_tokens = 1;
+
+    // The amount of tokens to add on each successful RPC. Typically this will
+    // be some number between 0 and 1, e.g., 0.1.
+    //
+    // This field is required and must be greater than zero. Up to 3 decimal
+    // places are supported.
+    float token_ratio = 2;
+  }
+  RetryThrottlingPolicy retry_throttling = 3;
+
+  message HealthCheckConfig {
+    // Service name to use in the health-checking request.
+    .google.protobuf.StringValue service_name = 1;
+  }
+  HealthCheckConfig health_check_config = 5;
+
+  // next available tag: 6
 }
