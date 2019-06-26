@@ -24,6 +24,7 @@ import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
+import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.samplegen.v1.SampleConfigProto;
 import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.codegen.util.ProtoParser;
@@ -41,7 +42,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.TypeLiteral;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
+import com.google.protobuf.util.JsonFormat;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -101,6 +104,13 @@ public class GapicGeneratorApp extends ToolDriverBase {
           "Whether to generate samples in non-production-ready languages.",
           false);
 
+  public static final Option<String> GRPC_SERVICE_CONFIG =
+      ToolOptions.createOption(
+          String.class,
+          "grpc_service_config",
+          "The filepath of the JSON gRPC Service Config file.",
+          "");
+
   private ArtifactType artifactType;
 
   private final GapicWriter gapicWriter;
@@ -147,6 +157,17 @@ public class GapicGeneratorApp extends ToolDriverBase {
       if (configProto == null) {
         return;
       }
+    }
+
+    // if gRPC Service Config is given, consume it
+    String gRPCServiceConfigPath = options.get(GRPC_SERVICE_CONFIG);
+    ServiceConfig gRPCServiceConfig = null;
+    if (!Strings.isNullOrEmpty(gRPCServiceConfigPath)) {
+      ServiceConfig.Builder b = ServiceConfig.newBuilder();
+      FileReader file = new FileReader(gRPCServiceConfigPath);
+      JsonFormat.parser().merge(file, b);
+
+      gRPCServiceConfig = b.build();
     }
 
     // Read the sample configs, if they are given, and convert them to protos.
@@ -197,7 +218,13 @@ public class GapicGeneratorApp extends ToolDriverBase {
 
     GapicProductConfig productConfig =
         GapicProductConfig.create(
-            model, configProto, sampleConfigProto, protoPackage, clientPackage, language);
+            model,
+            configProto,
+            sampleConfigProto,
+            protoPackage,
+            clientPackage,
+            language,
+            gRPCServiceConfig);
     if (productConfig == null) {
       ToolUtil.reportDiags(model.getDiagReporter().getDiagCollector(), true);
       return;

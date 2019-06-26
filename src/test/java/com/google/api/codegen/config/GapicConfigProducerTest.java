@@ -45,7 +45,7 @@ public class GapicConfigProducerTest {
             model.getDiagReporter().getDiagCollector(),
             locator,
             new String[] {"missing_config_schema_version.yaml"});
-    GapicProductConfig.create(model, configProto, null, null, null, TargetLanguage.JAVA);
+    GapicProductConfig.create(model, configProto, null, null, null, TargetLanguage.JAVA, null);
     Diag expectedError =
         Diag.error(
             SimpleLocation.TOPLEVEL, "config_schema_version field is required in GAPIC yaml.");
@@ -66,7 +66,7 @@ public class GapicConfigProducerTest {
             model.getDiagReporter().getDiagCollector(),
             locator,
             new String[] {"missing_interface_v1.yaml"});
-    GapicProductConfig.create(model, configProto, null, null, null, TargetLanguage.JAVA);
+    GapicProductConfig.create(model, configProto, null, null, null, TargetLanguage.JAVA, null);
     Diag expectedError =
         Diag.error(
             SimpleLocation.TOPLEVEL,

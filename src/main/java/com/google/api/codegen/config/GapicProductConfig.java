@@ -22,9 +22,15 @@ import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.RetryCodesDefinitionProto;
+import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
+import com.google.api.codegen.grpc.MethodConfig.Name;
+import com.google.api.codegen.grpc.MethodConfig.RetryOrHedgingPolicyCase;
+import com.google.api.codegen.grpc.MethodConfig.RetryPolicy;
+import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.samplegen.v1.SampleConfigProto;
 import com.google.api.codegen.util.ConfigVersionValidator;
 import com.google.api.codegen.util.LicenseHeaderUtil;
@@ -39,6 +45,7 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.util.Durations;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -122,7 +129,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public static GapicProductConfig create(
       Model model, ConfigProto configProto, TargetLanguage language) {
-    return create(model, configProto, null, null, null, language);
+    return create(model, configProto, null, null, null, language, null);
   }
 
   /**
@@ -145,7 +152,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       @Nullable SampleConfigProto sampleConfigProto,
       @Nullable String protoPackage,
       @Nullable String clientPackage,
-      TargetLanguage language) {
+      TargetLanguage language,
+      @Nullable ServiceConfig grpcServiceConfig) {
 
     final String defaultPackage;
     SymbolTable symbolTable = model.getSymbolTable();
@@ -271,7 +279,11 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (protoParser.isProtoAnnotationsEnabled()) {
       interfaceInputs =
           createInterfaceInputsWithAnnotationsAndGapicConfig(
-              diagCollector, configProto.getInterfacesList(), protoInterfaces, language);
+              diagCollector,
+              configProto.getInterfacesList(),
+              protoInterfaces,
+              language,
+              grpcServiceConfig);
     } else {
       interfaceInputs =
           createInterfaceInputsWithGapicConfigOnly(
@@ -475,7 +487,13 @@ public abstract class GapicProductConfig implements ProductConfig {
           DiagCollector diagCollector,
           List<InterfaceConfigProto> interfaceConfigProtosList,
           ImmutableMap<String, Interface> protoInterfaces,
-          TargetLanguage language) {
+          TargetLanguage language,
+          ServiceConfig grpcServiceConfig) {
+    if (grpcServiceConfig != null) {
+      interfaceConfigProtosList =
+          injectRetryPolicyConfig(grpcServiceConfig, protoInterfaces, interfaceConfigProtosList);
+    }
+
     return createGapicInterfaceInputList(
         diagCollector,
         language,
@@ -483,6 +501,145 @@ public abstract class GapicProductConfig implements ProductConfig {
         interfaceConfigProtosList
             .stream()
             .collect(Collectors.toMap(InterfaceConfigProto::getName, Function.identity())));
+  }
+
+  private static List<InterfaceConfigProto> injectRetryPolicyConfig(
+      ServiceConfig config,
+      ImmutableMap<String, Interface> protoInterfaces,
+      List<InterfaceConfigProto> gapicInterfaces) {
+
+    // Collect the GAPIC interfaces into a map for easier lookup
+    Map<String, InterfaceConfigProto.Builder> builders =
+        gapicInterfaces
+            .stream()
+            .collect(
+                Collectors.toMap(InterfaceConfigProto::getName, InterfaceConfigProto::toBuilder));
+
+    int retryNdx = 1;
+    for (com.google.api.codegen.grpc.MethodConfig mc : config.getMethodConfigList()) {
+      // construct GAPIC retry config from RetryPolicy
+      RetryPolicy rp = mc.getRetryPolicy();
+      String pName = "no_retry";
+      if (mc.getRetryOrHedgingPolicyCase() == RetryOrHedgingPolicyCase.RETRY_POLICY) {
+        pName = "retry_policy_" + retryNdx++;
+      }
+
+      // construct retry params from RetryPolicy
+      RetryParamsDefinitionProto.Builder rpb = RetryParamsDefinitionProto.newBuilder();
+      rpb.setMaxRetryDelayMillis(Durations.toMillis(rp.getMaxBackoff()));
+      rpb.setInitialRetryDelayMillis(Durations.toMillis(rp.getInitialBackoff()));
+      rpb.setRetryDelayMultiplier(rp.getBackoffMultiplier());
+      rpb.setName(pName + "_params");
+
+      // construct retry codes from RetryPolicy
+      RetryCodesDefinitionProto.Builder rcb = RetryCodesDefinitionProto.newBuilder();
+      rcb.setName(pName + "_codes");
+      rp.getRetryableStatusCodesList()
+          .forEach(
+              code -> {
+                rcb.addRetryCodes(code.name());
+              });
+
+      InterfaceConfigProto.Builder ib;
+      for (Name name : mc.getNameList()) {
+        ib = builders.getOrDefault(name.getService(), InterfaceConfigProto.newBuilder());
+        if (!builders.containsKey(name.getService())) {
+          builders.put(name.getService(), ib);
+        }
+
+        // add retry codes & params to GAPIC interface config
+        addRetryConfigIfAbsent(ib, rcb, rpb);
+
+        // apply specific method config or apply service config to all methods
+        if (!Strings.isNullOrEmpty(name.getMethod())) {
+          findAndSetRetry(ib, true, name.getMethod(), rcb.getName(), rpb.getName());
+        } else {
+          Interface protoService = protoInterfaces.get(ib.getName());
+          for (Method m : protoService.getMethods()) {
+            findAndSetRetry(ib, false, m.getSimpleName(), rcb.getName(), rpb.getName());
+          }
+        }
+      }
+    }
+
+    return builders
+        .keySet()
+        .stream()
+        .map(
+            key -> {
+              return builders.get(key).build();
+            })
+        .collect(Collectors.toList());
+  }
+
+  private static void addRetryConfigIfAbsent(
+      InterfaceConfigProto.Builder ib,
+      RetryCodesDefinitionProto.Builder rcb,
+      RetryParamsDefinitionProto.Builder rpb) {
+    boolean addRetryCodes = true;
+    for (RetryCodesDefinitionProto c : ib.getRetryCodesDefList()) {
+      if (c.getName().equals(rcb.getName())) {
+        addRetryCodes = false;
+      }
+    }
+
+    if (addRetryCodes) {
+      ib.addRetryCodesDef(rcb);
+    }
+
+    boolean addRetryParams = true;
+    for (RetryParamsDefinitionProto p : ib.getRetryParamsDefList()) {
+      if (p.getName().equals(rpb.getName())) {
+        addRetryParams = false;
+      }
+    }
+
+    if (addRetryParams) {
+      ib.addRetryParamsDef(rpb);
+    }
+  }
+
+  /**
+   * finds the named MethodConfigProto, creates one if absent in the GAPIC interface, and sets retry
+   * config
+   */
+  private static void findAndSetRetry(
+      InterfaceConfigProto.Builder ib, boolean overwrite, String method, String rc, String rp) {
+    int i = findMethod(ib, method);
+
+    // add a new MethodConfigProto item to the GAPIC interface
+    if (i == -1) {
+      MethodConfigProto.Builder mcp = MethodConfigProto.newBuilder();
+      mcp.setRetryParamsName(rp);
+      mcp.setRetryCodesName(rc);
+      mcp.setName(method);
+      ib.addMethods(mcp);
+      return;
+    }
+
+    MethodConfigProto.Builder mcp = ib.getMethods(i).toBuilder();
+    // don't overwrite a config previously given by gRPC service config
+    if (!overwrite
+        && (mcp.getRetryCodesName().startsWith("retry_policy_")
+            || mcp.getRetryCodesName().equals("no_retry_codes"))) {
+      return;
+    }
+
+    mcp.setRetryParamsName(rp);
+    mcp.setRetryCodesName(rc);
+    ib.setMethods(i, mcp);
+  }
+
+  /** returns the index of the named MethodConfigProto in the GAPIC interface and -1 if not found */
+  private static int findMethod(InterfaceConfigProto.Builder service, String method) {
+    List<MethodConfigProto> methods = service.getMethodsList();
+    for (int ndx = 0; ndx < methods.size(); ndx++) {
+      if (methods.get(ndx).getName().equals(method)) {
+        return ndx;
+      }
+    }
+
+    return -1;
   }
 
   private static ImmutableList<GapicInterfaceInput> createInterfaceInputsWithGapicConfigOnly(
