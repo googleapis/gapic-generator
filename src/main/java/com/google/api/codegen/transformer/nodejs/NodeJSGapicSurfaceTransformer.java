@@ -65,6 +65,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private static final String INDEX_TEMPLATE_FILE = "nodejs/index.snip";
   private static final String VERSION_INDEX_TEMPLATE_FILE = "nodejs/version_index.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "nodejs/main.snip";
+  private static final String PBJS_TEMPLATE_FILENAME = "nodejs/pbjs.snip";
 
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -90,7 +91,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   @Override
   public List<String> getTemplateFileNames() {
     return ImmutableList.of(
-        INDEX_TEMPLATE_FILE, VERSION_INDEX_TEMPLATE_FILE, XAPI_TEMPLATE_FILENAME);
+        INDEX_TEMPLATE_FILE, VERSION_INDEX_TEMPLATE_FILE, XAPI_TEMPLATE_FILENAME, PBJS_TEMPLATE_FILENAME);
   }
 
   @Override
