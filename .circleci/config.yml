@@ -178,7 +178,9 @@ anchor_run_ruby: &anchor_run_ruby
        name: Run Showcase Integration Tests
        command: |
          cd workspace/gapic-generator/showcase/ruby
-         bundle install
+         echo "gem 'google-gax', '~> 1.6.3'" >> Gemfile
+         bundle update --conservative google-gax
+         bundle
          bundle exec ruby showcase_integration_test.rb
 
 anchor_test_php: &anchor_test_php
