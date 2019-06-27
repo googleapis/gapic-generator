@@ -540,10 +540,13 @@ public abstract class GapicProductConfig implements ProductConfig {
                 rcb.addRetryCodes(code.name());
               });
 
+      long timeout = Durations.toMillis(mc.getTimeout());
+
       InterfaceConfigProto.Builder ib;
       for (Name name : mc.getNameList()) {
         ib = builders.getOrDefault(name.getService(), InterfaceConfigProto.newBuilder());
         if (!builders.containsKey(name.getService())) {
+          ib.setName(name.getService());
           builders.put(name.getService(), ib);
         }
 
@@ -552,11 +555,11 @@ public abstract class GapicProductConfig implements ProductConfig {
 
         // apply specific method config or apply service config to all methods
         if (!Strings.isNullOrEmpty(name.getMethod())) {
-          findAndSetRetry(ib, true, name.getMethod(), rcb.getName(), rpb.getName());
+          findAndSetRetry(ib, true, name.getMethod(), rcb.getName(), rpb.getName(), timeout);
         } else {
           Interface protoService = protoInterfaces.get(ib.getName());
           for (Method m : protoService.getMethods()) {
-            findAndSetRetry(ib, false, m.getSimpleName(), rcb.getName(), rpb.getName());
+            findAndSetRetry(ib, false, m.getSimpleName(), rcb.getName(), rpb.getName(), timeout);
           }
         }
       }
@@ -604,7 +607,12 @@ public abstract class GapicProductConfig implements ProductConfig {
    * config
    */
   static void findAndSetRetry(
-      InterfaceConfigProto.Builder ib, boolean overwrite, String method, String rc, String rp) {
+      InterfaceConfigProto.Builder ib,
+      boolean overwrite,
+      String method,
+      String rc,
+      String rp,
+      long timeout) {
     int i = findMethod(ib, method);
 
     // add a new MethodConfigProto item to the GAPIC interface
@@ -613,6 +621,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       mcp.setRetryParamsName(rp);
       mcp.setRetryCodesName(rc);
       mcp.setName(method);
+      mcp.setTimeoutMillis(timeout);
       ib.addMethods(mcp);
       return;
     }
@@ -627,6 +636,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     mcp.setRetryParamsName(rp);
     mcp.setRetryCodesName(rc);
+    mcp.setTimeoutMillis(timeout);
     ib.setMethods(i, mcp);
   }
 

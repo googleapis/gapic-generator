@@ -24,10 +24,14 @@ import com.google.api.codegen.MixedPathTestDataLocator;
 import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
+import com.google.common.collect.ImmutableList;
+import java.io.IOException;
+import java.util.Map;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -101,6 +105,7 @@ public class GapicConfigProducerTest {
     String rp = "retry_policy_1_params";
     String norc = "no_retry_codes";
     String norp = "no_retry_params";
+    long timeout = 60000;
     MethodConfigProto.Builder mcb = MethodConfigProto.newBuilder();
     InterfaceConfigProto.Builder service = InterfaceConfigProto.newBuilder();
 
@@ -114,26 +119,30 @@ public class GapicConfigProducerTest {
     service.addMethods(mcb);
 
     // test basic find and set
-    GapicProductConfig.findAndSetRetry(service, false, "foo", rc, rp);
+    GapicProductConfig.findAndSetRetry(service, false, "foo", rc, rp, timeout);
     assertThat(service.getMethods(0).getRetryCodesName()).isEqualTo(rc);
     assertThat(service.getMethods(0).getRetryParamsName()).isEqualTo(rp);
+    assertThat(service.getMethods(0).getTimeoutMillis()).isEqualTo(timeout);
 
     // test do not overwrite, e.g. service-defined retry not overwriting a method-defined retry
-    GapicProductConfig.findAndSetRetry(service, false, "bar", rc, rp);
+    GapicProductConfig.findAndSetRetry(service, false, "bar", rc, rp, timeout);
     assertThat(service.getMethods(1).getRetryCodesName()).isEqualTo(norc);
     assertThat(service.getMethods(1).getRetryParamsName()).isEqualTo(norp);
+    assertThat(service.getMethods(1).getTimeoutMillis()).isNotEqualTo(timeout);
 
     // test overwrite, e.g. method-defined retry overwriting a service-defined retry or existing
     // GAPIC-defined retry
-    GapicProductConfig.findAndSetRetry(service, true, "baz", rc, rp);
+    GapicProductConfig.findAndSetRetry(service, true, "baz", rc, rp, timeout);
     assertThat(service.getMethods(2).getRetryCodesName()).isEqualTo(rc);
     assertThat(service.getMethods(2).getRetryParamsName()).isEqualTo(rp);
+    assertThat(service.getMethods(2).getTimeoutMillis()).isEqualTo(timeout);
 
     // test add method config not defined in original GAPIC interface (but in the proto)
-    GapicProductConfig.findAndSetRetry(service, false, "buz", rc, rp);
+    GapicProductConfig.findAndSetRetry(service, false, "buz", rc, rp, timeout);
     assertThat(service.getMethods(3).getRetryCodesName()).isEqualTo(rc);
     assertThat(service.getMethods(3).getRetryParamsName()).isEqualTo(rp);
     assertThat(service.getMethods(3).getName()).isEqualTo("buz");
+    assertThat(service.getMethods(3).getTimeoutMillis()).isEqualTo(timeout);
   }
 
   @Test
@@ -153,5 +162,37 @@ public class GapicConfigProducerTest {
     // test attempt to add duplicate retry config
     GapicProductConfig.addRetryConfigIfAbsent(service, rcb, rpb);
     assertThat(service.getRetryParamsDefList().size()).isEqualTo(1);
+  }
+
+  @Test
+  public void injectRetryPolicyConfig() throws IOException {
+    TestDataLocator locator = MixedPathTestDataLocator.create(this.getClass());
+    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+
+    Model model =
+        CodegenTestUtil.readModel(
+            locator,
+            tempDir,
+            new String[] {"library.proto", "another_service.proto"},
+            new String[] {"library.yaml"});
+
+    ServiceConfig serviceConfig =
+        CodegenTestUtil.readGRPCServiceConfig(locator, "library_grpc_service_config.json");
+
+    GapicProductConfig product =
+        GapicProductConfig.create(
+            model, null, null, "google.example.library.v1", null, TargetLanguage.GO, serviceConfig);
+
+    assertThat(product).isNotNull();
+
+    InterfaceConfig libraryInterface =
+        product.getInterfaceConfig("google.example.library.v1.LibraryService");
+    Map<String, RetryParamsDefinitionProto> params = libraryInterface.getRetrySettingsDefinition();
+    assertThat(params.get("retry_policy_1_params")).isNotNull();
+    assertThat(params.get("no_retry_params")).isNotNull();
+    Map<String, ImmutableList<String>> codes =
+        libraryInterface.getRetryCodesConfig().getRetryCodesDefinition();
+    assertThat(codes.get("retry_policy_1_codes")).isNotNull();
+    assertThat(codes.get("no_retry_codes")).isNotNull();
   }
 }

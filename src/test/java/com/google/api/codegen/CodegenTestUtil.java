@@ -15,6 +15,7 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.gapic.GapicTestConfig;
+import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -25,7 +26,10 @@ import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.setup.StandardSetup;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Message;
+import com.google.protobuf.util.JsonFormat;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,5 +75,18 @@ public class CodegenTestUtil {
     }
 
     return (ConfigProto) configSource.getConfig();
+  }
+
+  public static ServiceConfig readGRPCServiceConfig(
+      TestDataLocator testDataLocator, String serviceConfigFileName) throws IOException {
+    URL serviceConfigUrl = testDataLocator.findTestData(serviceConfigFileName);
+
+    String serviceConfigPath = Objects.requireNonNull(serviceConfigUrl).getPath();
+
+    ServiceConfig.Builder b = ServiceConfig.newBuilder();
+    FileReader file = new FileReader(serviceConfigPath);
+    JsonFormat.parser().merge(file, b);
+
+    return b.build();
   }
 }
