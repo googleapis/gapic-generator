@@ -553,7 +553,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         // add retry codes & params to GAPIC interface config
         addRetryConfigIfAbsent(ib, rcb, rpb);
 
-        // apply specific method config or apply service config to all methods
+        // apply specific method config (overwrites) or apply service config to all methods (does
+        // not overwrite method-specific policies)
         if (!Strings.isNullOrEmpty(name.getMethod())) {
           findAndSetRetry(ib, true, name.getMethod(), rcb.getName(), rpb.getName(), timeout);
         } else {
@@ -580,6 +581,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     return Math.round(f * 100) / 100.0;
   }
 
+  /** adds the retry param and code list objects to the GAPIC interface unless already present */
   static void addRetryConfigIfAbsent(
       InterfaceConfigProto.Builder ib,
       RetryCodesDefinitionProto.Builder rcb,
