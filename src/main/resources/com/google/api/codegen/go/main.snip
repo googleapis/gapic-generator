@@ -442,14 +442,14 @@
     @end
     ",
     @join headerRequestParam : headerRequestParams on ", "
-        "{@headerRequestParam.fullyQualifiedName}", req.{@requestParamGetter(headerRequestParam.gettersChain)}
+        "{@headerRequestParam.fullyQualifiedName}", url.QueryEscape(req.{@requestParamGetter(headerRequestParam.gettersChain)})
     @end
     )
 @end
 
 @private mergeMetadata(method)
     @if method.headerRequestParams
-        md := metadata.Pairs("x-goog-request-params", url.QueryEscape({@headerRequestParamString(method.headerRequestParams)}))
+        md := metadata.Pairs("x-goog-request-params", {@headerRequestParamString(method.headerRequestParams)})
         ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     @else
         ctx = insertMetadata(ctx, c.xGoogMetadata)
