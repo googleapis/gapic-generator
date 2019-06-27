@@ -27,6 +27,7 @@ import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
+import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -59,6 +60,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   private final String protoPackage;
   private final String clientPackage;
   private final TestDataLocator testDataLocator = MixedPathTestDataLocator.create(this.getClass());
+  private final String grpcServiceConfigFileName;
+  private ServiceConfig grpcServiceConfig;
 
   public GapicTestBase2(
       TargetLanguage language,
@@ -67,13 +70,15 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       List<String> snippetNames,
       String baselineFile,
       String protoPackage,
-      String clientPackage) {
+      String clientPackage,
+      String grpcServiceConfigFileName) {
     this.language = language;
     this.gapicConfigFileNames = gapicConfigFileNames;
     this.packageConfigFileName = packageConfigFileName;
     this.snippetNames = ImmutableList.copyOf(snippetNames);
     this.baselineFile = baselineFile;
     this.clientPackage = clientPackage;
+    this.grpcServiceConfigFileName = grpcServiceConfigFileName;
 
     // Represents the test value for the --package flag.
     this.protoPackage = protoPackage;
@@ -122,6 +127,13 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
         throw new IllegalArgumentException("Problem creating packageConfig");
       }
     }
+    if (!Strings.isNullOrEmpty(grpcServiceConfigFileName)) {
+      grpcServiceConfig =
+          CodegenTestUtil.readGRPCServiceConfig(
+              model.getDiagReporter().getDiagCollector(),
+              testDataLocator,
+              grpcServiceConfigFileName);
+    }
     // TODO (garrettjones) depend on the framework to take care of this.
     if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
@@ -149,9 +161,17 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       String[] gapicConfigFileNames,
       String packageConfigFileName,
       String apiName,
+      String grpcServiceConfigFileName,
       String... baseNames) {
     return createTestConfig(
-        language, gapicConfigFileNames, packageConfigFileName, apiName, null, null, baseNames);
+        language,
+        gapicConfigFileNames,
+        packageConfigFileName,
+        apiName,
+        null,
+        null,
+        grpcServiceConfigFileName,
+        baseNames);
   }
 
   /**
@@ -168,6 +188,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       String apiName,
       String protoPackage,
       String clientPackage,
+      String grpcServiceConfigFileName,
       String... baseNames) {
     Model model = Model.create(Service.getDefaultInstance());
     GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
@@ -186,13 +207,16 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       snippetNames.addAll(generator.getInputFileNames());
     }
 
-    StringBuilder gapic_config_missing = new StringBuilder();
+    StringBuilder suffix = new StringBuilder();
     if (gapicConfigFileNames == null || gapicConfigFileNames.length == 0) {
-      gapic_config_missing.append("_no_gapic_config");
+      suffix.append("_no_gapic_config");
     }
 
-    String baseline =
-        language.toString().toLowerCase() + "_" + apiName + gapic_config_missing + ".baseline";
+    if (!Strings.isNullOrEmpty(grpcServiceConfigFileName)) {
+      suffix.append("_with_grpc_service_config");
+    }
+
+    String baseline = language.toString().toLowerCase() + "_" + apiName + suffix + ".baseline";
     baseNames = Lists.asList(apiName, baseNames).toArray(new String[0]);
 
     return new Object[] {
@@ -203,6 +227,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       baseline,
       protoPackage,
       clientPackage,
+      grpcServiceConfigFileName,
       baseNames
     };
   }
@@ -224,7 +249,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
     GapicProductConfig productConfig =
         GapicProductConfig.create(
-            model, gapicConfig, null, protoPackage, clientPackage, language, null);
+            model, gapicConfig, null, protoPackage, clientPackage, language, grpcServiceConfig);
     if (productConfig == null) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());

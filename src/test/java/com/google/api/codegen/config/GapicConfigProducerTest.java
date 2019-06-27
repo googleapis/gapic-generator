@@ -177,7 +177,10 @@ public class GapicConfigProducerTest {
             new String[] {"library.yaml"});
 
     ServiceConfig serviceConfig =
-        CodegenTestUtil.readGRPCServiceConfig(locator, "library_grpc_service_config.json");
+        CodegenTestUtil.readGRPCServiceConfig(
+            model.getDiagReporter().getDiagCollector(),
+            locator,
+            "library_grpc_service_config.json");
 
     GapicProductConfig product =
         GapicProductConfig.create(

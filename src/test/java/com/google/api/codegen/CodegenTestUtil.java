@@ -18,8 +18,10 @@ import com.google.api.codegen.gapic.GapicTestConfig;
 import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.tools.framework.model.ConfigSource;
+import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.TestConfig;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
@@ -78,14 +80,24 @@ public class CodegenTestUtil {
   }
 
   public static ServiceConfig readGRPCServiceConfig(
-      TestDataLocator testDataLocator, String serviceConfigFileName) throws IOException {
+      DiagCollector diagCollector, TestDataLocator testDataLocator, String serviceConfigFileName) {
     URL serviceConfigUrl = testDataLocator.findTestData(serviceConfigFileName);
 
     String serviceConfigPath = Objects.requireNonNull(serviceConfigUrl).getPath();
 
     ServiceConfig.Builder b = ServiceConfig.newBuilder();
-    FileReader file = new FileReader(serviceConfigPath);
-    JsonFormat.parser().merge(file, b);
+
+    try {
+      FileReader file = new FileReader(serviceConfigPath);
+      JsonFormat.parser().merge(file, b);
+    } catch (IOException e) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Error reading gRPC ServiceConfig JSON file '%s': %s",
+              serviceConfigFileName,
+              e.getMessage()));
+    }
 
     return b.build();
   }

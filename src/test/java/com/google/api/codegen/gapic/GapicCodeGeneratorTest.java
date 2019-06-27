@@ -37,6 +37,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
       String baseline,
       String protoPackage,
       String clientPackage,
+      String grpcServiceConfigFileName,
       String[] baseNames) {
     super(
         language,
@@ -45,7 +46,8 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
         snippetName,
         baseline,
         protoPackage,
-        clientPackage);
+        clientPackage,
+        grpcServiceConfigFileName);
     this.baseNames = baseNames;
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
   }
@@ -58,96 +60,113 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             new String[] {"library_gapic.yaml"},
             null,
             "library",
+            null,
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PHP,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
+            null,
             new String[] {"another_service"}), // Test passing in a proto_package flag.
         GapicTestBase2.createTestConfig(
             TargetLanguage.PHP,
             new String[] {"longrunning_gapic.yaml"},
             "longrunning_pkg2.yaml",
-            "longrunning"), // Test passing in a proto_package flag.
+            "longrunning",
+            null), // Test passing in a proto_package flag.
         GapicTestBase2.createTestConfig(
             TargetLanguage.PHP,
             new String[] {"no_path_templates_gapic.yaml"},
             "no_path_templates_pkg2.yaml",
-            "no_path_templates"),
+            "no_path_templates",
+            null),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
+            null,
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"multiple_services_gapic.yaml"},
             "multiple_services_pkg2.yaml",
             "multiple_services",
+            null,
             "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"no_path_templates_gapic.yaml"},
             "no_path_templates_pkg2.yaml",
-            "no_path_templates"),
+            "no_path_templates",
+            null),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
+            null,
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
             new String[] {"multiple_services_gapic.yaml"},
             "multiple_services_pkg2.yaml",
             "multiple_services",
+            null,
             "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
             new String[] {"longrunning_gapic.yaml"},
             "longrunning_pkg2.yaml",
-            "longrunning"),
+            "longrunning",
+            null),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PYTHON,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
+            null,
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PYTHON,
             new String[] {"no_path_templates_gapic.yaml"},
             "no_path_templates_pkg2.yaml",
-            "no_path_templates"),
+            "no_path_templates",
+            null),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PYTHON,
             new String[] {"multiple_services_gapic.yaml"},
             "multiple_services_pkg2.yaml",
             "multiple_services",
+            null,
             "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.NODEJS,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
+            null,
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
             TargetLanguage.NODEJS,
             new String[] {"no_path_templates_gapic.yaml"},
             "library_pkg2.yaml",
-            "no_path_templates"),
+            "no_path_templates",
+            null),
         GapicTestBase2.createTestConfig(
             TargetLanguage.NODEJS,
             new String[] {"multiple_services_gapic.yaml"},
             "multiple_services_pkg2.yaml",
             "multiple_services",
+            null,
             "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.CSHARP,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
+            null,
             new String[] {"another_service"}));
   }
 

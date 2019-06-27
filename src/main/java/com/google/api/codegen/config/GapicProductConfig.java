@@ -528,7 +528,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       RetryParamsDefinitionProto.Builder rpb = RetryParamsDefinitionProto.newBuilder();
       rpb.setMaxRetryDelayMillis(Durations.toMillis(rp.getMaxBackoff()));
       rpb.setInitialRetryDelayMillis(Durations.toMillis(rp.getInitialBackoff()));
-      rpb.setRetryDelayMultiplier(rp.getBackoffMultiplier());
+      rpb.setRetryDelayMultiplier(floatToDouble(rp.getBackoffMultiplier()));
       rpb.setName(pName + "_params");
 
       // construct retry codes from RetryPolicy
@@ -573,6 +573,11 @@ public abstract class GapicProductConfig implements ProductConfig {
               return builders.get(key).build();
             })
         .collect(Collectors.toList());
+  }
+
+  /** converts a float to a double rounding to the nearest hundredth */
+  private static double floatToDouble(float f) {
+    return Math.round(f * 100) / 100.0;
   }
 
   static void addRetryConfigIfAbsent(
