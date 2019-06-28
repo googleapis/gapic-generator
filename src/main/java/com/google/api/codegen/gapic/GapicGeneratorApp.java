@@ -203,11 +203,11 @@ public class GapicGeneratorApp extends ToolDriverBase {
       return;
     }
 
+    // TODO(hzyi-google): Once we switch to sample configs, require an
+    // additional check to generate samples:
+    // `sampleConfigProto != null`
     ArtifactFlags artifactFlags =
-        new ArtifactFlags(
-            options.get(ENABLED_ARTIFACTS),
-            artifactType,
-            options.get(DEV_SAMPLES) && sampleConfigProto != null);
+        new ArtifactFlags(options.get(ENABLED_ARTIFACTS), artifactType, options.get(DEV_SAMPLES));
     List<CodeGenerator<?>> generators =
         GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
     ImmutableMap.Builder<String, GeneratedResult<?>> generatedResults = ImmutableMap.builder();
