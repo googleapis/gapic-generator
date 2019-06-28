@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
+import com.google.api.codegen.util.EscaperFactory;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -162,7 +163,7 @@ public class RubyModelTypeNameConverter extends ModelTypeNameConverter {
         return value.toLowerCase();
       case TYPE_STRING:
       case TYPE_BYTES:
-        return "\"" + value + "\"";
+        return "\"" + EscaperFactory.getDoubleQuoteEscaper().escape(value) + "\"";
       default:
         // Types that do not need to be modified (e.g. TYPE_INT32) are handled
         // here
