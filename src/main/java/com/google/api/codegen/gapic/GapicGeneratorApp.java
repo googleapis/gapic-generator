@@ -203,8 +203,9 @@ public class GapicGeneratorApp extends ToolDriverBase {
       return;
     }
 
-    // TODO(hzyi-google): Once we switch to sample configs, require an additional check to generate
-    // samples: `sampleConfigProto != null`
+    // TODO(hzyi-google): Once we switch to sample configs, require an
+    // additional check to generate samples:
+    // `sampleConfigProto != null`
     ArtifactFlags artifactFlags =
         new ArtifactFlags(
             options.get(ENABLED_ARTIFACTS),
