@@ -85,6 +85,42 @@ def com_google_api_codegen_repositories():
         actual = "@net_zlib//:zlib",
     )
 
+    _maybe(
+        native.maven_jar,
+        name = "guava_maven",
+        artifact = "com.google.guava:guava:18.0",
+    )
+
+    _maybe(
+        native.bind,
+        name = "guava",
+        actual = "@guava_maven//jar",
+    )
+
+    _maybe(
+        native.maven_jar,
+        name = "gson_maven",
+        artifact = "com.google.code.gson:gson:2.7",
+    )
+
+    _maybe(
+        native.bind,
+        name = "gson",
+        actual = "@gson_maven//jar",
+    )
+
+    _maybe(
+        native.maven_jar,
+        name = "error_prone_annotations_maven",
+        artifact = "com.google.errorprone:error_prone_annotations:2.3.2",
+    )
+
+    _maybe(
+        native.bind,
+        name = "error_prone_annotations",
+        actual = "@error_prone_annotations_maven//jar",
+    )
+
 def _maybe(repo_rule, name, strip_repo_prefix = "", **kwargs):
     if not name.startswith(strip_repo_prefix):
         return
