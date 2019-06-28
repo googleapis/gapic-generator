@@ -163,7 +163,7 @@ public abstract class PackagingConfig {
   // 4) Set "name" capturing group as api_name value.
   // 5) Set "ver" capturing group as api_version value (or use "v1" if none found).
   // 6) Set "org" capturing group as organization_name (or use "google-cloud" if none found).
-  // 7) Always add "google-common-protos" to proto_deps and test_proto_deps lists.
+  // 7) Always add "google-common-protos" to proto_deps lists.
   // 8) Add "google-iam-v1" to proto_deps and test_proto_deps lists if interfaceConfigMap defines
   //    any IAM methods and it is not IAM client itself (i.e. IAM client should not depend on
   //    itself).
