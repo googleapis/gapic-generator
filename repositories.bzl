@@ -71,6 +71,15 @@ def com_google_api_codegen_repositories():
     )
 
     _maybe(
+        http_archive,
+        name = "com_google_googleapis",
+        strip_prefix = "googleapis-84c8ad4e52f8eec8f08a60636cfa597b86969b5c",
+        urls = [
+            "https://github.com/googleapis/googleapis/archive/84c8ad4e52f8eec8f08a60636cfa597b86969b5c.zip",
+        ],
+    )
+
+    _maybe(
         native.bind,
         name = "zlib",
         actual = "@net_zlib//:zlib",
