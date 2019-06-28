@@ -58,13 +58,13 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             new String[] {"library_gapic.yaml"},
             null,
             "library",
-            new String[] {"another_service"}),
+            "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PHP,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
-            new String[] {"another_service"}), // Test passing in a proto_package flag.
+            "another_service"), // Test passing in a proto_package flag.
         GapicTestBase2.createTestConfig(
             TargetLanguage.PHP,
             new String[] {"longrunning_gapic.yaml"},
@@ -78,9 +78,9 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"library_gapic.yaml"},
-            "library_pkg2.yaml",
+            null,
             "library",
-            new String[] {"another_service"}),
+            "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"multiple_services_gapic.yaml"},
@@ -95,9 +95,9 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
             new String[] {"library_gapic.yaml"},
-            "library_pkg2.yaml",
+            null,
             "library",
-            new String[] {"another_service"}),
+            "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
             new String[] {"multiple_services_gapic.yaml"},
@@ -114,7 +114,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
-            new String[] {"another_service"}),
+            "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PYTHON,
             new String[] {"no_path_templates_gapic.yaml"},
@@ -131,7 +131,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
-            new String[] {"another_service"}),
+            "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.NODEJS,
             new String[] {"no_path_templates_gapic.yaml"},
@@ -148,7 +148,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
-            new String[] {"another_service"}));
+            "another_service"));
   }
 
   @Test

@@ -33,6 +33,7 @@ _COMPILE_DEPS = [
 
 _TEST_COMPILE_DEPS = [
     "@com_google_truth_truth//jar",
+    "@com_googlecode_java_diff_utils_diffutils//jar",
     "@junit_junit//jar",
     "@pl_pragmatists_JUnitParams//jar",
     "@org_mockito_mockito_core//jar",
@@ -74,9 +75,11 @@ proto_library(
 
 java_proto_library(
     name = "config_java_proto",
-    deps = [":config_proto",
-            ":config_v2_proto",
-            ":sample_config_proto"],
+    deps = [
+        ":config_proto",
+        ":config_v2_proto",
+        ":sample_config_proto",
+    ],
 )
 
 java_binary(
@@ -86,9 +89,9 @@ java_binary(
     javacopts = _JAVA_COPTS,
     jvm_flags = ["-Xmx512m"],
     main_class = "com.google.api.codegen.GeneratorMain",
+    plugins = [":auto_value_plugin"],
     resources = glob(["src/main/resources/**/*"]),
     visibility = ["//visibility:public"],
-    plugins = [":auto_value_plugin"],
     deps = [
         ":config_java_proto",
     ] + _COMPILE_DEPS,
@@ -122,7 +125,6 @@ java_library(
     ]) + ["@com_google_protobuf//:well_known_protos"],
     visibility = ["//visibility:public"],
     runtime_deps = ["@com_google_protobuf//:protoc"],
-    plugins = [":auto_value_plugin"],
     deps = [
         ":config_java_proto",
         ":gapic_generator",

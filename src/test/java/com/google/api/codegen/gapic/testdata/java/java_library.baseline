@@ -19,7 +19,7 @@ buildscript {
 
 apply plugin: 'java'
 
-description = 'GAPIC library for google-cloud-library-v1'
+description = 'GAPIC library for google-example-library-v1'
 group = 'com.google.cloud'
 version = '0.0.0-SNAPSHOT'
 sourceCompatibility = 1.7
@@ -41,10 +41,9 @@ dependencies {
   testCompile 'io.grpc:grpc-netty-shaded:1.9.0'
   testCompile 'junit:junit:4.12'
   // Remove this line if you are bundling your proto-generated classes together with your client classes
-  compile project(':proto-google-cloud-library-v1')
+  compile project(':proto-google-example-library-v1')
   // Remove this line if you are bundling your proto-generated classes together with your client classes
-  testCompile project(':grpc-google-cloud-library-v1')
-  testCompile 'com.google.api.grpc:grpc-google-some-test-package-v1:0.0.0'
+  testCompile project(':grpc-google-example-library-v1')
 }
 
 task smokeTest(type: Test) {
@@ -86,7 +85,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'application'
 
-description = 'GAPIC samples for google-cloud-library-v1'
+description = 'GAPIC samples for google-example-library-v1'
 group = 'com.google.cloud'
 version = '0.0.0-SNAPSHOT'
 sourceCompatibility = 1.7
@@ -103,11 +102,11 @@ javadoc.options.encoding = 'UTF-8'
 dependencies {
   compile 'com.google.api:api-common:0.0.2'
   compile 'commons-cli:commons-cli:1.4'
-  compile project(':gapic-google-cloud-library-v1')
+  compile project(':gapic-google-example-library-v1')
 }
 
 task fatJar(type: Jar) {
-  baseName = 'sample-google-cloud-library-v1-all'
+  baseName = 'sample-google-example-library-v1-all'
   from {
     configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
   }

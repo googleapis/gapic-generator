@@ -258,6 +258,11 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   }
 
   @Override
+  public boolean hasIamMethods() {
+    return false;
+  }
+
+  @Override
   public boolean hasDefaultServiceAddress() {
     return !getRequiredConstructorParams().contains(SERVICE_ADDRESS_PARAM);
   }
