@@ -72,6 +72,14 @@ proto_library(
     deps = ["@com_google_protobuf//:wrappers_proto"],
 )
 
+proto_library(
+    name = "grpc_service_config_proto",
+    srcs = ["src/main/proto/com/google/api/codegen/grpc/service_config.proto"],
+    deps = ["@com_google_protobuf//:wrappers_proto",
+            "@com_google_protobuf//:duration_proto,
+            "@com_google_rpc//:code_proto],
+)
+
 java_proto_library(
     name = "config_java_proto",
     deps = [":config_proto",
