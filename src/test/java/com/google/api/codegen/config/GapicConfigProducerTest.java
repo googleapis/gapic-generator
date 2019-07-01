@@ -182,9 +182,21 @@ public class GapicConfigProducerTest {
             locator,
             "library_grpc_service_config.json");
 
+    ConfigProto configProto =
+        CodegenTestUtil.readConfig(
+            model.getDiagReporter().getDiagCollector(),
+            locator,
+            new String[] {"library_v2_gapic.yaml"});
+
     GapicProductConfig product =
         GapicProductConfig.create(
-            model, null, null, "google.example.library.v1", null, TargetLanguage.GO, serviceConfig);
+            model,
+            configProto,
+            null,
+            "google.example.library.v1",
+            null,
+            TargetLanguage.GO,
+            serviceConfig);
 
     assertThat(product).isNotNull();
 
