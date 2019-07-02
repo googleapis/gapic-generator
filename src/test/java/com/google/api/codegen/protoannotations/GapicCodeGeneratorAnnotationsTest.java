@@ -140,6 +140,15 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             "another_service"),
         GapicTestBase2.createTestConfig(
+            TargetLanguage.CSHARP,
+            new String[] {"library_v2_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "Google.Example.Library.V1",
+            "library_grpc_service_config.json",
+            "another_service"),
+        GapicTestBase2.createTestConfig(
             TargetLanguage.GO,
             new String[] {"library_v2_gapic.yaml"},
             "library_pkg2.yaml",
