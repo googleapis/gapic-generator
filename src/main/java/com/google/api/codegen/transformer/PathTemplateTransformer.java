@@ -108,7 +108,7 @@ public class PathTemplateTransformer {
         && resourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF) {
       for (SingleResourceNameConfig config :
           ((ResourceNameOneofConfig) resourceNameConfig).getSingleResourceNameConfigs()) {
-        if (!foundSet.contains(resourceNameConfig.getEntityId())) {
+        if (!foundSet.contains(config.getEntityId())) {
           resourceNameConfigs.add(config);
           foundSet.add(config.getEntityId());
         }
