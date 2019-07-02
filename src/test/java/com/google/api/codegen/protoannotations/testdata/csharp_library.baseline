@@ -3989,102 +3989,6 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        /// <summary>Snippet for AddCommentsAsync</summary>
-        public async Task AddCommentsAsync()
-        {
-            // Snippet: AddCommentsAsync(BookNameOneof,IEnumerable<Comment>,CallSettings)
-            // Additional: AddCommentsAsync(BookNameOneof,IEnumerable<Comment>,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
-            IEnumerable<Comment> comments = new[]
-            {
-                new Comment
-                {
-                    Comment = ByteString.Empty,
-                    Stage = Comment.Types.Stage.Unset,
-                    Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                },
-            };
-            // Make the request
-            await libraryServiceClient.AddCommentsAsync(name, comments);
-            // End snippet
-        }
-
-        /// <summary>Snippet for AddComments</summary>
-        public void AddComments()
-        {
-            // Snippet: AddComments(BookNameOneof,IEnumerable<Comment>,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
-            IEnumerable<Comment> comments = new[]
-            {
-                new Comment
-                {
-                    Comment = ByteString.Empty,
-                    Stage = Comment.Types.Stage.Unset,
-                    Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                },
-            };
-            // Make the request
-            libraryServiceClient.AddComments(name, comments);
-            // End snippet
-        }
-
-        /// <summary>Snippet for AddCommentsAsync</summary>
-        public async Task AddCommentsAsync_RequestObject()
-        {
-            // Snippet: AddCommentsAsync(AddCommentsRequest,CallSettings)
-            // Additional: AddCommentsAsync(AddCommentsRequest,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            AddCommentsRequest request = new AddCommentsRequest
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
-                Comments =
-                {
-                    new Comment
-                    {
-                        Comment = ByteString.Empty,
-                        Stage = Comment.Types.Stage.Unset,
-                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                    },
-                },
-            };
-            // Make the request
-            await libraryServiceClient.AddCommentsAsync(request);
-            // End snippet
-        }
-
-        /// <summary>Snippet for AddComments</summary>
-        public void AddComments_RequestObject()
-        {
-            // Snippet: AddComments(AddCommentsRequest,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            AddCommentsRequest request = new AddCommentsRequest
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
-                Comments =
-                {
-                    new Comment
-                    {
-                        Comment = ByteString.Empty,
-                        Stage = Comment.Types.Stage.Unset,
-                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                    },
-                },
-            };
-            // Make the request
-            libraryServiceClient.AddComments(request);
-            // End snippet
-        }
-
         /// <summary>Snippet for GetBookFromArchiveAsync</summary>
         public async Task GetBookFromArchiveAsync()
         {
@@ -5254,6 +5158,70 @@ namespace Google.Example.Library.V1.Snippets
             };
             // Make the request
             TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.TestOptionalRequiredFlatteningParams(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for AddCommentsAsync</summary>
+        public async Task AddCommentsAsync()
+        {
+            // Snippet: AddCommentsAsync(BookNameOneof,IEnumerable<Comment>,CallSettings)
+            // Additional: AddCommentsAsync(BookNameOneof,IEnumerable<Comment>,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
+            IEnumerable<Comment> comments = new List<Comment>();
+            // Make the request
+            await libraryServiceClient.AddCommentsAsync(name, comments);
+            // End snippet
+        }
+
+        /// <summary>Snippet for AddComments</summary>
+        public void AddComments()
+        {
+            // Snippet: AddComments(BookNameOneof,IEnumerable<Comment>,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
+            IEnumerable<Comment> comments = new List<Comment>();
+            // Make the request
+            libraryServiceClient.AddComments(name, comments);
+            // End snippet
+        }
+
+        /// <summary>Snippet for AddCommentsAsync</summary>
+        public async Task AddCommentsAsync_RequestObject()
+        {
+            // Snippet: AddCommentsAsync(AddCommentsRequest,CallSettings)
+            // Additional: AddCommentsAsync(AddCommentsRequest,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            AddCommentsRequest request = new AddCommentsRequest
+            {
+                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                Comments = { },
+            };
+            // Make the request
+            await libraryServiceClient.AddCommentsAsync(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for AddComments</summary>
+        public void AddComments_RequestObject()
+        {
+            // Snippet: AddComments(AddCommentsRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            AddCommentsRequest request = new AddCommentsRequest
+            {
+                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                Comments = { },
+            };
+            // Make the request
+            libraryServiceClient.AddComments(request);
             // End snippet
         }
 
@@ -6698,142 +6666,6 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public void AddComments()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            AddCommentsRequest expectedRequest = new AddCommentsRequest
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
-                Comments =
-                {
-                    new Comment
-                    {
-                        Comment = ByteString.CopyFromUtf8("95"),
-                        Stage = Comment.Types.Stage.Unset,
-                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                    },
-                },
-            };
-            Empty expectedResponse = new Empty();
-            mockGrpcClient.Setup(x => x.AddComments(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
-            IEnumerable<Comment> comments = new[]
-            {
-                new Comment
-                {
-                    Comment = ByteString.CopyFromUtf8("95"),
-                    Stage = Comment.Types.Stage.Unset,
-                    Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                },
-            };
-            client.AddComments(name, comments);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task AddCommentsAsync()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            AddCommentsRequest expectedRequest = new AddCommentsRequest
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
-                Comments =
-                {
-                    new Comment
-                    {
-                        Comment = ByteString.CopyFromUtf8("95"),
-                        Stage = Comment.Types.Stage.Unset,
-                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                    },
-                },
-            };
-            Empty expectedResponse = new Empty();
-            mockGrpcClient.Setup(x => x.AddCommentsAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
-            IEnumerable<Comment> comments = new[]
-            {
-                new Comment
-                {
-                    Comment = ByteString.CopyFromUtf8("95"),
-                    Stage = Comment.Types.Stage.Unset,
-                    Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                },
-            };
-            await client.AddCommentsAsync(name, comments);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void AddComments2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            AddCommentsRequest request = new AddCommentsRequest
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
-                Comments =
-                {
-                    new Comment
-                    {
-                        Comment = ByteString.CopyFromUtf8("95"),
-                        Stage = Comment.Types.Stage.Unset,
-                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                    },
-                },
-            };
-            Empty expectedResponse = new Empty();
-            mockGrpcClient.Setup(x => x.AddComments(request, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            client.AddComments(request);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task AddCommentsAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            AddCommentsRequest request = new AddCommentsRequest
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
-                Comments =
-                {
-                    new Comment
-                    {
-                        Comment = ByteString.CopyFromUtf8("95"),
-                        Stage = Comment.Types.Stage.Unset,
-                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                    },
-                },
-            };
-            Empty expectedResponse = new Empty();
-            mockGrpcClient.Setup(x => x.AddCommentsAsync(request, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            await client.AddCommentsAsync(request);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
         public void GetBookFromArchive()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
@@ -7818,6 +7650,94 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
+        public void AddComments()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            AddCommentsRequest expectedRequest = new AddCommentsRequest
+            {
+                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                Comments = { },
+            };
+            Empty expectedResponse = new Empty();
+            mockGrpcClient.Setup(x => x.AddComments(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
+            IEnumerable<Comment> comments = new List<Comment>();
+            client.AddComments(name, comments);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task AddCommentsAsync()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            AddCommentsRequest expectedRequest = new AddCommentsRequest
+            {
+                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                Comments = { },
+            };
+            Empty expectedResponse = new Empty();
+            mockGrpcClient.Setup(x => x.AddCommentsAsync(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
+            IEnumerable<Comment> comments = new List<Comment>();
+            await client.AddCommentsAsync(name, comments);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public void AddComments2()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            AddCommentsRequest request = new AddCommentsRequest
+            {
+                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                Comments = { },
+            };
+            Empty expectedResponse = new Empty();
+            mockGrpcClient.Setup(x => x.AddComments(request, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            client.AddComments(request);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task AddCommentsAsync2()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            AddCommentsRequest request = new AddCommentsRequest
+            {
+                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                Comments = { },
+            };
+            Empty expectedResponse = new Empty();
+            mockGrpcClient.Setup(x => x.AddCommentsAsync(request, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            await client.AddCommentsAsync(request);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
         public void PrivateListShelves()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
@@ -8060,7 +7980,6 @@ namespace Google.Example.Library.V1
             UpdateBookSettings = existing.UpdateBookSettings;
             MoveBookSettings = existing.MoveBookSettings;
             ListStringsSettings = existing.ListStringsSettings;
-            AddCommentsSettings = existing.AddCommentsSettings;
             GetBookFromArchiveSettings = existing.GetBookFromArchiveSettings;
             GetBookFromAnywhereSettings = existing.GetBookFromAnywhereSettings;
             GetBookFromAbsolutelyAnywhereSettings = existing.GetBookFromAbsolutelyAnywhereSettings;
@@ -8076,6 +7995,7 @@ namespace Google.Example.Library.V1
             GetBigNothingSettings = existing.GetBigNothingSettings;
             GetBigNothingOperationsSettings = existing.GetBigNothingOperationsSettings?.Clone();
             TestOptionalRequiredFlatteningParamsSettings = existing.TestOptionalRequiredFlatteningParamsSettings;
+            AddCommentsSettings = existing.AddCommentsSettings;
             PrivateListShelvesSettings = existing.PrivateListShelvesSettings;
             OnCopy(existing);
         }
@@ -8533,35 +8453,6 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
-        /// <c>LibraryServiceClient.AddComments</c> and <c>LibraryServiceClient.AddCommentsAsync</c>.
-        /// </summary>
-        /// <remarks>
-        /// The default <c>LibraryServiceClient.AddComments</c> and
-        /// <c>LibraryServiceClient.AddCommentsAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
-        /// <list type="bullet">
-        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
-        /// <item><description>Retry delay multiplier: 1.2</description></item>
-        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
-        /// <item><description>Initial timeout: 300 milliseconds</description></item>
-        /// <item><description>Timeout multiplier: 1.3</description></item>
-        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
-        /// </list>
-        /// Retry will be attempted on the following response status codes:
-        /// <list>
-        /// <item><description>No status codes</description></item>
-        /// </list>
-        /// Default RPC expiration is 30000 milliseconds.
-        /// </remarks>
-        public gaxgrpc::CallSettings AddCommentsSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
-            gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
-                retryBackoff: GetDefaultRetryBackoff(),
-                timeoutBackoff: GetDefaultTimeoutBackoff(),
-                totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
-                retryFilter: NonIdempotentRetryFilter
-            )));
-
-        /// <summary>
-        /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
         /// <c>LibraryServiceClient.GetBookFromArchive</c> and <c>LibraryServiceClient.GetBookFromArchiveAsync</c>.
         /// </summary>
         /// <remarks>
@@ -8898,6 +8789,35 @@ namespace Google.Example.Library.V1
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
         public gaxgrpc::CallSettings TestOptionalRequiredFlatteningParamsSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
+            gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>LibraryServiceClient.AddComments</c> and <c>LibraryServiceClient.AddCommentsAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>LibraryServiceClient.AddComments</c> and
+        /// <c>LibraryServiceClient.AddCommentsAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public gaxgrpc::CallSettings AddCommentsSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
             gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
                 retryBackoff: GetDefaultRetryBackoff(),
                 timeoutBackoff: GetDefaultTimeoutBackoff(),
@@ -12022,203 +11942,6 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             ListStringsRequest request,
-            gaxgrpc::CallSettings callSettings = null)
-        {
-            throw new sys::NotImplementedException();
-        }
-
-        /// <summary>
-        /// Adds comments to a book
-        /// </summary>
-        /// <param name="name">
-        ///
-        /// </param>
-        /// <param name="comments">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task that completes when the RPC has completed.
-        /// </returns>
-        public virtual stt::Task AddCommentsAsync(
-            BookNameOneof name,
-            scg::IEnumerable<Comment> comments,
-            gaxgrpc::CallSettings callSettings = null) => AddCommentsAsync(
-                new AddCommentsRequest
-                {
-                    BookNameOneof = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
-                    Comments = { gax::GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
-                },
-                callSettings);
-
-        /// <summary>
-        /// Adds comments to a book
-        /// </summary>
-        /// <param name="name">
-        ///
-        /// </param>
-        /// <param name="comments">
-        ///
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="st::CancellationToken"/> to use for this RPC.
-        /// </param>
-        /// <returns>
-        /// A Task that completes when the RPC has completed.
-        /// </returns>
-        public virtual stt::Task AddCommentsAsync(
-            BookNameOneof name,
-            scg::IEnumerable<Comment> comments,
-            st::CancellationToken cancellationToken) => AddCommentsAsync(
-                name,
-                comments,
-                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
-
-        /// <summary>
-        /// Adds comments to a book
-        /// </summary>
-        /// <param name="name">
-        ///
-        /// </param>
-        /// <param name="comments">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        public virtual void AddComments(
-            BookNameOneof name,
-            scg::IEnumerable<Comment> comments,
-            gaxgrpc::CallSettings callSettings = null) => AddComments(
-                new AddCommentsRequest
-                {
-                    BookNameOneof = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
-                    Comments = { gax::GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
-                },
-                callSettings);
-
-        /// <summary>
-        /// Adds comments to a book
-        /// </summary>
-        /// <param name="name">
-        ///
-        /// </param>
-        /// <param name="comments">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task that completes when the RPC has completed.
-        /// </returns>
-        public virtual stt::Task AddCommentsAsync(
-            string name,
-            scg::IEnumerable<Comment> comments,
-            gaxgrpc::CallSettings callSettings = null) => AddCommentsAsync(
-                new AddCommentsRequest
-                {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
-                    Comments = { gax::GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
-                },
-                callSettings);
-
-        /// <summary>
-        /// Adds comments to a book
-        /// </summary>
-        /// <param name="name">
-        ///
-        /// </param>
-        /// <param name="comments">
-        ///
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="st::CancellationToken"/> to use for this RPC.
-        /// </param>
-        /// <returns>
-        /// A Task that completes when the RPC has completed.
-        /// </returns>
-        public virtual stt::Task AddCommentsAsync(
-            string name,
-            scg::IEnumerable<Comment> comments,
-            st::CancellationToken cancellationToken) => AddCommentsAsync(
-                name,
-                comments,
-                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
-
-        /// <summary>
-        /// Adds comments to a book
-        /// </summary>
-        /// <param name="name">
-        ///
-        /// </param>
-        /// <param name="comments">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        public virtual void AddComments(
-            string name,
-            scg::IEnumerable<Comment> comments,
-            gaxgrpc::CallSettings callSettings = null) => AddComments(
-                new AddCommentsRequest
-                {
-                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
-                    Comments = { gax::GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
-                },
-                callSettings);
-
-        /// <summary>
-        /// Adds comments to a book
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task that completes when the RPC has completed.
-        /// </returns>
-        public virtual stt::Task AddCommentsAsync(
-            AddCommentsRequest request,
-            gaxgrpc::CallSettings callSettings = null)
-        {
-            throw new sys::NotImplementedException();
-        }
-
-        /// <summary>
-        /// Adds comments to a book
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="st::CancellationToken"/> to use for this RPC.
-        /// </param>
-        /// <returns>
-        /// A Task that completes when the RPC has completed.
-        /// </returns>
-        public virtual stt::Task AddCommentsAsync(
-            AddCommentsRequest request,
-            st::CancellationToken cancellationToken) => AddCommentsAsync(
-                request,
-                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
-
-        /// <summary>
-        /// Adds comments to a book
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        public virtual void AddComments(
-            AddCommentsRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             throw new sys::NotImplementedException();
@@ -16661,6 +16384,203 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="comments">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task that completes when the RPC has completed.
+        /// </returns>
+        public virtual stt::Task AddCommentsAsync(
+            BookNameOneof name,
+            scg::IEnumerable<Comment> comments,
+            gaxgrpc::CallSettings callSettings = null) => AddCommentsAsync(
+                new AddCommentsRequest
+                {
+                    BookNameOneof = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    Comments = { gax::GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
+                },
+                callSettings);
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="comments">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task that completes when the RPC has completed.
+        /// </returns>
+        public virtual stt::Task AddCommentsAsync(
+            BookNameOneof name,
+            scg::IEnumerable<Comment> comments,
+            st::CancellationToken cancellationToken) => AddCommentsAsync(
+                name,
+                comments,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="comments">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        public virtual void AddComments(
+            BookNameOneof name,
+            scg::IEnumerable<Comment> comments,
+            gaxgrpc::CallSettings callSettings = null) => AddComments(
+                new AddCommentsRequest
+                {
+                    BookNameOneof = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    Comments = { gax::GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
+                },
+                callSettings);
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="comments">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task that completes when the RPC has completed.
+        /// </returns>
+        public virtual stt::Task AddCommentsAsync(
+            string name,
+            scg::IEnumerable<Comment> comments,
+            gaxgrpc::CallSettings callSettings = null) => AddCommentsAsync(
+                new AddCommentsRequest
+                {
+                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Comments = { gax::GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
+                },
+                callSettings);
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="comments">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task that completes when the RPC has completed.
+        /// </returns>
+        public virtual stt::Task AddCommentsAsync(
+            string name,
+            scg::IEnumerable<Comment> comments,
+            st::CancellationToken cancellationToken) => AddCommentsAsync(
+                name,
+                comments,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="comments">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        public virtual void AddComments(
+            string name,
+            scg::IEnumerable<Comment> comments,
+            gaxgrpc::CallSettings callSettings = null) => AddComments(
+                new AddCommentsRequest
+                {
+                    Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Comments = { gax::GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
+                },
+                callSettings);
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task that completes when the RPC has completed.
+        /// </returns>
+        public virtual stt::Task AddCommentsAsync(
+            AddCommentsRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task that completes when the RPC has completed.
+        /// </returns>
+        public virtual stt::Task AddCommentsAsync(
+            AddCommentsRequest request,
+            st::CancellationToken cancellationToken) => AddCommentsAsync(
+                request,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        public virtual void AddComments(
+            AddCommentsRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
         /// This method is not exposed in the GAPIC config. It should be generated.
         /// </summary>
         /// <param name="request">
@@ -16736,7 +16656,6 @@ namespace Google.Example.Library.V1
         private readonly gaxgrpc::ApiCall<UpdateBookRequest, Book> _callUpdateBook;
         private readonly gaxgrpc::ApiCall<MoveBookRequest, Book> _callMoveBook;
         private readonly gaxgrpc::ApiCall<ListStringsRequest, ListStringsResponse> _callListStrings;
-        private readonly gaxgrpc::ApiCall<AddCommentsRequest, pbwkt::Empty> _callAddComments;
         private readonly gaxgrpc::ApiCall<GetBookFromArchiveRequest, BookFromArchive> _callGetBookFromArchive;
         private readonly gaxgrpc::ApiCall<GetBookFromAnywhereRequest, BookFromAnywhere> _callGetBookFromAnywhere;
         private readonly gaxgrpc::ApiCall<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> _callGetBookFromAbsolutelyAnywhere;
@@ -16749,6 +16668,7 @@ namespace Google.Example.Library.V1
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigBook;
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigNothing;
         private readonly gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> _callTestOptionalRequiredFlatteningParams;
+        private readonly gaxgrpc::ApiCall<AddCommentsRequest, pbwkt::Empty> _callAddComments;
         private readonly gaxgrpc::ApiCall<ListShelvesRequest, Book> _callPrivateListShelves;
 
         /// <summary>
@@ -16802,9 +16722,6 @@ namespace Google.Example.Library.V1
                 .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}"));
             _callListStrings = clientHelper.BuildApiCall<ListStringsRequest, ListStringsResponse>(
                 GrpcClient.ListStringsAsync, GrpcClient.ListStrings, effectiveSettings.ListStringsSettings);
-            _callAddComments = clientHelper.BuildApiCall<AddCommentsRequest, pbwkt::Empty>(
-                GrpcClient.AddCommentsAsync, GrpcClient.AddComments, effectiveSettings.AddCommentsSettings)
-                .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}"));
             _callGetBookFromArchive = clientHelper.BuildApiCall<GetBookFromArchiveRequest, BookFromArchive>(
                 GrpcClient.GetBookFromArchiveAsync, GrpcClient.GetBookFromArchive, effectiveSettings.GetBookFromArchiveSettings)
                 .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}"));
@@ -16836,6 +16753,9 @@ namespace Google.Example.Library.V1
                 .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}"));
             _callTestOptionalRequiredFlatteningParams = clientHelper.BuildApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>(
                 GrpcClient.TestOptionalRequiredFlatteningParamsAsync, GrpcClient.TestOptionalRequiredFlatteningParams, effectiveSettings.TestOptionalRequiredFlatteningParamsSettings);
+            _callAddComments = clientHelper.BuildApiCall<AddCommentsRequest, pbwkt::Empty>(
+                GrpcClient.AddCommentsAsync, GrpcClient.AddComments, effectiveSettings.AddCommentsSettings)
+                .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}"));
             _callPrivateListShelves = clientHelper.BuildApiCall<ListShelvesRequest, Book>(
                 GrpcClient.PrivateListShelvesAsync, GrpcClient.PrivateListShelves, effectiveSettings.PrivateListShelvesSettings);
             Modify_ApiCall(ref _callCreateShelf);
@@ -16864,8 +16784,6 @@ namespace Google.Example.Library.V1
             Modify_MoveBookApiCall(ref _callMoveBook);
             Modify_ApiCall(ref _callListStrings);
             Modify_ListStringsApiCall(ref _callListStrings);
-            Modify_ApiCall(ref _callAddComments);
-            Modify_AddCommentsApiCall(ref _callAddComments);
             Modify_ApiCall(ref _callGetBookFromArchive);
             Modify_GetBookFromArchiveApiCall(ref _callGetBookFromArchive);
             Modify_ApiCall(ref _callGetBookFromAnywhere);
@@ -16890,6 +16808,8 @@ namespace Google.Example.Library.V1
             Modify_GetBigNothingApiCall(ref _callGetBigNothing);
             Modify_ApiCall(ref _callTestOptionalRequiredFlatteningParams);
             Modify_TestOptionalRequiredFlatteningParamsApiCall(ref _callTestOptionalRequiredFlatteningParams);
+            Modify_ApiCall(ref _callAddComments);
+            Modify_AddCommentsApiCall(ref _callAddComments);
             Modify_ApiCall(ref _callPrivateListShelves);
             Modify_PrivateListShelvesApiCall(ref _callPrivateListShelves);
             OnConstruction(grpcClient, effectiveSettings, clientHelper);
@@ -16924,7 +16844,6 @@ namespace Google.Example.Library.V1
         partial void Modify_UpdateBookApiCall(ref gaxgrpc::ApiCall<UpdateBookRequest, Book> call);
         partial void Modify_MoveBookApiCall(ref gaxgrpc::ApiCall<MoveBookRequest, Book> call);
         partial void Modify_ListStringsApiCall(ref gaxgrpc::ApiCall<ListStringsRequest, ListStringsResponse> call);
-        partial void Modify_AddCommentsApiCall(ref gaxgrpc::ApiCall<AddCommentsRequest, pbwkt::Empty> call);
         partial void Modify_GetBookFromArchiveApiCall(ref gaxgrpc::ApiCall<GetBookFromArchiveRequest, BookFromArchive> call);
         partial void Modify_GetBookFromAnywhereApiCall(ref gaxgrpc::ApiCall<GetBookFromAnywhereRequest, BookFromAnywhere> call);
         partial void Modify_GetBookFromAbsolutelyAnywhereApiCall(ref gaxgrpc::ApiCall<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> call);
@@ -16937,6 +16856,7 @@ namespace Google.Example.Library.V1
         partial void Modify_GetBigBookApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_GetBigNothingApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_TestOptionalRequiredFlatteningParamsApiCall(ref gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> call);
+        partial void Modify_AddCommentsApiCall(ref gaxgrpc::ApiCall<AddCommentsRequest, pbwkt::Empty> call);
         partial void Modify_PrivateListShelvesApiCall(ref gaxgrpc::ApiCall<ListShelvesRequest, Book> call);
         partial void OnConstruction(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings effectiveSettings, gaxgrpc::ClientHelper clientHelper);
 
@@ -16961,7 +16881,6 @@ namespace Google.Example.Library.V1
         partial void Modify_UpdateBookRequest(ref UpdateBookRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_MoveBookRequest(ref MoveBookRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_ListStringsRequest(ref ListStringsRequest request, ref gaxgrpc::CallSettings settings);
-        partial void Modify_AddCommentsRequest(ref AddCommentsRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_GetBookFromArchiveRequest(ref GetBookFromArchiveRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_GetBookFromAnywhereRequest(ref GetBookFromAnywhereRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_GetBookFromAbsolutelyAnywhereRequest(ref GetBookFromAbsolutelyAnywhereRequest request, ref gaxgrpc::CallSettings settings);
@@ -16973,6 +16892,7 @@ namespace Google.Example.Library.V1
         partial void Modify_FindRelatedBooksRequest(ref FindRelatedBooksRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_AddLabelRequest(ref gtv::AddLabelRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_TestOptionalRequiredFlatteningParamsRequest(ref TestOptionalRequiredFlatteningParamsRequest request, ref gaxgrpc::CallSettings settings);
+        partial void Modify_AddCommentsRequest(ref AddCommentsRequest request, ref gaxgrpc::CallSettings settings);
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
@@ -17492,43 +17412,6 @@ namespace Google.Example.Library.V1
         {
             Modify_ListStringsRequest(ref request, ref callSettings);
             return new gaxgrpc::GrpcPagedEnumerable<ListStringsRequest, ListStringsResponse, IResourceName>(_callListStrings, request, callSettings);
-        }
-
-        /// <summary>
-        /// Adds comments to a book
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task that completes when the RPC has completed.
-        /// </returns>
-        public override stt::Task AddCommentsAsync(
-            AddCommentsRequest request,
-            gaxgrpc::CallSettings callSettings = null)
-        {
-            Modify_AddCommentsRequest(ref request, ref callSettings);
-            return _callAddComments.Async(request, callSettings);
-        }
-
-        /// <summary>
-        /// Adds comments to a book
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        public override void AddComments(
-            AddCommentsRequest request,
-            gaxgrpc::CallSettings callSettings = null)
-        {
-            Modify_AddCommentsRequest(ref request, ref callSettings);
-            _callAddComments.Sync(request, callSettings);
         }
 
         /// <summary>
@@ -18065,6 +17948,43 @@ namespace Google.Example.Library.V1
         {
             Modify_TestOptionalRequiredFlatteningParamsRequest(ref request, ref callSettings);
             return _callTestOptionalRequiredFlatteningParams.Sync(request, callSettings);
+        }
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task that completes when the RPC has completed.
+        /// </returns>
+        public override stt::Task AddCommentsAsync(
+            AddCommentsRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_AddCommentsRequest(ref request, ref callSettings);
+            return _callAddComments.Async(request, callSettings);
+        }
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        public override void AddComments(
+            AddCommentsRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_AddCommentsRequest(ref request, ref callSettings);
+            _callAddComments.Sync(request, callSettings);
         }
 
         /// <summary>
