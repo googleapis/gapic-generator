@@ -161,9 +161,11 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
     List<StaticLangApiMethodView> apiMethods =
         generateApiMethods(context, context.getSupportedMethods());
     view.apiMethods(apiMethods);
-    // If any methods have header request params, "fmt" is needed for `fmt.Sprintf` calls.
+    // If any methods have header request params, "fmt" is needed for `fmt.Sprintf` calls and
+    // "net/url" is needed for `url.QueryEscape`.
     if (apiMethods.stream().anyMatch(m -> !m.headerRequestParams().isEmpty())) {
       context.getImportTypeTable().saveNicknameFor("fmt;;;");
+      context.getImportTypeTable().saveNicknameFor("net/url;;;");
     }
 
     // In Go, multiple methods share the same iterator type, one iterator type per resource type.

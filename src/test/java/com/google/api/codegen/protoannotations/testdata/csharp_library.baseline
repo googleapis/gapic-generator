@@ -2276,7 +2276,7 @@ namespace Google.Example.Library.V1.Samples
         }
     }
 }
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/TestFloat.cs ==============
+============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/TestFloatAndInt64.cs ==============
 // Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -2293,13 +2293,13 @@ namespace Google.Example.Library.V1.Samples
 
 // Generated code. DO NOT EDIT!
 
-// This is a generated sample ("Request", "test_float")
+// This is a generated sample ("Request", "test_float_and_int64")
 
 // sample-metadata
 //   title:
-//   usage: dotnet run [--param_float 1.2345]
+//   usage: dotnet run [--param_float 1.2345] [--param_long 67890]
 
-// [START test_float]
+// [START test_float_and_int64]
 namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
@@ -2307,16 +2307,17 @@ namespace Google.Example.Library.V1.Samples
     using System;
     using System.Collections.Generic;
 
-    public class TestFloat
+    public class TestFloatAndInt64
     {
-        public static void SampleTestOptionalRequiredFlatteningParams(float paramFloat)
+        public static void SampleTestOptionalRequiredFlatteningParams(float paramFloat, long paramLong)
         {
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // float paramFloat = 1.2345f
+            // long paramLong = 67890L
             TestOptionalRequiredFlatteningParamsRequest request = new TestOptionalRequiredFlatteningParamsRequest
             {
                 RequiredSingularInt32 = 0,
-                RequiredSingularInt64 = 0L,
+                RequiredSingularInt64 = 67890L,
                 RequiredSingularFloat = 1.2345f,
                 RequiredSingularDouble = 0.0,
                 RequiredSingularBool = false,
@@ -2348,18 +2349,21 @@ namespace Google.Example.Library.V1.Samples
             TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.TestOptionalRequiredFlatteningParams(request);
             Console.WriteLine(response);
         }
-        // [END test_float]
+        // [END test_float_and_int64]
         public static void Main(string[] args)
         {
             new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
-                    SampleTestOptionalRequiredFlatteningParams(opts.ParamFloat));
+                    SampleTestOptionalRequiredFlatteningParams(opts.ParamFloat, opts.ParamLong));
         }
 
         public class Options
         {
             [Option("param_float", Default = 1.2345f)]
             public float ParamFloat { get; set; }
+
+            [Option("param_long", Default = 67890L)]
+            public long ParamLong { get; set; }
         }
     }
 }

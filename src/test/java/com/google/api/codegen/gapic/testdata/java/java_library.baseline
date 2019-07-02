@@ -101,9 +101,6 @@ compileJava.options.encoding = 'UTF-8'
 javadoc.options.encoding = 'UTF-8'
 
 dependencies {
-  compile 'com.google.api:gax:1.0.0'
-  compile 'com.google.api:gax-grpc:1.0.0'
-  compile 'io.grpc:grpc-netty-shaded:1.9.0'
   compile 'com.google.api:api-common:0.0.2'
   compile 'commons-cli:commons-cli:1.4'
   compile project(':gapic-google-cloud-library-v1')
@@ -121,7 +118,7 @@ clean {
   delete 'all-jars'
 }
 
-task run {
+run {
   mainClassName = getProperty('mainClass')
 }
 
@@ -3463,6 +3460,163 @@ public class TestDefaultCallingFormForPaging {
 
   public static void main(String[] args) {
     sampleListShelves();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/TestFloatAndInt64.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Request",  "test_float_and_int64")
+// sample-metadata:
+//   title:
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.TestFloatAndInt64 [--args='[--param_float 1.2345] [--param_long 67890]']
+
+package com.google.example.examples.library.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.cloud.ProjectName;
+import com.google.example.library.v1.BookName;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
+import com.google.protobuf.ByteString;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class TestFloatAndInt64 {
+  // [START test_float_and_int64]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.cloud.ProjectName;
+   * import com.google.example.library.v1.BookName;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
+   * import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
+   * import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
+   * import com.google.protobuf.ByteString;
+   * import java.util.ArrayList;
+   * import java.util.HashMap;
+   * import java.util.List;
+   * import java.util.Map;
+   */
+
+  public static void sampleTestOptionalRequiredFlatteningParams(float paramFloat, long paramLong) {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // paramFloat = 1.2345F;
+      // paramLong = 67890L;
+      int requiredSingularInt32 = 0;
+      double requiredSingularDouble = 0.0;
+      boolean requiredSingularBool = false;
+      TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO;
+      String requiredSingularString = "";
+      ByteString requiredSingularBytes = ByteString.copyFromUtf8("");
+      TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
+      ShelfBookName requiredSingularResourceName = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      BookName requiredSingularResourceNameOneof = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      ProjectName requiredSingularResourceNameCommon = ProjectName.of("[PROJECT]");
+      int requiredSingularFixed32 = 0;
+      long requiredSingularFixed64 = 0L;
+      List<Integer> requiredRepeatedInt32 = new ArrayList<>();
+      List<Long> requiredRepeatedInt64 = new ArrayList<>();
+      List<Float> requiredRepeatedFloat = new ArrayList<>();
+      List<Double> requiredRepeatedDouble = new ArrayList<>();
+      List<Boolean> requiredRepeatedBool = new ArrayList<>();
+      List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum = new ArrayList<>();
+      List<String> requiredRepeatedString = new ArrayList<>();
+      List<ByteString> requiredRepeatedBytes = new ArrayList<>();
+      List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage = new ArrayList<>();
+      List<ShelfBookName> requiredRepeatedResourceName = new ArrayList<>();
+      List<BookName> requiredRepeatedResourceNameOneof = new ArrayList<>();
+      List<ProjectName> requiredRepeatedResourceNameCommon = new ArrayList<>();
+      List<Integer> requiredRepeatedFixed32 = new ArrayList<>();
+      List<Long> requiredRepeatedFixed64 = new ArrayList<>();
+      Map<Integer, String> requiredMap = new HashMap<>();
+      TestOptionalRequiredFlatteningParamsRequest request = TestOptionalRequiredFlatteningParamsRequest.newBuilder()
+        .setRequiredSingularInt32(requiredSingularInt32)
+        .setRequiredSingularInt64(paramLong)
+        .setRequiredSingularFloat(paramFloat)
+        .setRequiredSingularDouble(requiredSingularDouble)
+        .setRequiredSingularBool(requiredSingularBool)
+        .setRequiredSingularEnum(requiredSingularEnum)
+        .setRequiredSingularString(requiredSingularString)
+        .setRequiredSingularBytes(requiredSingularBytes)
+        .setRequiredSingularMessage(requiredSingularMessage)
+        .setRequiredSingularResourceName(requiredSingularResourceName.toString())
+        .setRequiredSingularResourceNameOneof(requiredSingularResourceNameOneof.toString())
+        .setRequiredSingularResourceNameCommon(requiredSingularResourceNameCommon.toString())
+        .setRequiredSingularFixed32(requiredSingularFixed32)
+        .setRequiredSingularFixed64(requiredSingularFixed64)
+        .addAllRequiredRepeatedInt32(requiredRepeatedInt32)
+        .addAllRequiredRepeatedInt64(requiredRepeatedInt64)
+        .addAllRequiredRepeatedFloat(requiredRepeatedFloat)
+        .addAllRequiredRepeatedDouble(requiredRepeatedDouble)
+        .addAllRequiredRepeatedBool(requiredRepeatedBool)
+        .addAllRequiredRepeatedEnum(requiredRepeatedEnum)
+        .addAllRequiredRepeatedString(requiredRepeatedString)
+        .addAllRequiredRepeatedBytes(requiredRepeatedBytes)
+        .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
+        .addAllRequiredRepeatedResourceName(ShelfBookName.toStringList(requiredRepeatedResourceName))
+        .addAllRequiredRepeatedResourceNameOneof(BookName.toStringList(requiredRepeatedResourceNameOneof))
+        .addAllRequiredRepeatedResourceNameCommon(ProjectName.toStringList(requiredRepeatedResourceNameCommon))
+        .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
+        .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
+        .putAllRequiredMap(requiredMap)
+        .build();
+      TestOptionalRequiredFlatteningParamsResponse response = libraryClient.testOptionalRequiredFlatteningParams(request);
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END test_float_and_int64]
+
+  public static void main(String[] args) throws Exception {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("param_float")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("param_long")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    float paramFloat =
+        cl.getOptionValue("param_float") != null
+            ? Float.parseFloat(cl.getOptionValue("param_float"))
+            : 1.2345F;
+    long paramLong =
+        cl.getOptionValue("param_long") != null
+            ? Long.parseLong(cl.getOptionValue("param_long"))
+            : 67890L;
+
+    sampleTestOptionalRequiredFlatteningParams(paramFloat, paramLong);
   }
 }
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/TestResourceNameOneof.java ==============
