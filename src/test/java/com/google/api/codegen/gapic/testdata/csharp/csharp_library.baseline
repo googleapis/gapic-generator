@@ -19051,6 +19051,7 @@ namespace Google.Example.Library.V1
     /// <item><description>BookName: A resource of type 'book'.</description></item>
     /// <item><description>ArchivedBookName: A resource of type 'archived_book'.</description></item>
     /// <item><description>DeletedBookNameFixed: A resource of type 'deleted_book'.</description></item>
+    /// <item><description>ProjectBookName: A resource of type 'project_book'.</description></item>
     /// </list>
     /// </remarks>
     public sealed partial class BookNameOneof : gax::IResourceName, sys::IEquatable<BookNameOneof>
@@ -19079,6 +19080,11 @@ namespace Google.Example.Library.V1
             /// A resource of type 'deleted_book'.
             /// </summary>
             DeletedBookNameFixed = 3,
+
+            /// <summary>
+            /// A resource of type 'project_book'.
+            /// </summary>
+            ProjectBookName = 4,
         }
 
         /// <summary>
@@ -19090,6 +19096,7 @@ namespace Google.Example.Library.V1
         /// <item><description>BookName: A resource of type 'book'.</description></item>
         /// <item><description>ArchivedBookName: A resource of type 'archived_book'.</description></item>
         /// <item><description>DeletedBookNameFixed: A resource of type 'deleted_book'.</description></item>
+        /// <item><description>ProjectBookName: A resource of type 'project_book'.</description></item>
         /// </list>
         /// Or an <see cref="gax::UnknownResourceName"/> if <paramref name="allowUnknown"/> is <c>true</c>.
         /// </remarks>
@@ -19117,6 +19124,7 @@ namespace Google.Example.Library.V1
         /// <item><description>BookName: A resource of type 'book'.</description></item>
         /// <item><description>ArchivedBookName: A resource of type 'archived_book'.</description></item>
         /// <item><description>DeletedBookNameFixed: A resource of type 'deleted_book'.</description></item>
+        /// <item><description>ProjectBookName: A resource of type 'project_book'.</description></item>
         /// </list>
         /// Or an <see cref="gax::UnknownResourceName"/> if <paramref name="allowUnknown"/> is <c>true</c>.
         /// </remarks>
@@ -19145,6 +19153,12 @@ namespace Google.Example.Library.V1
             if (DeletedBookNameFixed.TryParse(name, out deletedBookNameFixed))
             {
                 result = new BookNameOneof(OneofType.DeletedBookNameFixed, deletedBookNameFixed);
+                return true;
+            }
+            ProjectBookName projectBookName;
+            if (ProjectBookName.TryParse(name, out projectBookName))
+            {
+                result = new BookNameOneof(OneofType.ProjectBookName, projectBookName);
                 return true;
             }
             if (allowUnknown)
@@ -19184,6 +19198,14 @@ namespace Google.Example.Library.V1
         /// <returns>A new <see cref="BookNameOneof"/>, containing <paramref name="deletedBookNameFixed"/>.</returns>
         public static BookNameOneof From(DeletedBookNameFixed deletedBookNameFixed) => new BookNameOneof(OneofType.DeletedBookNameFixed, deletedBookNameFixed);
 
+        /// <summary>
+        /// Construct a new instance of <see cref="BookNameOneof"/> from the provided <see cref="ProjectBookName"/>
+        /// </summary>
+        /// <param name="projectBookName">The <see cref="ProjectBookName"/> to be contained within
+        /// the returned <see cref="BookNameOneof"/>. Must not be <c>null</c>.</param>
+        /// <returns>A new <see cref="BookNameOneof"/>, containing <paramref name="projectBookName"/>.</returns>
+        public static BookNameOneof From(ProjectBookName projectBookName) => new BookNameOneof(OneofType.ProjectBookName, projectBookName);
+
         private static bool IsValid(OneofType type, gax::IResourceName name)
         {
             switch (type)
@@ -19192,6 +19214,7 @@ namespace Google.Example.Library.V1
                 case OneofType.BookName: return name is BookName;
                 case OneofType.ArchivedBookName: return name is ArchivedBookName;
                 case OneofType.DeletedBookNameFixed: return name is DeletedBookNameFixed;
+                case OneofType.ProjectBookName: return name is ProjectBookName;
                 default: return false;
             }
         }
@@ -19255,6 +19278,15 @@ namespace Google.Example.Library.V1
         /// contain an instance of <see cref="DeletedBookNameFixed"/>.
         /// </remarks>
         public DeletedBookNameFixed DeletedBookNameFixed => CheckAndReturn<DeletedBookNameFixed>(OneofType.DeletedBookNameFixed);
+
+        /// <summary>
+        /// Get the contained <see cref="gax::IResourceName"/> as <see cref="ProjectBookName"/>.
+        /// </summary>
+        /// <remarks>
+        /// An <see cref="sys::InvalidOperationException"/> will be thrown if this does not
+        /// contain an instance of <see cref="ProjectBookName"/>.
+        /// </remarks>
+        public ProjectBookName ProjectBookName => CheckAndReturn<ProjectBookName>(OneofType.ProjectBookName);
 
         /// <inheritdoc />
         public gax::ResourceNameKind Kind => gax::ResourceNameKind.Oneof;
@@ -19351,44 +19383,44 @@ namespace Google.Example.Library.V1
     }
 
     /// <summary>
-    /// Resource name for the 'location' resource.
+    /// Resource name for the 'project_book' resource.
     /// </summary>
-    public sealed partial class LocationName : gax::IResourceName, sys::IEquatable<LocationName>
+    public sealed partial class ProjectBookName : gax::IResourceName, sys::IEquatable<ProjectBookName>
     {
-        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("projects/{project}/locations/{location}");
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("projects/{project}/books/{book}");
 
         /// <summary>
-        /// Parses the given location resource name in string form into a new
-        /// <see cref="LocationName"/> instance.
+        /// Parses the given project_book resource name in string form into a new
+        /// <see cref="ProjectBookName"/> instance.
         /// </summary>
-        /// <param name="locationName">The location resource name in string form. Must not be <c>null</c>.</param>
-        /// <returns>The parsed <see cref="LocationName"/> if successful.</returns>
-        public static LocationName Parse(string locationName)
+        /// <param name="projectBookName">The project_book resource name in string form. Must not be <c>null</c>.</param>
+        /// <returns>The parsed <see cref="ProjectBookName"/> if successful.</returns>
+        public static ProjectBookName Parse(string projectBookName)
         {
-            gax::GaxPreconditions.CheckNotNull(locationName, nameof(locationName));
-            gax::TemplatedResourceName resourceName = s_template.ParseName(locationName);
-            return new LocationName(resourceName[0], resourceName[1]);
+            gax::GaxPreconditions.CheckNotNull(projectBookName, nameof(projectBookName));
+            gax::TemplatedResourceName resourceName = s_template.ParseName(projectBookName);
+            return new ProjectBookName(resourceName[0], resourceName[1]);
         }
 
         /// <summary>
-        /// Tries to parse the given location resource name in string form into a new
-        /// <see cref="LocationName"/> instance.
+        /// Tries to parse the given project_book resource name in string form into a new
+        /// <see cref="ProjectBookName"/> instance.
         /// </summary>
         /// <remarks>
-        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="locationName"/> is null,
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="projectBookName"/> is null,
         /// as this would usually indicate a programming error rather than a data error.
         /// </remarks>
-        /// <param name="locationName">The location resource name in string form. Must not be <c>null</c>.</param>
-        /// <param name="result">When this method returns, the parsed <see cref="LocationName"/>,
+        /// <param name="projectBookName">The project_book resource name in string form. Must not be <c>null</c>.</param>
+        /// <param name="result">When this method returns, the parsed <see cref="ProjectBookName"/>,
         /// or <c>null</c> if parsing fails.</param>
         /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
-        public static bool TryParse(string locationName, out LocationName result)
+        public static bool TryParse(string projectBookName, out ProjectBookName result)
         {
-            gax::GaxPreconditions.CheckNotNull(locationName, nameof(locationName));
+            gax::GaxPreconditions.CheckNotNull(projectBookName, nameof(projectBookName));
             gax::TemplatedResourceName resourceName;
-            if (s_template.TryParseName(locationName, out resourceName))
+            if (s_template.TryParseName(projectBookName, out resourceName))
             {
-                result = new LocationName(resourceName[0], resourceName[1]);
+                result = new ProjectBookName(resourceName[0], resourceName[1]);
                 return true;
             }
             else
@@ -19399,15 +19431,15 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Constructs a new instance of the <see cref="LocationName"/> resource name class
+        /// Constructs a new instance of the <see cref="ProjectBookName"/> resource name class
         /// from its component parts.
         /// </summary>
         /// <param name="projectId">The project ID. Must not be <c>null</c>.</param>
-        /// <param name="locationId">The location ID. Must not be <c>null</c>.</param>
-        public LocationName(string projectId, string locationId)
+        /// <param name="bookId">The book ID. Must not be <c>null</c>.</param>
+        public ProjectBookName(string projectId, string bookId)
         {
             ProjectId = gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId));
-            LocationId = gax::GaxPreconditions.CheckNotNull(locationId, nameof(locationId));
+            BookId = gax::GaxPreconditions.CheckNotNull(bookId, nameof(bookId));
         }
 
         /// <summary>
@@ -19416,30 +19448,30 @@ namespace Google.Example.Library.V1
         public string ProjectId { get; }
 
         /// <summary>
-        /// The location ID. Never <c>null</c>.
+        /// The book ID. Never <c>null</c>.
         /// </summary>
-        public string LocationId { get; }
+        public string BookId { get; }
 
         /// <inheritdoc />
         public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
 
         /// <inheritdoc />
-        public override string ToString() => s_template.Expand(ProjectId, LocationId);
+        public override string ToString() => s_template.Expand(ProjectId, BookId);
 
         /// <inheritdoc />
         public override int GetHashCode() => ToString().GetHashCode();
 
         /// <inheritdoc />
-        public override bool Equals(object obj) => Equals(obj as LocationName);
+        public override bool Equals(object obj) => Equals(obj as ProjectBookName);
 
         /// <inheritdoc />
-        public bool Equals(LocationName other) => ToString() == other?.ToString();
+        public bool Equals(ProjectBookName other) => ToString() == other?.ToString();
 
         /// <inheritdoc />
-        public static bool operator ==(LocationName a, LocationName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
+        public static bool operator ==(ProjectBookName a, ProjectBookName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
 
         /// <inheritdoc />
-        public static bool operator !=(LocationName a, LocationName b) => !(a == b);
+        public static bool operator !=(ProjectBookName a, ProjectBookName b) => !(a == b);
     }
 
     /// <summary>
