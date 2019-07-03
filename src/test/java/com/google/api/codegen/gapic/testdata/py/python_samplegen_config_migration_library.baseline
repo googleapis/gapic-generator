@@ -284,7 +284,7 @@ LibraryServiceClient
 
     client = library_v1.LibraryServiceClient()
 
-    name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+    name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
     # TODO: Initialize `book`:
     book = {}
@@ -744,7 +744,7 @@ LibraryServiceClient
 
     client = library_v1.LibraryServiceClient()
 
-    name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+    name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
     # TODO: Initialize `book`:
     book = {}
@@ -1146,39 +1146,29 @@ class LibraryServiceClient(object):
 
 
     @classmethod
-    def archive_book_path(cls, archive, book):
-        """Return a fully-qualified archive_book string."""
-        return google.api_core.path_template.expand(
-            'archives/{archive}/books/{book}',
-            archive=archive,
-            book=book,
-        )
-
-    @classmethod
-    def archived_book_path(cls, archive, book):
+    def archived_book_path(cls, archive_path, book_id):
         """Return a fully-qualified archived_book string."""
         return google.api_core.path_template.expand(
-            'archives/{archive}/books/{book}',
-            archive=archive,
-            book=book,
+            'archives/{archive_path}/books/{book_id=**}',
+            archive_path=archive_path,
+            book_id=book_id,
         )
 
     @classmethod
-    def book_path(cls, book_shelf, book):
+    def book_path(cls, shelf_id, book_id):
         """Return a fully-qualified book string."""
         return google.api_core.path_template.expand(
-            'bookShelves/{book_shelf}/books/{book}',
-            book_shelf=book_shelf,
-            book=book,
+            'shelves/{shelf_id}/books/{book_id}',
+            shelf_id=shelf_id,
+            book_id=book_id,
         )
 
     @classmethod
-    def project_book_path(cls, project, book):
-        """Return a fully-qualified project_book string."""
+    def project_path(cls, project):
+        """Return a fully-qualified project string."""
         return google.api_core.path_template.expand(
-            'projects/{project}/books/{book}',
+            'projects/{project}',
             project=project,
-            book=book,
         )
 
     @classmethod
@@ -1814,7 +1804,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>>
             >>> response = client.get_book(name)
 
@@ -1976,7 +1966,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>>
             >>> client.delete_book(name)
 
@@ -2041,7 +2031,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>>
             >>> # TODO: Initialize `book`:
             >>> book = {}
@@ -2126,7 +2116,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>> other_shelf_name = client.shelf_path('[SHELF_ID]')
             >>>
             >>> response = client.move_book(name, other_shelf_name)
@@ -2276,7 +2266,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>> comment = b''
             >>> stage = enums.Comment.Stage.UNSET
             >>> alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
@@ -2346,7 +2336,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.archived_book_path('[ARCHIVE]', '[BOOK]')
+            >>> name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
             >>>
             >>> response = client.get_book_from_archive(name)
 
@@ -2411,8 +2401,8 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-            >>> alt_book_name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>>
             >>> response = client.get_book_from_anywhere(name, alt_book_name)
 
@@ -2480,7 +2470,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>>
             >>> response = client.get_book_from_absolutely_anywhere(name)
 
@@ -2549,7 +2539,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>> index_name = 'default index'
             >>>
             >>> # TODO: Initialize `index_map_item`:
@@ -2734,7 +2724,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>> request = {'name': name}
             >>>
             >>> requests = [request]
@@ -2791,7 +2781,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>> request = {'name': name}
             >>>
             >>> requests = [request]
@@ -2847,8 +2837,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-            >>> request = {'name': name}
+            >>> request = {}
             >>>
             >>> requests = [request]
             >>> client.babble_about_book(requests)
@@ -2988,8 +2977,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> # TODO: Initialize `resource`:
-            >>> resource = ''
+            >>> resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>>
             >>> # TODO: Initialize `label`:
             >>> label = ''
@@ -3059,7 +3047,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>>
             >>> response = client.get_big_book(name)
             >>>
@@ -3138,7 +3126,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
             >>>
             >>> response = client.get_big_nothing(name)
             >>>
@@ -3333,11 +3321,9 @@ class LibraryServiceClient(object):
             >>>
             >>> # TODO: Initialize `required_singular_message`:
             >>> required_singular_message = {}
-            >>> required_singular_resource_name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-            >>> required_singular_resource_name_oneof = client.book_path('[BOOK_SHELF]', '[BOOK]')
-            >>>
-            >>> # TODO: Initialize `required_singular_resource_name_common`:
-            >>> required_singular_resource_name_common = ''
+            >>> required_singular_resource_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> required_singular_resource_name_oneof = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> required_singular_resource_name_common = client.project_path('[PROJECT]')
             >>>
             >>> # TODO: Initialize `required_singular_fixed32`:
             >>> required_singular_fixed32 = 0
@@ -3944,6 +3930,7 @@ import google.api_core.gapic_v1.client_info
 import google.api_core.gapic_v1.config
 import google.api_core.gapic_v1.method
 import google.api_core.grpc_helpers
+import google.api_core.path_template
 import grpc
 
 from google.cloud.example.library_v1.gapic import enums
@@ -4002,6 +3989,17 @@ class MyProtoClient(object):
         return cls(*args, **kwargs)
 
     from_service_account_json = from_service_account_file
+
+
+    @classmethod
+    def return_path(cls, shelf, book, return_):
+        """Return a fully-qualified return string."""
+        return google.api_core.path_template.expand(
+            'shelves/{shelf}/books/{book}/returns/{return}',
+            shelf=shelf,
+            book=book,
+            return=return_,
+        )
 
     def __init__(self, transport=None, channel=None, credentials=None,
             client_config=None, client_info=None, client_options=None):
@@ -4990,7 +4988,7 @@ def lint_setup_py(session):
     session.install('docutils', 'pygments')
     session.run(
         'python', 'setup.py', 'check', '--restructuredtext', '--strict')
-============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.py ==============
+============== file: samples/v1/babble_about_book_1.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5015,10 +5013,10 @@ def lint_setup_py(session):
 # sample-metadata
 #   title: Test response handling for methods that return empty
 #   description: Test response handling for methods that return empty
-#   usage: python3 samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.py
+#   usage: python3 samples/v1/babble_about_book_1.py
 import sys
 
-# [START sample]
+# [START babble_about_book_1]
 
 from google.cloud.example import library_v1
 
@@ -5027,21 +5025,20 @@ def sample_babble_about_book():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-  request = {'name': name}
+  request = {}
 
   requests = [request]
   client.babble_about_book(requests)
   # No one replied
   print(u'No one replied.')
-# [END sample]
+# [END babble_about_book_1]
 
 def main():
   sample_babble_about_book()
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py ==============
+============== file: samples/v1/babble_about_book_2.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5066,10 +5063,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Test default response handling is turned off for methods that return empty
 #   description: Test default response handling is turned off for methods that return empty
-#   usage: python3 samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py
+#   usage: python3 samples/v1/babble_about_book_2.py
 import sys
 
-# [START sample]
+# [START babble_about_book_2]
 
 from google.cloud.example import library_v1
 
@@ -5078,12 +5075,11 @@ def sample_babble_about_book():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-  request = {'name': name}
+  request = {}
 
   requests = [request]
   client.babble_about_book(requests)
-# [END sample]
+# [END babble_about_book_2]
 
 def main():
   sample_babble_about_book()
@@ -5186,254 +5182,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/find_related_books_request_paged_all_odyssey.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: The Odyssey
-#   description: Testing calling forms
-#   usage: python3 samples/v1/find_related_books_request_paged_all_odyssey.py
-import sys
-
-# [START sample]
-
-from google.cloud.example import library_v1
-
-def sample_find_related_books():
-  """Testing calling forms"""
-
-  client = library_v1.LibraryServiceClient()
-
-  names_element = 'Odyssey'
-  names = [names_element]
-  shelves_element = 'Classics'
-  shelves = [shelves_element]
-
-  # Iterate over all results
-  for response_item in client.find_related_books(names, shelves):
-    book = response_item
-    print(u'Here\'s a related book: {}'.format(book))
-# [END sample]
-
-def main():
-  sample_find_related_books()
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/find_related_books_request_paged_odyssey.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: The Odyssey
-#   description: Testing calling forms
-#   usage: python3 samples/v1/find_related_books_request_paged_odyssey.py
-import sys
-
-# [START sample]
-
-from google.cloud.example import library_v1
-
-def sample_find_related_books():
-  """Testing calling forms"""
-
-  client = library_v1.LibraryServiceClient()
-
-  names_element = 'Odyssey'
-  names = [names_element]
-  shelves_element = 'Classics'
-  shelves = [shelves_element]
-
-  # Iterate over results one page at a time
-  for page in client.find_related_books(names, shelves).pages:
-    for response_item in page:
-      book = response_item
-      print(u'Here\'s a related book: {}'.format(book))
-# [END sample]
-
-def main():
-  sample_find_related_books()
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/get_big_book_long_running_promise_wap.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: GetBigBook: 'War and Peace'
-#   description: Testing calling forms
-#   usage: python3 samples/v1/get_big_book_long_running_promise_wap.py [--shelf "Novel\\\"\`\b\t\n\r"]
-import sys
-
-# [START hopper]
-
-from google.cloud.example import library_v1
-
-def sample_get_big_book(shelf):
-  """Testing calling forms"""
-
-  client = library_v1.LibraryServiceClient()
-
-  # shelf = 'Novel\\"`\b\t\n\r'
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-
-  operation = client.get_big_book(name)
-
-  print(u'Waiting for operation to complete...')
-  response = operation.result()
-
-  # Testing iterating over map fields when both key and value are specified.
-  for my_key, my_value in response.map_list_value_value.items():
-    print(u'key: {}, value: {}'.format(my_key, my_value))
-
-  # Testing iterating over map fields when only key is specified.
-  for another_key, _ in response.map_list_value_value.items():
-    print(u'key: {}'.format(another_key))
-
-  # Testing iterating over map fields when only value is specified.
-  for _, another_value in response.map_list_value_value.items():
-    print(u'value: {}'.format(another_value))
-
-  print(u'name: {}'.format(response.name))
-  print(u'author: {}'.format(response.author))
-# [END hopper]
-
-def main():
-  import argparse
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default='Novel\\"`\b\t\n\r')
-  args = parser.parse_args()
-
-  sample_get_big_book(args.shelf)
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/get_big_book_long_running_promise_wap2.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap2")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: GetBigBook: 'War and Peace'
-#   description: Testing resource name overlap
-#   usage: python3 samples/v1/get_big_book_long_running_promise_wap2.py [--shelf Novel] [--big_book_name "War and Peace"]
-import sys
-
-# [START hopper]
-
-from google.cloud.example import library_v1
-
-def sample_get_big_book(shelf, big_book_name):
-  """
-    Testing resource name overlap
-
-    Args:
-      shelf Test word wrapping for long lines. This is a long comment. The name of
-      the shelf to retrieve the big book from.
-      big_book_name The name of the book.
-    """
-
-  client = library_v1.LibraryServiceClient()
-
-  # shelf = 'Novel'
-  # big_book_name = 'War and Peace'
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-
-  operation = client.get_big_book(name)
-
-  print(u'Waiting for operation to complete...')
-  response = operation.result()
-
-  print(response)
-# [END hopper]
-
-def main():
-  import argparse
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default='Novel')
-  parser.add_argument('--big_book_name', type=str, default='War and Peace')
-  args = parser.parse_args()
-
-  sample_get_big_book(args.shelf, args.big_book_name)
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.py ==============
+============== file: samples/v1/empty_response_type_with_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5458,10 +5207,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Test response handling for methods that return empty
 #   description: Test response handling for methods that return empty
-#   usage: python3 samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.py
+#   usage: python3 samples/v1/empty_response_type_with_response_handling.py
 import sys
 
-# [START sample]
+# [START empty_response_type_with_response_handling]
 
 from google.cloud.example import library_v1
 
@@ -5470,7 +5219,7 @@ def sample_get_big_nothing():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
   operation = client.get_big_nothing(name)
 
@@ -5479,14 +5228,14 @@ def sample_get_big_nothing():
 
   # Got nothing
   print(u'Got nothing.')
-# [END sample]
+# [END empty_response_type_with_response_handling]
 
 def main():
   sample_get_big_nothing()
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py ==============
+============== file: samples/v1/empty_response_type_without_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5511,10 +5260,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Test default response handling is turned off for methods that return empty
 #   description: Test default response handling is turned off for methods that return empty
-#   usage: python3 samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py
+#   usage: python3 samples/v1/empty_response_type_without_response_handling.py
 import sys
 
-# [START sample]
+# [START empty_response_type_without_response_handling]
 
 from google.cloud.example import library_v1
 
@@ -5523,17 +5272,70 @@ def sample_get_big_nothing():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
   operation = client.get_big_nothing(name)
 
   print(u'Waiting for operation to complete...')
   response = operation.result()
 
-# [END sample]
+# [END empty_response_type_without_response_handling]
 
 def main():
   sample_get_big_nothing()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/find_related_books_odyssey.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: The Odyssey
+#   description: Testing calling forms
+#   usage: python3 samples/v1/find_related_books_odyssey.py
+import sys
+
+# [START find_related_books_odyssey]
+
+from google.cloud.example import library_v1
+
+def sample_find_related_books():
+  """Testing calling forms"""
+
+  client = library_v1.LibraryServiceClient()
+
+  names_element = 'Odyssey'
+  names = [names_element]
+  shelves_element = 'Classics'
+  shelves = [shelves_element]
+
+  # Iterate over all results
+  for response_item in client.find_related_books(names, shelves):
+    book = response_item
+    print(u'Here\'s a related book: {}'.format(book))
+# [END find_related_books_odyssey]
+
+def main():
+  sample_find_related_books()
 
 if __name__ == '__main__':
   main()
@@ -5575,7 +5377,7 @@ def sample_get_book():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
   response = client.get_book(name)
   int_key_val = response.map_string_value[123]
@@ -5587,6 +5389,78 @@ def sample_get_book():
 
 def main():
   sample_get_book()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/hopper.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: GetBigBook: 'War and Peace'
+#   description: Testing calling forms
+#   usage: python3 samples/v1/hopper.py [--shelf "Novel\\\"\`\b\t\n\r"]
+import sys
+
+# [START hopper]
+
+from google.cloud.example import library_v1
+
+def sample_get_big_book(shelf):
+  """Testing calling forms"""
+
+  client = library_v1.LibraryServiceClient()
+
+  # shelf = 'Novel\\"`\b\t\n\r'
+  name = client.book_path(shelf, 'War and Peace')
+
+  operation = client.get_big_book(name)
+
+  print(u'Waiting for operation to complete...')
+  response = operation.result()
+
+  # Testing iterating over map fields when both key and value are specified.
+  for my_key, my_value in response.map_list_value_value.items():
+    print(u'key: {}, value: {}'.format(my_key, my_value))
+
+  # Testing iterating over map fields when only key is specified.
+  for another_key, _ in response.map_list_value_value.items():
+    print(u'key: {}'.format(another_key))
+
+  # Testing iterating over map fields when only value is specified.
+  for _, another_value in response.map_list_value_value.items():
+    print(u'value: {}'.format(another_value))
+
+  print(u'name: {}'.format(response.name))
+  print(u'author: {}'.format(response.author))
+# [END hopper]
+
+def main():
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--shelf', type=str, default='Novel\\"`\b\t\n\r')
+  args = parser.parse_args()
+
+  sample_get_big_book(args.shelf)
 
 if __name__ == '__main__':
   main()
@@ -5635,57 +5509,6 @@ def sample_stream_books():
 
 def main():
   sample_stream_books()
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/monolog_about_book_request_streaming_client_prog.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: Programming Books
-#   description: Testing calling forms
-#   usage: python3 samples/v1/monolog_about_book_request_streaming_client_prog.py
-import sys
-
-# [START sample]
-
-from google.cloud.example import library_v1
-from google.cloud.example.library_v1 import enums
-
-def sample_monolog_about_book():
-  """Testing calling forms"""
-
-  client = library_v1.LibraryServiceClient()
-
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-  request = {'name': name}
-
-  requests = [request]
-  response = client.monolog_about_book(requests)
-  print(u'The stage of the comment is: {}'.format(enums.Comment.Stage(response.stage).name))
-# [END sample]
-
-def main():
-  sample_monolog_about_book()
 
 if __name__ == '__main__':
   main()
@@ -5824,7 +5647,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/publish_series_request_test_request_object_field_comments.py ==============
+============== file: samples/v1/publish_series_test_request_object_field_comments.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5849,10 +5672,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: request object field comments
 #   description: Test request object field comments
-#   usage: python3 samples/v1/publish_series_request_test_request_object_field_comments.py
+#   usage: python3 samples/v1/publish_series_test_request_object_field_comments.py
 import sys
 
-# [START sample]
+# [START publish_series_test_request_object_field_comments]
 
 from google.cloud.example import library_v1
 import io
@@ -5889,14 +5712,14 @@ def sample_publish_series():
 
   response = client.publish_series(shelf, books, series_uuid, edition=edition)
   print(response)
-# [END sample]
+# [END publish_series_test_request_object_field_comments]
 
 def main():
   sample_publish_series()
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/publish_series_request_test_write_to_file.py ==============
+============== file: samples/v1/publish_series_test_write_to_file.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5921,10 +5744,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: test writing fields to files
 #   description: Testing write fields to files.
-#   usage: python3 samples/v1/publish_series_request_test_write_to_file.py
+#   usage: python3 samples/v1/publish_series_test_write_to_file.py
 import sys
 
-# [START sample]
+# [START publish_series_test_write_to_file]
 
 from google.cloud.example import library_v1
 
@@ -5944,7 +5767,7 @@ def sample_publish_series():
   # testing writing string field.
   with open('series_uuid_in_plain_text.txt', 'w') as out:
     out.write(response.series_uuid.series_string)
-# [END sample]
+# [END publish_series_test_write_to_file]
 
 def main():
   sample_publish_series()
@@ -6000,7 +5823,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/stream_shelves_request_streaming_server_empty.py ==============
+============== file: samples/v1/sample_monolog_about_book.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -6017,34 +5840,37 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
-#   title: Server streaming
+#   title: Programming Books
 #   description: Testing calling forms
-#   usage: python3 samples/v1/stream_shelves_request_streaming_server_empty.py
+#   usage: python3 samples/v1/sample_monolog_about_book.py
 import sys
 
-# [START sample]
+# [START sample_monolog_about_book]
 
 from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
 
-def sample_stream_shelves():
+def sample_monolog_about_book():
   """Testing calling forms"""
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.shelf_path('[SHELF_ID]')
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  request = {'name': name}
 
-  for response_item in client.stream_shelves(name):
-    print(response_item)
-# [END sample]
+  requests = [request]
+  response = client.monolog_about_book(requests)
+  print(u'The stage of the comment is: {}'.format(enums.Comment.Stage(response.stage).name))
+# [END sample_monolog_about_book]
 
 def main():
-  sample_stream_shelves()
+  sample_monolog_about_book()
 
 if __name__ == '__main__':
   main()
@@ -6140,9 +5966,9 @@ def sample_test_optional_required_flattening_params(param_float, param_long):
   required_singular_string = ''
   required_singular_bytes = b''
   required_singular_message = {}
-  required_singular_resource_name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-  required_singular_resource_name_oneof = client.book_path('[BOOK_SHELF]', '[BOOK]')
-  required_singular_resource_name_common = ''
+  required_singular_resource_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  required_singular_resource_name_oneof = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  required_singular_resource_name_common = client.project_path('[PROJECT]')
   required_singular_fixed32 = 0
   required_singular_fixed64 = 0
   required_repeated_int32 = []
@@ -6212,7 +6038,7 @@ def sample_get_book_from_absolutely_anywhere():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+  name = client.archived_book_path('The archive to search for the book', 'The ID of the book')
 
   response = client.get_book_from_absolutely_anywhere(name)
   print(u'Archived book found.')
@@ -6258,7 +6084,7 @@ def sample_get_book_from_absolutely_anywhere():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+  name = client.book_path('The Shelf to search for the book', 'The ID of the book')
 
   response = client.get_book_from_absolutely_anywhere(name)
   print(u'Book on shelf found.')
@@ -6339,62 +6165,58 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap2")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
 #   title: GetBigBook: 'War and Peace'
-#   description: Testing calling forms
-#   usage: python3 samples/v1/this_tag_should_be_the_name_of_the_file.py [--shelf "Novel\\\"\`\b\t\n\r"]
+#   description: Testing resource name overlap
+#   usage: python3 samples/v1/this_tag_should_be_the_name_of_the_file.py [--shelf Novel] [--big_book_name "War and Peace"]
 import sys
 
 # [START this_tag_should_be_the_name_of_the_file]
 
 from google.cloud.example import library_v1
 
-def sample_get_big_book(shelf):
-  """Testing calling forms"""
+def sample_get_big_book(shelf, big_book_name):
+  """
+    Testing resource name overlap
+
+    Args:
+      shelf Test word wrapping for long lines. This is a long comment. The name of
+      the shelf to retrieve the big book from.
+      big_book_name The name of the book.
+    """
 
   client = library_v1.LibraryServiceClient()
 
-  # shelf = 'Novel\\"`\b\t\n\r'
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+  # shelf = 'Novel'
+  # big_book_name = 'War and Peace'
+  name = client.book_path(shelf, big_book_name)
 
   operation = client.get_big_book(name)
 
   print(u'Waiting for operation to complete...')
   response = operation.result()
 
-  # Testing iterating over map fields when both key and value are specified.
-  for my_key, my_value in response.map_list_value_value.items():
-    print(u'key: {}, value: {}'.format(my_key, my_value))
-
-  # Testing iterating over map fields when only key is specified.
-  for another_key, _ in response.map_list_value_value.items():
-    print(u'key: {}'.format(another_key))
-
-  # Testing iterating over map fields when only value is specified.
-  for _, another_value in response.map_list_value_value.items():
-    print(u'value: {}'.format(another_value))
-
-  print(u'name: {}'.format(response.name))
-  print(u'author: {}'.format(response.author))
+  print(response)
 # [END this_tag_should_be_the_name_of_the_file]
 
 def main():
   import argparse
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default='Novel\\"`\b\t\n\r')
+  parser.add_argument('--shelf', type=str, default='Novel')
+  parser.add_argument('--big_book_name', type=str, default='War and Peace')
   args = parser.parse_args()
 
-  sample_get_big_book(args.shelf)
+  sample_get_big_book(args.shelf, args.big_book_name)
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/turing_prog_request_streaming_bidi.py ==============
+============== file: samples/v1/turing.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -6419,10 +6241,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Programming Books
 #   description: Testing calling forms
-#   usage: python3 samples/v1/turing_prog_request_streaming_bidi.py [--image_file_name "image_file.jpg"] [--stage DRAFT]
+#   usage: python3 samples/v1/turing.py [--image_file_name "image_file.jpg"] [--stage DRAFT]
 import sys
 
-# [START turing_prog_request_streaming_bidi]
+# [START turing]
 
 from google.cloud.example import library_v1
 from google.cloud.example.library_v1 import enums
@@ -6435,7 +6257,7 @@ def sample_discuss_book(image_file_name, stage):
 
   # image_file_name = 'image_file.jpg'
   # stage = enums.Comment.Stage.DRAFT
-  name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
   with io.open('comment_file', 'rb') as f:
     comment = f.read()
   comment_2 = {'comment': comment, 'stage': stage}
@@ -6446,7 +6268,7 @@ def sample_discuss_book(image_file_name, stage):
   requests = [request]
   for response_item in client.discuss_book(requests):
     print(response_item)
-# [END turing_prog_request_streaming_bidi]
+# [END turing]
 
 def main():
   import argparse
@@ -6563,6 +6385,7 @@ setuptools.setup(
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import time
 
 from google.cloud.example import library_v1
@@ -6575,9 +6398,10 @@ from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
 class TestSystemLibraryService(object):
 
     def test_update_book(self):
+        project_id = os.environ['PROJECT_ID']
 
         client = library_v1.LibraryServiceClient()
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('testShelf-{0}'.format(time.time()), project_id)
         rating = enums.Book.Rating.GOOD
         book = {'rating': rating}
         response = client.update_book(name, book)
@@ -6961,7 +6785,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         response = client.get_book(name)
         assert expected_response == response
@@ -6980,7 +6804,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         with pytest.raises(CustomException):
             client.get_book(name)
@@ -7038,7 +6862,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         client.delete_book(name)
 
@@ -7056,7 +6880,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         with pytest.raises(CustomException):
             client.delete_book(name)
@@ -7078,7 +6902,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         book = {}
 
         response = client.update_book(name, book)
@@ -7098,7 +6922,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         book = {}
 
         with pytest.raises(CustomException):
@@ -7121,7 +6945,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         other_shelf_name = client.shelf_path('[SHELF_ID]')
 
         response = client.move_book(name, other_shelf_name)
@@ -7141,7 +6965,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         other_shelf_name = client.shelf_path('[SHELF_ID]')
 
         with pytest.raises(CustomException):
@@ -7192,7 +7016,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         comment = b'95'
         stage = enums.Comment.Stage.UNSET
         alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
@@ -7215,7 +7039,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         comment = b'95'
         stage = enums.Comment.Stage.UNSET
         alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
@@ -7242,7 +7066,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.archived_book_path('[ARCHIVE]', '[BOOK]')
+        name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
 
         response = client.get_book_from_archive(name)
         assert expected_response == response
@@ -7261,7 +7085,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.archived_book_path('[ARCHIVE]', '[BOOK]')
+        name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
 
         with pytest.raises(CustomException):
             client.get_book_from_archive(name)
@@ -7283,8 +7107,8 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-        alt_book_name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         response = client.get_book_from_anywhere(name, alt_book_name)
         assert expected_response == response
@@ -7303,8 +7127,8 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-        alt_book_name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         with pytest.raises(CustomException):
             client.get_book_from_anywhere(name, alt_book_name)
@@ -7326,7 +7150,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         response = client.get_book_from_absolutely_anywhere(name)
         assert expected_response == response
@@ -7345,7 +7169,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         with pytest.raises(CustomException):
             client.get_book_from_absolutely_anywhere(name)
@@ -7358,7 +7182,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         index_name = 'default index'
         index_map_item = 'indexMapItem1918721251'
         index_map = {'default_key': index_map_item}
@@ -7379,7 +7203,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         index_name = 'default index'
         index_map_item = 'indexMapItem1918721251'
         index_map = {'default_key': index_map_item}
@@ -7488,7 +7312,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         request = {'name': name}
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
@@ -7513,7 +7337,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         request = {'name': name}
 
         request = library_pb2.DiscussBookRequest(**request)
@@ -7537,7 +7361,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         request = {'name': name}
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
@@ -7560,7 +7384,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         request = {'name': name}
 
         request = library_pb2.DiscussBookRequest(**request)
@@ -7578,8 +7402,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-        request = {'name': name}
+        request = {}
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
 
@@ -7600,8 +7423,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-        request = {'name': name}
+        request = {}
 
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
@@ -7669,7 +7491,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        resource = 'resource-341064690'
+        resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         label = 'label102727412'
 
         response = client.add_label(resource, label)
@@ -7689,7 +7511,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        resource = 'resource-341064690'
+        resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         label = 'label102727412'
 
         with pytest.raises(CustomException):
@@ -7714,7 +7536,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         response = client.get_big_book(name)
         result = response.result()
@@ -7740,7 +7562,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         response = client.get_big_book(name)
         exception = response.exception()
@@ -7761,7 +7583,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         response = client.get_big_nothing(name)
         result = response.result()
@@ -7787,7 +7609,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         response = client.get_big_nothing(name)
         exception = response.exception()
@@ -7815,9 +7637,9 @@ class TestLibraryServiceClient(object):
         required_singular_string = 'requiredSingularString-1949894503'
         required_singular_bytes = b'-29'
         required_singular_message = {}
-        required_singular_resource_name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-        required_singular_resource_name_oneof = client.book_path('[BOOK_SHELF]', '[BOOK]')
-        required_singular_resource_name_common = 'requiredSingularResourceNameCommon-1126805002'
+        required_singular_resource_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        required_singular_resource_name_oneof = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        required_singular_resource_name_common = client.project_path('[PROJECT]')
         required_singular_fixed32 = 720656715
         required_singular_fixed64 = 720656810
         required_repeated_int32 = []
@@ -7862,9 +7684,9 @@ class TestLibraryServiceClient(object):
         required_singular_string = 'requiredSingularString-1949894503'
         required_singular_bytes = b'-29'
         required_singular_message = {}
-        required_singular_resource_name = client.book_path('[BOOK_SHELF]', '[BOOK]')
-        required_singular_resource_name_oneof = client.book_path('[BOOK_SHELF]', '[BOOK]')
-        required_singular_resource_name_common = 'requiredSingularResourceNameCommon-1126805002'
+        required_singular_resource_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        required_singular_resource_name_oneof = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        required_singular_resource_name_common = client.project_path('[PROJECT]')
         required_singular_fixed32 = 720656715
         required_singular_fixed64 = 720656810
         required_repeated_int32 = []

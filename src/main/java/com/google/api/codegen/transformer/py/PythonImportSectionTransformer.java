@@ -130,6 +130,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     imports.add(createImport("google.oauth2", "service_account"));
     imports.add(createImport("google.api_core.grpc_helpers"));
     imports.add(createImport("google.api_core.gapic_v1.client_info"));
+    imports.add(createImport("google.api_core.client_options"));
     imports.add(createImport("google.api_core.gapic_v1.config"));
     imports.add(createImport("google.api_core.gapic_v1.method"));
 

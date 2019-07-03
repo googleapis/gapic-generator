@@ -151,7 +151,14 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       String apiName,
       String... baseNames) {
     return createTestConfig(
-        language, gapicConfigFileNames, packageConfigFileName, apiName, null, null, baseNames);
+        language,
+        gapicConfigFileNames,
+        packageConfigFileName,
+        apiName,
+        null,
+        null,
+        null,
+        baseNames);
   }
 
   /**
@@ -168,6 +175,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       String apiName,
       String protoPackage,
       String clientPackage,
+      String baseline,
       String... baseNames) {
     Model model = Model.create(Service.getDefaultInstance());
     GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
@@ -186,13 +194,16 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       snippetNames.addAll(generator.getInputFileNames());
     }
 
-    StringBuilder gapic_config_missing = new StringBuilder();
-    if (gapicConfigFileNames == null || gapicConfigFileNames.length == 0) {
-      gapic_config_missing.append("_no_gapic_config");
+    if (baseline == null) {
+      StringBuilder gapic_config_missing = new StringBuilder();
+      if (gapicConfigFileNames == null || gapicConfigFileNames.length == 0) {
+        gapic_config_missing.append("_no_gapic_config");
+      }
+
+      baseline =
+          language.toString().toLowerCase() + "_" + apiName + gapic_config_missing + ".baseline";
     }
 
-    String baseline =
-        language.toString().toLowerCase() + "_" + apiName + gapic_config_missing + ".baseline";
     baseNames = Lists.asList(apiName, baseNames).toArray(new String[0]);
 
     return new Object[] {
@@ -223,7 +234,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     }
 
     GapicProductConfig productConfig =
-        GapicProductConfig.create(model, gapicConfig, protoPackage, clientPackage, language);
+        GapicProductConfig.create(model, gapicConfig, null, protoPackage, clientPackage, language);
     if (productConfig == null) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());

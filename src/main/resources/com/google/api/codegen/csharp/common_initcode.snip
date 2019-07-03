@@ -127,6 +127,13 @@
 @private innerStructureInitLine(line)
     {
         @join fieldSetting : line.fieldSettings
+            @if fieldSetting.initCodeLine.descriptions
+                @join descLine : fieldSetting.initCodeLine.descriptions
+                    // {@descLine}
+                @end
+
+
+            @end
             {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
         @end
     }
@@ -136,6 +143,13 @@
 @private innerListInitLine(line)
     {
         @join child : line.elements
+            @if child.descriptions
+                @join descLine : child.descriptions
+                    // {@descLine}
+                @end
+
+
+            @end
             {@initCode(FALSE, child)},
         @end
     }
@@ -144,6 +158,13 @@
 @private innerMapInitLine(line)
     {
         @join mapEntry : line.initEntries
+            @if mapEntry.value.descriptions
+                @join descLine : mapEntry.value.descriptions
+                    // {@descLine}
+                @end
+
+
+            @end
             { {@mapEntry.key}, {@initCode(FALSE, mapEntry.value)} },
         @end
     }

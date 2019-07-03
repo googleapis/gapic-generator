@@ -2932,6 +2932,12 @@ module Library
 
       private_constant :BOOK_PATH_TEMPLATE
 
+      PROJECT_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "projects/{project}/books/{book}"
+      )
+
+      private_constant :PROJECT_BOOK_PATH_TEMPLATE
+
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf_id}"
       )
@@ -2967,6 +2973,17 @@ module Library
       def self.book_path book_shelf, book
         BOOK_PATH_TEMPLATE.render(
           :"book_shelf" => book_shelf,
+          :"book" => book
+        )
+      end
+
+      # Returns a fully-qualified project_book resource name string.
+      # @param project [String]
+      # @param book [String]
+      # @return [String]
+      def self.project_book_path project, book
+        PROJECT_BOOK_PATH_TEMPLATE.render(
+          :"project" => project,
           :"book" => book
         )
       end
@@ -3034,6 +3051,7 @@ module Library
           timeout: timeout,
           lib_name: lib_name,
           lib_version: lib_version,
+          metadata: metadata,
         )
 
         if credentials.is_a?(String) || credentials.is_a?(Hash)
@@ -5370,7 +5388,7 @@ end
 source "https://rubygems.org"
 
 gem "google-cloud-library", path: "../../"
-============== file: samples/v1/babble_about_book_1.rb ==============
+============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5390,11 +5408,11 @@ gem "google-cloud-library", path: "../../"
 # sample-metadata
 #   title: Test response handling for methods that return empty
 #   description: Test response handling for methods that return empty
-#   bundle exec ruby samples/v1/babble_about_book_1.rb
+#   bundle exec ruby samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.rb
 
 require "library"
 
-# [START babble_about_book_1]
+# [START sample]
 
 # Test response handling for methods that return empty
 def sample_babble_about_book
@@ -5410,7 +5428,7 @@ def sample_babble_about_book
   # No one replied
   puts "No one replied."
 end
-# [END babble_about_book_1]
+# [END sample]
 
 
 require "optparse"
@@ -5419,7 +5437,7 @@ if $PROGRAM_NAME == __FILE__
   sample_babble_about_book
 end
 
-============== file: samples/v1/babble_about_book_2.rb ==============
+============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5439,11 +5457,11 @@ end
 # sample-metadata
 #   title: Test default response handling is turned off for methods that return empty
 #   description: Test default response handling is turned off for methods that return empty
-#   bundle exec ruby samples/v1/babble_about_book_2.rb
+#   bundle exec ruby samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb
 
 require "library"
 
-# [START babble_about_book_2]
+# [START sample]
 
 # Test default response handling is turned off for methods that return empty
 def sample_babble_about_book
@@ -5456,7 +5474,7 @@ def sample_babble_about_book
   requests = [request]
   library_client.babble_about_book(requests)
 end
-# [END babble_about_book_2]
+# [END sample]
 
 
 require "optparse"
@@ -5556,7 +5574,263 @@ if $PROGRAM_NAME == __FILE__
   sample_delete_shelf
 end
 
-============== file: samples/v1/empty_response_type_with_response_handling.rb ==============
+============== file: samples/v1/find_related_books_request_paged_all_odyssey.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
+
+# sample-metadata
+#   title: The Odyssey
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/find_related_books_request_paged_all_odyssey.rb
+
+require "library"
+
+# [START sample]
+
+# Testing calling forms
+def sample_find_related_books
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  names_element = "Odyssey"
+  names = [names_element]
+  shelves_element = "Classics"
+  shelves = [shelves_element]
+
+  # Iterate over all results.
+  library_client.find_related_books(formatted_names, formatted_shelves).each do |element|
+    book = element
+    puts "Here's a related book: #{book}"
+  end
+end
+# [END sample]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+  sample_find_related_books
+end
+
+============== file: samples/v1/find_related_books_request_paged_odyssey.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
+
+# sample-metadata
+#   title: The Odyssey
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/find_related_books_request_paged_odyssey.rb
+
+require "library"
+
+# [START sample]
+
+# Testing calling forms
+def sample_find_related_books
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  names_element = "Odyssey"
+  names = [names_element]
+  shelves_element = "Classics"
+  shelves = [shelves_element]
+
+  # Iterate over results one page at a time.
+  library_client.find_related_books(formatted_names, formatted_shelves).each_page do |page|
+    # Process each page at a time.
+    page.each do |element|
+      book = element
+      puts "Here's a related book: #{book}"
+    end
+  end
+end
+# [END sample]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+  sample_find_related_books
+end
+
+============== file: samples/v1/get_big_book_long_running_request_async_wap.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
+
+# sample-metadata
+#   title: GetBigBook: 'War and Peace'
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/get_big_book_long_running_request_async_wap.rb [--shelf "Novel\\\"\`\b\t\n\r"]
+
+require "library"
+
+# [START hopper]
+
+# Testing calling forms
+def sample_get_big_book shelf
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  # shelf = "Novel\\\"`\b\t\n\r"
+  formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
+
+  # Make the long-running operation request
+  operation = library_client.get_big_book(formatted_name)
+
+  # Block until operation complete
+  operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  response = operation.response
+
+  # Testing iterating over map fields when both key and value are specified.
+  response.map_list_value_value.each do |my_key, my_value|
+    puts "key: #{my_key}, value: #{my_value.inspect}"
+  end
+
+  # Testing iterating over map fields when only key is specified.
+  response.map_list_value_value.keys.each do |another_key|
+    puts "key: #{another_key}"
+  end
+
+  # Testing iterating over map fields when only value is specified.
+  response.map_list_value_value.values.each do |another_value|
+    puts "value: #{another_value.inspect}"
+  end
+
+  puts "name: #{response.name}"
+  puts "author: #{response.author}"
+end
+# [END hopper]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+
+  shelf = "Novel\\\"`\b\t\n\r"
+
+  ARGV.options do |opts|
+    opts.on("--shelf=val") { |val| shelf = val }
+    opts.parse!
+  end
+
+
+  sample_get_big_book(shelf)
+end
+
+============== file: samples/v1/get_big_book_long_running_request_async_wap2.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap2")
+
+# sample-metadata
+#   title: GetBigBook: 'War and Peace'
+#   description: Testing resource name overlap
+#   bundle exec ruby samples/v1/get_big_book_long_running_request_async_wap2.rb [--shelf Novel] [--big_book_name "War and Peace"]
+
+require "library"
+
+# [START hopper]
+
+# Testing resource name overlap
+#
+# @param shelf {String} Test word wrapping for long lines. This is a long comment. The name of the
+# shelf to retrieve the big book from.
+# @param big_book_name {String} The name of the book.
+def sample_get_big_book shelf, big_book_name
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  # shelf = "Novel"
+  # big_book_name = "War and Peace"
+  formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
+
+  # Make the long-running operation request
+  operation = library_client.get_big_book(formatted_name)
+
+  # Block until operation complete
+  operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  response = operation.response
+
+  puts response.inspect
+end
+# [END hopper]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+
+  shelf = "Novel"
+  big_book_name = "War and Peace"
+
+  ARGV.options do |opts|
+    opts.on("--shelf=val") { |val| shelf = val }
+    opts.on("--big_book_name=val") { |val| big_book_name = val }
+    opts.parse!
+  end
+
+
+  sample_get_big_book(shelf, big_book_name)
+end
+
+============== file: samples/v1/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5576,11 +5850,11 @@ end
 # sample-metadata
 #   title: Test response handling for methods that return empty
 #   description: Test response handling for methods that return empty
-#   bundle exec ruby samples/v1/empty_response_type_with_response_handling.rb
+#   bundle exec ruby samples/v1/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb
 
 require "library"
 
-# [START empty_response_type_with_response_handling]
+# [START sample]
 
 # Test response handling for methods that return empty
 def sample_get_big_nothing
@@ -5602,7 +5876,7 @@ def sample_get_big_nothing
   # Got nothing
   puts "Got nothing."
 end
-# [END empty_response_type_with_response_handling]
+# [END sample]
 
 
 require "optparse"
@@ -5611,7 +5885,7 @@ if $PROGRAM_NAME == __FILE__
   sample_get_big_nothing
 end
 
-============== file: samples/v1/empty_response_type_without_response_handling.rb ==============
+============== file: samples/v1/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -5631,11 +5905,11 @@ end
 # sample-metadata
 #   title: Test default response handling is turned off for methods that return empty
 #   description: Test default response handling is turned off for methods that return empty
-#   bundle exec ruby samples/v1/empty_response_type_without_response_handling.rb
+#   bundle exec ruby samples/v1/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb
 
 require "library"
 
-# [START empty_response_type_without_response_handling]
+# [START sample]
 
 # Test default response handling is turned off for methods that return empty
 def sample_get_big_nothing
@@ -5654,64 +5928,13 @@ def sample_get_big_nothing
 
   response = operation.response
 end
-# [END empty_response_type_without_response_handling]
+# [END sample]
 
 
 require "optparse"
 
 if $PROGRAM_NAME == __FILE__
   sample_get_big_nothing
-end
-
-============== file: samples/v1/find_related_books_odyssey.rb ==============
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
-
-# sample-metadata
-#   title: The Odyssey
-#   description: Testing calling forms
-#   bundle exec ruby samples/v1/find_related_books_odyssey.rb
-
-require "library"
-
-# [START find_related_books_odyssey]
-
-# Testing calling forms
-def sample_find_related_books
-  # Instantiate a client
-  library_client = Library::Library.new version: :v1
-
-  names_element = "Odyssey"
-  names = [names_element]
-  shelves_element = "Classics"
-  shelves = [shelves_element]
-
-  # Iterate over all results.
-  library_client.find_related_books(formatted_names, formatted_shelves).each do |element|
-    book = element
-    puts "Here's a related book: #{book}"
-  end
-end
-# [END find_related_books_odyssey]
-
-
-require "optparse"
-
-if $PROGRAM_NAME == __FILE__
-  sample_find_related_books
 end
 
 ============== file: samples/v1/get_book_request_test_on_success_map.rb ==============
@@ -5763,88 +5986,6 @@ if $PROGRAM_NAME == __FILE__
   sample_get_book
 end
 
-============== file: samples/v1/hopper.rb ==============
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
-
-# sample-metadata
-#   title: GetBigBook: 'War and Peace'
-#   description: Testing calling forms
-#   bundle exec ruby samples/v1/hopper.rb [--shelf "Novel\\\"\`\b\t\n\r"]
-
-require "library"
-
-# [START hopper]
-
-# Testing calling forms
-def sample_get_big_book shelf
-  # Instantiate a client
-  library_client = Library::Library.new version: :v1
-
-  # shelf = "Novel\"`	
-  # "
-  formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
-
-  # Make the long-running operation request
-  operation = library_client.get_big_book(formatted_name)
-
-  # Block until operation complete
-  operation.wait_until_done!
-
-  raise operation.results.message if operation.error?
-
-  response = operation.response
-
-  # Testing iterating over map fields when both key and value are specified.
-  response.map_list_value_value.each do |my_key, my_value|
-    puts "key: #{my_key}, value: #{my_value.inspect}"
-  end
-
-  # Testing iterating over map fields when only key is specified.
-  response.map_list_value_value.keys.each do |another_key|
-    puts "key: #{another_key}"
-  end
-
-  # Testing iterating over map fields when only value is specified.
-  response.map_list_value_value.values.each do |another_value|
-    puts "value: #{another_value.inspect}"
-  end
-
-  puts "name: #{response.name}"
-  puts "author: #{response.author}"
-end
-# [END hopper]
-
-
-require "optparse"
-
-if $PROGRAM_NAME == __FILE__
-
-  shelf = "Novel\"`	
-"
-
-  ARGV.options do |opts|
-    opts.on("--shelf=val") { |val| shelf = val }
-    opts.parse!
-  end
-
-
-  sample_get_big_book(shelf)
-end
-
 ============== file: samples/v1/lovelace.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5889,6 +6030,54 @@ require "optparse"
 
 if $PROGRAM_NAME == __FILE__
   sample_stream_books
+end
+
+============== file: samples/v1/monolog_about_book_request_streaming_client_prog.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
+
+# sample-metadata
+#   title: Programming Books
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/monolog_about_book_request_streaming_client_prog.rb
+
+require "library"
+
+# [START sample]
+
+# Testing calling forms
+def sample_monolog_about_book
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
+  request = { name: formatted_name }
+
+  requests = [request]
+  response = library_client.monolog_about_book(requests, sample)
+
+  puts "The stage of the comment is: #{response.stage}"
+end
+# [END sample]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+  sample_monolog_about_book
 end
 
 ============== file: samples/v1/publish_series_request_pi_version.rb ==============
@@ -6022,7 +6211,7 @@ if $PROGRAM_NAME == __FILE__
   sample_publish_series
 end
 
-============== file: samples/v1/publish_series_test_request_object_field_comments.rb ==============
+============== file: samples/v1/publish_series_request_test_request_object_field_comments.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6042,11 +6231,11 @@ end
 # sample-metadata
 #   title: request object field comments
 #   description: Test request object field comments
-#   bundle exec ruby samples/v1/publish_series_test_request_object_field_comments.rb
+#   bundle exec ruby samples/v1/publish_series_request_test_request_object_field_comments.rb
 
 require "library"
 
-# [START publish_series_test_request_object_field_comments]
+# [START sample]
 
 # Test request object field comments
 def sample_publish_series
@@ -6084,7 +6273,7 @@ def sample_publish_series
   response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
   puts response.inspect
 end
-# [END publish_series_test_request_object_field_comments]
+# [END sample]
 
 
 require "optparse"
@@ -6093,7 +6282,7 @@ if $PROGRAM_NAME == __FILE__
   sample_publish_series
 end
 
-============== file: samples/v1/publish_series_test_write_to_file.rb ==============
+============== file: samples/v1/publish_series_request_test_write_to_file.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6113,11 +6302,11 @@ end
 # sample-metadata
 #   title: test writing fields to files
 #   description: Testing write fields to files.
-#   bundle exec ruby samples/v1/publish_series_test_write_to_file.rb
+#   bundle exec ruby samples/v1/publish_series_request_test_write_to_file.rb
 
 require "library"
 
-# [START publish_series_test_write_to_file]
+# [START sample]
 
 # Testing write fields to files.
 def sample_publish_series
@@ -6138,7 +6327,7 @@ def sample_publish_series
   File.write "series_uuid_in_plain_text.txt", response.series_uuid.series_string
 
 end
-# [END publish_series_test_write_to_file]
+# [END sample]
 
 
 require "optparse"
@@ -6193,7 +6382,7 @@ if $PROGRAM_NAME == __FILE__
   sample_get_shelf
 end
 
-============== file: samples/v1/sample_monolog_about_book.rb ==============
+============== file: samples/v1/stream_shelves_request_streaming_server_empty.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6208,37 +6397,35 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
 
 # sample-metadata
-#   title: Programming Books
+#   title: Server streaming
 #   description: Testing calling forms
-#   bundle exec ruby samples/v1/sample_monolog_about_book.rb
+#   bundle exec ruby samples/v1/stream_shelves_request_streaming_server_empty.rb
 
 require "library"
 
-# [START sample_monolog_about_book]
+# [START sample]
 
 # Testing calling forms
-def sample_monolog_about_book
+def sample_stream_shelves
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
-  request = { name: formatted_name }
+  formatted_name = library_client.class.shelf_path("[SHELF_ID]")
 
-  requests = [request]
-  response = library_client.monolog_about_book(requests, sample)
-
-  puts "The stage of the comment is: #{response.stage}"
+  library_client.stream_shelves(formatted_name).each do |element|
+    puts element.inspect
+  end
 end
-# [END sample_monolog_about_book]
+# [END sample]
 
 
 require "optparse"
 
 if $PROGRAM_NAME == __FILE__
-  sample_monolog_about_book
+  sample_stream_shelves
 end
 
 ============== file: samples/v1/test_default_calling_form_for_paging.rb ==============
@@ -6519,28 +6706,23 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap2")
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
 
 # sample-metadata
 #   title: GetBigBook: 'War and Peace'
-#   description: Testing resource name overlap
-#   bundle exec ruby samples/v1/this_tag_should_be_the_name_of_the_file.rb [--shelf Novel] [--big_book_name "War and Peace"]
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/this_tag_should_be_the_name_of_the_file.rb [--shelf "Novel\\\"\`\b\t\n\r"]
 
 require "library"
 
 # [START this_tag_should_be_the_name_of_the_file]
 
-# Testing resource name overlap
-#
-# @param shelf {String} Test word wrapping for long lines. This is a long comment. The name of the
-# shelf to retrieve the big book from.
-# @param big_book_name {String} The name of the book.
-def sample_get_big_book shelf, big_book_name
+# Testing calling forms
+def sample_get_big_book shelf
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  # shelf = "Novel"
-  # big_book_name = "War and Peace"
+  # shelf = "Novel\\\"`\b\t\n\r"
   formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
 
   # Make the long-running operation request
@@ -6553,7 +6735,23 @@ def sample_get_big_book shelf, big_book_name
 
   response = operation.response
 
-  puts response.inspect
+  # Testing iterating over map fields when both key and value are specified.
+  response.map_list_value_value.each do |my_key, my_value|
+    puts "key: #{my_key}, value: #{my_value.inspect}"
+  end
+
+  # Testing iterating over map fields when only key is specified.
+  response.map_list_value_value.keys.each do |another_key|
+    puts "key: #{another_key}"
+  end
+
+  # Testing iterating over map fields when only value is specified.
+  response.map_list_value_value.values.each do |another_value|
+    puts "value: #{another_value.inspect}"
+  end
+
+  puts "name: #{response.name}"
+  puts "author: #{response.author}"
 end
 # [END this_tag_should_be_the_name_of_the_file]
 
@@ -6562,20 +6760,18 @@ require "optparse"
 
 if $PROGRAM_NAME == __FILE__
 
-  shelf = "Novel"
-  big_book_name = "War and Peace"
+  shelf = "Novel\\\"`\b\t\n\r"
 
   ARGV.options do |opts|
     opts.on("--shelf=val") { |val| shelf = val }
-    opts.on("--big_book_name=val") { |val| big_book_name = val }
     opts.parse!
   end
 
 
-  sample_get_big_book(shelf, big_book_name)
+  sample_get_big_book(shelf)
 end
 
-============== file: samples/v1/turing.rb ==============
+============== file: samples/v1/turing_prog_request_streaming_bidi.rb ==============
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6595,11 +6791,11 @@ end
 # sample-metadata
 #   title: Programming Books
 #   description: Testing calling forms
-#   bundle exec ruby samples/v1/turing.rb [--image_file_name "image_file.jpg"] [--stage DRAFT]
+#   bundle exec ruby samples/v1/turing_prog_request_streaming_bidi.rb [--image_file_name "image_file.jpg"] [--stage DRAFT]
 
 require "library"
 
-# [START turing]
+# [START turing_prog_request_streaming_bidi]
 
 # Testing calling forms
 def sample_discuss_book image_file_name, stage
@@ -6623,7 +6819,7 @@ def sample_discuss_book image_file_name, stage
     puts element.inspect
   end
 end
-# [END turing]
+# [END turing_prog_request_streaming_bidi]
 
 
 require "optparse"

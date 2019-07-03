@@ -1059,6 +1059,7 @@ import pkg_resources
 import warnings
 
 from google.oauth2 import service_account
+import google.api_core.client_options
 import google.api_core.gapic_v1.client_info
 import google.api_core.gapic_v1.config
 import google.api_core.gapic_v1.method
@@ -1171,6 +1172,15 @@ class LibraryServiceClient(object):
         )
 
     @classmethod
+    def project_book_path(cls, project, book):
+        """Return a fully-qualified project_book string."""
+        return google.api_core.path_template.expand(
+            'projects/{project}/books/{book}',
+            project=project,
+            book=book,
+        )
+
+    @classmethod
     def shelf_path(cls, shelf_id):
         """Return a fully-qualified shelf string."""
         return google.api_core.path_template.expand(
@@ -1179,7 +1189,7 @@ class LibraryServiceClient(object):
         )
 
     def __init__(self, transport=None, channel=None, credentials=None,
-            client_config=None, client_info=None):
+            client_config=None, client_info=None, client_options=None):
         """Constructor.
 
         Args:
@@ -1209,6 +1219,9 @@ class LibraryServiceClient(object):
                 API requests. If ``None``, then default info will be used.
                 Generally, you only need to set this if you're developing
                 your own client library.
+            client_options (Union[dict, google.api_core.client_options.ClientOptions]):
+                Client options used to set user options on the client. API Endpoint
+                should be set through client_options.
         """
         # Raise deprecation warnings for things we want to go away.
         if client_config is not None:
@@ -1222,6 +1235,13 @@ class LibraryServiceClient(object):
                           '`transport` instead.',
                           PendingDeprecationWarning, stacklevel=2)
 
+        api_endpoint = self.SERVICE_ADDRESS
+        if client_options:
+            if type(client_options) == dict:
+                client_options = google.api_core.client_options.from_dict(client_options)
+            if client_options.api_endpoint:
+                api_endpoint = client_options.api_endpoint
+
         # Instantiate the transport.
         # The transport is responsible for handling serialization and
         # deserialization and actually sending data to the service.
@@ -1230,6 +1250,7 @@ class LibraryServiceClient(object):
                 self.transport = transport(
                     credentials=credentials,
                     default_class=library_service_grpc_transport.LibraryServiceGrpcTransport,
+                    address=api_endpoint,
                 )
             else:
                 if credentials:
@@ -1240,7 +1261,7 @@ class LibraryServiceClient(object):
                 self.transport = transport
         else:
             self.transport = library_service_grpc_transport.LibraryServiceGrpcTransport(
-                address=self.SERVICE_ADDRESS,
+                address=api_endpoint,
                 channel=channel,
                 credentials=credentials,
             )
@@ -1445,10 +1466,10 @@ class LibraryServiceClient(object):
                 that is provided to the method.
 
         Returns:
-            A :class:`~google.gax.PageIterator` instance. By default, this
-            is an iterable of :class:`~google.cloud.example.library_v1.types.Shelf` instances.
-            This object can also be configured to iterate over the pages
-            of the response through the `options` parameter.
+            A :class:`~google.api_core.page_iterator.PageIterator` instance.
+            An iterable of :class:`~google.cloud.example.library_v1.types.Shelf` instances.
+            You can also iterate over the pages of the response
+            using its `pages` property.
 
         Raises:
             google.api_core.exceptions.GoogleAPICallError: If the request
@@ -1893,10 +1914,10 @@ class LibraryServiceClient(object):
                 that is provided to the method.
 
         Returns:
-            A :class:`~google.gax.PageIterator` instance. By default, this
-            is an iterable of :class:`~google.cloud.example.library_v1.types.Book` instances.
-            This object can also be configured to iterate over the pages
-            of the response through the `options` parameter.
+            A :class:`~google.api_core.page_iterator.PageIterator` instance.
+            An iterable of :class:`~google.cloud.example.library_v1.types.Book` instances.
+            You can also iterate over the pages of the response
+            using its `pages` property.
 
         Raises:
             google.api_core.exceptions.GoogleAPICallError: If the request
@@ -2203,10 +2224,10 @@ class LibraryServiceClient(object):
                 that is provided to the method.
 
         Returns:
-            A :class:`~google.gax.PageIterator` instance. By default, this
-            is an iterable of :class:`str` instances.
-            This object can also be configured to iterate over the pages
-            of the response through the `options` parameter.
+            A :class:`~google.api_core.page_iterator.PageIterator` instance.
+            An iterable of :class:`str` instances.
+            You can also iterate over the pages of the response
+            using its `pages` property.
 
         Raises:
             google.api_core.exceptions.GoogleAPICallError: If the request
@@ -2914,10 +2935,10 @@ class LibraryServiceClient(object):
                 that is provided to the method.
 
         Returns:
-            A :class:`~google.gax.PageIterator` instance. By default, this
-            is an iterable of :class:`str` instances.
-            This object can also be configured to iterate over the pages
-            of the response through the `options` parameter.
+            A :class:`~google.api_core.page_iterator.PageIterator` instance.
+            An iterable of :class:`str` instances.
+            You can also iterate over the pages of the response
+            using its `pages` property.
 
         Raises:
             google.api_core.exceptions.GoogleAPICallError: If the request
@@ -3913,6 +3934,7 @@ import pkg_resources
 import warnings
 
 from google.oauth2 import service_account
+import google.api_core.client_options
 import google.api_core.gapic_v1.client_info
 import google.api_core.gapic_v1.config
 import google.api_core.gapic_v1.method
@@ -3989,7 +4011,7 @@ class MyProtoClient(object):
         )
 
     def __init__(self, transport=None, channel=None, credentials=None,
-            client_config=None, client_info=None):
+            client_config=None, client_info=None, client_options=None):
         """Constructor.
 
         Args:
@@ -4019,6 +4041,9 @@ class MyProtoClient(object):
                 API requests. If ``None``, then default info will be used.
                 Generally, you only need to set this if you're developing
                 your own client library.
+            client_options (Union[dict, google.api_core.client_options.ClientOptions]):
+                Client options used to set user options on the client. API Endpoint
+                should be set through client_options.
         """
         # Raise deprecation warnings for things we want to go away.
         if client_config is not None:
@@ -4032,6 +4057,13 @@ class MyProtoClient(object):
                           '`transport` instead.',
                           PendingDeprecationWarning, stacklevel=2)
 
+        api_endpoint = self.SERVICE_ADDRESS
+        if client_options:
+            if type(client_options) == dict:
+                client_options = google.api_core.client_options.from_dict(client_options)
+            if client_options.api_endpoint:
+                api_endpoint = client_options.api_endpoint
+
         # Instantiate the transport.
         # The transport is responsible for handling serialization and
         # deserialization and actually sending data to the service.
@@ -4040,6 +4072,7 @@ class MyProtoClient(object):
                 self.transport = transport(
                     credentials=credentials,
                     default_class=my_proto_grpc_transport.MyProtoGrpcTransport,
+                    address=api_endpoint,
                 )
             else:
                 if credentials:
@@ -4050,7 +4083,7 @@ class MyProtoClient(object):
                 self.transport = transport
         else:
             self.transport = my_proto_grpc_transport.MyProtoGrpcTransport(
-                address=self.SERVICE_ADDRESS,
+                address=api_endpoint,
                 channel=channel,
                 credentials=credentials,
             )
@@ -4964,7 +4997,7 @@ def lint_setup_py(session):
     session.install('docutils', 'pygments')
     session.run(
         'python', 'setup.py', 'check', '--restructuredtext', '--strict')
-============== file: samples/v1/babble_about_book_1.py ==============
+============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -4989,10 +5022,10 @@ def lint_setup_py(session):
 # sample-metadata
 #   title: Test response handling for methods that return empty
 #   description: Test response handling for methods that return empty
-#   usage: python3 samples/v1/babble_about_book_1.py
+#   usage: python3 samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.py
 import sys
 
-# [START babble_about_book_1]
+# [START sample]
 
 from google.cloud.example import library_v1
 
@@ -5007,14 +5040,14 @@ def sample_babble_about_book():
   client.babble_about_book(requests)
   # No one replied
   print(u'No one replied.')
-# [END babble_about_book_1]
+# [END sample]
 
 def main():
   sample_babble_about_book()
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/babble_about_book_2.py ==============
+============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5039,10 +5072,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Test default response handling is turned off for methods that return empty
 #   description: Test default response handling is turned off for methods that return empty
-#   usage: python3 samples/v1/babble_about_book_2.py
+#   usage: python3 samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py
 import sys
 
-# [START babble_about_book_2]
+# [START sample]
 
 from google.cloud.example import library_v1
 
@@ -5055,7 +5088,7 @@ def sample_babble_about_book():
 
   requests = [request]
   client.babble_about_book(requests)
-# [END babble_about_book_2]
+# [END sample]
 
 def main():
   sample_babble_about_book()
@@ -5158,111 +5191,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/empty_response_type_with_response_handling.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_with_response_handling")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: Test response handling for methods that return empty
-#   description: Test response handling for methods that return empty
-#   usage: python3 samples/v1/empty_response_type_with_response_handling.py
-import sys
-
-# [START empty_response_type_with_response_handling]
-
-from google.cloud.example import library_v1
-
-def sample_get_big_nothing():
-  """Test response handling for methods that return empty"""
-
-  client = library_v1.LibraryServiceClient()
-
-  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-
-  operation = client.get_big_nothing(name)
-
-  print(u'Waiting for operation to complete...')
-  response = operation.result()
-
-  # Got nothing
-  print(u'Got nothing.')
-# [END empty_response_type_with_response_handling]
-
-def main():
-  sample_get_big_nothing()
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/empty_response_type_without_response_handling.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_without_response_handling")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: Test default response handling is turned off for methods that return empty
-#   description: Test default response handling is turned off for methods that return empty
-#   usage: python3 samples/v1/empty_response_type_without_response_handling.py
-import sys
-
-# [START empty_response_type_without_response_handling]
-
-from google.cloud.example import library_v1
-
-def sample_get_big_nothing():
-  """Test default response handling is turned off for methods that return empty"""
-
-  client = library_v1.LibraryServiceClient()
-
-  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-
-  operation = client.get_big_nothing(name)
-
-  print(u'Waiting for operation to complete...')
-  response = operation.result()
-
-# [END empty_response_type_without_response_handling]
-
-def main():
-  sample_get_big_nothing()
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/find_related_books_odyssey.py ==============
+============== file: samples/v1/find_related_books_request_paged_all_odyssey.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5287,10 +5216,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: The Odyssey
 #   description: Testing calling forms
-#   usage: python3 samples/v1/find_related_books_odyssey.py
+#   usage: python3 samples/v1/find_related_books_request_paged_all_odyssey.py
 import sys
 
-# [START find_related_books_odyssey]
+# [START sample]
 
 from google.cloud.example import library_v1
 
@@ -5308,10 +5237,308 @@ def sample_find_related_books():
   for response_item in client.find_related_books(names, shelves):
     book = response_item
     print(u'Here\'s a related book: {}'.format(book))
-# [END find_related_books_odyssey]
+# [END sample]
 
 def main():
   sample_find_related_books()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/find_related_books_request_paged_odyssey.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: The Odyssey
+#   description: Testing calling forms
+#   usage: python3 samples/v1/find_related_books_request_paged_odyssey.py
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+
+def sample_find_related_books():
+  """Testing calling forms"""
+
+  client = library_v1.LibraryServiceClient()
+
+  names_element = 'Odyssey'
+  names = [names_element]
+  shelves_element = 'Classics'
+  shelves = [shelves_element]
+
+  # Iterate over results one page at a time
+  for page in client.find_related_books(names, shelves).pages:
+    for response_item in page:
+      book = response_item
+      print(u'Here\'s a related book: {}'.format(book))
+# [END sample]
+
+def main():
+  sample_find_related_books()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/get_big_book_long_running_promise_wap.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: GetBigBook: 'War and Peace'
+#   description: Testing calling forms
+#   usage: python3 samples/v1/get_big_book_long_running_promise_wap.py [--shelf "Novel\\\"\`\b\t\n\r"]
+import sys
+
+# [START hopper]
+
+from google.cloud.example import library_v1
+
+def sample_get_big_book(shelf):
+  """Testing calling forms"""
+
+  client = library_v1.LibraryServiceClient()
+
+  # shelf = 'Novel\\"`\b\t\n\r'
+  name = client.book_path(shelf, 'War and Peace')
+
+  operation = client.get_big_book(name)
+
+  print(u'Waiting for operation to complete...')
+  response = operation.result()
+
+  # Testing iterating over map fields when both key and value are specified.
+  for my_key, my_value in response.map_list_value_value.items():
+    print(u'key: {}, value: {}'.format(my_key, my_value))
+
+  # Testing iterating over map fields when only key is specified.
+  for another_key, _ in response.map_list_value_value.items():
+    print(u'key: {}'.format(another_key))
+
+  # Testing iterating over map fields when only value is specified.
+  for _, another_value in response.map_list_value_value.items():
+    print(u'value: {}'.format(another_value))
+
+  print(u'name: {}'.format(response.name))
+  print(u'author: {}'.format(response.author))
+# [END hopper]
+
+def main():
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--shelf', type=str, default='Novel\\"`\b\t\n\r')
+  args = parser.parse_args()
+
+  sample_get_big_book(args.shelf)
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/get_big_book_long_running_promise_wap2.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap2")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: GetBigBook: 'War and Peace'
+#   description: Testing resource name overlap
+#   usage: python3 samples/v1/get_big_book_long_running_promise_wap2.py [--shelf Novel] [--big_book_name "War and Peace"]
+import sys
+
+# [START hopper]
+
+from google.cloud.example import library_v1
+
+def sample_get_big_book(shelf, big_book_name):
+  """
+    Testing resource name overlap
+
+    Args:
+      shelf Test word wrapping for long lines. This is a long comment. The name of
+      the shelf to retrieve the big book from.
+      big_book_name The name of the book.
+    """
+
+  client = library_v1.LibraryServiceClient()
+
+  # shelf = 'Novel'
+  # big_book_name = 'War and Peace'
+  name = client.book_path(shelf, big_book_name)
+
+  operation = client.get_big_book(name)
+
+  print(u'Waiting for operation to complete...')
+  response = operation.result()
+
+  print(response)
+# [END hopper]
+
+def main():
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--shelf', type=str, default='Novel')
+  parser.add_argument('--big_book_name', type=str, default='War and Peace')
+  args = parser.parse_args()
+
+  sample_get_big_book(args.shelf, args.big_book_name)
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_with_response_handling")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: Test response handling for methods that return empty
+#   description: Test response handling for methods that return empty
+#   usage: python3 samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.py
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+
+def sample_get_big_nothing():
+  """Test response handling for methods that return empty"""
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+  operation = client.get_big_nothing(name)
+
+  print(u'Waiting for operation to complete...')
+  response = operation.result()
+
+  # Got nothing
+  print(u'Got nothing.')
+# [END sample]
+
+def main():
+  sample_get_big_nothing()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_without_response_handling")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: Test default response handling is turned off for methods that return empty
+#   description: Test default response handling is turned off for methods that return empty
+#   usage: python3 samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+
+def sample_get_big_nothing():
+  """Test default response handling is turned off for methods that return empty"""
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+  operation = client.get_big_nothing(name)
+
+  print(u'Waiting for operation to complete...')
+  response = operation.result()
+
+# [END sample]
+
+def main():
+  sample_get_big_nothing()
 
 if __name__ == '__main__':
   main()
@@ -5368,78 +5595,6 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/hopper.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: GetBigBook: 'War and Peace'
-#   description: Testing calling forms
-#   usage: python3 samples/v1/hopper.py [--shelf "Novel\\\"\`\b\t\n\r"]
-import sys
-
-# [START hopper]
-
-from google.cloud.example import library_v1
-
-def sample_get_big_book(shelf):
-  """Testing calling forms"""
-
-  client = library_v1.LibraryServiceClient()
-
-  # shelf = 'Novel\\"`\b\t\n\r'
-  name = client.book_path(shelf, 'War and Peace')
-
-  operation = client.get_big_book(name)
-
-  print(u'Waiting for operation to complete...')
-  response = operation.result()
-
-  # Testing iterating over map fields when both key and value are specified.
-  for my_key, my_value in response.map_list_value_value.items():
-    print(u'key: {}, value: {}'.format(my_key, my_value))
-
-  # Testing iterating over map fields when only key is specified.
-  for another_key, _ in response.map_list_value_value.items():
-    print(u'key: {}'.format(another_key))
-
-  # Testing iterating over map fields when only value is specified.
-  for _, another_value in response.map_list_value_value.items():
-    print(u'value: {}'.format(another_value))
-
-  print(u'name: {}'.format(response.name))
-  print(u'author: {}'.format(response.author))
-# [END hopper]
-
-def main():
-  import argparse
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default='Novel\\"`\b\t\n\r')
-  args = parser.parse_args()
-
-  sample_get_big_book(args.shelf)
-
-if __name__ == '__main__':
-  main()
 ============== file: samples/v1/lovelace.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -5485,6 +5640,57 @@ def sample_stream_books():
 
 def main():
   sample_stream_books()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/monolog_about_book_request_streaming_client_prog.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: Programming Books
+#   description: Testing calling forms
+#   usage: python3 samples/v1/monolog_about_book_request_streaming_client_prog.py
+import sys
+
+# [START sample]
+
+from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
+
+def sample_monolog_about_book():
+  """Testing calling forms"""
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  request = {'name': name}
+
+  requests = [request]
+  response = client.monolog_about_book(requests)
+  print(u'The stage of the comment is: {}'.format(enums.Comment.Stage(response.stage).name))
+# [END sample]
+
+def main():
+  sample_monolog_about_book()
 
 if __name__ == '__main__':
   main()
@@ -5623,7 +5829,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/publish_series_test_request_object_field_comments.py ==============
+============== file: samples/v1/publish_series_request_test_request_object_field_comments.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5648,10 +5854,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: request object field comments
 #   description: Test request object field comments
-#   usage: python3 samples/v1/publish_series_test_request_object_field_comments.py
+#   usage: python3 samples/v1/publish_series_request_test_request_object_field_comments.py
 import sys
 
-# [START publish_series_test_request_object_field_comments]
+# [START sample]
 
 from google.cloud.example import library_v1
 import io
@@ -5688,14 +5894,14 @@ def sample_publish_series():
 
   response = client.publish_series(shelf, books, series_uuid, edition=edition)
   print(response)
-# [END publish_series_test_request_object_field_comments]
+# [END sample]
 
 def main():
   sample_publish_series()
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/publish_series_test_write_to_file.py ==============
+============== file: samples/v1/publish_series_request_test_write_to_file.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5720,10 +5926,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: test writing fields to files
 #   description: Testing write fields to files.
-#   usage: python3 samples/v1/publish_series_test_write_to_file.py
+#   usage: python3 samples/v1/publish_series_request_test_write_to_file.py
 import sys
 
-# [START publish_series_test_write_to_file]
+# [START sample]
 
 from google.cloud.example import library_v1
 
@@ -5743,7 +5949,7 @@ def sample_publish_series():
   # testing writing string field.
   with open('series_uuid_in_plain_text.txt', 'w') as out:
     out.write(response.series_uuid.series_string)
-# [END publish_series_test_write_to_file]
+# [END sample]
 
 def main():
   sample_publish_series()
@@ -5799,7 +6005,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/sample_monolog_about_book.py ==============
+============== file: samples/v1/stream_shelves_request_streaming_server_empty.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -5816,37 +6022,34 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
-#   title: Programming Books
+#   title: Server streaming
 #   description: Testing calling forms
-#   usage: python3 samples/v1/sample_monolog_about_book.py
+#   usage: python3 samples/v1/stream_shelves_request_streaming_server_empty.py
 import sys
 
-# [START sample_monolog_about_book]
+# [START sample]
 
 from google.cloud.example import library_v1
-from google.cloud.example.library_v1 import enums
 
-def sample_monolog_about_book():
+def sample_stream_shelves():
   """Testing calling forms"""
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-  request = {'name': name}
+  name = client.shelf_path('[SHELF_ID]')
 
-  requests = [request]
-  response = client.monolog_about_book(requests)
-  print(u'The stage of the comment is: {}'.format(enums.Comment.Stage(response.stage).name))
-# [END sample_monolog_about_book]
+  for response_item in client.stream_shelves(name):
+    print(response_item)
+# [END sample]
 
 def main():
-  sample_monolog_about_book()
+  sample_stream_shelves()
 
 if __name__ == '__main__':
   main()
@@ -6141,58 +6344,62 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap2")
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
 #   title: GetBigBook: 'War and Peace'
-#   description: Testing resource name overlap
-#   usage: python3 samples/v1/this_tag_should_be_the_name_of_the_file.py [--shelf Novel] [--big_book_name "War and Peace"]
+#   description: Testing calling forms
+#   usage: python3 samples/v1/this_tag_should_be_the_name_of_the_file.py [--shelf "Novel\\\"\`\b\t\n\r"]
 import sys
 
 # [START this_tag_should_be_the_name_of_the_file]
 
 from google.cloud.example import library_v1
 
-def sample_get_big_book(shelf, big_book_name):
-  """
-    Testing resource name overlap
-
-    Args:
-      shelf Test word wrapping for long lines. This is a long comment. The name of
-      the shelf to retrieve the big book from.
-      big_book_name The name of the book.
-    """
+def sample_get_big_book(shelf):
+  """Testing calling forms"""
 
   client = library_v1.LibraryServiceClient()
 
-  # shelf = 'Novel'
-  # big_book_name = 'War and Peace'
-  name = client.book_path(shelf, big_book_name)
+  # shelf = 'Novel\\"`\b\t\n\r'
+  name = client.book_path(shelf, 'War and Peace')
 
   operation = client.get_big_book(name)
 
   print(u'Waiting for operation to complete...')
   response = operation.result()
 
-  print(response)
+  # Testing iterating over map fields when both key and value are specified.
+  for my_key, my_value in response.map_list_value_value.items():
+    print(u'key: {}, value: {}'.format(my_key, my_value))
+
+  # Testing iterating over map fields when only key is specified.
+  for another_key, _ in response.map_list_value_value.items():
+    print(u'key: {}'.format(another_key))
+
+  # Testing iterating over map fields when only value is specified.
+  for _, another_value in response.map_list_value_value.items():
+    print(u'value: {}'.format(another_value))
+
+  print(u'name: {}'.format(response.name))
+  print(u'author: {}'.format(response.author))
 # [END this_tag_should_be_the_name_of_the_file]
 
 def main():
   import argparse
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default='Novel')
-  parser.add_argument('--big_book_name', type=str, default='War and Peace')
+  parser.add_argument('--shelf', type=str, default='Novel\\"`\b\t\n\r')
   args = parser.parse_args()
 
-  sample_get_big_book(args.shelf, args.big_book_name)
+  sample_get_big_book(args.shelf)
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/turing.py ==============
+============== file: samples/v1/turing_prog_request_streaming_bidi.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2019 Google LLC
@@ -6217,10 +6424,10 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Programming Books
 #   description: Testing calling forms
-#   usage: python3 samples/v1/turing.py [--image_file_name "image_file.jpg"] [--stage DRAFT]
+#   usage: python3 samples/v1/turing_prog_request_streaming_bidi.py [--image_file_name "image_file.jpg"] [--stage DRAFT]
 import sys
 
-# [START turing]
+# [START turing_prog_request_streaming_bidi]
 
 from google.cloud.example import library_v1
 from google.cloud.example.library_v1 import enums
@@ -6244,7 +6451,7 @@ def sample_discuss_book(image_file_name, stage):
   requests = [request]
   for response_item in client.discuss_book(requests):
     print(response_item)
-# [END turing]
+# [END turing_prog_request_streaming_bidi]
 
 def main():
   import argparse

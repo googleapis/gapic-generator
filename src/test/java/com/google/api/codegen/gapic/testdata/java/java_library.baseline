@@ -184,7 +184,7 @@ public class Babbage {
     sampleStreamBooks();
   }
 }
-============== file: samples/src/main/java/com/google/example/examples/library/v1/BabbleAboutBook1.java ==============
+============== file: samples/src/main/java/com/google/example/examples/library/v1/BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithResponseHandling.java ==============
 /*
  * Copyright 2019 Google LLC
  *
@@ -204,7 +204,7 @@ public class Babbage {
 // sample-metadata:
 //   title: Test response handling for methods that return empty
 //   description: Test response handling for methods that return empty
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.BabbleAboutBook1
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithResponseHandling
 
 package com.google.example.examples.library.v1;
 
@@ -212,8 +212,8 @@ import com.google.api.gax.rpc.ApiStreamObserver;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.LibraryClient;
 
-public class BabbleAboutBook1 {
-  // [START babble_about_book_1]
+public class BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithResponseHandling {
+  // [START sample]
   /*
    * Please include the following imports to run this sample.
    *
@@ -252,13 +252,13 @@ public class BabbleAboutBook1 {
       System.err.println("Failed to create the client due to: " + exception);
     }
   }
-  // [END babble_about_book_1]
+  // [END sample]
 
   public static void main(String[] args) {
     sampleBabbleAboutBook();
   }
 }
-============== file: samples/src/main/java/com/google/example/examples/library/v1/BabbleAboutBook2.java ==============
+============== file: samples/src/main/java/com/google/example/examples/library/v1/BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithoutResponseHandling.java ==============
 /*
  * Copyright 2019 Google LLC
  *
@@ -278,7 +278,7 @@ public class BabbleAboutBook1 {
 // sample-metadata:
 //   title: Test default response handling is turned off for methods that return empty
 //   description: Test default response handling is turned off for methods that return empty
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.BabbleAboutBook2
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithoutResponseHandling
 
 package com.google.example.examples.library.v1;
 
@@ -286,8 +286,8 @@ import com.google.api.gax.rpc.ApiStreamObserver;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.LibraryClient;
 
-public class BabbleAboutBook2 {
-  // [START babble_about_book_2]
+public class BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWithoutResponseHandling {
+  // [START sample]
   /*
    * Please include the following imports to run this sample.
    *
@@ -323,10 +323,240 @@ public class BabbleAboutBook2 {
       System.err.println("Failed to create the client due to: " + exception);
     }
   }
-  // [END babble_about_book_2]
+  // [END sample]
 
   public static void main(String[] args) {
     sampleBabbleAboutBook();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfCallableCallableEmptyResponseTypeWithResponseHandling.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Callable",  "empty_response_type_with_response_handling")
+// sample-metadata:
+//   title: Test response handling for methods that return empty
+//   description: Test response handling for methods that return empty
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.DeleteShelfCallableCallableEmptyResponseTypeWithResponseHandling
+
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+public class DeleteShelfCallableCallableEmptyResponseTypeWithResponseHandling {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.core.ApiFuture;
+   * import com.google.example.library.v1.DeleteShelfRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfName;
+   */
+
+  /** Test response handling for methods that return empty */
+  public static void sampleDeleteShelf() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Void> future = libraryClient.deleteShelfCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+      // Shelf deleted
+      System.out.println("Shelf deleted.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfCallableCallableEmptyResponseTypeWithoutResponseHandling.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Callable",  "empty_response_type_without_response_handling")
+// sample-metadata:
+//   title: Test default response handling is turned off for methods that return empty
+//   description: Test default response handling is turned off for methods that return empty
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.DeleteShelfCallableCallableEmptyResponseTypeWithoutResponseHandling
+
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+public class DeleteShelfCallableCallableEmptyResponseTypeWithoutResponseHandling {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.core.ApiFuture;
+   * import com.google.example.library.v1.DeleteShelfRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfName;
+   */
+
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleDeleteShelf() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Void> future = libraryClient.deleteShelfCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Flattened",  "empty_response_type_with_response_handling")
+// sample-metadata:
+//   title: Test response handling for methods that return empty
+//   description: Test response handling for methods that return empty
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling
+
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+public class DeleteShelfFlattenedEmptyResponseTypeWithResponseHandling {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfName;
+   */
+
+  /** Test response handling for methods that return empty */
+  public static void sampleDeleteShelf() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      libraryClient.deleteShelf(name.toString());
+      // Shelf deleted
+      System.out.println("Shelf deleted.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Flattened",  "empty_response_type_without_response_handling")
+// sample-metadata:
+//   title: Test default response handling is turned off for methods that return empty
+//   description: Test default response handling is turned off for methods that return empty
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling
+
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+
+public class DeleteShelfFlattenedEmptyResponseTypeWithoutResponseHandling {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfName;
+   */
+
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleDeleteShelf() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      libraryClient.deleteShelf(name.toString());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleDeleteShelf();
   }
 }
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/DeleteShelfRequestEmptyResponseTypeWithResponseHandling.java ==============
@@ -443,7 +673,7 @@ public class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling {
     sampleDeleteShelf();
   }
 }
-============== file: samples/src/main/java/com/google/example/examples/library/v1/EmptyResponseTypeWithResponseHandling.java ==============
+============== file: samples/src/main/java/com/google/example/examples/library/v1/FindRelatedBooksCallableCallableListOdyssey.java ==============
 /*
  * Copyright 2019 Google LLC
  *
@@ -459,51 +689,71 @@ public class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_with_response_handling")
+// DO NOT EDIT! This is a generated sample ("CallableList",  "odyssey")
 // sample-metadata:
-//   title: Test response handling for methods that return empty
-//   description: Test response handling for methods that return empty
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.EmptyResponseTypeWithResponseHandling
+//   title: The Odyssey
+//   description: Testing calling forms
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.FindRelatedBooksCallableCallableListOdyssey
 
 package com.google.example.examples.library.v1;
 
-import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.FindRelatedBooksResponse;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
-import com.google.protobuf.Empty;
+import com.google.example.library.v1.ShelfName;
+import java.util.Arrays;
+import java.util.List;
 
-public class EmptyResponseTypeWithResponseHandling {
-  // [START empty_response_type_with_response_handling]
+public class FindRelatedBooksCallableCallableListOdyssey {
+  // [START sample]
   /*
    * Please include the following imports to run this sample.
    *
-   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.FindRelatedBooksRequest;
+   * import com.google.example.library.v1.FindRelatedBooksResponse;
    * import com.google.example.library.v1.LibraryClient;
    * import com.google.example.library.v1.ShelfBookName;
-   * import com.google.protobuf.Empty;
+   * import com.google.example.library.v1.ShelfName;
+   * import java.util.Arrays;
+   * import java.util.List;
    */
 
-  /** Test response handling for methods that return empty */
-  public static void sampleGetBigNothing() {
+  /** Testing calling forms */
+  public static void sampleFindRelatedBooks() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-      GetBookRequest request = GetBookRequest.newBuilder()
-        .setName(name.toString())
+      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<ShelfBookName> names = Arrays.asList(namesElement);
+      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+      List<ShelfName> shelves = Arrays.asList(shelvesElement);
+      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+        .addAllNames(ShelfBookName.toStringList(names))
+        .addAllShelves(ShelfName.toStringList(shelves))
         .build();
-      libraryClient.getBigNothingAsync(request).get();
-      // Got nothing
-      System.out.println("Got nothing.");
+      while (true) {
+        FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
+        for (ShelfBookName responseItem : ShelfBookName.parseList(response.getNamesList())) {
+          ShelfBookName book = responseItem;
+          System.out.printf("Here's a related book: %s\n", book);
+        }
+        String nextPageToken = response.getNextPageToken();
+        if (!Strings.isNullOrEmpty(nextPageToken)) {
+          request = request.toBuilder().setPageToken(nextPageToken).build();
+        } else {
+          break;
+        }
+      }
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
   }
-  // [END empty_response_type_with_response_handling]
+  // [END sample]
 
   public static void main(String[] args) {
-    sampleGetBigNothing();
+    sampleFindRelatedBooks();
   }
 }
-============== file: samples/src/main/java/com/google/example/examples/library/v1/EmptyResponseTypeWithoutResponseHandling.java ==============
+============== file: samples/src/main/java/com/google/example/examples/library/v1/FindRelatedBooksFlattenedPagedOdyssey.java ==============
 /*
  * Copyright 2019 Google LLC
  *
@@ -519,49 +769,137 @@ public class EmptyResponseTypeWithResponseHandling {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_without_response_handling")
+// DO NOT EDIT! This is a generated sample ("FlattenedPaged",  "odyssey")
 // sample-metadata:
-//   title: Test default response handling is turned off for methods that return empty
-//   description: Test default response handling is turned off for methods that return empty
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.EmptyResponseTypeWithoutResponseHandling
+//   title: The Odyssey
+//   description: Testing calling forms
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.FindRelatedBooksFlattenedPagedOdyssey
 
 package com.google.example.examples.library.v1;
 
-import com.google.example.library.v1.GetBookRequest;
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.FindRelatedBooksResponse;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
-import com.google.protobuf.Empty;
+import java.util.Arrays;
+import java.util.List;
 
-public class EmptyResponseTypeWithoutResponseHandling {
-  // [START empty_response_type_without_response_handling]
+public class FindRelatedBooksFlattenedPagedOdyssey {
+  // [START sample]
   /*
    * Please include the following imports to run this sample.
    *
-   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.api.core.ApiFuture;
+   * import com.google.example.library.v1.FindRelatedBooksResponse;
    * import com.google.example.library.v1.LibraryClient;
    * import com.google.example.library.v1.ShelfBookName;
-   * import com.google.protobuf.Empty;
+   * import java.util.Arrays;
+   * import java.util.List;
    */
 
-  /** Test default response handling is turned off for methods that return empty */
-  public static void sampleGetBigNothing() {
+  /** Testing calling forms */
+  public static void sampleFindRelatedBooks() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-      GetBookRequest request = GetBookRequest.newBuilder()
-        .setName(name.toString())
-        .build();
-      libraryClient.getBigNothingAsync(request).get();
+      String namesElement = "Odyssey";
+      List<String> names = Arrays.asList(namesElement);
+      String shelvesElement = "Classics";
+      List<String> shelves = Arrays.asList(shelvesElement);
+      ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooks().futureCall(formattedNames, formattedShelves);
+
+      // Do something
+
+      for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
+        ShelfBookName book = responseItem;
+        System.out.printf("Here's a related book: %s\n", book);
+      }
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
   }
-  // [END empty_response_type_without_response_handling]
+  // [END sample]
 
   public static void main(String[] args) {
-    sampleGetBigNothing();
+    sampleFindRelatedBooks();
   }
 }
-============== file: samples/src/main/java/com/google/example/examples/library/v1/FindRelatedBooksOdyssey.java ==============
+============== file: samples/src/main/java/com/google/example/examples/library/v1/FindRelatedBooksPagedCallableCallablePagedOdyssey.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("CallablePaged",  "odyssey")
+// sample-metadata:
+//   title: The Odyssey
+//   description: Testing calling forms
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.FindRelatedBooksPagedCallableCallablePagedOdyssey
+
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+import java.util.Arrays;
+import java.util.List;
+
+public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.core.ApiFuture;
+   * import com.google.example.library.v1.FindRelatedBooksRequest;
+   * import com.google.example.library.v1.FindRelatedBooksResponse;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.example.library.v1.ShelfName;
+   * import java.util.Arrays;
+   * import java.util.List;
+   */
+
+  /** Testing calling forms */
+  public static void sampleFindRelatedBooks() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName namesElement = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      List<ShelfBookName> names = Arrays.asList(namesElement);
+      ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
+      List<ShelfName> shelves = Arrays.asList(shelvesElement);
+      FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+        .addAllNames(ShelfBookName.toStringList(names))
+        .addAllShelves(ShelfName.toStringList(shelves))
+        .build();
+      ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
+
+      // Do something
+
+      for (ShelfBookName responseItem : future.get().iterateAllAsShelfBookName()) {
+        ShelfBookName book = responseItem;
+        System.out.printf("Here's a related book: %s\n", book);
+      }
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleFindRelatedBooks();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/FindRelatedBooksRequestPagedOdyssey.java ==============
 /*
  * Copyright 2019 Google LLC
  *
@@ -581,7 +919,7 @@ public class EmptyResponseTypeWithoutResponseHandling {
 // sample-metadata:
 //   title: The Odyssey
 //   description: Testing calling forms
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.FindRelatedBooksOdyssey
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.FindRelatedBooksRequestPagedOdyssey
 
 package com.google.example.examples.library.v1;
 
@@ -592,8 +930,8 @@ import com.google.example.library.v1.ShelfName;
 import java.util.Arrays;
 import java.util.List;
 
-public class FindRelatedBooksOdyssey {
-  // [START find_related_books_odyssey]
+public class FindRelatedBooksRequestPagedOdyssey {
+  // [START sample]
   /*
    * Please include the following imports to run this sample.
    *
@@ -624,10 +962,1390 @@ public class FindRelatedBooksOdyssey {
       System.err.println("Failed to create the client due to: " + exception);
     }
   }
-  // [END find_related_books_odyssey]
+  // [END sample]
 
   public static void main(String[] args) {
     sampleFindRelatedBooks();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigBookAsyncLongRunningFlattenedAsyncWap.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "wap")
+// sample-metadata:
+//   title: GetBigBook: 'War and Peace'
+//   description: Testing calling forms
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigBookAsyncLongRunningFlattenedAsyncWap [--args='[--shelf "Novel\\\"\`\b\t\n\r"]']
+
+package com.google.example.examples.library.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.ListValue;
+import java.util.Map;
+
+public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
+  // [START hopper]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.protobuf.ListValue;
+   * import java.util.Map;
+   */
+
+  /** Testing calling forms */
+  public static void sampleGetBigBook(String shelf) {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // shelf = "Novel\\\"`\b\t\n\r";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
+      Book response = libraryClient.getBigBookAsync(name.toString()).get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END hopper]
+
+  public static void main(String[] args) throws Exception {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel\\\"`\b\t\n\r");
+
+    sampleGetBigBook(shelf);
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigBookAsyncLongRunningFlattenedAsyncWap2.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "wap2")
+// sample-metadata:
+//   title: GetBigBook: 'War and Peace'
+//   description: Testing resource name overlap
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigBookAsyncLongRunningFlattenedAsyncWap2 [--args='[--shelf Novel] [--big_book_name "War and Peace"]']
+
+package com.google.example.examples.library.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBigBookAsyncLongRunningFlattenedAsyncWap2 {
+  // [START hopper]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   */
+
+  /**
+   * Testing resource name overlap
+   *
+   * @param shelf Test word wrapping for long lines. This is a long comment. The name of the shelf to
+   * retrieve the big book from.
+   * @param bigBookName The name of the book.
+   */
+  public static void sampleGetBigBook(String shelf, String bigBookName) {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // shelf = "Novel";
+      // bigBookName = "War and Peace";
+      ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
+      Book response = libraryClient.getBigBookAsync(name.toString()).get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END hopper]
+
+  public static void main(String[] args) throws Exception {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("big_book_name")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+    String bigBookName = cl.getOptionValue("big_book_name", "War and Peace");
+
+    sampleGetBigBook(shelf, bigBookName);
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigBookAsyncLongRunningRequestAsyncWap.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
+// sample-metadata:
+//   title: GetBigBook: 'War and Peace'
+//   description: Testing calling forms
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigBookAsyncLongRunningRequestAsyncWap [--args='[--shelf "Novel\\\"\`\b\t\n\r"]']
+
+package com.google.example.examples.library.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.ListValue;
+import java.util.Map;
+
+public class GetBigBookAsyncLongRunningRequestAsyncWap {
+  // [START hopper]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.protobuf.ListValue;
+   * import java.util.Map;
+   */
+
+  /** Testing calling forms */
+  public static void sampleGetBigBook(String shelf) {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // shelf = "Novel\\\"`\b\t\n\r";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      Book response = libraryClient.getBigBookAsync(request).get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END hopper]
+
+  public static void main(String[] args) throws Exception {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel\\\"`\b\t\n\r");
+
+    sampleGetBigBook(shelf);
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigBookAsyncLongRunningRequestAsyncWap2.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap2")
+// sample-metadata:
+//   title: GetBigBook: 'War and Peace'
+//   description: Testing resource name overlap
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigBookAsyncLongRunningRequestAsyncWap2 [--args='[--shelf Novel] [--big_book_name "War and Peace"]']
+
+package com.google.example.examples.library.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBigBookAsyncLongRunningRequestAsyncWap2 {
+  // [START hopper]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   */
+
+  /**
+   * Testing resource name overlap
+   *
+   * @param shelf Test word wrapping for long lines. This is a long comment. The name of the shelf to
+   * retrieve the big book from.
+   * @param bigBookName The name of the book.
+   */
+  public static void sampleGetBigBook(String shelf, String bigBookName) {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // shelf = "Novel";
+      // bigBookName = "War and Peace";
+      ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      Book response = libraryClient.getBigBookAsync(request).get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END hopper]
+
+  public static void main(String[] args) throws Exception {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("big_book_name")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+    String bigBookName = cl.getOptionValue("big_book_name", "War and Peace");
+
+    sampleGetBigBook(shelf, bigBookName);
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigBookCallableCallableWap.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Callable",  "wap")
+// sample-metadata:
+//   title: GetBigBook: 'War and Peace'
+//   description: Testing calling forms
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigBookCallableCallableWap [--args='[--shelf "Novel\\\"\`\b\t\n\r"]']
+
+package com.google.example.examples.library.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.longrunning.Operation;
+import com.google.protobuf.ListValue;
+import java.util.Map;
+
+public class GetBigBookCallableCallableWap {
+  // [START hopper]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.core.ApiFuture;
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.longrunning.Operation;
+   * import com.google.protobuf.ListValue;
+   * import java.util.Map;
+   */
+
+  /** Testing calling forms */
+  public static void sampleGetBigBook(String shelf) {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // shelf = "Novel\\\"`\b\t\n\r";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Operation> future = libraryClient.getBigBookCallable().futureCall(request);
+
+      // Do something
+
+      Operation response = future.get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END hopper]
+
+  public static void main(String[] args) throws Exception {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel\\\"`\b\t\n\r");
+
+    sampleGetBigBook(shelf);
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigBookCallableCallableWap2.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Callable",  "wap2")
+// sample-metadata:
+//   title: GetBigBook: 'War and Peace'
+//   description: Testing resource name overlap
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigBookCallableCallableWap2 [--args='[--shelf Novel] [--big_book_name "War and Peace"]']
+
+package com.google.example.examples.library.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.longrunning.Operation;
+
+public class GetBigBookCallableCallableWap2 {
+  // [START hopper]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.core.ApiFuture;
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.longrunning.Operation;
+   */
+
+  /**
+   * Testing resource name overlap
+   *
+   * @param shelf Test word wrapping for long lines. This is a long comment. The name of the shelf to
+   * retrieve the big book from.
+   * @param bigBookName The name of the book.
+   */
+  public static void sampleGetBigBook(String shelf, String bigBookName) {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // shelf = "Novel";
+      // bigBookName = "War and Peace";
+      ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Operation> future = libraryClient.getBigBookCallable().futureCall(request);
+
+      // Do something
+
+      Operation response = future.get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END hopper]
+
+  public static void main(String[] args) throws Exception {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("big_book_name")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+    String bigBookName = cl.getOptionValue("big_book_name", "War and Peace");
+
+    sampleGetBigBook(shelf, bigBookName);
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigBookOperationCallableLongRunningCallableWap.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "wap")
+// sample-metadata:
+//   title: GetBigBook: 'War and Peace'
+//   description: Testing calling forms
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigBookOperationCallableLongRunningCallableWap [--args='[--shelf "Novel\\\"\`\b\t\n\r"]']
+
+package com.google.example.examples.library.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBigBookMetadata;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.ListValue;
+import java.util.Map;
+
+public class GetBigBookOperationCallableLongRunningCallableWap {
+  // [START hopper]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.gax.longrunning.OperationFuture;
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.GetBigBookMetadata;
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.protobuf.ListValue;
+   * import java.util.Map;
+   */
+
+  /** Testing calling forms */
+  public static void sampleGetBigBook(String shelf) {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // shelf = "Novel\\\"`\b\t\n\r";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+
+      // Do something
+
+      Book response = future.get();
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END hopper]
+
+  public static void main(String[] args) throws Exception {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel\\\"`\b\t\n\r");
+
+    sampleGetBigBook(shelf);
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigBookOperationCallableLongRunningCallableWap2.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "wap2")
+// sample-metadata:
+//   title: GetBigBook: 'War and Peace'
+//   description: Testing resource name overlap
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigBookOperationCallableLongRunningCallableWap2 [--args='[--shelf Novel] [--big_book_name "War and Peace"]']
+
+package com.google.example.examples.library.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBigBookMetadata;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBigBookOperationCallableLongRunningCallableWap2 {
+  // [START hopper]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.gax.longrunning.OperationFuture;
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.GetBigBookMetadata;
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   */
+
+  /**
+   * Testing resource name overlap
+   *
+   * @param shelf Test word wrapping for long lines. This is a long comment. The name of the shelf to
+   * retrieve the big book from.
+   * @param bigBookName The name of the book.
+   */
+  public static void sampleGetBigBook(String shelf, String bigBookName) {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // shelf = "Novel";
+      // bigBookName = "War and Peace";
+      ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookOperationCallable().futureCall(request);
+
+      // Do something
+
+      Book response = future.get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END hopper]
+
+  public static void main(String[] args) throws Exception {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("big_book_name")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelf = cl.getOptionValue("shelf", "Novel");
+    String bigBookName = cl.getOptionValue("big_book_name", "War and Peace");
+
+    sampleGetBigBook(shelf, bigBookName);
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithResponseHandling.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "empty_response_type_with_response_handling")
+// sample-metadata:
+//   title: Test response handling for methods that return empty
+//   description: Test response handling for methods that return empty
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithResponseHandling
+
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+public class GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithResponseHandling {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.protobuf.Empty;
+   */
+
+  /** Test response handling for methods that return empty */
+  public static void sampleGetBigNothing() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      libraryClient.getBigNothingAsync(name.toString()).get();
+      // Got nothing
+      System.out.println("Got nothing.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithoutResponseHandling.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningFlattenedAsync",  "empty_response_type_without_response_handling")
+// sample-metadata:
+//   title: Test default response handling is turned off for methods that return empty
+//   description: Test default response handling is turned off for methods that return empty
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithoutResponseHandling
+
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+public class GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithoutResponseHandling {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.protobuf.Empty;
+   */
+
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleGetBigNothing() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      libraryClient.getBigNothingAsync(name.toString()).get();
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithResponseHandling.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_with_response_handling")
+// sample-metadata:
+//   title: Test response handling for methods that return empty
+//   description: Test response handling for methods that return empty
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithResponseHandling
+
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+public class GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithResponseHandling {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.protobuf.Empty;
+   */
+
+  /** Test response handling for methods that return empty */
+  public static void sampleGetBigNothing() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      libraryClient.getBigNothingAsync(request).get();
+      // Got nothing
+      System.out.println("Got nothing.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithoutResponseHandling.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_without_response_handling")
+// sample-metadata:
+//   title: Test default response handling is turned off for methods that return empty
+//   description: Test default response handling is turned off for methods that return empty
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithoutResponseHandling
+
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+public class GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithoutResponseHandling {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.protobuf.Empty;
+   */
+
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleGetBigNothing() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      libraryClient.getBigNothingAsync(request).get();
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingCallableCallableEmptyResponseTypeWithResponseHandling.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Callable",  "empty_response_type_with_response_handling")
+// sample-metadata:
+//   title: Test response handling for methods that return empty
+//   description: Test response handling for methods that return empty
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigNothingCallableCallableEmptyResponseTypeWithResponseHandling
+
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.longrunning.Operation;
+
+public class GetBigNothingCallableCallableEmptyResponseTypeWithResponseHandling {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.core.ApiFuture;
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.longrunning.Operation;
+   */
+
+  /** Test response handling for methods that return empty */
+  public static void sampleGetBigNothing() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Operation> future = libraryClient.getBigNothingCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+      // Got nothing
+      System.out.println("Got nothing.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingCallableCallableEmptyResponseTypeWithoutResponseHandling.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Callable",  "empty_response_type_without_response_handling")
+// sample-metadata:
+//   title: Test default response handling is turned off for methods that return empty
+//   description: Test default response handling is turned off for methods that return empty
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigNothingCallableCallableEmptyResponseTypeWithoutResponseHandling
+
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.longrunning.Operation;
+
+public class GetBigNothingCallableCallableEmptyResponseTypeWithoutResponseHandling {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.core.ApiFuture;
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.longrunning.Operation;
+   */
+
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleGetBigNothing() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Operation> future = libraryClient.getBigNothingCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithResponseHandling.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "empty_response_type_with_response_handling")
+// sample-metadata:
+//   title: Test response handling for methods that return empty
+//   description: Test response handling for methods that return empty
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithResponseHandling
+
+package com.google.example.examples.library.v1;
+
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.GetBigBookMetadata;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+public class GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithResponseHandling {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.gax.longrunning.OperationFuture;
+   * import com.google.example.library.v1.GetBigBookMetadata;
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.protobuf.Empty;
+   */
+
+  /** Test response handling for methods that return empty */
+  public static void sampleGetBigNothing() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingOperationCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+      // Got nothing
+      System.out.println("Got nothing.");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithoutResponseHandling.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("LongRunningCallable",  "empty_response_type_without_response_handling")
+// sample-metadata:
+//   title: Test default response handling is turned off for methods that return empty
+//   description: Test default response handling is turned off for methods that return empty
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithoutResponseHandling
+
+package com.google.example.examples.library.v1;
+
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.GetBigBookMetadata;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.Empty;
+
+public class GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeWithoutResponseHandling {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.gax.longrunning.OperationFuture;
+   * import com.google.example.library.v1.GetBigBookMetadata;
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.protobuf.Empty;
+   */
+
+  /** Test default response handling is turned off for methods that return empty */
+  public static void sampleGetBigNothing() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingOperationCallable().futureCall(request);
+
+      // Do something
+
+      future.get();
+
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleGetBigNothing();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBookCallableCallableTestOnSuccessMap.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Callable",  "test_on_success_map")
+// sample-metadata:
+//   title: test maps in response handling
+//   description: When there is a very long description for a sample file we can split
+//     the description into multiple lines and the samples will be just fine
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBookCallableCallableTestOnSuccessMap
+
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBookCallableCallableTestOnSuccessMap {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.core.ApiFuture;
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.GetBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   */
+
+  public static void sampleGetBook() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      GetBookRequest request = GetBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      ApiFuture<Book> future = libraryClient.getBookCallable().futureCall(request);
+
+      // Do something
+
+      Book response = future.get();
+      String intKeyVal = response.getMapStringValueMap().get(123);
+      String booleanKeyVal = response.getMapBoolKeyMap().get(true);
+      int mapValueField = response.getMapMessageValueMap().get("key").getField();
+      System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("quoted_key"));
+      System.out.printf("Test printing enum fields of a map value: %s\n", response.getMapMessageValueMap().get("key").getAlignment());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleGetBook();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBookFlattenedTestOnSuccessMap.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Flattened",  "test_on_success_map")
+// sample-metadata:
+//   title: test maps in response handling
+//   description: When there is a very long description for a sample file we can split
+//     the description into multiple lines and the samples will be just fine
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.GetBookFlattenedTestOnSuccessMap
+
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class GetBookFlattenedTestOnSuccessMap {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   */
+
+  public static void sampleGetBook() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      Book response = libraryClient.getBook(name.toString());
+      String intKeyVal = response.getMapStringValueMap().get(123);
+      String booleanKeyVal = response.getMapBoolKeyMap().get(true);
+      int mapValueField = response.getMapMessageValueMap().get("key").getField();
+      System.out.printf("Test printing map fields: %s\n", response.getMapListValueValueMap().get("quoted_key"));
+      System.out.printf("Test printing enum fields of a map value: %s\n", response.getMapMessageValueMap().get("key").getAlignment());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleGetBook();
   }
 }
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/GetBookRequestTestOnSuccessMap.java ==============
@@ -693,7 +2411,7 @@ public class GetBookRequestTestOnSuccessMap {
     sampleGetBook();
   }
 }
-============== file: samples/src/main/java/com/google/example/examples/library/v1/Hopper.java ==============
+============== file: samples/src/main/java/com/google/example/examples/library/v1/MonologAboutBookCallableCallableStreamingClientProg.java ==============
 /*
  * Copyright 2019 Google LLC
  *
@@ -709,11 +2427,304 @@ public class GetBookRequestTestOnSuccessMap {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
+// DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "prog")
 // sample-metadata:
-//   title: GetBigBook: 'War and Peace'
+//   title: Programming Books
 //   description: Testing calling forms
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.Hopper [--args='[--shelf "Novel\\\"\`\b\t\n\r"]']
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.MonologAboutBookCallableCallableStreamingClientProg
+
+package com.google.example.examples.library.v1;
+
+import com.google.api.gax.rpc.ApiStreamObserver;
+import com.google.example.library.v1.Comment;
+import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfBookName;
+
+public class MonologAboutBookCallableCallableStreamingClientProg {
+  // [START sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.gax.rpc.ApiStreamObserver;
+   * import com.google.example.library.v1.Comment;
+   * import com.google.example.library.v1.DiscussBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfBookName;
+   */
+
+  /** Testing calling forms */
+  public static void sampleMonologAboutBook() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ApiStreamObserver<Comment> responseObserver =
+          new ApiStreamObserver<Comment>() {
+            @Override
+            public void onNext(Comment response) {
+              System.out.printf("The stage of the comment is: %s\n", response.getStage());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+              // Add error-handling
+            }
+
+            @Override
+            public void onCompleted() {
+              // Do something when complete.
+            }
+          };
+      ApiStreamObserver<DiscussBookRequest> requestObserver =
+          libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
+
+      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
+      DiscussBookRequest request = DiscussBookRequest.newBuilder()
+        .setName(name.toString())
+        .build();
+      requestObserver.onNext(request);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END sample]
+
+  public static void main(String[] args) {
+    sampleMonologAboutBook();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/PublishSeriesCallableCallablePiVersion.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Callable",  "pi_version")
+// sample-metadata:
+//   title: Pi version
+//   description: Testing <@calling forms>
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.PublishSeriesCallableCallablePiVersion [--args='[--shelf_name Math] [--edition 123]']
+
+package com.google.example.examples.library.v1;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PublishSeriesCallableCallablePiVersion {
+  // [START canonical]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.core.ApiFuture;
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.PublishSeriesRequest;
+   * import com.google.example.library.v1.PublishSeriesResponse;
+   * import com.google.example.library.v1.SeriesUuid;
+   * import com.google.example.library.v1.Shelf;
+   * import java.util.ArrayList;
+   * import java.util.List;
+   */
+
+  /**
+   * Testing &lt;{@literal @}calling forms&gt;
+   *
+   * @param shelfName The name of the shelf where books are published to.
+   * @param edition The edition of the series.
+   */
+  public static void samplePublishSeries(String shelfName, int edition) {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      // shelfName = "Math";
+      // edition = 123;
+      Shelf shelf = Shelf.newBuilder()
+        .setName(shelfName)
+        .build();
+      List<Book> books = new ArrayList<>();
+      String seriesString = "xyz3141592654";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+
+      // Do something
+
+      PublishSeriesResponse response = future.get();
+      // % % % output handling % % % %
+      // fourScoreAndSevenYears ago
+      //
+      // our fathers brought forth upon this continent
+      //
+      // a new nation
+      // conceived in liberty
+      //
+      // and dedicated to the proposition that allMenAreCreatedEqual.
+      //
+      // Do something with bookNames one by one
+      List<String> bookNames = response.getBookNamesList();
+      for (String title : response.getBookNamesList()) {
+        // Now we deal with thisSingleBook!
+        System.out.printf("\t%%`` The book's title: \"%s\", \\\nand the book costs $50.00 ``%%\n", title);
+      }
+      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
+      System.out.printf("The author of the first book is: %s\n", response.getBooksList().get(0).getAuthor());
+      System.out.println("That's all!");
+      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END canonical]
+
+  public static void main(String[] args) throws Exception {
+    Options options = new Options();
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("shelf_name")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("edition")
+          .build());
+
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    String shelfName = cl.getOptionValue("shelf_name", "Math");
+    int edition =
+        cl.getOptionValue("edition") != null
+            ? Integer.parseInt(cl.getOptionValue("edition"))
+            : 123;
+
+    samplePublishSeries(shelfName, edition);
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/PublishSeriesCallableCallableSecondEdition.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Callable",  "second_edition")
+// sample-metadata:
+//   title: Second edition
+//   description: Testing calling forms
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.PublishSeriesCallableCallableSecondEdition
+
+package com.google.example.examples.library.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PublishSeriesCallableCallableSecondEdition {
+  // [START canonical]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.api.core.ApiFuture;
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.PublishSeriesRequest;
+   * import com.google.example.library.v1.PublishSeriesResponse;
+   * import com.google.example.library.v1.SeriesUuid;
+   * import com.google.example.library.v1.Shelf;
+   * import java.util.ArrayList;
+   * import java.util.List;
+   */
+
+  /** Testing calling forms */
+  public static void samplePublishSeries() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+      int edition = 2;
+      PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setSeriesUuid(seriesUuid)
+        .setEdition(edition)
+        .build();
+      ApiFuture<PublishSeriesResponse> future = libraryClient.publishSeriesCallable().futureCall(request);
+
+      // Do something
+
+      PublishSeriesResponse response = future.get();
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END canonical]
+
+  public static void main(String[] args) {
+    samplePublishSeries();
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/PublishSeriesFlattenedPiVersion.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Flattened",  "pi_version")
+// sample-metadata:
+//   title: Pi version
+//   description: Testing <@calling forms>
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.PublishSeriesFlattenedPiVersion [--args='[--shelf_name Math] [--edition 123]']
 
 package com.google.example.examples.library.v1;
 
@@ -722,58 +2733,71 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import com.google.example.library.v1.Book;
-import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.ShelfBookName;
-import com.google.protobuf.ListValue;
-import java.util.Map;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Hopper {
-  // [START hopper]
+public class PublishSeriesFlattenedPiVersion {
+  // [START canonical]
   /*
    * Please include the following imports to run this sample.
    *
    * import com.google.example.library.v1.Book;
-   * import com.google.example.library.v1.GetBookRequest;
    * import com.google.example.library.v1.LibraryClient;
-   * import com.google.example.library.v1.ShelfBookName;
-   * import com.google.protobuf.ListValue;
-   * import java.util.Map;
+   * import com.google.example.library.v1.PublishSeriesResponse;
+   * import com.google.example.library.v1.SeriesUuid;
+   * import com.google.example.library.v1.Shelf;
+   * import java.util.ArrayList;
+   * import java.util.List;
    */
 
-  /** Testing calling forms */
-  public static void sampleGetBigBook(String shelf) {
+  /**
+   * Testing &lt;{@literal @}calling forms&gt;
+   *
+   * @param shelfName The name of the shelf where books are published to.
+   * @param edition The edition of the series.
+   */
+  public static void samplePublishSeries(String shelfName, int edition) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // shelf = "Novel\\\"`\b\t\n\r";
-      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
-      GetBookRequest request = GetBookRequest.newBuilder()
-        .setName(name.toString())
+      // shelfName = "Math";
+      // edition = 123;
+      Shelf shelf = Shelf.newBuilder()
+        .setName(shelfName)
         .build();
-      Book response = libraryClient.getBigBookAsync(request).get();
-      // Testing iterating over map fields when both key and value are specified.
-      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
-        String myKey = entry.getKey();
-        ListValue myValue = entry.getValue();
-        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      List<Book> books = new ArrayList<>();
+      String seriesString = "xyz3141592654";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
+      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+      // % % % output handling % % % %
+      // fourScoreAndSevenYears ago
+      //
+      // our fathers brought forth upon this continent
+      //
+      // a new nation
+      // conceived in liberty
+      //
+      // and dedicated to the proposition that allMenAreCreatedEqual.
+      //
+      // Do something with bookNames one by one
+      List<String> bookNames = response.getBookNamesList();
+      for (String title : response.getBookNamesList()) {
+        // Now we deal with thisSingleBook!
+        System.out.printf("\t%%`` The book's title: \"%s\", \\\nand the book costs $50.00 ``%%\n", title);
       }
-
-      // Testing iterating over map fields when only key is specified.
-      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
-        System.out.printf("key: %s\n", anotherKey);
-      }
-
-      // Testing iterating over map fields when only value is specified.
-      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
-        System.out.printf("value: %s\n", anotherValue);
-      }
-
-      System.out.printf("name: %s\n", response.getName());
-      System.out.printf("author: %s\n", response.getAuthor());
+      System.out.printf("The first book is: %s\n", response.getBookNamesList().get(0));
+      System.out.printf("The author of the first book is: %s\n", response.getBooksList().get(0).getAuthor());
+      System.out.println("That's all!");
+      System.out.printf("series_uuid: %s\n", response.getSeriesUuid().getSeriesBytes());
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
   }
-  // [END hopper]
+  // [END canonical]
 
   public static void main(String[] args) throws Exception {
     Options options = new Options();
@@ -781,13 +2805,88 @@ public class Hopper {
         Option.builder("")
           .required(false)
           .hasArg(true)
-          .longOpt("shelf")
+          .longOpt("shelf_name")
+          .build());
+    options.addOption(
+        Option.builder("")
+          .required(false)
+          .hasArg(true)
+          .longOpt("edition")
           .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
-    String shelf = cl.getOptionValue("shelf", "Novel\\\"`\b\t\n\r");
+    String shelfName = cl.getOptionValue("shelf_name", "Math");
+    int edition =
+        cl.getOptionValue("edition") != null
+            ? Integer.parseInt(cl.getOptionValue("edition"))
+            : 123;
 
-    sampleGetBigBook(shelf);
+    samplePublishSeries(shelfName, edition);
+  }
+}
+============== file: samples/src/main/java/com/google/example/examples/library/v1/PublishSeriesFlattenedSecondEdition.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Flattened",  "second_edition")
+// sample-metadata:
+//   title: Second edition
+//   description: Testing calling forms
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.PublishSeriesFlattenedSecondEdition
+
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
+import com.google.example.library.v1.Shelf;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PublishSeriesFlattenedSecondEdition {
+  // [START canonical]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.PublishSeriesResponse;
+   * import com.google.example.library.v1.SeriesUuid;
+   * import com.google.example.library.v1.Shelf;
+   * import java.util.ArrayList;
+   * import java.util.List;
+   */
+
+  /** Testing calling forms */
+  public static void samplePublishSeries() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      Shelf shelf = Shelf.newBuilder().build();
+      List<Book> books = new ArrayList<>();
+      int edition = 2;
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
+      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+      System.out.println(response);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END canonical]
+
+  public static void main(String[] args) {
+    samplePublishSeries();
   }
 }
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/PublishSeriesRequestPiVersion.java ==============
@@ -991,7 +3090,7 @@ public class PublishSeriesRequestSecondEdition {
     samplePublishSeries();
   }
 }
-============== file: samples/src/main/java/com/google/example/examples/library/v1/PublishSeriesTestRequestObjectFieldComments.java ==============
+============== file: samples/src/main/java/com/google/example/examples/library/v1/PublishSeriesRequestTestRequestObjectFieldComments.java ==============
 /*
  * Copyright 2019 Google LLC
  *
@@ -1011,7 +3110,7 @@ public class PublishSeriesRequestSecondEdition {
 // sample-metadata:
 //   title: request object field comments
 //   description: Test request object field comments
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.PublishSeriesTestRequestObjectFieldComments
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.PublishSeriesRequestTestRequestObjectFieldComments
 
 package com.google.example.examples.library.v1;
 
@@ -1028,8 +3127,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PublishSeriesTestRequestObjectFieldComments {
-  // [START publish_series_test_request_object_field_comments]
+public class PublishSeriesRequestTestRequestObjectFieldComments {
+  // [START sample]
   /*
    * Please include the following imports to run this sample.
    *
@@ -1093,13 +3192,13 @@ public class PublishSeriesTestRequestObjectFieldComments {
       System.err.println("Failed to create the client due to: " + exception);
     }
   }
-  // [END publish_series_test_request_object_field_comments]
+  // [END sample]
 
   public static void main(String[] args) {
     samplePublishSeries();
   }
 }
-============== file: samples/src/main/java/com/google/example/examples/library/v1/PublishSeriesTestWriteToFile.java ==============
+============== file: samples/src/main/java/com/google/example/examples/library/v1/PublishSeriesRequestTestWriteToFile.java ==============
 /*
  * Copyright 2019 Google LLC
  *
@@ -1119,7 +3218,7 @@ public class PublishSeriesTestRequestObjectFieldComments {
 // sample-metadata:
 //   title: test writing fields to files
 //   description: Testing write fields to files.
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.PublishSeriesTestWriteToFile
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.PublishSeriesRequestTestWriteToFile
 
 package com.google.example.examples.library.v1;
 
@@ -1135,8 +3234,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PublishSeriesTestWriteToFile {
-  // [START publish_series_test_write_to_file]
+public class PublishSeriesRequestTestWriteToFile {
+  // [START sample]
   /*
    * Please include the following imports to run this sample.
    *
@@ -1177,7 +3276,7 @@ public class PublishSeriesTestWriteToFile {
       System.err.println("Failed to create the client due to: " + exception);
     }
   }
-  // [END publish_series_test_write_to_file]
+  // [END sample]
 
   public static void main(String[] args) {
     samplePublishSeries();
@@ -1244,7 +3343,7 @@ public class SampleGetShelf {
     sampleGetShelf();
   }
 }
-============== file: samples/src/main/java/com/google/example/examples/library/v1/SampleMonologAboutBook.java ==============
+============== file: samples/src/main/java/com/google/example/examples/library/v1/StreamShelvesCallableCallableStreamingServerEmpty.java ==============
 /*
  * Copyright 2019 Google LLC
  *
@@ -1260,68 +3359,52 @@ public class SampleGetShelf {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// DO NOT EDIT! This is a generated sample ("CallableStreamingClient",  "prog")
+// DO NOT EDIT! This is a generated sample ("CallableStreamingServer",  "empty")
 // sample-metadata:
-//   title: Programming Books
+//   title: Server streaming
 //   description: Testing calling forms
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.SampleMonologAboutBook
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.StreamShelvesCallableCallableStreamingServerEmpty
 
 package com.google.example.examples.library.v1;
 
-import com.google.api.gax.rpc.ApiStreamObserver;
-import com.google.example.library.v1.Comment;
-import com.google.example.library.v1.DiscussBookRequest;
+import com.google.api.gax.rpc.ServerStream;
 import com.google.example.library.v1.LibraryClient;
-import com.google.example.library.v1.ShelfBookName;
+import com.google.example.library.v1.ShelfName;
+import com.google.example.library.v1.StreamShelvesRequest;
+import com.google.example.library.v1.StreamShelvesResponse;
 
-public class SampleMonologAboutBook {
-  // [START sample_monolog_about_book]
+public class StreamShelvesCallableCallableStreamingServerEmpty {
+  // [START sample]
   /*
    * Please include the following imports to run this sample.
    *
-   * import com.google.api.gax.rpc.ApiStreamObserver;
-   * import com.google.example.library.v1.Comment;
-   * import com.google.example.library.v1.DiscussBookRequest;
+   * import com.google.api.gax.rpc.ServerStream;
    * import com.google.example.library.v1.LibraryClient;
-   * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.example.library.v1.ShelfName;
+   * import com.google.example.library.v1.StreamShelvesRequest;
+   * import com.google.example.library.v1.StreamShelvesResponse;
    */
 
   /** Testing calling forms */
-  public static void sampleMonologAboutBook() {
+  public static void sampleStreamShelves() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      ApiStreamObserver<Comment> responseObserver =
-          new ApiStreamObserver<Comment>() {
-            @Override
-            public void onNext(Comment response) {
-              System.out.printf("The stage of the comment is: %s\n", response.getStage());
-            }
-
-            @Override
-            public void onError(Throwable t) {
-              // Add error-handling
-            }
-
-            @Override
-            public void onCompleted() {
-              // Do something when complete.
-            }
-          };
-      ApiStreamObserver<DiscussBookRequest> requestObserver =
-          libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
-
-      ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
-      DiscussBookRequest request = DiscussBookRequest.newBuilder()
+      ShelfName name = ShelfName.of("[SHELF_ID]");
+      StreamShelvesRequest request = StreamShelvesRequest.newBuilder()
         .setName(name.toString())
         .build();
-      requestObserver.onNext(request);
+
+      ServerStream<StreamShelvesResponse> stream = libraryClient.streamShelvesCallable().call(request);
+      for (StreamShelvesResponse responseItem : stream) {
+        System.out.println(responseItem);
+      }
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
   }
-  // [END sample_monolog_about_book]
+  // [END sample]
 
   public static void main(String[] args) {
-    sampleMonologAboutBook();
+    sampleStreamShelves();
   }
 }
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/TestDefaultCallingFormForPaging.java ==============
@@ -1743,11 +3826,11 @@ public class TestSettingUpEmptyObjectsInRequest {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap2")
+// DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
 // sample-metadata:
 //   title: GetBigBook: 'War and Peace'
-//   description: Testing resource name overlap
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.ThisTagShouldBeTheNameOfTheFile [--args='[--shelf Novel] [--big_book_name "War and Peace"]']
+//   description: Testing calling forms
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.ThisTagShouldBeTheNameOfTheFile [--args='[--shelf "Novel\\\"\`\b\t\n\r"]']
 
 package com.google.example.examples.library.v1;
 
@@ -1759,6 +3842,8 @@ import com.google.example.library.v1.Book;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
+import com.google.protobuf.ListValue;
+import java.util.Map;
 
 public class ThisTagShouldBeTheNameOfTheFile {
   // [START this_tag_should_be_the_name_of_the_file]
@@ -1769,25 +3854,38 @@ public class ThisTagShouldBeTheNameOfTheFile {
    * import com.google.example.library.v1.GetBookRequest;
    * import com.google.example.library.v1.LibraryClient;
    * import com.google.example.library.v1.ShelfBookName;
+   * import com.google.protobuf.ListValue;
+   * import java.util.Map;
    */
 
-  /**
-   * Testing resource name overlap
-   *
-   * @param shelf Test word wrapping for long lines. This is a long comment. The name of the shelf to
-   * retrieve the big book from.
-   * @param bigBookName The name of the book.
-   */
-  public static void sampleGetBigBook(String shelf, String bigBookName) {
+  /** Testing calling forms */
+  public static void sampleGetBigBook(String shelf) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // shelf = "Novel";
-      // bigBookName = "War and Peace";
-      ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
+      // shelf = "Novel\\\"`\b\t\n\r";
+      ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
       Book response = libraryClient.getBigBookAsync(request).get();
-      System.out.println(response);
+      // Testing iterating over map fields when both key and value are specified.
+      for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
+        String myKey = entry.getKey();
+        ListValue myValue = entry.getValue();
+        System.out.printf("key: %s, value: %s\n", myKey, myValue);
+      }
+
+      // Testing iterating over map fields when only key is specified.
+      for (String anotherKey: response.getMapListValueValueMap().keySet()) {
+        System.out.printf("key: %s\n", anotherKey);
+      }
+
+      // Testing iterating over map fields when only value is specified.
+      for (ListValue anotherValue: response.getMapListValueValueMap().values()) {
+        System.out.printf("value: %s\n", anotherValue);
+      }
+
+      System.out.printf("name: %s\n", response.getName());
+      System.out.printf("author: %s\n", response.getAuthor());
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
@@ -1802,21 +3900,14 @@ public class ThisTagShouldBeTheNameOfTheFile {
           .hasArg(true)
           .longOpt("shelf")
           .build());
-    options.addOption(
-        Option.builder("")
-          .required(false)
-          .hasArg(true)
-          .longOpt("big_book_name")
-          .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
-    String shelf = cl.getOptionValue("shelf", "Novel");
-    String bigBookName = cl.getOptionValue("big_book_name", "War and Peace");
+    String shelf = cl.getOptionValue("shelf", "Novel\\\"`\b\t\n\r");
 
-    sampleGetBigBook(shelf, bigBookName);
+    sampleGetBigBook(shelf);
   }
 }
-============== file: samples/src/main/java/com/google/example/examples/library/v1/Turing.java ==============
+============== file: samples/src/main/java/com/google/example/examples/library/v1/TuringProgCallableStreamingBidi.java ==============
 /*
  * Copyright 2019 Google LLC
  *
@@ -1836,7 +3927,7 @@ public class ThisTagShouldBeTheNameOfTheFile {
 // sample-metadata:
 //   title: Programming Books
 //   description: Testing calling forms
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.Turing [--args='[--image_file_name "image_file.jpg"] [--stage DRAFT]']
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.TuringProgCallableStreamingBidi [--args='[--image_file_name "image_file.jpg"] [--stage DRAFT]']
 
 package com.google.example.examples.library.v1;
 
@@ -1854,8 +3945,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Turing {
-  // [START turing]
+public class TuringProgCallableStreamingBidi {
+  // [START turing_prog_callable_streaming_bidi]
   /*
    * Please include the following imports to run this sample.
    *
@@ -1902,7 +3993,7 @@ public class Turing {
       System.err.println("Failed to create the client due to: " + exception);
     }
   }
-  // [END turing]
+  // [END turing_prog_callable_streaming_bidi]
 
   public static void main(String[] args) throws Exception {
     Options options = new Options();
@@ -2101,6 +4192,9 @@ public class LibraryClient implements BackgroundResource {
   private static final PathTemplate PROJECT_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("projects/{project}");
 
+  private static final PathTemplate PROJECT_BOOK_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("projects/{project}/books/{book}");
+
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
 
@@ -2140,6 +4234,19 @@ public class LibraryClient implements BackgroundResource {
   public static final String formatProjectName(String project) {
     return PROJECT_PATH_TEMPLATE.instantiate(
         "project", project);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a project_book resource.
+   *
+   * @deprecated Use the {@link ProjectBookName} class instead.
+   */
+  @Deprecated
+  public static final String formatProjectBookName(String project, String book) {
+    return PROJECT_BOOK_PATH_TEMPLATE.instantiate(
+        "project", project,
+        "book", book);
   }
 
   /**
@@ -2207,6 +4314,28 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseProjectFromProjectName(String projectName) {
     return PROJECT_PATH_TEMPLATE.parse(projectName).get("project");
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which
+   * represents a project_book resource.
+   *
+   * @deprecated Use the {@link ProjectBookName} class instead.
+   */
+  @Deprecated
+  public static final String parseProjectFromProjectBookName(String projectBookName) {
+    return PROJECT_BOOK_PATH_TEMPLATE.parse(projectBookName).get("project");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a project_book resource.
+   *
+   * @deprecated Use the {@link ProjectBookName} class instead.
+   */
+  @Deprecated
+  public static final String parseBookFromProjectBookName(String projectBookName) {
+    return PROJECT_BOOK_PATH_TEMPLATE.parse(projectBookName).get("book");
   }
 
   /**
