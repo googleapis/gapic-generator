@@ -2,32 +2,32 @@ type: com.google.api.codegen.samplegen.SampleConfigProto
 config_schema_version: 1.2.0
 samples:
   # Behavior change:
-  # old config: if region_tag is unspecified or region_tag is not unique, derive the 
-  #   sample filename by concatinating method name, calling form, sample value set id
-  # new config: if region_tag (and id is unspecified), generator should auto-generate
+  # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+  #   sample filename by concatenating method name, calling form, sample value set id
+  # sample config: if region_tag (and id is unspecified), generator should auto-generate
   #   a unique filename for the sample. The generator will be unable to generate the same
-  #   filename as in the old config because there is no `sample value set id` in the 
-  #   new config.
+  #   filename as in the gapic config because there is no `sample value set id` in the 
+  #   sample config.
   #
   # "Hardcode" the ids here and below to make the samples have generated have the
-  # same name as in the old config.
+  # same name as in the gapic config.
   #
-  # When we move the new config completely we should remove the id field, change the
+  # TODO(hzyi): When we move the sample config completely we should remove the id field, change the
   # value of `calling_pattern` field of both samples to `[.*]`, and expect the generator 
-  # to generate samples with all avaiable calling forms, each with a unique filename.
+  # to generate samples with all available calling forms, each with a unique filename.
 - id: delete_shelf_request_empty_response_type_with_response_handling
   service: google.example.library.v1.LibraryService
   rpc: DeleteShelf
   title: "Test response handling for methods that return empty"
   description: "Test response handling for methods that return empty"
   # Behavior change:
-  # In old config, region tag defaults to `sample` if unspecified
-  # In new config, region tags are not generated if unspecified
+  # In gapic config, region tag defaults to `sample` if unspecified
+  # In sample config, region tags are not generated if unspecified
   #
-  # Add the region_tag here to mimic the old behavior and avoid too much
+  # Add the region_tag here to mimic the old behavior and avoid too many
   # baseline changes at a time. 
   #
-  # When we completely switch to the new config remove this field to test 
+  # TODO(hzyi): When we completely switch to the sample config remove this field to test 
   # the new conifg and we should expect that region tag in generated sample 
   # to disappear
   region_tag: sample
@@ -39,14 +39,12 @@ samples:
   rpc: DeleteShelf
   id: delete_shelf_request_empty_response_type_without_response_handling
   # Behavior change:
-  # In old config, region tag defaults to `sample` if unspecified
-  # In new config, region tags are not generated if unspecified
+  # In gapic config, region tag defaults to `sample` if unspecified
+  # In sample config, region tags are not generated if unspecified
   #
-  # Add the region_tag here to mimic the old behavior and avoid too much
-  # baseline changes at a time. When we completely switch to the new config
-  # remove this field to test the new conifg:
-  #
-  # region tag in generated sample should disappear
+  # TODO(hzyi): Add the region_tag here to mimic the old behavior and avoid too much
+  # baseline changes at a time. When we completely switch to the sample config
+  # remove this field to test the new config: region tag in generated sample should disappear
   region_tag: sample
   title: "Test default response handling is turned off for methods that return empty"
   description: "Test default response handling is turned off for methods that return empty"
