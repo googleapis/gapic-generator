@@ -17,8 +17,10 @@ package com.google.api.codegen.transformer.ruby;
 import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceContext;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.SampleContext;
 import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -30,12 +32,15 @@ import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
+import com.google.common.collect.Table;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -81,6 +86,9 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
         new ModelTypeTable(
             new RubyTypeTable(packageName), new RubyModelTypeNameConverter(packageName));
 
+    List<SampleConfig> sampleConfigs = producConfig.getSampleConfigs();
+
+    Table<String, String, MethodContext> interfaceMethodContexts = HashBasedTable.create();
     List<InterfaceContext> interfaceContexts =
         Streams.stream(apiModel.getInterfaces(productConfig))
             .filter(i -> productConfig.hasInterfaceConfig(i))
@@ -89,22 +97,36 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
                     GapicInterfaceContext.create(
                         i, productConfig, typeTable, namer, new RubyFeatureConfig()))
             .collect(ImmutableList.toImmutableList());
-    List<MethodSampleView> allSamples =
-        interfaceContexts
-            .stream()
-            .flatMap(c -> apiMethodTransformer.generateApiMethods(c).stream())
-            .flatMap(m -> m.samples().stream())
-            .collect(ImmutableList.toImmutableList());
-    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
-    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
-    for (InterfaceContext context : interfaceContexts) {
-      List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
+    for (InterfaceContext interfaceContext : interfaceContexts) {
+      for (MethodModel method : interfaceContext.getSupportedMethods()) {
+        MethodContext methodContext = interfaceContext.asRequestMethodContext(method);
+        interfaceMethodContexts.put(
+            interfaceContext.getName(), method.getShortName(), methodContext);
+      }
+    }
+
+    for (SampleConfig sampleConfig : sampleConfigs) {
+      String interfaceName = sampleConfig.interfaceConfig().getName();
+      String methodName = sampleConfig.methodConfig().getName();
+      MethodContext methodContext = interfaceMethodContexts.get(interfaceName, methodName);
+      Preconditions.checkNotNull(methodContext);
+      SampleContext sampleContext =
+          SampleContext.newBuilder()
+              .sampleType(SampleSpec.SampleType.STANDALONE)
+              .availableCallingForms(
+                  CallingForm.getCallingForms(methodContext, TargetLanguage.RUBY))
+              .sampleConfig(sampleConfig)
+              .build();
+      List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethod(
+          methodContext,
+          null,
+          context.getSurfaceInterfaceContext().getApiModel().hasMultipleServices(),
+          sampleContext);
       for (OptionalArrayMethodView method : methods) {
         for (MethodSampleView sample : method.samples()) {
           sampleFileViews.add(
               newSampleFileView(productConfig, context, method, sample, namer, registry));
         }
-      }
     }
     return sampleFileViews.build();
   }
