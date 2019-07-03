@@ -4192,6 +4192,9 @@ public class LibraryClient implements BackgroundResource {
   private static final PathTemplate PROJECT_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("projects/{project}");
 
+  private static final PathTemplate PROJECT_BOOK_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("projects/{project}/books/{book}");
+
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
 
@@ -4231,6 +4234,19 @@ public class LibraryClient implements BackgroundResource {
   public static final String formatProjectName(String project) {
     return PROJECT_PATH_TEMPLATE.instantiate(
         "project", project);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a project_book resource.
+   *
+   * @deprecated Use the {@link ProjectBookName} class instead.
+   */
+  @Deprecated
+  public static final String formatProjectBookName(String project, String book) {
+    return PROJECT_BOOK_PATH_TEMPLATE.instantiate(
+        "project", project,
+        "book", book);
   }
 
   /**
@@ -4298,6 +4314,28 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseProjectFromProjectName(String projectName) {
     return PROJECT_PATH_TEMPLATE.parse(projectName).get("project");
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which
+   * represents a project_book resource.
+   *
+   * @deprecated Use the {@link ProjectBookName} class instead.
+   */
+  @Deprecated
+  public static final String parseProjectFromProjectBookName(String projectBookName) {
+    return PROJECT_BOOK_PATH_TEMPLATE.parse(projectBookName).get("project");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a project_book resource.
+   *
+   * @deprecated Use the {@link ProjectBookName} class instead.
+   */
+  @Deprecated
+  public static final String parseBookFromProjectBookName(String projectBookName) {
+    return PROJECT_BOOK_PATH_TEMPLATE.parse(projectBookName).get("book");
   }
 
   /**
