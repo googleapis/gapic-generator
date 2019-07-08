@@ -2932,6 +2932,12 @@ module Library
 
       private_constant :BOOK_PATH_TEMPLATE
 
+      PROJECT_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "projects/{project}/books/{book}"
+      )
+
+      private_constant :PROJECT_BOOK_PATH_TEMPLATE
+
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf_id}"
       )
@@ -2967,6 +2973,17 @@ module Library
       def self.book_path book_shelf, book
         BOOK_PATH_TEMPLATE.render(
           :"book_shelf" => book_shelf,
+          :"book" => book
+        )
+      end
+
+      # Returns a fully-qualified project_book resource name string.
+      # @param project [String]
+      # @param book [String]
+      # @return [String]
+      def self.project_book_path project, book
+        PROJECT_BOOK_PATH_TEMPLATE.render(
+          :"project" => project,
           :"book" => book
         )
       end

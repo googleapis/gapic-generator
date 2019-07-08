@@ -4322,6 +4322,9 @@ class LibraryServiceClient {
       bookPathTemplate: new gax.PathTemplate(
         'bookShelves/{book_shelf}/books/{book}'
       ),
+      projectBookPathTemplate: new gax.PathTemplate(
+        'projects/{project}/books/{book}'
+      ),
       shelfPathTemplate: new gax.PathTemplate(
         'shelves/{shelf_id}'
       ),
@@ -6825,6 +6828,20 @@ class LibraryServiceClient {
   }
 
   /**
+   * Return a fully-qualified project_book resource name string.
+   *
+   * @param {String} project
+   * @param {String} book
+   * @returns {String}
+   */
+  projectBookPath(project, book) {
+    return this._pathTemplates.projectBookPathTemplate.render({
+      project: project,
+      book: book,
+    });
+  }
+
+  /**
    * Return a fully-qualified shelf resource name string.
    *
    * @param {String} shelfId
@@ -6911,6 +6928,32 @@ class LibraryServiceClient {
   matchBookFromBookName(bookName) {
     return this._pathTemplates.bookPathTemplate
       .match(bookName)
+      .book;
+  }
+
+  /**
+   * Parse the projectBookName from a project_book resource.
+   *
+   * @param {String} projectBookName
+   *   A fully-qualified path representing a project_book resources.
+   * @returns {String} - A string representing the project.
+   */
+  matchProjectFromProjectBookName(projectBookName) {
+    return this._pathTemplates.projectBookPathTemplate
+      .match(projectBookName)
+      .project;
+  }
+
+  /**
+   * Parse the projectBookName from a project_book resource.
+   *
+   * @param {String} projectBookName
+   *   A fully-qualified path representing a project_book resources.
+   * @returns {String} - A string representing the book.
+   */
+  matchBookFromProjectBookName(projectBookName) {
+    return this._pathTemplates.projectBookPathTemplate
+      .match(projectBookName)
       .book;
   }
 
