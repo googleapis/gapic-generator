@@ -25,11 +25,13 @@ public abstract class SampleContext {
 
   public abstract ImmutableList<CallingForm> availableCallingForms();
 
+  public abstract CallingForm defaultCallingForm();
+
   public abstract SampleSpec.SampleType sampleType();
 
   public abstract SampleConfig sampleConfig();
 
-  public Builder newBuilder() {
+  public static Builder newBuilder() {
     return new AutoValue_SampleContext.Builder();
   }
 
@@ -38,9 +40,11 @@ public abstract class SampleContext {
 
     public abstract Builder availableCallingForms(ImmutableList<CallingForm> val);
 
+    public abstract Builder defaultCallingForm(CallingForm val);
+
     public abstract Builder sampleType(SampleSpec.SampleType val);
 
-    public abstract Builder SampleConfig(SampleConfig val);
+    public abstract Builder sampleConfig(SampleConfig val);
 
     public abstract SampleContext build();
   }

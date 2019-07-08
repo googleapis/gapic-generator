@@ -22,6 +22,7 @@ import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.SampleContext;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.ServiceMessages;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -75,6 +76,11 @@ public class DynamicLangApiMethodTransformer {
         null,
         context.getSurfaceInterfaceContext().getApiModel().hasMultipleServices(),
         context.getNamer().getCallingForms(context));
+  }
+
+  public OptionalArrayMethodView generateApiMethod(
+      MethodContext methodContext, SampleContext sampleContext) {
+    return generateApiMethod(methodContext);
   }
 
   private OptionalArrayMethodView generateApiMethod(

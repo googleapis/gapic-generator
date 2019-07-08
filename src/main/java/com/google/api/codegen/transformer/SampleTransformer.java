@@ -222,6 +222,17 @@ public abstract class SampleTransformer {
     return methodSampleViews;
   }
 
+  // entry point for generating standalone samples using sample config.
+  public List<MethodSampleView> generateSample(SampleContext sampleContext, MethodContext methodContext) {
+    OutputContext outputContext = OutputContext.create();
+    List<OutputSpec> outputs = sampleContext.getSampleConfig().responseConfigs();
+    if (outputs.isEmpty()) {
+      outputs = OutputTransformer.defaultOutputSpecs(methodContext);
+    }
+    ImmutableList<OutputView> outputViews =
+        outputTransformer().toViews(outputs, methodContext, valueSet, form, outputContext);
+  }
+
   private MethodSampleView generateSample(
       SampleConfig config, MethodContext methodContext, InitCodeContext initCodeContext) {
     methodContext = methodContext.cloneWithEmptyTypeTable();

@@ -22,7 +22,10 @@ import com.google.api.codegen.samplegen.v1.SampleSpecProto;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -126,7 +129,7 @@ public abstract class SampleConfig {
     public abstract SampleConfig build();
   }
 
-  public static ImmutableList<SampleConfig> createSampleConfigs(
+  public static ImmutableTable<String, String, ImmutableList<SampleConfig>> createSampleConfigTable(
       SampleConfigProto sampleConfigProto, final Map<String, InterfaceConfig> interfaceConfigMap) {
     // First, apply region tag as IDs if IDs are not given
     List<SampleSpecProto> sampleSpecs = new ArrayList<>();
@@ -166,11 +169,25 @@ public abstract class SampleConfig {
     // regexes specified in the config need to be matched against
     // language-specific calling pattern definitions.
 
-    // Construct `SampleConfig` objects.
-    return flattenedSampleSpecs
+    // Construct the table.
+    HashBasedTable<String, String, ArrayList<SampleConfig>> table = HashBasedTable.create();
+    for (SampleSpecProto sampleSpec : flattenedSampleSpecs) {
+      SampleConfig config = createOneSampleConfig(sampleSpec, interfaceConfigMap);
+      if (!table.contains(sampleSpec.getService(), sampleSpec.getRpc())) {
+        table.put(sampleSpec.getService(), sampleSpec.getRpc(), new ArrayList<>());
+      }
+      table.get(sampleSpec.getService(), sampleSpec.getRpc()).add(config);
+    }
+
+    // Make an immutable copy.
+    return table
+        .cellSet()
         .stream()
-        .map(spec -> createOneSampleConfig(spec, interfaceConfigMap))
-        .collect(ImmutableList.toImmutableList());
+        .collect(
+            ImmutableTable.toImmutableTable(
+                Table.Cell::getRowKey,
+                Table.Cell::getColumnKey,
+                v -> ImmutableList.copyOf(v.getValue())));
   }
 
   private static SampleConfig createOneSampleConfig(

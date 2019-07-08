@@ -21,6 +21,7 @@ import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.OutputContext;
 import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.samplegen.v1.ResponseStatementProto;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.viewmodel.CallingForm;
@@ -53,14 +54,41 @@ public class OutputTransformer {
         OutputSpec.newBuilder().addPrint("%s").addPrint(RESPONSE_PLACEHOLDER).build());
   }
 
+  // Helper function for backward compatibility during sample config migration.
+  private static List<ResponseStatementProto> fromOutputSpecs(List<OutputSpec> oldConfigs) {
+    return oldConfigs.stream()
+        .map(OutputTransformer::fromOutputSpec)
+        .collect(ImmutableList.toImmutableList());
+  }
+
+  private static ResponseStatementProto fromOutputSpec(OutputSpec oldConfig) {
+    ResponseStatementProto.Builder builder = ResponseStatementProto.newBuilder();
+    builder
+        .setDefine(oldConfig.getDefine())
+        .AddAllComment(oldConfig.getCommentList())
+        .AddAllPrint(oldConfig.getPrintList());
+    builder
+        .getWriteFileBuilder()
+        .AddAllFileName(oldConfig.getWriteFile().getFileNameList())
+        .setContents(oldConfig.getContents());
+    builder
+        .getLoopBuilder()
+        .setCollection(oldConfig.getCollection())
+        .setVariable(oldConfig.getVariable())
+        .setMap(oldConfig.getMap())
+        .setKey(oldConfig.getKey())
+        .setValue(oldConfig.getValue())
+        .addAllBody(fromOldSpecs(oldConfig.getBodyList()));
+    return builder.build();
+  }
+
   ImmutableList<OutputView> toViews(
       List<OutputSpec> configs,
       MethodContext context,
       SampleValueSet valueSet,
       CallingForm form,
       OutputContext outputContext) {
-    return configs
-        .stream()
+    return configs.stream()
         .map(s -> toView(s, context, valueSet, outputContext, form))
         .collect(ImmutableList.toImmutableList());
   }
@@ -235,8 +263,7 @@ public class OutputTransformer {
         .variableName(context.getNamer().localVarName(Name.from(loopVariable)))
         .collection(accessor)
         .body(
-            loop.getBodyList()
-                .stream()
+            loop.getBodyList().stream()
                 .map(body -> toView(body, context, valueSet, outputContext, form))
                 .collect(ImmutableList.toImmutableList()))
         .build();
@@ -277,8 +304,7 @@ public class OutputTransformer {
         .valueType(valueTypeName)
         .map(mapVar)
         .body(
-            loop.getBodyList()
-                .stream()
+            loop.getBodyList().stream()
                 .map(body -> toView(body, context, valueSet, outputContext, form))
                 .collect(ImmutableList.toImmutableList()))
         .build();
@@ -318,9 +344,7 @@ public class OutputTransformer {
   private OutputView.CommentView commentView(List<String> configs, MethodContext context) {
     String comment = configs.get(0);
     Object[] args =
-        configs
-            .subList(1, configs.size())
-            .stream()
+        configs.subList(1, configs.size()).stream()
             .map(c -> context.getNamer().localVarName(Name.anyLower(c)))
             .toArray(Object[]::new);
     String formattedComment = String.format(comment, args);
@@ -586,7 +610,8 @@ public class OutputTransformer {
       CallingForm form) {
     Preconditions.checkArgument(
         !context.getNamer().getSampleUsedVarNames(context, form).contains(identifier),
-        "%s: %s cannot define variable \"%s\": it is already used by the sample template for calling form \"%s\".",
+        "%s: %s cannot define variable \"%s\": it is already used by the sample template for"
+            + " calling form \"%s\".",
         methodName,
         valueSetId,
         identifier,
