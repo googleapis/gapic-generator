@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.SampleConfig;
+import com.google.api.codegen.config.SampleContext;
 import com.google.api.codegen.OutputSpec;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldModel;
@@ -83,11 +85,29 @@ public class OutputTransformer {
   }
 
   ImmutableList<OutputView> toViews(
+      List<ResponseStatementProto> configs,
+      MethodContext methodContext,
+      SampleContext sampleContext,
+      OutputContext outputContext) {
+    return configs.stream()
+        .map(s -> toView(s, methodContext, sampleContext, outputContext))
+        .collect(ImmutableList.toImmutableList());
+  }
+
+  ImmutableList<OutputView> toViews(
       List<OutputSpec> configs,
       MethodContext context,
       SampleValueSet valueSet,
       CallingForm form,
       OutputContext outputContext) {
+    
+    SampleConfig sampleConfig = SampleConfig.newBuilder().id(valueSet.getId()).callingForm(form).build();
+
+    return toViews(
+      fromOutputSpecs(configs),
+      context,
+      SampleContext.newBuilder().sampleType(SampleSpec.SampleType.STANDALONE).sampleConfig(sampleConfig))
+
     return configs.stream()
         .map(s -> toView(s, context, valueSet, outputContext, form))
         .collect(ImmutableList.toImmutableList());

@@ -23,9 +23,7 @@ import com.google.common.collect.ImmutableList;
 @AutoValue
 public abstract class SampleContext {
 
-  public abstract ImmutableList<CallingForm> availableCallingForms();
-
-  public abstract CallingForm defaultCallingForm();
+  public abstract CallingForm callingForm();
 
   public abstract SampleSpec.SampleType sampleType();
 
@@ -38,22 +36,12 @@ public abstract class SampleContext {
   @AutoValue.Builder
   public abstract static class Builder {
 
-    public abstract Builder availableCallingForms(ImmutableList<CallingForm> val);
-
-    public abstract Builder defaultCallingForm(CallingForm val);
+    public abstract Builder callingForm(CallingForm val);
 
     public abstract Builder sampleType(SampleSpec.SampleType val);
 
     public abstract Builder sampleConfig(SampleConfig val);
 
     public abstract SampleContext build();
-  }
-
-  public SampleContext create(
-      MethodContext methodContext, SampleSpec.SampleType type, TargetLanguage language) {
-    return newBuilder()
-        .availableCallingForms(CallingForm.getCallingForms(methodContext, language))
-        .sampleType(type)
-        .build();
   }
 }

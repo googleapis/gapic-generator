@@ -115,17 +115,22 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
         } else {
           // Use sample config.
           for (SampleConfig sampleConfig : sampleConfigs) {
-            SampleContext sampleContext =
-                SampleContext.newBuilder()
-                    .sampleType(SampleSpec.SampleType.STANDALONE)
-                    .availableCallingForms(
-                        CallingForm.getCallingForms(methodContext, TargetLanguage.RUBY))
-                    .defaultCallingForm(
-                        CallingForm.getDefaultCallingForm(methodContext, TargetLanguage.RUBY))
-                    .sampleConfig(sampleConfig)
-                    .build();
-            allSamples.addAll(
-                apiMethodTransformer.generateApiMethod(methodContext, sampleContext).samples());
+            if (sampleConfig.usesDefaultCallingForm()) {
+              SampleContext sampleContext =
+                  SampleContext.newBuilder()
+                      .sampleType(SampleSpec.SampleType.STANDALONE)
+                      .callingForm(
+                          CallingForm.getDefaultCallingForm(methodContext, TargetLanguage.RUBY))
+                      .sampleConfig(sampleConfig);
+              allSamples.addAll(
+                  apiMethodTransformer.generateApiMethod(methodContext, sampleContext).samples());
+            } else {
+              List<CallingForm> allMatchingCallingForms =
+                  CallingForms.getCallingForms(methodContext, TargetLanguage.RUBY).stream()
+                      .filter(t -> t.toLowerUnderscore().matches(sampleConfig.getCallingPattern()))
+                      .collect(ImmutableList.toImmutableList());
+              
+            }
           }
         }
       }
