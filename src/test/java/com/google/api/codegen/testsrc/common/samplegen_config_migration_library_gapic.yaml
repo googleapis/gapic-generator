@@ -1,0 +1,1378 @@
+# Clone a gapic config for samplegen config migration comparison.
+# The baselines should be exactly the same when generating using this file
+# or the sample configs in common/samples, after the migration is finished.
+type: com.google.api.codegen.ConfigProto
+config_schema_version: 1.0.0
+language_settings:
+  java:
+    package_name: com.google.example.library.v1
+    interface_names:
+      google.example.library.v1.LibraryService: Library
+    release_level: GA
+  python:
+    package_name: google.cloud.example.library_v1.gapic
+  go:
+    # Intentionally changed from the gRPC package name.
+    # See: https://github.com/googleapis/toolkit/issues/320
+    package_name: cloud.google.com/go/library/apiv1
+    domain_layer_location: cloud.google.com/go/library
+    interface_names:
+      google.example.library.v1.LibraryService: LibClient
+  ruby:
+    # Note that package_name for ruby is intentionally changed
+    # from the gRPC package name of the API to test the generated
+    # code. See: https://github.com/googleapis/toolkit/issues/309
+    package_name: Library::V1
+  # Use default PHP package name.
+  nodejs:
+    package_name: library.v1
+    domain_layer_location: google-cloud
+  csharp:
+    package_name: Google.Example.Library.V1
+license_header:
+  copyright_file: copyright-google.txt # Test that the deprecated field is still parseable.
+  license_file: license-header-apache-2.0.txt # Test that the deprecated field is still parseable.
+collections:
+  - name_pattern: shelves/{shelf_id}
+    entity_name: shelf
+  # This pattern is present here and not in the interface configuration to test
+  # the restriction of generated parse/format methods
+  - name_pattern: archives/{archive_path}/books/{book_id=**}
+    entity_name: archived_book
+  - name_pattern: _deleted-book_
+    entity_name: deleted_book
+collection_oneofs:
+  - oneof_name: book_oneof
+    collection_names:
+    - book
+    - archived_book
+    - deleted_book
+interfaces:
+- name: google.example.library.v1.MyProto
+  retry_codes_def:
+    - name: idempotent
+      retry_codes:
+        - UNAVAILABLE
+        - DEADLINE_EXCEEDED
+    - name: non_idempotent
+      retry_codes: []
+  collections:
+    # To test the case that entity name / variable which happens to be
+    # a language keyword. See: https://github.com/googleapis/toolkit/issues/618
+    - name_pattern: shelves/{shelf}/books/{book}/returns/{return}
+      entity_name: return
+  methods:
+    - name: MyMethod
+      retry_codes_name: non_idempotent
+      retry_params_name: default
+      timeout_millis: 1000
+- name: google.example.library.v1.LibraryService
+  lang_doc:
+    java: >
+      Also see this awesome doc there!
+      and there!
+      and everywhere!
+    go: >
+      Write more docs here as an offering to the Great Gopher
+  retry_codes_def:
+  - name: idempotent
+    retry_codes:
+    - UNAVAILABLE
+    - DEADLINE_EXCEEDED
+  - name: non_idempotent
+    retry_codes: []
+  retry_params_def:
+  - name: default
+    initial_retry_delay_millis: 100
+    retry_delay_multiplier: 1.2
+    max_retry_delay_millis: 1000
+    initial_rpc_timeout_millis: 300
+    rpc_timeout_multiplier: 1.3
+    max_rpc_timeout_millis: 3000
+    total_timeout_millis: 30000
+  collections:
+  - name_pattern: shelves/{shelf_id}
+    entity_name: shelf
+  - name_pattern: shelves/{shelf_id}/books/{book_id}
+    entity_name: book
+    language_overrides:
+    - language: java
+      entity_name: shelf_book
+  - name_pattern: projects/{project}
+    entity_name: project
+    language_overrides:
+    - language: csharp
+      common_resource_name: Google.Api.Gax.ResourceNames.ProjectName
+    - language: java
+      common_resource_name: com.google.cloud.ProjectName
+  smoke_test:
+    method: UpdateBook
+    init_fields:
+      - name%shelf_id="testShelf-$RANDOM"
+      - name%book_id=$PROJECT_ID
+      - book . rating=GOOD
+  methods:
+  - name: CreateShelf
+    flattening:
+      groups:
+      - parameters:
+        - shelf
+    required_fields:
+      - shelf
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 1000
+  - name: GetShelf
+    flattening:
+      groups:
+      - parameters:
+        - name
+      - parameters:
+        - name
+        - message
+      - parameters:
+        - name
+        - message
+        - string_builder
+    required_fields:
+      - name
+      - options
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 2000
+    field_name_patterns:
+      name: shelf
+    sample_value_sets:
+    - id: test_default_calling_form_unary
+      title: test_default_calling_form_unary
+      description: "Test default calling forms for unary methods."
+      parameters:
+        defaults:
+        - name%shelf_id="my-shelf"
+      on_success:
+      - print:
+          - "The theme of the shelf is: %s"
+          - $resp.theme
+    - id: test_setting_up_empty_objects_in_request
+      title: test_setting_up_empty_objects_in_request
+      description: "Test setting up empty objects in the request objects."
+      parameters:
+        defaults:
+        - name%shelf_id="my-shelf"
+        - message={}
+        - string_builder={}
+        attributes:
+        - parameter: message
+          description: "we can set up this empty nested object now"
+      on_success:
+      - print:
+        - "Shelf found."
+    samples:
+      standalone:
+      - region_tag: sample_get_shelf
+        value_sets: test_default_calling_form_unary
+      - region_tag: test_setting_up_empty_objects_in_request
+        value_sets: test_setting_up_empty_objects_in_request
+  - name: ListShelves
+    page_streaming:
+      request:
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: shelves
+    flattening:
+      groups:
+      - parameters: []
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 3000
+    sample_value_sets:
+    - id: "test_default_calling_form_paging"
+      title: "test default calling form for paging"
+      description: "Test default calling form for paging methods."
+      on_success:
+        - print:
+          - "shelf name: %s"
+          - $resp
+    samples:
+      standalone:
+      - value_sets: [test_default_calling_form_paging]
+        region_tag: "test_default_calling_form_for_paging"
+  - name: DeleteShelf
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+      - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 4000
+    field_name_patterns:
+      name: shelf
+    sample_value_sets:
+    - id: empty_response_type_with_response_handling
+      title: "Test response handling for methods that return empty"
+      description: "Test response handling for methods that return empty"
+      on_success:
+      - comment: "Shelf deleted"
+      - print: "Shelf deleted."
+    - id: empty_response_type_without_response_handling
+      title: "Test default response handling is turned off for methods that return empty"
+      description: "Test default response handling is turned off for methods that return empty"
+    samples:
+      standalone:
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Change the regex `.*` to request so that we can "predict" the what the filenames would
+      #   be generated for these two value sets in the gapic config, and hardcode them in the
+      #   sample config.
+      - calling_forms: [request]
+        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
+  - name: MergeShelves
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - other_shelf_name
+    required_fields:
+      - name
+      - other_shelf_name
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 5000
+    field_name_patterns:
+      name: shelf
+      other_shelf_name: shelf
+  - name: CreateBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - book
+    required_fields:
+      - name
+      - book
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 6000
+    field_name_patterns:
+      name: shelf
+      shelf.name: shelf # Test non-existent field name.
+    header_request_params:
+    - name
+    - book.read
+  - name: PublishSeries
+    field_name_patterns:
+      shelf.name: shelf
+    flattening:
+      groups:
+      - parameters:
+        - shelf
+        - books
+        - edition
+        - series_uuid
+    required_fields:
+      - shelf
+      - books
+      - series_uuid
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 7000
+    batching:
+      thresholds:
+        element_count_threshold: 6
+        element_count_limit: 7
+        request_byte_threshold: 100000
+        request_byte_limit: 150000
+        delay_threshold_millis: 500
+      batch_descriptor:
+        batched_field: books
+        discriminator_fields:
+          - edition
+          - shelf.name
+        subresponse_field: book_names
+    sample_code_init_fields:
+    - series_uuid.series_string=foobar
+    sample_value_sets:
+      # callingFormCheck: pi_version java: Request
+      # callingFormCheck: pi_version nodejs: Request
+      # callingFormCheck: pi_version py: Request
+    - id: pi_version
+      title: "Pi version"
+      description: "Testing <@calling forms>"
+      parameters:
+        defaults:
+        - shelf.name=Math
+        - series_uuid.series_string=xyz3141592654
+        - edition=123
+        attributes:
+        - parameter: shelf.name
+          sample_argument_name: shelf_name
+          description: "The name of the shelf where books are published to."
+        - parameter: edition
+          sample_argument_name: edition
+          description: "The edition of the series."
+      on_success:
+      - comment:
+        - "%% %% %% output handling %% %% %% %%"
+      - comment:
+        - "%s ago\n\nour fathers brought forth upon this continent\n"
+        - four_score_and_seven_years
+      - comment:
+        - |+
+          a new nation
+          conceived in liberty
+
+          and dedicated to the proposition that %s.
+        - all_men_are_created_equal
+      - comment:
+        - "Do something with %s one by one"
+        - book_names
+      - define: book_names = $resp.book_names
+      - loop:
+          variable: title
+          collection: $resp.book_names
+          body:
+          - comment:
+              - "Now we deal with %s!"
+              - this_single_book
+          - print:
+              - "\t%%`` The book's title: \"%s\", \\\nand the book costs $50.00 ``%%"
+              - title
+      - print:
+        - "The first book is: %s"
+        - $resp.book_names[0]
+      - print:
+        - "The author of the first book is: %s"
+        - $resp.books[0].author
+      - print:
+        - "That's all!"
+      - print:
+        - "series_uuid: %s"
+        - $resp.series_uuid.series_bytes
+      # callingFormCheck: second_edition java: Request
+      # callingFormCheck: second_edition nodejs: Request
+      # callingFormCheck: second_edition py: Request
+    - id: second_edition
+      title: "Second edition"
+      description: "Testing calling forms"
+      parameters:
+        defaults:
+        - edition=2
+    - id: test_request_object_field_comments
+      title: "request object field comments"
+      description: "Test request object field comments"
+      parameters:
+        defaults:
+        - shelf.name%shelf_id="math"
+        - shelf.theme=Math
+        - shelf.internal_theme=Statistics
+        - series_uuid.series_bytes="xyz3141592654"
+        - edition=123
+        attributes:
+        - parameter: shelf.internal_theme
+          description: "Comment on a primitive field"
+        - parameter: series_uuid.series_bytes
+          read_file: true
+          description: "Comment on a file input field"
+        - parameter: series_uuid
+          description: "Comment on a message"
+          # TODO(hzyi): this comment is currently not generated because resource name 
+          # entities are inline literals. We need to revisit this issue when we start
+          # looking at making inline literals configurable
+        - parameter: shelf.name%shelf_id
+          description: "Comment on a resource name entity"
+        - parameter: shelf.name
+          description: "Comment on a resource name"
+        - parameter: edition
+          description: "A super long long long long long long long long long long long long long long comment that tests word wrapping"
+        - parameter: shelf.theme
+          description: "A super long comment\nwraps words at newline characters\nas well"
+    - id: test_write_to_file
+      title: "test writing fields to files"
+      description: "Testing write fields to files."
+      on_success:
+        - comment: "testing writing bytes field."
+        - write_file:
+            file_name:
+            - "uuid_of_series_with_book_%s.raw"
+            - $resp.book_names[0]
+            contents: $resp.series_uuid.series_bytes
+        - comment: "testing writing string field."
+        - write_file:
+            file_name:
+            - "series_uuid_in_plain_text.txt"
+            contents: $resp.series_uuid.series_string
+    samples:
+      standalone:
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id is unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Change the regex `.*` to request so that we can "predict" the what the filenames would
+      #   be generated for these two value sets in the gapic config, and hardcode them in the
+      #   sample config.
+      - calling_forms: request
+        value_sets: [second_edition, pi_version]
+        region_tag: "canonical"
+      - calling_forms: request
+        value_sets: ["test_request_object_field_comments"]
+        region_tag: publish_series_test_request_object_field_comments
+      - calling_forms: request
+        value_sets: ["test_write_to_file"]
+        region_tag: publish_series_test_write_to_file
+  - name: GetBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+      - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 8000
+    field_name_patterns:
+      name: book
+    sample_value_sets:
+    - id: not_here
+      title: "Non-existent book"
+      description: "This value set should never be used"
+      parameters:
+        defaults:
+        - name="Unreal book"
+    - id: test_on_success_map
+      title: "test maps in response handling"
+      description: |
+        When there is a very long description for a sample file we can split
+        the description into multiple lines and the samples will be just fine
+      parameters:
+        defaults:
+        - name="test_on_success_map"
+      on_success:
+        - define: int_key_val = $resp.map_string_value{123}
+        - define: boolean_key_val = $resp.map_bool_key{true}
+        - define: map_value_field = $resp.map_message_value{"key"}.field
+        - print:
+          - "Test printing map fields: %s"
+          - $resp.map_list_value_value{"quoted_key"}
+        - print:
+          - "Test printing enum fields of a map value: %s"
+          - $resp.map_message_value{"key"}.alignment
+    samples:
+      standalone:
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Change the regex `.*` to request so that we can "predict" the what the filenames would
+      #   be generated for these two value sets in the gapic config, and hardcode them in the
+      #   sample config.
+      - calling_forms: "request"
+        value_sets: test_on_success_map
+  - name: ListBooks
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - filter
+    required_fields:
+      - name
+    page_streaming:
+      request:
+        page_size_field: page_size
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: books
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    field_name_patterns:
+      name: shelf
+    sample_code_init_fields:
+    # Set the sample_code_init_field for an optional field
+    - filter="book-filter-string"
+  - name: DeleteBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+      - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    # leaving commented out to test the default
+    field_name_patterns:
+      name: book
+  - name: UpdateBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - book
+      - parameters:
+        - name
+        - optional_foo
+        - book
+        - update_mask
+        - physical_mask
+    required_fields:
+      - name
+      - book
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    field_name_patterns:
+      name: book
+  - name: MoveBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - other_shelf_name
+    required_fields:
+      - name
+      - other_shelf_name
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    field_name_patterns:
+      name: book
+      other_shelf_name: shelf
+  - name: ListStrings
+    flattening:
+      groups:
+      - parameters: []
+      - parameters:
+        - name
+    page_streaming:
+      request:
+        page_size_field: page_size
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: strings
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    field_name_patterns:
+      name: "*"
+  - name: AddComments
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - comments
+    required_fields:
+      - name
+      - comments
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    # Test batching with minimal settings (no flow control)
+    batching:
+      thresholds:
+        element_count_threshold: 6
+        request_byte_threshold: 100000
+        delay_threshold_millis: 500
+      batch_descriptor:
+        batched_field: comments
+        discriminator_fields:
+          - name
+    field_name_patterns:
+      name: book
+    sample_code_init_fields:
+      - comments[0].comment
+      - comments[0].stage
+      - comments[0].alignment
+  - name: GetBookFromArchive
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+      - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    field_name_patterns:
+      name: archived_book
+    surface_treatments:
+      - include_languages:
+          - go
+        visibility: DISABLED
+  - name: GetBookFromAnywhere
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - alt_book_name
+    required_fields:
+      - name
+      - alt_book_name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    field_name_patterns:
+      name: book_oneof
+      alt_book_name: book
+  - name: GetBookFromAbsolutelyAnywhere
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+      - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    field_name_patterns:
+      name: book_oneof
+    header_request_params:
+      - name
+      - alt_book_name
+    sample_value_sets:
+    - id: test_resource_name_oneof
+      parameters:
+        defaults:
+        - name%archive_path="The archive to search for the book"
+        - name%book_id="The ID of the book"
+      on_success:
+      - print: ["Archived book found."]
+    - id: test_resource_name_oneof_2
+      parameters:
+        defaults:
+        - name%shelf_id="The Shelf to search for the book"
+        - name%book_id="The ID of the book"
+      on_success:
+      - print: ["Book on shelf found."]
+    samples:
+      standalone:
+      - region_tag: test_resource_name_oneof
+        value_sets: [test_resource_name_oneof]
+      - region_tag: test_resource_name_oneof_2
+        value_sets: [test_resource_name_oneof_2]
+  - name: UpdateBookIndex
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - index_name
+        - index_map
+    required_fields:
+    - name
+    - index_name
+    - index_map
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    field_name_patterns:
+      name: book
+    sample_code_init_fields:
+      - index_name="default index"
+      - index_map{"default_key"}
+  - name: StreamShelves
+    grpc_streaming:
+      response:
+        resources_field: shelves
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 30000
+    field_name_patterns:
+      name: shelf
+    flattening:
+      groups:
+        - parameters:
+            - name
+    required_fields:
+      - name
+    #
+    # This set of tests were to test that gapic-generator correctly
+    # generates all the valid combinations of value sets and calling forms
+    # Now that we are flattening the config, we won't need to test
+    # this behavior any more.
+    #
+    # They are commented out instead of deleted just for reference.
+    # Once the migration is over delete them.
+    #
+    # sample_value_sets:
+    #   # callingFormCheck: empty java: CallableStreamingServer
+    #   # callingFormCheck: empty nodejs: RequestStreamingServer
+    #   # callingFormCheck: empty py: RequestStreamingServer
+    # - id: empty
+    #   title: "Server streaming"
+    #   description: "Testing calling forms"
+    # samples:
+    #   in_code:
+    #   - calling_forms: ".*"
+    #     value_sets: ".*"
+    #   standalone:
+    #   - calling_forms: ".*"
+    #     value_sets: ".*"
+    #   api_explorer:
+    #   - calling_forms: ".*"
+    #     value_sets: ".*"
+  - name: StreamBooks
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 30000
+    sample_value_sets:
+      # callingFormCheck: prog java: CallableStreamingServer
+      # callingFormCheck: prog nodejs: RequestStreamingServer
+      # callingFormCheck: prog py: RequestStreamingServer
+    - id: prog
+      title: "Programming Books"
+      description: "Testing calling forms"
+      parameters:
+        defaults:
+        - name=BASIC
+    samples:
+      standalone:
+      # Python only
+      - calling_forms: request_streaming_server
+        value_sets: prog
+        region_tag: lovelace
+      # Java only
+      - calling_forms: callable_streaming_server
+        value_sets: "prog"
+        region_tag: babbage
+  - name: DiscussBook
+    # required_fields makes a difference on sample code.
+    required_fields:
+    - name
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 30000
+    field_name_patterns:
+      name: book
+    sample_value_sets:
+      # callingFormCheck: prog java: CallableStreamingBidi
+      # callingFormCheck: prog nodejs: RequestStreamingBidi
+      # callingFormCheck: prog py: RequestStreamingBidi
+    - id: prog
+      title: "Programming Books"
+      description: "Testing calling forms"
+      parameters:
+        defaults:
+        - name=BASIC
+        - comment.comment = comment_file
+        - image= "image_file.jpg"
+        - comment.stage=DRAFT
+        attributes:
+        - parameter: comment.comment
+          read_file: true
+        - parameter: image
+          read_file: true
+          sample_argument_name: image_file_name
+        - parameter: comment.stage
+          sample_argument_name: stage
+    samples:
+      # Behavior change:
+      # gapic config: %v and %c can be placeholders for value set ids and calling form names
+      #   in region tags.
+      # sample config: value set id does not exist any more.
+      #
+      # Change region tag to `turing`.
+      #
+      # Note, technically it's still possible to use %c as placeholders for calling form names,
+      # but this feature is not needed for production use, as existing users don't forsee
+      # the case where they need calling form/calling pattern at all for the moment. Thus to
+      # make the migration easier and faster, we will not support this feature in the sample config,
+      # at least for now.
+      #
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Remove the regex `.*` to use the default calling form so that the filenames would
+      #   the same as the region_tag.
+      standalone:
+      - value_sets: ".*"
+        region_tag: "turing"
+  - name: MonologAboutBook
+    # required_fields makes a difference on sample code.
+    required_fields:
+    - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book
+    timeout_millis: 30000
+    sample_value_sets:
+      # callingFormCheck: prog java: CallableStreamingClient
+      # callingFormCheck: prog nodejs: RequestStreamingClient
+      # callingFormCheck: prog py: RequestStreamingClient
+    - id: prog
+      title: "Programming Books"
+      description: "Testing calling forms"
+      parameters:
+        defaults:
+        - name=BASIC
+      on_success:
+        - print:
+          - "The stage of the comment is: %s"
+          - $resp.stage
+    samples:
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Add a region_tag `sample_monolog_about_book` here. It would be unique as there
+      #   is only one calling form for client-streaming methods in one language, and therefore
+      #   it will be used as the sample filename.
+      standalone:
+      - calling_forms: ".*"
+        value_sets: ".*"
+        region_tag: "sample_monolog_about_book"
+  - name: BabbleAboutBook
+    field_name_patterns:
+      name: book
+    sample_value_sets:
+    - id: empty_response_type_with_response_handling
+      title: "Test response handling for methods that return empty"
+      description: "Test response handling for methods that return empty"
+      on_success:
+      - comment: "No one replied"
+      - print: "No one replied."
+    - id: empty_response_type_without_response_handling
+      title: "Test default response handling is turned off for methods that return empty"
+      description: "Test default response handling is turned off for methods that return empty"
+    # Behavior change:
+    # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+    #   sample filename by concatinating method name, calling form, sample value set id
+    # sample config: if region_tag and id are unspecified, generator should auto-generate
+    #   a unique filename for the sample. The generator will be unable to generate the same
+    #   filename as in the gapic config because there is no `sample value set id` in the 
+    #   sample config.
+    #
+    # Add region_tags here. They are both unique and therefore will be used as the
+    # sample filenames.
+    samples:
+      standalone:
+      - calling_forms: ".*"
+        value_sets: [empty_response_type_with_response_handling]
+        region_tag: babble_about_book_1
+      - calling_forms: ".*"
+        value_sets: [empty_response_type_without_response_handling]
+        region_tag: babble_about_book_2
+  - name: FindRelatedBooks
+    flattening:
+      groups:
+      - parameters:
+        - names
+        - shelves
+    field_name_patterns:
+      names: book
+      shelves: shelf
+    required_fields:
+    - names
+    - shelves
+    page_streaming:
+      request:
+        token_field: page_token
+        page_size_field: page_size
+      response:
+        token_field: next_page_token
+        resources_field: names
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 3000
+    sample_code_init_fields:
+    - names[0]
+    # TODO(michaelbausor): support %-entity notation for list elements
+    #- names[1]%shelf_id=my_shelf
+    #- names[1]%book_id=my_first_book
+    sample_value_sets:
+      # callingFormCheck: odyssey java: RequestPaged
+      # callingFormCheck: odyssey nodejs: RequestAsyncPagedAll
+      # callingFormCheck: odyssey py: RequestPagedAll
+    - id: odyssey
+      title: "The Odyssey"
+      description: "Testing calling forms"
+      parameters:
+        defaults:
+        - names[0]=Odyssey
+        - shelves[0]=Classics
+      on_success:
+        - define: book = $resp
+        - print:
+          - 'Here''s a related book: %s'
+          - book
+    samples:
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Remove the regex calling forms to use the default one. Add a unique region tag so
+      #   that the region tag will become the filenames of the samples.
+      standalone:
+      - region_tag: find_related_books_odyssey
+        value_sets: odyssey
+  - name: AddTag
+    flattening:
+      groups:
+      - parameters:
+        - resource
+        - tag
+    required_fields:
+    - resource
+    - tag
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      resource: book
+    timeout_millis: 60000
+    surface_treatments:
+    - include_languages:
+      - go
+      - java
+      - php
+      - nodejs
+      - csharp
+      - ruby
+      - python
+      visibility: DISABLED
+  - name: AddLabel
+    flattening:
+      groups:
+      - parameters:
+        - resource
+        - label
+    required_fields:
+    - resource
+    - label
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      resource: book
+    timeout_millis: 60000
+    reroute_to_grpc_interface: google.tagger.v1.Labeler
+    surface_treatments:
+    - include_languages:
+      - go
+      - java
+      visibility: PACKAGE
+      release_level: DEPRECATED
+  - name: GetBigBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book
+    timeout_millis: 60000
+    long_running:
+      return_type: google.example.library.v1.Book
+      metadata_type: google.example.library.v1.GetBigBookMetadata
+      initial_poll_delay_millis: 3000
+      poll_delay_multiplier: 1.3
+      max_poll_delay_millis: 30000
+      total_poll_timeout_millis: 86400000
+    sample_value_sets:
+      # callingFormCheck: wap java: LongRunningRequestAsync
+      # callingFormCheck: wap nodejs: LongRunningPromiseAwait
+      # callingFormCheck: wap py: LongRunningPromise
+    - id: wap
+      title: "GetBigBook: 'War and Peace'"
+      description: "Testing calling forms"
+      parameters:
+        defaults:
+        - name%shelf_id="Novel\\\"`\b\t\n\r"
+        - name%book_id="War and Peace"
+        attributes:
+        - parameter: name%shelf_id
+          sample_argument_name: shelf
+      on_success:
+      - comment:
+        - "Testing iterating over map fields when both key and value are specified."
+      - loop:
+          map: $resp.map_list_value_value
+          key: my_key
+          value: my_value
+          body:
+          - print:
+            - "key: %s, value: %s"
+            - my_key
+            - my_value
+      - comment:
+        - "Testing iterating over map fields when only key is specified."
+      - loop:
+          map: $resp.map_list_value_value
+          key: another_key
+          body:
+          - print:
+            - "key: %s"
+            - another_key
+      - comment:
+        - "Testing iterating over map fields when only value is specified."
+      - loop:
+          map: $resp.map_list_value_value
+          value: another_value
+          body:
+          - print:
+            - "value: %s"
+            - another_value
+      - print:
+        - "name: %s"
+        - $resp.name
+      - print:
+        - "author: %s"
+        - $resp.author
+    - id: wap2
+      title: "GetBigBook: 'War and Peace'"
+      description: "Testing resource name overlap"
+      parameters:
+        defaults:
+        - name%shelf_id=Novel
+        - name%book_id="War and Peace"
+        attributes:
+        - parameter: name%shelf_id
+          sample_argument_name: shelf
+          description: "Test word wrapping for long lines. This is a long comment. The name of the shelf to retrieve the big book from."
+        - parameter: name%book_id
+          sample_argument_name: big_book_name
+          description: "The name of the book."
+    samples:
+      standalone:
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Rearrange the samples to use default calling forms. Since region tags are unique
+      #   they becomes the filenames.
+      # 
+      - value_sets: [wap]
+        region_tag: hopper
+      - value_sets: [wap2]
+        region_tag: "this_tag_should_be_the_name_of_the_file"
+  - name: GetBigNothing
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book
+    timeout_millis: 60000
+    long_running:
+      return_type: google.protobuf.Empty
+      metadata_type: google.example.library.v1.GetBigBookMetadata
+      initial_poll_delay_millis: 3000
+      poll_delay_multiplier: 1.3
+      max_poll_delay_millis: 60000
+      total_poll_timeout_millis: 600000
+    sample_value_sets:
+    - id: empty_response_type_with_response_handling
+      title: "Test response handling for methods that return empty"
+      description: "Test response handling for methods that return empty"
+      on_success:
+      - comment: "Got nothing"
+      - print: "Got nothing."
+    - id: empty_response_type_without_response_handling
+      title: "Test default response handling is turned off for methods that return empty"
+      description: "Test default response handling is turned off for methods that return empty"
+    samples:
+      standalone:
+      - value_sets: [empty_response_type_with_response_handling]
+        region_tag: empty_response_type_with_response_handling
+      - value_sets: [empty_response_type_without_response_handling]
+        region_tag: empty_response_type_without_response_handling
+  - name: TestOptionalRequiredFlatteningParams
+    flattening:
+      groups:
+      - parameters: [] # Test empty flattening
+      - parameters:
+        - required_singular_int32
+        - required_singular_int64
+        - required_singular_float
+        - required_singular_double
+        - required_singular_bool
+        - required_singular_enum
+        - required_singular_string
+        - required_singular_bytes
+        - required_singular_message
+        - required_singular_resource_name
+        - required_singular_resource_name_oneof
+        - required_singular_resource_name_common
+        - required_singular_fixed32
+        - required_singular_fixed64
+        - required_repeated_int32
+        - required_repeated_int64
+        - required_repeated_float
+        - required_repeated_double
+        - required_repeated_bool
+        - required_repeated_enum
+        - required_repeated_string
+        - required_repeated_bytes
+        - required_repeated_message
+        - required_repeated_resource_name
+        - required_repeated_resource_name_oneof
+        - required_repeated_resource_name_common
+        - required_repeated_fixed32
+        - required_repeated_fixed64
+        - required_map
+        - optional_singular_int32
+        - optional_singular_int64
+        - optional_singular_float
+        - optional_singular_double
+        - optional_singular_bool
+        - optional_singular_enum
+        - optional_singular_string
+        - optional_singular_bytes
+        - optional_singular_message
+        - optional_singular_resource_name
+        - optional_singular_resource_name_oneof
+        - optional_singular_resource_name_common
+        - optional_singular_fixed32
+        - optional_singular_fixed64
+        - optional_repeated_int32
+        - optional_repeated_int64
+        - optional_repeated_float
+        - optional_repeated_double
+        - optional_repeated_bool
+        - optional_repeated_enum
+        - optional_repeated_string
+        - optional_repeated_bytes
+        - optional_repeated_message
+        - optional_repeated_resource_name
+        - optional_repeated_resource_name_oneof
+        - optional_repeated_resource_name_common
+        - optional_repeated_fixed32
+        - optional_repeated_fixed64
+        - optional_map
+        - any_value
+        - struct_value
+        - value_value
+        - list_value_value
+        - time_value
+        - duration_value
+        - field_mask_value
+        - int32_value
+        - uint32_value
+        - int64_value
+        - uint64_value
+        - float_value
+        - double_value
+        - string_value
+        - bool_value
+        - bytes_value
+        - repeated_any_value
+        - repeated_struct_value
+        - repeated_value_value
+        - repeated_list_value_value
+        - repeated_time_value
+        - repeated_duration_value
+        - repeated_field_mask_value
+        - repeated_int32_value
+        - repeated_uint32_value
+        - repeated_int64_value
+        - repeated_uint64_value
+        - repeated_float_value
+        - repeated_double_value
+        - repeated_string_value
+        - repeated_bool_value
+        - repeated_bytes_value
+    required_fields:
+    - required_singular_int32
+    - required_singular_int64
+    - required_singular_float
+    - required_singular_double
+    - required_singular_bool
+    - required_singular_enum
+    - required_singular_string
+    - required_singular_bytes
+    - required_singular_message
+    - required_singular_resource_name
+    - required_singular_resource_name_oneof
+    - required_singular_resource_name_common
+    - required_singular_fixed32
+    - required_singular_fixed64
+    - required_repeated_int32
+    - required_repeated_int64
+    - required_repeated_float
+    - required_repeated_double
+    - required_repeated_bool
+    - required_repeated_enum
+    - required_repeated_string
+    - required_repeated_bytes
+    - required_repeated_message
+    - required_repeated_resource_name
+    - required_repeated_resource_name_oneof
+    - required_repeated_resource_name_common
+    - required_repeated_fixed32
+    - required_repeated_fixed64
+    - required_map
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      required_singular_resource_name: book
+      required_singular_resource_name_oneof: book_oneof
+      required_singular_resource_name_common: project
+      required_repeated_resource_name: book
+      required_repeated_resource_name_oneof: book_oneof
+      required_repeated_resource_name_common: project
+      optional_singular_resource_name: book
+      optional_singular_resource_name_oneof: book_oneof
+      optional_singular_resource_name_common: project
+      optional_repeated_resource_name: book
+      optional_repeated_resource_name_oneof: book_oneof
+      optional_repeated_resource_name_common: project
+    timeout_millis: 60000
+    samples:
+      standalone:
+      - value_sets: [test_float_and_int64]
+        region_tag: test_float_and_int64
+    sample_value_sets:
+    - id: test_float_and_int64
+      parameters:
+        defaults: 
+        - required_singular_float=1.2345
+        - required_singular_int64=67890
+        attributes:
+        - parameter: required_singular_float
+          sample_argument_name: param_float
+        - parameter: required_singular_int64
+          sample_argument_name: param_long
+  # Intentionally leave out PrivateListShelves method from GAPIC config.
+resource_name_generation:
+- message_name: Book
+  field_entity_map:
+    name: book_oneof
+# Test using fully qualified name
+- message_name: google.example.library.v1.BookFromArchive
+  field_entity_map:
+    name: archived_book
+- message_name: BookFromAnywhere
+  field_entity_map:
+    name: book_oneof
+- message_name: Shelf
+  field_entity_map:
+    name: shelf
+- message_name: GetShelfRequest
+  field_entity_map:
+    name: shelf
+- message_name: DeleteShelfRequest
+  field_entity_map:
+    name: shelf
+- message_name: MergeShelvesRequest
+  field_entity_map:
+    name: shelf
+    other_shelf_name: shelf
+- message_name: CreateBookRequest
+  field_entity_map:
+    name: shelf
+- message_name: GetBookRequest
+  field_entity_map:
+    name: book
+- message_name: ListBooksRequest
+  field_entity_map:
+    name: shelf
+- message_name: UpdateBookRequest
+  field_entity_map:
+    name: book
+- message_name: DeleteBookRequest
+  field_entity_map:
+    name: book
+- message_name: MoveBookRequest
+  field_entity_map:
+    name: book
+    other_shelf_name: shelf
+- message_name: ListStringsRequest
+  field_entity_map:
+    name: "*"
+- message_name: ListStringsResponse
+  field_entity_map:
+    strings: "*"
+- message_name: GetBookFromArchiveRequest
+  field_entity_map:
+    name: archived_book
+- message_name: GetBookFromAnywhereRequest
+  field_entity_map:
+    name: book_oneof
+    alt_book_name: book_oneof
+- message_name: GetBookFromAbsolutelyAnywhereRequest
+  field_entity_map:
+    name: "*"
+- message_name: DiscussBookRequest
+  field_entity_map:
+    name: book
+- message_name: UpdateBookIndexRequest
+  field_entity_map:
+    name: book
+- message_name: FindRelatedBooksRequest
+  field_entity_map:
+    names: book
+    shelves: shelf
+- message_name: FindRelatedBooksResponse
+  field_entity_map:
+    names: book
+- message_name: BabbleAboutBookRequest # message type does not exist
+  field_entity_map:
+    name: book
+- message_name: AddCommentsRequest
+  field_entity_map:
+    name: book
+- message_name: StreamShelvesRequest
+  field_entity_map:
+    name: shelf
+- message_name: TestOptionalRequiredFlatteningParamsRequest
+  field_entity_map:
+    required_singular_resource_name: book
+    required_singular_resource_name_oneof: book_oneof
+    required_singular_resource_name_common: project
+    required_repeated_resource_name: book
+    required_repeated_resource_name_oneof: book_oneof
+    required_repeated_resource_name_common: project
+    optional_singular_resource_name: book
+    optional_singular_resource_name_oneof: book_oneof
+    optional_singular_resource_name_common: project
+    optional_repeated_resource_name: book
+    optional_repeated_resource_name_oneof: book_oneof
+    optional_repeated_resource_name_common: project
+# Force Java client to have the formatting string functions.
+enable_string_format_functions_override: true

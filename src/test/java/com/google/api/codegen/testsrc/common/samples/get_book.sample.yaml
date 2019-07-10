@@ -1,0 +1,47 @@
+---
+type: com.google.api.codegen.samplegen.SampleConfigProto
+config_schema_version: 1.2.0
+samples:
+- id: get_book_request_test_on_success_map
+  service: google.example.library.v1.LibraryService
+  rpc: GetBook
+  title: "test maps in response handling"
+  # Behavior change:
+  # gapic config: if region_tag is unspecified or region_tag is not unique, derive the
+  #   sample filename by concatinating method name, calling form, sample value set id
+  # sample config: if region_tag (and id is unspecified), generator should auto-generate
+  #   a unique filename for the sample. The generator will be unable to generate the same
+  #   filename as in the gapic config because there is no `sample value set id` in the
+  #   sample config.
+  #
+  # "Hardcode" the ids here and below to make the samples have generated have the
+  # same name as in the gapic config.
+  #
+  # TODO(hzyi): When we move the sample config completely we should remove the id field, adding a
+  # `calling_pattern` field whose value is `[.*]`, and expect the generator to generate
+  # samples will all avaiable calling forms, each with a unique filename.
+  calling_pattern: [request]
+  # Behavior change:
+  # In gapic config, region tag defaults to `sample` if unspecified
+  # In sample config, region tags are not generated if unspecified
+  #
+  # Add the region_tag here to mimic the old behavior and avoid too many
+  # baseline changes at a time. 
+  #
+  # TODO(hzyi): When we completely switch to the sample config remove this field to test
+  # the new config and we should expect that region tag in generated sample
+  # to disappear
+  region_tag: sample
+  request:
+  - field: name
+    value: "test_on_success_map"
+  response:
+    - define: int_key_val = $resp.map_string_value{123}
+    - define: boolean_key_val = $resp.map_bool_key{true}
+    - define: map_value_field = $resp.map_message_value{"key"}.field
+    - print:
+      - "Test printing map fields: %s"
+      - $resp.map_list_value_value{"quoted_key"}
+    - print:
+      - "Test printing enum fields of a map value: %s"
+      - $resp.map_message_value{"key"}.alignment
