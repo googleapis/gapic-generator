@@ -524,11 +524,14 @@ public abstract class GapicProductConfig implements ProductConfig {
         pName = "retry_policy_" + retryNdx++;
       }
 
+      long timeout = Durations.toMillis(mc.getTimeout());
+
       // construct retry params from RetryPolicy
       RetryParamsDefinitionProto.Builder rpb = RetryParamsDefinitionProto.newBuilder();
       rpb.setMaxRetryDelayMillis(Durations.toMillis(rp.getMaxBackoff()));
       rpb.setInitialRetryDelayMillis(Durations.toMillis(rp.getInitialBackoff()));
       rpb.setRetryDelayMultiplier(floatToDouble(rp.getBackoffMultiplier()));
+      rpb.setTotalTimeoutMillis(timeout);
       rpb.setName(pName + "_params");
 
       // construct retry codes from RetryPolicy
@@ -539,8 +542,6 @@ public abstract class GapicProductConfig implements ProductConfig {
               code -> {
                 rcb.addRetryCodes(code.name());
               });
-
-      long timeout = Durations.toMillis(mc.getTimeout());
 
       InterfaceConfigProto.Builder ib;
       for (Name name : mc.getNameList()) {

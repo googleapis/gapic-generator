@@ -30,7 +30,6 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.common.collect.ImmutableList;
-import java.io.IOException;
 import java.util.Map;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -165,7 +164,7 @@ public class GapicConfigProducerTest {
   }
 
   @Test
-  public void injectRetryPolicyConfig() throws IOException {
+  public void injectRetryPolicyConfig() {
     TestDataLocator locator = MixedPathTestDataLocator.create(this.getClass());
     locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
 
@@ -205,6 +204,7 @@ public class GapicConfigProducerTest {
     Map<String, RetryParamsDefinitionProto> params = libraryInterface.getRetrySettingsDefinition();
     assertThat(params.get("retry_policy_1_params")).isNotNull();
     assertThat(params.get("no_retry_params")).isNotNull();
+    assertThat(params.get("no_retry_params").getTotalTimeoutMillis()).isEqualTo(60000);
     Map<String, ImmutableList<String>> codes =
         libraryInterface.getRetryCodesConfig().getRetryCodesDefinition();
     assertThat(codes.get("retry_policy_1_codes")).isNotNull();
