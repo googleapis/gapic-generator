@@ -402,39 +402,37 @@ public class InitCodeNode {
   private void resolveSampleParamConfig(
       InitCodeContext context, SampleParameterConfig sampleParamConfig) {
     Preconditions.checkArgument(
-        initValueConfig.getInitialValue() != null || !sampleParamConfig.isSampleArgument(),
+        initValueConfig.getInitialValue() != null || !sampleParamConfig.isInputParameter(),
         "Cannot configure attributes for parameter \"%s\", default value not set.",
-        sampleParamConfig.identifier());
-    if (sampleParamConfig.readFromFile()) {
+        sampleParamConfig.field());
+    if (sampleParamConfig.isFile()) {
       setupReadFileNode(context, sampleParamConfig);
       return;
     }
-    if (sampleParamConfig.isSampleArgument()) {
-      Name argName = Name.anyLower(sampleParamConfig.sampleArgumentName());
+    if (sampleParamConfig.isInputParameter()) {
+      Name argName = Name.anyLower(sampleParamConfig.inputParameter());
       if (!argName.equals(identifier)) {
-        identifier =
-            identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
+        identifier = identifierFromInputParameterName(context, sampleParamConfig.inputParameter());
       }
     }
-    setDescription(sampleParamConfig.description());
+    setDescription(sampleParamConfig.comment());
   }
 
   /** Apply {@code sampleParamConfig} to a resource path entity. */
   private void resolveSampleParamConfig(
       InitCodeContext context, String entityName, SampleParameterConfig sampleParamConfig) {
     Preconditions.checkArgument(
-        !sampleParamConfig.readFromFile(),
-        "cannot configure a resource name entity to read from file");
+        !sampleParamConfig.isFile(), "cannot configure a resource name entity to read from file");
     Preconditions.checkArgument(
         !initValueConfig.getResourceNameBindingValues().isEmpty()
-            || !sampleParamConfig.isSampleArgument(),
+            || !sampleParamConfig.isInputParameter(),
         "Cannot configure attributes for parameter \"%s\", default value not set.",
-        sampleParamConfig.identifier());
-    if (!sampleParamConfig.isSampleArgument()) {
+        sampleParamConfig.field());
+    if (!sampleParamConfig.isInputParameter()) {
       return;
     }
     Name entityIdentifier =
-        identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
+        identifierFromInputParameterName(context, sampleParamConfig.inputParameter());
     addChildNodeForSampleParameter(
         context,
         entityName,
@@ -442,7 +440,7 @@ public class InitCodeNode {
         entityIdentifier,
         InitValueConfig.createWithValue(
             initValueConfig.getResourceNameBindingValues().get(entityName)),
-        sampleParamConfig.description());
+        sampleParamConfig.comment());
     initValueConfig =
         initValueConfig.withUpdatedInitialCollectionValue(
             entityName, InitValue.createVariable(entityIdentifier.toLowerUnderscore()));
@@ -483,22 +481,21 @@ public class InitCodeNode {
 
     // A read-from-file node that is not passed in as a parameter. Attaching the description is all
     // we need to do.
-    if (!sampleParamConfig.isSampleArgument()) {
-      setDescription(sampleParamConfig.description());
+    if (!sampleParamConfig.isInputParameter()) {
+      setDescription(sampleParamConfig.comment());
       return;
     }
 
     // A read-from-file node passed in as a parameter. We add the child node to hold the variable
     // name and value of the parameter.
-    childIdentifier =
-        identifierFromSampleArgumentName(context, sampleParamConfig.sampleArgumentName());
+    childIdentifier = identifierFromInputParameterName(context, sampleParamConfig.inputParameter());
     addChildNodeForSampleParameter(
         context,
         FILE_NAME_KEY,
         ProtoTypeRef.create(TypeRef.fromPrimitiveName("string")),
         childIdentifier,
         initValueConfig,
-        sampleParamConfig.description());
+        sampleParamConfig.comment());
     initValueConfig =
         InitValueConfig.createWithValue(
             InitValue.createVariable(childIdentifier.toLowerUnderscore()));
@@ -518,7 +515,7 @@ public class InitCodeNode {
     children.put(key, child);
   }
 
-  private Name identifierFromSampleArgumentName(InitCodeContext context, String argName) {
+  private Name identifierFromInputParameterName(InitCodeContext context, String argName) {
     Name name = Name.anyLower(argName);
     Preconditions.checkArgument(
         !context.symbolTable().contains(name),

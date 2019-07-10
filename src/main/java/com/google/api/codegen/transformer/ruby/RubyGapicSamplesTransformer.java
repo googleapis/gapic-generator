@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import static com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
+
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -121,15 +123,17 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
                       .sampleType(SampleSpec.SampleType.STANDALONE)
                       .callingForm(
                           CallingForm.getDefaultCallingForm(methodContext, TargetLanguage.RUBY))
-                      .sampleConfig(sampleConfig);
+                      .sampleConfig(sampleConfig)
+                      .initCodeOutputType(InitCodeOutputType.FieldList)
+                      .build();
               allSamples.addAll(
                   apiMethodTransformer.generateApiMethod(methodContext, sampleContext).samples());
             } else {
               List<CallingForm> allMatchingCallingForms =
-                  CallingForms.getCallingForms(methodContext, TargetLanguage.RUBY).stream()
-                      .filter(t -> t.toLowerUnderscore().matches(sampleConfig.getCallingPattern()))
+                  CallingForm.getCallingForms(methodContext, TargetLanguage.RUBY)
+                      .stream()
+                      .filter(t -> t.toLowerUnderscore().matches(sampleConfig.callingPattern()))
                       .collect(ImmutableList.toImmutableList());
-              
             }
           }
         }

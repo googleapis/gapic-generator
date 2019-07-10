@@ -14,10 +14,9 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
 
 /** The context of transforming a sample into a view model. */
 @AutoValue
@@ -28,6 +27,9 @@ public abstract class SampleContext {
   public abstract SampleSpec.SampleType sampleType();
 
   public abstract SampleConfig sampleConfig();
+
+  // Whether the sample flattens.
+  public abstract InitCodeOutputType initCodeOutputType();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleContext.Builder();
@@ -41,6 +43,8 @@ public abstract class SampleContext {
     public abstract Builder sampleType(SampleSpec.SampleType val);
 
     public abstract Builder sampleConfig(SampleConfig val);
+
+    public abstract Builder initCodeOutputType(InitCodeOutputType val);
 
     public abstract SampleContext build();
   }

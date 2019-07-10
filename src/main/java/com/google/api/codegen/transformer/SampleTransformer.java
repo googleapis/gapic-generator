@@ -23,10 +23,13 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.OutputContext;
 import com.google.api.codegen.config.SampleConfig;
+import com.google.api.codegen.config.SampleContext;
 import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
+import com.google.api.codegen.samplegen.v1.RequestFieldProto;
+import com.google.api.codegen.samplegen.v1.ResponseStatementProto;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.CallingForm;
@@ -223,14 +226,86 @@ public abstract class SampleTransformer {
   }
 
   // entry point for generating standalone samples using sample config.
-  public List<MethodSampleView> generateSample(SampleContext sampleContext, MethodContext methodContext) {
+  public MethodSampleView generateSample(SampleContext sampleContext, MethodContext methodContext) {
+    // add new type table in sample context?
+    methodContext = methodContext.cloneWithEmptyTypeTable();
+
+    // request
+    InitCodeContext initCodeContext = createInitCodeContext(methodContext, sampleContext);
+    InitCodeView initCodeView =
+        initCodeTransformer().generateInitCode(methodContext, initCodeContext);
+
+    // response
     OutputContext outputContext = OutputContext.create();
-    List<OutputSpec> outputs = sampleContext.getSampleConfig().responseConfigs();
+    List<ResponseStatementProto> outputs = sampleContext.sampleConfig().responseConfigs();
     if (outputs.isEmpty()) {
-      outputs = OutputTransformer.defaultOutputSpecs(methodContext);
+      outputs = OutputTransformer.defaultResponseStatements(methodContext);
     }
     ImmutableList<OutputView> outputViews =
-        outputTransformer().toViews(outputs, methodContext, valueSet, form, outputContext);
+        outputTransformer().toViews(outputs, methodContext, sampleContext, outputContext);
+
+    // imports
+    ImportSectionView sampleImportSectionView =
+        sampleImportTransformer()
+            .generateImportSection(
+                methodContext.cloneWithEmptyTypeTable(),
+                form,
+                outputContext,
+                methodContext.getTypeTable(),
+                initCodeTransformer()
+                    .getInitCodeNodes(
+                        methodContext,
+                        initCodeContext
+                            .cloneWithEmptySymbolTable())); // to avoid symbol collision);
+
+    // Documentation
+    SampleFunctionDocView sampleFunctionDocView =
+        SampleFunctionDocView.newBuilder()
+            .paramDocLines(paramDocLines(methodContext, initCodeView))
+            .mainDocLines(
+                ImmutableList.<String>builder()
+                    .addAll(
+                        methodContext
+                            .getNamer()
+                            .getWrappedDocLines(
+                                sampleContext.sampleConfig().getDescription(), true))
+                    .build())
+            .build();
+
+    // metadata
+    ImmutableList<String> metadataDescription =
+        ImmutableList.<String>builder()
+            .addAll(
+                methodContext
+                    .getNamer()
+                    .getWrappedDocLines(sampleContext.sampleConfig().getDescription(), false))
+            .build();
+
+    String descriptionLine = metadataDescription.isEmpty() ? "" : metadataDescription.get(0);
+    ImmutableList<String> additionalDescriptionLines =
+        metadataDescription.isEmpty()
+            ? ImmutableList.of()
+            : metadataDescription.subList(1, metadataDescription.size());
+
+    // assemble
+    return MethodSampleView.newBuilder()
+        .callingForm(sampleContext.callingForm())
+        .sampleInitCode(initCodeView)
+        .outputs(outputViews)
+        .hasMultipleFileOutputs(outputContext.hasMultipleFileOutputs())
+        .usesAsyncAwaitPattern(
+            methodContext.getNamer().usesAsyncAwaitPattern(form)) // Used by C# and Node.js
+        .sampleImports(sampleImportSectionView)
+        .regionTag(sampleContext.sampleConfig().regionTag())
+        .sampleFunctionName(
+            methodContext.getNamer().getSampleFunctionName(methodContext.getMethodModel()))
+        .sampleFunctionDoc(sampleFunctionDocView)
+        .title(sampleContext.sampleConfig().title())
+        .descriptionLine(descriptionLine)
+        .additionalDescriptionLines(additionalDescriptionLines)
+        .build();
+
+    return null;
   }
 
   private MethodSampleView generateSample(
@@ -337,6 +412,28 @@ public abstract class SampleTransformer {
         .build();
   }
 
+  private InitCodeContext createInitCodeContext(
+      MethodContext methodContext, SampleContext sampleContext) {
+    // Temporary solution
+    List<String> initFieldConfigStrings =
+        sampleContext.sampleConfig().requestConfigs().stream()
+            .map(req -> String.format("%s=%s", req.getField(), req.getValue()))
+            .collect(ImmutableList.toImmutableList());
+    List<FieldConfig> requiredFieldConfigs =
+        methodContext.getMethodConfig().getRequiredFieldConfigs();
+    return InitCodeContext.newBuilder()
+        .initObjectType(methodContext.getMethodModel().getInputType())
+        .suggestedName(Name.from("request"))
+        .initFieldConfigStrings(initFieldConfigStrings)
+        .sampleParamConfigMap(
+            sampleParamConfigMapFromRequestConfigs(sampleContext.sampleConfig().requestConfigs()))
+        .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
+        .initFields(FieldConfig.toFieldTypeIterable(requiredFieldConfigs))
+        .outputType(sampleContext.initCodeOutputType())
+        .fieldConfigMap(FieldConfig.toFieldConfigMap(requiredFieldConfigs))
+        .build();
+  }
+
   private SampleValueSet defaultValueSet(MethodConfig methodConfig) {
     // For backwards compatibility in the configs, we need to use sample_code_init_fields instead
     // to generate the samples in various scenarios. Once all the configs have been migrated to
@@ -359,15 +456,32 @@ public abstract class SampleTransformer {
       SampleValueSet valueSet) {
     ImmutableMap.Builder<String, SampleParameterConfig> builder = ImmutableMap.builder();
     for (SampleInitAttribute attr : valueSet.getParameters().getAttributesList()) {
-      String identifier = attr.getParameter();
+      String field = attr.getParameter();
       SampleParameterConfig config =
           SampleParameterConfig.newBuilder()
-              .identifier(identifier)
-              .readFromFile(attr.getReadFile())
-              .sampleArgumentName(attr.getSampleArgumentName())
-              .description(attr.getDescription())
+              .field(field)
+              .isFile(attr.getReadFile())
+              .inputParameter(attr.getSampleArgumentName())
+              .comment(attr.getDescription())
               .build();
-      builder.put(identifier, config);
+      builder.put(field, config);
+    }
+    return builder.build();
+  }
+
+  private ImmutableMap<String, SampleParameterConfig> sampleParamConfigMapFromRequestConfigs(
+      List<RequestFieldProto> requests) {
+    ImmutableMap.Builder<String, SampleParameterConfig> builder = ImmutableMap.builder();
+    for (RequestFieldProto request : requests) {
+      String field = request.getField();
+      SampleParameterConfig config =
+          SampleParameterConfig.newBuilder()
+              .field(field)
+              .isFile(request.getValueIsFile())
+              .inputParameter(request.getInputParameter())
+              .comment(request.getComment())
+              .build();
+      builder.put(field, config);
     }
     return builder.build();
   }

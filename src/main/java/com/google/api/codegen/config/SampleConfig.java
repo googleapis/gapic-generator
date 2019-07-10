@@ -149,7 +149,8 @@ public abstract class SampleConfig {
     // Then, check user specified sample IDs do not clash
     Set<String> distinctIds = new HashSet<>();
     Set<String> duplicateIds =
-        sampleSpecs.stream()
+        sampleSpecs
+            .stream()
             .map(s -> s.getId())
             .filter(id -> !id.isEmpty())
             .filter(s -> !distinctIds.add(s))
@@ -185,7 +186,9 @@ public abstract class SampleConfig {
     }
 
     // Make an immutable copy.
-    return table.cellSet().stream()
+    return table
+        .cellSet()
+        .stream()
         .collect(
             ImmutableTable.toImmutableTable(
                 Table.Cell::getRowKey,

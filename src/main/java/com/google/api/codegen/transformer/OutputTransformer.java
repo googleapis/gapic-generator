@@ -14,14 +14,17 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.SampleConfig;
-import com.google.api.codegen.config.SampleContext;
+import static com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
+
 import com.google.api.codegen.OutputSpec;
 import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.OutputContext;
+import com.google.api.codegen.config.SampleConfig;
+import com.google.api.codegen.config.SampleContext;
+import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.samplegen.v1.ResponseStatementProto;
 import com.google.api.codegen.util.Name;
@@ -56,9 +59,14 @@ public class OutputTransformer {
         OutputSpec.newBuilder().addPrint("%s").addPrint(RESPONSE_PLACEHOLDER).build());
   }
 
+  static List<ResponseStatementProto> defaultResponseStatements(MethodContext methodContext) {
+    return fromOutputSpecs(defaultOutputSpecs(methodContext));
+  }
+
   // Helper function for backward compatibility during sample config migration.
   private static List<ResponseStatementProto> fromOutputSpecs(List<OutputSpec> oldConfigs) {
-    return oldConfigs.stream()
+    return oldConfigs
+        .stream()
         .map(OutputTransformer::fromOutputSpec)
         .collect(ImmutableList.toImmutableList());
   }
@@ -67,58 +75,67 @@ public class OutputTransformer {
     ResponseStatementProto.Builder builder = ResponseStatementProto.newBuilder();
     builder
         .setDefine(oldConfig.getDefine())
-        .AddAllComment(oldConfig.getCommentList())
-        .AddAllPrint(oldConfig.getPrintList());
-    builder
-        .getWriteFileBuilder()
-        .AddAllFileName(oldConfig.getWriteFile().getFileNameList())
-        .setContents(oldConfig.getContents());
-    builder
-        .getLoopBuilder()
-        .setCollection(oldConfig.getCollection())
-        .setVariable(oldConfig.getVariable())
-        .setMap(oldConfig.getMap())
-        .setKey(oldConfig.getKey())
-        .setValue(oldConfig.getValue())
-        .addAllBody(fromOldSpecs(oldConfig.getBodyList()));
+        .addAllComment(oldConfig.getCommentList())
+        .addAllPrint(oldConfig.getPrintList());
+    if (oldConfig.hasWriteFile()) {
+      builder
+          .getWriteFileBuilder()
+          .addAllFileName(oldConfig.getWriteFile().getFileNameList())
+          .setContents(oldConfig.getWriteFile().getContents());
+    }
+    if (oldConfig.hasLoop()) {
+      builder
+          .getLoopBuilder()
+          .setCollection(oldConfig.getLoop().getCollection())
+          .setVariable(oldConfig.getLoop().getVariable())
+          .setMap(oldConfig.getLoop().getMap())
+          .setKey(oldConfig.getLoop().getKey())
+          .setValue(oldConfig.getLoop().getValue())
+          .addAllBody(fromOutputSpecs(oldConfig.getLoop().getBodyList()));
+    }
     return builder.build();
   }
 
+  // Entry point for generating output views using sample config.
   ImmutableList<OutputView> toViews(
       List<ResponseStatementProto> configs,
       MethodContext methodContext,
       SampleContext sampleContext,
       OutputContext outputContext) {
-    return configs.stream()
+    return configs
+        .stream()
         .map(s -> toView(s, methodContext, sampleContext, outputContext))
         .collect(ImmutableList.toImmutableList());
   }
 
+  // Entry point for generating output views using gapic config. To be deprecated.
   ImmutableList<OutputView> toViews(
       List<OutputSpec> configs,
       MethodContext context,
       SampleValueSet valueSet,
       CallingForm form,
       OutputContext outputContext) {
-    
-    SampleConfig sampleConfig = SampleConfig.newBuilder().id(valueSet.getId()).callingForm(form).build();
 
-    return toViews(
-      fromOutputSpecs(configs),
-      context,
-      SampleContext.newBuilder().sampleType(SampleSpec.SampleType.STANDALONE).sampleConfig(sampleConfig))
-
-    return configs.stream()
-        .map(s -> toView(s, context, valueSet, outputContext, form))
-        .collect(ImmutableList.toImmutableList());
+    SampleConfig sampleConfig =
+        SampleConfig.newBuilder()
+            .id(valueSet.getId())
+            .type(SampleSpec.SampleType.STANDALONE)
+            .build();
+    SampleContext sampleContext =
+        SampleContext.newBuilder()
+            .sampleType(SampleSpec.SampleType.STANDALONE)
+            .sampleConfig(sampleConfig)
+            .initCodeOutputType(InitCodeOutputType.FieldList)
+            .callingForm(form)
+            .build();
+    return toViews(fromOutputSpecs(configs), context, sampleContext, outputContext);
   }
 
   private OutputView toView(
-      OutputSpec config,
-      MethodContext context,
-      SampleValueSet valueSet,
-      OutputContext outputContext,
-      CallingForm form) {
+      ResponseStatementProto config,
+      MethodContext methodContext,
+      SampleContext sampleContext,
+      OutputContext outputContext) {
     Runnable once =
         new Runnable() {
           boolean ran;
@@ -128,8 +145,8 @@ public class OutputTransformer {
             Preconditions.checkArgument(
                 !ran,
                 "%s:%s: only one field of OutputSpec may be set",
-                context.getMethodModel().getSimpleName(),
-                valueSet.getId());
+                methodContext.getMethodModel().getSimpleName(),
+                sampleContext.sampleConfig().id());
             ran = true;
           }
         };
@@ -137,60 +154,63 @@ public class OutputTransformer {
     OutputView view = null;
     if (config.hasLoop()) {
       once.run();
-      view = loopView(config.getLoop(), context, valueSet, outputContext, form);
+      view = loopView(config.getLoop(), methodContext, sampleContext, outputContext);
     }
     if (config.getPrintCount() > 0) {
       once.run();
-      view = printView(config.getPrintList(), context, valueSet, outputContext, form);
+      view = printView(config.getPrintList(), methodContext, sampleContext, outputContext);
     }
     if (!config.getDefine().isEmpty()) {
       once.run();
-      view = defineView(new Scanner(config.getDefine()), context, valueSet, outputContext, form);
+      view =
+          defineView(new Scanner(config.getDefine()), methodContext, sampleContext, outputContext);
     }
     if (config.getCommentCount() > 0) {
       once.run();
-      view = commentView(config.getCommentList(), context);
+      view = commentView(config.getCommentList(), methodContext);
     }
     if (config.hasWriteFile()) {
       once.run();
-      view = writeFileView(config.getWriteFile(), context, valueSet, outputContext, form);
+      view = writeFileView(config.getWriteFile(), methodContext, sampleContext, outputContext);
     }
 
     return Preconditions.checkNotNull(
         view,
         "%s:%s: one field of OutputSpec must be set",
-        context.getMethodModel().getSimpleName(),
-        valueSet.getId());
+        methodContext.getMethodModel().getSimpleName(),
+        sampleContext.sampleConfig().id());
   }
 
   private OutputView.PrintView printView(
       List<String> config,
-      MethodContext context,
-      SampleValueSet valueSet,
-      OutputContext outputContext,
-      CallingForm form) {
+      MethodContext methodContext,
+      SampleContext sampleContext,
+      OutputContext outputContext) {
     Preconditions.checkArgument(
         !config.isEmpty(),
         "%s:%s: print spec cannot be empty",
-        context.getMethodModel().getSimpleName(),
-        valueSet.getId());
+        methodContext.getMethodModel().getSimpleName(),
+        sampleContext.sampleConfig().id());
     outputContext.printSpecs().add(config);
     OutputView.StringInterpolationView interpolatedString =
-        stringInterpolationView(context, outputContext, config, valueSet, form);
+        stringInterpolationView(methodContext, sampleContext, outputContext, config);
     return OutputView.PrintView.newBuilder().interpolatedString(interpolatedString).build();
   }
 
   private OutputView.WriteFileView writeFileView(
-      OutputSpec.WriteFileStatement config,
-      MethodContext context,
-      SampleValueSet valueSet,
-      OutputContext outputContext,
-      CallingForm form) {
+      ResponseStatementProto.WriteFileStatement config,
+      MethodContext methodContext,
+      SampleContext sampleContext,
+      OutputContext outputContext) {
     OutputView.StringInterpolationView fileName =
-        stringInterpolationView(context, outputContext, config.getFileNameList(), valueSet, form);
+        stringInterpolationView(
+            methodContext, sampleContext, outputContext, config.getFileNameList());
     OutputView.VariableView contents =
         accessor(
-            new Scanner(config.getContents()), context, valueSet, outputContext.scopeTable(), form);
+            new Scanner(config.getContents()),
+            methodContext,
+            sampleContext,
+            outputContext.scopeTable());
     Preconditions.checkArgument(
         contents.type().isStringType() || contents.type().isBytesType(),
         "Output to file: expected 'string' or 'bytes', found %s",
@@ -204,16 +224,15 @@ public class OutputTransformer {
   }
 
   private OutputView.StringInterpolationView stringInterpolationView(
-      MethodContext context,
+      MethodContext methodContext,
+      SampleContext sampleContext,
       OutputContext outputContext,
-      List<String> configs,
-      SampleValueSet valueSet,
-      CallingForm form) {
+      List<String> configs) {
     String format = configs.get(0);
     ImmutableList.Builder<String> builder = ImmutableList.builder();
     for (String path : configs.subList(1, configs.size())) {
       OutputView.VariableView variable =
-          accessor(new Scanner(path), context, valueSet, outputContext.scopeTable(), form);
+          accessor(new Scanner(path), methodContext, sampleContext, outputContext.scopeTable());
       TypeModel type = variable.type();
       // TODO: resource names are left out. We don't need to do anything for
       // resource names, but should include them as well for completeness
@@ -221,15 +240,15 @@ public class OutputTransformer {
         outputContext.stringFormattedVariableTypes().add(type);
       }
       String formattedArg =
-          context
+          methodContext
               .getNamer()
               .getFormattedPrintArgName(
-                  context.getTypeTable(), type, variable.variable(), variable.accessors());
+                  methodContext.getTypeTable(), type, variable.variable(), variable.accessors());
       builder.add(formattedArg);
     }
     ImmutableList<String> args = builder.build();
     ImmutableList<String> stringWithInterpolatedArgs =
-        context.getNamer().getInterpolatedFormatAndArgs(format, args);
+        methodContext.getNamer().getInterpolatedFormatAndArgs(format, args);
     return OutputView.StringInterpolationView.newBuilder()
         .format(stringWithInterpolatedArgs.get(0))
         .args(stringWithInterpolatedArgs.subList(1, stringWithInterpolatedArgs.size()))
@@ -237,11 +256,10 @@ public class OutputTransformer {
   }
 
   private OutputView loopView(
-      OutputSpec.LoopStatement loop,
-      MethodContext context,
-      SampleValueSet valueSet,
-      OutputContext outputContext,
-      CallingForm form) {
+      ResponseStatementProto.LoopStatement loop,
+      MethodContext methodContext,
+      SampleContext sampleContext,
+      OutputContext outputContext) {
     if (!loop.getCollection().isEmpty() && loop.getMap().isEmpty()) {
       Preconditions.checkArgument(
           !loop.getVariable().isEmpty(),
@@ -249,7 +267,8 @@ public class OutputTransformer {
       Preconditions.checkArgument(
           loop.getKey().isEmpty() && loop.getValue().isEmpty(),
           "Bad format: neither `key` nor `value` can be specified if `collection` is specified.");
-      return arrayLoopView(loop, context, valueSet, outputContext.createWithNewChildScope(), form);
+      return arrayLoopView(
+          loop, methodContext, sampleContext, outputContext.createWithNewChildScope());
     } else if (!loop.getMap().isEmpty() && loop.getCollection().isEmpty()) {
       Preconditions.checkArgument(
           loop.getVariable().isEmpty(),
@@ -258,7 +277,8 @@ public class OutputTransformer {
           !loop.getKey().isEmpty() || !loop.getValue().isEmpty(),
           "Bad format: at least one of `key` and `value` must be specified if `collection` is"
               + " specified.");
-      return mapLoopView(loop, context, valueSet, outputContext.createWithNewChildScope(), form);
+      return mapLoopView(
+          loop, methodContext, sampleContext, outputContext.createWithNewChildScope());
     } else {
       throw new IllegalArgumentException(
           "Bad format: exactly one of `map` and `collection` should be specified in `loop`.");
@@ -266,97 +286,102 @@ public class OutputTransformer {
   }
 
   private OutputView.ArrayLoopView arrayLoopView(
-      OutputSpec.LoopStatement loop,
-      MethodContext context,
-      SampleValueSet valueSet,
-      OutputContext outputContext,
-      CallingForm form) {
+      ResponseStatementProto.LoopStatement loop,
+      MethodContext methodContext,
+      SampleContext sampleContext,
+      OutputContext outputContext) {
     ScopeTable scope = outputContext.scopeTable();
     String loopVariable = loop.getVariable();
-    assertIdentifierNotUsed(
-        loopVariable, context.getMethodModel().getSimpleName(), valueSet.getId(), context, form);
+    assertIdentifierNotUsed(loopVariable, methodContext, sampleContext);
     OutputView.VariableView accessor =
         accessorNewVariable(
-            new Scanner(loop.getCollection()), context, valueSet, scope, loopVariable, true, form);
+            new Scanner(loop.getCollection()),
+            methodContext,
+            sampleContext,
+            scope,
+            loopVariable,
+            true);
     return OutputView.ArrayLoopView.newBuilder()
         .variableType(scope.getTypeName(loopVariable))
-        .variableName(context.getNamer().localVarName(Name.from(loopVariable)))
+        .variableName(methodContext.getNamer().localVarName(Name.from(loopVariable)))
         .collection(accessor)
         .body(
-            loop.getBodyList().stream()
-                .map(body -> toView(body, context, valueSet, outputContext, form))
+            loop.getBodyList()
+                .stream()
+                .map(body -> toView(body, methodContext, sampleContext, outputContext))
                 .collect(ImmutableList.toImmutableList()))
         .build();
   }
 
   private OutputView.MapLoopView mapLoopView(
-      OutputSpec.LoopStatement loop,
-      MethodContext context,
-      SampleValueSet valueSet,
-      OutputContext outputContext,
-      CallingForm form) {
+      ResponseStatementProto.LoopStatement loop,
+      MethodContext methodContext,
+      SampleContext sampleContext,
+      OutputContext outputContext) {
     outputContext.mapSpecs().add(loop);
     ScopeTable scope = outputContext.scopeTable();
     String key = loop.getKey();
     String value = loop.getValue();
 
     OutputView.VariableView mapVar =
-        accessor(new Scanner(loop.getMap()), context, valueSet, scope, form);
+        accessor(new Scanner(loop.getMap()), methodContext, sampleContext, scope);
     TypeModel keyType = mapVar.type().getMapKeyType();
     TypeModel valueType = mapVar.type().getMapValueType();
-    String keyTypeName = context.getTypeTable().getNicknameFor(keyType);
-    String valueTypeName = context.getTypeTable().getNicknameFor(valueType);
+    String keyTypeName = methodContext.getTypeTable().getNicknameFor(keyType);
+    String valueTypeName = methodContext.getTypeTable().getNicknameFor(valueType);
 
     if (!key.isEmpty()) {
-      assertIdentifierNotUsed(
-          key, context.getMethodModel().getSimpleName(), valueSet.getId(), context, form);
+      assertIdentifierNotUsed(key, methodContext, sampleContext);
       scope.put(key, keyType, keyTypeName);
     }
     if (!value.isEmpty()) {
-      assertIdentifierNotUsed(
-          value, context.getMethodModel().getSimpleName(), valueSet.getId(), context, form);
+      assertIdentifierNotUsed(value, methodContext, sampleContext);
       scope.put(value, valueType, valueTypeName);
     }
     return OutputView.MapLoopView.newBuilder()
-        .keyVariableName(context.getNamer().localVarName(Name.anyLower(key)))
+        .keyVariableName(methodContext.getNamer().localVarName(Name.anyLower(key)))
         .keyType(keyTypeName)
-        .valueVariableName(context.getNamer().localVarName(Name.anyLower(value)))
+        .valueVariableName(methodContext.getNamer().localVarName(Name.anyLower(value)))
         .valueType(valueTypeName)
         .map(mapVar)
         .body(
-            loop.getBodyList().stream()
-                .map(body -> toView(body, context, valueSet, outputContext, form))
+            loop.getBodyList()
+                .stream()
+                .map(body -> toView(body, methodContext, sampleContext, outputContext))
                 .collect(ImmutableList.toImmutableList()))
         .build();
   }
 
   private OutputView.DefineView defineView(
       Scanner definition,
-      MethodContext context,
-      SampleValueSet valueSet,
-      OutputContext outputContext,
-      CallingForm form) {
+      MethodContext methodContext,
+      SampleContext sampleContext,
+      OutputContext outputContext) {
     Preconditions.checkArgument(
         definition.scan() == Scanner.IDENT,
         "%s:%s: expected identifier: %s",
-        context.getMethodModel().getSimpleName(),
-        valueSet.getId(),
+        methodContext.getMethodModel().getSimpleName(),
+        sampleContext.sampleConfig().id(),
         definition.input());
     String identifier = definition.tokenStr();
-    assertIdentifierNotUsed(
-        identifier, context.getMethodModel().getSimpleName(), valueSet.getId(), context, form);
+    assertIdentifierNotUsed(identifier, methodContext, sampleContext);
     Preconditions.checkArgument(
         definition.scan() == '=',
         "%s:%s invalid definition, expecting '=': %s",
-        context.getMethodModel().getSimpleName(),
-        valueSet.getId(),
+        methodContext.getMethodModel().getSimpleName(),
+        sampleContext.sampleConfig().id(),
         definition.input());
     OutputView.VariableView reference =
         accessorNewVariable(
-            definition, context, valueSet, outputContext.scopeTable(), identifier, false, form);
+            definition,
+            methodContext,
+            sampleContext,
+            outputContext.scopeTable(),
+            identifier,
+            false);
     return OutputView.DefineView.newBuilder()
         .variableTypeName(outputContext.scopeTable().getTypeName(identifier))
-        .variableName(context.getNamer().localVarName(Name.from(identifier)))
+        .variableName(methodContext.getNamer().localVarName(Name.from(identifier)))
         .reference(reference)
         .build();
   }
@@ -364,7 +389,9 @@ public class OutputTransformer {
   private OutputView.CommentView commentView(List<String> configs, MethodContext context) {
     String comment = configs.get(0);
     Object[] args =
-        configs.subList(1, configs.size()).stream()
+        configs
+            .subList(1, configs.size())
+            .stream()
             .map(c -> context.getNamer().localVarName(Name.anyLower(c)))
             .toArray(Object[]::new);
     String formattedComment = String.format(comment, args);
@@ -374,11 +401,10 @@ public class OutputTransformer {
 
   private static OutputView.VariableView accessor(
       Scanner config,
-      MethodContext context,
-      SampleValueSet valueSet,
-      ScopeTable localVars,
-      CallingForm form) {
-    return accessorNewVariable(config, context, valueSet, localVars, null, false, form);
+      MethodContext methodContext,
+      SampleContext sampleContext,
+      ScopeTable localVars) {
+    return accessorNewVariable(config, methodContext, sampleContext, localVars, null, false);
   }
 
   /**
@@ -401,68 +427,70 @@ public class OutputTransformer {
   @VisibleForTesting
   static OutputView.VariableView accessorNewVariable(
       Scanner config,
-      MethodContext context,
-      SampleValueSet valueSet,
+      MethodContext methodContext,
+      SampleContext sampleContext,
       ScopeTable localVars,
       @Nullable String newVar,
-      boolean scalarTypeForCollection,
-      CallingForm form) {
+      boolean scalarTypeForCollection) {
 
     OutputView.VariableView.Builder view = OutputView.VariableView.newBuilder();
 
     Preconditions.checkArgument(
         config.scan() == Scanner.IDENT,
         "%s:%s: expected identifier: %s",
-        context.getMethodModel().getSimpleName(),
-        valueSet.getId(),
+        methodContext.getMethodModel().getSimpleName(),
+        sampleContext.sampleConfig().id(),
         config.input());
     String baseIdentifier = config.tokenStr();
 
     TypeModel type = null;
     String typeName = null;
     if (baseIdentifier.equals(RESPONSE_PLACEHOLDER)) {
-      view.variable(context.getNamer().getSampleResponseVarName(context, form));
-      boolean pageStreaming = context.getMethodConfig().getPageStreaming() != null;
+      view.variable(
+          methodContext
+              .getNamer()
+              .getSampleResponseVarName(methodContext, sampleContext.callingForm()));
+      boolean pageStreaming = methodContext.getMethodConfig().getPageStreaming() != null;
       boolean pageStreamingAndUseResourceName =
           pageStreaming
-              && context
+              && methodContext
                   .getFeatureConfig()
                   .useResourceNameFormatOption(
-                      context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
+                      methodContext.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
 
       // Compute the resource name format of output type and store that in typeName
       if (pageStreamingAndUseResourceName) {
         typeName =
-            context
+            methodContext
                 .getNamer()
                 .getAndSaveElementResourceTypeName(
-                    context.getTypeTable(),
-                    context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
+                    methodContext.getTypeTable(),
+                    methodContext.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
       } else if (pageStreaming) {
         type =
-            context
+            methodContext
                 .getMethodConfig()
                 .getPageStreaming()
                 .getResourcesFieldConfig()
                 .getField()
                 .getType()
                 .makeOptional();
-      } else if (context.isLongRunningMethodContext()) {
-        type = context.getLongRunningConfig().getReturnType();
+      } else if (methodContext.isLongRunningMethodContext()) {
+        type = methodContext.getLongRunningConfig().getReturnType();
       } else {
-        type = context.getMethodModel().getOutputType();
+        type = methodContext.getMethodModel().getOutputType();
       }
     } else {
       // Referencing the value of a local variable
-      view.variable(context.getNamer().localVarName(Name.from(baseIdentifier)));
+      view.variable(methodContext.getNamer().localVarName(Name.from(baseIdentifier)));
       type = localVars.getTypeModel(baseIdentifier);
       if (type == null) {
         typeName =
             Preconditions.checkNotNull(
                 localVars.getTypeName(baseIdentifier),
                 "%s:%s: variable not defined: %s",
-                context.getMethodModel().getSimpleName(),
-                valueSet.getId(),
+                methodContext.getMethodModel().getSimpleName(),
+                sampleContext.sampleConfig().id(),
                 baseIdentifier);
       }
     }
@@ -477,26 +505,26 @@ public class OutputTransformer {
         Preconditions.checkArgument(
             type != null,
             "%s:%s: accessing a field of a resource name is not currently supported",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId());
+            methodContext.getMethodModel().getSimpleName(),
+            sampleContext.sampleConfig().id());
         Preconditions.checkArgument(
             type.isMessage(),
             "%s:%s: %s is not a message",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId(),
+            methodContext.getMethodModel().getSimpleName(),
+            sampleContext.sampleConfig().id(),
             config.input());
         Preconditions.checkArgument(
             !type.isRepeated() && !type.isMap(),
             "%s:%s: %s is not scalar",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId(),
+            methodContext.getMethodModel().getSimpleName(),
+            sampleContext.sampleConfig().id(),
             config.input());
 
         Preconditions.checkArgument(
             config.scan() == Scanner.IDENT,
             "%s:%s: expected identifier: %s",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId(),
+            methodContext.getMethodModel().getSimpleName(),
+            sampleContext.sampleConfig().id(),
             config.input());
 
         String fieldName = config.tokenStr();
@@ -504,44 +532,44 @@ public class OutputTransformer {
             Preconditions.checkNotNull(
                 type.getField(fieldName),
                 "%s:%s: type %s does not have field %s",
-                context.getMethodModel().getSimpleName(),
-                valueSet.getId(),
+                methodContext.getMethodModel().getSimpleName(),
+                sampleContext.sampleConfig().id(),
                 type,
                 fieldName);
 
         type = field.getType();
-        accessors.add(context.getNamer().getFieldAccessorName(field));
+        accessors.add(methodContext.getNamer().getFieldAccessorName(field));
       } else if (token == '[') {
         Preconditions.checkArgument(
             type.isRepeated() && !type.isMap(),
             "%s:%s: %s is not a repeated field",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId(),
+            methodContext.getMethodModel().getSimpleName(),
+            sampleContext.sampleConfig().id(),
             config.input());
         Preconditions.checkArgument(
             config.scan() == Scanner.INT,
             "%s:%s: expected int in index expression: %s",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId(),
+            methodContext.getMethodModel().getSimpleName(),
+            sampleContext.sampleConfig().id(),
             config.input());
 
         type = type.makeOptional();
         int index = Integer.parseInt(config.tokenStr());
-        accessors.add(context.getNamer().getIndexAccessorName(index));
+        accessors.add(methodContext.getNamer().getIndexAccessorName(index));
 
         Preconditions.checkArgument(
             config.scan() == ']',
             "%s:%s: expected ']': %s",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId(),
+            methodContext.getMethodModel().getSimpleName(),
+            sampleContext.sampleConfig().id(),
             config.input());
       } else if (token == '{') {
         // TODO: honor https://github.com/googleapis/gapic-generator/issues/2600
         Preconditions.checkArgument(
             type.isMap(),
             "%s:%s: %s is not a map field",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId(),
+            methodContext.getMethodModel().getSimpleName(),
+            sampleContext.sampleConfig().id(),
             config.input());
         TypeModel keyType = type.getMapKeyType();
         int keyToken = config.scan();
@@ -549,58 +577,60 @@ public class OutputTransformer {
           Preconditions.checkArgument(
               keyToken == Scanner.STRING,
               "%s:%s: expected string type for map key: %s",
-              context.getMethodModel().getSimpleName(),
-              valueSet.getId(),
+              methodContext.getMethodModel().getSimpleName(),
+              sampleContext.sampleConfig().id(),
               config.input());
         } else if (keyType.isBooleanType()) {
           // `true` and `false` are the only valid literals here
           Preconditions.checkArgument(
               keyToken == Scanner.IDENT,
               "%s:%s: expected boolean type for map key: %s",
-              context.getMethodModel().getSimpleName(),
-              valueSet.getId(),
+              methodContext.getMethodModel().getSimpleName(),
+              sampleContext.sampleConfig().id(),
               config.input());
         } else {
           // Protobuf map keys can only be strings, booleans or integers
           Preconditions.checkArgument(
               keyToken == Scanner.INT,
               "%s:%s: expected integral type for map key: %s",
-              context.getMethodModel().getSimpleName(),
-              valueSet.getId(),
+              methodContext.getMethodModel().getSimpleName(),
+              sampleContext.sampleConfig().id(),
               config.input());
         }
         keyType.validateValue(config.tokenStr());
-        accessors.add(context.getNamer().getMapKeyAccessorName(keyType, config.tokenStr()));
+        accessors.add(methodContext.getNamer().getMapKeyAccessorName(keyType, config.tokenStr()));
         type = type.getMapValueType();
         Preconditions.checkArgument(
             config.scan() == '}',
             "%s:%s: expected '}': %s",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId(),
+            methodContext.getMethodModel().getSimpleName(),
+            sampleContext.sampleConfig().id(),
             config.input());
       } else {
         throw new IllegalArgumentException(
             String.format(
                 "%s:%s: unexpected character: %c (%d)",
-                context.getMethodModel().getSimpleName(), valueSet.getId(), token, token));
+                methodContext.getMethodModel().getSimpleName(),
+                sampleContext.sampleConfig().id(),
+                token,
+                token));
       }
     }
 
     if (newVar != null) {
-      assertIdentifierNotUsed(
-          newVar, context.getMethodModel().getSimpleName(), valueSet.getId(), context, form);
+      assertIdentifierNotUsed(newVar, methodContext, sampleContext);
       if (scalarTypeForCollection) {
         Preconditions.checkArgument(
             type != null,
             "%s:%s: a resource name can never be a repeated field",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId());
+            methodContext.getMethodModel().getSimpleName(),
+            sampleContext.sampleConfig().id());
 
         Preconditions.checkArgument(
             type.isRepeated() && !type.isMap(),
             "%s:%s: %s is not a repeated field",
-            context.getMethodModel().getSimpleName(),
-            valueSet.getId(),
+            methodContext.getMethodModel().getSimpleName(),
+            sampleContext.sampleConfig().id(),
             config.input());
         type = type.makeOptional(); // "optional" is how protobuf defines singular fields
       }
@@ -608,14 +638,16 @@ public class OutputTransformer {
         throw new IllegalStateException(
             String.format(
                 "%s:%s: type and typeName can't be null at the same time",
-                context.getMethodModel().getSimpleName(), valueSet.getId()));
+                methodContext.getMethodModel().getSimpleName(), sampleContext.sampleConfig().id()));
       }
-      typeName = type == null ? typeName : context.getTypeTable().getNicknameFor(type);
+      typeName = type == null ? typeName : methodContext.getTypeTable().getNicknameFor(type);
       if (!localVars.put(newVar, type, typeName)) {
         throw new IllegalStateException(
             String.format(
                 "%s:%s: duplicate variable declaration not allowed: %s",
-                context.getMethodModel().getSimpleName(), valueSet.getId(), newVar));
+                methodContext.getMethodModel().getSimpleName(),
+                sampleContext.sampleConfig().id(),
+                newVar));
       }
     }
 
@@ -623,19 +655,18 @@ public class OutputTransformer {
   }
 
   private static void assertIdentifierNotUsed(
-      String identifier,
-      String methodName,
-      String valueSetId,
-      MethodContext context,
-      CallingForm form) {
+      String identifier, MethodContext methodContext, SampleContext sampleContext) {
     Preconditions.checkArgument(
-        !context.getNamer().getSampleUsedVarNames(context, form).contains(identifier),
+        !methodContext
+            .getNamer()
+            .getSampleUsedVarNames(methodContext, sampleContext.callingForm())
+            .contains(identifier),
         "%s: %s cannot define variable \"%s\": it is already used by the sample template for"
             + " calling form \"%s\".",
-        methodName,
-        valueSetId,
+        methodContext.getMethodModel().getSimpleName(),
+        sampleContext.sampleConfig().id(),
         identifier,
-        form);
+        sampleContext.callingForm());
   }
 
   /**
