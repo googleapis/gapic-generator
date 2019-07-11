@@ -168,6 +168,10 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
           }
 
           for (CallingForm form : allMatchingCallingForms) {
+            InitCodeOutputType initCodeOutputType =
+                methodContext.getMethodModel().getRequestStreaming()
+                    ? InitCodeOutputType.SingleObject
+                    : InitCodeOutputType.FieldList;
             SampleContext sampleContext =
                 SampleContext.newBuilder()
                     .uniqueSampleId(registry.getUniqueSampleId(sampleConfig.id(), form))
@@ -175,7 +179,7 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
                     .callingForm(
                         CallingForm.getDefaultCallingForm(methodContext, TargetLanguage.RUBY))
                     .sampleConfig(sampleConfig)
-                    .initCodeOutputType(InitCodeOutputType.FieldList)
+                    .initCodeOutputType(initCodeOutputType)
                     .build();
             OptionalArrayMethodView methodView =
                 apiMethodTransformer.generateApiMethod(methodContext, sampleContext);
