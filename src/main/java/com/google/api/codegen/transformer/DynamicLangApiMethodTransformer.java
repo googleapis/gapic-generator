@@ -81,6 +81,7 @@ public class DynamicLangApiMethodTransformer {
         null);
   }
 
+  /** Generates the method view for an RPC method and standalone samples. */
   public OptionalArrayMethodView generateApiMethod(
       MethodContext methodContext, SampleContext sampleContext) {
     return generateApiMethod(
@@ -121,9 +122,12 @@ public class DynamicLangApiMethodTransformer {
         sampleContext);
   }
 
-  // TODO: After we migrate Node.js and PHP to use the public `generateApiMethod` and
+  // TODO(hzyi): After we migrate Node.js and PHP to use the public `generateApiMethod` and
   // `generateApiMethods`, we can remove PhpMethodViewGenerator and NodejsMethodViewGenerator
   // and make this method and the following two private.
+  //
+  // TODO(hzyi): `callingForms` are already stored in method context. Remove them when cleaning
+  // up these methods.
   public OptionalArrayMethodView generateRequestMethod(
       GapicMethodContext context,
       InitCodeContext initContext,

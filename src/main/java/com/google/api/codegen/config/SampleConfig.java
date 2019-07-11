@@ -47,6 +47,8 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class SampleConfig {
 
+  private static final String DEFAULT_CALLING_PATTERN = "default";
+
   @Nullable
   public abstract String id();
 
@@ -77,7 +79,7 @@ public abstract class SampleConfig {
   public boolean usesDefaultCallingForm() {
     return callingPattern() == null
         || callingPattern().isEmpty()
-        || callingPattern().equals("default");
+        || callingPattern().equals(DEFAULT_CALLING_PATTERN);
   }
 
   @Nullable
@@ -166,19 +168,19 @@ public abstract class SampleConfig {
         duplicateIds.stream().collect(Collectors.joining(", ")));
 
     // Next, flatten the calling pattern list so we have one per sample
+    // Note these are not the final calling pattern values, because the
+    // regexes specified in the config need to be matched against
+    // language-specific calling pattern definitions.
     List<SampleSpecProto> flattenedSampleSpecs = new ArrayList<>();
     for (SampleSpecProto spec : sampleSpecs) {
       if (spec.getCallingPatternsList().isEmpty()) {
-        flattenedSampleSpecs.add(spec.toBuilder().addCallingPatterns("").build());
+        flattenedSampleSpecs.add(
+            spec.toBuilder().addCallingPatterns(DEFAULT_CALLING_PATTERN).build());
       }
       for (String pattern : spec.getCallingPatternsList()) {
         flattenedSampleSpecs.add(spec.toBuilder().addCallingPatterns(pattern).build());
       }
     }
-
-    // These are not the final calling pattern values, because the
-    // regexes specified in the config need to be matched against
-    // language-specific calling pattern definitions.
 
     // Construct the table.
     HashBasedTable<String, String, ArrayList<SampleConfig>> table = HashBasedTable.create();

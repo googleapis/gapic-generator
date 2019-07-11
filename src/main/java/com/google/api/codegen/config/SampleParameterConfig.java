@@ -20,6 +20,7 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class SampleParameterConfig {
 
+  /** The path to the field. */
   public abstract String field();
 
   /**

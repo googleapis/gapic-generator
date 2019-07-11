@@ -456,8 +456,6 @@ public class InitCodeNode {
       case ListInitLine:
         return parentName.join("element");
       default:
-        System.out.println(parentName);
-        System.out.println(child);
         throw new IllegalArgumentException("Cannot generate child name for " + parentType);
     }
   }

@@ -99,6 +99,10 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public abstract Boolean enableStringFormattingFunctionsOverride();
 
+  /**
+   * Returns a table of SampleConfigs. The row key is the full name of the interface and the column
+   * key is the name of the method.
+   */
   @Nullable
   public abstract ImmutableTable<String, String, ImmutableList<SampleConfig>>
       getSampleConfigTable();
@@ -772,16 +776,14 @@ public abstract class GapicProductConfig implements ProductConfig {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "Found single resource name \"%s\" in GAPIC config that has no corresponding"
-                    + " annotation",
+                "Found single resource name \"%s\" in GAPIC config that has no corresponding annotation",
                 key));
       }
       if (annotationResourceNameConfigs.get(key).getResourceNameType() != ResourceNameType.SINGLE) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "Found single resource name \"%s\" in GAPIC config that had entity name matching a"
-                    + " non-single resource annotation: %s",
+                "Found single resource name \"%s\" in GAPIC config that had entity name matching a non-single resource annotation: %s",
                 key,
                 annotationResourceNameConfigs.get(key)));
       }

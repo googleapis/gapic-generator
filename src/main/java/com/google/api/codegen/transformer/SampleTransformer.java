@@ -226,17 +226,12 @@ public abstract class SampleTransformer {
 
   // entry point for generating standalone samples using sample config.
   public MethodSampleView generateSample(MethodContext methodContext, SampleContext sampleContext) {
-    // add new type table in sample context?
     methodContext = methodContext.cloneWithEmptyTypeTable();
 
     // request
     InitCodeContext initCodeContext = createInitCodeContext(methodContext, sampleContext);
     InitCodeView initCodeView =
         initCodeTransformer().generateInitCode(methodContext, initCodeContext);
-
-    if (initCodeView == null || initCodeView.topLevelIndexFileImportName() == null) {
-      System.out.println(sampleContext.sampleConfig().id());
-    }
 
     // response
     OutputContext outputContext = OutputContext.create();
@@ -417,7 +412,7 @@ public abstract class SampleTransformer {
 
   private InitCodeContext createInitCodeContext(
       MethodContext methodContext, SampleContext sampleContext) {
-    // Temporary solution
+    // Create initFieldConfigStrings from `field` and `value`
     List<String> initFieldConfigStrings =
         sampleContext
             .sampleConfig()
@@ -428,6 +423,7 @@ public abstract class SampleTransformer {
             .collect(ImmutableList.toImmutableList());
     List<FieldConfig> requiredFieldConfigs =
         methodContext.getMethodConfig().getRequiredFieldConfigs();
+
     return InitCodeContext.newBuilder()
         .initObjectType(methodContext.getMethodModel().getInputType())
         .suggestedName(Name.from("request"))

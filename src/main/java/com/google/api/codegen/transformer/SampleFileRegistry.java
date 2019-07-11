@@ -38,37 +38,36 @@ import java.util.Map;
 public class SampleFileRegistry {
 
   private final Map<String, SampleInfo> files = new HashMap<>();
-  private final Map<String, Integer> regionTagCount = new HashMap<>();
+  private final Map<String, Integer> userProvidedIdCount = new HashMap<>();
   private final Map<String, Integer> usedSuffixes = new HashMap<>();
   private final SurfaceNamer namer;
 
   public SampleFileRegistry(SurfaceNamer namer, List<MethodSampleView> allSamples) {
     this.namer = namer;
     for (MethodSampleView sample : allSamples) {
-      regionTagCount.put(
-          sample.regionTag(), regionTagCount.getOrDefault(sample.regionTag(), 0) + 1);
+      userProvidedIdCount.put(
+          sample.regionTag(), userProvidedIdCount.getOrDefault(sample.regionTag(), 0) + 1);
     }
   }
 
   public SampleFileRegistry(SurfaceNamer namer, Collection<SampleConfig> sampleConfigs) {
     this.namer = namer;
     for (SampleConfig config : sampleConfigs) {
-      regionTagCount.put(config.id(), regionTagCount.getOrDefault(config.id(), 0) + 1);
+      userProvidedIdCount.put(config.id(), userProvidedIdCount.getOrDefault(config.id(), 0) + 1);
     }
   }
 
   public String getUniqueSampleId(String userProvidedId, CallingForm callingForm) {
-    Integer userProvidedIdCount = regionTagCount.get(userProvidedId);
-    Preconditions.checkState(
-        userProvidedIdCount != null && userProvidedIdCount > 0, "Sample not registered.");
+    Integer count = userProvidedIdCount.get(userProvidedId);
+    Preconditions.checkState(count != null && count > 0, "Sample not registered.");
 
-    if (userProvidedIdCount == 1) {
+    if (count == 1) {
       return userProvidedId;
     }
 
     String idWithCallingPattern = userProvidedId + "_" + callingForm.toLowerUnderscore();
-    if (!regionTagCount.containsKey(idWithCallingPattern)) {
-      regionTagCount.put(idWithCallingPattern, 1);
+    if (!userProvidedIdCount.containsKey(idWithCallingPattern)) {
+      userProvidedIdCount.put(idWithCallingPattern, 1);
       return idWithCallingPattern;
     }
 
@@ -81,9 +80,9 @@ public class SampleFileRegistry {
   public String getSampleClassName(MethodSampleView sample, String method) {
     String regionTag = sample.regionTag();
     Preconditions.checkState(
-        regionTagCount.get(regionTag) != null && regionTagCount.get(regionTag) > 0,
+        userProvidedIdCount.get(regionTag) != null && userProvidedIdCount.get(regionTag) > 0,
         "Sample not registered.");
-    if (regionTagCount.get(regionTag) == 1) {
+    if (userProvidedIdCount.get(regionTag) == 1) {
       return namer.getApiSampleClassName(regionTag);
     }
     return namer.getApiSampleClassName(method, sample.callingForm().toLowerCamel(), sample.id());
@@ -95,10 +94,10 @@ public class SampleFileRegistry {
     String callingForm = sample.callingForm().toLowerCamel();
     String id = sample.id();
     Preconditions.checkState(
-        regionTagCount.get(regionTag) != null && regionTagCount.get(regionTag) > 0,
+        userProvidedIdCount.get(regionTag) != null && userProvidedIdCount.get(regionTag) > 0,
         "Sample not registered.");
     String fileName;
-    if (regionTagCount.get(regionTag) == 1) {
+    if (userProvidedIdCount.get(regionTag) == 1) {
       fileName = namer.getApiSampleFileName(regionTag);
     } else {
       fileName = namer.getApiSampleFileName(method, callingForm, id);
