@@ -5418,6 +5418,8 @@ def sample_babble_about_book
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
+  request = {}
+
   requests = [request]
   library_client.babble_about_book(requests)
 
@@ -5463,6 +5465,8 @@ require "library"
 def sample_babble_about_book
   # Instantiate a client
   library_client = Library::Library.new version: :v1
+
+  request = {}
 
   requests = [request]
   library_client.babble_about_book(requests)
@@ -6232,6 +6236,7 @@ def sample_monolog_about_book
   library_client = Library::Library.new version: :v1
 
   formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  request = { name: formatted_name }
 
   requests = [request]
   response = library_client.monolog_about_book(requests, sample)
@@ -6618,6 +6623,11 @@ def sample_discuss_book image_file_name, stage
   comment = File.binread "comment_file"
   comment_2 = { comment: comment, stage: stage }
   image = File.binread image_file_name
+  request = {
+    name: formatted_name,
+    comment: comment_2,
+    image: image
+  }
 
   requests = [request]
   library_client.discuss_book(requests).each do |element|
