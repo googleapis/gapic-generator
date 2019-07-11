@@ -6331,7 +6331,7 @@ def sample_publish_series
   books = []
   series_uuid = {}
 
-  response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
+  response = library_client.publish_series(shelf, books, series_uuid)
   # testing writing bytes field.
   File.open("uuid_of_series_with_book_#{response.book_names[0]}.raw", "wb") do |file|
     file.write(response.series_uuid.series_bytes)
@@ -6693,7 +6693,7 @@ def sample_get_shelf
   message = {}
   string_builder = {}
 
-  response = library_client.get_shelf(formatted_name, options_)
+  response = library_client.get_shelf(formatted_name, options_, message: message, string_builder: string_builder)
   puts "Shelf found."
 end
 # [END test_setting_up_empty_objects_in_request]

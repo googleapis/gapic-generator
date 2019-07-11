@@ -231,14 +231,12 @@ public abstract class SampleTransformer {
 
     // request
     InitCodeContext initCodeContext = createInitCodeContext(methodContext, sampleContext);
-    if (sampleContext
-        .sampleConfig()
-        .id()
-        .equals("publish_series_test_request_object_field_comments")) {
-      System.out.println(initCodeContext);
-    }
     InitCodeView initCodeView =
         initCodeTransformer().generateInitCode(methodContext, initCodeContext);
+
+    if (initCodeView == null || initCodeView.topLevelIndexFileImportName() == null) {
+      System.out.println(sampleContext.sampleConfig().id());
+    }
 
     // response
     OutputContext outputContext = OutputContext.create();
@@ -425,6 +423,7 @@ public abstract class SampleTransformer {
             .sampleConfig()
             .requestConfigs()
             .stream()
+            .filter(req -> !req.getValue().isEmpty())
             .map(req -> String.format("%s=%s", req.getField(), req.getValue()))
             .collect(ImmutableList.toImmutableList());
     List<FieldConfig> requiredFieldConfigs =
