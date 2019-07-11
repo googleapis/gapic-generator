@@ -15,6 +15,7 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.gapic.GapicTestConfig;
+import com.google.api.codegen.samplegen.v1.SampleConfigProto;
 import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -71,5 +72,35 @@ public class CodegenTestUtil {
     }
 
     return (ConfigProto) configSource.getConfig();
+  }
+
+  public static SampleConfigProto readSampleConfig(
+      DiagCollector diagCollector,
+      TestDataLocator testDataLocator,
+      String[] sampleConfigFileNames) {
+    ImmutableMap<String, Message> supportedConfigTypes =
+        ImmutableMap.of(
+            SampleConfigProto.getDescriptor().getFullName(),
+            SampleConfigProto.getDefaultInstance());
+
+    List<File> configFiles = new ArrayList<>();
+    for (String sampleConfigFileName : sampleConfigFileNames) {
+      URL sampleConfigUrl = testDataLocator.findTestData(sampleConfigFileName);
+
+      String sampleConfigPath = Objects.requireNonNull(sampleConfigUrl).getPath();
+
+      File configFile = new File(sampleConfigPath);
+      configFiles.add(configFile);
+    }
+
+    ConfigSource configSource =
+        MultiYamlReader.read(diagCollector, configFiles, supportedConfigTypes);
+
+    if (diagCollector.getErrorCount() > 0) {
+      System.err.println(diagCollector.toString());
+      return null;
+    }
+
+    return (SampleConfigProto) configSource.getConfig();
   }
 }

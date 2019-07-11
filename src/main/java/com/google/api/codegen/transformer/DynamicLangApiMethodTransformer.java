@@ -30,9 +30,11 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
 import java.util.ArrayList;
@@ -75,38 +77,48 @@ public class DynamicLangApiMethodTransformer {
         context,
         null,
         context.getSurfaceInterfaceContext().getApiModel().hasMultipleServices(),
-        context.getNamer().getCallingForms(context));
+        context.getNamer().getCallingForms(context),
+        null);
   }
 
   public OptionalArrayMethodView generateApiMethod(
       MethodContext methodContext, SampleContext sampleContext) {
-    return generateApiMethod(methodContext);
+    return generateApiMethod(
+        methodContext,
+        null,
+        methodContext.getSurfaceInterfaceContext().getApiModel().hasMultipleServices(),
+        methodContext.getNamer().getCallingForms(methodContext),
+        sampleContext);
   }
 
   private OptionalArrayMethodView generateApiMethod(
       MethodContext methodContext,
       @Nullable InitCodeContext initCodeContext,
       boolean packageHasMultipleServices,
-      List<CallingForm> callingForms) {
+      List<CallingForm> callingForms,
+      @Nullable SampleContext sampleContext) {
     if (methodContext.getMethodConfig().isPageStreaming()) {
       return generatePagedStreamingMethod(
           (GapicMethodContext) methodContext,
           initCodeContext,
           packageHasMultipleServices,
-          callingForms);
+          callingForms,
+          sampleContext);
     }
     if (methodContext.isLongRunningMethodContext()) {
       return generateLongRunningMethod(
           (GapicMethodContext) methodContext,
           initCodeContext,
           packageHasMultipleServices,
-          callingForms);
+          callingForms,
+          sampleContext);
     }
     return generateRequestMethod(
         (GapicMethodContext) methodContext,
         initCodeContext,
         packageHasMultipleServices,
-        callingForms);
+        callingForms,
+        sampleContext);
   }
 
   // TODO: After we migrate Node.js and PHP to use the public `generateApiMethod` and
@@ -116,14 +128,21 @@ public class DynamicLangApiMethodTransformer {
       GapicMethodContext context,
       InitCodeContext initContext,
       boolean packageHasMultipleServices,
-      List<CallingForm> callingForms) {
+      List<CallingForm> callingForms,
+      @Nullable SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
     apiMethod.type(ClientMethodType.OptionalArrayMethod);
     generateMethodCommon(
-        context, initContext, packageHasMultipleServices, method, apiMethod, callingForms);
+        context,
+        initContext,
+        packageHasMultipleServices,
+        method,
+        apiMethod,
+        callingForms,
+        sampleContext);
 
     return apiMethod.build();
   }
@@ -132,7 +151,8 @@ public class DynamicLangApiMethodTransformer {
       GapicMethodContext context,
       InitCodeContext initContext,
       boolean packageHasMultipleServices,
-      List<CallingForm> callingForms) {
+      List<CallingForm> callingForms,
+      @Nullable SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
@@ -141,7 +161,13 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.type(ClientMethodType.LongRunningOptionalArrayMethod);
 
     generateMethodCommon(
-        context, initContext, packageHasMultipleServices, method, apiMethod, callingForms);
+        context,
+        initContext,
+        packageHasMultipleServices,
+        method,
+        apiMethod,
+        callingForms,
+        sampleContext);
 
     return apiMethod.build();
   }
@@ -150,7 +176,8 @@ public class DynamicLangApiMethodTransformer {
       GapicMethodContext context,
       InitCodeContext initContext,
       boolean packageHasMultipleServices,
-      List<CallingForm> callingForms) {
+      List<CallingForm> callingForms,
+      @Nullable SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
@@ -159,7 +186,13 @@ public class DynamicLangApiMethodTransformer {
         pageStreamingTransformer.generateDescriptor(context.getSurfaceInterfaceContext(), method));
 
     generateMethodCommon(
-        context, initContext, packageHasMultipleServices, method, apiMethod, callingForms);
+        context,
+        initContext,
+        packageHasMultipleServices,
+        method,
+        apiMethod,
+        callingForms,
+        sampleContext);
 
     return apiMethod.build();
   }
@@ -170,7 +203,8 @@ public class DynamicLangApiMethodTransformer {
       boolean packageHasMultipleServices,
       MethodModel method,
       OptionalArrayMethodView.Builder apiMethod,
-      List<CallingForm> callingForms) {
+      List<CallingForm> callingForms,
+      SampleContext sampleContext) {
     SurfaceNamer namer = context.getNamer();
 
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
@@ -231,13 +265,18 @@ public class DynamicLangApiMethodTransformer {
         context.getMethodModel().getRequestStreaming()
             ? InitCodeOutputType.SingleObject
             : InitCodeOutputType.FieldList;
-    sampleTransformer.generateSamples(
-        apiMethod,
-        context,
-        initContext,
-        context.getMethodConfig().getRequiredFieldConfigs(),
-        initCodeOutputType,
-        callingForms);
+    if (sampleContext == null) {
+      sampleTransformer.generateSamples(
+          apiMethod,
+          context,
+          initContext,
+          context.getMethodConfig().getRequiredFieldConfigs(),
+          initCodeOutputType,
+          callingForms);
+    } else {
+      MethodSampleView sampleView = sampleTransformer.generateSample(context, sampleContext);
+      apiMethod.samples(ImmutableList.of(sampleView));
+    }
   }
 
   private ApiMethodDocView generateMethodDoc(GapicMethodContext context) {

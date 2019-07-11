@@ -22,6 +22,8 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class SampleContext {
 
+  public abstract String uniqueSampleId();
+
   public abstract CallingForm callingForm();
 
   public abstract SampleSpec.SampleType sampleType();
@@ -37,6 +39,8 @@ public abstract class SampleContext {
 
   @AutoValue.Builder
   public abstract static class Builder {
+
+    public abstract Builder uniqueSampleId(String val);
 
     public abstract Builder callingForm(CallingForm val);
 

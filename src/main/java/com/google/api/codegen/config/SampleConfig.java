@@ -136,10 +136,15 @@ public abstract class SampleConfig {
   }
 
   public static ImmutableTable<String, String, ImmutableList<SampleConfig>> createSampleConfigTable(
-      SampleConfigProto sampleConfigProto, final Map<String, InterfaceConfig> interfaceConfigMap) {
+      @Nullable SampleConfigProto sampleConfigProto,
+      final Map<String, InterfaceConfig> interfaceConfigMap) {
+    if (sampleConfigProto == null) {
+      sampleConfigProto = SampleConfigProto.getDefaultInstance();
+    }
+
     // First, apply region tag as IDs if IDs are not given
     List<SampleSpecProto> sampleSpecs = new ArrayList<>();
-    for (SampleSpecProto spec : sampleSpecs) {
+    for (SampleSpecProto spec : sampleConfigProto.getSamplesList()) {
       if (spec.getId().isEmpty()) {
         spec = spec.toBuilder().setId(spec.getRegionTag()).build();
       }
@@ -164,10 +169,10 @@ public abstract class SampleConfig {
     List<SampleSpecProto> flattenedSampleSpecs = new ArrayList<>();
     for (SampleSpecProto spec : sampleSpecs) {
       if (spec.getCallingPatternsList().isEmpty()) {
-        sampleSpecs.add(spec.toBuilder().addCallingPatterns("").build());
+        flattenedSampleSpecs.add(spec.toBuilder().addCallingPatterns("").build());
       }
       for (String pattern : spec.getCallingPatternsList()) {
-        sampleSpecs.add(spec.toBuilder().addCallingPatterns(pattern).build());
+        flattenedSampleSpecs.add(spec.toBuilder().addCallingPatterns(pattern).build());
       }
     }
 
@@ -200,14 +205,22 @@ public abstract class SampleConfig {
       SampleSpecProto sampleSpec, Map<String, InterfaceConfig> interfaceConfigMap) {
     InterfaceConfig interfaceConfig = interfaceConfigMap.get(sampleSpec.getService());
     Preconditions.checkNotNull(
-        interfaceConfig, "can't find interface named %s", sampleSpec.getService());
+        interfaceConfig,
+        "sample %s: can't find interface named %s",
+        sampleSpec.getId(),
+        sampleSpec.getService());
     Preconditions.checkState(
         interfaceConfig instanceof GapicInterfaceConfig,
         "can't generate samples for non-gapic libraries");
 
     GapicInterfaceConfig gapicInterfaceConfig = (GapicInterfaceConfig) interfaceConfig;
     MethodConfig methodConfig = gapicInterfaceConfig.getMethodConfigMap().get(sampleSpec.getRpc());
-    Preconditions.checkNotNull(methodConfig, "can't find method named %s", sampleSpec.getRpc());
+    Preconditions.checkNotNull(
+        methodConfig,
+        "sample %s: can't find method named %s in interface %s",
+        sampleSpec.getId(),
+        sampleSpec.getRpc(),
+        sampleSpec.getService());
 
     return SampleConfig.newBuilder()
         .id(sampleSpec.getId())

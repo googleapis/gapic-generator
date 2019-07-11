@@ -68,6 +68,7 @@ public class OutputTransformerTest {
             .build();
     sampleContext =
         SampleContext.newBuilder()
+            .uniqueSampleId("test-sample-value-set-id")
             .sampleConfig(sampleConfig)
             .sampleType(SampleSpec.SampleType.STANDALONE)
             .callingForm(form)

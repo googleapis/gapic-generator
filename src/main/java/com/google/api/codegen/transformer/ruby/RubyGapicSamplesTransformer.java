@@ -35,7 +35,6 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SampleTransformer;
-import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
@@ -47,6 +46,7 @@ import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Streams;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -103,50 +103,89 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
             .collect(ImmutableList.toImmutableList());
 
     List<MethodSampleView> allSamples = new ArrayList<>();
+    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
+
+    // We don't have sample configs written in sample config. Continue to use gapic config.
+    if (sampleConfigTable.isEmpty()) {
+      allSamples =
+          interfaceContexts
+              .stream()
+              .flatMap(c -> apiMethodTransformer.generateApiMethods(c).stream())
+              .flatMap(m -> m.samples().stream())
+              .collect(ImmutableList.toImmutableList());
+      SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
+
+      for (InterfaceContext context : interfaceContexts) {
+        List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
+        for (OptionalArrayMethodView method : methods) {
+          for (MethodSampleView sample : method.samples()) {
+            sampleFileViews.add(
+                newSampleFileView(
+                    productConfig,
+                    context,
+                    registry.getSampleFileName(sample, method.name()),
+                    method,
+                    sample));
+          }
+        }
+      }
+      return sampleFileViews.build();
+    }
+
+    // Generate samples using sample configs.
+    SampleFileRegistry registry =
+        new SampleFileRegistry(
+            namer,
+            sampleConfigTable
+                .values()
+                .stream()
+                .flatMap(List::stream)
+                .collect(ImmutableList.toImmutableList()));
 
     for (InterfaceContext interfaceContext : interfaceContexts) {
       for (MethodModel method : interfaceContext.getSupportedMethods()) {
         MethodContext methodContext = interfaceContext.asRequestMethodContext(method);
-        String interfaceName = interfaceContext.getInterfaceConfig().getName();
+        String interfaceName =
+            interfaceContext.getInterfaceConfig().getInterfaceModel().getFullName();
         String methodName = method.getSimpleName();
         ImmutableList<SampleConfig> sampleConfigs =
             sampleConfigTable.get(interfaceName, methodName);
-        // We don't have sample configs written in sample config. Continue to use gapic config.
         if (sampleConfigs == null) {
-          allSamples.addAll(apiMethodTransformer.generateApiMethod(methodContext).samples());
-        } else {
-          // Use sample config.
-          for (SampleConfig sampleConfig : sampleConfigs) {
-            if (sampleConfig.usesDefaultCallingForm()) {
-              SampleContext sampleContext =
-                  SampleContext.newBuilder()
-                      .sampleType(SampleSpec.SampleType.STANDALONE)
-                      .callingForm(
-                          CallingForm.getDefaultCallingForm(methodContext, TargetLanguage.RUBY))
-                      .sampleConfig(sampleConfig)
-                      .initCodeOutputType(InitCodeOutputType.FieldList)
-                      .build();
-              allSamples.addAll(
-                  apiMethodTransformer.generateApiMethod(methodContext, sampleContext).samples());
-            } else {
-              List<CallingForm> allMatchingCallingForms =
-                  CallingForm.getCallingForms(methodContext, TargetLanguage.RUBY)
-                      .stream()
-                      .filter(t -> t.toLowerUnderscore().matches(sampleConfig.callingPattern()))
-                      .collect(ImmutableList.toImmutableList());
-            }
-          }
+          continue;
         }
-      }
-    }
-    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
-    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
-    for (InterfaceContext context : interfaceContexts) {
-      List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
-      for (OptionalArrayMethodView method : methods) {
-        for (MethodSampleView sample : method.samples()) {
-          sampleFileViews.add(
-              newSampleFileView(productConfig, context, method, sample, namer, registry));
+        for (SampleConfig sampleConfig : sampleConfigs) {
+          List<CallingForm> allMatchingCallingForms;
+          if (sampleConfig.usesDefaultCallingForm()) {
+            allMatchingCallingForms =
+                Collections.singletonList(
+                    CallingForm.getDefaultCallingForm(methodContext, TargetLanguage.RUBY));
+          } else {
+            allMatchingCallingForms =
+                CallingForm.getCallingForms(methodContext, TargetLanguage.RUBY)
+                    .stream()
+                    .filter(t -> t.toLowerUnderscore().matches(sampleConfig.callingPattern()))
+                    .collect(ImmutableList.toImmutableList());
+          }
+
+          for (CallingForm form : allMatchingCallingForms) {
+            SampleContext sampleContext =
+                SampleContext.newBuilder()
+                    .uniqueSampleId(registry.getUniqueSampleId(sampleConfig.id(), form))
+                    .sampleType(SampleSpec.SampleType.STANDALONE)
+                    .callingForm(
+                        CallingForm.getDefaultCallingForm(methodContext, TargetLanguage.RUBY))
+                    .sampleConfig(sampleConfig)
+                    .initCodeOutputType(InitCodeOutputType.FieldList)
+                    .build();
+            OptionalArrayMethodView methodView =
+                apiMethodTransformer.generateApiMethod(methodContext, sampleContext);
+
+            MethodSampleView methodSampleView = methodView.samples().get(0);
+            String fileName = namer.getApiSampleFileName(sampleContext.uniqueSampleId());
+            sampleFileViews.add(
+                newSampleFileView(
+                    productConfig, interfaceContext, fileName, methodView, methodSampleView));
+          }
         }
       }
     }
@@ -156,11 +195,9 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
   private DynamicLangSampleView newSampleFileView(
       GapicProductConfig productConfig,
       InterfaceContext context,
+      String sampleFileName,
       OptionalArrayMethodView method,
-      MethodSampleView sample,
-      SurfaceNamer namer,
-      SampleFileRegistry registry) {
-    String sampleFileName = registry.getSampleFileName(sample, method.name());
+      MethodSampleView sample) {
     String outputPath =
         Paths.get(
                 pathMapper.getSamplesOutputPath(
@@ -173,7 +210,6 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
         .outputPath(outputPath)
         .libraryMethod(method)
         .sample(sample)
-        .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
         .build();
   }
 }

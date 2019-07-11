@@ -123,6 +123,7 @@ public class OutputTransformer {
             .build();
     SampleContext sampleContext =
         SampleContext.newBuilder()
+            .uniqueSampleId(valueSet.getId())
             .sampleType(SampleSpec.SampleType.STANDALONE)
             .sampleConfig(sampleConfig)
             .initCodeOutputType(InitCodeOutputType.FieldList)

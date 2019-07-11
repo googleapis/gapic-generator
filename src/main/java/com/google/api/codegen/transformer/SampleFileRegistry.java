@@ -14,9 +14,12 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.SampleConfig;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +39,7 @@ public class SampleFileRegistry {
 
   private final Map<String, SampleInfo> files = new HashMap<>();
   private final Map<String, Integer> regionTagCount = new HashMap<>();
+  private final Map<String, Integer> usedSuffixes = new HashMap<>();
   private final SurfaceNamer namer;
 
   public SampleFileRegistry(SurfaceNamer namer, List<MethodSampleView> allSamples) {
@@ -46,6 +50,34 @@ public class SampleFileRegistry {
     }
   }
 
+  public SampleFileRegistry(SurfaceNamer namer, Collection<SampleConfig> sampleConfigs) {
+    this.namer = namer;
+    for (SampleConfig config : sampleConfigs) {
+      regionTagCount.put(config.id(), regionTagCount.getOrDefault(config.id(), 0) + 1);
+    }
+  }
+
+  public String getUniqueSampleId(String userProvidedId, CallingForm callingForm) {
+    Integer userProvidedIdCount = regionTagCount.get(userProvidedId);
+    Preconditions.checkState(
+        userProvidedIdCount != null && userProvidedIdCount > 0, "Sample not registered.");
+
+    if (userProvidedIdCount == 1) {
+      return userProvidedId;
+    }
+
+    String idWithCallingPattern = userProvidedId + "_" + callingForm.toLowerUnderscore();
+    if (!regionTagCount.containsKey(idWithCallingPattern)) {
+      regionTagCount.put(idWithCallingPattern, 1);
+      return idWithCallingPattern;
+    }
+
+    int suffix = usedSuffixes.getOrDefault(idWithCallingPattern, 0) + 1;
+    usedSuffixes.put(idWithCallingPattern, suffix);
+    return idWithCallingPattern + suffix;
+  }
+
+  @Deprecated
   public String getSampleClassName(MethodSampleView sample, String method) {
     String regionTag = sample.regionTag();
     Preconditions.checkState(
@@ -53,18 +85,15 @@ public class SampleFileRegistry {
         "Sample not registered.");
     if (regionTagCount.get(regionTag) == 1) {
       return namer.getApiSampleClassName(regionTag);
-    } else {
-      String callingForm = sample.callingForm().toLowerCamel();
-      String valueSet = sample.valueSet().id();
-      return namer.getApiSampleClassName(
-          method, sample.callingForm().toLowerUnderscore(), sample.valueSet().id());
     }
+    return namer.getApiSampleClassName(method, sample.callingForm().toLowerCamel(), sample.id());
   }
 
+  @Deprecated
   public String getSampleFileName(MethodSampleView sample, String method) {
     String regionTag = sample.regionTag();
     String callingForm = sample.callingForm().toLowerCamel();
-    String valueSet = sample.valueSet().id();
+    String id = sample.id();
     Preconditions.checkState(
         regionTagCount.get(regionTag) != null && regionTagCount.get(regionTag) > 0,
         "Sample not registered.");
@@ -72,11 +101,9 @@ public class SampleFileRegistry {
     if (regionTagCount.get(regionTag) == 1) {
       fileName = namer.getApiSampleFileName(regionTag);
     } else {
-      fileName =
-          namer.getApiSampleFileName(
-              method, sample.callingForm().toLowerUnderscore(), sample.valueSet().id());
+      fileName = namer.getApiSampleFileName(method, callingForm, id);
     }
-    addFile(fileName, method, callingForm, valueSet, regionTag);
+    addFile(fileName, method, callingForm, id, regionTag);
     return fileName;
   }
 
@@ -86,13 +113,13 @@ public class SampleFileRegistry {
    * describing the conflict.
    */
   private void addFile(
-      String path, String method, String callingForm, String valueSet, String regionTag) {
+      String path, String method, String callingForm, String id, String regionTag) {
     SampleInfo current =
         SampleInfo.newBuilder()
             .path(path)
             .method(method)
             .callingForm(callingForm)
-            .valueSet(valueSet)
+            .id(id)
             .regionTag(regionTag)
             .build();
     SampleInfo previous = files.get(path);
@@ -114,7 +141,7 @@ public class SampleFileRegistry {
 
     public abstract String callingForm();
 
-    public abstract String valueSet();
+    public abstract String id();
 
     public abstract String regionTag();
 
@@ -130,7 +157,7 @@ public class SampleFileRegistry {
 
       public abstract SampleInfo.Builder callingForm(String value);
 
-      public abstract SampleInfo.Builder valueSet(String value);
+      public abstract SampleInfo.Builder id(String value);
 
       public abstract SampleInfo.Builder regionTag(String value);
 

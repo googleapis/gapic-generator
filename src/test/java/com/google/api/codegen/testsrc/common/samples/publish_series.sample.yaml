@@ -1,5 +1,5 @@
 ---
-type: com.google.api.codegen.samplegen.SampleConfigProto
+type: com.google.api.codegen.samplegen.v1.SampleConfigProto
 config_schema_version: 1.2.0
 samples:
 - id: publish_series_request_pi_edition
@@ -16,10 +16,10 @@ samples:
     comment: "The name of the shelf where books are published to."
   - field: series_uuid.series_string
     value: xyz3141592654
-    input_parameter: edition
-    comment: "The edition of the series."
   - field: edition
     value: 123
+    input_parameter: edition
+    comment: "The edition of the series."
   response:
   - comment:
     - "%% %% %% output handling %% %% %% %%"
@@ -71,6 +71,8 @@ samples:
 - region_tag: publish_series_test_request_object_field_comments
   title: "request object field comments"
   description: "Test request object field comments"
+  service: google.example.library.v1.LibraryService
+  rpc: PublishSeries
   calling_patterns: [request]
   request:
   - field: shelf.name%shelf_id
@@ -98,6 +100,8 @@ samples:
     comment: "Comment on a resource name"
 
 - region_tag: publish_series_test_write_to_file
+  service: google.example.library.v1.LibraryService
+  rpc: PublishSeries
   title: "test writing fields to files"
   description: "Testing write fields to files."
   # Behavior change:

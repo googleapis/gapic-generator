@@ -456,6 +456,8 @@ public class InitCodeNode {
       case ListInitLine:
         return parentName.join("element");
       default:
+        System.out.println(parentName);
+        System.out.println(child);
         throw new IllegalArgumentException("Cannot generate child name for " + parentType);
     }
   }
@@ -519,7 +521,7 @@ public class InitCodeNode {
     Name name = Name.anyLower(argName);
     Preconditions.checkArgument(
         !context.symbolTable().contains(name),
-        "sample_argument_name \"%s\" is already in use.",
+        "input parameter name \"%s\" is already in use.",
         name);
     return context.symbolTable().getNewSymbol(name);
   }
