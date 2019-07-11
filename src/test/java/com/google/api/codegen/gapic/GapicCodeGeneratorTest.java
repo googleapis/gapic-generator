@@ -233,7 +233,8 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
       "list_shelves.sample.yaml",
       "monolog_about_book.sample.yaml",
       "publish_series.sample.yaml",
-      "stream_books.sample.yaml"
+      "stream_books.sample.yaml",
+      "test_optional_required_flattening_params.sample.yaml"
     };
   }
 }
