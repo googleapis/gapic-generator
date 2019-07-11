@@ -26,7 +26,7 @@ import com.google.api.codegen.config.SampleConfig;
 import com.google.api.codegen.config.SampleContext;
 import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.config.TypeModel;
-import com.google.api.codegen.samplegen.v1.ResponseStatementProto;
+import com.google.api.codegen.samplegen.v1p2.ResponseStatementProto;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.viewmodel.CallingForm;

@@ -15,7 +15,7 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.gapic.GapicTestConfig;
-import com.google.api.codegen.samplegen.v1.SampleConfigProto;
+import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.DiagCollector;

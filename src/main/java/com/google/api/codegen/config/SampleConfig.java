@@ -15,10 +15,10 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.SampleValueSet;
-import com.google.api.codegen.samplegen.v1.RequestFieldProto;
-import com.google.api.codegen.samplegen.v1.ResponseStatementProto;
-import com.google.api.codegen.samplegen.v1.SampleConfigProto;
-import com.google.api.codegen.samplegen.v1.SampleSpecProto;
+import com.google.api.codegen.samplegen.v1p2.RequestFieldProto;
+import com.google.api.codegen.samplegen.v1p2.ResponseStatementProto;
+import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
+import com.google.api.codegen.samplegen.v1p2.SampleSpecProto;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
