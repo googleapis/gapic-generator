@@ -175,11 +175,11 @@ public enum CallingForm {
           // TODO(hzyi): Change C# calling forms to appropriate ones after C# LRO and streaming are
           // done
           .put(CSHARP, RpcType.UNARY, Request)
-          .put(CSHARP, RpcType.LRO, Generic)
+          .put(CSHARP, RpcType.LRO, LongRunningRequestPollUntilComplete)
           .put(CSHARP, RpcType.PAGED_STREAMING, RequestPagedAll)
           .put(CSHARP, RpcType.CLIENT_STREAMING, Generic)
-          .put(CSHARP, RpcType.SERVER_STREAMING, Generic)
-          .put(CSHARP, RpcType.BIDI_STREAMING, Generic)
+          .put(CSHARP, RpcType.SERVER_STREAMING, RequestStreamingServer)
+          .put(CSHARP, RpcType.BIDI_STREAMING, RequestStreamingBidi)
           .put(JAVA, RpcType.UNARY, Request)
           .put(JAVA, RpcType.LRO, LongRunningRequestAsync)
           .put(JAVA, RpcType.PAGED_STREAMING, RequestPaged)

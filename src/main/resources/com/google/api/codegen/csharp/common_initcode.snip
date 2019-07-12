@@ -115,9 +115,9 @@
         @end
     @case "ReadFileInitLine"
         @if includeAssignment
-            ByteString {@line.identifier} = File.ReadAllBytes({@renderInitValue(line.fileName, FALSE)})
+            ByteString {@line.identifier} = ByteString.CopyFrom(File.ReadAllBytes({@renderInitValue(line.fileName, FALSE)}))
         @else
-            File.ReadAllBytes({@renderInitValue(line.fileName, TRUE)})
+            ByteString.CopyFrom(File.ReadAllBytes({@renderInitValue(line.fileName, TRUE)}))
         @end
     @default
         $unhandledCase: {@line.lineType.toString}$
