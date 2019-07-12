@@ -135,16 +135,12 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext methodContext =
-                // TODO: replace the empty list with real calling forms:
-                //
-                // FlattenedStreamingBidi
-                // FlattenedStreamingServer
-                //
-                // Keep an empty list here to turn off generating samples for
-                // gRPC streaming methods for now so that the baseline does not explode
                 context
                     .asFlattenedMethodContext(requestMethodContext, flatteningGroup)
-                    .withCallingForms(Collections.emptyList());
+                    .withCallingForms(
+                        ImmutableList.of(
+                            CallingForm.FlattenedStreamingBidi,
+                            CallingForm.FlattenedStreamingServer));
             apiMethods.add(
                 generateGrpcStreamingFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));
@@ -156,14 +152,10 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             }
           }
         }
-        // TODO: replace the empty list with real calling forms:
-        //
-        // RequestStreamingBidi
-        // RequestStreamingServer
-        //
-        // Keep an empty list here to turn off generating samples for
-        // gRPC streaming methods for now so that the baseline does not explode
-        requestMethodContext = requestMethodContext.withCallingForms(Collections.emptyList());
+        requestMethodContext =
+            requestMethodContext.withCallingForms(
+                ImmutableList.of(
+                    CallingForm.RequestStreamingBidi, CallingForm.RequestStreamingServer));
         apiMethods.add(generateGrpcStreamingRequestObjectMethod(requestMethodContext));
       } else if (requestMethodContext.isLongRunningMethodContext()) {
 
@@ -181,26 +173,18 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
         }
         apiMethods.add(
             generateAsyncOperationRequestObjectMethod(
-                // TODO: replace the empty list with real calling forms:
-                //
-                // LongRunningRequestAsyncPollUntilComplete
-                // LongRunningRequestAsyncPollLater
-                //
-                // Keep an empty list here to turn off generating samples for
-                // LRO methods for now so that the baseline does not explode
-                requestMethodContext.withCallingForms(Collections.emptyList()),
+                requestMethodContext.withCallingForms(
+                    ImmutableList.of(
+                        CallingForm.LongRunningRequestAsyncPollUntilComplete,
+                        CallingForm.LongRunningRequestAsyncPollLater)),
                 csharpCommonTransformer.callSettingsParam(),
                 true));
         apiMethods.add(
             generateOperationRequestObjectMethod(
-                // TODO: replace the empty list with real calling forms:
-                //
-                // LongRunningRequestPollUntilComplete
-                // LongRunningRequestPollLater
-                //
-                // Keep an empty list here to turn off generating samples for
-                // LRO methods for now so that the baseline does not explode
-                requestMethodContext.withCallingForms(Collections.emptyList()),
+                requestMethodContext.withCallingForms(
+                    ImmutableList.of(
+                        CallingForm.LongRunningRequestPollUntilComplete,
+                        CallingForm.LongRunningRequestPollLater)),
                 csharpCommonTransformer.callSettingsParam()));
       } else if (methodConfig.isPageStreaming()) {
 
@@ -275,14 +259,10 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     apiMethods.add(
         generateAsyncOperationFlattenedMethod(
-            // TODO: replace the empty list with real calling forms:
-            //
-            // LongRunningFlattenedAsyncPollUntilComplete
-            // LongRunningFlattenedAsyncPollLater
-            //
-            // Keep an empty list here to turn off generating samples for
-            // LRO methods for now so that the baseline does not explode
-            methodContext.withCallingForms(Collections.emptyList()),
+            methodContext.withCallingForms(
+                ImmutableList.of(
+                    CallingForm.LongRunningFlattenedAsyncPollUntilComplete,
+                    CallingForm.LongRunningFlattenedAsyncPollLater)),
             csharpCommonTransformer.callSettingsParam(),
             ClientMethodType.AsyncOperationFlattenedCallSettingsMethod,
             true));
@@ -294,14 +274,10 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             true));
     apiMethods.add(
         generateOperationFlattenedMethod(
-            // TODO: replace the empty list with real calling forms:
-            //
-            // LongRunningFlattenedPollUntilComplete
-            // LongRunningFlattenedPollLater
-            //
-            // Keep an empty list here to turn off generating samples for
-            // LRO methods for now so that the baseline does not explode
-            methodContext.withCallingForms(Collections.emptyList()),
+            methodContext.withCallingForms(
+                ImmutableList.of(
+                    CallingForm.LongRunningFlattenedPollUntilComplete,
+                    CallingForm.LongRunningFlattenedPollLater)),
             csharpCommonTransformer.callSettingsParam()));
     return apiMethods;
   }

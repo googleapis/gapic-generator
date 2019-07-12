@@ -66,13 +66,15 @@ public enum CallingForm {
   FlattenedAsyncPaged, // used by: csharp
   FlattenedAsyncPagedAll, // used by: csharp
   FlattenedAsyncPagedPageSize, // used by: csharp
+  FlattenedStreamingBidi, // used by: csharp
+  FlattenedStreamingServer, // used by: csharp
 
   Callable, // used by: java
   CallableList, // used by: java
   CallablePaged, // used by: java
-  CallableStreamingBidi, // used by: java
+  CallableStreamingBidi, // used by: csharp java
   CallableStreamingClient, // used by: java
-  CallableStreamingServer, // used by: java
+  CallableStreamingServer, // used by: csharp java
 
   LongRunningCallable, // used by: java
   LongRunningEventEmitter, // used by: nodejs
@@ -82,23 +84,14 @@ public enum CallingForm {
   LongRunningPromiseAwait, // used by: nodejs
   LongRunningRequest, // used by: php
   LongRunningRequestAsync, // used by: java php ruby
-
-  // TODO: the following calling forms should be added for csharp. They are
-  // currently removed to turn off generating samples in these calling forms
-  // so that baseline do not explode
-  // Flattened,
-  // RequestStreamingBidi,
-  // RequestStreamingServer,
-  // FlattenedStreamingBidi,
-  // FlattenedStreamingServer,
-  // LongRunningFlattenedPollUntilComplete,
-  // LongRunningFlattenedPollLater,
-  // LongRunningFlattenedAsyncPollUntilComplete,
-  // LongRunningFlattenedAsyncPollLater,
-  // LongRunningRequestPollUntilComplete,
-  // LongRunningRequestPollLater,
-  // LongRunningRequestAsyncPollUntilComplete,
-  // LongRunningRequestAsyncPollLater,
+  LongRunningFlattenedPollUntilComplete, // used by: csharp
+  LongRunningFlattenedPollLater, // used by: csharp
+  LongRunningFlattenedAsyncPollUntilComplete, // used by: csharp
+  LongRunningFlattenedAsyncPollLater, // used by: csharp
+  LongRunningRequestPollUntilComplete, // used by: csharp
+  LongRunningRequestPollLater, // used by: csharp
+  LongRunningRequestAsyncPollUntilComplete, // used by: csharp
+  LongRunningRequestAsyncPollLater, // used by: csharp
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.

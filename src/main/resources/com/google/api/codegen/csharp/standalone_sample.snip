@@ -316,21 +316,21 @@
         }
 @end
 
-@private streamingRequestObjectMethodServer(apiMethod, sample)
+@private streamingServerMethod(apiMethod, sample)
     {@asyncSampleFunction(sample)}
     {
         {@syncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.initCode)}
+        {@standaloneSampleInitCode(sample.sampleInitCode)}
         
         // Make the request, returning a streaming response
         {@apiMethod.apiClassName}.{@apiMethod.name}Stream streamingResponse =
             {@methodCall(apiMethod, sample)};
 
         // Read streaming responses from server until complete
-        IAsyncEnumerator<{@snippetMethod.method.serviceResponseTypeName}> responseStream = streamingResponse.ResponseStream;
+        IAsyncEnumerator<{@apiMethod.serviceResponseTypeName}> responseStream = streamingResponse.ResponseStream;
         while (await responseStream.MoveNext())
         {
-            {@snippetMethod.method.serviceResponseTypeName} response = responseStream.Current;
+            {@apiMethod.serviceResponseTypeName} response = responseStream.Current;
             @if sample.outputs
                 {@processOutputViews(sample.outputs)}
             @end
