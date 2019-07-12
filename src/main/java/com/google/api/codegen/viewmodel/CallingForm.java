@@ -72,9 +72,9 @@ public enum CallingForm {
   Callable, // used by: java
   CallableList, // used by: java
   CallablePaged, // used by: java
-  CallableStreamingBidi, // used by: csharp java
+  CallableStreamingBidi, // used by: java
   CallableStreamingClient, // used by: java
-  CallableStreamingServer, // used by: csharp java
+  CallableStreamingServer, // used by: java
 
   LongRunningCallable, // used by: java
   LongRunningEventEmitter, // used by: nodejs
