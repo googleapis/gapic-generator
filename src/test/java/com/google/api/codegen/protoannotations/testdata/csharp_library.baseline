@@ -22,6 +22,8 @@
 //   description: Test response handling for methods that return empty
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -73,6 +75,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test default response handling is turned off for methods that return empty
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -120,6 +124,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: Test response handling for methods that return empty
 //   description: Test response handling for methods that return empty
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -175,6 +181,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test default response handling is turned off for methods that return empty
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -226,6 +234,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test response handling for methods that return empty
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -276,6 +286,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test default response handling is turned off for methods that return empty
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -322,6 +334,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: Test response handling for methods that return empty
 //   description: Test response handling for methods that return empty
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -376,6 +390,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test default response handling is turned off for methods that return empty
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -426,6 +442,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run [--image_file_name "image_file.jpg"] [--stage DRAFT]
 
+using CommandLine;
+
 // [START turing_prog_flattened_streaming_bidi]
 namespace Google.Example.Library.V1.Samples
 {
@@ -472,10 +490,10 @@ namespace Google.Example.Library.V1.Samples
                 BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
                 Comment comment2 = new Comment
                 {
-                    Comment = File.ReadAllBytes("comment_file"),
+                    Comment = ByteString.CopyFrom(File.ReadAllBytes("comment_file")),
                     Stage = Comment.Types.Stage.Draft,
                 };
-                ByteString image = File.ReadAllBytes(imageFileName);
+                ByteString image = ByteString.CopyFrom(File.ReadAllBytes(imageFileName));
                 // Stream a request to the server
                 await duplexStream.WriteAsync(request);
 
@@ -530,6 +548,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run [--image_file_name "image_file.jpg"] [--stage DRAFT]
 
+using CommandLine;
+
 // [START turing_prog_flattened_streaming_server]
 namespace Google.Example.Library.V1.Samples
 {
@@ -551,10 +571,10 @@ namespace Google.Example.Library.V1.Samples
             BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
             Comment comment2 = new Comment
             {
-                Comment = File.ReadAllBytes("comment_file"),
+                Comment = ByteString.CopyFrom(File.ReadAllBytes("comment_file")),
                 Stage = Comment.Types.Stage.Draft,
             };
-            ByteString image = File.ReadAllBytes(imageFileName);
+            ByteString image = ByteString.CopyFrom(File.ReadAllBytes(imageFileName));
 
             // Make the request, returning a streaming response
             LibraryServiceClient.DiscussBookStream streamingResponse =
@@ -610,6 +630,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: The Odyssey
 //   description: Testing calling forms
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -674,6 +696,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: The Odyssey
 //   description: Testing calling forms
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -742,6 +766,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -809,6 +835,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -875,6 +903,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: The Odyssey
 //   description: Testing calling forms
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -946,6 +976,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -1016,6 +1048,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -1078,6 +1112,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: The Odyssey
 //   description: Testing calling forms
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -1144,6 +1180,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: The Odyssey
 //   description: Testing calling forms
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -1212,6 +1250,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -1277,6 +1317,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: The Odyssey
 //   description: Testing calling forms
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -1347,6 +1389,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -1416,6 +1460,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: GetBigBook: 'War and Peace'
 //   description: Testing calling forms
 //   usage: dotnet run [--shelf "Novel\\\"\`\b\t\n\r"]
+
+using CommandLine;
 
 // [START hopper]
 namespace Google.Example.Library.V1.Samples
@@ -1493,6 +1539,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing resource name overlap
 //   usage: dotnet run [--shelf Novel] [--big_book_name "War and Peace"]
 
+using CommandLine;
+
 // [START hopper]
 namespace Google.Example.Library.V1.Samples
 {
@@ -1558,6 +1606,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: GetBigBook: 'War and Peace'
 //   description: Testing calling forms
 //   usage: dotnet run [--shelf "Novel\\\"\`\b\t\n\r"]
+
+using CommandLine;
 
 // [START hopper]
 namespace Google.Example.Library.V1.Samples
@@ -1638,6 +1688,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing resource name overlap
 //   usage: dotnet run [--shelf Novel] [--big_book_name "War and Peace"]
 
+using CommandLine;
+
 // [START hopper]
 namespace Google.Example.Library.V1.Samples
 {
@@ -1706,6 +1758,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: GetBigBook: 'War and Peace'
 //   description: Testing calling forms
 //   usage: dotnet run [--shelf "Novel\\\"\`\b\t\n\r"]
+
+using CommandLine;
 
 // [START hopper]
 namespace Google.Example.Library.V1.Samples
@@ -1783,6 +1837,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing resource name overlap
 //   usage: dotnet run [--shelf Novel] [--big_book_name "War and Peace"]
 
+using CommandLine;
+
 // [START hopper]
 namespace Google.Example.Library.V1.Samples
 {
@@ -1848,6 +1904,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: GetBigBook: 'War and Peace'
 //   description: Testing calling forms
 //   usage: dotnet run [--shelf "Novel\\\"\`\b\t\n\r"]
+
+using CommandLine;
 
 // [START hopper]
 namespace Google.Example.Library.V1.Samples
@@ -1928,6 +1986,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing resource name overlap
 //   usage: dotnet run [--shelf Novel] [--big_book_name "War and Peace"]
 
+using CommandLine;
+
 // [START hopper]
 namespace Google.Example.Library.V1.Samples
 {
@@ -1997,6 +2057,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test response handling for methods that return empty
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -2048,6 +2110,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test default response handling is turned off for methods that return empty
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -2095,6 +2159,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: Test response handling for methods that return empty
 //   description: Test response handling for methods that return empty
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -2150,6 +2216,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test default response handling is turned off for methods that return empty
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -2200,6 +2268,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: Test response handling for methods that return empty
 //   description: Test response handling for methods that return empty
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -2252,6 +2322,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test default response handling is turned off for methods that return empty
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -2299,6 +2371,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: Test response handling for methods that return empty
 //   description: Test response handling for methods that return empty
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -2354,6 +2428,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test default response handling is turned off for methods that return empty
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -2405,6 +2481,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: When there is a very long description for a sample file we can split
 //     the description into multiple lines and the samples will be just fine
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -2461,6 +2539,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: When there is a very long description for a sample file we can split
 //     the description into multiple lines and the samples will be just fine
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -2521,6 +2601,8 @@ namespace Google.Example.Library.V1.Samples
 //     the description into multiple lines and the samples will be just fine
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -2575,6 +2657,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: When there is a very long description for a sample file we can split
 //     the description into multiple lines and the samples will be just fine
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -2632,6 +2716,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: Programming Books
 //   description: Testing calling forms
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START lovelace]
 namespace Google.Example.Library.V1.Samples
@@ -2695,6 +2781,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: Pi version
 //   description: Testing <@calling forms>
 //   usage: dotnet run [--shelf_name Math] [--edition 123]
+
+using CommandLine;
 
 // [START canonical]
 namespace Google.Example.Library.V1.Samples
@@ -2790,6 +2878,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START canonical]
 namespace Google.Example.Library.V1.Samples
 {
@@ -2843,6 +2933,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: Pi version
 //   description: Testing <@calling forms>
 //   usage: dotnet run [--shelf_name Math] [--edition 123]
+
+using CommandLine;
 
 // [START canonical]
 namespace Google.Example.Library.V1.Samples
@@ -2942,6 +3034,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START canonical]
 namespace Google.Example.Library.V1.Samples
 {
@@ -2998,6 +3092,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: Pi version
 //   description: Testing <@calling forms>
 //   usage: dotnet run [--shelf_name Math] [--edition 123]
+
+using CommandLine;
 
 // [START canonical]
 namespace Google.Example.Library.V1.Samples
@@ -3092,6 +3188,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START canonical]
 namespace Google.Example.Library.V1.Samples
 {
@@ -3144,6 +3242,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: Pi version
 //   description: Testing <@calling forms>
 //   usage: dotnet run [--shelf_name Math] [--edition 123]
+
+using CommandLine;
 
 // [START canonical]
 namespace Google.Example.Library.V1.Samples
@@ -3242,6 +3342,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START canonical]
 namespace Google.Example.Library.V1.Samples
 {
@@ -3298,6 +3400,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test request object field comments
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -3332,7 +3436,7 @@ namespace Google.Example.Library.V1.Samples
                 SeriesUuid = new SeriesUuid
                 {
                     // Comment on a file input field
-                    SeriesBytes = File.ReadAllBytes("xyz3141592654"),
+                    SeriesBytes = ByteString.CopyFrom(File.ReadAllBytes("xyz3141592654")),
                 },
                 Edition = 123,
             };
@@ -3369,6 +3473,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: test writing fields to files
 //   description: Testing write fields to files.
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -3429,6 +3535,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test default calling forms for unary methods.
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample_get_shelf]
 namespace Google.Example.Library.V1.Samples
 {
@@ -3481,6 +3589,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: Server streaming
 //   description: Testing calling forms
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START sample]
 namespace Google.Example.Library.V1.Samples
@@ -3568,6 +3678,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START sample]
 namespace Google.Example.Library.V1.Samples
 {
@@ -3631,6 +3743,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test default calling form for paging methods.
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START test_default_calling_form_for_paging]
 namespace Google.Example.Library.V1.Samples
 {
@@ -3683,6 +3797,8 @@ namespace Google.Example.Library.V1.Samples
 // sample-metadata
 //   title:
 //   usage: dotnet run [--param_float 1.2345] [--param_long 67890]
+
+using CommandLine;
 
 // [START test_float_and_int64]
 namespace Google.Example.Library.V1.Samples
@@ -3775,6 +3891,8 @@ namespace Google.Example.Library.V1.Samples
 //   title:
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START test_resource_name_oneof]
 namespace Google.Example.Library.V1.Samples
 {
@@ -3822,6 +3940,8 @@ namespace Google.Example.Library.V1.Samples
 // sample-metadata
 //   title:
 //   usage: dotnet run
+
+using CommandLine;
 
 // [START test_resource_name_oneof_2]
 namespace Google.Example.Library.V1.Samples
@@ -3872,6 +3992,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Test setting up empty objects in the request objects.
 //   usage: dotnet run
 
+using CommandLine;
+
 // [START test_setting_up_empty_objects_in_request]
 namespace Google.Example.Library.V1.Samples
 {
@@ -3903,6 +4025,87 @@ namespace Google.Example.Library.V1.Samples
         }
     }
 }
+============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/ThisTagShouldBeTheNameOfTheFile.cs ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Generated code. DO NOT EDIT!
+
+// This is a generated sample ("LongRunningRequestPollUntilComplete", "wap")
+
+// sample-metadata
+//   title: GetBigBook: 'War and Peace'
+//   description: Testing calling forms
+//   usage: dotnet run [--shelf "Novel\\\"\`\b\t\n\r"]
+
+using CommandLine;
+
+// [START this_tag_should_be_the_name_of_the_file]
+namespace Google.Example.Library.V1.Samples
+{
+    using Google.Example.Library.V1;
+    using Google.Protobuf.WellKnownTypes;
+    using System;
+    using System.Collections.Generic;
+
+    public class ThisTagShouldBeTheNameOfTheFile
+    {
+        /// <summary>
+        /// Testing calling forms
+        /// </summary>
+        public static void SampleGetBigBook(string shelf)
+        {
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // string shelf = "Novel\\\"`\b\t\n\r"
+            GetBookRequest request = new GetBookRequest
+            {
+                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+            };
+            // Poll until the returned long-running operation is complete
+            Book response = libraryServiceClient.GetBigBook(request).PollUntilCompleted().Result;
+            // Testing iterating over map fields when both key and value are specified.
+            foreach (KeyValuePair<string, ListValue> entry in response.MapListValueValue.entrySet()) {
+                string myKey = entry.Key;
+                ListValue myValue = entry.Value;
+                Console.WriteLine($"key: {myKey}, value: {myValue}");
+            }
+            // Testing iterating over map fields when only key is specified.
+            foreach (var anotherKey: response.MapListValueValue.Keys) {
+                Console.WriteLine($"key: {anotherKey}");
+            }
+            // Testing iterating over map fields when only value is specified.
+            for (var anotherValue: response.MapListValueValue.Values) {
+                Console.WriteLine($"value: {anotherValue}");
+            }
+            Console.WriteLine($"name: {response.Name}");
+            Console.WriteLine($"author: {response.Author}");
+        }
+        // [END this_tag_should_be_the_name_of_the_file]
+        public static void Main(string[] args)
+        {
+            new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
+                .WithParsed<Options>(opts =>
+                    SampleGetBigBook(opts.Shelf));
+        }
+
+        public class Options
+        {
+            [Option("shelf", Default = "Novel\\\"`\b\t\n\r")]
+            public string Shelf { get; set; }
+        }
+    }
+}
 ============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/TuringProgRequestStreamingBidi.cs ==============
 // Copyright 2019 Google LLC
 //
@@ -3926,6 +4129,8 @@ namespace Google.Example.Library.V1.Samples
 //   title: Programming Books
 //   description: Testing calling forms
 //   usage: dotnet run [--image_file_name "image_file.jpg"] [--stage DRAFT]
+
+using CommandLine;
 
 // [START turing_prog_request_streaming_bidi]
 namespace Google.Example.Library.V1.Samples
@@ -3975,10 +4180,10 @@ namespace Google.Example.Library.V1.Samples
                     BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                     Comment = new Comment
                     {
-                        Comment = File.ReadAllBytes("comment_file"),
+                        Comment = ByteString.CopyFrom(File.ReadAllBytes("comment_file")),
                         Stage = Comment.Types.Stage.Draft,
                     },
-                    Image = File.ReadAllBytes(imageFileName),
+                    Image = ByteString.CopyFrom(File.ReadAllBytes(imageFileName)),
                 };
                 // Stream a request to the server
                 await duplexStream.WriteAsync(request);
@@ -4034,6 +4239,8 @@ namespace Google.Example.Library.V1.Samples
 //   description: Testing calling forms
 //   usage: dotnet run [--image_file_name "image_file.jpg"] [--stage DRAFT]
 
+using CommandLine;
+
 // [START turing_prog_request_streaming_server]
 namespace Google.Example.Library.V1.Samples
 {
@@ -4057,10 +4264,10 @@ namespace Google.Example.Library.V1.Samples
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 Comment = new Comment
                 {
-                    Comment = File.ReadAllBytes("comment_file"),
+                    Comment = ByteString.CopyFrom(File.ReadAllBytes("comment_file")),
                     Stage = Comment.Types.Stage.Draft,
                 },
-                Image = File.ReadAllBytes(imageFileName),
+                Image = ByteString.CopyFrom(File.ReadAllBytes(imageFileName)),
             };
 
             // Make the request, returning a streaming response
