@@ -270,13 +270,13 @@ namespace Google.Example.Library.V1.Samples
 
             // Make the request, returning a streaming response
             LibraryServiceClient.StreamBooksStream streamingResponse =
-                AsyncServerStreamingCall<Book> response = libraryServiceClient.StreamBooks(request);;
+                AsyncServerStreamingCall<Book> response = libraryServiceClient.StreamBooks(request);
 
             // Read streaming responses from server until complete
             IAsyncEnumerator<Book> responseStream = streamingResponse.ResponseStream;
             while (await responseStream.MoveNext())
             {
-                Book response = responseStream.Current;
+                Book item = responseStream.Current;
                 Console.WriteLine(item);
             }
             // The response stream has completed

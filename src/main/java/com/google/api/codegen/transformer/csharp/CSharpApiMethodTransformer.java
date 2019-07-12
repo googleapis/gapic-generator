@@ -174,17 +174,13 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
         apiMethods.add(
             generateAsyncOperationRequestObjectMethod(
                 requestMethodContext.withCallingForms(
-                    ImmutableList.of(
-                        CallingForm.LongRunningRequestAsyncPollUntilComplete,
-                        CallingForm.LongRunningRequestAsyncPollLater)),
+                    ImmutableList.of(CallingForm.LongRunningRequestAsyncPollUntilComplete)),
                 csharpCommonTransformer.callSettingsParam(),
                 true));
         apiMethods.add(
             generateOperationRequestObjectMethod(
                 requestMethodContext.withCallingForms(
-                    ImmutableList.of(
-                        CallingForm.LongRunningRequestPollUntilComplete,
-                        CallingForm.LongRunningRequestPollLater)),
+                    ImmutableList.of(CallingForm.LongRunningRequestPollUntilComplete)),
                 csharpCommonTransformer.callSettingsParam()));
       } else if (methodConfig.isPageStreaming()) {
 
@@ -260,9 +256,7 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
     apiMethods.add(
         generateAsyncOperationFlattenedMethod(
             methodContext.withCallingForms(
-                ImmutableList.of(
-                    CallingForm.LongRunningFlattenedAsyncPollUntilComplete,
-                    CallingForm.LongRunningFlattenedAsyncPollLater)),
+                ImmutableList.of(CallingForm.LongRunningFlattenedAsyncPollUntilComplete)),
             csharpCommonTransformer.callSettingsParam(),
             ClientMethodType.AsyncOperationFlattenedCallSettingsMethod,
             true));
@@ -275,9 +269,7 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
     apiMethods.add(
         generateOperationFlattenedMethod(
             methodContext.withCallingForms(
-                ImmutableList.of(
-                    CallingForm.LongRunningFlattenedPollUntilComplete,
-                    CallingForm.LongRunningFlattenedPollLater)),
+                ImmutableList.of(CallingForm.LongRunningFlattenedPollUntilComplete)),
             csharpCommonTransformer.callSettingsParam()));
     return apiMethods;
   }

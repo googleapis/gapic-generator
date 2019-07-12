@@ -85,13 +85,9 @@ public enum CallingForm {
   LongRunningRequest, // used by: php
   LongRunningRequestAsync, // used by: java php ruby
   LongRunningFlattenedPollUntilComplete, // used by: csharp
-  LongRunningFlattenedPollLater, // used by: csharp
   LongRunningFlattenedAsyncPollUntilComplete, // used by: csharp
-  LongRunningFlattenedAsyncPollLater, // used by: csharp
   LongRunningRequestPollUntilComplete, // used by: csharp
-  LongRunningRequestPollLater, // used by: csharp
   LongRunningRequestAsyncPollUntilComplete, // used by: csharp
-  LongRunningRequestAsyncPollLater, // used by: csharp
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.

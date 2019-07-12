@@ -1208,116 +1208,6 @@ namespace Google.Example.Library.V1.Samples
         }
     }
 }
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigBookAsyncLongRunningFlattenedAsyncPollLaterWap.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningFlattenedAsyncPollLater", "wap")
-
-// sample-metadata
-//   title: GetBigBook: 'War and Peace'
-//   description: Testing calling forms
-//   usage: dotnet run [--shelf "Novel\\\"\`\b\t\n\r"]
-
-// [START hopper]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-    using Google.Protobuf.WellKnownTypes;
-    using System;
-    using System.Collections.Generic;
-
-    public class GetBigBookAsyncLongRunningFlattenedAsyncPollLaterWap
-    {
-        /// <summary>
-        /// Testing calling forms
-        /// </summary>
-        Unrecognized callingForm: LongRunningFlattenedAsyncPollLater
-        // [END hopper]
-        public static void Main(string[] args)
-        {
-            new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
-                .WithParsed<Options>(opts =>
-                    SampleGetBigBook(opts.Shelf));
-        }
-
-        public class Options
-        {
-            [Option("shelf", Default = "Novel\\\"`\b\t\n\r")]
-            public string Shelf { get; set; }
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigBookAsyncLongRunningFlattenedAsyncPollLaterWap2.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningFlattenedAsyncPollLater", "wap2")
-
-// sample-metadata
-//   title: GetBigBook: 'War and Peace'
-//   description: Testing resource name overlap
-//   usage: dotnet run [--shelf Novel] [--big_book_name "War and Peace"]
-
-// [START hopper]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-    using System;
-
-    public class GetBigBookAsyncLongRunningFlattenedAsyncPollLaterWap2
-    {
-        /// <summary>
-        /// Testing resource name overlap
-        /// </summary>
-        /// <param name="shelf">Test word wrapping for long lines. This is a long comment. The name of the
-        /// shelf to retrieve the big book from.</param>
-        /// <param name="bigBookName">The name of the book.</param>
-        Unrecognized callingForm: LongRunningFlattenedAsyncPollLater
-        // [END hopper]
-        public static void Main(string[] args)
-        {
-            new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
-                .WithParsed<Options>(opts =>
-                    SampleGetBigBook(opts.Shelf, opts.BigBookName));
-        }
-
-        public class Options
-        {
-            [Option("shelf", Default = "Novel")]
-            public string Shelf { get; set; }
-
-            [Option("big_book_name", Default = "War and Peace")]
-            public string BigBookName { get; set; }
-        }
-    }
-}
 ============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigBookAsyncLongRunningFlattenedAsyncPollUntilCompleteWap.cs ==============
 // Copyright 2019 Google LLC
 //
@@ -1355,7 +1245,30 @@ namespace Google.Example.Library.V1.Samples
         /// <summary>
         /// Testing calling forms
         /// </summary>
-        Unrecognized callingForm: LongRunningFlattenedAsyncPollUntilComplete
+        public static async Task SampleGetBigBookAsync(string shelf)
+        {
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // string shelf = "Novel\\\"`\b\t\n\r"
+            BookName name = new BookName(shelf, "War and Peace");
+            // Poll until the returned long-running operation is complete
+            Book response = await libraryServiceClient.GetBigBookAsync(name).PollUntilCompletedAsync().Result;
+            // Testing iterating over map fields when both key and value are specified.
+            foreach (KeyValuePair<string, ListValue> entry in response.MapListValueValue.entrySet()) {
+                string myKey = entry.Key;
+                ListValue myValue = entry.Value;
+                Console.WriteLine($"key: {myKey}, value: {myValue}");
+            }
+            // Testing iterating over map fields when only key is specified.
+            foreach (var anotherKey: response.MapListValueValue.Keys) {
+                Console.WriteLine($"key: {anotherKey}");
+            }
+            // Testing iterating over map fields when only value is specified.
+            for (var anotherValue: response.MapListValueValue.Values) {
+                Console.WriteLine($"value: {anotherValue}");
+            }
+            Console.WriteLine($"name: {response.Name}");
+            Console.WriteLine($"author: {response.Author}");
+        }
         // [END hopper]
         public static void Main(string[] args)
         {
@@ -1409,162 +1322,14 @@ namespace Google.Example.Library.V1.Samples
         /// <param name="shelf">Test word wrapping for long lines. This is a long comment. The name of the
         /// shelf to retrieve the big book from.</param>
         /// <param name="bigBookName">The name of the book.</param>
-        Unrecognized callingForm: LongRunningFlattenedAsyncPollUntilComplete
-        // [END hopper]
-        public static void Main(string[] args)
+        public static async Task SampleGetBigBookAsync(string shelf, string bigBookName)
         {
-            new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
-                .WithParsed<Options>(opts =>
-                    SampleGetBigBook(opts.Shelf, opts.BigBookName));
-        }
-
-        public class Options
-        {
-            [Option("shelf", Default = "Novel")]
-            public string Shelf { get; set; }
-
-            [Option("big_book_name", Default = "War and Peace")]
-            public string BigBookName { get; set; }
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigBookAsyncLongRunningRequestAsyncPollLaterWap.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningRequestAsyncPollLater", "wap")
-
-// sample-metadata
-//   title: GetBigBook: 'War and Peace'
-//   description: Testing calling forms
-//   usage: dotnet run [--shelf "Novel\\\"\`\b\t\n\r"]
-
-// [START hopper]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-    using Google.Protobuf.WellKnownTypes;
-    using System;
-    using System.Collections.Generic;
-
-    public class GetBigBookAsyncLongRunningRequestAsyncPollLaterWap
-    {
-        /// <summary>
-        /// Testing calling forms
-        /// </summary>
-        public static void SampleGetBigBook(string shelf)
-        {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // string shelf = "Novel\\\"`\b\t\n\r"
-            GetBookRequest request = new GetBookRequest
-            {
-                BookName = new BookName(shelf, "War and Peace"),
-            };
-            // Get the name of the operation
-            string operationName = response.Name;
-
-            // This name can be stored, then the long-running operation retrieved later by name
-            // FIXME: process LRO result
-            // Testing iterating over map fields when both key and value are specified.
-            foreach (KeyValuePair<string, ListValue> entry in response.MapListValueValue.entrySet()) {
-                string myKey = entry.Key;
-                ListValue myValue = entry.Value;
-            Console.WriteLine($"key: {myKey}, value: {myValue}");
-            }
-
-            // Testing iterating over map fields when only key is specified.
-            foreach (var anotherKey: response.MapListValueValue.Keys) {
-            Console.WriteLine($"key: {anotherKey}");
-            }
-
-            // Testing iterating over map fields when only value is specified.
-            for (var anotherValue: response.MapListValueValue.Values) {
-            Console.WriteLine($"value: {anotherValue}");
-            }
-
-            Console.WriteLine($"name: {response.Name}");
-            Console.WriteLine($"author: {response.Author}");
-        }
-        // [END hopper]
-        public static void Main(string[] args)
-        {
-            new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
-                .WithParsed<Options>(opts =>
-                    SampleGetBigBook(opts.Shelf));
-        }
-
-        public class Options
-        {
-            [Option("shelf", Default = "Novel\\\"`\b\t\n\r")]
-            public string Shelf { get; set; }
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigBookAsyncLongRunningRequestAsyncPollLaterWap2.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningRequestAsyncPollLater", "wap2")
-
-// sample-metadata
-//   title: GetBigBook: 'War and Peace'
-//   description: Testing resource name overlap
-//   usage: dotnet run [--shelf Novel] [--big_book_name "War and Peace"]
-
-// [START hopper]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-    using System;
-
-    public class GetBigBookAsyncLongRunningRequestAsyncPollLaterWap2
-    {
-        /// <summary>
-        /// Testing resource name overlap
-        /// </summary>
-        /// <param name="shelf">Test word wrapping for long lines. This is a long comment. The name of the
-        /// shelf to retrieve the big book from.</param>
-        /// <param name="bigBookName">The name of the book.</param>
-        public static void SampleGetBigBook(string shelf, string bigBookName)
-        {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // string shelf = "Novel"
             // string bigBookName = "War and Peace"
-            GetBookRequest request = new GetBookRequest
-            {
-                BookName = new BookName(shelf, bigBookName),
-            };
-            // Get the name of the operation
-            string operationName = response.Name;
-
-            // This name can be stored, then the long-running operation retrieved later by name
-            // FIXME: process LRO result
+            BookName name = new BookName(shelf, bigBookName);
+            // Poll until the returned long-running operation is complete
+            Book response = await libraryServiceClient.GetBigBookAsync(name).PollUntilCompletedAsync().Result;
             Console.WriteLine(response);
         }
         // [END hopper]
@@ -1631,24 +1396,21 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName(shelf, "War and Peace"),
             };
             // Poll until the returned long-running operation is complete
-            Book response = libraryServiceClient.GetBigBookAsync(request);.PollUntilCompletedAsync().Result;
+            Book response = await libraryServiceClient.GetBigBookAsync(request).PollUntilCompletedAsync().Result;
             // Testing iterating over map fields when both key and value are specified.
             foreach (KeyValuePair<string, ListValue> entry in response.MapListValueValue.entrySet()) {
                 string myKey = entry.Key;
                 ListValue myValue = entry.Value;
-            Console.WriteLine($"key: {myKey}, value: {myValue}");
+                Console.WriteLine($"key: {myKey}, value: {myValue}");
             }
-
             // Testing iterating over map fields when only key is specified.
             foreach (var anotherKey: response.MapListValueValue.Keys) {
-            Console.WriteLine($"key: {anotherKey}");
+                Console.WriteLine($"key: {anotherKey}");
             }
-
             // Testing iterating over map fields when only value is specified.
             for (var anotherValue: response.MapListValueValue.Values) {
-            Console.WriteLine($"value: {anotherValue}");
+                Console.WriteLine($"value: {anotherValue}");
             }
-
             Console.WriteLine($"name: {response.Name}");
             Console.WriteLine($"author: {response.Author}");
         }
@@ -1715,158 +1477,7 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName(shelf, bigBookName),
             };
             // Poll until the returned long-running operation is complete
-            Book response = libraryServiceClient.GetBigBookAsync(request);.PollUntilCompletedAsync().Result;
-            Console.WriteLine(response);
-        }
-        // [END hopper]
-        public static void Main(string[] args)
-        {
-            new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
-                .WithParsed<Options>(opts =>
-                    SampleGetBigBook(opts.Shelf, opts.BigBookName));
-        }
-
-        public class Options
-        {
-            [Option("shelf", Default = "Novel")]
-            public string Shelf { get; set; }
-
-            [Option("big_book_name", Default = "War and Peace")]
-            public string BigBookName { get; set; }
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigBookLongRunningFlattenedPollLaterWap.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningFlattenedPollLater", "wap")
-
-// sample-metadata
-//   title: GetBigBook: 'War and Peace'
-//   description: Testing calling forms
-//   usage: dotnet run [--shelf "Novel\\\"\`\b\t\n\r"]
-
-// [START hopper]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-    using Google.Protobuf.WellKnownTypes;
-    using System;
-    using System.Collections.Generic;
-
-    public class GetBigBookLongRunningFlattenedPollLaterWap
-    {
-        /// <summary>
-        /// Testing calling forms
-        /// </summary>
-        public static void SampleGetBigBook(string shelf)
-        {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // string shelf = "Novel\\\"`\b\t\n\r"
-            BookName name = new BookName(shelf, "War and Peace");
-            // Get the name of the operation
-            string operationName = response.Name;
-
-            // This name can be stored, then the long-running operation retrieved later by name
-            // FIXME: process LRO result
-            // Testing iterating over map fields when both key and value are specified.
-            foreach (KeyValuePair<string, ListValue> entry in response.MapListValueValue.entrySet()) {
-                string myKey = entry.Key;
-                ListValue myValue = entry.Value;
-            Console.WriteLine($"key: {myKey}, value: {myValue}");
-            }
-
-            // Testing iterating over map fields when only key is specified.
-            foreach (var anotherKey: response.MapListValueValue.Keys) {
-            Console.WriteLine($"key: {anotherKey}");
-            }
-
-            // Testing iterating over map fields when only value is specified.
-            for (var anotherValue: response.MapListValueValue.Values) {
-            Console.WriteLine($"value: {anotherValue}");
-            }
-
-            Console.WriteLine($"name: {response.Name}");
-            Console.WriteLine($"author: {response.Author}");
-        }
-        // [END hopper]
-        public static void Main(string[] args)
-        {
-            new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
-                .WithParsed<Options>(opts =>
-                    SampleGetBigBook(opts.Shelf));
-        }
-
-        public class Options
-        {
-            [Option("shelf", Default = "Novel\\\"`\b\t\n\r")]
-            public string Shelf { get; set; }
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigBookLongRunningFlattenedPollLaterWap2.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningFlattenedPollLater", "wap2")
-
-// sample-metadata
-//   title: GetBigBook: 'War and Peace'
-//   description: Testing resource name overlap
-//   usage: dotnet run [--shelf Novel] [--big_book_name "War and Peace"]
-
-// [START hopper]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-    using System;
-
-    public class GetBigBookLongRunningFlattenedPollLaterWap2
-    {
-        /// <summary>
-        /// Testing resource name overlap
-        /// </summary>
-        /// <param name="shelf">Test word wrapping for long lines. This is a long comment. The name of the
-        /// shelf to retrieve the big book from.</param>
-        /// <param name="bigBookName">The name of the book.</param>
-        public static void SampleGetBigBook(string shelf, string bigBookName)
-        {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // string shelf = "Novel"
-            // string bigBookName = "War and Peace"
-            BookName name = new BookName(shelf, bigBookName);
-            // Get the name of the operation
-            string operationName = response.Name;
-
-            // This name can be stored, then the long-running operation retrieved later by name
-            // FIXME: process LRO result
+            Book response = await libraryServiceClient.GetBigBookAsync(request).PollUntilCompletedAsync().Result;
             Console.WriteLine(response);
         }
         // [END hopper]
@@ -1930,24 +1541,21 @@ namespace Google.Example.Library.V1.Samples
             // string shelf = "Novel\\\"`\b\t\n\r"
             BookName name = new BookName(shelf, "War and Peace");
             // Poll until the returned long-running operation is complete
-            Book response = libraryServiceClient.GetBigBook(name);.PollUntilCompleted().Result;
+            Book response = libraryServiceClient.GetBigBook(name).PollUntilCompleted().Result;
             // Testing iterating over map fields when both key and value are specified.
             foreach (KeyValuePair<string, ListValue> entry in response.MapListValueValue.entrySet()) {
                 string myKey = entry.Key;
                 ListValue myValue = entry.Value;
-            Console.WriteLine($"key: {myKey}, value: {myValue}");
+                Console.WriteLine($"key: {myKey}, value: {myValue}");
             }
-
             // Testing iterating over map fields when only key is specified.
             foreach (var anotherKey: response.MapListValueValue.Keys) {
-            Console.WriteLine($"key: {anotherKey}");
+                Console.WriteLine($"key: {anotherKey}");
             }
-
             // Testing iterating over map fields when only value is specified.
             for (var anotherValue: response.MapListValueValue.Values) {
-            Console.WriteLine($"value: {anotherValue}");
+                Console.WriteLine($"value: {anotherValue}");
             }
-
             Console.WriteLine($"name: {response.Name}");
             Console.WriteLine($"author: {response.Author}");
         }
@@ -2011,164 +1619,7 @@ namespace Google.Example.Library.V1.Samples
             // string bigBookName = "War and Peace"
             BookName name = new BookName(shelf, bigBookName);
             // Poll until the returned long-running operation is complete
-            Book response = libraryServiceClient.GetBigBook(name);.PollUntilCompleted().Result;
-            Console.WriteLine(response);
-        }
-        // [END hopper]
-        public static void Main(string[] args)
-        {
-            new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
-                .WithParsed<Options>(opts =>
-                    SampleGetBigBook(opts.Shelf, opts.BigBookName));
-        }
-
-        public class Options
-        {
-            [Option("shelf", Default = "Novel")]
-            public string Shelf { get; set; }
-
-            [Option("big_book_name", Default = "War and Peace")]
-            public string BigBookName { get; set; }
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigBookLongRunningRequestPollLaterWap.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningRequestPollLater", "wap")
-
-// sample-metadata
-//   title: GetBigBook: 'War and Peace'
-//   description: Testing calling forms
-//   usage: dotnet run [--shelf "Novel\\\"\`\b\t\n\r"]
-
-// [START hopper]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-    using Google.Protobuf.WellKnownTypes;
-    using System;
-    using System.Collections.Generic;
-
-    public class GetBigBookLongRunningRequestPollLaterWap
-    {
-        /// <summary>
-        /// Testing calling forms
-        /// </summary>
-        public static void SampleGetBigBook(string shelf)
-        {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // string shelf = "Novel\\\"`\b\t\n\r"
-            GetBookRequest request = new GetBookRequest
-            {
-                BookName = new BookName(shelf, "War and Peace"),
-            };
-            // Get the name of the operation
-            string operationName = response.Name;
-
-            // This name can be stored, then the long-running operation retrieved later by name
-            // FIXME: process LRO result
-            // Testing iterating over map fields when both key and value are specified.
-            foreach (KeyValuePair<string, ListValue> entry in response.MapListValueValue.entrySet()) {
-                string myKey = entry.Key;
-                ListValue myValue = entry.Value;
-            Console.WriteLine($"key: {myKey}, value: {myValue}");
-            }
-
-            // Testing iterating over map fields when only key is specified.
-            foreach (var anotherKey: response.MapListValueValue.Keys) {
-            Console.WriteLine($"key: {anotherKey}");
-            }
-
-            // Testing iterating over map fields when only value is specified.
-            for (var anotherValue: response.MapListValueValue.Values) {
-            Console.WriteLine($"value: {anotherValue}");
-            }
-
-            Console.WriteLine($"name: {response.Name}");
-            Console.WriteLine($"author: {response.Author}");
-        }
-        // [END hopper]
-        public static void Main(string[] args)
-        {
-            new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
-                .WithParsed<Options>(opts =>
-                    SampleGetBigBook(opts.Shelf));
-        }
-
-        public class Options
-        {
-            [Option("shelf", Default = "Novel\\\"`\b\t\n\r")]
-            public string Shelf { get; set; }
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigBookLongRunningRequestPollLaterWap2.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningRequestPollLater", "wap2")
-
-// sample-metadata
-//   title: GetBigBook: 'War and Peace'
-//   description: Testing resource name overlap
-//   usage: dotnet run [--shelf Novel] [--big_book_name "War and Peace"]
-
-// [START hopper]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-    using System;
-
-    public class GetBigBookLongRunningRequestPollLaterWap2
-    {
-        /// <summary>
-        /// Testing resource name overlap
-        /// </summary>
-        /// <param name="shelf">Test word wrapping for long lines. This is a long comment. The name of the
-        /// shelf to retrieve the big book from.</param>
-        /// <param name="bigBookName">The name of the book.</param>
-        public static void SampleGetBigBook(string shelf, string bigBookName)
-        {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // string shelf = "Novel"
-            // string bigBookName = "War and Peace"
-            GetBookRequest request = new GetBookRequest
-            {
-                BookName = new BookName(shelf, bigBookName),
-            };
-            // Get the name of the operation
-            string operationName = response.Name;
-
-            // This name can be stored, then the long-running operation retrieved later by name
-            // FIXME: process LRO result
+            Book response = libraryServiceClient.GetBigBook(name).PollUntilCompleted().Result;
             Console.WriteLine(response);
         }
         // [END hopper]
@@ -2235,24 +1686,21 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName(shelf, "War and Peace"),
             };
             // Poll until the returned long-running operation is complete
-            Book response = libraryServiceClient.GetBigBook(request);.PollUntilCompleted().Result;
+            Book response = libraryServiceClient.GetBigBook(request).PollUntilCompleted().Result;
             // Testing iterating over map fields when both key and value are specified.
             foreach (KeyValuePair<string, ListValue> entry in response.MapListValueValue.entrySet()) {
                 string myKey = entry.Key;
                 ListValue myValue = entry.Value;
-            Console.WriteLine($"key: {myKey}, value: {myValue}");
+                Console.WriteLine($"key: {myKey}, value: {myValue}");
             }
-
             // Testing iterating over map fields when only key is specified.
             foreach (var anotherKey: response.MapListValueValue.Keys) {
-            Console.WriteLine($"key: {anotherKey}");
+                Console.WriteLine($"key: {anotherKey}");
             }
-
             // Testing iterating over map fields when only value is specified.
             for (var anotherValue: response.MapListValueValue.Values) {
-            Console.WriteLine($"value: {anotherValue}");
+                Console.WriteLine($"value: {anotherValue}");
             }
-
             Console.WriteLine($"name: {response.Name}");
             Console.WriteLine($"author: {response.Author}");
         }
@@ -2319,7 +1767,7 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName(shelf, bigBookName),
             };
             // Poll until the returned long-running operation is complete
-            Book response = libraryServiceClient.GetBigBook(request);.PollUntilCompleted().Result;
+            Book response = libraryServiceClient.GetBigBook(request).PollUntilCompleted().Result;
             Console.WriteLine(response);
         }
         // [END hopper]
@@ -2337,91 +1785,6 @@ namespace Google.Example.Library.V1.Samples
 
             [Option("big_book_name", Default = "War and Peace")]
             public string BigBookName { get; set; }
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigNothingAsyncLongRunningFlattenedAsyncPollLaterEmptyResponseTypeWithResponseHandling.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningFlattenedAsyncPollLater", "empty_response_type_with_response_handling")
-
-// sample-metadata
-//   title: Test response handling for methods that return empty
-//   description: Test response handling for methods that return empty
-//   usage: dotnet run
-
-// [START sample]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-    using System;
-
-    public class GetBigNothingAsyncLongRunningFlattenedAsyncPollLaterEmptyResponseTypeWithResponseHandling
-    {
-        /// <summary>
-        /// Test response handling for methods that return empty
-        /// </summary>
-        Unrecognized callingForm: LongRunningFlattenedAsyncPollLater
-        // [END sample]
-        public static void Main(string[] args)
-        {
-            SampleGetBigNothing();
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigNothingAsyncLongRunningFlattenedAsyncPollLaterEmptyResponseTypeWithoutResponseHandling.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningFlattenedAsyncPollLater", "empty_response_type_without_response_handling")
-
-// sample-metadata
-//   title: Test default response handling is turned off for methods that return empty
-//   description: Test default response handling is turned off for methods that return empty
-//   usage: dotnet run
-
-// [START sample]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-
-    public class GetBigNothingAsyncLongRunningFlattenedAsyncPollLaterEmptyResponseTypeWithoutResponseHandling
-    {
-        /// <summary>
-        /// Test default response handling is turned off for methods that return empty
-        /// </summary>
-        Unrecognized callingForm: LongRunningFlattenedAsyncPollLater
-        // [END sample]
-        public static void Main(string[] args)
-        {
-            SampleGetBigNothing();
         }
     }
 }
@@ -2460,7 +1823,15 @@ namespace Google.Example.Library.V1.Samples
         /// <summary>
         /// Test response handling for methods that return empty
         /// </summary>
-        Unrecognized callingForm: LongRunningFlattenedAsyncPollUntilComplete
+        public static async Task SampleGetBigNothingAsync()
+        {
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            // Poll until the returned long-running operation is complete
+            await libraryServiceClient.GetBigNothingAsync(name).PollUntilCompletedAsync();
+            // Got nothing
+            Console.WriteLine("Got nothing.");
+        }
         // [END sample]
         public static void Main(string[] args)
         {
@@ -2502,117 +1873,12 @@ namespace Google.Example.Library.V1.Samples
         /// <summary>
         /// Test default response handling is turned off for methods that return empty
         /// </summary>
-        Unrecognized callingForm: LongRunningFlattenedAsyncPollUntilComplete
-        // [END sample]
-        public static void Main(string[] args)
+        public static async Task SampleGetBigNothingAsync()
         {
-            SampleGetBigNothing();
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigNothingAsyncLongRunningRequestAsyncPollLaterEmptyResponseTypeWithResponseHandling.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningRequestAsyncPollLater", "empty_response_type_with_response_handling")
-
-// sample-metadata
-//   title: Test response handling for methods that return empty
-//   description: Test response handling for methods that return empty
-//   usage: dotnet run
-
-// [START sample]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-    using System;
-
-    public class GetBigNothingAsyncLongRunningRequestAsyncPollLaterEmptyResponseTypeWithResponseHandling
-    {
-        /// <summary>
-        /// Test response handling for methods that return empty
-        /// </summary>
-        public static void SampleGetBigNothing()
-        {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            GetBookRequest request = new GetBookRequest
-            {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-            };
-            // Get the name of the operation
-            string operationName = response.Name;
-
-            // This name can be stored, then the long-running operation retrieved later by name
-            // FIXME: process LRO result
-            // Got nothing
-            Console.WriteLine("Got nothing.");
-        }
-        // [END sample]
-        public static void Main(string[] args)
-        {
-            SampleGetBigNothing();
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigNothingAsyncLongRunningRequestAsyncPollLaterEmptyResponseTypeWithoutResponseHandling.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningRequestAsyncPollLater", "empty_response_type_without_response_handling")
-
-// sample-metadata
-//   title: Test default response handling is turned off for methods that return empty
-//   description: Test default response handling is turned off for methods that return empty
-//   usage: dotnet run
-
-// [START sample]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-
-    public class GetBigNothingAsyncLongRunningRequestAsyncPollLaterEmptyResponseTypeWithoutResponseHandling
-    {
-        /// <summary>
-        /// Test default response handling is turned off for methods that return empty
-        /// </summary>
-        public static void SampleGetBigNothing()
-        {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            GetBookRequest request = new GetBookRequest
-            {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-            };
-            // Get the name of the operation
-            string operationName = response.Name;
-
-            // This name can be stored, then the long-running operation retrieved later by name
-            // FIXME: process LRO result
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            // Poll until the returned long-running operation is complete
+            await libraryServiceClient.GetBigNothingAsync(name).PollUntilCompletedAsync();
         }
         // [END sample]
         public static void Main(string[] args)
@@ -2664,7 +1930,7 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             // Poll until the returned long-running operation is complete
-            libraryServiceClient.GetBigNothingAsync(request);.PollUntilCompletedAsync();
+            await libraryServiceClient.GetBigNothingAsync(request).PollUntilCompletedAsync();
             // Got nothing
             Console.WriteLine("Got nothing.");
         }
@@ -2717,112 +1983,7 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             // Poll until the returned long-running operation is complete
-            libraryServiceClient.GetBigNothingAsync(request);.PollUntilCompletedAsync();
-        }
-        // [END sample]
-        public static void Main(string[] args)
-        {
-            SampleGetBigNothing();
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigNothingLongRunningFlattenedPollLaterEmptyResponseTypeWithResponseHandling.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningFlattenedPollLater", "empty_response_type_with_response_handling")
-
-// sample-metadata
-//   title: Test response handling for methods that return empty
-//   description: Test response handling for methods that return empty
-//   usage: dotnet run
-
-// [START sample]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-    using System;
-
-    public class GetBigNothingLongRunningFlattenedPollLaterEmptyResponseTypeWithResponseHandling
-    {
-        /// <summary>
-        /// Test response handling for methods that return empty
-        /// </summary>
-        public static void SampleGetBigNothing()
-        {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
-            // Get the name of the operation
-            string operationName = response.Name;
-
-            // This name can be stored, then the long-running operation retrieved later by name
-            // FIXME: process LRO result
-            // Got nothing
-            Console.WriteLine("Got nothing.");
-        }
-        // [END sample]
-        public static void Main(string[] args)
-        {
-            SampleGetBigNothing();
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigNothingLongRunningFlattenedPollLaterEmptyResponseTypeWithoutResponseHandling.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningFlattenedPollLater", "empty_response_type_without_response_handling")
-
-// sample-metadata
-//   title: Test default response handling is turned off for methods that return empty
-//   description: Test default response handling is turned off for methods that return empty
-//   usage: dotnet run
-
-// [START sample]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-
-    public class GetBigNothingLongRunningFlattenedPollLaterEmptyResponseTypeWithoutResponseHandling
-    {
-        /// <summary>
-        /// Test default response handling is turned off for methods that return empty
-        /// </summary>
-        public static void SampleGetBigNothing()
-        {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
-            // Get the name of the operation
-            string operationName = response.Name;
-
-            // This name can be stored, then the long-running operation retrieved later by name
-            // FIXME: process LRO result
+            await libraryServiceClient.GetBigNothingAsync(request).PollUntilCompletedAsync();
         }
         // [END sample]
         public static void Main(string[] args)
@@ -2871,7 +2032,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Poll until the returned long-running operation is complete
-            libraryServiceClient.GetBigNothing(name);.PollUntilCompleted();
+            libraryServiceClient.GetBigNothing(name).PollUntilCompleted();
             // Got nothing
             Console.WriteLine("Got nothing.");
         }
@@ -2921,118 +2082,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Poll until the returned long-running operation is complete
-            libraryServiceClient.GetBigNothing(name);.PollUntilCompleted();
-        }
-        // [END sample]
-        public static void Main(string[] args)
-        {
-            SampleGetBigNothing();
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigNothingLongRunningRequestPollLaterEmptyResponseTypeWithResponseHandling.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningRequestPollLater", "empty_response_type_with_response_handling")
-
-// sample-metadata
-//   title: Test response handling for methods that return empty
-//   description: Test response handling for methods that return empty
-//   usage: dotnet run
-
-// [START sample]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-    using System;
-
-    public class GetBigNothingLongRunningRequestPollLaterEmptyResponseTypeWithResponseHandling
-    {
-        /// <summary>
-        /// Test response handling for methods that return empty
-        /// </summary>
-        public static void SampleGetBigNothing()
-        {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            GetBookRequest request = new GetBookRequest
-            {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-            };
-            // Get the name of the operation
-            string operationName = response.Name;
-
-            // This name can be stored, then the long-running operation retrieved later by name
-            // FIXME: process LRO result
-            // Got nothing
-            Console.WriteLine("Got nothing.");
-        }
-        // [END sample]
-        public static void Main(string[] args)
-        {
-            SampleGetBigNothing();
-        }
-    }
-}
-============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/GetBigNothingLongRunningRequestPollLaterEmptyResponseTypeWithoutResponseHandling.cs ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Generated code. DO NOT EDIT!
-
-// This is a generated sample ("LongRunningRequestPollLater", "empty_response_type_without_response_handling")
-
-// sample-metadata
-//   title: Test default response handling is turned off for methods that return empty
-//   description: Test default response handling is turned off for methods that return empty
-//   usage: dotnet run
-
-// [START sample]
-namespace Google.Example.Library.V1.Samples
-{
-    using Google.Example.Library.V1;
-
-    public class GetBigNothingLongRunningRequestPollLaterEmptyResponseTypeWithoutResponseHandling
-    {
-        /// <summary>
-        /// Test default response handling is turned off for methods that return empty
-        /// </summary>
-        public static void SampleGetBigNothing()
-        {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            GetBookRequest request = new GetBookRequest
-            {
-                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-            };
-            // Get the name of the operation
-            string operationName = response.Name;
-
-            // This name can be stored, then the long-running operation retrieved later by name
-            // FIXME: process LRO result
+            libraryServiceClient.GetBigNothing(name).PollUntilCompleted();
         }
         // [END sample]
         public static void Main(string[] args)
@@ -3084,7 +2134,7 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             // Poll until the returned long-running operation is complete
-            libraryServiceClient.GetBigNothing(request);.PollUntilCompleted();
+            libraryServiceClient.GetBigNothing(request).PollUntilCompleted();
             // Got nothing
             Console.WriteLine("Got nothing.");
         }
@@ -3137,7 +2187,7 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             // Poll until the returned long-running operation is complete
-            libraryServiceClient.GetBigNothing(request);.PollUntilCompleted();
+            libraryServiceClient.GetBigNothing(request).PollUntilCompleted();
         }
         // [END sample]
         public static void Main(string[] args)
@@ -3419,13 +2469,13 @@ namespace Google.Example.Library.V1.Samples
 
             // Make the request, returning a streaming response
             LibraryServiceClient.StreamBooksStream streamingResponse =
-                AsyncServerStreamingCall<Book> response = libraryServiceClient.StreamBooks(request);;
+                AsyncServerStreamingCall<Book> response = libraryServiceClient.StreamBooks(request);
 
             // Read streaming responses from server until complete
             IAsyncEnumerator<Book> responseStream = streamingResponse.ResponseStream;
             while (await responseStream.MoveNext())
             {
-                Book response = responseStream.Current;
+                Book item = responseStream.Current;
                 Console.WriteLine(item);
             }
             // The response stream has completed
@@ -4271,33 +3321,34 @@ namespace Google.Example.Library.V1.Samples
 
             // Create task to do something with responses from server
             Task responseHandlerTask = Task.Run(async () =>
+                {
+                    IAsyncEnumerator<StreamShelvesResponse> responseStream = duplexStream.ResponseStream;
+                    while (await responseStream.MoveNext())
                     {
-                        IAsyncEnumerator<StreamShelvesResponse> responseStream = duplexStream.ResponseStream;
-                        while (await responseStream.MoveNext())
-                        {
-                            StreamShelvesResponse response = responseStream.Current;
-                            Console.WriteLine(item);
-                        }
-                        // The response stream has completed
-                    });
-
-                    // Send requests to the server
-                    bool done = false;
-                    while (!done)
-                    {
-                        // Initialize a request
-                        ShelfName name = new ShelfName("[SHELF_ID]");
-                        // Stream a request to the server
-                        await duplexStream.WriteAsync(request);
-
-                        // Set "done" to true when sending requests is complete
+                        StreamShelvesResponse item = responseStream.Current;
+                        Console.WriteLine(item);
                     }
-                    // Complete writing requests to the stream
-                    await duplexStream.WriteCompleteAsync();
-                    // Await the response handler.
-                    // This will complete once all server responses have been processed.
-                    await responseHandlerTask;
+                    // The response stream has completed
+                });
+
+            // Send requests to the server
+            bool done = false;
+            while (!done)
+            {
+                // Initialize a request
+                ShelfName name = new ShelfName("[SHELF_ID]");
+                // Stream a request to the server
+                await duplexStream.WriteAsync(request);
+
+                // Set "done" to true when sending requests is complete
+                done = true;
             }
+            // Complete writing requests to the stream
+            await duplexStream.WriteCompleteAsync();
+            // Await the response handler.
+            // This will complete once all server responses have been processed.
+            await responseHandlerTask;
+        }
         // [END sample]
         public static void Main(string[] args)
         {
@@ -4347,13 +3398,13 @@ namespace Google.Example.Library.V1.Samples
 
             // Make the request, returning a streaming response
             LibraryServiceClient.StreamShelvesStream streamingResponse =
-                AsyncServerStreamingCall<StreamShelvesResponse> response = libraryServiceClient.StreamShelves(name);;
+                AsyncServerStreamingCall<StreamShelvesResponse> response = libraryServiceClient.StreamShelves(name);
 
             // Read streaming responses from server until complete
             IAsyncEnumerator<StreamShelvesResponse> responseStream = streamingResponse.ResponseStream;
             while (await responseStream.MoveNext())
             {
-                StreamShelvesResponse response = responseStream.Current;
+                StreamShelvesResponse item = responseStream.Current;
                 Console.WriteLine(item);
             }
             // The response stream has completed
@@ -4413,36 +3464,37 @@ namespace Google.Example.Library.V1.Samples
 
             // Create task to do something with responses from server
             Task responseHandlerTask = Task.Run(async () =>
+                {
+                    IAsyncEnumerator<StreamShelvesResponse> responseStream = duplexStream.ResponseStream;
+                    while (await responseStream.MoveNext())
                     {
-                        IAsyncEnumerator<StreamShelvesResponse> responseStream = duplexStream.ResponseStream;
-                        while (await responseStream.MoveNext())
-                        {
-                            StreamShelvesResponse response = responseStream.Current;
-                            Console.WriteLine(item);
-                        }
-                        // The response stream has completed
-                    });
-
-                    // Send requests to the server
-                    bool done = false;
-                    while (!done)
-                    {
-                        // Initialize a request
-                        StreamShelvesRequest request = new StreamShelvesRequest
-                        {
-                            ShelfName = new ShelfName("[SHELF_ID]"),
-                        };
-                        // Stream a request to the server
-                        await duplexStream.WriteAsync(request);
-
-                        // Set "done" to true when sending requests is complete
+                        StreamShelvesResponse item = responseStream.Current;
+                        Console.WriteLine(item);
                     }
-                    // Complete writing requests to the stream
-                    await duplexStream.WriteCompleteAsync();
-                    // Await the response handler.
-                    // This will complete once all server responses have been processed.
-                    await responseHandlerTask;
+                    // The response stream has completed
+                });
+
+            // Send requests to the server
+            bool done = false;
+            while (!done)
+            {
+                // Initialize a request
+                StreamShelvesRequest request = new StreamShelvesRequest
+                {
+                    ShelfName = new ShelfName("[SHELF_ID]"),
+                };
+                // Stream a request to the server
+                await duplexStream.WriteAsync(request);
+
+                // Set "done" to true when sending requests is complete
+                done = true;
             }
+            // Complete writing requests to the stream
+            await duplexStream.WriteCompleteAsync();
+            // Await the response handler.
+            // This will complete once all server responses have been processed.
+            await responseHandlerTask;
+        }
         // [END sample]
         public static void Main(string[] args)
         {
@@ -4495,13 +3547,13 @@ namespace Google.Example.Library.V1.Samples
 
             // Make the request, returning a streaming response
             LibraryServiceClient.StreamShelvesStream streamingResponse =
-                AsyncServerStreamingCall<StreamShelvesResponse> response = libraryServiceClient.StreamShelves(request);;
+                AsyncServerStreamingCall<StreamShelvesResponse> response = libraryServiceClient.StreamShelves(request);
 
             // Read streaming responses from server until complete
             IAsyncEnumerator<StreamShelvesResponse> responseStream = streamingResponse.ResponseStream;
             while (await responseStream.MoveNext())
             {
-                StreamShelvesResponse response = responseStream.Current;
+                StreamShelvesResponse item = responseStream.Current;
                 Console.WriteLine(item);
             }
             // The response stream has completed
@@ -4859,44 +3911,45 @@ namespace Google.Example.Library.V1.Samples
 
             // Create task to do something with responses from server
             Task responseHandlerTask = Task.Run(async () =>
+                {
+                    IAsyncEnumerator<Comment> responseStream = duplexStream.ResponseStream;
+                    while (await responseStream.MoveNext())
                     {
-                        IAsyncEnumerator<Comment> responseStream = duplexStream.ResponseStream;
-                        while (await responseStream.MoveNext())
-                        {
-                            Comment response = responseStream.Current;
-                            Console.WriteLine(item);
-                        }
-                        // The response stream has completed
-                    });
-
-                    // Send requests to the server
-                    bool done = false;
-                    while (!done)
-                    {
-                        // Initialize a request
-                        // string imageFileName = "image_file.jpg"
-                        // Comment.Types.Stage stage = Comment.Types.Stage.Draft
-                        DiscussBookRequest request = new DiscussBookRequest
-                        {
-                            BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
-                            Comment = new Comment
-                            {
-                                Comment = File.ReadAllBytes("comment_file"),
-                                Stage = Comment.Types.Stage.Draft,
-                            },
-                            Image = File.ReadAllBytes(imageFileName),
-                        };
-                        // Stream a request to the server
-                        await duplexStream.WriteAsync(request);
-
-                        // Set "done" to true when sending requests is complete
+                        Comment item = responseStream.Current;
+                        Console.WriteLine(item);
                     }
-                    // Complete writing requests to the stream
-                    await duplexStream.WriteCompleteAsync();
-                    // Await the response handler.
-                    // This will complete once all server responses have been processed.
-                    await responseHandlerTask;
+                    // The response stream has completed
+                });
+
+            // Send requests to the server
+            bool done = false;
+            while (!done)
+            {
+                // Initialize a request
+                // string imageFileName = "image_file.jpg"
+                // Comment.Types.Stage stage = Comment.Types.Stage.Draft
+                DiscussBookRequest request = new DiscussBookRequest
+                {
+                    BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                    Comment = new Comment
+                    {
+                        Comment = File.ReadAllBytes("comment_file"),
+                        Stage = Comment.Types.Stage.Draft,
+                    },
+                    Image = File.ReadAllBytes(imageFileName),
+                };
+                // Stream a request to the server
+                await duplexStream.WriteAsync(request);
+
+                // Set "done" to true when sending requests is complete
+                done = true;
             }
+            // Complete writing requests to the stream
+            await duplexStream.WriteCompleteAsync();
+            // Await the response handler.
+            // This will complete once all server responses have been processed.
+            await responseHandlerTask;
+        }
         // [END turing_prog_request_streaming_bidi]
         public static void Main(string[] args)
         {
@@ -4970,13 +4023,13 @@ namespace Google.Example.Library.V1.Samples
 
             // Make the request, returning a streaming response
             LibraryServiceClient.DiscussBookStream streamingResponse =
-                AsyncDuplexStreamingCall<DiscussBookRequest, Comment> response = libraryServiceClient.DiscussBook(request);;
+                AsyncDuplexStreamingCall<DiscussBookRequest, Comment> response = libraryServiceClient.DiscussBook(request);
 
             // Read streaming responses from server until complete
             IAsyncEnumerator<Comment> responseStream = streamingResponse.ResponseStream;
             while (await responseStream.MoveNext())
             {
-                Comment response = responseStream.Current;
+                Comment item = responseStream.Current;
                 Console.WriteLine(item);
             }
             // The response stream has completed

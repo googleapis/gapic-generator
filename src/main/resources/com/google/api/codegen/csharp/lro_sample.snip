@@ -1,0 +1,58 @@
+@extends "csharp/common.snip"
+@extends "csharp/common_initcode.snip"
+@extends "csharp/client.snip"
+@extends "csharp/response.snip"
+
+@snippet longRunningPollUntilCompleteMethod(apiMethod, sample)
+    {@syncSampleFunction(sample)}
+    {
+        {@syncClient(apiMethod)}
+        {@standaloneSampleInitCode(sample.sampleInitCode)}
+        {@pollOperationUntilCompleteSync(apiMethod, sample)}
+    }
+@end
+
+@snippet longRunningPollUntilCompleteAsyncMethod(apiMethod, sample)
+    {@asyncSampleFunction(sample)}
+    {
+        {@asyncClient(apiMethod)}
+        {@standaloneSampleInitCode(sample.sampleInitCode)}
+        {@pollOperationUntilCompleteAsync(apiMethod, sample)}
+    }
+@end
+
+@private pollOperationUntilCompleteSync(apiMethod, sample)
+    // Poll until the returned long-running operation is complete
+    {@lroMethodCall(apiMethod, sample)}
+    @if sample.outputs
+        {@processOutputViews(sample.outputs)}
+    @end
+@end
+
+@private pollOperationUntilCompleteAsync(apiMethod, sample)
+    // Poll until the returned long-running operation is complete
+    {@asyncLroMethodCall(apiMethod, sample)}
+    @if sample.outputs
+        {@processOutputViews(sample.outputs)}
+    @end
+@end
+
+@private lroMethodCall(apiMethod, sample)
+    @if apiMethod.hasReturnValue
+        {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)}).PollUntilCompleted().Result;
+    @else
+        {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)}).PollUntilCompleted();
+    @end
+@end
+
+@private asyncLroMethodCall(apiMethod, sample)
+    @if apiMethod.hasReturnValue
+        {@apiMethod.responseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)}).PollUntilCompletedAsync().Result;
+    @else
+        await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)}).PollUntilCompletedAsync();
+    @end
+@end
