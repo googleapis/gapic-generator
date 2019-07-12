@@ -52,11 +52,11 @@ public enum CallingForm {
   RequestPaged, // used by: csharp java php py ruby
   RequestPagedAll, // used by: csharp php py ruby
   RequestPagedPageSize, // used by: csharp
-  RequestStreamingBidi, // used by: nodejs php py ruby
+  RequestStreamingBidi, // used by: csharp nodejs php py ruby
   RequestStreamingBidiAsync, // used by: php
   RequestStreamingClient, // used by: nodejs php py ruby
   RequestStreamingClientAsync, // used by: php
-  RequestStreamingServer, // used by: nodejs php py ruby
+  RequestStreamingServer, // used by: csharp nodejs php py ruby
 
   Flattened, // used by: csharp java
   FlattenedPaged, // used by: csharp java
