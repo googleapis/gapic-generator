@@ -1,0 +1,65 @@
+---
+type: com.google.api.codegen.samplegen.SampleConfigProto
+config_schema_version: 1.2.0
+samples:
+- service: google.example.library.v1.LibraryService
+  rpc: GetBigBook
+  title: "GetBigBook: 'War and Peace'"
+  description: "Testing calling forms"
+  region_tag: hopper
+  request:
+  - field: name%shelf_id
+    value: "Novel\\\"`\b\t\n\r"
+    input_parameter: shelf
+  - field: name%book_id
+    value: "War and Peace"
+  response:
+  - comment:
+    - "Testing iterating over map fields when both key and value are specified."
+  - loop:
+      map: $resp.map_list_value_value
+      key: my_key
+      value: my_value
+      body:
+      - print:
+        - "key: %s, value: %s"
+        - my_key
+        - my_value
+  - comment:
+    - "Testing iterating over map fields when only key is specified."
+  - loop:
+      map: $resp.map_list_value_value
+      key: another_key
+      body:
+      - print:
+        - "key: %s"
+        - another_key
+  - comment:
+    - "Testing iterating over map fields when only value is specified."
+  - loop:
+      map: $resp.map_list_value_value
+      value: another_value
+      body:
+      - print:
+        - "value: %s"
+        - another_value
+  - print:
+    - "name: %s"
+    - $resp.name
+  - print:
+    - "author: %s"
+    - $resp.author
+- service: google.example.library.v1.LibraryService
+  rpc: GetBigBook
+  title: "GetBigBook: 'War and Peace'"
+  description: "Testing resource name overlap"
+  region_tag: this_tag_should_be_the_name_of_the_file
+  request:
+  - field: name%shelf_id
+    value: Novel
+    input_parameter: shelf
+    description: "Test word wrapping for long lines. This is a long comment. The name of the shelf to retrieve the big book from."
+  - field: name%book_id
+    value: "War and Peace"
+    input_parameter: big_book_name
+    description: "The name of the book."
