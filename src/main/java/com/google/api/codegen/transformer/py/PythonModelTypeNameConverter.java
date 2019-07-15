@@ -167,10 +167,6 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
     }
 
     boolean useGrpcName = elem instanceof Interface || elem instanceof Method;
-    if (elem.getFile().getSimpleName().equals("google/iam/v1/iam_policy.proto")) {
-      // IAM policy gRPC service isn't actually used; API producers implement this themselves.
-      useGrpcName = false;
-    }
 
     if (useGrpcName) {
       path.add(0, getGrpcPbFileName(elem.getFile().getSimpleName()));
