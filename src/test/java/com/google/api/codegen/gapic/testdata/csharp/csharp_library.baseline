@@ -1293,7 +1293,8 @@ namespace Google.Example.Library.V1.Samples
             // string shelf = "Novel\\\"`\b\t\n\r"
             BookName name = new BookName(shelf, "War and Peace");
             // Poll until the returned long-running operation is complete
-            Book response = await libraryServiceClient.GetBigBookAsync(name).PollUntilCompletedAsync().Result;
+            Operation<Book, GetBigBookMetadata> operation = await libraryServiceClient.GetBigBookAsync(name);
+            Book response = (await operation.PollUntilCompletedAsync()).Result;
             // Testing iterating over map fields when both key and value are specified.
             foreach (KeyValuePair<string, ListValue> entry in response.MapListValueValue.entrySet()) {
                 string myKey = entry.Key;
@@ -1301,11 +1302,11 @@ namespace Google.Example.Library.V1.Samples
                 Console.WriteLine($"key: {myKey}, value: {myValue}");
             }
             // Testing iterating over map fields when only key is specified.
-            foreach (var anotherKey: response.MapListValueValue.Keys) {
+            foreach (var anotherKey in response.MapListValueValue.Keys) {
                 Console.WriteLine($"key: {anotherKey}");
             }
             // Testing iterating over map fields when only value is specified.
-            for (var anotherValue: response.MapListValueValue.Values) {
+            for (var anotherValue in response.MapListValueValue.Values) {
                 Console.WriteLine($"value: {anotherValue}");
             }
             Console.WriteLine($"name: {response.Name}");
@@ -1373,7 +1374,8 @@ namespace Google.Example.Library.V1.Samples
             // string bigBookName = "War and Peace"
             BookName name = new BookName(shelf, bigBookName);
             // Poll until the returned long-running operation is complete
-            Book response = await libraryServiceClient.GetBigBookAsync(name).PollUntilCompletedAsync().Result;
+            Operation<Book, GetBigBookMetadata> operation = await libraryServiceClient.GetBigBookAsync(name);
+            Book response = (await operation.PollUntilCompletedAsync()).Result;
             Console.WriteLine(response);
         }
         // [END hopper]
@@ -1442,7 +1444,8 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName(shelf, "War and Peace"),
             };
             // Poll until the returned long-running operation is complete
-            Book response = await libraryServiceClient.GetBigBookAsync(request).PollUntilCompletedAsync().Result;
+            Operation<Book, GetBigBookMetadata> operation = await libraryServiceClient.GetBigBookAsync(request);
+            Book response = (await operation.PollUntilCompletedAsync()).Result;
             // Testing iterating over map fields when both key and value are specified.
             foreach (KeyValuePair<string, ListValue> entry in response.MapListValueValue.entrySet()) {
                 string myKey = entry.Key;
@@ -1450,11 +1453,11 @@ namespace Google.Example.Library.V1.Samples
                 Console.WriteLine($"key: {myKey}, value: {myValue}");
             }
             // Testing iterating over map fields when only key is specified.
-            foreach (var anotherKey: response.MapListValueValue.Keys) {
+            foreach (var anotherKey in response.MapListValueValue.Keys) {
                 Console.WriteLine($"key: {anotherKey}");
             }
             // Testing iterating over map fields when only value is specified.
-            for (var anotherValue: response.MapListValueValue.Values) {
+            for (var anotherValue in response.MapListValueValue.Values) {
                 Console.WriteLine($"value: {anotherValue}");
             }
             Console.WriteLine($"name: {response.Name}");
@@ -1525,7 +1528,8 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName(shelf, bigBookName),
             };
             // Poll until the returned long-running operation is complete
-            Book response = await libraryServiceClient.GetBigBookAsync(request).PollUntilCompletedAsync().Result;
+            Operation<Book, GetBigBookMetadata> operation = await libraryServiceClient.GetBigBookAsync(request);
+            Book response = (await operation.PollUntilCompletedAsync()).Result;
             Console.WriteLine(response);
         }
         // [END hopper]
@@ -1599,11 +1603,11 @@ namespace Google.Example.Library.V1.Samples
                 Console.WriteLine($"key: {myKey}, value: {myValue}");
             }
             // Testing iterating over map fields when only key is specified.
-            foreach (var anotherKey: response.MapListValueValue.Keys) {
+            foreach (var anotherKey in response.MapListValueValue.Keys) {
                 Console.WriteLine($"key: {anotherKey}");
             }
             // Testing iterating over map fields when only value is specified.
-            for (var anotherValue: response.MapListValueValue.Values) {
+            for (var anotherValue in response.MapListValueValue.Values) {
                 Console.WriteLine($"value: {anotherValue}");
             }
             Console.WriteLine($"name: {response.Name}");
@@ -1748,11 +1752,11 @@ namespace Google.Example.Library.V1.Samples
                 Console.WriteLine($"key: {myKey}, value: {myValue}");
             }
             // Testing iterating over map fields when only key is specified.
-            foreach (var anotherKey: response.MapListValueValue.Keys) {
+            foreach (var anotherKey in response.MapListValueValue.Keys) {
                 Console.WriteLine($"key: {anotherKey}");
             }
             // Testing iterating over map fields when only value is specified.
-            for (var anotherValue: response.MapListValueValue.Values) {
+            for (var anotherValue in response.MapListValueValue.Values) {
                 Console.WriteLine($"value: {anotherValue}");
             }
             Console.WriteLine($"name: {response.Name}");
@@ -1886,7 +1890,8 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Poll until the returned long-running operation is complete
-            await libraryServiceClient.GetBigNothingAsync(name).PollUntilCompletedAsync();
+            Operation<Empty, GetBigBookMetadata> operation = await libraryServiceClient.GetBigNothingAsync(name);
+            await operation.PollUntilCompletedAsync();
             // Got nothing
             Console.WriteLine("Got nothing.");
         }
@@ -1938,7 +1943,8 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Poll until the returned long-running operation is complete
-            await libraryServiceClient.GetBigNothingAsync(name).PollUntilCompletedAsync();
+            Operation<Empty, GetBigBookMetadata> operation = await libraryServiceClient.GetBigNothingAsync(name);
+            await operation.PollUntilCompletedAsync();
         }
         // [END sample]
         public static void Main(string[] args)
@@ -1992,7 +1998,8 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             // Poll until the returned long-running operation is complete
-            await libraryServiceClient.GetBigNothingAsync(request).PollUntilCompletedAsync();
+            Operation<Empty, GetBigBookMetadata> operation = await libraryServiceClient.GetBigNothingAsync(request);
+            await operation.PollUntilCompletedAsync();
             // Got nothing
             Console.WriteLine("Got nothing.");
         }
@@ -2047,7 +2054,8 @@ namespace Google.Example.Library.V1.Samples
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             // Poll until the returned long-running operation is complete
-            await libraryServiceClient.GetBigNothingAsync(request).PollUntilCompletedAsync();
+            Operation<Empty, GetBigBookMetadata> operation = await libraryServiceClient.GetBigNothingAsync(request);
+            await operation.PollUntilCompletedAsync();
         }
         // [END sample]
         public static void Main(string[] args)
@@ -2535,6 +2543,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System;
+    using System.Threading.Tasks;
 
     public class Lovelace
     {
@@ -2543,29 +2552,27 @@ namespace Google.Example.Library.V1.Samples
         /// </summary>
         public static async Task SampleStreamBooksAsync()
         {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             StreamBooksRequest request = new StreamBooksRequest
             {
                 Name = "BASIC",
             };
 
             // Make the request, returning a streaming response
-            LibraryServiceClient.StreamBooksStream streamingResponse =
-                AsyncServerStreamingCall<Book> response = libraryServiceClient.StreamBooks(request);
+            LibraryServiceClient.StreamBooksStream streamingResponse = libraryServiceClient.StreamBooks(request);
 
             // Read streaming responses from server until complete
-            IAsyncEnumerator<Book> responseStream = streamingResponse.ResponseStream;
-            while (await responseStream.MoveNext())
+            IAsyncEnumerator<Book> responsestream = streamingResponse.ResponseStream;
+            await responseStream.ForEachAsync(item =>
             {
-                Book item = responseStream.Current;
                 Console.WriteLine(item);
-            }
+            });
             // The response stream has completed
         }
         // [END lovelace]
         public static void Main(string[] args)
         {
-            SampleStreamBooks();
+            SampleStreamBooksAsync().Wait();
         }
     }
 }
@@ -3408,6 +3415,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System;
+    using System.Threading.Tasks;
 
     public class StreamShelvesFlattenedStreamingBidiEmpty
     {
@@ -3416,7 +3424,7 @@ namespace Google.Example.Library.V1.Samples
         /// </summary>
         public static async Task SampleStreamShelvesAsync()
         {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
 
             // Initialize streaming call, retrieving the stream object
             LibraryServiceClient.StreamShelvesStream duplexStream =
@@ -3458,7 +3466,7 @@ namespace Google.Example.Library.V1.Samples
         // [END sample]
         public static void Main(string[] args)
         {
-            SampleStreamShelves();
+            SampleStreamShelvesAsync().Wait();
         }
     }
 }
@@ -3493,6 +3501,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System;
+    using System.Threading.Tasks;
 
     public class StreamShelvesFlattenedStreamingServerEmpty
     {
@@ -3501,26 +3510,24 @@ namespace Google.Example.Library.V1.Samples
         /// </summary>
         public static async Task SampleStreamShelvesAsync()
         {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             ShelfName name = new ShelfName("[SHELF_ID]");
 
             // Make the request, returning a streaming response
-            LibraryServiceClient.StreamShelvesStream streamingResponse =
-                AsyncServerStreamingCall<StreamShelvesResponse> response = libraryServiceClient.StreamShelves(name);
+            LibraryServiceClient.StreamShelvesStream streamingResponse = libraryServiceClient.StreamShelves(name);
 
             // Read streaming responses from server until complete
-            IAsyncEnumerator<StreamShelvesResponse> responseStream = streamingResponse.ResponseStream;
-            while (await responseStream.MoveNext())
+            IAsyncEnumerator<StreamShelvesResponse> responsestream = streamingResponse.ResponseStream;
+            await responseStream.ForEachAsync(item =>
             {
-                StreamShelvesResponse item = responseStream.Current;
                 Console.WriteLine(item);
-            }
+            });
             // The response stream has completed
         }
         // [END sample]
         public static void Main(string[] args)
         {
-            SampleStreamShelves();
+            SampleStreamShelvesAsync().Wait();
         }
     }
 }
@@ -3555,6 +3562,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System;
+    using System.Threading.Tasks;
 
     public class StreamShelvesRequestStreamingBidiEmpty
     {
@@ -3563,7 +3571,7 @@ namespace Google.Example.Library.V1.Samples
         /// </summary>
         public static async Task SampleStreamShelvesAsync()
         {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
 
             // Initialize streaming call, retrieving the stream object
             LibraryServiceClient.StreamShelvesStream duplexStream =
@@ -3608,7 +3616,7 @@ namespace Google.Example.Library.V1.Samples
         // [END sample]
         public static void Main(string[] args)
         {
-            SampleStreamShelves();
+            SampleStreamShelvesAsync().Wait();
         }
     }
 }
@@ -3643,6 +3651,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System;
+    using System.Threading.Tasks;
 
     public class StreamShelvesRequestStreamingServerEmpty
     {
@@ -3651,29 +3660,27 @@ namespace Google.Example.Library.V1.Samples
         /// </summary>
         public static async Task SampleStreamShelvesAsync()
         {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             StreamShelvesRequest request = new StreamShelvesRequest
             {
                 ShelfName = new ShelfName("[SHELF_ID]"),
             };
 
             // Make the request, returning a streaming response
-            LibraryServiceClient.StreamShelvesStream streamingResponse =
-                AsyncServerStreamingCall<StreamShelvesResponse> response = libraryServiceClient.StreamShelves(request);
+            LibraryServiceClient.StreamShelvesStream streamingResponse = libraryServiceClient.StreamShelves(request);
 
             // Read streaming responses from server until complete
-            IAsyncEnumerator<StreamShelvesResponse> responseStream = streamingResponse.ResponseStream;
-            while (await responseStream.MoveNext())
+            IAsyncEnumerator<StreamShelvesResponse> responsestream = streamingResponse.ResponseStream;
+            await responseStream.ForEachAsync(item =>
             {
-                StreamShelvesResponse item = responseStream.Current;
                 Console.WriteLine(item);
-            }
+            });
             // The response stream has completed
         }
         // [END sample]
         public static void Main(string[] args)
         {
-            SampleStreamShelves();
+            SampleStreamShelvesAsync().Wait();
         }
     }
 }
@@ -4039,11 +4046,11 @@ namespace Google.Example.Library.V1.Samples
                 Console.WriteLine($"key: {myKey}, value: {myValue}");
             }
             // Testing iterating over map fields when only key is specified.
-            foreach (var anotherKey: response.MapListValueValue.Keys) {
+            foreach (var anotherKey in response.MapListValueValue.Keys) {
                 Console.WriteLine($"key: {anotherKey}");
             }
             // Testing iterating over map fields when only value is specified.
-            for (var anotherValue: response.MapListValueValue.Values) {
+            for (var anotherValue in response.MapListValueValue.Values) {
                 Console.WriteLine($"value: {anotherValue}");
             }
             Console.WriteLine($"name: {response.Name}");
@@ -4097,6 +4104,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Protobuf;
     using System;
     using System.IO;
+    using System.Threading.Tasks;
 
     public class TuringProgRequestStreamingBidi
     {
@@ -4105,7 +4113,7 @@ namespace Google.Example.Library.V1.Samples
         /// </summary>
         public static async Task SampleDiscussBookAsync(string imageFileName, Comment.Types.Stage stage)
         {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
 
             // Initialize streaming call, retrieving the stream object
             LibraryServiceClient.DiscussBookStream duplexStream =
@@ -4160,7 +4168,7 @@ namespace Google.Example.Library.V1.Samples
         {
             new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
-                    SampleDiscussBook(opts.ImageFileName, opts.Stage));
+                    SampleDiscussBookAsync(opts.ImageFileName, opts.Stage).Wait());
         }
 
         public class Options
@@ -4206,6 +4214,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Protobuf;
     using System;
     using System.IO;
+    using System.Threading.Tasks;
 
     public class TuringProgRequestStreamingServer
     {
@@ -4214,7 +4223,7 @@ namespace Google.Example.Library.V1.Samples
         /// </summary>
         public static async Task SampleDiscussBookAsync(string imageFileName, Comment.Types.Stage stage)
         {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // string imageFileName = "image_file.jpg"
             // Comment.Types.Stage stage = Comment.Types.Stage.Draft
             DiscussBookRequest request = new DiscussBookRequest
@@ -4229,16 +4238,14 @@ namespace Google.Example.Library.V1.Samples
             };
 
             // Make the request, returning a streaming response
-            LibraryServiceClient.DiscussBookStream streamingResponse =
-                AsyncDuplexStreamingCall<DiscussBookRequest, Comment> response = libraryServiceClient.DiscussBook(request);
+            LibraryServiceClient.DiscussBookStream streamingResponse = libraryServiceClient.DiscussBook(request);
 
             // Read streaming responses from server until complete
-            IAsyncEnumerator<Comment> responseStream = streamingResponse.ResponseStream;
-            while (await responseStream.MoveNext())
+            IAsyncEnumerator<Comment> responsestream = streamingResponse.ResponseStream;
+            await responseStream.ForEachAsync(item =>
             {
-                Comment item = responseStream.Current;
                 Console.WriteLine(item);
-            }
+            });
             // The response stream has completed
         }
         // [END turing_prog_request_streaming_server]
@@ -4246,7 +4253,7 @@ namespace Google.Example.Library.V1.Samples
         {
             new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
-                    SampleDiscussBook(opts.ImageFileName, opts.Stage));
+                    SampleDiscussBookAsync(opts.ImageFileName, opts.Stage).Wait());
         }
 
         public class Options

@@ -49,10 +49,12 @@
 
 @private asyncLroMethodCall(apiMethod, sample)
     @if apiMethod.hasReturnValue
-        {@apiMethod.responseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)}).PollUntilCompletedAsync().Result;
+        {@apiMethod.operationMethod.clientReturnTypeName} operation \
+            = await {@apiMethod.apiVariableName}.{@apiMethod.name}({@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+        {@apiMethod.responseTypeName} response = (await operation.PollUntilCompletedAsync()).Result;
     @else
-        await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)}).PollUntilCompletedAsync();
+        {@apiMethod.operationMethod.clientReturnTypeName} operation \
+            = await {@apiMethod.apiVariableName}.{@apiMethod.name}({@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+        await operation.PollUntilCompletedAsync();
     @end
 @end

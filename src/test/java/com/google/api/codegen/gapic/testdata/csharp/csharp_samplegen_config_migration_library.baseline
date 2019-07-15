@@ -398,11 +398,11 @@ namespace Google.Example.Library.V1.Samples
                 Console.WriteLine($"key: {myKey}, value: {myValue}");
             }
             // Testing iterating over map fields when only key is specified.
-            foreach (var anotherKey: response.MapListValueValue.Keys) {
+            foreach (var anotherKey in response.MapListValueValue.Keys) {
                 Console.WriteLine($"key: {anotherKey}");
             }
             // Testing iterating over map fields when only value is specified.
-            for (var anotherValue: response.MapListValueValue.Values) {
+            for (var anotherValue in response.MapListValueValue.Values) {
                 Console.WriteLine($"value: {anotherValue}");
             }
             Console.WriteLine($"name: {response.Name}");
@@ -454,6 +454,7 @@ namespace Google.Example.Library.V1.Samples
 {
     using Google.Example.Library.V1;
     using System;
+    using System.Threading.Tasks;
 
     public class Lovelace
     {
@@ -462,29 +463,27 @@ namespace Google.Example.Library.V1.Samples
         /// </summary>
         public static async Task SampleStreamBooksAsync()
         {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             StreamBooksRequest request = new StreamBooksRequest
             {
                 Name = "BASIC",
             };
 
             // Make the request, returning a streaming response
-            LibraryServiceClient.StreamBooksStream streamingResponse =
-                AsyncServerStreamingCall<Book> response = libraryServiceClient.StreamBooks(request);
+            LibraryServiceClient.StreamBooksStream streamingResponse = libraryServiceClient.StreamBooks(request);
 
             // Read streaming responses from server until complete
-            IAsyncEnumerator<Book> responseStream = streamingResponse.ResponseStream;
-            while (await responseStream.MoveNext())
+            IAsyncEnumerator<Book> responsestream = streamingResponse.ResponseStream;
+            await responseStream.ForEachAsync(item =>
             {
-                Book item = responseStream.Current;
                 Console.WriteLine(item);
-            }
+            });
             // The response stream has completed
         }
         // [END lovelace]
         public static void Main(string[] args)
         {
-            SampleStreamBooks();
+            SampleStreamBooksAsync().Wait();
         }
     }
 }
@@ -1245,6 +1244,7 @@ namespace Google.Example.Library.V1.Samples
     using Google.Protobuf;
     using System;
     using System.IO;
+    using System.Threading.Tasks;
 
     public class Turing
     {
@@ -1253,7 +1253,7 @@ namespace Google.Example.Library.V1.Samples
         /// </summary>
         public static async Task SampleDiscussBookAsync(string imageFileName, Comment.Types.Stage stage)
         {
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
 
             // Initialize streaming call, retrieving the stream object
             LibraryServiceClient.DiscussBookStream duplexStream =
@@ -1308,7 +1308,7 @@ namespace Google.Example.Library.V1.Samples
         {
             new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
-                    SampleDiscussBook(opts.ImageFileName, opts.Stage));
+                    SampleDiscussBookAsync(opts.ImageFileName, opts.Stage).Wait());
         }
 
         public class Options

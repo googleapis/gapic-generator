@@ -6,7 +6,7 @@
 @snippet streamingBidiMethod(apiMethod, sample)
     {@asyncSampleFunction(sample)}
     {
-        {@syncClient(apiMethod)}
+        {@asyncClient(apiMethod)}
 
         // Initialize streaming call, retrieving the stream object
         {@apiMethod.apiClassName}.{@apiMethod.name}Stream duplexStream =
@@ -52,32 +52,25 @@
 @snippet streamingServerMethod(apiMethod, sample)
     {@asyncSampleFunction(sample)}
     {
-        {@syncClient(apiMethod)}
+        {@asyncClient(apiMethod)}
         {@standaloneSampleInitCode(sample.sampleInitCode)}
         
-        // Make the request, returning a streaming response
-        {@apiMethod.apiClassName}.{@apiMethod.name}Stream streamingResponse =
-            {@methodCall(apiMethod, sample)}
-
-        // Read streaming responses from server until complete
-        IAsyncEnumerator<{@apiMethod.serviceResponseTypeName}> responseStream = streamingResponse.ResponseStream;
-        while (await responseStream.MoveNext())
+        {@serverStreamingMethodCall(apiMethod, sample)}
+        await responseStream.ForEachAsync(item =>
         {
-            {@apiMethod.serviceResponseTypeName} item = responseStream.Current;
             @if sample.outputs
                 {@processOutputViews(sample.outputs)}
             @end
-        }
+        });
         // The response stream has completed
     }
 @end
 
-@private methodCall(apiMethod, sample)
-    @if apiMethod.hasReturnValue
-        {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+@private serverStreamingMethodCall(apiMethod, sample)
+    // Make the request, returning a streaming response
+    {@apiMethod.apiClassName}.{@apiMethod.name}Stream streamingResponse = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
             {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-    @else
-        {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-    @end
+
+    // Read streaming responses from server until complete
+    IAsyncEnumerator<{@apiMethod.serviceResponseTypeName}> responsestream = streamingResponse.ResponseStream;
 @end
