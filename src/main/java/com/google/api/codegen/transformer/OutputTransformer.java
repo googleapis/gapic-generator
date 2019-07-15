@@ -178,7 +178,7 @@ public class OutputTransformer {
 
     return Preconditions.checkNotNull(
         view,
-        "%s:%s: one field of OutputSpec must be set",
+        "%s:%s: one field of ResponseStatementProto must be set",
         methodContext.getMethodModel().getSimpleName(),
         sampleContext.sampleConfig().id());
   }
