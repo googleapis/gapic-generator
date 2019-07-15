@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.SampleConfig;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.auto.value.AutoValue;
@@ -25,15 +26,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * {@code SampleFileRegistry} is used to verify that the samples we generate with different
- * parameters have different paths, so they don't clobber each other.
+ * {@code SampleFileRegistry} is used to provide unique IDs for samples we generate with different
+ * so they don't clobber each other.
  *
- * <p>If a sample has a unique region tag, the file name of the sample will be its region tag in the
- * language-idiomatic case, followed by an appropriate extension.
+ * <p>If the user provided a sample ID, the user provided ID will be used as a base ID.
  *
- * <p>If the region tag of a sample is not unique, the file name of the sample will be constructed
- * by concatinating `method_name`, `calling_form` and `value_set_id`. The file name will be in the
- * language-idiomatic case and followed by an appropriate extension as well.
+ * <p>If the user did not provide a sample ID, the generator will use the combination of the word
+ * "sample" and the method name as a base ID.
+ *
+ * <p>If there are multiple calling forms specified for one base ID, the calling form will be added
+ * to the base ID.
+ *
+ * <p>If the base ID is still not unique, a numeric suffix will be added to disambiguate them.
  */
 public class SampleFileRegistry {
 
@@ -57,7 +61,14 @@ public class SampleFileRegistry {
     }
   }
 
-  public String getUniqueSampleId(String userProvidedId, CallingForm callingForm) {
+  public String getUniqueSampleId(SampleConfig config, CallingForm callingForm) {
+    String userProvidedId = config.id();
+    if (userProvidedId.equals("")) {
+      userProvidedId =
+          "sample_"
+              + Name.upperCamel(config.methodConfig().getMethodModel().getSimpleName())
+                  .toLowerUnderscore();
+    }
     Integer count = userProvidedIdCount.get(userProvidedId);
     Preconditions.checkState(count != null && count > 0, "Sample not registered.");
 
@@ -76,6 +87,7 @@ public class SampleFileRegistry {
     return idWithCallingPattern + suffix;
   }
 
+  // TODO(hzyi): remove this method after migrating to sample config.
   @Deprecated
   public String getSampleClassName(MethodSampleView sample, String method) {
     String regionTag = sample.regionTag();

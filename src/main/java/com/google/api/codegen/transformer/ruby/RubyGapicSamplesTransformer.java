@@ -207,7 +207,7 @@ public class RubyGapicSamplesTransformer implements ModelToViewTransformer<Proto
                     : InitCodeOutputType.FieldList;
             SampleContext sampleContext =
                 SampleContext.newBuilder()
-                    .uniqueSampleId(registry.getUniqueSampleId(sampleConfig.id(), form))
+                    .uniqueSampleId(registry.getUniqueSampleId(sampleConfig, form))
                     .sampleType(SampleSpec.SampleType.STANDALONE)
                     .callingForm(
                         CallingForm.getDefaultCallingForm(methodContext, TargetLanguage.RUBY))

@@ -108,7 +108,8 @@ public class OutputTransformer {
         .collect(ImmutableList.toImmutableList());
   }
 
-  // Entry point for generating output views using gapic config. To be deprecated.
+  // TODO(hzyi): Entry point for generating output views using gapic config. To be deprecated.
+  @Deprecated
   ImmutableList<OutputView> toViews(
       List<OutputSpec> configs,
       MethodContext context,
@@ -145,7 +146,7 @@ public class OutputTransformer {
           public void run() {
             Preconditions.checkArgument(
                 !ran,
-                "%s:%s: only one field of OutputSpec may be set",
+                "%s:%s: only one field of ResponseStatementProto may be set",
                 methodContext.getMethodModel().getSimpleName(),
                 sampleContext.sampleConfig().id());
             ran = true;

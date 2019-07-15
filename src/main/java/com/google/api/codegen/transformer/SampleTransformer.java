@@ -253,8 +253,7 @@ public abstract class SampleTransformer {
                 initCodeTransformer()
                     .getInitCodeNodes(
                         methodContext,
-                        initCodeContext
-                            .cloneWithEmptySymbolTable())); // to avoid symbol collision);
+                        initCodeContext.cloneWithEmptySymbolTable())); // to avoid symbol collision
 
     // Documentation
     SampleFunctionDocView sampleFunctionDocView =
