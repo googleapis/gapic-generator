@@ -707,7 +707,9 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
             CallingForm.FlattenedStreamingBidi,
             CallingForm.FlattenedStreamingServer,
             CallingForm.RequestStreamingBidi,
-            CallingForm.RequestStreamingServer)
+            CallingForm.RequestStreamingServer,
+            CallingForm.LongRunningFlattenedAsyncPollUntilComplete,
+            CallingForm.LongRunningRequestAsyncPollUntilComplete)
         .contains(form);
   }
 

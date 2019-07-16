@@ -172,8 +172,6 @@ public enum CallingForm {
 
   private static final Table<TargetLanguage, RpcType, CallingForm> DEFAULT_CALLING_FORM_TABLE =
       ImmutableTable.<TargetLanguage, RpcType, CallingForm>builder()
-          // TODO(hzyi): Change C# calling forms to appropriate ones after C# LRO and streaming are
-          // done
           .put(CSHARP, RpcType.UNARY, Request)
           .put(CSHARP, RpcType.LRO, LongRunningRequestPollUntilComplete)
           .put(CSHARP, RpcType.PAGED_STREAMING, RequestPagedAll)
