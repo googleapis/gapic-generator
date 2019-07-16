@@ -85,11 +85,11 @@ public class CodegenTestUtil {
 
     String serviceConfigPath = Objects.requireNonNull(serviceConfigUrl).getPath();
 
-    ServiceConfig.Builder b = ServiceConfig.newBuilder();
+    ServiceConfig.Builder builder = ServiceConfig.newBuilder();
 
     try {
       FileReader file = new FileReader(serviceConfigPath);
-      JsonFormat.parser().merge(file, b);
+      JsonFormat.parser().merge(file, builder);
     } catch (IOException e) {
       diagCollector.addDiag(
           Diag.error(
@@ -99,6 +99,6 @@ public class CodegenTestUtil {
               e.getMessage()));
     }
 
-    return b.build();
+    return builder.build();
   }
 }

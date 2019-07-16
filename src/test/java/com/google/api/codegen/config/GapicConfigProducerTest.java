@@ -83,88 +83,88 @@ public class GapicConfigProducerTest {
   }
 
   @Test
-  public void findMethod() {
-    MethodConfigProto.Builder mcb = MethodConfigProto.newBuilder();
+  public void testFindMethod() {
+    MethodConfigProto.Builder methodBuilder = MethodConfigProto.newBuilder();
     InterfaceConfigProto.Builder service = InterfaceConfigProto.newBuilder();
 
-    mcb.setName("foo");
-    service.addMethods(mcb);
-    mcb.setName("bar");
-    service.addMethods(mcb);
-    mcb.setName("baz");
-    service.addMethods(mcb);
+    methodBuilder.setName("foo");
+    service.addMethods(methodBuilder);
+    methodBuilder.setName("bar");
+    service.addMethods(methodBuilder);
+    methodBuilder.setName("baz");
+    service.addMethods(methodBuilder);
 
     assertThat(GapicProductConfig.findMethod(service, "baz")).isEqualTo(2);
     assertThat(GapicProductConfig.findMethod(service, "dne")).isEqualTo(-1);
   }
 
   @Test
-  public void findAndSetRetry() {
-    String rc = "retry_policy_1_codes";
-    String rp = "retry_policy_1_params";
-    String norc = "no_retry_codes";
-    String norp = "no_retry_params";
+  public void testFindAndSetRetry() {
+    String RETRY_CODES = "retry_policy_1_codes";
+    String RETRY_PARAMS = "retry_policy_1_params";
+    String NO_RETRY_CODES = "no_retry_codes";
+    String NO_RETRY_PARAMS = "no_retry_params";
     long timeout = 60000;
-    MethodConfigProto.Builder mcb = MethodConfigProto.newBuilder();
+    MethodConfigProto.Builder methodBuilder = MethodConfigProto.newBuilder();
     InterfaceConfigProto.Builder service = InterfaceConfigProto.newBuilder();
 
-    mcb.setName("foo");
-    service.addMethods(mcb);
-    mcb.setName("bar");
-    mcb.setRetryCodesName(norc);
-    mcb.setRetryParamsName(norp);
-    service.addMethods(mcb);
-    mcb.setName("baz");
-    service.addMethods(mcb);
+    methodBuilder.setName("foo");
+    service.addMethods(methodBuilder);
+    methodBuilder.setName("bar");
+    methodBuilder.setRetryCodesName(NO_RETRY_CODES);
+    methodBuilder.setRetryParamsName(NO_RETRY_PARAMS);
+    service.addMethods(methodBuilder);
+    methodBuilder.setName("baz");
+    service.addMethods(methodBuilder);
 
     // test basic find and set
-    GapicProductConfig.findAndSetRetry(service, false, "foo", rc, rp, timeout);
-    assertThat(service.getMethods(0).getRetryCodesName()).isEqualTo(rc);
-    assertThat(service.getMethods(0).getRetryParamsName()).isEqualTo(rp);
+    GapicProductConfig.findAndSetRetry(service, false, "foo", RETRY_CODES, RETRY_PARAMS, timeout);
+    assertThat(service.getMethods(0).getRetryCodesName()).isEqualTo(RETRY_CODES);
+    assertThat(service.getMethods(0).getRetryParamsName()).isEqualTo(RETRY_PARAMS);
     assertThat(service.getMethods(0).getTimeoutMillis()).isEqualTo(timeout);
 
     // test do not overwrite, e.g. service-defined retry not overwriting a method-defined retry
-    GapicProductConfig.findAndSetRetry(service, false, "bar", rc, rp, timeout);
-    assertThat(service.getMethods(1).getRetryCodesName()).isEqualTo(norc);
-    assertThat(service.getMethods(1).getRetryParamsName()).isEqualTo(norp);
+    GapicProductConfig.findAndSetRetry(service, false, "bar", RETRY_CODES, RETRY_PARAMS, timeout);
+    assertThat(service.getMethods(1).getRetryCodesName()).isEqualTo(NO_RETRY_CODES);
+    assertThat(service.getMethods(1).getRetryParamsName()).isEqualTo(NO_RETRY_PARAMS);
     assertThat(service.getMethods(1).getTimeoutMillis()).isNotEqualTo(timeout);
 
     // test overwrite, e.g. method-defined retry overwriting a service-defined retry or existing
     // GAPIC-defined retry
-    GapicProductConfig.findAndSetRetry(service, true, "baz", rc, rp, timeout);
-    assertThat(service.getMethods(2).getRetryCodesName()).isEqualTo(rc);
-    assertThat(service.getMethods(2).getRetryParamsName()).isEqualTo(rp);
+    GapicProductConfig.findAndSetRetry(service, true, "baz", RETRY_CODES, RETRY_PARAMS, timeout);
+    assertThat(service.getMethods(2).getRetryCodesName()).isEqualTo(RETRY_CODES);
+    assertThat(service.getMethods(2).getRetryParamsName()).isEqualTo(RETRY_PARAMS);
     assertThat(service.getMethods(2).getTimeoutMillis()).isEqualTo(timeout);
 
     // test add method config not defined in original GAPIC interface (but in the proto)
-    GapicProductConfig.findAndSetRetry(service, false, "buz", rc, rp, timeout);
-    assertThat(service.getMethods(3).getRetryCodesName()).isEqualTo(rc);
-    assertThat(service.getMethods(3).getRetryParamsName()).isEqualTo(rp);
+    GapicProductConfig.findAndSetRetry(service, false, "buz", RETRY_CODES, RETRY_PARAMS, timeout);
+    assertThat(service.getMethods(3).getRetryCodesName()).isEqualTo(RETRY_CODES);
+    assertThat(service.getMethods(3).getRetryParamsName()).isEqualTo(RETRY_PARAMS);
     assertThat(service.getMethods(3).getName()).isEqualTo("buz");
     assertThat(service.getMethods(3).getTimeoutMillis()).isEqualTo(timeout);
   }
 
   @Test
-  public void addRetryConfigIfAbsent() {
-    RetryParamsDefinitionProto.Builder rpb = RetryParamsDefinitionProto.newBuilder();
-    RetryCodesDefinitionProto.Builder rcb = RetryCodesDefinitionProto.newBuilder();
+  public void testAddRetryConfigIfAbsent() {
+    RetryParamsDefinitionProto.Builder retryParamsBuilder = RetryParamsDefinitionProto.newBuilder();
+    RetryCodesDefinitionProto.Builder retryCodesBuilder = RetryCodesDefinitionProto.newBuilder();
     InterfaceConfigProto.Builder service = InterfaceConfigProto.newBuilder();
 
-    rcb.setName("retry_policy_1_params");
-    rpb.setName("retry_policy_1_params");
+    retryCodesBuilder.setName("retry_policy_1_codes");
+    retryParamsBuilder.setName("retry_policy_1_params");
 
     // test basic add new retry config
-    GapicProductConfig.addRetryConfigIfAbsent(service, rcb, rpb);
-    assertThat(service.getRetryCodesDef(0).getName()).isEqualTo(rcb.getName());
-    assertThat(service.getRetryParamsDef(0).getName()).isEqualTo(rpb.getName());
+    GapicProductConfig.addRetryConfigIfAbsent(service, retryCodesBuilder, retryParamsBuilder);
+    assertThat(service.getRetryCodesDef(0).getName()).isEqualTo(retryCodesBuilder.getName());
+    assertThat(service.getRetryParamsDef(0).getName()).isEqualTo(retryParamsBuilder.getName());
 
     // test attempt to add duplicate retry config
-    GapicProductConfig.addRetryConfigIfAbsent(service, rcb, rpb);
+    GapicProductConfig.addRetryConfigIfAbsent(service, retryCodesBuilder, retryParamsBuilder);
     assertThat(service.getRetryParamsDefList().size()).isEqualTo(1);
   }
 
   @Test
-  public void injectRetryPolicyConfig() {
+  public void testInjectRetryPolicyConfig() {
     TestDataLocator locator = MixedPathTestDataLocator.create(this.getClass());
     locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
 
