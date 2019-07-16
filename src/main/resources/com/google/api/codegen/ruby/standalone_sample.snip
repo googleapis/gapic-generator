@@ -7,7 +7,7 @@
     @let sample = sampleFile.sample
       {@license(sampleFile.fileHeader)}
 
-      @# DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+      @# DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.id}")
       
       @# sample-metadata
       @#   title: {@sample.title}
@@ -16,7 +16,7 @@
       @end
       @#   bundle exec ruby {@sampleFile.outputPath} {@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}
 
-      require "{@apiMethod.initCode.topLevelIndexFileImportName}"
+      require "{@sample.sampleInitCode.topLevelIndexFileImportName}"
 
       {@standaloneSample(apiMethod, sample)}
 
@@ -186,9 +186,9 @@
 @end
 
 @private methodCallSampleCode(apiMethod, sample)
-  @if apiMethod.initCode.fieldSettings
+  @if sample.sampleInitCode.fieldSettings
     {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-      {@sampleMethodCallArgList(apiMethod.initCode)})
+      {@sampleMethodCallArgList(sample.sampleInitCode)})
   @else
     {@apiMethod.apiVariableName}.{@apiMethod.name}
   @end

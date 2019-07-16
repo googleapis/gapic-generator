@@ -57,14 +57,16 @@ public class PhpMethodViewGenerator {
               methodContext,
               initContext,
               false,
-              Arrays.asList(CallingForm.RequestPaged, CallingForm.RequestPagedAll));
+              Arrays.asList(CallingForm.RequestPaged, CallingForm.RequestPagedAll),
+              null);
     } else if (methodContext.isLongRunningMethodContext()) {
       methodView =
           clientMethodTransformer.generateLongRunningMethod(
               methodContext,
               initContext,
               false,
-              Arrays.asList(CallingForm.LongRunningRequest, CallingForm.LongRunningRequestAsync));
+              Arrays.asList(CallingForm.LongRunningRequest, CallingForm.LongRunningRequestAsync),
+              null);
     } else {
       List<CallingForm> callingForms;
       GrpcStreamingType streamingType = methodContext.getMethodConfig().getGrpcStreamingType();
@@ -91,7 +93,7 @@ public class PhpMethodViewGenerator {
       }
       methodView =
           clientMethodTransformer.generateRequestMethod(
-              methodContext, initContext, false, callingForms);
+              methodContext, initContext, false, callingForms, null);
     }
 
     return methodView;
