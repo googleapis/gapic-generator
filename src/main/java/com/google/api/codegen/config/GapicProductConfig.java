@@ -503,6 +503,7 @@ public abstract class GapicProductConfig implements ProductConfig {
             .collect(Collectors.toMap(InterfaceConfigProto::getName, Function.identity())));
   }
 
+  @VisibleForTesting
   static List<InterfaceConfigProto> injectRetryPolicyConfig(
       ServiceConfig config,
       ImmutableMap<String, Interface> protoInterfaces,
@@ -583,6 +584,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   /** adds the retry param and code list objects to the GAPIC interface unless already present */
+  @VisibleForTesting
   static void addRetryConfigIfAbsent(
       InterfaceConfigProto.Builder ib,
       RetryCodesDefinitionProto.Builder rcb,
@@ -614,6 +616,7 @@ public abstract class GapicProductConfig implements ProductConfig {
    * finds the named MethodConfigProto, creates one if absent in the GAPIC interface, and sets retry
    * config
    */
+  @VisibleForTesting
   static void findAndSetRetry(
       InterfaceConfigProto.Builder ib,
       boolean overwrite,
@@ -621,10 +624,10 @@ public abstract class GapicProductConfig implements ProductConfig {
       String rc,
       String rp,
       long timeout) {
-    int i = findMethod(ib, method);
+    int mthdNdx = findMethod(ib, method);
 
     // add a new MethodConfigProto item to the GAPIC interface
-    if (i == -1) {
+    if (mthdNdx == -1) {
       MethodConfigProto.Builder mcp = MethodConfigProto.newBuilder();
       mcp.setRetryParamsName(rp);
       mcp.setRetryCodesName(rc);
@@ -634,7 +637,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       return;
     }
 
-    MethodConfigProto.Builder mcp = ib.getMethods(i).toBuilder();
+    MethodConfigProto.Builder mcp = ib.getMethods(mthdNdx).toBuilder();
     // don't overwrite a config previously given by gRPC service config
     if (!overwrite
         && (mcp.getRetryCodesName().startsWith("retry_policy_")
@@ -645,10 +648,11 @@ public abstract class GapicProductConfig implements ProductConfig {
     mcp.setRetryParamsName(rp);
     mcp.setRetryCodesName(rc);
     mcp.setTimeoutMillis(timeout);
-    ib.setMethods(i, mcp);
+    ib.setMethods(mthdNdx, mcp);
   }
 
   /** returns the index of the named MethodConfigProto in the GAPIC interface and -1 if not found */
+  @VisibleForTesting
   static int findMethod(InterfaceConfigProto.Builder service, String method) {
     List<MethodConfigProto> methods = service.getMethodsList();
     for (int ndx = 0; ndx < methods.size(); ndx++) {

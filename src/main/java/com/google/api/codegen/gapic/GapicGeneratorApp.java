@@ -163,11 +163,11 @@ public class GapicGeneratorApp extends ToolDriverBase {
     String gRPCServiceConfigPath = options.get(GRPC_SERVICE_CONFIG);
     ServiceConfig gRPCServiceConfig = null;
     if (!Strings.isNullOrEmpty(gRPCServiceConfigPath)) {
-      ServiceConfig.Builder b = ServiceConfig.newBuilder();
+      ServiceConfig.Builder builder = ServiceConfig.newBuilder();
       FileReader file = new FileReader(gRPCServiceConfigPath);
-      JsonFormat.parser().merge(file, b);
+      JsonFormat.parser().merge(file, builder);
 
-      gRPCServiceConfig = b.build();
+      gRPCServiceConfig = builder.build();
     }
 
     // Read the sample configs, if they are given, and convert them to protos.
