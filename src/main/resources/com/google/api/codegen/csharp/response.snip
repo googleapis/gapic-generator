@@ -42,7 +42,7 @@
 @end
 
 @private processArrayLoopView(view)
-    foreach (var {@view.variableName} in {@variableField(@view.collection)}) {
+    foreach ({@view.variableType} {@view.variableName} in {@variableField(@view.collection)}) {
         {@processOutputViews(@view.body)}
     }
 @end
@@ -56,12 +56,12 @@
         }
     @else
         @if view.keyVariableName
-            foreach (var {@view.keyVariableName} in {@variableField(@view.map)}.Keys) {
+            foreach ({@view.keyType} {@view.keyVariableName} in {@variableField(@view.map)}.Keys) {
                 {@processOutputViews(@view.body)}
             }
         @else
             @if view.valueVariableName
-                for (var {@view.valueVariableName} in {@variableField(@view.map)}.Values) {
+                for ({@view.valueType} {@view.valueVariableName} in {@variableField(@view.map)}.Values) {
                     {@processOutputViews(@view.body)}
                 }
             @else
