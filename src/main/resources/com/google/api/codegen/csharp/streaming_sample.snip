@@ -1,0 +1,76 @@
+@extends "csharp/client.snip"
+@extends "csharp/common.snip"
+@extends "csharp/common_initcode.snip"
+@extends "csharp/response.snip"
+
+@snippet streamingBidiMethod(apiMethod, sample)
+    {@asyncSampleFunction(sample)}
+    {
+        {@asyncClient(apiMethod)}
+
+        // Initialize streaming call, retrieving the stream object
+        {@apiMethod.apiClassName}.{@apiMethod.name}Stream duplexStream =
+            {@apiMethod.apiVariableName}.{@apiMethod.name}();
+
+        // Sending requests are retrieving responses can be arbitrarily interleaved.
+        // Exact sequence will depend on client/server behavior.
+
+        // Create task to do something with responses from server
+        Task responseHandlerTask = Task.Run(async () =>
+            {
+                IAsyncEnumerator<{@apiMethod.serviceResponseTypeName}> responseStream = duplexStream.ResponseStream;
+                while (await responseStream.MoveNext())
+                {
+                    {@apiMethod.serviceResponseTypeName} item = responseStream.Current;
+                    @if sample.outputs
+                        {@processOutputViews(sample.outputs)}
+                    @end
+                }
+                // The response stream has completed
+            });
+                
+        // Send requests to the server
+        bool done = false;
+        while (!done)
+        {
+            // Initialize a request
+            {@standaloneSampleInitCode(sample.sampleInitCode)}
+            // Stream a request to the server
+            await duplexStream.WriteAsync(request);
+            
+            // Set "done" to true when sending requests is complete
+            done = true;
+        }
+        // Complete writing requests to the stream
+        await duplexStream.WriteCompleteAsync();
+        // Await the response handler.
+        // This will complete once all server responses have been processed.
+        await responseHandlerTask;
+    }
+@end
+
+@snippet streamingServerMethod(apiMethod, sample)
+    {@asyncSampleFunction(sample)}
+    {
+        {@asyncClient(apiMethod)}
+        {@standaloneSampleInitCode(sample.sampleInitCode)}
+        
+        {@serverStreamingMethodCall(apiMethod, sample)}
+        await responseStream.ForEachAsync(item =>
+        {
+            @if sample.outputs
+                {@processOutputViews(sample.outputs)}
+            @end
+        });
+        // The response stream has completed
+    }
+@end
+
+@private serverStreamingMethodCall(apiMethod, sample)
+    // Make the request, returning a streaming response
+    {@apiMethod.apiClassName}.{@apiMethod.name}Stream streamingResponse = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+
+    // Read streaming responses from server until complete
+    IAsyncEnumerator<{@apiMethod.serviceResponseTypeName}> responsestream = streamingResponse.ResponseStream;
+@end

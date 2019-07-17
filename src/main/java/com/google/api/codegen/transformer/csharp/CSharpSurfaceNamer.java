@@ -54,6 +54,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class CSharpSurfaceNamer extends SurfaceNamer {
 
@@ -702,7 +703,13 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
             CallingForm.FlattenedAsyncPaged,
             CallingForm.FlattenedAsyncPagedAll,
             CallingForm.FlattenedAsyncPagedPageSize,
-            CallingForm.LongRunningPromiseAwait)
+            CallingForm.LongRunningPromiseAwait,
+            CallingForm.FlattenedStreamingBidi,
+            CallingForm.FlattenedStreamingServer,
+            CallingForm.RequestStreamingBidi,
+            CallingForm.RequestStreamingServer,
+            CallingForm.LongRunningFlattenedAsyncPollUntilComplete,
+            CallingForm.LongRunningRequestAsyncPollUntilComplete)
         .contains(form);
   }
 
@@ -748,6 +755,45 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getMapKeyAccessorName(TypeModel keyType, String key) {
     return String.format("[%s]", getModelTypeFormatter().renderPrimitiveValue(keyType, key));
+  }
+
+  @Override
+  public Set<String> getSampleUsedVarNames(MethodContext context, CallingForm form) {
+    switch (form) {
+      case FlattenedStreamingBidi:
+      case RequestStreamingBidi:
+        return ImmutableSet.of("responseStream", "item");
+      case FlattenedStreamingServer:
+      case RequestStreamingServer:
+        return ImmutableSet.of("response", "responseStream", "item");
+      case FlattenedPaged:
+      case RequestPaged:
+      case FlattenedAsyncPaged:
+      case RequestAsyncPaged:
+        return ImmutableSet.of("response", "page", "item");
+      case FlattenedPagedAll:
+      case RequestPagedAll:
+      case FlattenedAsyncPagedAll:
+      case RequestAsyncPagedAll:
+        return ImmutableSet.of("response", "item");
+      case FlattenedPagedPageSize:
+      case RequestPagedPageSize:
+      case FlattenedAsyncPagedPageSize:
+      case RequestAsyncPagedPageSize:
+        return ImmutableSet.of("response", "singlePage", "item");
+      case Request:
+      case Flattened:
+      case RequestAsync:
+      case FlattenedAsync:
+        return ImmutableSet.of("response");
+      case LongRunningFlattenedPollUntilComplete:
+      case LongRunningFlattenedAsyncPollUntilComplete:
+      case LongRunningRequestPollUntilComplete:
+      case LongRunningRequestAsyncPollUntilComplete:
+        return ImmutableSet.of("operation", "response");
+      default:
+        throw new IllegalArgumentException("Unrecognized calling form: " + form);
+    }
   }
 
   @Override

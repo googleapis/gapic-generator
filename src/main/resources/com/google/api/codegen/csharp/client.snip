@@ -1,0 +1,23 @@
+@snippet syncClient(apiMethod)
+    {@apiMethod.apiClassName} {@apiMethod.apiVariableName} = \
+        {@apiMethod.apiClassName}.Create();
+@end
+
+@snippet asyncClient(apiMethod)
+    {@apiMethod.apiClassName} {@apiMethod.apiVariableName} = await \
+        {@apiMethod.apiClassName}.CreateAsync();
+@end
+
+@snippet commaSeparatedArgAndTypes(args)
+    @join arg : args on ", "
+        {@arg.typeName} {@arg.identifier}
+    @end
+@end
+
+@snippet syncSampleFunction(sample)
+    public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)})
+@end
+
+@snippet asyncSampleFunction(sample)
+    public static async Task {@sample.sampleFunctionName}Async({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)})
+@end
