@@ -1,5 +1,5 @@
 ---
-type: com.google.api.codegen.samplegen.SampleConfigProto
+type: com.google.api.codegen.samplegen.v1p2.SampleConfigProto
 config_schema_version: 1.2.0
 samples:
 - service: google.example.library.v1.LibraryService
@@ -14,3 +14,18 @@ samples:
   - print:
       - "The theme of the shelf is: %s"
       - $resp.theme
+- service: google.example.library.v1.LibraryService
+  rpc: GetShelf
+  region_tag: test_setting_up_empty_objects_in_request
+  title: test_setting_up_empty_objects_in_request
+  description: "Test setting up empty objects in the request objects."
+  request:
+  - field: name%shelf_id
+    value: "my-shelf"
+  - field: message
+    value: "{}"
+    comment: "we can set up this empty nested object now"
+  - field: string_builder
+    value: "{}"
+  response:
+  - print: ["Shelf found."]

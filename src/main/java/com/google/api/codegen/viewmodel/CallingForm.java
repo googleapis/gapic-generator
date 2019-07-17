@@ -29,7 +29,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
-import java.util.List;
 
 /**
  * The different calling forms we wish to illustrate in samples. Not every method type will have
@@ -130,45 +129,49 @@ public enum CallingForm {
   }
 
   // TODO: Factor this out to a yaml file
-  private static final Table<TargetLanguage, RpcType, List<CallingForm>> CALLING_FORM_TABLE =
-      ImmutableTable.<TargetLanguage, RpcType, List<CallingForm>>builder()
-          .put(JAVA, RpcType.UNARY, ImmutableList.of(Request, Flattened, Callable))
-          .put(
-              JAVA,
-              RpcType.LRO,
-              ImmutableList.of(LongRunningFlattenedAsync, LongRunningRequestAsync))
-          .put(
-              JAVA,
-              RpcType.PAGED_STREAMING,
-              ImmutableList.of(RequestPaged, RequestPagedAll, FlattenedPaged, CallableList))
-          .put(JAVA, RpcType.CLIENT_STREAMING, ImmutableList.of(CallableStreamingClient))
-          .put(JAVA, RpcType.SERVER_STREAMING, ImmutableList.of(CallableStreamingServer))
-          .put(JAVA, RpcType.BIDI_STREAMING, ImmutableList.of(CallableStreamingBidi))
-          .put(PYTHON, RpcType.UNARY, ImmutableList.of(Request))
-          .put(PYTHON, RpcType.LRO, ImmutableList.of(LongRunningPromise))
-          .put(PYTHON, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPagedAll, RequestPaged))
-          .put(PYTHON, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
-          .put(PYTHON, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
-          .put(PYTHON, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
-          .put(PHP, RpcType.UNARY, ImmutableList.of(Request))
-          .put(PHP, RpcType.LRO, ImmutableList.of(LongRunningRequest, LongRunningRequestAsync))
-          .put(PHP, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
-          .put(PHP, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
-          .put(PHP, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
-          .put(PHP, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
-          .put(NODEJS, RpcType.UNARY, ImmutableList.of(Request))
-          .put(NODEJS, RpcType.LRO, ImmutableList.of(LongRunningEventEmitter, LongRunningPromise))
-          .put(NODEJS, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
-          .put(NODEJS, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
-          .put(NODEJS, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
-          .put(NODEJS, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
-          .put(RUBY, RpcType.UNARY, ImmutableList.of(Request))
-          .put(RUBY, RpcType.LRO, ImmutableList.of(LongRunningRequestAsync))
-          .put(RUBY, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPagedAll, RequestPaged))
-          .put(RUBY, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
-          .put(RUBY, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
-          .put(RUBY, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
-          .build();
+  private static final Table<TargetLanguage, RpcType, ImmutableList<CallingForm>>
+      CALLING_FORM_TABLE =
+          ImmutableTable.<TargetLanguage, RpcType, ImmutableList<CallingForm>>builder()
+              .put(JAVA, RpcType.UNARY, ImmutableList.of(Request, Flattened, Callable))
+              .put(
+                  JAVA,
+                  RpcType.LRO,
+                  ImmutableList.of(LongRunningFlattenedAsync, LongRunningRequestAsync))
+              .put(
+                  JAVA,
+                  RpcType.PAGED_STREAMING,
+                  ImmutableList.of(RequestPaged, RequestPagedAll, FlattenedPaged, CallableList))
+              .put(JAVA, RpcType.CLIENT_STREAMING, ImmutableList.of(CallableStreamingClient))
+              .put(JAVA, RpcType.SERVER_STREAMING, ImmutableList.of(CallableStreamingServer))
+              .put(JAVA, RpcType.BIDI_STREAMING, ImmutableList.of(CallableStreamingBidi))
+              .put(PYTHON, RpcType.UNARY, ImmutableList.of(Request))
+              .put(PYTHON, RpcType.LRO, ImmutableList.of(LongRunningPromise))
+              .put(PYTHON, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPagedAll, RequestPaged))
+              .put(PYTHON, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
+              .put(PYTHON, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
+              .put(PYTHON, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
+              .put(PHP, RpcType.UNARY, ImmutableList.of(Request))
+              .put(PHP, RpcType.LRO, ImmutableList.of(LongRunningRequest, LongRunningRequestAsync))
+              .put(PHP, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
+              .put(PHP, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
+              .put(PHP, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
+              .put(PHP, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
+              .put(NODEJS, RpcType.UNARY, ImmutableList.of(Request))
+              .put(
+                  NODEJS,
+                  RpcType.LRO,
+                  ImmutableList.of(LongRunningEventEmitter, LongRunningPromise))
+              .put(NODEJS, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
+              .put(NODEJS, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
+              .put(NODEJS, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
+              .put(NODEJS, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
+              .put(RUBY, RpcType.UNARY, ImmutableList.of(Request))
+              .put(RUBY, RpcType.LRO, ImmutableList.of(LongRunningRequestAsync))
+              .put(RUBY, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPagedAll, RequestPaged))
+              .put(RUBY, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
+              .put(RUBY, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
+              .put(RUBY, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
+              .build();
 
   private static final Table<TargetLanguage, RpcType, CallingForm> DEFAULT_CALLING_FORM_TABLE =
       ImmutableTable.<TargetLanguage, RpcType, CallingForm>builder()
@@ -224,7 +227,7 @@ public enum CallingForm {
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, toString());
   }
 
-  public static List<CallingForm> getCallingForms(
+  public static ImmutableList<CallingForm> getCallingForms(
       MethodContext methodContext, TargetLanguage lang) {
     Preconditions.checkArgument(lang != TargetLanguage.GO, "Go is not supported for now.");
     return CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));

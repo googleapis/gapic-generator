@@ -20,35 +20,29 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class SampleParameterConfig {
 
-  /** The identifier of the parameter, usually a protobuf field path. */
-  public abstract String identifier();
+  /** The path to the field. */
+  public abstract String field();
 
   /**
-   * Configured by attributes.parameter.read_file in the spec. If true, the value of this parameter
-   * will be replaced by the contents of the file with the name that equals to the original value of
-   * this parameter. Only allowed when the parameter represents a bytes field or a repeated bytes
-   * field.
-   *
-   * <p>If the parameter is a bytes field, the value set to this parameter will be the file name.
-   *
-   * <p>If the parameter is a repeated bytes field, the value set to this parameter will be a list
-   * of comma separated file names. For example, "foo.jpg,bar.jpg,baz.jpg".
+   * If true, the value of this parameter will be replaced by the contents of the file with the name
+   * that equals to the original value of this parameter. Only allowed when the parameter represents
+   * a bytes field.
    */
-  public abstract boolean readFromFile();
+  public abstract boolean isFile();
 
   /** If true, the parameter will be an argument passed to the sample function. */
-  public boolean isSampleArgument() {
-    return !sampleArgumentName().isEmpty();
+  public boolean isInputParameter() {
+    return !inputParameter().isEmpty();
   }
 
-  /** The description of the parameter. */
-  public abstract String description();
+  /** The comment of the parameter. */
+  public abstract String comment();
 
   /**
-   * If not empty, the parameter will be an argument passed to the sample function. Returns the name
-   * of the argument.
+   * If not empty, the parameter will be a parameter passed to the sample function. Returns the name
+   * of the parameter.
    */
-  public abstract String sampleArgumentName();
+  public abstract String inputParameter();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleParameterConfig.Builder();
@@ -57,13 +51,13 @@ public abstract class SampleParameterConfig {
   @AutoValue.Builder
   public abstract static class Builder {
 
-    public abstract Builder identifier(String val);
+    public abstract Builder field(String val);
 
-    public abstract Builder readFromFile(boolean val);
+    public abstract Builder isFile(boolean val);
 
-    public abstract Builder sampleArgumentName(String val);
+    public abstract Builder inputParameter(String val);
 
-    public abstract Builder description(String val);
+    public abstract Builder comment(String val);
 
     public abstract SampleParameterConfig build();
   }

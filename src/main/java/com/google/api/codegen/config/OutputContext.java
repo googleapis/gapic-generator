@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.OutputSpec;
+import com.google.api.codegen.samplegen.v1p2.ResponseStatementProto;
 import com.google.api.codegen.transformer.OutputTransformer;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
@@ -59,7 +59,7 @@ public abstract class OutputContext {
    *
    * <p>In C#, `System.Collection.Generic.KeyValuePair` needs to be imported if there are map Specs.
    */
-  public abstract List<OutputSpec.LoopStatement> mapSpecs();
+  public abstract List<ResponseStatementProto.LoopStatement> mapSpecs();
 
   public boolean hasMaps() {
     return !mapSpecs().isEmpty();

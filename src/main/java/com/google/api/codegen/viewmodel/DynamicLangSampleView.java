@@ -39,13 +39,11 @@ public abstract class DynamicLangSampleView implements ViewModel {
 
   public abstract String outputPath();
 
-  // Only needed in Java for now
-  @Nullable
-  public abstract String className();
-
   /** The client library method illustrated in this sample. */
   public abstract OptionalArrayMethodView libraryMethod();
 
+  /** Only Used in Python. */
+  @Nullable
   public abstract String gapicPackageName();
 
   // TODO: Currently we put generated samples in libraryMethod(),
@@ -74,8 +72,6 @@ public abstract class DynamicLangSampleView implements ViewModel {
     public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder outputPath(String val);
-
-    public abstract Builder className(String val);
 
     public abstract Builder libraryMethod(OptionalArrayMethodView val);
 

@@ -128,7 +128,6 @@ public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoA
                 .outputPath(sampleOutputPath)
                 .libraryMethod(
                     method.toBuilder().samples(Collections.singletonList(methodSample)).build())
-                .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
                 .extraInfo(
                     PhpSampleExtraInfo.newBuilder()
                         .autoloadPath(autoloadPath)
