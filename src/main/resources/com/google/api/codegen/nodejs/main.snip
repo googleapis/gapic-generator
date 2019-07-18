@@ -95,7 +95,11 @@
 
       // Load the applicable protos.
       const protos = gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
+        @if xapi.fileHeader.hasVersion
+          path.join(__dirname, '..', '..', 'protos'),
+        @else
+          path.join(__dirname, '..', 'protos'),
+        @end
         [
           @join stub : xapi.stubs on {@","}.add(BREAK)
             '{@stub.protoFileName}'

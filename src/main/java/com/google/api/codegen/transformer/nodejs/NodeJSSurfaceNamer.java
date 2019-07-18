@@ -512,6 +512,15 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getProtoListFileName(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getRawName())
+            .join("proto")
+            .join("list")
+            .toLowerUnderscore()
+        + ".json";
+  }
+
+  @Override
   public String getSourceFilePath(String path, String publicClassName) {
     return path + File.separator + Name.upperCamel(publicClassName).toLowerUnderscore() + ".js";
   }

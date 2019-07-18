@@ -66,6 +66,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private static final String VERSION_INDEX_TEMPLATE_FILE = "nodejs/version_index.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "nodejs/main.snip";
   private static final String PBJS_TEMPLATE_FILENAME = "nodejs/pbjs.snip";
+  private static final String PROTO_LIST_TEMPLATE_FILENAME = "nodejs/protos.snip";
 
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -91,7 +92,11 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   @Override
   public List<String> getTemplateFileNames() {
     return ImmutableList.of(
-        INDEX_TEMPLATE_FILE, VERSION_INDEX_TEMPLATE_FILE, XAPI_TEMPLATE_FILENAME, PBJS_TEMPLATE_FILENAME);
+        INDEX_TEMPLATE_FILE,
+        VERSION_INDEX_TEMPLATE_FILE,
+        XAPI_TEMPLATE_FILENAME,
+        PBJS_TEMPLATE_FILENAME,
+        PROTO_LIST_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -116,21 +121,43 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     for (InterfaceModel apiInterface : apiInterfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       models.add(generateApiClass(context, hasMultipleServices));
+      models.add(generateProtoList(context, hasMultipleServices));
     }
     return models.build();
   }
 
-  private ViewModel generateApiClass(GapicInterfaceContext context, boolean hasMultipleServices) {
+  private ViewModel generateProtoList(GapicInterfaceContext context, boolean hasMultipleServices) {
+    DynamicLangXApiView.Builder protoList = prepareApiClassBuilder(context, hasMultipleServices);
     SurfaceNamer namer = context.getNamer();
     String subPath =
         pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
+
+    protoList.templateFileName(PROTO_LIST_TEMPLATE_FILENAME);
+    protoList.outputPath(subPath + "/" + namer.getProtoListFileName(context.getInterfaceConfig()));
+
+    return protoList.build();
+  }
+
+  private ViewModel generateApiClass(GapicInterfaceContext context, boolean hasMultipleServices) {
+    DynamicLangXApiView.Builder xapiClass = prepareApiClassBuilder(context, hasMultipleServices);
+
+    SurfaceNamer namer = context.getNamer();
+    String subPath =
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
+
+    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
+    xapiClass.outputPath(subPath + "/" + namer.getServiceFileName(context.getInterfaceConfig()));
+
+    return xapiClass.build();
+  }
+
+  private DynamicLangXApiView.Builder prepareApiClassBuilder(
+      GapicInterfaceContext context, boolean hasMultipleServices) {
+    SurfaceNamer namer = context.getNamer();
     List<OptionalArrayMethodView> methods =
         methodGenerator.generateApiMethods(context, hasMultipleServices);
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
-
-    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
-    xapiClass.outputPath(subPath + "/" + namer.getServiceFileName(context.getInterfaceConfig()));
 
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
@@ -176,7 +203,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
 
     xapiClass.validDescriptorsNames(generateValidDescriptorsNames(context));
 
-    return xapiClass.build();
+    return xapiClass;
   }
 
   private List<String> generateValidDescriptorsNames(GapicInterfaceContext context) {
