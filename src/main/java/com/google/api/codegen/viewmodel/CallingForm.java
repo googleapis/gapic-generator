@@ -51,11 +51,11 @@ public enum CallingForm {
   RequestPaged, // used by: csharp java php py ruby
   RequestPagedAll, // used by: csharp php py ruby
   RequestPagedPageSize, // used by: csharp
-  RequestStreamingBidi, // used by: nodejs php py ruby
+  RequestStreamingBidi, // used by: csharp nodejs php py ruby
   RequestStreamingBidiAsync, // used by: php
   RequestStreamingClient, // used by: nodejs php py ruby
   RequestStreamingClientAsync, // used by: php
-  RequestStreamingServer, // used by: nodejs php py ruby
+  RequestStreamingServer, // used by: csharp nodejs php py ruby
 
   Flattened, // used by: csharp java
   FlattenedPaged, // used by: csharp java
@@ -65,6 +65,8 @@ public enum CallingForm {
   FlattenedAsyncPaged, // used by: csharp
   FlattenedAsyncPagedAll, // used by: csharp
   FlattenedAsyncPagedPageSize, // used by: csharp
+  FlattenedStreamingBidi, // used by: csharp
+  FlattenedStreamingServer, // used by: csharp
 
   Callable, // used by: java
   CallableList, // used by: java
@@ -81,23 +83,10 @@ public enum CallingForm {
   LongRunningPromiseAwait, // used by: nodejs
   LongRunningRequest, // used by: php
   LongRunningRequestAsync, // used by: java php ruby
-
-  // TODO: the following calling forms should be added for csharp. They are
-  // currently removed to turn off generating samples in these calling forms
-  // so that baseline do not explode
-  // Flattened,
-  // RequestStreamingBidi,
-  // RequestStreamingServer,
-  // FlattenedStreamingBidi,
-  // FlattenedStreamingServer,
-  // LongRunningFlattenedPollUntilComplete,
-  // LongRunningFlattenedPollLater,
-  // LongRunningFlattenedAsyncPollUntilComplete,
-  // LongRunningFlattenedAsyncPollLater,
-  // LongRunningRequestPollUntilComplete,
-  // LongRunningRequestPollLater,
-  // LongRunningRequestAsyncPollUntilComplete,
-  // LongRunningRequestAsyncPollLater,
+  LongRunningFlattenedPollUntilComplete, // used by: csharp
+  LongRunningFlattenedAsyncPollUntilComplete, // used by: csharp
+  LongRunningRequestPollUntilComplete, // used by: csharp
+  LongRunningRequestAsyncPollUntilComplete, // used by: csharp
 
   // Used only if code does not yet support deciding on one of the other ones. The goal is to have
   // this value never set.
@@ -186,14 +175,12 @@ public enum CallingForm {
 
   private static final Table<TargetLanguage, RpcType, CallingForm> DEFAULT_CALLING_FORM_TABLE =
       ImmutableTable.<TargetLanguage, RpcType, CallingForm>builder()
-          // TODO(hzyi): Change C# calling forms to appropriate ones after C# LRO and streaming are
-          // done
           .put(CSHARP, RpcType.UNARY, Request)
-          .put(CSHARP, RpcType.LRO, Generic)
+          .put(CSHARP, RpcType.LRO, LongRunningRequestPollUntilComplete)
           .put(CSHARP, RpcType.PAGED_STREAMING, RequestPagedAll)
           .put(CSHARP, RpcType.CLIENT_STREAMING, Generic)
-          .put(CSHARP, RpcType.SERVER_STREAMING, Generic)
-          .put(CSHARP, RpcType.BIDI_STREAMING, Generic)
+          .put(CSHARP, RpcType.SERVER_STREAMING, RequestStreamingServer)
+          .put(CSHARP, RpcType.BIDI_STREAMING, RequestStreamingBidi)
           .put(JAVA, RpcType.UNARY, Request)
           .put(JAVA, RpcType.LRO, LongRunningRequestAsync)
           .put(JAVA, RpcType.PAGED_STREAMING, RequestPaged)
