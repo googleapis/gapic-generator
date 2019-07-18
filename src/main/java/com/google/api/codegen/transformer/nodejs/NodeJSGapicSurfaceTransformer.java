@@ -65,7 +65,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private static final String INDEX_TEMPLATE_FILE = "nodejs/index.snip";
   private static final String VERSION_INDEX_TEMPLATE_FILE = "nodejs/version_index.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "nodejs/main.snip";
-  private static final String PBJS_TEMPLATE_FILENAME = "nodejs/pbjs.snip";
   private static final String PROTO_LIST_TEMPLATE_FILENAME = "nodejs/protos.snip";
 
   private final GapicCodePathMapper pathMapper;
@@ -95,7 +94,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
         INDEX_TEMPLATE_FILE,
         VERSION_INDEX_TEMPLATE_FILE,
         XAPI_TEMPLATE_FILENAME,
-        PBJS_TEMPLATE_FILENAME,
         PROTO_LIST_TEMPLATE_FILENAME);
   }
 
@@ -340,6 +338,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
               .namespace(packageMetadataNamer.getServiceName());
       indexViews.add(versionIndexViewBuilder.build());
     }
+
     return indexViews;
   }
 

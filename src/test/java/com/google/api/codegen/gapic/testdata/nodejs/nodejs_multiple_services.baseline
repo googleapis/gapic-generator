@@ -1,6 +1,81 @@
 ============== file: README.md ==============
 # Node.js Clients for Google Example API
 This is a generated README.md placeholder. Put your own documentation here.
+============== file: compileProtos.js ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
+
+const pbjs = require("protobufjs/cli/pbjs");
+
+const readdir = util.promisify(fs.readdir);
+const readFile = util.promisify(fs.readFile);
+const stat = util.promisify(fs.stat);
+const pbjsMain = util.promisify(pbjs.main);
+
+async function findProtoJsonFiles(directory) {
+  const result = [];
+  const files = await readdir(directory);
+  for (const file of files) {
+    const fullPath = path.join(directory, file);
+    const fileStat = await stat(fullPath);
+    if (fileStat.isFile() && file.match(/_proto_list.json$/)) {
+      result.push(fullPath);
+    }
+    else if (fileStat.isDirectory()) {
+      const nested = await findProtoJsonFiles(fullPath);
+      result.push(...nested);
+    }
+  }
+  return result;
+}
+
+function normalizePath(filePath) {
+  return path.join(...filePath.split('/'));
+}
+
+async function buildListOfProtos(protoJsonFiles) {
+  const result = [];
+  for (const file of protoJsonFiles) {
+    const content = await readFile(file);
+    const list = JSON.parse(content).map(filePath => normalizePath(filePath));
+    result.push(...list);
+  }
+  return result;
+}
+
+async function compileProtos(protos) {
+  const pbjsArgs = [
+    '--target', 'json',
+    '-p', path.join('node_modules', 'google-gax', 'protos'),
+    '-p', 'protos',
+    '-o', path.join('protos', 'protos.json')
+  ];
+  pbjsArgs.push(...protos);
+  await pbjsMain(pbjsArgs);
+}
+
+async function main() {
+  const protoJsonFiles = await findProtoJsonFiles('./src');
+  const protos = await buildListOfProtos(protoJsonFiles);
+  await compileProtos(protos);
+}
+
+main();
 ============== file: package.json ==============
 {
   "repository": "GoogleCloudPlatform/google-cloud-node",
@@ -38,7 +113,7 @@ This is a generated README.md placeholder. Put your own documentation here.
     "through2": "^2.0.3"
   },
   "scripts": {
-    "postinstall": "node ./protos/compileJson.js",
+    "postinstall": "node ./compileProtos.js",
     "smoke-test": "mocha smoke-test/*.js --timeout 5000",
     "test": "mocha test/*.js"
   },
@@ -401,7 +476,7 @@ module.exports = DecrementerServiceClient;
 
 ============== file: src/v1/decrementer_service_proto_list.json ==============
 [
-  '../../protos/multiple_services.proto'
+  "../../protos/multiple_services.proto"
 ]
 ============== file: src/v1/doc/google/cloud/example/v1/foo/doc_multiple_services.js ==============
 // Copyright 2019 Google LLC
@@ -737,7 +812,7 @@ module.exports = IncrementerServiceClient;
 
 ============== file: src/v1/incrementer_service_proto_list.json ==============
 [
-  '../../protos/multiple_services.proto'
+  "../../protos/multiple_services.proto"
 ]
 ============== file: src/v1/index.js ==============
 // Copyright 2019 Google LLC
