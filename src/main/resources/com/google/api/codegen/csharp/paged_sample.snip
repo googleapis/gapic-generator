@@ -1,0 +1,144 @@
+@extends "csharp/client.snip"
+@extends "csharp/common.snip"
+@extends "csharp/common_initcode.snip"
+@extends "csharp/response.snip"
+
+@snippet pagedMethod(apiMethod, sample)
+    {@syncSampleFunction(sample)}
+    {
+        {@syncClient(apiMethod)}
+        {@standaloneSampleInitCode(sample.sampleInitCode)}
+        {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+        {@paging(apiMethod, sample)}
+    }
+@end
+
+@snippet pagedAllMethod(apiMethod, sample)
+    {@syncSampleFunction(sample)}
+    {
+        {@syncClient(apiMethod)}
+        {@standaloneSampleInitCode(sample.sampleInitCode)}
+        {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+        {@pagingAll(apiMethod, sample)}
+    }
+@end
+
+@snippet pagedPageSizeMethod(apiMethod, sample)
+    {@syncSampleFunction(sample)}
+    {
+        {@syncClient(apiMethod)}
+        {@standaloneSampleInitCode(sample.sampleInitCode)}
+        {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+        {@pagingPageSize(apiMethod, sample)}
+    }
+@end
+
+@snippet pagedAsyncMethod(apiMethod, sample)
+    {@asyncSampleFunction(sample)}
+    {
+        {@asyncClient(apiMethod)}
+        {@standaloneSampleInitCode(sample.sampleInitCode)}
+        {@apiMethod.callerResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+        {@pagingAsync(apiMethod, sample)}
+    }
+@end
+
+@snippet pagedAllAsyncMethod(apiMethod, sample)
+    {@asyncSampleFunction(sample)}
+    {
+        {@asyncClient(apiMethod)}
+        {@standaloneSampleInitCode(sample.sampleInitCode)}
+        {@apiMethod.callerResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+        {@pagingAllAsync(apiMethod, sample)}
+    }
+@end
+
+@snippet pagedPageSizeAsyncMethod(apiMethod, sample)
+    {@asyncSampleFunction(sample)}
+    {
+        {@asyncClient(apiMethod)}
+        {@standaloneSampleInitCode(sample.sampleInitCode)}
+        {@apiMethod.callerResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+        {@pagingPageSizeAsync(apiMethod, sample)}
+    }
+@end
+
+@private paging(apiMethod, sample)
+    // Iterate over all response items, lazily performing RPCs as required
+    foreach ({@apiMethod.listMethod.responseTypeName} page in response.asRawResponses())
+    {
+        foreach ({@apiMethod.listMethod.resourceTypeName} item in page)
+        {
+            @if sample.outputs
+                {@processOutputViews(sample.outputs)}
+            @end
+        }
+    }
+@end
+
+@private pagingAll(apiMethod, sample)
+    // Iterate over pages (of server-defined size), performing one RPC per page
+    foreach ({@apiMethod.listMethod.resourceTypeName} item in response)
+    {
+        @if sample.outputs
+            {@processOutputViews(sample.outputs)}
+        @end
+    }
+@end
+
+@private pagingPageSize(apiMethod, sample)
+    // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+    int pageSize = 10;
+    Page<{@apiMethod.listMethod.resourceTypeName}> singlePage = response.ReadPage(pageSize);
+    foreach ({@apiMethod.listMethod.resourceTypeName} item in response)
+    {
+        @if sample.outputs
+            {@processOutputViews(sample.outputs)}
+        @end
+    }
+    // Store the pageToken, for when the next page is required.
+    string nextPageToken = singlePage.NextPageToken;
+@end
+
+@private pagingAsync(apiMethod, sample)
+    // Iterate over all response items, lazily performing RPCs as required
+    await response.AsRawResponses().ForEachAsync(({@apiMethod.listMethod.responseTypeName} page) =>
+    {
+        foreach ({@apiMethod.listMethod.resourceTypeName} item in page)
+        {
+            @if sample.outputs
+                {@processOutputViews(sample.outputs)}
+            @end
+        }
+    });
+@end
+
+@private pagingAllAsync(apiMethod, sample)
+    // Iterate over pages (of server-defined size), performing one RPC per page
+    await response.ForEachAsync(({@apiMethod.listMethod.resourceTypeName} item) =>
+    {
+        @if sample.outputs
+            {@processOutputViews(sample.outputs)}
+        @end
+    });
+@end
+
+@private pagingPageSizeAsync(apiMethod, sample)
+    // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+    int pageSize = 10;
+    Page<{@apiMethod.listMethod.resourceTypeName}> singlePage = await response.ReadPageAsync(pageSize);
+    foreach ({@apiMethod.listMethod.resourceTypeName} item in response)
+    {
+        @if sample.outputs
+            {@processOutputViews(sample.outputs)}
+        @end
+    }
+    // Store the pageToken, for when the next page is required.
+    string nextPageToken = singlePage.NextPageToken;
+@end
