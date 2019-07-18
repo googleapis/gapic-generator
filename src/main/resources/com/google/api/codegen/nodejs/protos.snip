@@ -1,15 +1,15 @@
 @snippet generate(protoList)
   [
     @join stub : protoList.stubs on {@","}.add(BREAK)
-      [{@protoPath(protoList)} '{@stub.protoFileName}']
+      '{@protoPath(protoList)}/{@stub.protoFileName}'
     @end
   ]
 @end
 
 @private protoPath(protoList)
   @if protoList.fileHeader.hasVersion
-    '..', '..', 'protos',
+    ../../protos
   @else
-    '..', 'protos',
+    ../protos
   @end
 @end
