@@ -24,7 +24,7 @@ import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
-import com.google.api.codegen.samplegen.v1.SampleConfigProto;
+import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.ConfigSource;
@@ -203,11 +203,11 @@ public class GapicGeneratorApp extends ToolDriverBase {
       return;
     }
 
+    // TODO(hzyi-google): Once we switch to sample configs, require an
+    // additional check to generate samples:
+    // `sampleConfigProto != null`
     ArtifactFlags artifactFlags =
-        new ArtifactFlags(
-            options.get(ENABLED_ARTIFACTS),
-            artifactType,
-            options.get(DEV_SAMPLES) && sampleConfigProto != null);
+        new ArtifactFlags(options.get(ENABLED_ARTIFACTS), artifactType, options.get(DEV_SAMPLES));
     List<CodeGenerator<?>> generators =
         GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
     ImmutableMap.Builder<String, GeneratedResult<?>> generatedResults = ImmutableMap.builder();

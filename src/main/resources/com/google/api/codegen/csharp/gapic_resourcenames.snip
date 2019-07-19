@@ -78,6 +78,14 @@
             }
         }
 
+        /// <summary>Formats the IDs into the string representation of the <see cref="{@resource.typeName}"/>.</summary>
+        @join param : resource.params
+            /// <param name="{@param.nameAsParam}">The <c>{@param.docName}</c> ID. Must not be <c>null</c>.</param>
+        @end
+        /// <returns>The string representation of the <see cref="{@resource.typeName}"/>.</returns>
+        public static string Format({@formatParams(resource.params)}) =>
+            s_template.Expand({@formatNotNullParams(resource.params)});
+
         /// <summary>
         /// Constructs a new instance of the <see cref="{@resource.typeName}"/> resource name class
         /// from its component parts.
@@ -405,6 +413,12 @@
 @private formatResourceNameArgs(params)
     @join param : params on ", "
         resourceName[{@param.index}]
+    @end
+@end
+
+@private formatNotNullParams(params)
+    @join param : params on ", "
+        gax::GaxPreconditions.CheckNotNull({@param.nameAsParam}, nameof({@param.nameAsParam}))
     @end
 @end
 

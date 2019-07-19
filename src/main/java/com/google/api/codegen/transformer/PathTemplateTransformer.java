@@ -22,6 +22,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
 import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
@@ -73,16 +74,46 @@ public class PathTemplateTransformer {
     for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
       MethodContext methodContext = context.asRequestMethodContext(methodConfig.getMethodModel());
       for (String fieldNamePattern : methodConfig.getFieldNamePatterns().values()) {
-        SingleResourceNameConfig resourceNameConfig =
-            methodContext.getSingleResourceNameConfig(fieldNamePattern);
-        if (resourceNameConfig != null && !foundSet.contains(resourceNameConfig.getEntityId())) {
-          resourceNameConfigs.add(resourceNameConfig);
-          foundSet.add(resourceNameConfig.getEntityId());
-        }
+        addSingleResourceNameConfigsUsedByInterface(
+            methodContext, fieldNamePattern, foundSet, resourceNameConfigs);
+        addResourceNameOneofConfigsUsedByInterface(
+            context, fieldNamePattern, foundSet, resourceNameConfigs);
       }
     }
     return ImmutableList.sortedCopyOf(
         Comparator.comparing(ResourceNameConfig::getEntityId), resourceNameConfigs);
+  }
+
+  private void addSingleResourceNameConfigsUsedByInterface(
+      MethodContext methodContext,
+      String fieldNamePattern,
+      Set<String> foundSet,
+      List<SingleResourceNameConfig> resourceNameConfigs) {
+    SingleResourceNameConfig resourceNameConfig =
+        methodContext.getSingleResourceNameConfig(fieldNamePattern);
+    if (resourceNameConfig != null && !foundSet.contains(resourceNameConfig.getEntityId())) {
+      resourceNameConfigs.add(resourceNameConfig);
+      foundSet.add(resourceNameConfig.getEntityId());
+    }
+  }
+
+  private void addResourceNameOneofConfigsUsedByInterface(
+      InterfaceContext context,
+      String fieldNamPattern,
+      Set<String> foundSet,
+      List<SingleResourceNameConfig> resourceNameConfigs) {
+    ResourceNameConfig resourceNameConfig =
+        context.getProductConfig().getResourceNameConfigs().get(fieldNamPattern);
+    if (resourceNameConfig != null
+        && resourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF) {
+      for (SingleResourceNameConfig config :
+          ((ResourceNameOneofConfig) resourceNameConfig).getSingleResourceNameConfigs()) {
+        if (!foundSet.contains(config.getEntityId())) {
+          resourceNameConfigs.add(config);
+          foundSet.add(config.getEntityId());
+        }
+      }
+    }
   }
 
   public List<ResourceNameView> generateResourceNames(GapicInterfaceContext context) {

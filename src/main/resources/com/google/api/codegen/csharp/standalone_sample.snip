@@ -1,8 +1,10 @@
 @extends "common.snip"
 @extends "csharp/commandline.snip"
 @extends "csharp/common.snip"
-@extends "csharp/common_initcode.snip"
-@extends "csharp/response.snip"
+@extends "csharp/lro_sample.snip"
+@extends "csharp/streaming_sample.snip"
+@extends "csharp/paged_sample.snip"
+@extends "csharp/unary_sample.snip"
 @extends "metadatagen/samplegen.snip"
 
 # StaticLangFileView
@@ -11,7 +13,7 @@
         @let apiMethod = sampleClass.libraryMethod, sample = sampleClass.sample
             {@initialComments(sampleFile.fileHeader)}
 
-            // This is a generated sample ("{@sample.callingForm}", "{@sample.valueSet.id}")
+            // This is a generated sample ("{@sample.callingForm}", "{@sample.id}")
 
             // sample-metadata
             //   title: {@sample.title}
@@ -19,6 +21,8 @@
                 {@descriptionLines("//", sample.descriptionLine, sample.additionalDescriptionLines)}
             @end
             //   usage: dotnet run {@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}
+
+            using CommandLine;
 
             // [START {@sample.regionTag}]
             namespace {@sampleFile.fileHeader.packageName}.Samples
@@ -78,18 +82,10 @@
                         {@longRunningPollUntilCompleteMethod(apiMethod, sample)}
                     @case "LongRunningFlattenedPollUntilComplete"
                         {@longRunningPollUntilCompleteMethod(apiMethod, sample)}
-                    @case "LongRunningRequestPollLater"
-                        {@longRunningPollLaterMethod(apiMethod, sample)}
-                    @case "LongRunningFlattenedPollLater"
-                        {@longRunningPollLaterMethod(apiMethod, sample)}
                     @case "LongRunningRequestAsyncPollUntilComplete"
-                        {@longRunningAsyncPollUntilCompleteMethod(apiMethod, sample)}
-                    @case "LongRunningFlattenedAsycPollUntilComplete"
-                        {@longRunningAsyncPollUntilCompleteMethod(apiMethod, sample)}
-                    @case "LongRunningRequestAsyncPollLater"
-                        {@longRunningAsyncPollLaterMethod(apiMethod, sample)}
-                    @case "LongRunningFlattenedAsycPollLater"
-                        {@longRunningAsyncPollLaterMethod(apiMethod, sample)}
+                        {@longRunningPollUntilCompleteAsyncMethod(apiMethod, sample)}
+                    @case "LongRunningFlattenedAsyncPollUntilComplete"
+                        {@longRunningPollUntilCompleteAsyncMethod(apiMethod, sample)}
                     #
                     # gRPC streaming
                     #
@@ -105,6 +101,7 @@
                         Unrecognized callingForm: {@sample.callingForm}
                     @end
                     // [END {@sample.regionTag}]
+
                     public static void Main(string[] args)
                     {
                         {@processCliArguments(sample)}
@@ -116,382 +113,6 @@
                 }
             }
         @end
-    @end
-@end
-
-# Unary Methods
-@private unaryMethod(apiMethod, sample)
-    {@syncSampleFunction(sample)}
-    {
-        {@syncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@methodCall(apiMethod, sample)}
-        @if sample.outputs
-            {@processOutputViews(sample.outputs)}
-        @end
-    }
-@end
-
-@private unaryAsyncMethod(apiMethod, sample)
-    {@asyncSampleFunction(sample)}
-    {
-        {@asyncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@asyncMethodCall(apiMethod, sample)}
-        @if sample.outputs
-            {@processOutputViews(sample.outputs)}
-        @end
-    }
-@end
-
-@private flattenedAsyncMethod(apiMethod, sample)
-    {@asyncSampleFunction(sample)}
-    {
-        {@asyncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@asyncMethodCall(apiMethod, sample)}
-        @if sample.outputs
-            {@processOutputViews(sample.outputs)}
-        @end
-    }
-@end
-
-
-# Pagination
-@private pagedMethod(apiMethod, sample)
-    {@syncSampleFunction(sample)}
-    {
-        {@syncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-        {@paging(apiMethod, sample)}
-    }
-@end
-
-@private pagedAllMethod(apiMethod, sample)
-    {@syncSampleFunction(sample)}
-    {
-        {@syncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-        {@pagingAll(apiMethod, sample)}
-    }
-@end
-
-@private pagedPageSizeMethod(apiMethod, sample)
-    {@syncSampleFunction(sample)}
-    {
-        {@syncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@apiMethod.callerResponseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-        {@pagingPageSize(apiMethod, sample)}
-    }
-@end
-
-@private pagedAsyncMethod(apiMethod, sample)
-    {@asyncSampleFunction(sample)}
-    {
-        {@asyncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@apiMethod.callerResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-        {@pagingAsync(apiMethod, sample)}
-    }
-@end
-
-@private pagedAllAsyncMethod(apiMethod, sample)
-    {@asyncSampleFunction(sample)}
-    {
-        {@asyncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@apiMethod.callerResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-        {@pagingAllAsync(apiMethod, sample)}
-    }
-@end
-
-@private pagedPageSizeAsyncMethod(apiMethod, sample)
-    {@asyncSampleFunction(sample)}
-    {
-        {@asyncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@apiMethod.callerResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-        {@pagingPageSizeAsync(apiMethod, sample)}
-    }
-@end
-
-# LRO
-
-@private longRunningPollUntilCompleteMethod(apiMethod, sample)
-    {@syncSampleFunction(sample)}
-    {
-        {@syncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@pollOperationUntilCompleteSync(apiMethod, sample)}
-    }
-@end
-
-@private longRunningPollLaterMethod(apiMethod, sample)
-    {@syncSampleFunction(sample)}
-    {
-        {@syncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@pollOperationLaterSync(apiMethod, sample)}
-    }
-@end
-
-@private longRunningAsyncPollUntilCompleteMethod(apiMethod, sample)
-    {@asyncSampleFunction(sample)}
-    {
-        {@asyncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@pollOperationUntilCompleteAsync(apiMethod, sample)}
-    }
-@end
-
-@private longRunningAsyncPollLaterMethod(apiMethod, sample)
-    {@syncSampleFunction(sample)}
-    {
-        {@syncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@pollOperationLaterAsync(apiMethod, sample)}
-    }
-@end
-
-@private longRunningFlattenedMethodPollUntilComplete(apiMethod, sample)
-    {@syncSampleFunction(sample)}
-    {
-        {@syncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
-        {@pollOperationUntilComplete(apiMethod, sample)}
-    }
-@end
-
-@private streamingBidiMethod(apiMethod, sample)
-    {@asyncSampleFunction(sample)}
-    {
-        {@syncClient(apiMethod)}
-
-        // Initialize streaming call, retrieving the stream object
-        {@apiMethod.apiClassName}.{@apiMethod.name}Stream duplexStream =
-            {@apiMethod.apiVariableName}.{@apiMethod.name}();
-
-        // Sending requests are retrieving responses can be arbitrarily interleaved.
-        // Exact sequence will depend on client/server behavior.
-
-        // Create task to do something with responses from server
-        Task responseHandlerTask = Task.Run(async () =>
-                {
-                    IAsyncEnumerator<{@apiMethod.serviceResponseTypeName}> responseStream = duplexStream.ResponseStream;
-                    while (await responseStream.MoveNext())
-                    {
-                        {@apiMethod.serviceResponseTypeName} response = responseStream.Current;
-                        @if sample.outputs
-                            {@processOutputViews(sample.outputs)}
-                        @end
-                    }
-                    // The response stream has completed
-                });
-                
-                // Send requests to the server
-                bool done = false;
-                while (!done)
-                {
-                    // Initialize a request
-                    {@standaloneSampleInitCode(sample.sampleInitCode)}
-                    // Stream a request to the server
-                    await duplexStream.WriteAsync(request);
-                    
-                    // Set "done" to true when sending requests is complete
-                }
-                // Complete writing requests to the stream
-                await duplexStream.WriteCompleteAsync();
-                // Await the response handler.
-                // This will complete once all server responses have been processed.
-                await responseHandlerTask;
-        }
-@end
-
-@private streamingRequestObjectMethodServer(apiMethod, sample)
-    {@asyncSampleFunction(sample)}
-    {
-        {@syncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.initCode)}
-        
-        // Make the request, returning a streaming response
-        {@apiMethod.apiClassName}.{@apiMethod.name}Stream streamingResponse =
-            {@methodCall(apiMethod, sample)};
-
-        // Read streaming responses from server until complete
-        IAsyncEnumerator<{@snippetMethod.method.serviceResponseTypeName}> responseStream = streamingResponse.ResponseStream;
-        while (await responseStream.MoveNext())
-        {
-            {@snippetMethod.method.serviceResponseTypeName} response = responseStream.Current;
-            @if sample.outputs
-                {@processOutputViews(sample.outputs)}
-            @end
-        }
-        // The response stream has completed
-    }
-@end
-
-@private commaSeparatedArgAndTypes(args)
-    @join arg : args on ", "
-        {@arg.typeName} {@arg.identifier}
-    @end
-@end
-
-@private syncSampleFunction(sample)
-    public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)})
-@end
-
-@private asyncSampleFunction(sample)
-    public static async Task {@sample.sampleFunctionName}Async({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)})
-@end 
-
-@private syncClient(apiMethod)
-    {@apiMethod.apiClassName} {@apiMethod.apiVariableName} = \
-        {@apiMethod.apiClassName}.Create();
-@end
-
-@private asyncClient(apiMethod)
-    {@apiMethod.apiClassName} {@apiMethod.apiVariableName} = await \
-        {@apiMethod.apiClassName}.CreateAsync();
-@end
-
-@private methodCall(apiMethod, sample)
-    @if apiMethod.hasReturnValue
-        {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-    @else
-        {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-    @end
-@end
-
-@private asyncMethodCall(apiMethod, sample)
-    @if apiMethod.hasReturnValue
-        {@apiMethod.serviceResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-    @else
-        await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
-    @end
-@end
-
-@private paging(apiMethod, sample)
-    // Iterate over all response items, lazily performing RPCs as required
-    foreach ({@apiMethod.listMethod.responseTypeName} page in response.asRawResponses())
-    {
-        foreach ({@apiMethod.listMethod.resourceTypeName} item in page)
-        {
-            @if sample.outputs
-                {@processOutputViews(sample.outputs)}
-            @end
-        }
-    }
-@end
-
-@private pagingAll(apiMethod, sample)
-    // Iterate over pages (of server-defined size), performing one RPC per page
-    foreach ({@apiMethod.listMethod.resourceTypeName} item in response)
-    {
-        @if sample.outputs
-            {@processOutputViews(sample.outputs)}
-        @end
-    }
-@end
-
-@private pagingPageSize(apiMethod, sample)
-    // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-    int pageSize = 10;
-    Page<{@apiMethod.listMethod.resourceTypeName}> singlePage = response.ReadPage(pageSize);
-    foreach ({@apiMethod.listMethod.resourceTypeName} item in response)
-    {
-        @if sample.outputs
-            {@processOutputViews(sample.outputs)}
-        @end
-    }
-    // Store the pageToken, for when the next page is required.
-    string nextPageToken = singlePage.NextPageToken;
-@end
-
-@private pagingAsync(apiMethod, sample)
-    // Iterate over all response items, lazily performing RPCs as required
-    await response.AsRawResponses().ForEachAsync(({@apiMethod.listMethod.responseTypeName} page) =>
-    {
-        foreach ({@apiMethod.listMethod.resourceTypeName} item in page)
-        {
-            @if sample.outputs
-                {@processOutputViews(sample.outputs)}
-            @end
-        }
-    });
-@end
-
-@private pagingAllAsync(apiMethod, sample)
-    // Iterate over pages (of server-defined size), performing one RPC per page
-    await response.ForEachAsync(({@apiMethod.listMethod.resourceTypeName} item) =>
-    {
-        @if sample.outputs
-            {@processOutputViews(sample.outputs)}
-        @end
-    });
-@end
-
-@private pagingPageSizeAsync(apiMethod, sample)
-    // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-    int pageSize = 10;
-    Page<{@apiMethod.listMethod.resourceTypeName}> singlePage = await response.ReadPageAsync(pageSize);
-    foreach ({@apiMethod.listMethod.resourceTypeName} item in response)
-    {
-        @if sample.outputs
-            {@processOutputViews(sample.outputs)}
-        @end
-    }
-    // Store the pageToken, for when the next page is required.
-    string nextPageToken = singlePage.NextPageToken;
-@end
-
-@private pollOperationUntilCompleteSync(apiMethod, sample)
-    // Poll until the returned long-running operation is complete
-    {@methodCall(apiMethod, sample)}.PollUntilCompleted(){@if(apiMethod.hasReturnValue, ".Result", "")};
-    @if sample.outputs
-        {@processOutputViews(sample.outputs)}
-    @end
-@end
-
-@private pollOperationUntilCompleteAsync(apiMethod, sample)
-    // Poll until the returned long-running operation is complete
-    {@methodCall(apiMethod, sample)}.PollUntilCompletedAsync(){@if(apiMethod.hasReturnValue, ".Result", "")};
-    @if sample.outputs
-        {@processOutputViews(sample.outputs)}
-    @end
-@end
-
-@private pollOperationLaterSync(apiMethod, sample)
-    // Get the name of the operation
-    string operationName = response.Name;
-
-    // This name can be stored, then the long-running operation retrieved later by name
-    // FIXME: process LRO result
-    @if sample.outputs
-        {@processOutputViews(sample.outputs)}
-    @end
-@end
-
-@private pollOperationLaterAsync(apiMethod, sample)
-    // Get the name of the operation
-    string operationName = response.Name;
-
-    // This name can be stored, then the long-running operation retrieved later by name
-    // FIXME: process LRO result
-    @if sample.outputs
-        {@processOutputViews(sample.outputs)}
     @end
 @end
 

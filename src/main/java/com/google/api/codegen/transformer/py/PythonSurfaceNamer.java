@@ -337,12 +337,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     if (methodConfig.isPageStreaming()) {
       FieldModel fieldModel = methodConfig.getPageStreaming().getResourcesField();
       return ImmutableList.of(
-          "A :class:`~google.gax.PageIterator` instance. By default, this",
-          "is an iterable of "
+          "A :class:`~google.api_core.page_iterator.PageIterator` instance.",
+          "An iterable of "
               + annotateWithClass(getResponseTypeNameForElementType(fieldModel.getType()))
               + " instances.",
-          "This object can also be configured to iterate over the pages",
-          "of the response through the `options` parameter.");
+          "You can also iterate over the pages of the response ",
+          "using its `pages` property.");
     }
 
     return ImmutableList.of(String.format("A %s instance.", annotateWithClass(classInfo)));

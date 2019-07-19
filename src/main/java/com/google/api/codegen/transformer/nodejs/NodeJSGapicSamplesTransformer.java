@@ -132,7 +132,6 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<Pro
                 .fileHeader(fileHeaderTransformer.generateFileHeader(context))
                 .outputPath(sampleOutputPath)
                 .libraryMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build())
-                .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
                 .build());
       }
     }

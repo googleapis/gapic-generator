@@ -178,7 +178,8 @@ anchor_run_ruby: &anchor_run_ruby
        name: Run Showcase Integration Tests
        command: |
          cd workspace/gapic-generator/showcase/ruby
-         bundle install
+         bundle update
+         bundle
          bundle exec ruby showcase_integration_test.rb
 
 anchor_test_php: &anchor_test_php
@@ -398,7 +399,7 @@ jobs:
           path: reports/gapic-generator
   generate-clients:
     docker:
-      - image: googleapis/artman:0.26.0
+      - image: googleapis/artman:0.30.0
     working_directory: /tmp/
     environment:
       <<: *anchor_artman_vars
@@ -718,7 +719,7 @@ jobs:
     environment:
       ARTMAN_USER_CONFIG: /tmp/workspace/gapic-generator/.circleci/artman_config.yaml
     docker:
-      - image: googleapis/artman:0.26.0
+      - image: googleapis/artman:0.30.0
     steps:
       - attach_workspace:
           at: workspace

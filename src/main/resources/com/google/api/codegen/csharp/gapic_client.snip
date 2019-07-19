@@ -489,7 +489,7 @@
                     {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
                     @if call.anyHeaderRequestParams
                         {@""}    {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName})
-                        {@""}    .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"{@routingHeader(call.headerRequestParams)}"));
+                        {@routingHeader(call.headerRequestParams)};
                     @else
                         {@""}    {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
                     @end
@@ -497,7 +497,7 @@
                     {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
                     @if call.anyHeaderRequestParams
                         {@""}    {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName})
-                        {@""}    .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"{@routingHeader(call.headerRequestParams)}"));
+                        {@routingHeader(call.headerRequestParams)};
                     @else
                         {@""}    {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
                     @end
@@ -587,8 +587,8 @@
 
 # headers: List[HeaderRequestParamView]
 @private routingHeader(headers)
-    @join header : headers on "&"
-        {@header.fullyQualifiedName}={request.{@routingHeaderGetters(header.gettersChain)}}
+    @join header : headers
+        {@""}    .WithGoogleRequestParam("{@header.fullyQualifiedName}", request => request.{@routingHeaderGetters(header.gettersChain)})
     @end
 @end
 

@@ -318,14 +318,14 @@ public class InitCodeTransformer {
       if (token == '%') {
         scanner.scan();
         node = node.getChildren().get(scanner.tokenStr());
-        node.setDescription(paramConfigMap.get(path).description());
+        node.setDescription(paramConfigMap.get(path).comment());
         params.add(node);
       } else if (node.getLineType() == InitCodeLineType.ReadFileInitLine) {
         node = node.getChildren().get(InitCodeNode.FILE_NAME_KEY);
-        node.setDescription(paramConfigMap.get(path).description());
+        node.setDescription(paramConfigMap.get(path).comment());
         params.add(node);
       } else {
-        node.setDescription(paramConfigMap.get(path).description());
+        node.setDescription(paramConfigMap.get(path).comment());
         params.add(node);
       }
     }

@@ -110,8 +110,7 @@ main();
     "google-gax": "^1.1.0"
   },
   "devDependencies": {
-    "mocha": "^5.2.0",
-    "through2": "^2.0.3"
+    "mocha": "^5.2.0"
   },
   "scripts": {
     "postinstall": "node ./compileProtos.js",
@@ -4398,6 +4397,9 @@ class LibraryServiceClient {
       bookPathTemplate: new gax.PathTemplate(
         'bookShelves/{book_shelf}/books/{book}'
       ),
+      projectBookPathTemplate: new gax.PathTemplate(
+        'projects/{project}/books/{book}'
+      ),
       shelfPathTemplate: new gax.PathTemplate(
         'shelves/{shelf_id}'
       ),
@@ -6897,6 +6899,20 @@ class LibraryServiceClient {
   }
 
   /**
+   * Return a fully-qualified project_book resource name string.
+   *
+   * @param {String} project
+   * @param {String} book
+   * @returns {String}
+   */
+  projectBookPath(project, book) {
+    return this._pathTemplates.projectBookPathTemplate.render({
+      project: project,
+      book: book,
+    });
+  }
+
+  /**
    * Return a fully-qualified shelf resource name string.
    *
    * @param {String} shelfId
@@ -6983,6 +6999,32 @@ class LibraryServiceClient {
   matchBookFromBookName(bookName) {
     return this._pathTemplates.bookPathTemplate
       .match(bookName)
+      .book;
+  }
+
+  /**
+   * Parse the projectBookName from a project_book resource.
+   *
+   * @param {String} projectBookName
+   *   A fully-qualified path representing a project_book resources.
+   * @returns {String} - A string representing the project.
+   */
+  matchProjectFromProjectBookName(projectBookName) {
+    return this._pathTemplates.projectBookPathTemplate
+      .match(projectBookName)
+      .project;
+  }
+
+  /**
+   * Parse the projectBookName from a project_book resource.
+   *
+   * @param {String} projectBookName
+   *   A fully-qualified path representing a project_book resources.
+   * @returns {String} - A string representing the book.
+   */
+  matchBookFromProjectBookName(projectBookName) {
+    return this._pathTemplates.projectBookPathTemplate
+      .match(projectBookName)
       .book;
   }
 
@@ -7489,7 +7531,7 @@ module.exports = MyProtoClient;
 'use strict';
 
 const assert = require('assert');
-const through2 = require('through2');
+const {PassThrough} = require('stream');
 
 const libraryModule = require('../src');
 
@@ -9470,12 +9512,15 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
 function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
   return actualRequest => {
     assert.deepStrictEqual(actualRequest, expectedRequest);
-    const mockStream = through2.obj((chunk, enc, callback) => {
-      if (error) {
-        callback(error);
-      }
-      else {
-        callback(null, response);
+    const mockStream = new PassThrough({
+      objectMode: true,
+      transform: (chunk, enc, callback) => {
+        if (error) {
+          callback(error);
+        }
+        else {
+          callback(null, response);
+        }
       }
     });
     return mockStream;
@@ -9484,13 +9529,16 @@ function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
 
 function mockBidiStreamingGrpcMethod(expectedRequest, response, error) {
   return () => {
-    const mockStream = through2.obj((chunk, enc, callback) => {
-      assert.deepStrictEqual(chunk, expectedRequest);
-      if (error) {
-        callback(error);
-      }
-      else {
-        callback(null, response);
+    const mockStream = new PassThrough({
+      objectMode: true,
+      transform: (chunk, enc, callback) => {
+        assert.deepStrictEqual(chunk, expectedRequest);
+        if (error) {
+          callback(error);
+        }
+        else {
+          callback(null, response);
+        }
       }
     });
     return mockStream;

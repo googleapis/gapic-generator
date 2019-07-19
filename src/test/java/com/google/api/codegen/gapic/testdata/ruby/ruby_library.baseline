@@ -2936,6 +2936,12 @@ module Library
 
       private_constant :PROJECT_PATH_TEMPLATE
 
+      PROJECT_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "projects/{project}/books/{book}"
+      )
+
+      private_constant :PROJECT_BOOK_PATH_TEMPLATE
+
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf_id}"
       )
@@ -2970,6 +2976,17 @@ module Library
       def self.project_path project
         PROJECT_PATH_TEMPLATE.render(
           :"project" => project
+        )
+      end
+
+      # Returns a fully-qualified project_book resource name string.
+      # @param project [String]
+      # @param book [String]
+      # @return [String]
+      def self.project_book_path project, book
+        PROJECT_BOOK_PATH_TEMPLATE.render(
+          :"project" => project,
+          :"book" => book
         )
       end
 
@@ -3036,6 +3053,7 @@ module Library
           timeout: timeout,
           lib_name: lib_name,
           lib_version: lib_version,
+          metadata: metadata,
         )
 
         if credentials.is_a?(String) || credentials.is_a?(Hash)
@@ -5706,8 +5724,7 @@ def sample_get_big_book shelf
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  # shelf = "Novel\"`	
-  # "
+  # shelf = "Novel\\\"`\b\t\n\r"
   formatted_name = library_client.class.book_path(shelf, "War and Peace")
 
   # Make the long-running operation request
@@ -5745,8 +5762,7 @@ require "optparse"
 
 if $PROGRAM_NAME == __FILE__
 
-  shelf = "Novel\"`	
-"
+  shelf = "Novel\\\"`\b\t\n\r"
 
   ARGV.options do |opts|
     opts.on("--shelf=val") { |val| shelf = val }
@@ -6315,7 +6331,7 @@ def sample_publish_series
   books = []
   series_uuid = {}
 
-  response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
+  response = library_client.publish_series(shelf, books, series_uuid)
   # testing writing bytes field.
   File.open("uuid_of_series_with_book_#{response.book_names[0]}.raw", "wb") do |file|
     file.write(response.series_uuid.series_bytes)
@@ -6677,7 +6693,7 @@ def sample_get_shelf
   message = {}
   string_builder = {}
 
-  response = library_client.get_shelf(formatted_name, options_)
+  response = library_client.get_shelf(formatted_name, options_, message: message, string_builder: string_builder)
   puts "Shelf found."
 end
 # [END test_setting_up_empty_objects_in_request]
@@ -6720,8 +6736,7 @@ def sample_get_big_book shelf
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  # shelf = "Novel\"`	
-  # "
+  # shelf = "Novel\\\"`\b\t\n\r"
   formatted_name = library_client.class.book_path(shelf, "War and Peace")
 
   # Make the long-running operation request
@@ -6759,8 +6774,7 @@ require "optparse"
 
 if $PROGRAM_NAME == __FILE__
 
-  shelf = "Novel\"`	
-"
+  shelf = "Novel\\\"`\b\t\n\r"
 
   ARGV.options do |opts|
     opts.on("--shelf=val") { |val| shelf = val }
