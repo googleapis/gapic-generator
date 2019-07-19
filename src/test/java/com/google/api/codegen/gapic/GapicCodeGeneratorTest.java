@@ -107,6 +107,11 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "no_path_templates"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
+            new String[] {"my_streaming_proto_gapic.yaml"},
+            "my_streaming_proto_pkg2.yaml",
+            "my_streaming_proto"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA,
             new String[] {"samplegen_config_migration_library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",

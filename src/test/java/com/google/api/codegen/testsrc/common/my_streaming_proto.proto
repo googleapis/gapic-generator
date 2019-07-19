@@ -4,26 +4,14 @@ syntax = "proto3";
 
 package google.example.myproto.v1;
 
-service MyStreamingProto {
-  rpc MyMethod(stream MethodRequest) returns (stream MethodResponse);
+service MyStreamingService {
+  rpc MyMethod(stream StreamingRequest) returns (stream StreamingResponse);
 }
 
-message MethodRequest {
-  repeated SubMessage mylist = 1;
-  SubMessage myfield = 2;
-  SubMessage secondfield = 3;
-
-  map<string, string> stringmap = 4;
-  map<int32, string> intmap = 5;
-
-  string formatted_field = 6;
+message StreamingRequest {
+  string myfield = 1;
 }
 
-message SubMessage {
-  string subfield = 1;
-  string subsecondfield = 2;
-}
-
-message MethodResponse {
+message StreamingResponse {
   string myfield = 1;
 }
