@@ -48,7 +48,7 @@
 @private header(apiTest)
   const assert = require('assert');
   @if apiTest.hasGrpcStreaming
-    const through2 = require('through2');
+    const {PassThrough} = require('stream');
   @end
 
   const {@apiTest.localPackageName}Module = require('../src');
@@ -76,12 +76,15 @@
     function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
       return actualRequest => {
         assert.deepStrictEqual(actualRequest, expectedRequest);
-        const mockStream = through2.obj((chunk, enc, callback) => {
-          if (error) {
-            callback(error);
-          }
-          else {
-            callback(null, response);
+        const mockStream = new PassThrough({
+          objectMode: true,
+          transform: (chunk, enc, callback) => {
+            if (error) {
+              callback(error);
+            }
+            else {
+              callback(null, response);
+            }
           }
         });
         return mockStream;
@@ -92,13 +95,16 @@
 
     function mockBidiStreamingGrpcMethod(expectedRequest, response, error) {
       return () => {
-        const mockStream = through2.obj((chunk, enc, callback) => {
-          assert.deepStrictEqual(chunk, expectedRequest);
-          if (error) {
-            callback(error);
-          }
-          else {
-            callback(null, response);
+        const mockStream = new PassThrough({
+          objectMode: true,
+          transform: (chunk, enc, callback) => {
+            assert.deepStrictEqual(chunk, expectedRequest);
+            if (error) {
+              callback(error);
+            }
+            else {
+              callback(null, response);
+            }
           }
         });
         return mockStream;
