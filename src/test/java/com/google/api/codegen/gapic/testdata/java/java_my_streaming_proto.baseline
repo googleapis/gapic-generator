@@ -180,6 +180,17 @@ import javax.annotation.Generated;
  *     MyStreamingServiceClient.create(myStreamingServiceSettings);
  * </code>
  * </pre>
+ *
+ * To customize the endpoint:
+ *
+ * <pre>
+ * <code>
+ * MyStreamingServiceSettings myStreamingServiceSettings =
+ *     MyStreamingServiceSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * MyStreamingServiceClient myStreamingServiceClient =
+ *     MyStreamingServiceClient.create(myStreamingServiceSettings);
+ * </code>
+ * </pre>
  */
 @Generated("by gapic-generator")
 @BetaApi
@@ -189,6 +200,12 @@ public class MyStreamingServiceClient implements BackgroundResource {
 
 
 
+  /**
+   * Constructs an instance of MyStreamingServiceClient with default settings.
+   */
+  public static final MyStreamingServiceClient create() throws IOException {
+    return create(MyStreamingServiceSettings.newBuilder().build());
+  }
 
   /**
    * Constructs an instance of MyStreamingServiceClient, using the given settings.
@@ -345,6 +362,21 @@ import org.threeten.bp.Duration;
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
  * Settings class to configure an instance of {@link MyStreamingServiceClient}.
+ *
+ * <p>The default instance has everything set to sensible defaults:
+ *
+ * <ul>
+ * <li>The default service address (mystreaming-example.googleapis.com) and default port (443)
+ * are used.
+ * <li>Credentials are acquired automatically through Application Default Credentials.
+ * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ * </ul>
+ *
+ * <p>The builder of this class is recursive, so contained classes are themselves builders.
+ * When build() is called, the tree of builders is called to create the complete settings
+ * object.
+ *
+ */
 @Generated("by gapic-generator")
 @BetaApi
 public class MyStreamingServiceSettings extends ClientSettings<MyStreamingServiceSettings> {
@@ -367,6 +399,20 @@ public class MyStreamingServiceSettings extends ClientSettings<MyStreamingServic
     return MyStreamingServiceStubSettings.defaultExecutorProviderBuilder();
   }
 
+  /**
+   * Returns the default service endpoint.
+   */
+   public static String getDefaultEndpoint() {
+     return MyStreamingServiceStubSettings.getDefaultEndpoint();
+   }
+
+
+  /**
+   * Returns the default service scopes.
+   */
+  public static List<String> getDefaultServiceScopes() {
+    return MyStreamingServiceStubSettings.getDefaultServiceScopes();
+  }
 
 
   /**
@@ -376,6 +422,14 @@ public class MyStreamingServiceSettings extends ClientSettings<MyStreamingServic
     return MyStreamingServiceStubSettings.defaultCredentialsProviderBuilder();
   }
 
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+    return MyStreamingServiceStubSettings.defaultGrpcTransportProviderBuilder();
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+    return MyStreamingServiceStubSettings.defaultTransportChannelProvider();
+  }
 
   @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
@@ -487,6 +541,17 @@ public class MyStreamingServiceSettings extends ClientSettings<MyStreamingServic
  * ========================
  *
  * Service Description:
+ *
+ * Sample for MyStreamingServiceClient:
+ * <pre>
+ * <code>
+ * try (MyStreamingServiceClient myStreamingServiceClient = MyStreamingServiceClient.create()) {
+ *   StreamingRequest request = StreamingRequest.newBuilder().build();
+ *   StreamingResponse response = myStreamingServiceClient.myMethodCallable(request);
+ * }
+ * </code>
+ * </pre>
+ *
  */
 @Generated("by gapic-generator")
 package com.google.gcloud.example;
@@ -849,9 +914,31 @@ import org.threeten.bp.Duration;
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
  * Settings class to configure an instance of {@link MyStreamingServiceStub}.
+ *
+ * <p>The default instance has everything set to sensible defaults:
+ *
+ * <ul>
+ * <li>The default service address (mystreaming-example.googleapis.com) and default port (443)
+ * are used.
+ * <li>Credentials are acquired automatically through Application Default Credentials.
+ * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ * </ul>
+ *
+ * <p>The builder of this class is recursive, so contained classes are themselves builders.
+ * When build() is called, the tree of builders is called to create the complete settings
+ * object.
+ *
+ */
 @Generated("by gapic-generator")
 @BetaApi
 public class MyStreamingServiceStubSettings extends StubSettings<MyStreamingServiceStubSettings> {
+  /**
+   * The default scopes of the service.
+   */
+  private static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
+      .add("https://www.googleapis.com/auth/cloud-platform")
+      .add("https://www.googleapis.com/auth/library")
+      .build();
 
   private final StreamingCallSettings<StreamingRequest, StreamingResponse> myMethodSettings;
 
@@ -882,6 +969,20 @@ public class MyStreamingServiceStubSettings extends StubSettings<MyStreamingServ
     return InstantiatingExecutorProvider.newBuilder();
   }
 
+  /**
+   * Returns the default service endpoint.
+   */
+  public static String getDefaultEndpoint() {
+    return "mystreaming-example.googleapis.com:443";
+  }
+
+
+  /**
+   * Returns the default service scopes.
+   */
+  public static List<String> getDefaultServiceScopes() {
+    return DEFAULT_SERVICE_SCOPES;
+  }
 
 
   /**
@@ -889,9 +990,18 @@ public class MyStreamingServiceStubSettings extends StubSettings<MyStreamingServ
    */
   public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
     return GoogleCredentialsProvider.newBuilder()
+        .setScopesToApply(DEFAULT_SERVICE_SCOPES)
         ;
   }
 
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+    return InstantiatingGrpcChannelProvider.newBuilder();
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+    return defaultGrpcTransportProviderBuilder().build();
+  }
 
   @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
@@ -986,6 +1096,10 @@ public class MyStreamingServiceStubSettings extends StubSettings<MyStreamingServ
 
     private static Builder createDefault() {
       Builder builder = new Builder((ClientContext) null);
+      builder.setTransportChannelProvider(defaultTransportChannelProvider());
+      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+      builder.setInternalHeaderProvider(defaultApiClientHeaderProviderBuilder().build());
+      builder.setEndpoint(getDefaultEndpoint());
       return initDefaults(builder);
     }
 
