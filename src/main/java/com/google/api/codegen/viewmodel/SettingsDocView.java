@@ -27,6 +27,8 @@ public abstract class SettingsDocView {
 
   public abstract String exampleApiMethodSettingsGetter();
 
+  public abstract boolean exampleApiMethodSettingsHasRetrySettings();
+
   public abstract String apiClassName();
 
   public abstract String settingsVarName();
@@ -52,6 +54,8 @@ public abstract class SettingsDocView {
     public abstract Builder exampleApiMethodName(String val);
 
     public abstract Builder exampleApiMethodSettingsGetter(String val);
+
+    public abstract Builder exampleApiMethodSettingsHasRetrySettings(boolean val);
 
     public abstract Builder apiClassName(String val);
 
