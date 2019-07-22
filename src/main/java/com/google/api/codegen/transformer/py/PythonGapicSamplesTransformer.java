@@ -14,51 +14,34 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.GapicInterfaceContext;
-import com.google.api.codegen.config.GapicMethodConfig;
-import com.google.api.codegen.config.GapicMethodContext;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
-import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.DynamicLangGapicSamplesTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.py.PythonTypeTable;
-import com.google.api.codegen.viewmodel.DynamicLangSampleView;
-import com.google.api.codegen.viewmodel.MethodSampleView;
-import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
-import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.collect.ImmutableList;
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
+import java.util.function.Function;
 
 /**
  * A transformer to generate Python standalone samples for each method in the GAPIC surface
  * generated from the same ApiModel.
  */
-public class PythonGapicSamplesTransformer implements ModelToViewTransformer<ProtoApiModel> {
+public class PythonGapicSamplesTransformer extends DynamicLangGapicSamplesTransformer {
+
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "py/standalone_sample.snip";
   private static final SampleType sampleType = SampleType.STANDALONE;
 
-  private final PythonImportSectionTransformer importSectionTransformer =
+  private static final PythonImportSectionTransformer importSectionTransformer =
       new PythonImportSectionTransformer();
-  private final FileHeaderTransformer fileHeaderTransformer =
+  private static final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
-  private final DynamicLangApiMethodTransformer apiMethodTransformer =
+  private static final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
           new PythonApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
@@ -66,114 +49,26 @@ public class PythonGapicSamplesTransformer implements ModelToViewTransformer<Pro
               .sampleType(sampleType)
               .sampleImportTransformer(new PythonSampleImportTransformer())
               .build());
-  private final GapicCodePathMapper pathMapper;
+  private static final Function<String, SurfaceNamer> newSurfaceNamer =
+      p -> new PythonSurfaceNamer(p);
+
   private final PackageMetadataConfig packageConfig;
 
   public PythonGapicSamplesTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
-    this.pathMapper = pathMapper;
+    super(
+        STANDALONE_SAMPLE_TEMPLATE_FILENAME,
+        pathMapper,
+        fileHeaderTransformer,
+        apiMethodTransformer,
+        new DefaultFeatureConfig(),
+        newSurfaceNamer,
+        p -> new ModelTypeTable(new PythonTypeTable(p), new PythonModelTypeNameConverter(p)));
     this.packageConfig = packageConfig;
   }
 
   @Override
-  public List<String> getTemplateFileNames() {
-    return ImmutableList.of(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
-  }
-
-  @Override
-  public List<ViewModel> transform(ProtoApiModel apiModel, GapicProductConfig productConfig) {
-    ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    views.addAll(generateSampleFiles(apiModel, productConfig));
-    return views.build();
-  }
-
-  private Iterable<ViewModel> generateSampleFiles(
-      ProtoApiModel apiModel, GapicProductConfig productConfig) {
-    ModelTypeTable modelTypeTable =
-        new ModelTypeTable(
-            new PythonTypeTable(productConfig.getPackageName()),
-            new PythonModelTypeNameConverter(productConfig.getPackageName()));
-    SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
-    FeatureConfig featureConfig = new DefaultFeatureConfig();
-    ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
-
-    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
-      if (!productConfig.hasInterfaceConfig(apiInterface)) {
-        continue;
-      }
-
-      GapicInterfaceContext context =
-          GapicInterfaceContext.create(
-              apiInterface, productConfig, modelTypeTable, namer, featureConfig);
-      addApiImports(context);
-      serviceSurfaces.addAll(generateSampleClasses(context));
-    }
-
-    return serviceSurfaces.build();
-  }
-
-  private void addApiImports(GapicInterfaceContext context) {
-    for (TypeRef type : context.getInterface().getModel().getSymbolTable().getDeclaredTypes()) {
-      if (type.isEnum() && type.getEnumType().isReachable()) {
-        context.getImportTypeTable().getAndSaveNicknameFor(type);
-        break;
-      }
-    }
-
-    for (MethodModel method : context.getSupportedMethods()) {
-      addMethodImports(context.asRequestMethodContext(method));
-    }
-  }
-
-  private void addMethodImports(GapicMethodContext context) {
-    ModelTypeTable typeTable = context.getTypeTable();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
-    if (context.isLongRunningMethodContext()) {
-      typeTable.getAndSaveNicknameFor(context.getLongRunningConfig().getReturnType());
-      typeTable.getAndSaveNicknameFor(context.getLongRunningConfig().getMetadataType());
-    }
-
-    typeTable.getAndSaveNicknameFor(context.getMethod().getInputType());
-    addFieldsImports(typeTable, methodConfig.getRequiredFields());
-    addFieldsImports(typeTable, methodConfig.getOptionalFields());
-  }
-
-  private void addFieldsImports(ModelTypeTable typeTable, Iterable<FieldModel> fields) {
-    for (FieldModel field : fields) {
-      typeTable.getAndSaveNicknameFor(field);
-    }
-  }
-
-  private List<ViewModel> generateSampleClasses(GapicInterfaceContext context) {
-    ImmutableList.Builder<ViewModel> viewModels = new ImmutableList.Builder<>();
-    SurfaceNamer namer = context.getNamer();
-    List<OptionalArrayMethodView> allMethods = apiMethodTransformer.generateApiMethods(context);
-    List<MethodSampleView> allSamples =
-        allMethods
-            .stream()
-            .flatMap(m -> m.samples().stream())
-            .collect(ImmutableList.toImmutableList());
-    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
-    DynamicLangSampleView.Builder sampleClassBuilder = DynamicLangSampleView.newBuilder();
-    for (OptionalArrayMethodView method : allMethods) {
-      String subPath =
-          pathMapper.getSamplesOutputPath(
-              context.getInterfaceModel().getFullName(), context.getProductConfig(), method.name());
-      for (MethodSampleView methodSample : method.samples()) {
-        String sampleFileName = registry.getSampleFileName(methodSample, method.name());
-        String sampleOutputPath = subPath + File.separator + sampleFileName;
-
-        viewModels.add(
-            sampleClassBuilder
-                .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
-                .fileHeader(fileHeaderTransformer.generateFileHeader(context))
-                .outputPath(sampleOutputPath)
-                .libraryMethod(
-                    method.toBuilder().samples(Collections.singletonList(methodSample)).build())
-                .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
-                .build());
-      }
-    }
-    return viewModels.build();
+  protected String getGapicPackageName(String protoPackageName) {
+    return newSurfaceNamer.apply(protoPackageName).getGapicPackageName(packageConfig.packageName());
   }
 }
