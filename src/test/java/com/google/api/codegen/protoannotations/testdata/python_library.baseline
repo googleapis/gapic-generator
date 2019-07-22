@@ -5058,14 +5058,14 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_with_response_handling")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
-#   title: Test response handling for methods that return empty
-#   description: Test response handling for methods that return empty
+#   title: Test default response handling is turned off for methods that return empty
+#   description: Test default response handling is turned off for methods that return empty
 #   usage: python3 samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py
 import sys
 
@@ -5074,7 +5074,7 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_babble_about_book():
-  """Test response handling for methods that return empty"""
+  """Test default response handling is turned off for methods that return empty"""
 
   client = library_v1.LibraryServiceClient()
 
@@ -5083,8 +5083,6 @@ def sample_babble_about_book():
 
   requests = [request]
   client.babble_about_book(requests)
-  # No one replied
-  print(u'No one replied.')
 # [END sample]
 
 def main():
@@ -5158,14 +5156,14 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
+# DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
-#   title: Test response handling for methods that return empty
-#   description: Test response handling for methods that return empty
+#   title: Test default response handling is turned off for methods that return empty
+#   description: Test default response handling is turned off for methods that return empty
 #   usage: python3 samples/v1/delete_shelf_request_empty_response_type_without_response_handling.py
 import sys
 
@@ -5174,15 +5172,13 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_delete_shelf():
-  """Test response handling for methods that return empty"""
+  """Test default response handling is turned off for methods that return empty"""
 
   client = library_v1.LibraryServiceClient()
 
   name = client.shelf_path('[SHELF_ID]')
 
   client.delete_shelf(name)
-  # Shelf deleted
-  print(u'Shelf deleted.')
 # [END sample]
 
 def main():
@@ -5260,7 +5256,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
+# DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -5285,10 +5281,11 @@ def sample_find_related_books():
   shelves_element = 'Classics'
   shelves = [shelves_element]
 
-  # Iterate over all results
-  for response_item in client.find_related_books(names, shelves):
-    book = response_item
-    print(u'Here\'s a related book: {}'.format(book))
+  # Iterate over results one page at a time
+  for page in client.find_related_books(names, shelves).pages:
+    for response_item in page:
+      book = response_item
+      print(u'Here\'s a related book: {}'.format(book))
 # [END sample]
 
 def main():
@@ -5385,27 +5382,35 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap2")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
 #   title: GetBigBook: 'War and Peace'
-#   description: Testing calling forms
-#   usage: python3 samples/v1/get_big_book_long_running_promise_wap2.py [--shelf "Novel\\\"\`\b\t\n\r"]
+#   description: Testing resource name overlap
+#   usage: python3 samples/v1/get_big_book_long_running_promise_wap2.py [--shelf Novel] [--big_book_name "War and Peace"]
 import sys
 
 # [START hopper]
 
 from google.cloud.example import library_v1
 
-def sample_get_big_book(shelf):
-  """Testing calling forms"""
+def sample_get_big_book(shelf, big_book_name):
+  """
+    Testing resource name overlap
+
+    Args:
+      shelf Test word wrapping for long lines. This is a long comment. The name of
+      the shelf to retrieve the big book from.
+      big_book_name The name of the book.
+    """
 
   client = library_v1.LibraryServiceClient()
 
-  # shelf = 'Novel\\"`\b\t\n\r'
+  # shelf = 'Novel'
+  # big_book_name = 'War and Peace'
   name = client.book_path('[BOOK_SHELF]', '[BOOK]')
 
   operation = client.get_big_book(name)
@@ -5413,30 +5418,18 @@ def sample_get_big_book(shelf):
   print(u'Waiting for operation to complete...')
   response = operation.result()
 
-  # Testing iterating over map fields when both key and value are specified.
-  for my_key, my_value in response.map_list_value_value.items():
-    print(u'key: {}, value: {}'.format(my_key, my_value))
-
-  # Testing iterating over map fields when only key is specified.
-  for another_key, _ in response.map_list_value_value.items():
-    print(u'key: {}'.format(another_key))
-
-  # Testing iterating over map fields when only value is specified.
-  for _, another_value in response.map_list_value_value.items():
-    print(u'value: {}'.format(another_value))
-
-  print(u'name: {}'.format(response.name))
-  print(u'author: {}'.format(response.author))
+  print(response)
 # [END hopper]
 
 def main():
   import argparse
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default='Novel\\"`\b\t\n\r')
+  parser.add_argument('--shelf', type=str, default='Novel')
+  parser.add_argument('--big_book_name', type=str, default='War and Peace')
   args = parser.parse_args()
 
-  sample_get_big_book(args.shelf)
+  sample_get_big_book(args.shelf, args.big_book_name)
 
 if __name__ == '__main__':
   main()
@@ -5510,14 +5503,14 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_with_response_handling")
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_without_response_handling")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
-#   title: Test response handling for methods that return empty
-#   description: Test response handling for methods that return empty
+#   title: Test default response handling is turned off for methods that return empty
+#   description: Test default response handling is turned off for methods that return empty
 #   usage: python3 samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py
 import sys
 
@@ -5526,7 +5519,7 @@ import sys
 from google.cloud.example import library_v1
 
 def sample_get_big_nothing():
-  """Test response handling for methods that return empty"""
+  """Test default response handling is turned off for methods that return empty"""
 
   client = library_v1.LibraryServiceClient()
 
@@ -5537,8 +5530,6 @@ def sample_get_big_nothing():
   print(u'Waiting for operation to complete...')
   response = operation.result()
 
-  # Got nothing
-  print(u'Got nothing.')
 # [END sample]
 
 def main():
@@ -5799,70 +5790,37 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
+# DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
-#   title: Pi version
-#   description: Testing <@calling forms>
-#   usage: python3 samples/v1/publish_series_request_second_edition.py [--shelf_name Math] [--edition 123]
+#   title: Second edition
+#   description: Testing calling forms
+#   usage: python3 samples/v1/publish_series_request_second_edition.py
 import sys
 
 # [START canonical]
 
 from google.cloud.example import library_v1
 
-def sample_publish_series(shelf_name, edition):
-  """
-    Testing <@calling forms>
-
-    Args:
-      shelf_name The name of the shelf where books are published to.
-      edition The edition of the series.
-    """
+def sample_publish_series():
+  """Testing calling forms"""
 
   client = library_v1.LibraryServiceClient()
 
-  # shelf_name = 'Math'
-  # edition = 123
-  shelf = {'name': shelf_name}
+  shelf = {}
   books = []
-  series_string = 'xyz3141592654'
-  series_uuid = {'series_string': series_string}
+  series_uuid = {}
+  edition = 2
 
   response = client.publish_series(shelf, books, series_uuid, edition=edition)
-  # % % % output handling % % % %
-  # four_score_and_seven_years ago
-  #
-  # our fathers brought forth upon this continent
-  #
-  # a new nation
-  # conceived in liberty
-  #
-  # and dedicated to the proposition that all_men_are_created_equal.
-  #
-  # Do something with book_names one by one
-  book_names = response.book_names
-  for title in response.book_names:
-    # Now we deal with this_single_book!
-    print(u'\t%`` The book\'s title: "{}", \\\nand the book costs $50.00 ``%'.format(title))
-  print(u'The first book is: {}'.format(response.book_names[0]))
-  print(u'The author of the first book is: {}'.format(response.books[0].author))
-  print(u'That\'s all!')
-  print(u'series_uuid: {}'.format(response.series_uuid.series_bytes))
+  print(response)
 # [END canonical]
 
 def main():
-  import argparse
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf_name', type=str, default='Math')
-  parser.add_argument('--edition', type=int, default=123)
-  args = parser.parse_args()
-
-  sample_publish_series(args.shelf_name, args.edition)
+  sample_publish_series()
 
 if __name__ == '__main__':
   main()
@@ -5883,70 +5841,58 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
+# DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
-#   title: Pi version
-#   description: Testing <@calling forms>
-#   usage: python3 samples/v1/publish_series_request_test_request_object_field_comments.py [--shelf_name Math] [--edition 123]
+#   title: request object field comments
+#   description: Test request object field comments
+#   usage: python3 samples/v1/publish_series_request_test_request_object_field_comments.py
 import sys
 
-# [START canonical]
+# [START sample]
 
 from google.cloud.example import library_v1
+import io
 
-def sample_publish_series(shelf_name, edition):
-  """
-    Testing <@calling forms>
-
-    Args:
-      shelf_name The name of the shelf where books are published to.
-      edition The edition of the series.
-    """
+def sample_publish_series():
+  """Test request object field comments"""
 
   client = library_v1.LibraryServiceClient()
 
-  # shelf_name = 'Math'
-  # edition = 123
-  shelf = {'name': shelf_name}
+
+  # Comment on a resource name
+  name = client.shelf_path('math')
+
+  # A super long comment
+  # wraps words at newline characters
+  # as well
+  theme = 'Math'
+
+  # Comment on a primitive field
+  internal_theme = 'Statistics'
+  shelf = {'name': name, 'theme': theme, 'internal_theme': internal_theme}
   books = []
-  series_string = 'xyz3141592654'
-  series_uuid = {'series_string': series_string}
+
+  # Comment on a file input field
+  with io.open('xyz3141592654', 'rb') as f:
+    series_bytes = f.read()
+
+  # Comment on a message
+  series_uuid = {'series_bytes': series_bytes}
+
+  # A super long long long long long long long long long long long long long long
+  # comment that tests word wrapping
+  edition = 123
 
   response = client.publish_series(shelf, books, series_uuid, edition=edition)
-  # % % % output handling % % % %
-  # four_score_and_seven_years ago
-  #
-  # our fathers brought forth upon this continent
-  #
-  # a new nation
-  # conceived in liberty
-  #
-  # and dedicated to the proposition that all_men_are_created_equal.
-  #
-  # Do something with book_names one by one
-  book_names = response.book_names
-  for title in response.book_names:
-    # Now we deal with this_single_book!
-    print(u'\t%`` The book\'s title: "{}", \\\nand the book costs $50.00 ``%'.format(title))
-  print(u'The first book is: {}'.format(response.book_names[0]))
-  print(u'The author of the first book is: {}'.format(response.books[0].author))
-  print(u'That\'s all!')
-  print(u'series_uuid: {}'.format(response.series_uuid.series_bytes))
-# [END canonical]
+  print(response)
+# [END sample]
 
 def main():
-  import argparse
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf_name', type=str, default='Math')
-  parser.add_argument('--edition', type=int, default=123)
-  args = parser.parse_args()
-
-  sample_publish_series(args.shelf_name, args.edition)
+  sample_publish_series()
 
 if __name__ == '__main__':
   main()
@@ -5967,70 +5913,41 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
+# DO NOT EDIT! This is a generated sample ("Request",  "test_write_to_file")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
-#   title: Pi version
-#   description: Testing <@calling forms>
-#   usage: python3 samples/v1/publish_series_request_test_write_to_file.py [--shelf_name Math] [--edition 123]
+#   title: test writing fields to files
+#   description: Testing write fields to files.
+#   usage: python3 samples/v1/publish_series_request_test_write_to_file.py
 import sys
 
-# [START canonical]
+# [START sample]
 
 from google.cloud.example import library_v1
 
-def sample_publish_series(shelf_name, edition):
-  """
-    Testing <@calling forms>
-
-    Args:
-      shelf_name The name of the shelf where books are published to.
-      edition The edition of the series.
-    """
+def sample_publish_series():
+  """Testing write fields to files."""
 
   client = library_v1.LibraryServiceClient()
 
-  # shelf_name = 'Math'
-  # edition = 123
-  shelf = {'name': shelf_name}
+  shelf = {}
   books = []
-  series_string = 'xyz3141592654'
-  series_uuid = {'series_string': series_string}
+  series_uuid = {}
 
-  response = client.publish_series(shelf, books, series_uuid, edition=edition)
-  # % % % output handling % % % %
-  # four_score_and_seven_years ago
-  #
-  # our fathers brought forth upon this continent
-  #
-  # a new nation
-  # conceived in liberty
-  #
-  # and dedicated to the proposition that all_men_are_created_equal.
-  #
-  # Do something with book_names one by one
-  book_names = response.book_names
-  for title in response.book_names:
-    # Now we deal with this_single_book!
-    print(u'\t%`` The book\'s title: "{}", \\\nand the book costs $50.00 ``%'.format(title))
-  print(u'The first book is: {}'.format(response.book_names[0]))
-  print(u'The author of the first book is: {}'.format(response.books[0].author))
-  print(u'That\'s all!')
-  print(u'series_uuid: {}'.format(response.series_uuid.series_bytes))
-# [END canonical]
+  response = client.publish_series(shelf, books, series_uuid)
+  # testing writing bytes field.
+  with open('uuid_of_series_with_book_{}.raw'.format(response.book_names[0]), 'wb') as out:
+    out.write(response.series_uuid.series_bytes)
+  # testing writing string field.
+  with open('series_uuid_in_plain_text.txt', 'w') as out:
+    out.write(response.series_uuid.series_string)
+# [END sample]
 
 def main():
-  import argparse
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf_name', type=str, default='Math')
-  parser.add_argument('--edition', type=int, default=123)
-  args = parser.parse_args()
-
-  sample_publish_series(args.shelf_name, args.edition)
+  sample_publish_series()
 
 if __name__ == '__main__':
   main()
@@ -6323,7 +6240,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof")
+# DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof_2")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -6333,7 +6250,7 @@ if __name__ == '__main__':
 #   usage: python3 samples/v1/test_resource_name_oneof_2.py
 import sys
 
-# [START test_resource_name_oneof]
+# [START test_resource_name_oneof_2]
 
 from google.cloud.example import library_v1
 
@@ -6344,8 +6261,8 @@ def sample_get_book_from_absolutely_anywhere():
   name = client.book_path('[BOOK_SHELF]', '[BOOK]')
 
   response = client.get_book_from_absolutely_anywhere(name)
-  print(u'Archived book found.')
-# [END test_resource_name_oneof]
+  print(u'Book on shelf found.')
+# [END test_resource_name_oneof_2]
 
 def main():
   sample_get_book_from_absolutely_anywhere()
@@ -6369,32 +6286,36 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
+# DO NOT EDIT! This is a generated sample ("Request",  "test_setting_up_empty_objects_in_request")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
-#   title: test_default_calling_form_unary
-#   description: Test default calling forms for unary methods.
+#   title: test_setting_up_empty_objects_in_request
+#   description: Test setting up empty objects in the request objects.
 #   usage: python3 samples/v1/test_setting_up_empty_objects_in_request.py
 import sys
 
-# [START sample_get_shelf]
+# [START test_setting_up_empty_objects_in_request]
 
 from google.cloud.example import library_v1
 
 def sample_get_shelf():
-  """Test default calling forms for unary methods."""
+  """Test setting up empty objects in the request objects."""
 
   client = library_v1.LibraryServiceClient()
 
   name = client.shelf_path('my-shelf')
   options_ = ''
 
-  response = client.get_shelf(name, options_)
-  print(u'The theme of the shelf is: {}'.format(response.theme))
-# [END sample_get_shelf]
+  # we can set up this empty nested object now
+  message = {}
+  string_builder = {}
+
+  response = client.get_shelf(name, options_, message=message, string_builder=string_builder)
+  print(u'Shelf found.')
+# [END test_setting_up_empty_objects_in_request]
 
 def main():
   sample_get_shelf()
@@ -6429,7 +6350,7 @@ if __name__ == '__main__':
 #   usage: python3 samples/v1/this_tag_should_be_the_name_of_the_file.py [--shelf "Novel\\\"\`\b\t\n\r"]
 import sys
 
-# [START hopper]
+# [START this_tag_should_be_the_name_of_the_file]
 
 from google.cloud.example import library_v1
 
@@ -6460,7 +6381,7 @@ def sample_get_big_book(shelf):
 
   print(u'name: {}'.format(response.name))
   print(u'author: {}'.format(response.author))
-# [END hopper]
+# [END this_tag_should_be_the_name_of_the_file]
 
 def main():
   import argparse

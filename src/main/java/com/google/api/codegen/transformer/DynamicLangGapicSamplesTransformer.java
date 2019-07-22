@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import static com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 
-import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceContext;
@@ -166,11 +165,11 @@ public abstract class DynamicLangGapicSamplesTransformer
           List<CallingForm> allMatchingCallingForms;
           if (sampleConfig.usesDefaultCallingForm()) {
             allMatchingCallingForms =
-                Collections.singletonList(
-                    CallingForm.getDefaultCallingForm(methodContext, TargetLanguage.RUBY));
+                Collections.singletonList(namer.getDefaultCallingForm(methodContext));
           } else {
             allMatchingCallingForms =
-                CallingForm.getCallingForms(methodContext, TargetLanguage.RUBY)
+                namer
+                    .getCallingForms(methodContext)
                     .stream()
                     .filter(t -> t.toLowerUnderscore().matches(sampleConfig.callingPattern()))
                     .collect(ImmutableList.toImmutableList());
@@ -185,8 +184,7 @@ public abstract class DynamicLangGapicSamplesTransformer
                 SampleContext.newBuilder()
                     .uniqueSampleId(registry.getUniqueSampleId(sampleConfig, form))
                     .sampleType(SampleSpec.SampleType.STANDALONE)
-                    .callingForm(
-                        CallingForm.getDefaultCallingForm(methodContext, TargetLanguage.RUBY))
+                    .callingForm(form)
                     .sampleConfig(sampleConfig)
                     .initCodeOutputType(initCodeOutputType)
                     .build();
