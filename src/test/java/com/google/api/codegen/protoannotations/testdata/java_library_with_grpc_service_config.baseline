@@ -11993,14 +11993,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     static {
       ImmutableMap.Builder<String, ImmutableSet<StatusCode.Code>> definitions = ImmutableMap.builder();
       definitions.put(
-          "idempotent",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
           "retry_policy_1_codes",
           ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.UNAVAILABLE, StatusCode.Code.UNKNOWN)));
-      definitions.put(
-          "non_idempotent",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
       definitions.put(
           "no_retry_codes",
           ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
@@ -12012,16 +12006,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     static {
       ImmutableMap.Builder<String, RetrySettings> definitions = ImmutableMap.builder();
       RetrySettings settings = null;
-      settings = RetrySettings.newBuilder()
-          .setInitialRetryDelay(Duration.ofMillis(100L))
-          .setRetryDelayMultiplier(1.2)
-          .setMaxRetryDelay(Duration.ofMillis(1000L))
-          .setInitialRpcTimeout(Duration.ofMillis(300L))
-          .setRpcTimeoutMultiplier(1.3)
-          .setMaxRpcTimeout(Duration.ofMillis(3000L))
-          .setTotalTimeout(Duration.ofMillis(30000L))
-          .build();
-      definitions.put("default", settings);
       settings = RetrySettings.newBuilder()
           .setInitialRetryDelay(Duration.ofMillis(200L))
           .setRetryDelayMultiplier(1.3)
@@ -12869,13 +12853,7 @@ public class MyProtoStubSettings extends StubSettings<MyProtoStubSettings> {
     static {
       ImmutableMap.Builder<String, ImmutableSet<StatusCode.Code>> definitions = ImmutableMap.builder();
       definitions.put(
-          "idempotent",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
-      definitions.put(
           "no_retry_codes",
-          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
-      definitions.put(
-          "non_idempotent",
           ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
       RETRYABLE_CODE_DEFINITIONS = definitions.build();
     }

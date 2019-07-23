@@ -22,14 +22,9 @@ import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.RetryCodesDefinitionProto;
-import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
-import com.google.api.codegen.grpc.MethodConfig.Name;
-import com.google.api.codegen.grpc.MethodConfig.RetryOrHedgingPolicyCase;
-import com.google.api.codegen.grpc.MethodConfig.RetryPolicy;
 import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.samplegen.v1.SampleConfigProto;
 import com.google.api.codegen.util.ConfigVersionValidator;
@@ -45,7 +40,6 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos;
-import com.google.protobuf.util.Durations;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -279,11 +273,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (protoParser.isProtoAnnotationsEnabled()) {
       interfaceInputs =
           createInterfaceInputsWithAnnotationsAndGapicConfig(
-              diagCollector,
-              configProto.getInterfacesList(),
-              protoInterfaces,
-              language,
-              grpcServiceConfig);
+              diagCollector, configProto.getInterfacesList(), protoInterfaces, language);
     } else {
       interfaceInputs =
           createInterfaceInputsWithGapicConfigOnly(
@@ -297,6 +287,11 @@ public abstract class GapicProductConfig implements ProductConfig {
       return null;
     }
 
+    GrpcGapicRetryMapping grpcGapicRetryMapping = null;
+    if (grpcServiceConfig != null) {
+      grpcGapicRetryMapping = GrpcGapicRetryMapping.create(grpcServiceConfig, protoInterfaces);
+    }
+
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
             diagCollector,
@@ -306,7 +301,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             messageConfigs,
             resourceNameConfigs,
             language,
-            protoParser);
+            protoParser,
+            grpcGapicRetryMapping);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -487,13 +483,7 @@ public abstract class GapicProductConfig implements ProductConfig {
           DiagCollector diagCollector,
           List<InterfaceConfigProto> interfaceConfigProtosList,
           ImmutableMap<String, Interface> protoInterfaces,
-          TargetLanguage language,
-          ServiceConfig grpcServiceConfig) {
-    if (grpcServiceConfig != null) {
-      interfaceConfigProtosList =
-          injectRetryPolicyConfig(grpcServiceConfig, protoInterfaces, interfaceConfigProtosList);
-    }
-
+          TargetLanguage language) {
     return createGapicInterfaceInputList(
         diagCollector,
         language,
@@ -501,167 +491,6 @@ public abstract class GapicProductConfig implements ProductConfig {
         interfaceConfigProtosList
             .stream()
             .collect(Collectors.toMap(InterfaceConfigProto::getName, Function.identity())));
-  }
-
-  @VisibleForTesting
-  static List<InterfaceConfigProto> injectRetryPolicyConfig(
-      ServiceConfig config,
-      ImmutableMap<String, Interface> protoInterfaces,
-      List<InterfaceConfigProto> gapicInterfaces) {
-
-    // Collect the GAPIC interfaces into a map for easier lookup
-    Map<String, InterfaceConfigProto.Builder> builders =
-        gapicInterfaces
-            .stream()
-            .collect(
-                Collectors.toMap(InterfaceConfigProto::getName, InterfaceConfigProto::toBuilder));
-
-    int retryNdx = 1;
-    for (com.google.api.codegen.grpc.MethodConfig mc : config.getMethodConfigList()) {
-      // construct GAPIC retry config from RetryPolicy
-      RetryPolicy rp = mc.getRetryPolicy();
-      String pName = "no_retry";
-      if (mc.getRetryOrHedgingPolicyCase() == RetryOrHedgingPolicyCase.RETRY_POLICY) {
-        pName = "retry_policy_" + retryNdx++;
-      }
-
-      long timeout = Durations.toMillis(mc.getTimeout());
-
-      // construct retry params from RetryPolicy
-      RetryParamsDefinitionProto.Builder rpb = RetryParamsDefinitionProto.newBuilder();
-      rpb.setMaxRetryDelayMillis(Durations.toMillis(rp.getMaxBackoff()));
-      rpb.setInitialRetryDelayMillis(Durations.toMillis(rp.getInitialBackoff()));
-      rpb.setRetryDelayMultiplier(floatToDouble(rp.getBackoffMultiplier()));
-      rpb.setTotalTimeoutMillis(timeout);
-      rpb.setName(pName + "_params");
-
-      // construct retry codes from RetryPolicy
-      RetryCodesDefinitionProto.Builder rcb = RetryCodesDefinitionProto.newBuilder();
-      rcb.setName(pName + "_codes");
-      rp.getRetryableStatusCodesList()
-          .forEach(
-              code -> {
-                rcb.addRetryCodes(code.name());
-              });
-
-      InterfaceConfigProto.Builder ib;
-      for (Name name : mc.getNameList()) {
-        ib = builders.getOrDefault(name.getService(), InterfaceConfigProto.newBuilder());
-        if (!builders.containsKey(name.getService())) {
-          ib.setName(name.getService());
-          builders.put(name.getService(), ib);
-        }
-
-        // add retry codes & params to GAPIC interface config
-        addRetryConfigIfAbsent(ib, rcb, rpb);
-
-        // apply specific method config (overwrites) or apply service config to all methods (does
-        // not overwrite method-specific policies)
-        if (!Strings.isNullOrEmpty(name.getMethod())) {
-          findAndSetRetry(ib, true, name.getMethod(), rcb.getName(), rpb.getName(), timeout);
-        } else {
-          Interface protoService = protoInterfaces.get(ib.getName());
-          for (Method m : protoService.getMethods()) {
-            findAndSetRetry(ib, false, m.getSimpleName(), rcb.getName(), rpb.getName(), timeout);
-          }
-        }
-      }
-    }
-
-    return builders
-        .keySet()
-        .stream()
-        .map(
-            key -> {
-              return builders.get(key).build();
-            })
-        .collect(Collectors.toList());
-  }
-
-  /** converts a float to a double rounding to the nearest hundredth */
-  private static double floatToDouble(float f) {
-    return Math.round(f * 100) / 100.0;
-  }
-
-  /** adds the retry param and code list objects to the GAPIC interface unless already present */
-  @VisibleForTesting
-  static void addRetryConfigIfAbsent(
-      InterfaceConfigProto.Builder ib,
-      RetryCodesDefinitionProto.Builder rcb,
-      RetryParamsDefinitionProto.Builder rpb) {
-    boolean addRetryCodes = true;
-    for (RetryCodesDefinitionProto c : ib.getRetryCodesDefList()) {
-      if (c.getName().equals(rcb.getName())) {
-        addRetryCodes = false;
-      }
-    }
-
-    if (addRetryCodes) {
-      ib.addRetryCodesDef(rcb);
-    }
-
-    boolean addRetryParams = true;
-    for (RetryParamsDefinitionProto p : ib.getRetryParamsDefList()) {
-      if (p.getName().equals(rpb.getName())) {
-        addRetryParams = false;
-      }
-    }
-
-    if (addRetryParams) {
-      ib.addRetryParamsDef(rpb);
-    }
-  }
-
-  /**
-   * finds the named MethodConfigProto, creates one if absent in the GAPIC interface, and sets retry
-   * config
-   */
-  @VisibleForTesting
-  static void findAndSetRetry(
-      InterfaceConfigProto.Builder ib,
-      boolean overwrite,
-      String method,
-      String rc,
-      String rp,
-      long timeout) {
-    int mthdNdx = findMethod(ib, method);
-
-    // add a new MethodConfigProto item to the GAPIC interface
-    if (mthdNdx == -1) {
-      MethodConfigProto.Builder mcp = MethodConfigProto.newBuilder();
-      mcp.setRetryParamsName(rp);
-      mcp.setRetryCodesName(rc);
-      mcp.setName(method);
-      mcp.setTimeoutMillis(timeout);
-      ib.addMethods(mcp);
-      return;
-    }
-
-    MethodConfigProto.Builder mcp = ib.getMethods(mthdNdx).toBuilder();
-    // don't overwrite a config previously given by gRPC service config
-    if (!overwrite
-        && (mcp.getRetryCodesName().startsWith("retry_policy_")
-            || mcp.getRetryCodesName().equals("no_retry_codes"))) {
-      return;
-    }
-
-    mcp.setRetryParamsName(rp);
-    mcp.setRetryCodesName(rc);
-    mcp.setTimeoutMillis(timeout);
-    ib.setMethods(mthdNdx, mcp);
-  }
-
-  /** returns the index of the named MethodConfigProto in the GAPIC interface and -1 if not found */
-  @VisibleForTesting
-  static int findMethod(InterfaceConfigProto.Builder service, String method) {
-    List<MethodConfigProto> methods = service.getMethodsList();
-    for (int ndx = 0; ndx < methods.size(); ndx++) {
-      if (methods.get(ndx).getName().equals(method)) {
-        return ndx;
-      }
-    }
-
-    return -1;
   }
 
   private static ImmutableList<GapicInterfaceInput> createInterfaceInputsWithGapicConfigOnly(
@@ -828,7 +657,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       TargetLanguage language,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      GrpcGapicRetryMapping grpcGapicRetryMapping) {
     // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
@@ -846,7 +676,8 @@ public abstract class GapicProductConfig implements ProductConfig {
               interfaceNameOverride,
               messageConfigs,
               resourceNameConfigs,
-              protoParser);
+              protoParser,
+              grpcGapicRetryMapping);
       if (interfaceConfig == null) {
         continue;
       }

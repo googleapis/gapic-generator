@@ -73,7 +73,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       Method method,
       ProtoMethodModel methodModel,
       RetryCodesConfig retryCodesConfig,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      GrpcGapicRetryMapping retryMapping) {
 
     GrpcStreamingConfig grpcStreaming = null;
     if (isGrpcStreamingMethod(methodModel)) {
@@ -94,13 +95,34 @@ public abstract class GapicMethodConfig extends MethodConfig {
               diagCollector, methodConfigProto.getBatching(), methodModel);
     }
 
-    String retryCodesName = retryCodesConfig.getMethodRetryNames().get(method.getSimpleName());
+    String retryCodesName;
+    String retryParamsName;
+    long defaultTimeout;
+    if (retryMapping != null) {
+      // use the gRPC ServiceConfig retry as the source
+      retryCodesName = retryCodesConfig.getMethodRetryNames().get(method.getSimpleName());
+      retryParamsName = retryMapping.methodParamsMap().get(methodModel.getFullName());
 
-    String retryParamsName =
-        RetryDefinitionsTransformer.getRetryParamsName(
-            methodConfigProto, diagCollector, retryParamsConfigNames);
+      // unknown/unspecified methods get no retry codes or params
+      if (Strings.isNullOrEmpty(retryCodesName)) {
+        retryCodesName = "no_retry_codes";
+      }
+      if (Strings.isNullOrEmpty(retryParamsName)) {
+        retryParamsName = "no_retry_params";
+      }
 
-    long defaultTimeout = methodConfigProto.getTimeoutMillis();
+      // use the totalTimeoutMillis set by the gRPC ServiceConfig MethodConfig timeout field
+      defaultTimeout = retryMapping.paramsDefMap().get(retryParamsName).getTotalTimeoutMillis();
+    } else {
+      retryCodesName = retryCodesConfig.getMethodRetryNames().get(method.getSimpleName());
+
+      retryParamsName =
+          RetryDefinitionsTransformer.getRetryParamsName(
+              methodConfigProto, diagCollector, retryParamsConfigNames);
+
+      defaultTimeout = methodConfigProto.getTimeoutMillis();
+    }
+
     if (defaultTimeout <= 0) {
       defaultTimeout = DEFAULT_MAX_RETRY_DELAY;
     }
@@ -164,7 +186,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      GrpcGapicRetryMapping retryMapping) {
     int previousErrors = diagCollector.getErrorCount();
 
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
@@ -180,7 +203,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
                 method,
                 methodModel,
                 retryCodesConfig,
-                retryParamsConfigNames)
+                retryParamsConfigNames,
+                retryMapping)
             .setPageStreaming(
                 PageStreamingConfig.createPageStreamingConfig(
                     diagCollector,
@@ -253,7 +277,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
                 method,
                 methodModel,
                 retryCodesConfig,
-                retryParamsConfigNames)
+                retryParamsConfigNames,
+                null)
             .setPageStreaming(
                 PageStreamingConfig.createPageStreamingConfig(
                     diagCollector,

@@ -25,6 +25,7 @@ import static com.google.api.codegen.configgen.transformer.RetryTransformer.RETR
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
+import com.google.api.codegen.config.GrpcGapicRetryMapping;
 import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
@@ -37,7 +38,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -91,6 +94,26 @@ public class RetryDefinitionsTransformer {
       builder.put(RETRY_PARAMS_DEFAULT_NAME, defaultRetryParams);
     }
     return builder.build();
+  }
+
+  public static ImmutableMap<String, RetryParamsDefinitionProto>
+      createRetryDefinitionsFromGRPCServiceConfig(
+          GrpcGapicRetryMapping retryMapping, String service) {
+    Map<String, RetryParamsDefinitionProto> paramsMap = new HashMap<>();
+    ImmutableMap<String, String> methodParamMap = retryMapping.methodParamsMap();
+    ImmutableMap<String, RetryParamsDefinitionProto> paramsDefMap = retryMapping.paramsDefMap();
+
+    methodParamMap
+        .keySet()
+        .stream()
+        .filter(name -> name.startsWith(service))
+        .forEach(
+            name -> {
+              String paramName = methodParamMap.get(name);
+              paramsMap.putIfAbsent(paramName, paramsDefMap.get(paramName));
+            });
+
+    return ImmutableMap.copyOf(paramsMap);
   }
 
   public static String getRetryParamsName(
