@@ -80,8 +80,6 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
   private final NodeJSFeatureConfig featureConfig = new NodeJSFeatureConfig();
 
-  public static String debug = "no!";
-
   @Override
   public List<String> getTemplateFileNames() {
     return ImmutableList.of(TEST_TEMPLATE_FILE, SMOKE_TEST_TEMPLATE_FILE);
@@ -266,18 +264,12 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
             .generateApiMethod(context);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
-    System.out.println("we are here!");
-    debug = "yes";
     InitCodeContext initCodeContext = testCaseTransformer.createSmokeTestInitContext(context);
-    System.out.println(initCodeContext);
     InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(
             context, testCaseTransformer.createSmokeTestInitContext(context));
-    apiMethodView.initCode(initCodeView);
-    System.out.println("we are done!");
-    System.out.println(initCodeView);
-    return apiMethodView.packageName("../src").build();
+    return apiMethodView.initCode(initCodeView).packageName("../src").build();
   }
 
   private GapicInterfaceContext createContext(

@@ -71,13 +71,24 @@ public class DynamicLangApiMethodTransformer {
         .collect(Collectors.toList());
   }
 
-  /** Generate the method view for an RPC method. */
+  /** Generates the method view for an RPC method. */
   public OptionalArrayMethodView generateApiMethod(MethodContext context) {
     return generateApiMethod(
         context,
         null,
         context.getSurfaceInterfaceContext().getApiModel().hasMultipleServices(),
         context.getNamer().getCallingForms(context),
+        null);
+  }
+
+  /** Generates the views for an RPC method and parameter initialization code. */
+  public OptionalArrayMethodView generateApiMethod(
+      MethodContext methodContext, InitCodeContext initCodeContext) {
+    return generateApiMethod(
+        methodContext,
+        initCodeContext,
+        methodContext.getSurfaceInterfaceContext().getApiModel().hasMultipleServices(),
+        methodContext.getNamer().getCallingForms(methodContext),
         null);
   }
 
@@ -92,7 +103,7 @@ public class DynamicLangApiMethodTransformer {
         sampleContext);
   }
 
-  public OptionalArrayMethodView generateApiMethod(
+  private OptionalArrayMethodView generateApiMethod(
       MethodContext methodContext,
       @Nullable InitCodeContext initCodeContext,
       boolean packageHasMultipleServices,
@@ -122,13 +133,9 @@ public class DynamicLangApiMethodTransformer {
         sampleContext);
   }
 
-  // TODO(hzyi): After we migrate Node.js and PHP to use the public `generateApiMethod` and
-  // `generateApiMethods`, we can remove PhpMethodViewGenerator and NodejsMethodViewGenerator
-  // and make this method and the following two private.
-  //
   // TODO(hzyi): `callingForms` are already stored in method context. Remove them when cleaning
   // up these methods.
-  public OptionalArrayMethodView generateRequestMethod(
+  private OptionalArrayMethodView generateRequestMethod(
       GapicMethodContext context,
       InitCodeContext initContext,
       boolean packageHasMultipleServices,
@@ -151,7 +158,7 @@ public class DynamicLangApiMethodTransformer {
     return apiMethod.build();
   }
 
-  public OptionalArrayMethodView generateLongRunningMethod(
+  private OptionalArrayMethodView generateLongRunningMethod(
       GapicMethodContext context,
       InitCodeContext initContext,
       boolean packageHasMultipleServices,
@@ -176,7 +183,7 @@ public class DynamicLangApiMethodTransformer {
     return apiMethod.build();
   }
 
-  public OptionalArrayMethodView generatePagedStreamingMethod(
+  private OptionalArrayMethodView generatePagedStreamingMethod(
       GapicMethodContext context,
       InitCodeContext initContext,
       boolean packageHasMultipleServices,
