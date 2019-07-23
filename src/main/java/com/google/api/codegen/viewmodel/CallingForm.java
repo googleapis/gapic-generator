@@ -160,8 +160,12 @@ public enum CallingForm {
               .put(
                   NODEJS,
                   RpcType.LRO,
-                  ImmutableList.of(LongRunningEventEmitter, LongRunningPromise))
-              .put(NODEJS, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
+                  ImmutableList.of(
+                      LongRunningEventEmitter, LongRunningPromise, LongRunningPromiseAwait))
+              .put(
+                  NODEJS,
+                  RpcType.PAGED_STREAMING,
+                  ImmutableList.of(RequestAsyncPaged, RequestAsyncPagedAll))
               .put(NODEJS, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
               .put(NODEJS, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
               .put(NODEJS, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))

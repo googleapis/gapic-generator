@@ -112,6 +112,9 @@ public class SampleFileRegistry {
     if (userProvidedIdCount.get(regionTag) == 1) {
       fileName = namer.getApiSampleFileName(regionTag);
     } else {
+      Name methodName =
+          Character.isUpperCase(method.charAt(0)) ? Name.anyCamel(method) : Name.anyLower(method);
+      method = methodName.toLowerUnderscore();
       fileName = namer.getApiSampleFileName(method, callingForm, id);
     }
     addFile(fileName, method, callingForm, id, regionTag);
