@@ -71,8 +71,6 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
       new FileHeaderTransformer(new NodeJSImportSectionTransformer());
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer());
-  private final NodeJSMethodViewGenerator methodGenerator =
-      new NodeJSMethodViewGenerator(apiMethodTransformer);
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
@@ -103,28 +101,25 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
             .collect(ImmutableList.toImmutableList());
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     models.addAll(generateIndexViews(apiInterfaces, productConfig));
-    models.addAll(generateApiClasses(apiInterfaces, productConfig, model.hasMultipleServices()));
+    models.addAll(generateApiClasses(apiInterfaces, productConfig));
     return models.build();
   }
 
   private List<ViewModel> generateApiClasses(
-      Collection<? extends InterfaceModel> apiInterfaces,
-      GapicProductConfig productConfig,
-      boolean hasMultipleServices) {
+      Collection<? extends InterfaceModel> apiInterfaces, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     for (InterfaceModel apiInterface : apiInterfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      models.add(generateApiClass(context, hasMultipleServices));
+      models.add(generateApiClass(context));
     }
     return models.build();
   }
 
-  private ViewModel generateApiClass(GapicInterfaceContext context, boolean hasMultipleServices) {
+  private ViewModel generateApiClass(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     String subPath =
         pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
-    List<OptionalArrayMethodView> methods =
-        methodGenerator.generateApiMethods(context, hasMultipleServices);
+    List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 
@@ -264,10 +259,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
       String localName =
           hasVersion ? serviceName.join(version).toLowerCamel() : serviceName.toLowerCamel();
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      ApiMethodView exampleMethod =
-          methodGenerator
-              .generateApiMethods(context, apiInterface.getApiModel().hasMultipleServices())
-              .get(0);
+      ApiMethodView exampleMethod = apiMethodTransformer.generateApiMethods(context).get(0);
       VersionIndexRequireView require =
           VersionIndexRequireView.newBuilder()
               .clientName(

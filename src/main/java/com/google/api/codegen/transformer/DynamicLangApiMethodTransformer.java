@@ -92,7 +92,7 @@ public class DynamicLangApiMethodTransformer {
         sampleContext);
   }
 
-  private OptionalArrayMethodView generateApiMethod(
+  public OptionalArrayMethodView generateApiMethod(
       MethodContext methodContext,
       @Nullable InitCodeContext initCodeContext,
       boolean packageHasMultipleServices,

@@ -39,7 +39,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 
 /**
  * A base transformer to generate standalone samples for each method in the GAPIC surface generated
@@ -204,7 +203,16 @@ public abstract class DynamicLangGapicSamplesTransformer
     return sampleFileViews.build();
   }
 
-  protected DynamicLangSampleView newSampleFileView(
+  private DynamicLangSampleView newSampleFileView(
+      GapicProductConfig productConfig,
+      InterfaceContext context,
+      String sampleFileName,
+      OptionalArrayMethodView method,
+      MethodSampleView sample) {
+    return newSampleFileViewBuilder(productConfig, context, sampleFileName, method, sample).build();
+  }
+
+  protected DynamicLangSampleView.Builder newSampleFileViewBuilder(
       GapicProductConfig productConfig,
       InterfaceContext context,
       String sampleFileName,
@@ -223,13 +231,6 @@ public abstract class DynamicLangGapicSamplesTransformer
         .fileHeader(fileHeaderTransformer.generateFileHeader(context))
         .outputPath(outputPath)
         .libraryMethod(method)
-        .sample(sample)
-        .gapicPackageName(getGapicPackageName(productConfig))
-        .build();
-  }
-
-  @Nullable
-  protected String getGapicPackageName(GapicProductConfig gapicProductConfig) {
-    return null;
+        .sample(sample);
   }
 }

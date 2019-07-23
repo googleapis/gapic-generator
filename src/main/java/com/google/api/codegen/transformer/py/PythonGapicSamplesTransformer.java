@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -27,6 +28,9 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.py.PythonTypeTable;
+import com.google.api.codegen.viewmodel.DynamicLangSampleView;
+import com.google.api.codegen.viewmodel.MethodSampleView;
+import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import java.util.function.Function;
 
 /**
@@ -69,7 +73,14 @@ public class PythonGapicSamplesTransformer extends DynamicLangGapicSamplesTransf
   }
 
   @Override
-  protected String getGapicPackageName(GapicProductConfig productConfig) {
-    return newSurfaceNamer.apply(productConfig).getGapicPackageName(packageConfig.packageName());
+  protected DynamicLangSampleView.Builder newSampleFileViewBuilder(
+      GapicProductConfig productConfig,
+      InterfaceContext context,
+      String sampleFileName,
+      OptionalArrayMethodView method,
+      MethodSampleView sample) {
+    return super.newSampleFileViewBuilder(productConfig, context, sampleFileName, method, sample)
+        .gapicPackageName(
+            newSurfaceNamer.apply(productConfig).getGapicPackageName(packageConfig.packageName()));
   }
 }

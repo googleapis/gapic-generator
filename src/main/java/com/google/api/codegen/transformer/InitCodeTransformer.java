@@ -33,6 +33,7 @@ import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValueConfig;
+import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
 import com.google.api.codegen.util.EscaperFactory;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
@@ -472,6 +473,12 @@ public class InitCodeTransformer {
       isFirstReadFileView =
           isFirstReadFileView && item.getLineType() != InitCodeLineType.ReadFileInitLine;
     }
+    if (NodeJSGapicSurfaceTestTransformer.debug.equals("yes")) {
+      System.out.println("surfaceLines");
+      surfaceLines.stream().forEach(System.out::println);
+    }
+    NodeJSGapicSurfaceTestTransformer.debug = "no!";
+
     return surfaceLines;
   }
 
@@ -480,6 +487,16 @@ public class InitCodeTransformer {
       InitCodeNode specItemNode,
       boolean isFirstItem,
       boolean isFirstReadFileView) {
+    if (NodeJSGapicSurfaceTestTransformer.debug.equals("yes")) {
+      // orderedItems
+      //     .stream()
+      //     .forEach(
+      //         e ->
+      //             System.out.printf(
+      //                 "name: %s, init_value: %s\n", e.getKey(), e.getInitValueConfig()));
+      System.out.printf(
+          "name: %s, init_value: %s\n", specItemNode.getKey(), specItemNode.getInitValueConfig());
+    }
     switch (specItemNode.getLineType()) {
       case StructureInitLine:
         return generateStructureInitCodeLine(context, specItemNode);
@@ -522,7 +539,8 @@ public class InitCodeTransformer {
     surfaceLine.isEnum(item.getType().isEnum());
     surfaceLine.identifier(getVariableName(context, item));
     setInitValueAndComments(surfaceLine, context, item, isFirstItem);
-
+    if (NodeJSGapicSurfaceTestTransformer.debug.equals("yes"))
+      System.out.println(surfaceLine.build());
     return surfaceLine.build();
   }
 
@@ -758,7 +776,10 @@ public class InitCodeTransformer {
             .withoutVars()
             .encode(encodeArgs)
             .replace(FORMAT_SPEC_PLACEHOLDER, context.getNamer().formatSpec()));
-
+    if (NodeJSGapicSurfaceTestTransformer.debug.equals("yes")) {
+      System.out.println("varList");
+      singleResourceNameConfig.getNameTemplate().vars().stream().forEach(System.out::println);
+    }
     List<String> varList = Lists.newArrayList(singleResourceNameConfig.getNameTemplate().vars());
     formattedInitValue.formatArgs(getFormatFunctionArgs(context, varList, initValueConfig));
 

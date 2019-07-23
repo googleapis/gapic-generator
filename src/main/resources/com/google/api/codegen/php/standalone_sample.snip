@@ -2,7 +2,7 @@
 @extends "metadatagen/samplegen.snip"
 
 @snippet generate(sampleFile)
-    {@standaloneSample(sampleFile, sampleFile.libraryMethod, sampleFile.libraryMethod.samples.get(0))}
+    {@standaloneSample(sampleFile, sampleFile.libraryMethod, sampleFile.sample)}
 @end
 
 # The structure of this should be parallel to that of method_sample.snip:@incodeSampleCall
@@ -21,7 +21,7 @@
     @end
     //   usage: php {@sampleFile.outputPath} {@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}
     // [START {@sample.regionTag}]
-    require {@sampleFile.extraInfo.autoloadPath};
+    require {@sampleFile.autoloadPath};
 
     @if sample.sampleImports.appImports
         {@importList(sample.sampleImports.appImports)}
@@ -32,23 +32,7 @@
     @end
     function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)})
     {
-        @if sampleFile.extraInfo.hasMissingDefaultOptions
-            $options = [
-                @if sampleFile.extraInfo.missingDefaultServiceAddress
-                    'serviceAddress' => 'my-service-address',
-                @end
-                @if sampleFile.extraInfo.missingDefaultServiceScopes
-                    'credentialsConfig' => [
-                        'scopes' => ['my-service-scope'],
-                    ],
-                @end
-                ];
-            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
-
-        @else
-            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
-
-        @end
+        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
         @if sample.sampleInitCode.lines
             {@sampleInitCode(sample.sampleInitCode, apiMethod.apiVariableName)}
 
@@ -79,13 +63,7 @@
                 $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
             @end
         } finally {
-            @if sampleFile.extraInfo.hasMissingDefaultOptions
-                if (isset(${@apiMethod.apiVariableName})) {
-                    ${@apiMethod.apiVariableName}->close();
-                }
-            @else
-                ${@apiMethod.apiVariableName}->close();
-            @end
+            ${@apiMethod.apiVariableName}->close();
         }
     }
     // [END {@sample.regionTag}]

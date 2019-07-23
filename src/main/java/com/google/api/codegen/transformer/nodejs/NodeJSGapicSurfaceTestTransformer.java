@@ -47,6 +47,7 @@ import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
+import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
@@ -78,6 +79,8 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
   private final NodeJSFeatureConfig featureConfig = new NodeJSFeatureConfig();
+
+  public static String debug = "no!";
 
   @Override
   public List<String> getTemplateFileNames() {
@@ -258,15 +261,23 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
 
   private OptionalArrayMethodView createSmokeTestCaseApiMethodView(
       GapicMethodContext context, boolean packageHasMultipleServices) {
-    OptionalArrayMethodView apiMethodView =
-        new NodeJSMethodViewGenerator(
-                new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer()))
-            .generateOneApiMethod(
-                context,
-                testCaseTransformer.createSmokeTestInitContext(context),
-                packageHasMultipleServices);
+    OptionalArrayMethodView initialApiMethodView =
+        new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer())
+            .generateApiMethod(context);
 
-    return apiMethodView.toBuilder().packageName("../src").build();
+    OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
+    System.out.println("we are here!");
+    debug = "yes";
+    InitCodeContext initCodeContext = testCaseTransformer.createSmokeTestInitContext(context);
+    System.out.println(initCodeContext);
+    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+    InitCodeView initCodeView =
+        initCodeTransformer.generateInitCode(
+            context, testCaseTransformer.createSmokeTestInitContext(context));
+    apiMethodView.initCode(initCodeView);
+    System.out.println("we are done!");
+    System.out.println(initCodeView);
+    return apiMethodView.packageName("../src").build();
   }
 
   private GapicInterfaceContext createContext(
