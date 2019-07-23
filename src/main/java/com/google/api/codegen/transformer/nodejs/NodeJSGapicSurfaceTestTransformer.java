@@ -47,7 +47,6 @@ import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
-import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
@@ -259,17 +258,11 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
 
   private OptionalArrayMethodView createSmokeTestCaseApiMethodView(
       GapicMethodContext context, boolean packageHasMultipleServices) {
-    OptionalArrayMethodView initialApiMethodView =
+    OptionalArrayMethodView apiMethodView =
         new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer())
-            .generateApiMethod(context);
+            .generateApiMethod(context, testCaseTransformer.createSmokeTestInitContext(context));
 
-    OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
-    InitCodeContext initCodeContext = testCaseTransformer.createSmokeTestInitContext(context);
-    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
-    InitCodeView initCodeView =
-        initCodeTransformer.generateInitCode(
-            context, testCaseTransformer.createSmokeTestInitContext(context));
-    return apiMethodView.initCode(initCodeView).packageName("../src").build();
+    return apiMethodView.toBuilder().packageName("../src").build();
   }
 
   private GapicInterfaceContext createContext(

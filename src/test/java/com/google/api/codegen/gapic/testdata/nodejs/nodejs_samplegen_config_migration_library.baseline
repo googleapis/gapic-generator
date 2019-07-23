@@ -1070,8 +1070,11 @@ describe('LibraryServiceSmokeTest', () => {
       // optional auth parameters.
     });
 
-    const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
-    const book = {};
+    const formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
+    const rating = 'GOOD';
+    const book = {
+      rating: rating,
+    };
     const request = {
       name: formattedName,
       book: book,

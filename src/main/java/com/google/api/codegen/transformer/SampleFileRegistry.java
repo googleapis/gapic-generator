@@ -112,6 +112,7 @@ public class SampleFileRegistry {
     if (userProvidedIdCount.get(regionTag) == 1) {
       fileName = namer.getApiSampleFileName(regionTag);
     } else {
+      // method names can be in snake_case, camelCase or ParscalCase depending on the language
       Name methodName =
           Character.isUpperCase(method.charAt(0)) ? Name.anyCamel(method) : Name.anyLower(method);
       method = methodName.toLowerUnderscore();

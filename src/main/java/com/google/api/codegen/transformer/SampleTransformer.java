@@ -164,6 +164,7 @@ public abstract class SampleTransformer {
       Collection<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType,
       List<CallingForm> callingForms) {
+
     List<MethodSampleView> methodSampleViews =
         generateSamples(context, initContext, fieldConfigs, initCodeOutputType, callingForms);
 

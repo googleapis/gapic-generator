@@ -45,9 +45,9 @@ public class RubyGapicSamplesTransformer extends DynamicLangGapicSamplesTransfor
               .sampleType(SampleSpec.SampleType.STANDALONE)
               .build());
 
+  // TODO(hzyi): `packageConfig` is not actually needed. Remove it in a coming PR.
   public RubyGapicSamplesTransformer(
-      GapicCodePathMapper pathMapper,
-      PackageMetadataConfig packageConfig) { // we don't need the latter
+      GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
     super(
         STANDALONE_SAMPLE_TEMPLATE_FILENAME,
         pathMapper,

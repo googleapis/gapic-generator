@@ -105,7 +105,7 @@ public abstract class DynamicLangGapicSamplesTransformer
     return Arrays.asList(templateFileName);
   }
 
-  protected List<ViewModel> generateSamplesFromGapicConfigs(
+  private List<ViewModel> generateSamplesFromGapicConfigs(
       List<InterfaceContext> interfaceContexts,
       GapicProductConfig productConfig,
       SurfaceNamer namer) {
@@ -134,7 +134,7 @@ public abstract class DynamicLangGapicSamplesTransformer
     return sampleFileViews.build();
   }
 
-  protected List<ViewModel> generateSamplesFromSampleConfigs(
+  private List<ViewModel> generateSamplesFromSampleConfigs(
       List<InterfaceContext> interfaceContexts,
       GapicProductConfig productConfig,
       SurfaceNamer namer,

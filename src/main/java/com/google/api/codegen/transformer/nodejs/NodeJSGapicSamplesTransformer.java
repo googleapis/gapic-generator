@@ -48,9 +48,9 @@ public class NodeJSGapicSamplesTransformer extends DynamicLangGapicSamplesTransf
               .sampleType(SampleType.STANDALONE)
               .build());
 
+  // TODO(hzyi): `packageConfig` is not actually needed. Remove it in a coming PR.
   public NodeJSGapicSamplesTransformer(
-      GapicCodePathMapper pathMapper,
-      PackageMetadataConfig packageConfig) { // we don't need the latter
+      GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
     super(
         STANDALONE_SAMPLE_TEMPLATE_FILENAME,
         pathMapper,

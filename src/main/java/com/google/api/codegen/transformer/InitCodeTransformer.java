@@ -522,6 +522,7 @@ public class InitCodeTransformer {
     surfaceLine.isEnum(item.getType().isEnum());
     surfaceLine.identifier(getVariableName(context, item));
     setInitValueAndComments(surfaceLine, context, item, isFirstItem);
+
     return surfaceLine.build();
   }
 
@@ -757,6 +758,7 @@ public class InitCodeTransformer {
             .withoutVars()
             .encode(encodeArgs)
             .replace(FORMAT_SPEC_PLACEHOLDER, context.getNamer().formatSpec()));
+
     List<String> varList = Lists.newArrayList(singleResourceNameConfig.getNameTemplate().vars());
     formattedInitValue.formatArgs(getFormatFunctionArgs(context, varList, initValueConfig));
 
