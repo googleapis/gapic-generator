@@ -54,7 +54,7 @@ public class RubyGapicSamplesTransformer extends DynamicLangGapicSamplesTransfor
         fileHeaderTransformer,
         apiMethodTransformer,
         new RubyFeatureConfig(),
-        p -> new RubySurfaceNamer(p),
+        p -> new RubySurfaceNamer(p.getPackageName()),
         p -> new ModelTypeTable(new RubyTypeTable(p), new RubyModelTypeNameConverter(p)));
   }
 }

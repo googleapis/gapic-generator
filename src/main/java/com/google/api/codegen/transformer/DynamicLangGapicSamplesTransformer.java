@@ -54,7 +54,7 @@ public abstract class DynamicLangGapicSamplesTransformer
   private final FileHeaderTransformer fileHeaderTransformer;
   private final DynamicLangApiMethodTransformer apiMethodTransformer;
   private final FeatureConfig featureConfig;
-  private final Function<String, SurfaceNamer> newSurfaceNamer;
+  private final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer;
   private final Function<String, ModelTypeTable> newTypeTable;
 
   protected DynamicLangGapicSamplesTransformer(
@@ -63,7 +63,7 @@ public abstract class DynamicLangGapicSamplesTransformer
       FileHeaderTransformer fileHeaderTransformer,
       DynamicLangApiMethodTransformer apiMethodTransformer,
       FeatureConfig featureConfig,
-      Function<String, SurfaceNamer> newSurfaceNamer,
+      Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer,
       Function<String, ModelTypeTable> newTypeTable) {
     this.templateFileName = templateFileName;
     this.pathMapper = pathMapper;
@@ -77,7 +77,7 @@ public abstract class DynamicLangGapicSamplesTransformer
   @Override
   public List<ViewModel> transform(ProtoApiModel apiModel, GapicProductConfig productConfig) {
     String packageName = productConfig.getPackageName();
-    SurfaceNamer namer = newSurfaceNamer.apply(packageName);
+    SurfaceNamer namer = newSurfaceNamer.apply(productConfig);
     ModelTypeTable typeTable = newTypeTable.apply(packageName);
 
     List<InterfaceContext> interfaceContexts =
@@ -224,12 +224,12 @@ public abstract class DynamicLangGapicSamplesTransformer
         .outputPath(outputPath)
         .libraryMethod(method)
         .sample(sample)
-        .gapicPackageName(getGapicPackageName(productConfig.getPackageName()))
+        .gapicPackageName(getGapicPackageName(productConfig))
         .build();
   }
 
   @Nullable
-  protected String getGapicPackageName(String protoPackageName) {
+  protected String getGapicPackageName(GapicProductConfig gapicProductConfig) {
     return null;
   }
 }
