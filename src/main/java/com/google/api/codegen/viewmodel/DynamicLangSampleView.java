@@ -74,7 +74,7 @@ public abstract class DynamicLangSampleView implements ViewModel {
 
     public abstract Builder outputPath(String val);
 
-    // ok?
+    // Used by PhpGapicSamplesTransformer to calculate `autoloadPath`
     public abstract String outputPath();
 
     public abstract Builder libraryMethod(OptionalArrayMethodView val);

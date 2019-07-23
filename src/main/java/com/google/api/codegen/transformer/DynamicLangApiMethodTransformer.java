@@ -81,7 +81,10 @@ public class DynamicLangApiMethodTransformer {
         null);
   }
 
-  /** Generates the views for an RPC method and parameter initialization code. */
+  /**
+   * Generates the views for an RPC method and parameter initialization code. Used by smoke tests
+   * and example methods in surface documentation.
+   */
   public OptionalArrayMethodView generateApiMethod(
       MethodContext methodContext, InitCodeContext initCodeContext) {
     return generateApiMethod(
