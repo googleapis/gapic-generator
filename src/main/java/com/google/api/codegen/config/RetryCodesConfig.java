@@ -99,29 +99,25 @@ public class RetryCodesConfig {
     ImmutableMap<String, String> methodCodesMap = retryMapping.methodCodesMap();
     ImmutableMap<String, RetryCodesDefinitionProto> codesMap = retryMapping.codesDefMap();
 
-    methodCodesMap
-        .keySet()
-        .stream()
-        .filter(name -> name.startsWith(service))
-        .forEach(
-            name -> {
-              // simple method name from fully-qualified name
-              String method = name.substring(name.lastIndexOf(".") + 1);
-              String codeDefName = methodCodesMap.get(name);
+    for (String name : methodCodesMap.keySet()) {
+      if (name.startsWith(service)) {
+        // simple method name from fully-qualified name
+        String method = name.substring(name.lastIndexOf(".") + 1);
+        String codeDefName = methodCodesMap.get(name);
 
-              ImmutableList.Builder<String> codeListBuilder = ImmutableList.builder();
-              codeListBuilder.addAll(codesMap.get(codeDefName).getRetryCodesList());
+        ImmutableList.Builder<String> codeListBuilder = ImmutableList.builder();
+        codeListBuilder.addAll(codesMap.get(codeDefName).getRetryCodesList());
 
-              // map code def name to list of codes
-              codesDefMap.putIfAbsent(codeDefName, codeListBuilder.build());
+        // map code def name to list of codes
+        codesDefMap.putIfAbsent(codeDefName, codeListBuilder.build());
 
-              // map method name to code definition
-              methodNamesMap.putIfAbsent(method, codeDefName);
-            });
+        // map method name to code definition
+        methodNamesMap.putIfAbsent(method, codeDefName);
+      }
+    }
 
     retryCodesConfig.retryCodesDefinition = ImmutableMap.copyOf(codesDefMap);
     retryCodesConfig.methodRetryNames = ImmutableMap.copyOf(methodNamesMap);
-
     retryCodesConfig.setFinalRetryProperties();
 
     return retryCodesConfig;

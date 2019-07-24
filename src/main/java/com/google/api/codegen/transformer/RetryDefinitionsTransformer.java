@@ -108,10 +108,9 @@ public class RetryDefinitionsTransformer {
         .stream()
         .filter(name -> name.startsWith(service))
         .forEach(
-            name -> {
-              String paramName = methodParamMap.get(name);
-              paramsMap.putIfAbsent(paramName, paramsDefMap.get(paramName));
-            });
+            name ->
+                paramsMap.putIfAbsent(
+                    methodParamMap.get(name), paramsDefMap.get(methodParamMap.get(name))));
 
     return ImmutableMap.copyOf(paramsMap);
   }

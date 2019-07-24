@@ -21,6 +21,7 @@ import com.google.api.codegen.grpc.MethodConfig.RetryOrHedgingPolicyCase;
 import com.google.api.codegen.grpc.MethodConfig.RetryPolicy;
 import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -40,55 +41,50 @@ public abstract class GrpcGapicRetryMapping {
 
     // build retry-to-interface mapping from gRPC ServiceConfig
     int retryNdx = 1;
-    for (com.google.api.codegen.grpc.MethodConfig mc : config.getMethodConfigList()) {
-      RetryPolicy rp = mc.getRetryPolicy();
-      String pName = "no_retry";
-      if (mc.getRetryOrHedgingPolicyCase() == RetryOrHedgingPolicyCase.RETRY_POLICY) {
-        pName = "retry_policy_" + retryNdx++;
+    for (com.google.api.codegen.grpc.MethodConfig methodConfig : config.getMethodConfigList()) {
+      RetryPolicy retryPolicy = methodConfig.getRetryPolicy();
+      String policyName = "no_retry";
+      if (methodConfig.getRetryOrHedgingPolicyCase() == RetryOrHedgingPolicyCase.RETRY_POLICY) {
+        policyName = "retry_policy_" + retryNdx++;
       }
 
-      long timeout = Durations.toMillis(mc.getTimeout());
+      long timeout = Durations.toMillis(methodConfig.getTimeout());
 
       // construct retry params from RetryPolicy
-      RetryParamsDefinitionProto.Builder rpb = RetryParamsDefinitionProto.newBuilder();
-      rpb.setMaxRetryDelayMillis(Durations.toMillis(rp.getMaxBackoff()));
-      rpb.setInitialRetryDelayMillis(Durations.toMillis(rp.getInitialBackoff()));
-      rpb.setRetryDelayMultiplier(floatToDouble(rp.getBackoffMultiplier()));
-      rpb.setTotalTimeoutMillis(timeout);
-      rpb.setName(pName + "_params");
-      paramsDefMap.putIfAbsent(rpb.getName(), rpb.build());
+      RetryParamsDefinitionProto.Builder paramsBuilder = RetryParamsDefinitionProto.newBuilder();
+      paramsBuilder.setMaxRetryDelayMillis(Durations.toMillis(retryPolicy.getMaxBackoff()));
+      paramsBuilder.setInitialRetryDelayMillis(Durations.toMillis(retryPolicy.getInitialBackoff()));
+      paramsBuilder.setRetryDelayMultiplier(floatToDouble(retryPolicy.getBackoffMultiplier()));
+      paramsBuilder.setTotalTimeoutMillis(timeout);
+      paramsBuilder.setName(policyName + "_params");
+      paramsDefMap.putIfAbsent(paramsBuilder.getName(), paramsBuilder.build());
 
       // construct retry codes from RetryPolicy
-      RetryCodesDefinitionProto.Builder rcb = RetryCodesDefinitionProto.newBuilder();
-      rcb.setName(pName + "_codes");
-      rp.getRetryableStatusCodesList()
-          .forEach(
-              code -> {
-                rcb.addRetryCodes(code.name());
-              });
-      codesDefMap.putIfAbsent(rcb.getName(), rcb.build());
+      RetryCodesDefinitionProto.Builder codesBuilder = RetryCodesDefinitionProto.newBuilder();
+      codesBuilder.setName(policyName + "_codes");
+      retryPolicy
+          .getRetryableStatusCodesList()
+          .forEach(code -> codesBuilder.addRetryCodes(code.name()));
+      codesDefMap.putIfAbsent(codesBuilder.getName(), codesBuilder.build());
 
       // apply specific method config (overwrites) or apply service config to all methods (does
       // not overwrite method-specific policies)
-      for (Name name : mc.getNameList()) {
+      for (Name name : methodConfig.getNameList()) {
         String serviceBase = name.getService();
 
         if (!Strings.isNullOrEmpty(name.getMethod())) {
-          String fqn = fullyQualifiedName(serviceBase, name.getMethod());
-          methodCodesMap.put(fqn, rcb.getName());
-          methodParamsMap.put(fqn, rpb.getName());
+          String fullName = fullyQualifiedName(serviceBase, name.getMethod());
+          methodCodesMap.put(fullName, codesBuilder.getName());
+          methodParamsMap.put(fullName, paramsBuilder.getName());
           continue;
         }
 
         Interface interProto = protoInterfaces.get(serviceBase);
-        interProto
-            .getMethods()
-            .forEach(
-                method -> {
-                  String fqn = method.getFullName();
-                  methodCodesMap.putIfAbsent(fqn, rcb.getName());
-                  methodParamsMap.putIfAbsent(fqn, rpb.getName());
-                });
+        for (Method method : interProto.getMethods()) {
+          String fullName = method.getFullName();
+          methodCodesMap.putIfAbsent(fullName, codesBuilder.getName());
+          methodParamsMap.putIfAbsent(fullName, paramsBuilder.getName());
+        }
       }
     }
 

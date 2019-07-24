@@ -121,7 +121,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     RetryCodesConfig retryCodesConfig;
     ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition;
     if (grpcGapicRetryMapping != null) {
-      // use the gRPC ServiceCongif retry mapping as the source
+      // use the gRPC ServiceConfig retry mapping as the source
       retryCodesConfig =
           RetryCodesConfig.create(grpcGapicRetryMapping, interfaceConfigProto.getName());
       retrySettingsDefinition =
