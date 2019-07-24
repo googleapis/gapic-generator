@@ -26,7 +26,7 @@ import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
 import com.google.api.codegen.grpc.ServiceConfig;
-import com.google.api.codegen.samplegen.v1.SampleConfigProto;
+import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.codegen.util.ConfigVersionValidator;
 import com.google.api.codegen.util.LicenseHeaderUtil;
 import com.google.api.codegen.util.ProtoParser;
@@ -37,6 +37,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.Api;
 import com.google.protobuf.DescriptorProtos;
@@ -99,8 +100,13 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public abstract Boolean enableStringFormattingFunctionsOverride();
 
+  /**
+   * Returns a table of SampleConfigs. The row key is the full name of the interface and the column
+   * key is the name of the method.
+   */
   @Nullable
-  public abstract ImmutableList<SampleConfig> getSampleConfigs();
+  public abstract ImmutableTable<String, String, ImmutableList<SampleConfig>>
+      getSampleConfigTable();
 
   public GapicProductConfig withPackageName(String packageName) {
     return new AutoValue_GapicProductConfig(
@@ -117,7 +123,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         getDefaultResourceNameFieldConfigMap(),
         getConfigSchemaVersion(),
         enableStringFormattingFunctionsOverride(),
-        getSampleConfigs());
+        getSampleConfigTable());
   }
 
   @Nullable
@@ -358,7 +364,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion,
         enableStringFormatFunctionsOverride,
-        SampleConfig.createSampleConfigs(sampleConfigProto, interfaceConfigMap));
+        SampleConfig.createSampleConfigTable(sampleConfigProto, interfaceConfigMap));
   }
 
   public static GapicProductConfig create(
@@ -432,7 +438,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion,
         enableStringFormatFunctionsOverride,
-        ImmutableList.of());
+        ImmutableTable.of());
   }
 
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
@@ -474,7 +480,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),
         configSchemaVersion,
         false,
-        ImmutableList.of());
+        ImmutableTable.of());
   }
 
   /** Return the list of information about clients to be generated. */

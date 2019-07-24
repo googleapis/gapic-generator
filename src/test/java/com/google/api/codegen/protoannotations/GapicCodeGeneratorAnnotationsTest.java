@@ -37,6 +37,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
   public GapicCodeGeneratorAnnotationsTest(
       TargetLanguage language,
       String[] gapicConfigFileNames,
+      String[] sampleConfigFileNames,
       String packageConfigFileName,
       List<String> snippetName,
       String baseline,
@@ -47,6 +48,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
     super(
         language,
         gapicConfigFileNames,
+        sampleConfigFileNames,
         packageConfigFileName,
         snippetName,
         baseline,
@@ -72,7 +74,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
     // TODO(andrealin): Remove dependency on yaml files when proto annotations fully supported.
   }
 
-  @Parameters(name = "{4}")
+  @Parameters(name = "{5}")
   public static List<Object[]> testedConfigs() {
     return Arrays.<Object[]>asList(
         // Only Proto Annotations, no GAPIC config
@@ -85,6 +87,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "com.google.example.library.v1",
             null,
             null,
+            null,
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
@@ -93,6 +96,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library",
             "google.example.library.v1",
             "Library::V1",
+            null,
             null,
             null,
             "another_service"),
@@ -105,6 +109,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "google.cloud.example.library_v1.gapic",
             null,
             null,
+            null,
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
@@ -115,6 +120,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "google.cloud.example.library_v1.gapic",
             "library_grpc_service_config.json",
             null,
+            null,
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PYTHON,
@@ -123,6 +129,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library",
             "google.example.library.v1",
             "google.cloud.example.library_v1.gapic",
+            null,
             null,
             null,
             "another_service"),
@@ -134,6 +141,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "google.example.library.v1",
             "google.cloud.example.library_v1.gapic",
             "library_grpc_service_config.json",
+            null,
             null,
             "another_service"),
         GapicTestBase2.createTestConfig(
@@ -145,6 +153,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "Google.Example.Library.V1",
             null,
             null,
+            null,
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.CSHARP,
@@ -155,6 +164,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "Google.Example.Library.V1",
             "library_grpc_service_config.json",
             null,
+            null,
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.GO,
@@ -163,6 +173,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library",
             "google.example.library.v1",
             "cloud.google.com/go/library/apiv1",
+            null,
             null,
             null,
             "another_service"),
@@ -174,6 +185,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "google.example.library.v1",
             "cloud.google.com/go/library/apiv1",
             "library_grpc_service_config.json",
+            null,
             null,
             "another_service"),
         GapicTestBase2.createTestConfig(
@@ -185,6 +197,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "Library::V1",
             null,
             null,
+            null,
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
@@ -195,6 +208,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "Library::V1",
             "library_grpc_service_config.json",
             null,
+            null,
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PHP,
@@ -202,6 +216,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library_pkg2.yaml",
             "library",
             "google.example.library.v1",
+            null,
             null,
             null,
             null,
@@ -215,6 +230,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             "library_grpc_service_config.json",
             null,
+            null,
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.NODEJS,
@@ -223,6 +239,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library",
             "google.example.library.v1",
             "library.v1",
+            null,
             null,
             null,
             "another_service"),
@@ -234,6 +251,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "google.example.library.v1",
             "library.v1",
             "library_grpc_service_config.json",
+            null,
             null,
             "another_service"));
   }

@@ -1,0 +1,48 @@
+@extends "csharp/client.snip"
+@extends "csharp/common.snip"
+@extends "csharp/common_initcode.snip"
+@extends "csharp/response.snip"
+
+@snippet unaryMethod(apiMethod, sample)
+    {@syncSampleFunction(sample)}
+    {
+        {@syncClient(apiMethod)}
+        {@standaloneSampleInitCode(sample.sampleInitCode)}
+        {@methodCall(apiMethod, sample)}
+        @if sample.outputs
+            {@processOutputViews(sample.outputs)}
+        @end
+    }
+@end
+
+@snippet unaryAsyncMethod(apiMethod, sample)
+    {@asyncSampleFunction(sample)}
+    {
+        {@asyncClient(apiMethod)}
+        {@standaloneSampleInitCode(sample.sampleInitCode)}
+        {@asyncMethodCall(apiMethod, sample)}
+        @if sample.outputs
+            {@processOutputViews(sample.outputs)}
+        @end
+    }
+@end
+
+@private methodCall(apiMethod, sample)
+    @if apiMethod.hasReturnValue
+        {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+    @else
+        {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+    @end
+@end
+
+@private asyncMethodCall(apiMethod, sample)
+    @if apiMethod.hasReturnValue
+        {@apiMethod.serviceResponseTypeName} response = await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+    @else
+        await {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+            {@rpcMethodCallArgList(sample.sampleInitCode.fieldSettings, FALSE)});
+    @end
+@end

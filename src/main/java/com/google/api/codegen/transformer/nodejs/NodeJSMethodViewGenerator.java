@@ -62,7 +62,8 @@ public class NodeJSMethodViewGenerator {
               methodContext,
               initContext,
               packageHasMultipleServices,
-              Arrays.asList(CallingForm.RequestAsyncPagedAll, CallingForm.RequestAsyncPaged));
+              Arrays.asList(CallingForm.RequestAsyncPagedAll, CallingForm.RequestAsyncPaged),
+              null);
     } else if (methodContext.isLongRunningMethodContext()) {
       methodView =
           clientMethodTransformer.generateLongRunningMethod(
@@ -72,7 +73,8 @@ public class NodeJSMethodViewGenerator {
               Arrays.asList(
                   CallingForm.LongRunningPromise,
                   CallingForm.LongRunningEventEmitter,
-                  CallingForm.LongRunningPromiseAwait));
+                  CallingForm.LongRunningPromiseAwait),
+              null);
     } else {
       List<CallingForm> callingForms;
       GrpcStreamingType streamingType = methodContext.getMethodConfig().getGrpcStreamingType();
@@ -95,7 +97,7 @@ public class NodeJSMethodViewGenerator {
       }
       methodView =
           clientMethodTransformer.generateRequestMethod(
-              methodContext, initContext, packageHasMultipleServices, callingForms);
+              methodContext, initContext, packageHasMultipleServices, callingForms, null);
     }
     return methodView;
   }

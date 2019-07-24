@@ -297,19 +297,44 @@ public class JavaSurfaceTransformer {
 
   private StaticLangApiMethodView getExampleApiMethod(List<StaticLangApiMethodView> methods) {
     StaticLangApiMethodView exampleApiMethod =
-        searchExampleMethod(methods, ClientMethodType.FlattenedMethod);
+        searchExampleMethod(
+            methods, ClientMethodType.FlattenedMethod, GrpcStreamingType.NonStreaming);
     if (exampleApiMethod == null) {
-      exampleApiMethod = searchExampleMethod(methods, ClientMethodType.PagedFlattenedMethod);
-    }
-    if (exampleApiMethod == null) {
-      exampleApiMethod = searchExampleMethod(methods, ClientMethodType.RequestObjectMethod);
+      exampleApiMethod =
+          searchExampleMethod(
+              methods, ClientMethodType.PagedFlattenedMethod, GrpcStreamingType.NonStreaming);
     }
     if (exampleApiMethod == null) {
       exampleApiMethod =
-          searchExampleMethod(methods, ClientMethodType.AsyncOperationFlattenedMethod);
+          searchExampleMethod(
+              methods, ClientMethodType.RequestObjectMethod, GrpcStreamingType.NonStreaming);
     }
     if (exampleApiMethod == null) {
-      exampleApiMethod = searchExampleMethod(methods, ClientMethodType.CallableMethod);
+      exampleApiMethod =
+          searchExampleMethod(
+              methods,
+              ClientMethodType.AsyncOperationFlattenedMethod,
+              GrpcStreamingType.NonStreaming);
+    }
+    if (exampleApiMethod == null) {
+      exampleApiMethod =
+          searchExampleMethod(
+              methods, ClientMethodType.CallableMethod, GrpcStreamingType.NonStreaming);
+    }
+    if (exampleApiMethod == null) {
+      exampleApiMethod =
+          searchExampleMethod(
+              methods, ClientMethodType.CallableMethod, GrpcStreamingType.ServerStreaming);
+    }
+    if (exampleApiMethod == null) {
+      exampleApiMethod =
+          searchExampleMethod(
+              methods, ClientMethodType.CallableMethod, GrpcStreamingType.BidiStreaming);
+    }
+    if (exampleApiMethod == null) {
+      exampleApiMethod =
+          searchExampleMethod(
+              methods, ClientMethodType.CallableMethod, GrpcStreamingType.ClientStreaming);
     }
     if (exampleApiMethod == null) {
       throw new RuntimeException("Could not find method to use as an example method");
@@ -318,9 +343,11 @@ public class JavaSurfaceTransformer {
   }
 
   private StaticLangApiMethodView searchExampleMethod(
-      List<StaticLangApiMethodView> methods, ClientMethodType methodType) {
+      List<StaticLangApiMethodView> methods,
+      ClientMethodType methodType,
+      GrpcStreamingType grpcStreamingType) {
     for (StaticLangApiMethodView method : methods) {
-      if (method.type().equals(methodType)) {
+      if (method.type().equals(methodType) && method.grpcStreamingType() == grpcStreamingType) {
         return method;
       }
     }
@@ -980,6 +1007,9 @@ public class JavaSurfaceTransformer {
     settingsDoc.transportProtocol(productConfig.getTransportProtocol());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());
+    settingsDoc.exampleApiMethodSettingsHasRetrySettings(
+        exampleApiMethod.grpcStreamingType() == GrpcStreamingType.ServerStreaming
+            || exampleApiMethod.grpcStreamingType() == GrpcStreamingType.NonStreaming);
     settingsDoc.apiClassName(apiClassName);
     settingsDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterfaceConfig()));
     settingsDoc.settingsClassName(settingsClassName);

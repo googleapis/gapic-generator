@@ -36,19 +36,24 @@
      *
      * <p>The builder of this class is recursive, so contained classes are themselves builders.
      * When build() is called, the tree of builders is called to create the complete settings
-     * object. For example, to set the total timeout of {@doc.exampleApiMethodName} to 30 seconds:
+     * object.
      *
-     * <pre>
-     * <code>
-     * {@doc.settingsClassName}.Builder {@doc.settingsBuilderVarName} =
-     *     {@doc.settingsClassName}.newBuilder();
-     * {@doc.settingsBuilderVarName}.{@doc.exampleApiMethodSettingsGetter}().getRetrySettings().toBuilder()
-     *     .setTotalTimeout(Duration.ofSeconds(30));
-     * {@doc.settingsClassName} {@doc.settingsVarName} = {@doc.settingsBuilderVarName}.build();
-     * </code>
-     * </pre>
+     # TODO: remove this check when https://github.com/googleapis/gax-java/issues/764 is fixed.
+    @if doc.exampleApiMethodSettingsHasRetrySettings
+      {@""} * For example, to set the total timeout of {@doc.exampleApiMethodName} to 30 seconds:
+       *
+       * <pre>
+       * <code>
+       * {@doc.settingsClassName}.Builder {@doc.settingsBuilderVarName} =
+       *     {@doc.settingsClassName}.newBuilder();
+       * {@doc.settingsBuilderVarName}.{@doc.exampleApiMethodSettingsGetter}().getRetrySettings().toBuilder()
+       *     .setTotalTimeout(Duration.ofSeconds(30));
+       * {@doc.settingsClassName} {@doc.settingsVarName} = {@doc.settingsBuilderVarName}.build();
+       * </code>
+       * </pre>
+    @end
   @end
-   */
+  {@""} */
 @end
 
 @snippet settingsBuilderConstructors(xsettingsClass)

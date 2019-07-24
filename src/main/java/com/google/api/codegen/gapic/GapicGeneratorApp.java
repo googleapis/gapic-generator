@@ -25,7 +25,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
 import com.google.api.codegen.grpc.ServiceConfig;
-import com.google.api.codegen.samplegen.v1.SampleConfigProto;
+import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.ConfigSource;
