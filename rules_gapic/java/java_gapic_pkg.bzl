@@ -85,7 +85,7 @@ def _java_gapic_build_configs_pkg_impl(ctx):
 
 java_gapic_build_configs_pkg = rule(
     attrs = {
-        "deps": attr.label_list(mandatory = True, non_empty = True),
+        "deps": attr.label_list(mandatory = True),
         "test_deps": attr.label_list(mandatory = False, allow_empty = True),
         "package_dir": attr.string(mandatory = False),
         "artifact_group_overrides": attr.string_dict(mandatory = False, allow_empty = True, default = {}),
@@ -153,7 +153,7 @@ def _java_gapic_srcs_pkg_impl(ctx):
 
 java_gapic_srcs_pkg = rule(
     attrs = {
-        "deps": attr.label_list(mandatory = True, non_empty = True),
+        "deps": attr.label_list(mandatory = True),
         "test_deps": attr.label_list(mandatory = False, allow_empty = True),
         "package_dir": attr.string(mandatory = True),
     },
