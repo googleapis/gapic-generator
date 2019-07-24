@@ -115,7 +115,16 @@ public abstract class GrpcGapicRetryMapping {
     return new AutoValue_GrpcGapicRetryMapping.Builder();
   }
 
-  /** converts a float to a double rounding to the nearest hundredth */
+  /**
+   * Converts a float to a double rounding to the nearest hundredth.
+   *
+   * This is necessary because when a float is converted to a double
+   * the double is more precise. When that same double is printed
+   * (e.g. in a template), the more precise value is used. For example,
+   * a float of 1.3 is printed as 1.2999999523162842. This is undesirable
+   * because this multiplier does not need to be this precise (it was
+   * originally a float) and it is not the expected value.
+   */
   private static double floatToDouble(float f) {
     return Math.round(f * 100) / 100.0;
   }
