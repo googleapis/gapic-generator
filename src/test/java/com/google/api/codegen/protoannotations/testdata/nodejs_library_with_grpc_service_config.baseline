@@ -35,8 +35,7 @@ This is a generated README.md placeholder. Put your own documentation here.
     "google-gax": "^1.1.0"
   },
   "devDependencies": {
-    "mocha": "^5.2.0",
-    "through2": "^2.0.3"
+    "mocha": "^5.2.0"
   },
   "scripts": {
     "smoke-test": "mocha smoke-test/*.js --timeout 5000",
@@ -7458,7 +7457,7 @@ module.exports = MyProtoClient;
 'use strict';
 
 const assert = require('assert');
-const through2 = require('through2');
+const {PassThrough} = require('stream');
 
 const libraryModule = require('../src');
 
@@ -9439,12 +9438,15 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
 function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
   return actualRequest => {
     assert.deepStrictEqual(actualRequest, expectedRequest);
-    const mockStream = through2.obj((chunk, enc, callback) => {
-      if (error) {
-        callback(error);
-      }
-      else {
-        callback(null, response);
+    const mockStream = new PassThrough({
+      objectMode: true,
+      transform: (chunk, enc, callback) => {
+        if (error) {
+          callback(error);
+        }
+        else {
+          callback(null, response);
+        }
       }
     });
     return mockStream;
@@ -9453,13 +9455,16 @@ function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
 
 function mockBidiStreamingGrpcMethod(expectedRequest, response, error) {
   return () => {
-    const mockStream = through2.obj((chunk, enc, callback) => {
-      assert.deepStrictEqual(chunk, expectedRequest);
-      if (error) {
-        callback(error);
-      }
-      else {
-        callback(null, response);
+    const mockStream = new PassThrough({
+      objectMode: true,
+      transform: (chunk, enc, callback) => {
+        assert.deepStrictEqual(chunk, expectedRequest);
+        if (error) {
+          callback(error);
+        }
+        else {
+          callback(null, response);
+        }
       }
     });
     return mockStream;
