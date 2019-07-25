@@ -64,6 +64,7 @@ import java.util.TreeSet;
 public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String INDEX_TEMPLATE_FILE = "nodejs/index.snip";
   private static final String VERSION_INDEX_TEMPLATE_FILE = "nodejs/version_index.snip";
+  private static final String VERSION_BROWSER_TEMPLATE_FILE = "nodejs/version_browser.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "nodejs/main.snip";
   private static final String PROTO_LIST_TEMPLATE_FILENAME = "nodejs/protos.snip";
 
@@ -79,13 +80,11 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final BatchingTransformer batchingTransformer = new BatchingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
-  private final PackageMetadataConfig packageConfig;
   private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   public NodeJSGapicSurfaceTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
     this.pathMapper = pathMapper;
-    this.packageConfig = packageConfig;
   }
 
   @Override
@@ -93,6 +92,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     return ImmutableList.of(
         INDEX_TEMPLATE_FILE,
         VERSION_INDEX_TEMPLATE_FILE,
+        VERSION_BROWSER_TEMPLATE_FILE,
         XAPI_TEMPLATE_FILENAME,
         PROTO_LIST_TEMPLATE_FILENAME);
   }
@@ -337,6 +337,22 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
               .packageName(packageMetadataNamer.getMetadataIdentifier())
               .namespace(packageMetadataNamer.getServiceName());
       indexViews.add(versionIndexViewBuilder.build());
+
+      String versionBrowserOutputPath = "src/browser.js";
+      VersionIndexView.Builder versionBrowserViewBuilder =
+          VersionIndexView.newBuilder()
+              .templateFileName(VERSION_BROWSER_TEMPLATE_FILE)
+              .outputPath(versionBrowserOutputPath)
+              .requireViews(requireViews)
+              .primaryService(requireViews.get(0))
+              .apiVersion(version)
+              .stubs(versionIndexStubs(apiInterfaces, productConfig))
+              .fileHeader(
+                  fileHeaderTransformer.generateFileHeader(
+                      productConfig, ImportSectionView.newBuilder().build(), namer))
+              .packageName(packageMetadataNamer.getMetadataIdentifier())
+              .namespace(packageMetadataNamer.getServiceName());
+      indexViews.add(versionBrowserViewBuilder.build());
     }
 
     return indexViews;

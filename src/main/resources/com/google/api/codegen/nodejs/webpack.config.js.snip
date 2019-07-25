@@ -1,0 +1,24 @@
+@snippet generate(metadata)
+const path = require('path');
+  
+module.exports = {
+    entry: './src/browser.js',
+    output: {
+      library: "{@metadata.identifier}",
+      filename: "./{@metadata.identifier}.js"
+    },
+    resolve: {
+      extensions: ['.js', '.json']
+    },
+    module: {
+      rules: [
+        {
+          test: /node_modules[\\\/]retry-request[\\\/]/,
+          use: 'null-loader',
+        }
+      ]
+    },
+    mode: 'production'
+}
+
+@end

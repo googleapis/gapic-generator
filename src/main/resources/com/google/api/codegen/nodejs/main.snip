@@ -94,17 +94,12 @@
       }
 
       // Load the applicable protos.
+      // For Node.js, pass the path to JSON proto file.
+      // For browsers, pass the JSON content.
       const protos = gaxGrpc.loadProto(
-        @if xapi.fileHeader.hasVersion
-          path.join(__dirname, '..', '..', 'protos'),
-        @else
-          path.join(__dirname, '..', 'protos'),
-        @end
-        [
-          @join stub : xapi.stubs on {@","}.add(BREAK)
-            '{@stub.protoFileName}'
-          @end
-        ]
+        global.isBrowser ?
+          require("../../protos/protos.json") :
+          {@protoPath(xapi)}
       );
       @if xapi.pathTemplates
 
@@ -145,18 +140,10 @@
         };
       @end
       @if or(xapi.hasBatchingMethods, xapi.hasLongRunningOperations)
-        let protoFilesRoot = new gax.GoogleProtoFilesRoot();
-        @join stub : xapi.stubs
-          protoFilesRoot = protobuf.loadSync(
-            @if xapi.fileHeader.hasVersion
-              path.join(__dirname, '..', '..', 'protos', '{@stub.protoFileName}'),
-            @else
-              path.join(__dirname, '..', 'protos', '{@stub.protoFileName}'),
-            @end
-            protoFilesRoot
-          );
-        @end
 
+        const protoFilesRoot = global.isBrowser ?
+          gax.protobuf.Root.fromJSON(require("../../protos/protos.json")) :
+          gax.protobuf.loadSync({@protoPath(xapi)})
       @end
       @if xapi.hasBatchingMethods
 
@@ -228,7 +215,9 @@
         // Put together the "service stub" for
         // {@stub.fullyQualifiedType}.
         const {@stub.name} = gaxGrpc.createStub(
-          protos.{@stub.fullyQualifiedType},
+          global.isBrowser ?
+            protos.lookupService('{@stub.fullyQualifiedType}') :
+            protos.{@stub.fullyQualifiedType},
           opts
         );
 
@@ -584,5 +573,13 @@
   @case "NonStreaming"
     request, {@""}
   @default
+  @end
+@end
+
+@private protoPath(xapi)
+  @if xapi.fileHeader.hasVersion
+    path.join(__dirname, '..', '..', 'protos', 'protos.json')
+  @else
+    path.join(__dirname, '..', 'protos', 'protos.json')
   @end
 @end

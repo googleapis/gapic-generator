@@ -61,10 +61,6 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
     imports.add(createImport("gapicConfig", "./" + configModule + ".json"));
     imports.add(createImport("gax", "google-gax"));
     imports.add(createImport("path", "path"));
-    if (context.getInterfaceConfig().hasLongRunningOperations()
-        || context.getInterfaceConfig().hasBatchingMethods()) {
-      imports.add(createImport("protobuf", "protobufjs"));
-    }
     return imports.build();
   }
 

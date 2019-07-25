@@ -1,81 +1,6 @@
 ============== file: README.md ==============
 # Node.js Clients for Google Example Library API
 This is a generated README.md placeholder. Put your own documentation here.
-============== file: compileProtos.js ==============
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
-
-const pbjs = require("protobufjs/cli/pbjs");
-
-const readdir = util.promisify(fs.readdir);
-const readFile = util.promisify(fs.readFile);
-const stat = util.promisify(fs.stat);
-const pbjsMain = util.promisify(pbjs.main);
-
-async function findProtoJsonFiles(directory) {
-  const result = [];
-  const files = await readdir(directory);
-  for (const file of files) {
-    const fullPath = path.join(directory, file);
-    const fileStat = await stat(fullPath);
-    if (fileStat.isFile() && file.match(/_proto_list.json$/)) {
-      result.push(fullPath);
-    }
-    else if (fileStat.isDirectory()) {
-      const nested = await findProtoJsonFiles(fullPath);
-      result.push(...nested);
-    }
-  }
-  return result;
-}
-
-function normalizePath(filePath) {
-  return path.join(...filePath.split('/'));
-}
-
-async function buildListOfProtos(protoJsonFiles) {
-  const result = [];
-  for (const file of protoJsonFiles) {
-    const content = await readFile(file);
-    const list = JSON.parse(content).map(filePath => normalizePath(filePath));
-    result.push(...list);
-  }
-  return result;
-}
-
-async function compileProtos(protos) {
-  const pbjsArgs = [
-    '--target', 'json',
-    '-p', path.join('node_modules', 'google-gax', 'protos'),
-    '-p', 'protos',
-    '-o', path.join('protos', 'protos.json')
-  ];
-  pbjsArgs.push(...protos);
-  await pbjsMain(pbjsArgs);
-}
-
-async function main() {
-  const protoJsonFiles = await findProtoJsonFiles('./src');
-  const protos = await buildListOfProtos(protoJsonFiles);
-  await compileProtos(protos);
-}
-
-main();
 ============== file: package.json ==============
 {
   "repository": "GoogleCloudPlatform/google-cloud-node",
@@ -84,6 +9,7 @@ main();
   "author": "Google LLC",
   "description": "Google Example Library API client for Node.js",
   "main": "src/index.js",
+  "browser": "src/browser.js",
   "files": [
     "protos",
     "src",
@@ -106,14 +32,16 @@ main();
   "dependencies": {
     "google-some-other-package-v1": "^0.2.1",
     "lodash.union": "^4.6.0",
-    "protobufjs": "^6.8.0",
-    "google-gax": "^1.1.0"
+    "google-gax": "^1.2.0"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "null-loader": "^3.0.0",
+    "webpack": "^4.37.0",
+    "webpack-cli": "^3.3.6"
   },
   "scripts": {
-    "postinstall": "node ./compileProtos.js",
+    "postinstall": "compileProtos ./src",
     "smoke-test": "mocha smoke-test/*.js --timeout 5000",
     "test": "mocha test/*.js"
   },
@@ -1751,6 +1679,29 @@ describe('LibraryServiceSmokeTest', () => {
       .catch(done);
   });
 });
+
+============== file: src/browser.js ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+'use strict';
+
+// Set a flag that we are running in a browser bundle.
+global.isBrowser = true;
+
+// Re-export all exports from ./index.js.
+module.exports = require('./index');
 
 ============== file: src/index.js ==============
 // Copyright 2019 Google LLC
@@ -4286,7 +4237,6 @@ module.exports.MyProtoClient = MyProtoClient;
 const gapicConfig = require('./library_service_client_config.json');
 const gax = require('google-gax');
 const path = require('path');
-const protobuf = require('protobufjs');
 
 const VERSION = require('../../package.json').version;
 
@@ -4376,12 +4326,12 @@ class LibraryServiceClient {
     }
 
     // Load the applicable protos.
+    // For Node.js, pass the path to JSON proto file.
+    // For browsers, pass the JSON content.
     const protos = gaxGrpc.loadProto(
-      path.join(__dirname, '..', '..', 'protos'),
-      [
-        'library.proto',
-        'tagger.proto'
-      ]
+      global.isBrowser ?
+        require("../../protos/protos.json") :
+        path.join(__dirname, '..', '..', 'protos', 'protos.json')
     );
 
     // This API contains "path templates"; forward-slash-separated
@@ -4440,16 +4390,10 @@ class LibraryServiceClient {
       monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
       babbleAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
     };
-    let protoFilesRoot = new gax.GoogleProtoFilesRoot();
-    protoFilesRoot = protobuf.loadSync(
-      path.join(__dirname, '..', '..', 'protos', 'library.proto'),
-      protoFilesRoot
-    );
-    protoFilesRoot = protobuf.loadSync(
-      path.join(__dirname, '..', '..', 'protos', 'tagger.proto'),
-      protoFilesRoot
-    );
 
+    const protoFilesRoot = global.isBrowser ?
+      gax.protobuf.Root.fromJSON(require("../../protos/protos.json")) :
+      gax.protobuf.loadSync(path.join(__dirname, '..', '..', 'protos', 'protos.json'))
 
     // Some methods on this API support automatically batching
     // requests; denote this.
@@ -4523,7 +4467,9 @@ class LibraryServiceClient {
     // Put together the "service stub" for
     // google.example.library.v1.LibraryService.
     const libraryServiceStub = gaxGrpc.createStub(
-      protos.google.example.library.v1.LibraryService,
+      global.isBrowser ?
+        protos.lookupService('google.example.library.v1.LibraryService') :
+        protos.google.example.library.v1.LibraryService,
       opts
     );
 
@@ -4578,7 +4524,9 @@ class LibraryServiceClient {
     // Put together the "service stub" for
     // google.tagger.v1.Labeler.
     const labelerStub = gaxGrpc.createStub(
-      protos.google.tagger.v1.Labeler,
+      global.isBrowser ?
+        protos.lookupService('google.tagger.v1.Labeler') :
+        protos.google.tagger.v1.Labeler,
       opts
     );
 
@@ -7329,11 +7277,12 @@ class MyProtoClient {
     }
 
     // Load the applicable protos.
+    // For Node.js, pass the path to JSON proto file.
+    // For browsers, pass the JSON content.
     const protos = gaxGrpc.loadProto(
-      path.join(__dirname, '..', '..', 'protos'),
-      [
-        'another_service.proto'
-      ]
+      global.isBrowser ?
+        require("../../protos/protos.json") :
+        path.join(__dirname, '..', '..', 'protos', 'protos.json')
     );
 
     // Put together the default options sent with requests.
@@ -7352,7 +7301,9 @@ class MyProtoClient {
     // Put together the "service stub" for
     // google.example.library.v1.MyProto.
     const myProtoStub = gaxGrpc.createStub(
-      protos.google.example.library.v1.MyProto,
+      global.isBrowser ?
+        protos.lookupService('google.example.library.v1.MyProto') :
+        protos.google.example.library.v1.MyProto,
       opts
     );
 
@@ -9562,5 +9513,28 @@ function mockLongRunningGrpcMethod(expectedRequest, response, error) {
     };
     return Promise.resolve([mockOperation]);
   };
+}
+
+============== file: webpack.config.js ==============
+const path = require('path');
+
+module.exports = {
+    entry: './src/browser.js',
+    output: {
+      library: "@google-cloud/library",
+      filename: "./@google-cloud/library.js"
+    },
+    resolve: {
+      extensions: ['.js', '.json']
+    },
+    module: {
+      rules: [
+        {
+          test: /node_modules[\\\/]retry-request[\\\/]/,
+          use: 'null-loader',
+        }
+      ]
+    },
+    mode: 'production'
 }
 
