@@ -85,7 +85,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "library",
             null,
             null,
-            null,
+            sampleConfigFileNames(),
             "php_samplegen_config_migration_library.baseline",
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(

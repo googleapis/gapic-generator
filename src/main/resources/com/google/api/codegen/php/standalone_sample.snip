@@ -141,17 +141,17 @@
 
 @end
 
-@private methodCallSampleCode(apiMethod)
+@private methodCallSampleCode(sample, apiMethod)
     @if apiMethod.isSingularRequestMethod
         ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod.initCode)})
+            {@sampleMethodCallArgList(sample.sampleInitCode)})
     @else
         ${@apiMethod.apiVariableName}->{@apiMethod.name}()
     @end
 @end
 
 @private longRunningSampleCode(sample, apiMethod)
-    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationResponse = {@methodCallSampleCode(sample, apiMethod)};
     $operationResponse->pollUntilComplete();
     if ($operationResponse->operationSucceeded()) {
         @if apiMethod.longRunningView.isEmptyOperation
@@ -170,7 +170,7 @@
 
 @private longRunningAsyncSampleCode(sample, apiMethod)
     // start the operation, keep the operation name, and resume later
-    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationResponse = {@methodCallSampleCode(sample, apiMethod)};
     $operationName = $operationResponse->getName();
     // ... do other work
     $newOperationResponse = ${@apiMethod.apiVariableName}->resumeOperation($operationName, '{@apiMethod.name}');
@@ -195,10 +195,10 @@
 
 @private requestSampleCode(sample, apiMethod)
     @if apiMethod.hasReturnValue
-        $response = {@methodCallSampleCode(apiMethod)};
+        $response = {@methodCallSampleCode(sample, apiMethod)};
 
     @else
-        {@methodCallSampleCode(apiMethod)};
+        {@methodCallSampleCode(sample, apiMethod)};
 
     @end
     @if sample.outputs
@@ -208,7 +208,7 @@
 
 @private pagedSampleCode(sample, apiMethod)
     // Iterate over pages of elements
-    $pagedResponse = {@methodCallSampleCode(apiMethod)};
+    $pagedResponse = {@methodCallSampleCode(sample, apiMethod)};
     foreach ($pagedResponse->iteratePages() as $page) {
         foreach ($page as $responseItem) {
             {@processResponse(sample)}
@@ -218,7 +218,7 @@
 
 @private pagedAllSampleCode(sample, apiMethod)
     // Iterate through all elements
-    $pagedResponse = {@methodCallSampleCode(apiMethod)};
+    $pagedResponse = {@methodCallSampleCode(sample, apiMethod)};
     foreach ($pagedResponse->iterateAllElements() as $responseItem) {
         {@processResponse(sample)}
     }
@@ -227,7 +227,7 @@
 @private clientStreamingSampleCode(sample, apiMethod)
     // Write data to server and wait for a response
     $requests = [$request];
-    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream = {@methodCallSampleCode(sample, apiMethod)};
     $response = $stream->writeAllAndReadResponse($requests);
     @if sample.outputs
         {@processResponse(sample)}
@@ -237,7 +237,7 @@
 @private clientStreamingAsyncSampleCode(sample, apiMethod)
     // Write data as it becomes available, then wait for a response
     $requests = [$request];
-    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream = {@methodCallSampleCode(sample, apiMethod)};
     foreach ($requests as $request) {
         $stream->write($request);
     }
@@ -249,7 +249,7 @@
 
 @private serverStreamingSampleCode(sample, apiMethod)
     // Read all responses until the stream is complete
-    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream = {@methodCallSampleCode(sample, apiMethod)};
     foreach ($stream->readAll() as $responseItem) {
         {@processResponse(sample)}
     }
@@ -259,7 +259,7 @@
     // Write all requests to the server, then read all responses until the
     // stream is complete
     $requests = [$request];
-    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream = {@methodCallSampleCode(sample, apiMethod)};
     $stream->writeAll($requests);
     foreach ($stream->closeWriteAndReadAll() as $responseItem) {
         {@processResponse(sample)}
@@ -271,7 +271,7 @@
     // required. Call closeWrite() once writes are complete, and read the
     // remaining responses from the server.
     $requests = [$request];
-    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream = {@methodCallSampleCode(sample, apiMethod)};
     foreach ($requests as $request) {
         $stream->write($request);
         // if required, read a single response from the stream
