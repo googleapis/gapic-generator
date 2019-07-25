@@ -24,9 +24,9 @@
 
             using CommandLine;
 
-            // [START {@sample.regionTag}]
             namespace {@sampleFile.fileHeader.packageName}.Samples
             {
+                // [START {@sample.regionTag}]
                 @if sample.sampleImports.appImports
                     {@imports(sample.sampleImports)}
 
@@ -100,11 +100,14 @@
                     @default
                         Unrecognized callingForm: {@sample.callingForm}
                     @end
-                    // [END {@sample.regionTag}]
+                }
 
+                // [END {@sample.regionTag}]
+                    
+                public class {@sampleClass.name}Main {
                     public static void Main(string[] args)
                     {
-                        {@processCliArguments(sample)}
+                        {@processCliArguments(sample, @sampleClass.name)}
                     }
                     @if sample.sampleInitCode.argDefaultParams
 
