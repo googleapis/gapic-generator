@@ -221,9 +221,7 @@ public abstract class DynamicLangGapicSamplesTransformer
     String outputPath =
         Paths.get(
                 pathMapper.getSamplesOutputPath(
-                    context.getInterfaceModel().getFullName(),
-                    productConfig,
-                    method.name()), // we don't need the last one?
+                    context.getInterfaceModel().getFullName(), productConfig, method.name()),
                 sampleFileName)
             .toString();
     return DynamicLangSampleView.newBuilder()
