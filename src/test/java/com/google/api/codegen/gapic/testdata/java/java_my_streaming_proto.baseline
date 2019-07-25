@@ -1,0 +1,1434 @@
+============== file: ../build.gradle ==============
+Static or binary file content is not shown.
+============== file: ../gradle/wrapper/gradle-wrapper.jar ==============
+Static or binary file content is not shown.
+============== file: ../gradle/wrapper/gradle-wrapper.properties ==============
+Static or binary file content is not shown.
+============== file: ../gradlew ==============
+Static or binary file content is not shown.
+============== file: ../gradlew.bat ==============
+Static or binary file content is not shown.
+============== file: ../settings.gradle ==============
+Static or binary file content is not shown.
+============== file: build.gradle ==============
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+apply plugin: 'java'
+
+description = 'GAPIC library for google-cloud-my_streaming_service-v1'
+group = 'com.google.cloud'
+version = '0.0.0-SNAPSHOT'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+
+dependencies {
+  compile 'com.google.api:gax:1.0.0'
+  testCompile 'com.google.api:gax:1.0.0:testlib'
+  compile 'com.google.api:gax-grpc:0.18.0'
+  testCompile 'com.google.api:gax-grpc:0.18.0:testlib'
+  testCompile 'io.grpc:grpc-netty-shaded:1.9.0'
+  testCompile 'junit:junit:4.12'
+  // Remove this line if you are bundling your proto-generated classes together with your client classes
+  compile project(':proto-google-cloud-my_streaming_service-v1')
+  // Remove this line if you are bundling your proto-generated classes together with your client classes
+  testCompile project(':grpc-google-cloud-my_streaming_service-v1')
+  testCompile 'com.google.api.grpc:grpc-google-some-test-package-v1:0.0.0'
+}
+
+task smokeTest(type: Test) {
+  filter {
+    includeTestsMatching "*SmokeTest"
+    setFailOnNoMatchingTests false
+  }
+}
+
+test {
+  exclude "**/*SmokeTest*"
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir 'src/main/java'
+    }
+  }
+}
+
+clean {
+  delete 'all-jars'
+}
+
+task allJars(type: Copy) {
+  dependsOn test, jar
+  into 'all-jars'
+  // Replace with `from configurations.testRuntime, jar` to include test dependencies
+  from configurations.runtime, jar
+}
+============== file: src/main/java/com/google/gcloud/example/MyStreamingServiceClient.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.gcloud.example;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.paging.FixedSizeCollection;
+import com.google.api.gax.paging.Page;
+import com.google.api.gax.rpc.ApiExceptions;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.gcloud.example.stub.MyStreamingServiceStub;
+import com.google.gcloud.example.stub.MyStreamingServiceStubSettings;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingRequest;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingResponse;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND SERVICE
+/**
+ * Service Description:
+ *
+ * <p>This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * <pre>
+ * <code>
+ * try (MyStreamingServiceClient myStreamingServiceClient = MyStreamingServiceClient.create()) {
+ *   StreamingRequest request = StreamingRequest.newBuilder().build();
+ *   ApiFuture&lt;StreamingResponse&gt; future = myStreamingServiceClient.myMethodCallable().futureCall(request);
+ *   // Do something
+ *   StreamingResponse response = future.get();
+ * }
+ * </code>
+ * </pre>
+ *
+ * <p>Note: close() needs to be called on the myStreamingServiceClient object to clean up resources such
+ * as threads. In the example above, try-with-resources is used, which automatically calls
+ * close().
+ *
+ * <p>The surface of this class includes several types of Java methods for each of the API's methods:
+ *
+ * <ol>
+ * <li> A "flattened" method. With this type of method, the fields of the request type have been
+ * converted into function parameters. It may be the case that not all fields are available
+ * as parameters, and not every API method will have a flattened method entry point.
+ * <li> A "request object" method. This type of method only takes one parameter, a request
+ * object, which must be constructed before the call. Not every API method will have a request
+ * object method.
+ * <li> A "callable" method. This type of method takes no parameters and returns an immutable
+ * API callable object, which can be used to initiate calls to the service.
+ * </ol>
+ *
+ * <p>See the individual methods for example code.
+ *
+ * <p>Many parameters require resource names to be formatted in a particular way. To assist
+ * with these names, this class includes a format method for each type of name, and additionally
+ * a parse method to extract the individual identifiers contained within names that are
+ * returned.
+ *
+ * <p>This class can be customized by passing in a custom instance of MyStreamingServiceSettings to
+ * create(). For example:
+ *
+ * To customize credentials:
+ *
+ * <pre>
+ * <code>
+ * MyStreamingServiceSettings myStreamingServiceSettings =
+ *     MyStreamingServiceSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * MyStreamingServiceClient myStreamingServiceClient =
+ *     MyStreamingServiceClient.create(myStreamingServiceSettings);
+ * </code>
+ * </pre>
+ *
+ * To customize the endpoint:
+ *
+ * <pre>
+ * <code>
+ * MyStreamingServiceSettings myStreamingServiceSettings =
+ *     MyStreamingServiceSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * MyStreamingServiceClient myStreamingServiceClient =
+ *     MyStreamingServiceClient.create(myStreamingServiceSettings);
+ * </code>
+ * </pre>
+ */
+@Generated("by gapic-generator")
+@BetaApi
+public class MyStreamingServiceClient implements BackgroundResource {
+  private final MyStreamingServiceSettings settings;
+  private final MyStreamingServiceStub stub;
+
+
+
+  /**
+   * Constructs an instance of MyStreamingServiceClient with default settings.
+   */
+  public static final MyStreamingServiceClient create() throws IOException {
+    return create(MyStreamingServiceSettings.newBuilder().build());
+  }
+
+  /**
+   * Constructs an instance of MyStreamingServiceClient, using the given settings.
+   * The channels are created based on the settings passed in, or defaults for any
+   * settings that are not set.
+   */
+  public static final MyStreamingServiceClient create(MyStreamingServiceSettings settings) throws IOException {
+    return new MyStreamingServiceClient(settings);
+  }
+
+  /**
+   * Constructs an instance of MyStreamingServiceClient, using the given stub for making calls. This is for
+   * advanced usage - prefer to use MyStreamingServiceSettings}.
+   */
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public static final MyStreamingServiceClient create(MyStreamingServiceStub stub) {
+    return new MyStreamingServiceClient(stub);
+  }
+
+  /**
+   * Constructs an instance of MyStreamingServiceClient, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected MyStreamingServiceClient(MyStreamingServiceSettings settings) throws IOException {
+    this.settings = settings;
+    this.stub = ((MyStreamingServiceStubSettings) settings.getStubSettings()).createStub();
+  }
+
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  protected MyStreamingServiceClient(MyStreamingServiceStub stub) {
+    this.settings = null;
+    this.stub = stub;
+  }
+
+  public final MyStreamingServiceSettings getSettings() {
+    return settings;
+  }
+
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public MyStreamingServiceStub getStub() {
+    return stub;
+  }
+
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (MyStreamingServiceClient myStreamingServiceClient = MyStreamingServiceClient.create()) {
+   *   BidiStream&lt;StreamingRequest, StreamingResponse&gt; bidiStream =
+   *       myStreamingServiceClient.myMethodCallable().call();
+   *
+   *   StreamingRequest request = StreamingRequest.newBuilder().build();
+   *   bidiStream.send(request);
+   *   for (StreamingResponse response : bidiStream) {
+   *     // Do something when receive a response
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final BidiStreamingCallable<StreamingRequest, StreamingResponse> myMethodCallable() {
+    return stub.myMethodCallable();
+  }
+
+  @Override
+  public final void close() {
+    stub.close();
+  }
+
+  @Override
+  public void shutdown() {
+    stub.shutdown();
+  }
+
+  @Override
+  public boolean isShutdown() {
+    return stub.isShutdown();
+  }
+
+  @Override
+  public boolean isTerminated() {
+    return stub.isTerminated();
+  }
+
+  @Override
+  public void shutdownNow() {
+    stub.shutdownNow();
+  }
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return stub.awaitTermination(duration, unit);
+  }
+
+
+}
+============== file: src/main/java/com/google/gcloud/example/MyStreamingServiceSettings.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.gcloud.example;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.core.GaxProperties;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
+import com.google.api.gax.grpc.GrpcTransportChannel;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.HeaderProvider;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.StreamingCallSettings;
+import com.google.api.gax.rpc.StubSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.auth.Credentials;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.gcloud.example.stub.MyStreamingServiceStubSettings;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingRequest;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingResponse;
+import com.google.protos.google.example.myproto.v1.MyStreamingServiceGrpc;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import javax.annotation.Generated;
+import org.threeten.bp.Duration;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Settings class to configure an instance of {@link MyStreamingServiceClient}.
+ *
+ * <p>The default instance has everything set to sensible defaults:
+ *
+ * <ul>
+ * <li>The default service address (mystreaming-example.googleapis.com) and default port (443)
+ * are used.
+ * <li>Credentials are acquired automatically through Application Default Credentials.
+ * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ * </ul>
+ *
+ * <p>The builder of this class is recursive, so contained classes are themselves builders.
+ * When build() is called, the tree of builders is called to create the complete settings
+ * object.
+ *
+ */
+@Generated("by gapic-generator")
+@BetaApi
+public class MyStreamingServiceSettings extends ClientSettings<MyStreamingServiceSettings> {
+  /**
+   * Returns the object with the settings used for calls to myMethod.
+   */
+  public StreamingCallSettings<StreamingRequest, StreamingResponse> myMethodSettings() {
+    return ((MyStreamingServiceStubSettings) getStubSettings()).myMethodSettings();
+  }
+
+
+  public static final MyStreamingServiceSettings create(MyStreamingServiceStubSettings stub) throws IOException {
+    return new MyStreamingServiceSettings.Builder(stub.toBuilder()).build();
+  }
+
+  /**
+   * Returns a builder for the default ExecutorProvider for this service.
+   */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+    return MyStreamingServiceStubSettings.defaultExecutorProviderBuilder();
+  }
+
+  /**
+   * Returns the default service endpoint.
+   */
+   public static String getDefaultEndpoint() {
+     return MyStreamingServiceStubSettings.getDefaultEndpoint();
+   }
+
+
+  /**
+   * Returns the default service scopes.
+   */
+  public static List<String> getDefaultServiceScopes() {
+    return MyStreamingServiceStubSettings.getDefaultServiceScopes();
+  }
+
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return MyStreamingServiceStubSettings.defaultCredentialsProviderBuilder();
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+    return MyStreamingServiceStubSettings.defaultGrpcTransportProviderBuilder();
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+    return MyStreamingServiceStubSettings.defaultTransportChannelProvider();
+  }
+
+  @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+    return MyStreamingServiceStubSettings.defaultApiClientHeaderProviderBuilder();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder() {
+    return Builder.createDefault();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder(ClientContext clientContext) {
+    return new Builder(clientContext);
+  }
+
+  /**
+   * Returns a builder containing all the values of this settings class.
+   */
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  protected MyStreamingServiceSettings(Builder settingsBuilder) throws IOException {
+    super(settingsBuilder);
+  }
+
+  /**
+   * Builder for MyStreamingServiceSettings.
+   */
+  public static class Builder extends ClientSettings.Builder<MyStreamingServiceSettings, Builder> {
+    protected Builder() throws IOException {
+      this((ClientContext) null);
+    }
+
+    protected Builder(ClientContext clientContext) {
+      super(MyStreamingServiceStubSettings.newBuilder(clientContext));
+    }
+
+    private static Builder createDefault() {
+      return new Builder(MyStreamingServiceStubSettings.newBuilder());
+    }
+
+    protected Builder(MyStreamingServiceSettings settings) {
+      super(settings.getStubSettings().toBuilder());
+    }
+
+    protected Builder(MyStreamingServiceStubSettings.Builder stubSettings) {
+      super(stubSettings);
+    }
+
+
+    public MyStreamingServiceStubSettings.Builder getStubSettingsBuilder() {
+      return ((MyStreamingServiceStubSettings.Builder) getStubSettings());
+    }
+
+    // NEXT_MAJOR_VER: remove 'throws Exception'
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder<?, ?>, Void> settingsUpdater) throws Exception {
+      super.applyToAllUnaryMethods(getStubSettingsBuilder().unaryMethodSettingsBuilders(), settingsUpdater);
+      return this;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to myMethod.
+     */
+    public StreamingCallSettings.Builder<StreamingRequest, StreamingResponse> myMethodSettings() {
+      return getStubSettingsBuilder().myMethodSettings();
+    }
+
+    @Override
+    public MyStreamingServiceSettings build() throws IOException {
+      return new MyStreamingServiceSettings(this);
+    }
+  }
+}
+============== file: src/main/java/com/google/gcloud/example/package-info.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * A client to Google Example MyProto API.
+ *
+ * The interfaces provided are listed below, along with usage samples.
+ *
+ * ========================
+ * MyStreamingServiceClient
+ * ========================
+ *
+ * Service Description:
+ *
+ * Sample for MyStreamingServiceClient:
+ * <pre>
+ * <code>
+ * try (MyStreamingServiceClient myStreamingServiceClient = MyStreamingServiceClient.create()) {
+ *   StreamingRequest request = StreamingRequest.newBuilder().build();
+ *   StreamingResponse response = myStreamingServiceClient.myMethodCallable(request);
+ * }
+ * </code>
+ * </pre>
+ *
+ */
+@Generated("by gapic-generator")
+package com.google.gcloud.example;
+
+import  javax.annotation.Generated;
+============== file: src/main/java/com/google/gcloud/example/stub/GrpcMyStreamingServiceCallableFactory.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.gcloud.example.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcCallableFactory;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.BatchingCallSettings;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.RequestParamsExtractor;
+import com.google.api.gax.rpc.ServerStreamingCallSettings;
+import com.google.api.gax.rpc.ServerStreamingCallable;
+import com.google.api.gax.rpc.StreamingCallSettings;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.common.collect.ImmutableMap;
+import com.google.gcloud.example.MyStreamingServiceSettings;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.OperationsStub;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingRequest;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingResponse;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * gRPC callable factory implementation for Google Example MyProto API.
+ *
+ * <p>This class is for advanced usage.
+ */
+@Generated("by gapic-generator")
+@BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+public class GrpcMyStreamingServiceCallableFactory implements GrpcStubCallableFactory {
+  @Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createUnaryCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      UnaryCallSettings<RequestT, ResponseT> callSettings, ClientContext clientContext) {
+    return GrpcCallableFactory.createUnaryCallable(grpcCallSettings, callSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT, PagedListResponseT> UnaryCallable<RequestT, PagedListResponseT> createPagedCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      PagedCallSettings<RequestT, ResponseT, PagedListResponseT> pagedCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createPagedCallable(grpcCallSettings, pagedCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> createBatchingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      BatchingCallSettings<RequestT, ResponseT> batchingCallSettings, ClientContext clientContext) {
+    return GrpcCallableFactory.createBatchingCallable(grpcCallSettings, batchingCallSettings, clientContext);
+  }
+
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  @Override
+  public <RequestT, ResponseT, MetadataT> OperationCallable<RequestT, ResponseT, MetadataT> createOperationCallable(
+      GrpcCallSettings<RequestT, com.google.longrunning.Operation> grpcCallSettings,
+      OperationCallSettings<RequestT, ResponseT, MetadataT> operationCallSettings,
+      ClientContext clientContext, OperationsStub operationsStub) {
+    return GrpcCallableFactory.createOperationCallable(grpcCallSettings, operationCallSettings, clientContext, operationsStub);
+  }
+
+  @Override
+  public <RequestT, ResponseT> BidiStreamingCallable<RequestT, ResponseT> createBidiStreamingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      StreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createBidiStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> ServerStreamingCallable<RequestT, ResponseT> createServerStreamingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      ServerStreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createServerStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
+  }
+
+  @Override
+  public <RequestT, ResponseT> ClientStreamingCallable<RequestT, ResponseT> createClientStreamingCallable(
+      GrpcCallSettings<RequestT, ResponseT> grpcCallSettings,
+      StreamingCallSettings<RequestT, ResponseT> streamingCallSettings,
+      ClientContext clientContext) {
+    return GrpcCallableFactory.createClientStreamingCallable(grpcCallSettings, streamingCallSettings, clientContext);
+  }
+}
+============== file: src/main/java/com/google/gcloud/example/stub/GrpcMyStreamingServiceStub.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.gcloud.example.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcCallableFactory;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.RequestParamsExtractor;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.common.collect.ImmutableMap;
+import com.google.gcloud.example.MyStreamingServiceSettings;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingRequest;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingResponse;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * gRPC stub implementation for Google Example MyProto API.
+ *
+ * <p>This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated("by gapic-generator")
+@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+public class GrpcMyStreamingServiceStub extends MyStreamingServiceStub {
+
+  private static final MethodDescriptor<StreamingRequest, StreamingResponse> myMethodMethodDescriptor =
+      MethodDescriptor.<StreamingRequest, StreamingResponse>newBuilder()
+          .setType(MethodDescriptor.MethodType.BIDI_STREAMING)
+          .setFullMethodName("google.example.myproto.v1.MyStreamingService/MyMethod")
+          .setRequestMarshaller(ProtoUtils.marshaller(StreamingRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(StreamingResponse.getDefaultInstance()))
+          .build();
+
+
+  private final BackgroundResource backgroundResources;
+
+  private final BidiStreamingCallable<StreamingRequest, StreamingResponse> myMethodCallable;
+
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcMyStreamingServiceStub create(MyStreamingServiceStubSettings settings) throws IOException {
+    return new GrpcMyStreamingServiceStub(settings, ClientContext.create(settings));
+  }
+
+  public static final GrpcMyStreamingServiceStub create(ClientContext clientContext) throws IOException {
+    return new GrpcMyStreamingServiceStub(MyStreamingServiceStubSettings.newBuilder().build(), clientContext);
+  }
+
+  public static final GrpcMyStreamingServiceStub create(ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+    return new GrpcMyStreamingServiceStub(MyStreamingServiceStubSettings.newBuilder().build(), clientContext, callableFactory);
+  }
+
+  /**
+   * Constructs an instance of GrpcMyStreamingServiceStub, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected GrpcMyStreamingServiceStub(MyStreamingServiceStubSettings settings, ClientContext clientContext) throws IOException {
+    this(settings, clientContext, new GrpcMyStreamingServiceCallableFactory());
+  }
+
+  /**
+   * Constructs an instance of GrpcMyStreamingServiceStub, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected GrpcMyStreamingServiceStub(MyStreamingServiceStubSettings settings, ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+    this.callableFactory = callableFactory;
+
+    GrpcCallSettings<StreamingRequest, StreamingResponse> myMethodTransportSettings =
+        GrpcCallSettings.<StreamingRequest, StreamingResponse>newBuilder()
+            .setMethodDescriptor(myMethodMethodDescriptor)
+            .build();
+
+    this.myMethodCallable = callableFactory.createBidiStreamingCallable(myMethodTransportSettings,settings.myMethodSettings(), clientContext);
+
+    backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
+  }
+
+
+  public BidiStreamingCallable<StreamingRequest, StreamingResponse> myMethodCallable() {
+    return myMethodCallable;
+  }
+
+  @Override
+  public final void close() {
+    shutdown();
+  }
+
+  @Override
+  public void shutdown() {
+    backgroundResources.shutdown();
+  }
+
+  @Override
+  public boolean isShutdown() {
+    return backgroundResources.isShutdown();
+  }
+
+  @Override
+  public boolean isTerminated() {
+    return backgroundResources.isTerminated();
+  }
+
+  @Override
+  public void shutdownNow() {
+    backgroundResources.shutdownNow();
+  }
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return backgroundResources.awaitTermination(duration, unit);
+  }
+
+}
+============== file: src/main/java/com/google/gcloud/example/stub/MyStreamingServiceStub.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.gcloud.example.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingRequest;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingResponse;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Base stub class for Google Example MyProto API.
+ *
+ * <p>This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated("by gapic-generator")
+@BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+public abstract class MyStreamingServiceStub implements BackgroundResource {
+
+
+  public BidiStreamingCallable<StreamingRequest, StreamingResponse> myMethodCallable() {
+    throw new UnsupportedOperationException("Not implemented: myMethodCallable()");
+  }
+
+  @Override
+  public abstract void close();
+}
+============== file: src/main/java/com/google/gcloud/example/stub/MyStreamingServiceStubSettings.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.gcloud.example.stub;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.core.GaxProperties;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
+import com.google.api.gax.grpc.GrpcTransportChannel;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.HeaderProvider;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.StreamingCallSettings;
+import com.google.api.gax.rpc.StubSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.auth.Credentials;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingRequest;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingResponse;
+import com.google.protos.google.example.myproto.v1.MyStreamingServiceGrpc;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import javax.annotation.Generated;
+import org.threeten.bp.Duration;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Settings class to configure an instance of {@link MyStreamingServiceStub}.
+ *
+ * <p>The default instance has everything set to sensible defaults:
+ *
+ * <ul>
+ * <li>The default service address (mystreaming-example.googleapis.com) and default port (443)
+ * are used.
+ * <li>Credentials are acquired automatically through Application Default Credentials.
+ * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ * </ul>
+ *
+ * <p>The builder of this class is recursive, so contained classes are themselves builders.
+ * When build() is called, the tree of builders is called to create the complete settings
+ * object.
+ *
+ */
+@Generated("by gapic-generator")
+@BetaApi
+public class MyStreamingServiceStubSettings extends StubSettings<MyStreamingServiceStubSettings> {
+  /**
+   * The default scopes of the service.
+   */
+  private static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
+      .add("https://www.googleapis.com/auth/cloud-platform")
+      .add("https://www.googleapis.com/auth/library")
+      .build();
+
+  private final StreamingCallSettings<StreamingRequest, StreamingResponse> myMethodSettings;
+
+  /**
+   * Returns the object with the settings used for calls to myMethod.
+   */
+  public StreamingCallSettings<StreamingRequest, StreamingResponse> myMethodSettings() {
+    return myMethodSettings;
+  }
+
+
+  @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
+  public MyStreamingServiceStub createStub() throws IOException {
+    if (getTransportChannelProvider()
+        .getTransportName()
+        .equals(GrpcTransportChannel.getGrpcTransportName())) {
+      return GrpcMyStreamingServiceStub.create(this);
+    } else {
+      throw new UnsupportedOperationException(
+          "Transport not supported: " + getTransportChannelProvider().getTransportName());
+    }
+  }
+
+  /**
+   * Returns a builder for the default ExecutorProvider for this service.
+   */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+    return InstantiatingExecutorProvider.newBuilder();
+  }
+
+  /**
+   * Returns the default service endpoint.
+   */
+  public static String getDefaultEndpoint() {
+    return "mystreaming-example.googleapis.com:443";
+  }
+
+
+  /**
+   * Returns the default service scopes.
+   */
+  public static List<String> getDefaultServiceScopes() {
+    return DEFAULT_SERVICE_SCOPES;
+  }
+
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return GoogleCredentialsProvider.newBuilder()
+        .setScopesToApply(DEFAULT_SERVICE_SCOPES)
+        ;
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+    return InstantiatingGrpcChannelProvider.newBuilder();
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+    return defaultGrpcTransportProviderBuilder().build();
+  }
+
+  @BetaApi("The surface for customizing headers is not stable yet and may change in the future.")
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+    return ApiClientHeaderProvider.newBuilder()
+        .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(MyStreamingServiceStubSettings.class))
+        .setTransportToken(GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder() {
+    return Builder.createDefault();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder(ClientContext clientContext) {
+    return new Builder(clientContext);
+  }
+
+  /**
+   * Returns a builder containing all the values of this settings class.
+   */
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  protected MyStreamingServiceStubSettings(Builder settingsBuilder) throws IOException {
+    super(settingsBuilder);
+
+    myMethodSettings = settingsBuilder.myMethodSettings().build();
+  }
+
+
+
+
+  /**
+   * Builder for MyStreamingServiceStubSettings.
+   */
+  public static class Builder extends StubSettings.Builder<MyStreamingServiceStubSettings, Builder> {
+    private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
+
+    private final StreamingCallSettings.Builder<StreamingRequest, StreamingResponse> myMethodSettings;
+
+    private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder<String, ImmutableSet<StatusCode.Code>> definitions = ImmutableMap.builder();
+      definitions.put(
+          "idempotent",
+          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList(StatusCode.Code.DEADLINE_EXCEEDED, StatusCode.Code.UNAVAILABLE)));
+      definitions.put(
+          "non_idempotent",
+          ImmutableSet.copyOf(Lists.<StatusCode.Code>newArrayList()));
+      RETRYABLE_CODE_DEFINITIONS = definitions.build();
+    }
+
+    private static final ImmutableMap<String, RetrySettings> RETRY_PARAM_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder<String, RetrySettings> definitions = ImmutableMap.builder();
+      RetrySettings settings = null;
+      settings = RetrySettings.newBuilder()
+          .setInitialRetryDelay(Duration.ofMillis(100L))
+          .setRetryDelayMultiplier(1.3)
+          .setMaxRetryDelay(Duration.ofMillis(60000L))
+          .setInitialRpcTimeout(Duration.ofMillis(20000L))
+          .setRpcTimeoutMultiplier(1.0)
+          .setMaxRpcTimeout(Duration.ofMillis(20000L))
+          .setTotalTimeout(Duration.ofMillis(600000L))
+          .build();
+      definitions.put("default", settings);
+      RETRY_PARAM_DEFINITIONS = definitions.build();
+    }
+
+    protected Builder() {
+      this((ClientContext) null);
+    }
+
+    protected Builder(ClientContext clientContext) {
+      super(clientContext);
+
+      myMethodSettings = StreamingCallSettings.newBuilder();
+
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+      );
+
+      initDefaults(this);
+    }
+
+    private static Builder createDefault() {
+      Builder builder = new Builder((ClientContext) null);
+      builder.setTransportChannelProvider(defaultTransportChannelProvider());
+      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+      builder.setInternalHeaderProvider(defaultApiClientHeaderProviderBuilder().build());
+      builder.setEndpoint(getDefaultEndpoint());
+      return initDefaults(builder);
+    }
+
+    private static Builder initDefaults(Builder builder) {
+
+      return builder;
+    }
+
+    protected Builder(MyStreamingServiceStubSettings settings) {
+      super(settings);
+
+      myMethodSettings = settings.myMethodSettings.toBuilder();
+
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
+      );
+    }
+
+    // NEXT_MAJOR_VER: remove 'throws Exception'
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder<?, ?>, Void> settingsUpdater) throws Exception {
+      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);
+      return this;
+    }
+
+    public ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders() {
+      return unaryMethodSettingsBuilders;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to myMethod.
+     */
+    public StreamingCallSettings.Builder<StreamingRequest, StreamingResponse> myMethodSettings() {
+      return myMethodSettings;
+    }
+
+    @Override
+    public MyStreamingServiceStubSettings build() throws IOException {
+      return new MyStreamingServiceStubSettings(this);
+    }
+  }
+}
+============== file: src/test/java/com/google/gcloud/example/MockMyStreamingService.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.gcloud.example;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.grpc.testing.MockGrpcService;
+import com.google.protobuf.AbstractMessage;
+import io.grpc.ServerServiceDefinition;
+import java.util.List;
+
+@javax.annotation.Generated("by GAPIC")
+@BetaApi
+public class MockMyStreamingService implements MockGrpcService  {
+  private final MockMyStreamingServiceImpl serviceImpl;
+
+  public MockMyStreamingService() {
+    serviceImpl = new MockMyStreamingServiceImpl();
+  }
+
+  @Override
+  public List<AbstractMessage> getRequests() {
+    return serviceImpl.getRequests();
+  }
+
+  @Override
+  public void addResponse(AbstractMessage response) {
+    serviceImpl.addResponse(response);
+  }
+
+  @Override
+  public void addException(Exception exception) {
+    serviceImpl.addException(exception);
+  }
+
+  @Override
+  public ServerServiceDefinition getServiceDefinition() {
+    return serviceImpl.bindService();
+  }
+
+  @Override
+  public void reset() {
+    serviceImpl.reset();
+  }
+}
+============== file: src/test/java/com/google/gcloud/example/MockMyStreamingServiceImpl.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.gcloud.example;
+
+import com.google.api.core.BetaApi;
+import com.google.common.collect.Lists;
+import com.google.protobuf.AbstractMessage;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingRequest;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingResponse;
+import com.google.protos.google.example.myproto.v1.MyStreamingServiceGrpc.MyStreamingServiceImplBase;
+import io.grpc.stub.StreamObserver;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+@javax.annotation.Generated("by GAPIC")
+@BetaApi
+public class MockMyStreamingServiceImpl extends MyStreamingServiceImplBase {
+  private List<AbstractMessage> requests;
+  private Queue<Object> responses;
+
+  public MockMyStreamingServiceImpl() {
+    requests = new ArrayList<>();
+    responses = new LinkedList<>();
+  }
+
+  public List<AbstractMessage> getRequests() {
+    return requests;
+  }
+
+  public void addResponse(AbstractMessage response) {
+    responses.add(response);
+  }
+
+  public void setResponses(List<AbstractMessage> responses) {
+    this.responses = new LinkedList<Object>(responses);
+  }
+
+  public void addException(Exception exception) {
+    responses.add(exception);
+  }
+
+  public void reset() {
+    requests = new ArrayList<>();
+    responses = new LinkedList<>();
+  }
+
+  @Override
+  public StreamObserver<StreamingRequest> myMethod(
+      final StreamObserver<StreamingResponse> responseObserver) {
+    final Object response = responses.remove();
+    StreamObserver<StreamingRequest> requestObserver =
+        new StreamObserver<StreamingRequest>() {
+      @Override
+      public void onNext(StreamingRequest value) {
+        if (response instanceof StreamingResponse) {
+          responseObserver.onNext((StreamingResponse) response);
+        } else if (response instanceof Exception) {
+          responseObserver.onError((Exception) response);
+        } else {
+          responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+        }
+      }
+
+      @Override
+      public void onError(Throwable t) {
+        responseObserver.onError(t);
+      }
+
+      @Override
+      public void onCompleted() {
+        responseObserver.onCompleted();
+      }
+    };
+    return requestObserver;
+  }
+
+}
+============== file: src/test/java/com/google/gcloud/example/MyStreamingServiceClientTest.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.gcloud.example;
+
+import com.google.api.gax.core.NoCredentialsProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
+import com.google.api.gax.grpc.GrpcStatusCode;
+import com.google.api.gax.grpc.testing.LocalChannelProvider;
+import com.google.api.gax.grpc.testing.MockGrpcService;
+import com.google.api.gax.grpc.testing.MockServiceHelper;
+import com.google.api.gax.grpc.testing.MockStreamObserver;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ApiStreamObserver;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.InvalidArgumentException;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.common.collect.Lists;
+import com.google.protobuf.AbstractMessage;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingRequest;
+import com.google.protos.google.example.myproto.v1.MyStreamingProto.StreamingResponse;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+@javax.annotation.Generated("by GAPIC")
+public class MyStreamingServiceClientTest {
+  private static MockMyStreamingService mockMyStreamingService;
+  private static MockServiceHelper serviceHelper;
+  private MyStreamingServiceClient client;
+  private LocalChannelProvider channelProvider;
+
+  @BeforeClass
+  public static void startStaticServer() {
+    mockMyStreamingService = new MockMyStreamingService();
+    serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList(mockMyStreamingService));
+    serviceHelper.start();
+  }
+
+  @AfterClass
+  public static void stopServer() {
+    serviceHelper.stop();
+  }
+
+  @Before
+  public void setUp() throws IOException {
+    serviceHelper.reset();
+    channelProvider = serviceHelper.createChannelProvider();
+    MyStreamingServiceSettings settings = MyStreamingServiceSettings.newBuilder()
+        .setTransportChannelProvider(channelProvider)
+        .setCredentialsProvider(NoCredentialsProvider.create())
+        .build();
+    client = MyStreamingServiceClient.create(settings);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    client.close();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void myMethodTest() throws Exception {
+    String myfield = "myfield1515208398";
+    StreamingResponse expectedResponse = StreamingResponse.newBuilder()
+      .setMyfield(myfield)
+      .build();
+    mockMyStreamingService.addResponse(expectedResponse);
+    StreamingRequest request = StreamingRequest.newBuilder().build();
+
+    MockStreamObserver<StreamingResponse> responseObserver = new MockStreamObserver<>();
+
+    BidiStreamingCallable<StreamingRequest, StreamingResponse> callable =
+        client.myMethodCallable();
+    ApiStreamObserver<StreamingRequest> requestObserver =
+        callable.bidiStreamingCall(responseObserver);
+
+    requestObserver.onNext(request);
+    requestObserver.onCompleted();
+
+    List<StreamingResponse> actualResponses = responseObserver.future().get();
+    Assert.assertEquals(1, actualResponses.size());
+    Assert.assertEquals(expectedResponse, actualResponses.get(0));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void myMethodExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockMyStreamingService.addException(exception);
+    StreamingRequest request = StreamingRequest.newBuilder().build();
+
+    MockStreamObserver<StreamingResponse> responseObserver = new MockStreamObserver<>();
+
+    BidiStreamingCallable<StreamingRequest, StreamingResponse> callable =
+        client.myMethodCallable();
+    ApiStreamObserver<StreamingRequest> requestObserver =
+        callable.bidiStreamingCall(responseObserver);
+
+    requestObserver.onNext(request);
+
+    try {
+      List<StreamingResponse> actualResponses = responseObserver.future().get();
+      Assert.fail("No exception thrown");
+    } catch (ExecutionException e) {
+      Assert.assertTrue(e.getCause() instanceof InvalidArgumentException);
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(StatusCode.Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
+    }
+  }
+
+}

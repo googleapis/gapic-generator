@@ -10,22 +10,22 @@
     }
 @end
 
-@snippet processCliArguments(sample)
+@snippet processCliArguments(sample, sampleClassName)
     @if sample.sampleInitCode.argDefaultParams
         @if sample.usesAsyncAwaitPattern
             new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
-                    {@sample.sampleFunctionName}Async({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}).Wait());
+                    {@sampleClassName}.{@sample.sampleFunctionName}Async({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}).Wait());
         @else
             new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
-                    {@sample.sampleFunctionName}({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}));
+                    {@sampleClassName}.{@sample.sampleFunctionName}({@commaSeparatedOpts(sample.sampleInitCode.argDefaultParams)}));
         @end
     @else
         @if sample.usesAsyncAwaitPattern
-            {@sample.sampleFunctionName}Async().Wait();
+            {@sampleClassName}.{@sample.sampleFunctionName}Async().Wait();
         @else
-            {@sample.sampleFunctionName}();
+            {@sampleClassName}.{@sample.sampleFunctionName}();
         @end
     @end
 @end
