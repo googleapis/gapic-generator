@@ -31,10 +31,12 @@ import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Streams;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -139,14 +141,24 @@ public abstract class DynamicLangGapicSamplesTransformer
       GapicProductConfig productConfig,
       SurfaceNamer namer,
       ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable) {
+
+    List<SampleConfig> sampleConfigWithValidCallingPattern = new ArrayList<>();
+    for (InterfaceContext interfaceContext : interfaceContexts) {
+      for (MethodModel method : interfaceContext.getSupportedMethods()) {
+        MethodContext methodContext = interfaceContext.asRequestMethodContext(method);
+        String interfaceName =
+            interfaceContext.getInterfaceConfig().getInterfaceModel().getFullName();
+        String methodName = method.getSimpleName();
+        MoreObjects.firstNonNull(
+                sampleConfigTable.get(interfaceName, methodName), ImmutableList.<SampleConfig>of())
+            .stream()
+            .filter(c -> hasMatchingCallingForm(c.callingPattern(), namer, methodContext))
+            .forEach(c -> sampleConfigWithValidCallingPattern.add(c));
+      }
+    }
     SampleFileRegistry registry =
-        new SampleFileRegistry(
-            namer,
-            sampleConfigTable
-                .values()
-                .stream()
-                .flatMap(List::stream)
-                .collect(ImmutableList.toImmutableList()));
+        new SampleFileRegistry(namer, sampleConfigWithValidCallingPattern);
+
     ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
     for (InterfaceContext interfaceContext : interfaceContexts) {
       for (MethodModel method : interfaceContext.getSupportedMethods()) {
@@ -230,5 +242,15 @@ public abstract class DynamicLangGapicSamplesTransformer
         .outputPath(outputPath)
         .libraryMethod(method)
         .sample(sample);
+  }
+
+  private static boolean hasMatchingCallingForm(
+      String userProvidedCallingPattern, SurfaceNamer namer, MethodContext context) {
+    return userProvidedCallingPattern.equals("")
+        || userProvidedCallingPattern.equals("default")
+        || namer
+            .getCallingForms(context)
+            .stream()
+            .anyMatch(t -> t.toLowerUnderscore().matches(userProvidedCallingPattern));
   }
 }

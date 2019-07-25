@@ -20,7 +20,7 @@
     "phpunit/phpunit": "^4.8|^5.0"
   }
 }
-============== file: samples/V1/BabbleAboutBook1.php ==============
+============== file: samples/V1/BabbleAboutBook1RequestStreamingClient.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -39,13 +39,13 @@
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "babble_about_book_1")
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "babble_about_book_1_request_streaming_client")
  */
 
 // sample-metadata
 //   title: Test response handling for methods that return empty
 //   description: Test response handling for methods that return empty
-//   usage: php samples/V1/BabbleAboutBook1.php
+//   usage: php samples/V1/BabbleAboutBook1RequestStreamingClient.php
 // [START babble_about_book_1]
 require __DIR__ . '/../../vendor/autoload.php';
 
@@ -73,7 +73,7 @@ function sampleBabbleAboutBook()
 // [END babble_about_book_1]
 
 sampleBabbleAboutBook();
-============== file: samples/V1/BabbleAboutBook2.php ==============
+============== file: samples/V1/BabbleAboutBook1RequestStreamingClientAsync.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -92,13 +92,69 @@ sampleBabbleAboutBook();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "babble_about_book_2")
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClientAsync",  "babble_about_book_1_request_streaming_client_async")
+ */
+
+// sample-metadata
+//   title: Test response handling for methods that return empty
+//   description: Test response handling for methods that return empty
+//   usage: php samples/V1/BabbleAboutBook1RequestStreamingClientAsync.php
+// [START babble_about_book_1]
+require __DIR__ . '/../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\DiscussBookRequest;
+
+/** Test response handling for methods that return empty */
+function sampleBabbleAboutBook()
+{
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $request = new DiscussBookRequest();
+
+    try {
+        // Write data as it becomes available, then wait for a response
+        $requests = [$request];
+        $stream = $libraryServiceClient->babbleAboutBook();
+        foreach ($requests as $request) {
+            $stream->write($request);
+        }
+        $response = $stream->readResponse();
+        // No one replied
+        printf("No one replied." . PHP_EOL);
+    } finally {
+        $libraryServiceClient->close();
+    }
+}
+// [END babble_about_book_1]
+
+sampleBabbleAboutBook();
+============== file: samples/V1/BabbleAboutBook2RequestStreamingClient.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "babble_about_book_2_request_streaming_client")
  */
 
 // sample-metadata
 //   title: Test default response handling is turned off for methods that return empty
 //   description: Test default response handling is turned off for methods that return empty
-//   usage: php samples/V1/BabbleAboutBook2.php
+//   usage: php samples/V1/BabbleAboutBook2RequestStreamingClient.php
 // [START babble_about_book_2]
 require __DIR__ . '/../../vendor/autoload.php';
 
@@ -117,6 +173,60 @@ function sampleBabbleAboutBook()
         $requests = [$request];
         $stream = $libraryServiceClient->babbleAboutBook();
         $response = $stream->writeAllAndReadResponse($requests);
+    } finally {
+        $libraryServiceClient->close();
+    }
+}
+// [END babble_about_book_2]
+
+sampleBabbleAboutBook();
+============== file: samples/V1/BabbleAboutBook2RequestStreamingClientAsync.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClientAsync",  "babble_about_book_2_request_streaming_client_async")
+ */
+
+// sample-metadata
+//   title: Test default response handling is turned off for methods that return empty
+//   description: Test default response handling is turned off for methods that return empty
+//   usage: php samples/V1/BabbleAboutBook2RequestStreamingClientAsync.php
+// [START babble_about_book_2]
+require __DIR__ . '/../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\DiscussBookRequest;
+
+/** Test default response handling is turned off for methods that return empty */
+function sampleBabbleAboutBook()
+{
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $request = new DiscussBookRequest();
+
+    try {
+        // Write data as it becomes available, then wait for a response
+        $requests = [$request];
+        $stream = $libraryServiceClient->babbleAboutBook();
+        foreach ($requests as $request) {
+            $stream->write($request);
+        }
+        $response = $stream->readResponse();
     } finally {
         $libraryServiceClient->close();
     }

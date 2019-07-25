@@ -178,7 +178,8 @@ public abstract class SampleConfig {
             spec.toBuilder().addCallingPatterns(DEFAULT_CALLING_PATTERN).build());
       }
       for (String pattern : spec.getCallingPatternsList()) {
-        flattenedSampleSpecs.add(spec.toBuilder().addCallingPatterns(pattern).build());
+        flattenedSampleSpecs.add(
+            spec.toBuilder().clearCallingPatterns().addCallingPatterns(pattern).build());
       }
     }
 
