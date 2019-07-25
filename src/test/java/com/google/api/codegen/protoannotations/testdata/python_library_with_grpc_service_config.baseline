@@ -3740,7 +3740,8 @@ config = {
           "UNAVAILABLE",
           "UNKNOWN"
         ],
-        "no_retry_codes": []
+        "no_retry_codes": [],
+        "no_retry_1_codes": []
       },
       "retry_params": {
         "retry_policy_1_params": {
@@ -3759,14 +3760,23 @@ config = {
           "initial_rpc_timeout_millis": 0,
           "rpc_timeout_multiplier": 0.0,
           "max_rpc_timeout_millis": 0,
+          "total_timeout_millis": 0
+        },
+        "no_retry_1_params": {
+          "initial_retry_delay_millis": 0,
+          "retry_delay_multiplier": 0.0,
+          "max_retry_delay_millis": 0,
+          "initial_rpc_timeout_millis": 0,
+          "rpc_timeout_multiplier": 0.0,
+          "max_rpc_timeout_millis": 0,
           "total_timeout_millis": 60000
         }
       },
       "methods": {
         "CreateShelf": {
           "timeout_millis": 1000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params"
+          "retry_codes_name": "no_retry_1_codes",
+          "retry_params_name": "no_retry_1_params"
         },
         "GetShelf": {
           "timeout_millis": 60000,
@@ -3785,18 +3795,18 @@ config = {
         },
         "MergeShelves": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params"
+          "retry_codes_name": "no_retry_1_codes",
+          "retry_params_name": "no_retry_1_params"
         },
         "CreateBook": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params"
+          "retry_codes_name": "no_retry_1_codes",
+          "retry_params_name": "no_retry_1_params"
         },
         "PublishSeries": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params",
+          "retry_codes_name": "no_retry_1_codes",
+          "retry_params_name": "no_retry_1_params",
           "bundling": {
             "element_count_threshold": 6,
             "element_count_limit": 7,
@@ -3827,8 +3837,8 @@ config = {
         },
         "MoveBook": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params"
+          "retry_codes_name": "no_retry_1_codes",
+          "retry_params_name": "no_retry_1_params"
         },
         "ListStrings": {
           "timeout_millis": 60000,
@@ -3837,8 +3847,8 @@ config = {
         },
         "AddComments": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params",
+          "retry_codes_name": "no_retry_1_codes",
+          "retry_params_name": "no_retry_1_params",
           "bundling": {
             "element_count_threshold": 6,
             "request_byte_threshold": 100000,
@@ -3867,8 +3877,8 @@ config = {
         },
         "StreamShelves": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params"
+          "retry_codes_name": "no_retry_1_codes",
+          "retry_params_name": "no_retry_1_params"
         },
         "StreamBooks": {
           "timeout_millis": 60000,
@@ -3877,8 +3887,8 @@ config = {
         },
         "DiscussBook": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params"
+          "retry_codes_name": "no_retry_1_codes",
+          "retry_params_name": "no_retry_1_params"
         },
         "MonologAboutBook": {
           "timeout_millis": 60000,
@@ -3887,8 +3897,8 @@ config = {
         },
         "BabbleAboutBook": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params"
+          "retry_codes_name": "no_retry_1_codes",
+          "retry_params_name": "no_retry_1_params"
         },
         "FindRelatedBooks": {
           "timeout_millis": 60000,
@@ -3902,18 +3912,18 @@ config = {
         },
         "GetBigBook": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params"
+          "retry_codes_name": "no_retry_1_codes",
+          "retry_params_name": "no_retry_1_params"
         },
         "GetBigNothing": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params"
+          "retry_codes_name": "no_retry_1_codes",
+          "retry_params_name": "no_retry_1_params"
         },
         "TestOptionalRequiredFlatteningParams": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params"
+          "retry_codes_name": "no_retry_1_codes",
+          "retry_params_name": "no_retry_1_params"
         },
         "PrivateListShelves": {
           "timeout_millis": 60000,
@@ -4180,10 +4190,20 @@ config = {
   "interfaces": {
     "google.example.library.v1.MyProto": {
       "retry_codes": {
+        "no_retry_2_codes": [],
         "no_retry_codes": []
       },
       "retry_params": {
         "no_retry_params": {
+          "initial_retry_delay_millis": 0,
+          "retry_delay_multiplier": 0.0,
+          "max_retry_delay_millis": 0,
+          "initial_rpc_timeout_millis": 0,
+          "rpc_timeout_multiplier": 0.0,
+          "max_rpc_timeout_millis": 0,
+          "total_timeout_millis": 0
+        },
+        "no_retry_2_params": {
           "initial_retry_delay_millis": 0,
           "retry_delay_multiplier": 0.0,
           "max_retry_delay_millis": 0,
@@ -4196,8 +4216,8 @@ config = {
       "methods": {
         "MyMethod": {
           "timeout_millis": 60000,
-          "retry_codes_name": "no_retry_codes",
-          "retry_params_name": "no_retry_params"
+          "retry_codes_name": "no_retry_2_codes",
+          "retry_params_name": "no_retry_2_params"
         }
       }
     }

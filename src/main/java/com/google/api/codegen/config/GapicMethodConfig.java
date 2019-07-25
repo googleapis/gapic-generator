@@ -100,7 +100,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     long defaultTimeout;
     if (retryMapping != null) {
       // use the gRPC ServiceConfig retry as the source
-      retryCodesName = retryCodesConfig.getMethodRetryNames().get(method.getSimpleName());
+      retryCodesName = retryCodesConfig.getMethodRetryNames().get(methodModel.getSimpleName());
       retryParamsName = retryMapping.methodParamsMap().get(methodModel.getFullName());
 
       // unknown/unspecified methods get no retry codes or params

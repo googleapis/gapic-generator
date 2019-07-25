@@ -120,11 +120,14 @@ public class GapicConfigProducerTest {
         product.getInterfaceConfig("google.example.library.v1.LibraryService");
     Map<String, RetryParamsDefinitionProto> params = libraryInterface.getRetrySettingsDefinition();
     assertThat(params.get("retry_policy_1_params")).isNotNull();
+    assertThat(params.get("no_retry_1_params")).isNotNull();
+    assertThat(params.get("no_retry_1_params").getTotalTimeoutMillis()).isEqualTo(60000);
     assertThat(params.get("no_retry_params")).isNotNull();
-    assertThat(params.get("no_retry_params").getTotalTimeoutMillis()).isEqualTo(60000);
+    assertThat(params.get("no_retry_params").getTotalTimeoutMillis()).isEqualTo(0);
     Map<String, ImmutableList<String>> codes =
         libraryInterface.getRetryCodesConfig().getRetryCodesDefinition();
     assertThat(codes.get("retry_policy_1_codes")).isNotNull();
+    assertThat(codes.get("no_retry_1_codes")).isNotNull();
     assertThat(codes.get("no_retry_codes")).isNotNull();
   }
 }

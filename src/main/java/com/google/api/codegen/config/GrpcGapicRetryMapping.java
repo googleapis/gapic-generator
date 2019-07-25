@@ -39,13 +39,28 @@ public abstract class GrpcGapicRetryMapping {
     Map<String, RetryCodesDefinitionProto> codesDefMap = new HashMap<>();
     Map<String, RetryParamsDefinitionProto> paramsDefMap = new HashMap<>();
 
+    // add no_retry configs for unknown/unspecified methods
+    RetryParamsDefinitionProto.Builder defaultParamsBuilder =
+        RetryParamsDefinitionProto.newBuilder();
+    defaultParamsBuilder.setTotalTimeoutMillis(0);
+    defaultParamsBuilder.setName("no_retry_params");
+    paramsDefMap.putIfAbsent(defaultParamsBuilder.getName(), defaultParamsBuilder.build());
+
+    RetryCodesDefinitionProto.Builder defaultCodesBuilder = RetryCodesDefinitionProto.newBuilder();
+    defaultCodesBuilder.setName("no_retry_codes");
+    codesDefMap.putIfAbsent(defaultCodesBuilder.getName(), defaultCodesBuilder.build());
+
     // build retry-to-interface mapping from gRPC ServiceConfig
     int retryNdx = 1;
+    int noRetryNdx = 1;
     for (com.google.api.codegen.grpc.MethodConfig methodConfig : config.getMethodConfigList()) {
       RetryPolicy retryPolicy = methodConfig.getRetryPolicy();
-      String policyName = "no_retry";
+      String policyName;
       if (methodConfig.getRetryOrHedgingPolicyCase() == RetryOrHedgingPolicyCase.RETRY_POLICY) {
         policyName = "retry_policy_" + retryNdx++;
+      } else {
+        // make "unique" no_retry configs because the MethodConfig timeout may differ
+        policyName = "no_retry_" + noRetryNdx++;
       }
 
       long timeout = Durations.toMillis(methodConfig.getTimeout());

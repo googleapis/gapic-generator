@@ -112,6 +112,9 @@ public class RetryDefinitionsTransformer {
                 paramsMap.putIfAbsent(
                     methodParamMap.get(name), paramsDefMap.get(methodParamMap.get(name))));
 
+    // force the addition of the default, no retry params config
+    paramsMap.putIfAbsent("no_retry_params", paramsDefMap.get("no_retry_params"));
+
     return ImmutableMap.copyOf(paramsMap);
   }
 

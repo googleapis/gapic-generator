@@ -116,6 +116,9 @@ public class RetryCodesConfig {
       }
     }
 
+    // force the addition of the default, no retry codes config
+    codesDefMap.putIfAbsent("no_retry_codes", ImmutableList.of());
+
     retryCodesConfig.retryCodesDefinition = ImmutableMap.copyOf(codesDefMap);
     retryCodesConfig.methodRetryNames = ImmutableMap.copyOf(methodNamesMap);
     retryCodesConfig.setFinalRetryProperties();
