@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.HashMap;
 
 /**
  * A base transformer to generate standalone samples for each method in the GAPIC surface generated
@@ -142,7 +143,7 @@ public abstract class DynamicLangGapicSamplesTransformer
       SurfaceNamer namer,
       ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable) {
 
-    List<SampleConfig> sampleConfigWithValidCallingPattern = new ArrayList<>();
+    Map<SampleConfig, Integer> configNamesCount = new HashMap<>();
     for (InterfaceContext interfaceContext : interfaceContexts) {
       for (MethodModel method : interfaceContext.getSupportedMethods()) {
         MethodContext methodContext = interfaceContext.asRequestMethodContext(method);
@@ -152,12 +153,14 @@ public abstract class DynamicLangGapicSamplesTransformer
         MoreObjects.firstNonNull(
                 sampleConfigTable.get(interfaceName, methodName), ImmutableList.<SampleConfig>of())
             .stream()
+            .forEach(configNamesCount.put(c, namer.getMatchingCallingForms(methodContext, c.callingPattern())))
             .filter(c -> hasMatchingCallingForm(c.callingPattern(), namer, methodContext))
-            .forEach(c -> sampleConfigWithValidCallingPattern.add(c));
+            .forEach(c -> configNamesCount.put(c));
       }
     }
+
     SampleFileRegistry registry =
-        new SampleFileRegistry(namer, sampleConfigWithValidCallingPattern);
+        new SampleFileRegistry(namer, configNamesCount);
 
     ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
     for (InterfaceContext interfaceContext : interfaceContexts) {
@@ -199,7 +202,6 @@ public abstract class DynamicLangGapicSamplesTransformer
                     .sampleConfig(sampleConfig)
                     .initCodeOutputType(initCodeOutputType)
                     .build();
-
             OptionalArrayMethodView methodView =
                 apiMethodTransformer.generateApiMethod(methodContext, sampleContext);
 

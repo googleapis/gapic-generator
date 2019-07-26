@@ -57,7 +57,10 @@ public class SampleFileRegistry {
   public SampleFileRegistry(SurfaceNamer namer, Collection<SampleConfig> sampleConfigs) {
     this.namer = namer;
     for (SampleConfig config : sampleConfigs) {
-      userProvidedIdCount.put(config.id(), userProvidedIdCount.getOrDefault(config.id(), 0) + 1);
+      userProvidedIdCount.put(
+          config.id(),
+          userProvidedIdCount.getOrDefault(config.id(), 0)
+              + namer.getMatchingCallingForms().size());
     }
   }
 

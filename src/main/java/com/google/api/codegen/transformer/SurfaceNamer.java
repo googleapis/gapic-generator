@@ -1694,6 +1694,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return Collections.singletonList(CallingForm.Generic);
   }
 
+  public List<CallingForm> getMatchingCallingForms(MethodContext context, String callingPattern) {
+    return getCallingForms(context)
+        .stream()
+        .filter(c -> c.toLowerUnderscore().matches(callingPattern))
+        .collect(ImmutableList.toImmutableList());
+  }
+
   public CallingForm getDefaultCallingForm(MethodContext context) {
     return CallingForm.Generic;
   }
