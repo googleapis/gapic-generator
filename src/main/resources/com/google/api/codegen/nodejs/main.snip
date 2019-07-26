@@ -96,10 +96,12 @@
       // Load the applicable protos.
       // For Node.js, pass the path to JSON proto file.
       // For browsers, pass the JSON content.
+
+      const nodejsProtoPath = {@protoPath(xapi)};
       const protos = gaxGrpc.loadProto(
         global.isBrowser ?
           require("../../protos/protos.json") :
-          {@protoPath(xapi)}
+          nodejsProtoPath
       );
       @if xapi.pathTemplates
 
@@ -143,7 +145,7 @@
 
         const protoFilesRoot = global.isBrowser ?
           gax.protobuf.Root.fromJSON(require("../../protos/protos.json")) :
-          gax.protobuf.loadSync({@protoPath(xapi)})
+          gax.protobuf.loadSync(nodejsProtoPath})
       @end
       @if xapi.hasBatchingMethods
 
