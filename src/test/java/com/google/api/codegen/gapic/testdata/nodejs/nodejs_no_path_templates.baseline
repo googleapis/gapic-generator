@@ -40,7 +40,7 @@ This is a generated README.md placeholder. Put your own documentation here.
     "webpack-cli": "^3.3.6"
   },
   "scripts": {
-    "postinstall": "compileProtos ./src",
+    "compile-protos": "compileProtos ./src",
     "smoke-test": "mocha smoke-test/*.js --timeout 5000",
     "test": "mocha test/*.js"
   },
@@ -227,10 +227,12 @@ class NoTemplatesApiServiceClient {
     // Load the applicable protos.
     // For Node.js, pass the path to JSON proto file.
     // For browsers, pass the JSON content.
+
+    const nodejsProtoPath = path.join(__dirname, '..', 'protos', 'protos.json');
     const protos = gaxGrpc.loadProto(
       global.isBrowser ?
         require("../../protos/protos.json") :
-        path.join(__dirname, '..', 'protos', 'protos.json')
+        nodejsProtoPath
     );
 
     // Put together the default options sent with requests.
