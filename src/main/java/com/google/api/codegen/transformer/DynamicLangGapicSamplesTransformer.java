@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import static com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
+import static com.google.common.base.MoreObjects.firstNonNull;
 
 import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -31,17 +32,16 @@ import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Streams;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * A base transformer to generate standalone samples for each method in the GAPIC surface generated
@@ -143,24 +143,29 @@ public abstract class DynamicLangGapicSamplesTransformer
       SurfaceNamer namer,
       ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable) {
 
-    Map<SampleConfig, Integer> configNamesCount = new HashMap<>();
+    Map<String, List<CallingForm>> configsAndMatchingForms = new HashMap<>();
     for (InterfaceContext interfaceContext : interfaceContexts) {
       for (MethodModel method : interfaceContext.getSupportedMethods()) {
         MethodContext methodContext = interfaceContext.asRequestMethodContext(method);
         String interfaceName =
             interfaceContext.getInterfaceConfig().getInterfaceModel().getFullName();
         String methodName = method.getSimpleName();
-        MoreObjects.firstNonNull(
-                sampleConfigTable.get(interfaceName, methodName), ImmutableList.<SampleConfig>of())
-            .stream()
-            .forEach(configNamesCount.put(c, namer.getMatchingCallingForms(methodContext, c.callingPattern())))
-            .filter(c -> hasMatchingCallingForm(c.callingPattern(), namer, methodContext))
-            .forEach(c -> configNamesCount.put(c));
+        List<SampleConfig> sampleConfigs = sampleConfigTable.get(interfaceName, methodName);
+        sampleConfigs = firstNonNull(sampleConfigs, ImmutableList.<SampleConfig>of());
+        for (SampleConfig config : sampleConfigs) {
+          List<CallingForm> allMatchingCallingForms =
+              namer.getMatchingCallingForms(methodContext, config.callingPattern());
+          List<CallingForm> existingForms = configsAndMatchingForms.get(config.id());
+          if (existingForms == null) {
+            existingForms = new ArrayList<>();
+            configsAndMatchingForms.put(config.id(), existingForms);
+          }
+          existingForms.addAll(allMatchingCallingForms);
+        }
       }
     }
 
-    SampleFileRegistry registry =
-        new SampleFileRegistry(namer, configNamesCount);
+    SampleFileRegistry registry = new SampleFileRegistry(namer, configsAndMatchingForms);
 
     ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
     for (InterfaceContext interfaceContext : interfaceContexts) {
@@ -176,19 +181,8 @@ public abstract class DynamicLangGapicSamplesTransformer
         }
 
         for (SampleConfig sampleConfig : sampleConfigs) {
-          List<CallingForm> allMatchingCallingForms;
-          if (sampleConfig.usesDefaultCallingForm()) {
-            allMatchingCallingForms =
-                Collections.singletonList(namer.getDefaultCallingForm(methodContext));
-          } else {
-            allMatchingCallingForms =
-                namer
-                    .getCallingForms(methodContext)
-                    .stream()
-                    .filter(t -> t.toLowerUnderscore().matches(sampleConfig.callingPattern()))
-                    .collect(ImmutableList.toImmutableList());
-          }
-
+          List<CallingForm> allMatchingCallingForms =
+              configsAndMatchingForms.get(sampleConfig.id());
           for (CallingForm form : allMatchingCallingForms) {
             InitCodeOutputType initCodeOutputType =
                 methodContext.getMethodModel().getRequestStreaming()

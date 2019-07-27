@@ -28,6 +28,7 @@ import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.SampleConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
@@ -1695,6 +1696,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public List<CallingForm> getMatchingCallingForms(MethodContext context, String callingPattern) {
+    if (callingPattern.isEmpty() || SampleConfig.DEFAULT_CALLING_PATTERN.equals(callingPattern)) {
+      return Collections.singletonList(getDefaultCallingForm(context));
+    }
     return getCallingForms(context)
         .stream()
         .filter(c -> c.toLowerUnderscore().matches(callingPattern))

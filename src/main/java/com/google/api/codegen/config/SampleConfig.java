@@ -47,7 +47,7 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class SampleConfig {
 
-  private static final String DEFAULT_CALLING_PATTERN = "default";
+  public static final String DEFAULT_CALLING_PATTERN = "default";
 
   @Nullable
   public abstract String id();
