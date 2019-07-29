@@ -172,8 +172,8 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
     retryParamDoc.lines(
         ImmutableList.of(
             " A retry object used",
-            "to retry requests. If ``None`` is specified, requests will not",
-            "be retried."));
+            "to retry requests. If ``None`` is specified, requests will",
+            "be retried using a default configuration."));
 
     SimpleParamDocView.Builder timeoutParamDoc = SimpleParamDocView.newBuilder();
     timeoutParamDoc.paramName("timeout");
