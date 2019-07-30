@@ -230,12 +230,34 @@ public enum CallingForm {
   public static ImmutableList<CallingForm> getCallingForms(
       MethodContext methodContext, TargetLanguage lang) {
     Preconditions.checkArgument(lang != TargetLanguage.GO, "Go is not supported for now.");
-    return CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
+    List<CallingForms> forms =
+        CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
+    if (methodContext.isFlattenedMethodContext()) {
+      forms =
+          froms.stream().filter(CallingForm::isFlattened).collect(ImmutableList.toImmutableList());
+    }
+    return forms;
   }
 
   public static CallingForm getDefaultCallingForm(
       MethodContext methodContext, TargetLanguage lang) {
     Preconditions.checkArgument(lang != TargetLanguage.GO, "Go is not supported for now.");
     return DEFAULT_CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
+  }
+
+  /** Whether this calling form takes a flattened parameter list. */
+  private boolean isFlattened() {
+    return ImmutableSet.<CallingForm>of(
+            Flattened,
+            FlattenedPaged,
+            FlattenedPagedAll,
+            FlattenedPagedPageSize,
+            FlattenedAsync,
+            FlattenedAsyncPaged,
+            FlattenedAsyncPagedAll,
+            FlattenedAsyncPagedPageSize,
+            FlattenedStreamingBidi,
+            FlattenedStreamingServer)
+        .contains(this);
   }
 }
