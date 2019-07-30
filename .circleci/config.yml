@@ -285,8 +285,7 @@ anchor_test_nodejs_client: &anchor_test_nodejs_client
   command: |
     cd ${NODEJS_GEN_DIR}/${TEST_API}
     npm install
-    # Copy over IAM protos.
-    cp -r node_modules/google-gax/protos/google/iam/ protos/google/
+    npm run compile-protos
     npm test
   when: always
 
@@ -619,13 +618,15 @@ jobs:
             npm install
             # The following step must be done since the new api annotations are not
             # in the nodejs proto files repository.
-            cp -rf /tmp/workspace/showcase-protos/* node_modules/google-proto-files
+            cp -rf /tmp/workspace/showcase-protos/* protos/
+            npm run compile-protos
             npm test
       - run:
           name: Run Showcase integration tests
           command: |
             cd workspace/gapic-generator/showcase/nodejs
             npm install
+            npm run compile-protos
             npm test
       - run:
           name: Prepare to test Pubsub
