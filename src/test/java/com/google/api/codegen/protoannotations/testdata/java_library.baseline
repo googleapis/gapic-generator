@@ -1041,7 +1041,11 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       // shelf = "Novel\\\"`\b\t\n\r";
       BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
-      Book response = libraryClient.getBigBookAsync(name.toString()).get();
+
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookAsync(name.toString());
+
+      System.out.println("Waiting for operation to complete...");
+      Book response = future.get();
       // Testing iterating over map fields when both key and value are specified.
       for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
         String myKey = entry.getKey();
@@ -1138,7 +1142,11 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap2 {
       // shelf = "Novel";
       // bigBookName = "War and Peace";
       BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
-      Book response = libraryClient.getBigBookAsync(name.toString()).get();
+
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookAsync(name.toString());
+
+      System.out.println("Waiting for operation to complete...");
+      Book response = future.get();
       System.out.println(response);
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
@@ -1226,7 +1234,11 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap {
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
-      Book response = libraryClient.getBigBookAsync(request).get();
+
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookAsync(request);
+
+      System.out.println("Waiting for operation to complete...");
+      Book response = future.get();
       // Testing iterating over map fields when both key and value are specified.
       for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
         String myKey = entry.getKey();
@@ -1328,7 +1340,11 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap2 {
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
-      Book response = libraryClient.getBigBookAsync(request).get();
+
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookAsync(request);
+
+      System.out.println("Waiting for operation to complete...");
+      Book response = future.get();
       System.out.println(response);
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
@@ -1810,7 +1826,11 @@ public class GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithRes
   public static void sampleGetBigNothing() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
-      libraryClient.getBigNothingAsync(name.toString()).get();
+
+      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingAsync(name.toString());
+
+      System.out.println("Waiting for operation to complete...");
+      future.get();
       // Got nothing
       System.out.println("Got nothing.");
     } catch (Exception exception) {
@@ -1867,7 +1887,11 @@ public class GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithout
   public static void sampleGetBigNothing() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
-      libraryClient.getBigNothingAsync(name.toString()).get();
+
+      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingAsync(name.toString());
+
+      System.out.println("Waiting for operation to complete...");
+      future.get();
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
@@ -1927,7 +1951,11 @@ public class GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithRespo
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
-      libraryClient.getBigNothingAsync(request).get();
+
+      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingAsync(request);
+
+      System.out.println("Waiting for operation to complete...");
+      future.get();
       // Got nothing
       System.out.println("Got nothing.");
     } catch (Exception exception) {
@@ -1989,7 +2017,11 @@ public class GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithoutRe
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
-      libraryClient.getBigNothingAsync(request).get();
+
+      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingAsync(request);
+
+      System.out.println("Waiting for operation to complete...");
+      future.get();
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
@@ -3922,7 +3954,11 @@ public class ThisTagShouldBeTheNameOfTheFile {
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
-      Book response = libraryClient.getBigBookAsync(request).get();
+
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookAsync(request);
+
+      System.out.println("Waiting for operation to complete...");
+      Book response = future.get();
       // Testing iterating over map fields when both key and value are specified.
       for (Map.Entry<String, ListValue> entry : response.getMapListValueValueMap().entrySet()) {
         String myKey = entry.getKey();
