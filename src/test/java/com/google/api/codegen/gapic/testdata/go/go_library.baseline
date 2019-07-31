@@ -251,6 +251,9 @@ func defaultClientOptions() []option.ClientOption {
     return []option.ClientOption{
         option.WithEndpoint("library-example.googleapis.com:1234"),
         option.WithScopes(DefaultAuthScopes()...),
+        option.WithGRPCDialOption(grpc.WithDefaultCallOptions(
+        			grpc.MaxCallRecvMsgSize(-1),
+        			grpc.MaxCallSendMsgSize(-1))),
     }
 }
 
@@ -4419,6 +4422,9 @@ func defaultMyProtoClientOptions() []option.ClientOption {
     return []option.ClientOption{
         option.WithEndpoint("library-example.googleapis.com:1234"),
         option.WithScopes(DefaultAuthScopes()...),
+        option.WithGRPCDialOption(grpc.WithDefaultCallOptions(
+        			grpc.MaxCallRecvMsgSize(-1),
+        			grpc.MaxCallSendMsgSize(-1))),
     }
 }
 

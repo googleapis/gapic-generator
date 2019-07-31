@@ -107,7 +107,13 @@
   @if xsettingsClass.hasDefaultServiceAddress
     /** Returns a builder for the default ChannelProvider for this service. */
     public static {@xsettingsClass.instantiatingChannelProvider}.Builder {@xsettingsClass.defaultTransportProviderBuilder}() {
-      return {@xsettingsClass.instantiatingChannelProvider}.newBuilder();
+      @if xsettingsClass.transportProtocol == "GRPC"
+        return {@xsettingsClass.instantiatingChannelProvider}.newBuilder()
+            .setMaxInboundMessageSize(Integer.MAX_VALUE)
+            .setMaxOutboundMessageSize(Integer.MAX_VALUE);
+      @else
+        return {@xsettingsClass.instantiatingChannelProvider}.newBuilder();
+      @end
     }
 
     public static TransportChannelProvider defaultTransportChannelProvider() {
