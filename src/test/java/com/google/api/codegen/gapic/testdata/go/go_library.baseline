@@ -252,7 +252,7 @@ func defaultClientOptions() []option.ClientOption {
         option.WithEndpoint("library-example.googleapis.com:1234"),
         option.WithScopes(DefaultAuthScopes()...),
         option.WithGRPCDialOption(grpc.WithDefaultCallOptions(
-        			grpc.MaxCallRecvMsgSize(-1))),
+        			grpc.MaxCallRecvMsgSize(math.MaxInt32))),
     }
 }
 
@@ -4404,6 +4404,7 @@ package library
 import (
     pb ""
     "context"
+    "math"
 
     gax "github.com/googleapis/gax-go/v2"
     "google.golang.org/api/option"
@@ -4422,7 +4423,7 @@ func defaultMyProtoClientOptions() []option.ClientOption {
         option.WithEndpoint("library-example.googleapis.com:1234"),
         option.WithScopes(DefaultAuthScopes()...),
         option.WithGRPCDialOption(grpc.WithDefaultCallOptions(
-        			grpc.MaxCallRecvMsgSize(-1))),
+        			grpc.MaxCallRecvMsgSize(math.MaxInt32))),
     }
 }
 
