@@ -24,9 +24,9 @@
 
 using CommandLine;
 
-// [START sample]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START sample]
     using Google.Example.Library.V1;
     using System;
 
@@ -46,11 +46,14 @@ namespace Google.Example.Library.V1.Samples
             // Shelf deleted
             Console.WriteLine("Shelf deleted.");
         }
-        // [END sample]
+    }
 
+    // [END sample]
+
+    public class DeleteShelfRequestEmptyResponseTypeWithResponseHandlingMain {
         public static void Main(string[] args)
         {
-            SampleDeleteShelf();
+            DeleteShelfRequestEmptyResponseTypeWithResponseHandling.SampleDeleteShelf();
         }
     }
 }
@@ -80,9 +83,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START sample]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START sample]
     using Google.Example.Library.V1;
 
     public class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling
@@ -99,11 +102,14 @@ namespace Google.Example.Library.V1.Samples
             };
             libraryServiceClient.DeleteShelf(request);
         }
-        // [END sample]
+    }
 
+    // [END sample]
+
+    public class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandlingMain {
         public static void Main(string[] args)
         {
-            SampleDeleteShelf();
+            DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling.SampleDeleteShelf();
         }
     }
 }
@@ -133,9 +139,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START empty_response_type_with_response_handling]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START empty_response_type_with_response_handling]
     using Google.Example.Library.V1;
     using System;
 
@@ -156,11 +162,14 @@ namespace Google.Example.Library.V1.Samples
             // Got nothing
             Console.WriteLine("Got nothing.");
         }
-        // [END empty_response_type_with_response_handling]
+    }
 
+    // [END empty_response_type_with_response_handling]
+
+    public class EmptyResponseTypeWithResponseHandlingMain {
         public static void Main(string[] args)
         {
-            SampleGetBigNothing();
+            EmptyResponseTypeWithResponseHandling.SampleGetBigNothing();
         }
     }
 }
@@ -190,9 +199,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START empty_response_type_without_response_handling]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START empty_response_type_without_response_handling]
     using Google.Example.Library.V1;
 
     public class EmptyResponseTypeWithoutResponseHandling
@@ -210,11 +219,14 @@ namespace Google.Example.Library.V1.Samples
             // Poll until the returned long-running operation is complete
             libraryServiceClient.GetBigNothing(request).PollUntilCompleted();
         }
-        // [END empty_response_type_without_response_handling]
+    }
 
+    // [END empty_response_type_without_response_handling]
+
+    public class EmptyResponseTypeWithoutResponseHandlingMain {
         public static void Main(string[] args)
         {
-            SampleGetBigNothing();
+            EmptyResponseTypeWithoutResponseHandling.SampleGetBigNothing();
         }
     }
 }
@@ -244,9 +256,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START find_related_books_odyssey]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START find_related_books_odyssey]
     using Google.Api.Gax;
     using Google.Example.Library.V1;
     using System;
@@ -279,11 +291,14 @@ namespace Google.Example.Library.V1.Samples
                 Console.WriteLine($"Here's a related book: {book}");
             }
         }
-        // [END find_related_books_odyssey]
+    }
 
+    // [END find_related_books_odyssey]
+
+    public class FindRelatedBooksOdysseyMain {
         public static void Main(string[] args)
         {
-            SampleFindRelatedBooks();
+            FindRelatedBooksOdyssey.SampleFindRelatedBooks();
         }
     }
 }
@@ -314,9 +329,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START sample]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START sample]
     using Google.Example.Library.V1;
     using System;
 
@@ -340,11 +355,14 @@ namespace Google.Example.Library.V1.Samples
             Console.WriteLine($"Test printing map fields: {response.MapListValueValue["quoted_key"]}");
             Console.WriteLine($"Test printing enum fields of a map value: {response.MapMessageValue["key"].Alignment}");
         }
-        // [END sample]
+    }
 
+    // [END sample]
+
+    public class GetBookRequestTestOnSuccessMapMain {
         public static void Main(string[] args)
         {
-            SampleGetBook();
+            GetBookRequestTestOnSuccessMap.SampleGetBook();
         }
     }
 }
@@ -374,9 +392,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START hopper]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START hopper]
     using Google.Example.Library.V1;
     using Google.Protobuf.WellKnownTypes;
     using System;
@@ -414,13 +432,16 @@ namespace Google.Example.Library.V1.Samples
             Console.WriteLine($"name: {response.Name}");
             Console.WriteLine($"author: {response.Author}");
         }
-        // [END hopper]
+    }
 
+    // [END hopper]
+
+    public class HopperMain {
         public static void Main(string[] args)
         {
             new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
-                    SampleGetBigBook(opts.Shelf));
+                    Hopper.SampleGetBigBook(opts.Shelf));
         }
 
         public class Options
@@ -456,9 +477,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START lovelace]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START lovelace]
     using Google.Example.Library.V1;
     using System;
     using System.Threading.Tasks;
@@ -487,11 +508,14 @@ namespace Google.Example.Library.V1.Samples
             });
             // The response stream has completed
         }
-        // [END lovelace]
+    }
 
+    // [END lovelace]
+
+    public class LovelaceMain {
         public static void Main(string[] args)
         {
-            SampleStreamBooksAsync().Wait();
+            Lovelace.SampleStreamBooksAsync().Wait();
         }
     }
 }
@@ -521,9 +545,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START canonical]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START canonical]
     using Google.Example.Library.V1;
     using System;
     using System.Collections.Generic;
@@ -576,13 +600,16 @@ namespace Google.Example.Library.V1.Samples
             Console.WriteLine("That's all!");
             Console.WriteLine($"series_uuid: {response.SeriesUuid.SeriesBytes}");
         }
-        // [END canonical]
+    }
 
+    // [END canonical]
+
+    public class PublishSeriesRequestPiVersionMain {
         public static void Main(string[] args)
         {
             new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
-                    SamplePublishSeries(opts.ShelfName, opts.Edition));
+                    PublishSeriesRequestPiVersion.SamplePublishSeries(opts.ShelfName, opts.Edition));
         }
 
         public class Options
@@ -621,9 +648,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START canonical]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START canonical]
     using Google.Example.Library.V1;
     using System;
     using System.Collections.Generic;
@@ -646,11 +673,14 @@ namespace Google.Example.Library.V1.Samples
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
             Console.WriteLine(response);
         }
-        // [END canonical]
+    }
 
+    // [END canonical]
+
+    public class PublishSeriesRequestSecondEditionMain {
         public static void Main(string[] args)
         {
-            SamplePublishSeries();
+            PublishSeriesRequestSecondEdition.SamplePublishSeries();
         }
     }
 }
@@ -680,9 +710,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START publish_series_test_request_object_field_comments]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START publish_series_test_request_object_field_comments]
     using Google.Example.Library.V1;
     using Google.Protobuf;
     using System;
@@ -721,11 +751,14 @@ namespace Google.Example.Library.V1.Samples
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
             Console.WriteLine(response);
         }
-        // [END publish_series_test_request_object_field_comments]
+    }
 
+    // [END publish_series_test_request_object_field_comments]
+
+    public class PublishSeriesTestRequestObjectFieldCommentsMain {
         public static void Main(string[] args)
         {
-            SamplePublishSeries();
+            PublishSeriesTestRequestObjectFieldComments.SamplePublishSeries();
         }
     }
 }
@@ -755,9 +788,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START publish_series_test_write_to_file]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START publish_series_test_write_to_file]
     using Google.Example.Library.V1;
     using System.Collections.Generic;
     using System.IO;
@@ -783,11 +816,14 @@ namespace Google.Example.Library.V1.Samples
             // testing writing string field.
             File.WriteAllText("series_uuid_in_plain_text.txt", response.SeriesUuid.SeriesString);
         }
-        // [END publish_series_test_write_to_file]
+    }
 
+    // [END publish_series_test_write_to_file]
+
+    public class PublishSeriesTestWriteToFileMain {
         public static void Main(string[] args)
         {
-            SamplePublishSeries();
+            PublishSeriesTestWriteToFile.SamplePublishSeries();
         }
     }
 }
@@ -817,9 +853,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START sample_get_shelf]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START sample_get_shelf]
     using Google.Example.Library.V1;
     using System;
 
@@ -839,11 +875,14 @@ namespace Google.Example.Library.V1.Samples
             Shelf response = libraryServiceClient.GetShelf(request);
             Console.WriteLine($"The theme of the shelf is: {response.Theme}");
         }
-        // [END sample_get_shelf]
+    }
 
+    // [END sample_get_shelf]
+
+    public class SampleGetShelfMain {
         public static void Main(string[] args)
         {
-            SampleGetShelf();
+            SampleGetShelf.SampleGetShelf();
         }
     }
 }
@@ -873,9 +912,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START test_default_calling_form_for_paging]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START test_default_calling_form_for_paging]
     using Google.Api.Gax;
     using Google.Example.Library.V1;
     using System;
@@ -896,11 +935,14 @@ namespace Google.Example.Library.V1.Samples
                 Console.WriteLine($"shelf name: {item}");
             }
         }
-        // [END test_default_calling_form_for_paging]
+    }
 
+    // [END test_default_calling_form_for_paging]
+
+    public class TestDefaultCallingFormForPagingMain {
         public static void Main(string[] args)
         {
-            SampleListShelves();
+            TestDefaultCallingFormForPaging.SampleListShelves();
         }
     }
 }
@@ -929,9 +971,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START test_float_and_int64]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START test_float_and_int64]
     using Google.Example.Library.V1;
     using Google.Protobuf;
     using System;
@@ -979,13 +1021,16 @@ namespace Google.Example.Library.V1.Samples
             TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.TestOptionalRequiredFlatteningParams(request);
             Console.WriteLine(response);
         }
-        // [END test_float_and_int64]
+    }
 
+    // [END test_float_and_int64]
+
+    public class TestFloatAndInt64Main {
         public static void Main(string[] args)
         {
             new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
-                    SampleTestOptionalRequiredFlatteningParams(opts.ParamFloat, opts.ParamLong));
+                    TestFloatAndInt64.SampleTestOptionalRequiredFlatteningParams(opts.ParamFloat, opts.ParamLong));
         }
 
         public class Options
@@ -1023,9 +1068,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START test_resource_name_oneof]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START test_resource_name_oneof]
     using Google.Example.Library.V1;
     using System;
 
@@ -1041,11 +1086,14 @@ namespace Google.Example.Library.V1.Samples
             BookFromAnywhere response = libraryServiceClient.GetBookFromAbsolutelyAnywhere(request);
             Console.WriteLine("Archived book found.");
         }
-        // [END test_resource_name_oneof]
+    }
 
+    // [END test_resource_name_oneof]
+
+    public class TestResourceNameOneofMain {
         public static void Main(string[] args)
         {
-            SampleGetBookFromAbsolutelyAnywhere();
+            TestResourceNameOneof.SampleGetBookFromAbsolutelyAnywhere();
         }
     }
 }
@@ -1074,9 +1122,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START test_resource_name_oneof_2]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START test_resource_name_oneof_2]
     using Google.Example.Library.V1;
     using System;
 
@@ -1092,11 +1140,14 @@ namespace Google.Example.Library.V1.Samples
             BookFromAnywhere response = libraryServiceClient.GetBookFromAbsolutelyAnywhere(request);
             Console.WriteLine("Book on shelf found.");
         }
-        // [END test_resource_name_oneof_2]
+    }
 
+    // [END test_resource_name_oneof_2]
+
+    public class TestResourceNameOneof2Main {
         public static void Main(string[] args)
         {
-            SampleGetBookFromAbsolutelyAnywhere();
+            TestResourceNameOneof2.SampleGetBookFromAbsolutelyAnywhere();
         }
     }
 }
@@ -1126,9 +1177,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START test_setting_up_empty_objects_in_request]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START test_setting_up_empty_objects_in_request]
     using Google.Example.Library.V1;
     using System;
 
@@ -1150,11 +1201,14 @@ namespace Google.Example.Library.V1.Samples
             Shelf response = libraryServiceClient.GetShelf(request);
             Console.WriteLine("Shelf found.");
         }
-        // [END test_setting_up_empty_objects_in_request]
+    }
 
+    // [END test_setting_up_empty_objects_in_request]
+
+    public class TestSettingUpEmptyObjectsInRequestMain {
         public static void Main(string[] args)
         {
-            SampleGetShelf();
+            TestSettingUpEmptyObjectsInRequest.SampleGetShelf();
         }
     }
 }
@@ -1184,9 +1238,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START this_tag_should_be_the_name_of_the_file]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START this_tag_should_be_the_name_of_the_file]
     using Google.Example.Library.V1;
     using System;
 
@@ -1211,13 +1265,16 @@ namespace Google.Example.Library.V1.Samples
             Book response = libraryServiceClient.GetBigBook(request).PollUntilCompleted().Result;
             Console.WriteLine(response);
         }
-        // [END this_tag_should_be_the_name_of_the_file]
+    }
 
+    // [END this_tag_should_be_the_name_of_the_file]
+
+    public class ThisTagShouldBeTheNameOfTheFileMain {
         public static void Main(string[] args)
         {
             new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
-                    SampleGetBigBook(opts.Shelf, opts.BigBookName));
+                    ThisTagShouldBeTheNameOfTheFile.SampleGetBigBook(opts.Shelf, opts.BigBookName));
         }
 
         public class Options
@@ -1256,9 +1313,9 @@ namespace Google.Example.Library.V1.Samples
 
 using CommandLine;
 
-// [START turing]
 namespace Google.Example.Library.V1.Samples
 {
+    // [START turing]
     using Google.Example.Library.V1;
     using Google.Protobuf;
     using System;
@@ -1322,13 +1379,16 @@ namespace Google.Example.Library.V1.Samples
             // This will complete once all server responses have been processed.
             await responseHandlerTask;
         }
-        // [END turing]
+    }
 
+    // [END turing]
+
+    public class TuringMain {
         public static void Main(string[] args)
         {
             new Parser(with => with.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .WithParsed<Options>(opts =>
-                    SampleDiscussBookAsync(opts.ImageFileName, opts.Stage).Wait());
+                    Turing.SampleDiscussBookAsync(opts.ImageFileName, opts.Stage).Wait());
         }
 
         public class Options
