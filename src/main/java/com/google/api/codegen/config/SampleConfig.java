@@ -47,7 +47,7 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class SampleConfig {
 
-  private static final String DEFAULT_CALLING_PATTERN = "default";
+  public static final String DEFAULT_CALLING_PATTERN = "default";
 
   @Nullable
   public abstract String id();
@@ -178,7 +178,8 @@ public abstract class SampleConfig {
             spec.toBuilder().addCallingPatterns(DEFAULT_CALLING_PATTERN).build());
       }
       for (String pattern : spec.getCallingPatternsList()) {
-        flattenedSampleSpecs.add(spec.toBuilder().addCallingPatterns(pattern).build());
+        flattenedSampleSpecs.add(
+            spec.toBuilder().clearCallingPatterns().addCallingPatterns(pattern).build());
       }
     }
 
