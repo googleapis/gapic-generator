@@ -176,6 +176,10 @@ public class GapicGeneratorFactory {
         GapicCodePathMapper samplePathMapper = newCodePathMapper.apply(".Samples");
         generators.add(
             newCsharpGenerator.apply(new CSharpStandaloneSampleTransformer(samplePathMapper)));
+        if (artifactFlags.packagingFilesEnabled()) {
+          generators.add(
+              newCsharpGenerator.apply(CSharpBasicPackageTransformer.forSamples(samplePathMapper)));
+        }
       }
 
     } else if (language.equals(GO)) {
