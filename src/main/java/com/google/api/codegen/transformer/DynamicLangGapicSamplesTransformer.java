@@ -143,9 +143,9 @@ public abstract class DynamicLangGapicSamplesTransformer
       SurfaceNamer namer,
       ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable) {
 
-    // Loop through sample configs and save sample ids with all matching calling forms
-    // in a map. We need this information when we need to create unique sample ids when
-    // one sample id has multiple matching calling forms
+    // Loop through sample configs and and map each sample id to its matching calling forms.
+    // We need this information when we need to create, in a language-specific way, unique
+    // sample ids when one sample id has multiple matching calling forms
     Map<String, List<CallingForm>> configsAndMatchingForms = new HashMap<>();
     for (InterfaceContext interfaceContext : interfaceContexts) {
       for (MethodModel method : interfaceContext.getSupportedMethods()) {

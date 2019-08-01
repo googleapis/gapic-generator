@@ -99,7 +99,7 @@ public class SampleFileRegistry {
     while (userProvidedIdCount.containsKey(calculatedId)) {
       int suffix = firstNonNull(usedSuffixes.get(calculatedBaseId), 0) + 1;
       usedSuffixes.put(calculatedId, suffix);
-      calculatedId = calculatedBaseId + suffix;
+      calculatedId = calculatedBaseId + '_' + suffix;
     }
     return calculatedId;
   }
