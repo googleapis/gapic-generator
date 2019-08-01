@@ -4269,6 +4269,10 @@ class LibraryServiceGrpcTransport(object):
             channel = self.create_channel(
                 address=address,
                 credentials=credentials,
+                options={
+                    'grpc.max_send_message_length': -1,
+                    'grpc.max_receive_message_length': -1,
+                },
             )
 
         self._channel = channel
@@ -4769,6 +4773,10 @@ class MyProtoGrpcTransport(object):
             channel = self.create_channel(
                 address=address,
                 credentials=credentials,
+                options={
+                    'grpc.max_send_message_length': -1,
+                    'grpc.max_receive_message_length': -1,
+                },
             )
 
         self._channel = channel
