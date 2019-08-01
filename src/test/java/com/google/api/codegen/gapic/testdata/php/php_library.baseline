@@ -1528,7 +1528,7 @@ function samplePublishSeries()
     $seriesUuid = new SeriesUuid();
 
     try {
-        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
         // testing writing bytes field.
         file_put_contents(sprintf('uuid_of_series_with_book_%s.raw', $response->getBookNames()[0]), $response->getSeriesUuid()->getSeriesBytes());
         // testing writing string field.
@@ -1926,7 +1926,7 @@ function sampleGetShelf()
     $stringBuilder = new StringBuilder();
 
     try {
-        $response = $libraryServiceClient->getShelf($formattedName, $options);
+        $response = $libraryServiceClient->getShelf($formattedName, $options, ['message' => $message, 'stringBuilder' => $stringBuilder]);
         printf("Shelf found." . PHP_EOL);
     } finally {
         $libraryServiceClient->close();

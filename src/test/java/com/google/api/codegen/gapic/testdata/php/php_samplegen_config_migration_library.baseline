@@ -20,7 +20,7 @@
     "phpunit/phpunit": "^4.8|^5.0"
   }
 }
-============== file: samples/V1/BabbleAboutBookRequestStreamingClientAsyncEmptyResponseTypeWithResponseHandling.php ==============
+============== file: samples/V1/BabbleAboutBook1RequestStreamingClient.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -39,13 +39,67 @@
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingClientAsync",  "empty_response_type_with_response_handling")
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "babble_about_book_1_request_streaming_client")
  */
 
 // sample-metadata
 //   title: Test response handling for methods that return empty
 //   description: Test response handling for methods that return empty
-//   usage: php samples/V1/BabbleAboutBookRequestStreamingClientAsyncEmptyResponseTypeWithResponseHandling.php
+//   usage: php samples/V1/BabbleAboutBook1RequestStreamingClient.php
+// [START babble_about_book_1]
+require __DIR__ . '/../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\DiscussBookRequest;
+
+/** Test response handling for methods that return empty */
+function sampleBabbleAboutBook()
+{
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $request = new DiscussBookRequest();
+
+    try {
+        // Write data to server and wait for a response
+        $requests = [$request];
+        $stream = $libraryServiceClient->babbleAboutBook();
+        $response = $stream->writeAllAndReadResponse($requests);
+        // No one replied
+        printf("No one replied." . PHP_EOL);
+    } finally {
+        $libraryServiceClient->close();
+    }
+}
+// [END babble_about_book_1]
+
+sampleBabbleAboutBook();
+
+============== file: samples/V1/BabbleAboutBook1RequestStreamingClientAsync.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClientAsync",  "babble_about_book_1_request_streaming_client_async")
+ */
+
+// sample-metadata
+//   title: Test response handling for methods that return empty
+//   description: Test response handling for methods that return empty
+//   usage: php samples/V1/BabbleAboutBook1RequestStreamingClientAsync.php
 // [START babble_about_book_1]
 require __DIR__ . '/../../vendor/autoload.php';
 
@@ -77,7 +131,7 @@ function sampleBabbleAboutBook()
 
 sampleBabbleAboutBook();
 
-============== file: samples/V1/BabbleAboutBookRequestStreamingClientAsyncEmptyResponseTypeWithoutResponseHandling.php ==============
+============== file: samples/V1/BabbleAboutBook2RequestStreamingClient.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -96,13 +150,13 @@ sampleBabbleAboutBook();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingClientAsync",  "empty_response_type_without_response_handling")
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "babble_about_book_2_request_streaming_client")
  */
 
 // sample-metadata
 //   title: Test default response handling is turned off for methods that return empty
 //   description: Test default response handling is turned off for methods that return empty
-//   usage: php samples/V1/BabbleAboutBookRequestStreamingClientAsyncEmptyResponseTypeWithoutResponseHandling.php
+//   usage: php samples/V1/BabbleAboutBook2RequestStreamingClient.php
 // [START babble_about_book_2]
 require __DIR__ . '/../../vendor/autoload.php';
 
@@ -117,13 +171,10 @@ function sampleBabbleAboutBook()
     $request = new DiscussBookRequest();
 
     try {
-        // Write data as it becomes available, then wait for a response
+        // Write data to server and wait for a response
         $requests = [$request];
         $stream = $libraryServiceClient->babbleAboutBook();
-        foreach ($requests as $request) {
-            $stream->write($request);
-        }
-        $response = $stream->readResponse();
+        $response = $stream->writeAllAndReadResponse($requests);
     } finally {
         $libraryServiceClient->close();
     }
@@ -132,7 +183,7 @@ function sampleBabbleAboutBook()
 
 sampleBabbleAboutBook();
 
-============== file: samples/V1/BabbleAboutBookRequestStreamingClientEmptyResponseTypeWithResponseHandling.php ==============
+============== file: samples/V1/BabbleAboutBook2RequestStreamingClientAsync.php ==============
 <?php
 /*
  * Copyright 2019 Google LLC
@@ -151,67 +202,13 @@ sampleBabbleAboutBook();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_with_response_handling")
- */
-
-// sample-metadata
-//   title: Test response handling for methods that return empty
-//   description: Test response handling for methods that return empty
-//   usage: php samples/V1/BabbleAboutBookRequestStreamingClientEmptyResponseTypeWithResponseHandling.php
-// [START babble_about_book_1]
-require __DIR__ . '/../../vendor/autoload.php';
-
-use Google\Cloud\Example\Library\V1\LibraryServiceClient;
-use Google\Example\Library\V1\DiscussBookRequest;
-
-/** Test response handling for methods that return empty */
-function sampleBabbleAboutBook()
-{
-    $libraryServiceClient = new LibraryServiceClient();
-
-    $request = new DiscussBookRequest();
-
-    try {
-        // Write data to server and wait for a response
-        $requests = [$request];
-        $stream = $libraryServiceClient->babbleAboutBook();
-        $response = $stream->writeAllAndReadResponse($requests);
-        // No one replied
-        printf("No one replied." . PHP_EOL);
-    } finally {
-        $libraryServiceClient->close();
-    }
-}
-// [END babble_about_book_1]
-
-sampleBabbleAboutBook();
-
-============== file: samples/V1/BabbleAboutBookRequestStreamingClientEmptyResponseTypeWithoutResponseHandling.php ==============
-<?php
-/*
- * Copyright 2019 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClientAsync",  "babble_about_book_2_request_streaming_client_async")
  */
 
 // sample-metadata
 //   title: Test default response handling is turned off for methods that return empty
 //   description: Test default response handling is turned off for methods that return empty
-//   usage: php samples/V1/BabbleAboutBookRequestStreamingClientEmptyResponseTypeWithoutResponseHandling.php
+//   usage: php samples/V1/BabbleAboutBook2RequestStreamingClientAsync.php
 // [START babble_about_book_2]
 require __DIR__ . '/../../vendor/autoload.php';
 
@@ -226,10 +223,13 @@ function sampleBabbleAboutBook()
     $request = new DiscussBookRequest();
 
     try {
-        // Write data to server and wait for a response
+        // Write data as it becomes available, then wait for a response
         $requests = [$request];
         $stream = $libraryServiceClient->babbleAboutBook();
-        $response = $stream->writeAllAndReadResponse($requests);
+        foreach ($requests as $request) {
+            $stream->write($request);
+        }
+        $response = $stream->readResponse();
     } finally {
         $libraryServiceClient->close();
     }
@@ -257,7 +257,7 @@ sampleBabbleAboutBook();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
+ * DO NOT EDIT! This is a generated sample ("Request",  "delete_shelf_request_empty_response_type_with_response_handling")
  */
 
 // sample-metadata
@@ -307,7 +307,7 @@ sampleDeleteShelf();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
+ * DO NOT EDIT! This is a generated sample ("Request",  "delete_shelf_request_empty_response_type_without_response_handling")
  */
 
 // sample-metadata
@@ -466,7 +466,7 @@ sampleGetBigNothing();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
+ * DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "find_related_books_odyssey")
  */
 
 // sample-metadata
@@ -522,7 +522,7 @@ sampleFindRelatedBooks();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
+ * DO NOT EDIT! This is a generated sample ("Request",  "get_book_request_test_on_success_map")
  */
 
 // sample-metadata
@@ -576,7 +576,7 @@ sampleGetBook();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("LongRunningRequest",  "wap")
+ * DO NOT EDIT! This is a generated sample ("LongRunningRequest",  "hopper")
  */
 
 // sample-metadata
@@ -662,7 +662,7 @@ sampleGetBigBook($shelf);
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "lovelace")
  */
 
 // sample-metadata
@@ -695,121 +695,6 @@ function sampleStreamBooks()
 
 sampleStreamBooks();
 
-============== file: samples/V1/MonologAboutBookRequestStreamingClientAsyncProg.php ==============
-<?php
-/*
- * Copyright 2019 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingClientAsync",  "prog")
- */
-
-// sample-metadata
-//   title: Programming Books
-//   description: Testing calling forms
-//   usage: php samples/V1/MonologAboutBookRequestStreamingClientAsyncProg.php
-// [START sample_monolog_about_book]
-require __DIR__ . '/../../vendor/autoload.php';
-
-use Google\Cloud\Example\Library\V1\LibraryServiceClient;
-use Google\Example\Library\V1\Comment\Stage;
-use Google\Example\Library\V1\DiscussBookRequest;
-
-/** Testing calling forms */
-function sampleMonologAboutBook()
-{
-    $libraryServiceClient = new LibraryServiceClient();
-
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
-    $request = new DiscussBookRequest();
-    $request->setName($formattedName);
-
-    try {
-        // Write data as it becomes available, then wait for a response
-        $requests = [$request];
-        $stream = $libraryServiceClient->monologAboutBook();
-        foreach ($requests as $request) {
-            $stream->write($request);
-        }
-        $response = $stream->readResponse();
-        printf("The stage of the comment is: %s" . PHP_EOL, Stage::name($response->getStage()));
-    } finally {
-        $libraryServiceClient->close();
-    }
-}
-// [END sample_monolog_about_book]
-
-sampleMonologAboutBook();
-
-============== file: samples/V1/MonologAboutBookRequestStreamingClientProg.php ==============
-<?php
-/*
- * Copyright 2019 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
- */
-
-// sample-metadata
-//   title: Programming Books
-//   description: Testing calling forms
-//   usage: php samples/V1/MonologAboutBookRequestStreamingClientProg.php
-// [START sample_monolog_about_book]
-require __DIR__ . '/../../vendor/autoload.php';
-
-use Google\Cloud\Example\Library\V1\LibraryServiceClient;
-use Google\Example\Library\V1\Comment\Stage;
-use Google\Example\Library\V1\DiscussBookRequest;
-
-/** Testing calling forms */
-function sampleMonologAboutBook()
-{
-    $libraryServiceClient = new LibraryServiceClient();
-
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
-    $request = new DiscussBookRequest();
-    $request->setName($formattedName);
-
-    try {
-        // Write data to server and wait for a response
-        $requests = [$request];
-        $stream = $libraryServiceClient->monologAboutBook();
-        $response = $stream->writeAllAndReadResponse($requests);
-        printf("The stage of the comment is: %s" . PHP_EOL, Stage::name($response->getStage()));
-    } finally {
-        $libraryServiceClient->close();
-    }
-}
-// [END sample_monolog_about_book]
-
-sampleMonologAboutBook();
-
 ============== file: samples/V1/PublishSeriesRequestPiVersion.php ==============
 <?php
 /*
@@ -829,7 +714,7 @@ sampleMonologAboutBook();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
+ * DO NOT EDIT! This is a generated sample ("Request",  "publish_series_request_pi_version")
  */
 
 // sample-metadata
@@ -928,7 +813,7 @@ samplePublishSeries($shelfName, $edition);
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
+ * DO NOT EDIT! This is a generated sample ("Request",  "publish_series_request_second_edition")
  */
 
 // sample-metadata
@@ -983,7 +868,7 @@ samplePublishSeries();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
+ * DO NOT EDIT! This is a generated sample ("Request",  "publish_series_test_request_object_field_comments")
  */
 
 // sample-metadata
@@ -1061,7 +946,7 @@ samplePublishSeries();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("Request",  "test_write_to_file")
+ * DO NOT EDIT! This is a generated sample ("Request",  "publish_series_test_write_to_file")
  */
 
 // sample-metadata
@@ -1086,7 +971,7 @@ function samplePublishSeries()
     $seriesUuid = new SeriesUuid();
 
     try {
-        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid, ['edition' => $edition]);
+        $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
         // testing writing bytes field.
         file_put_contents(sprintf('uuid_of_series_with_book_%s.raw', $response->getBookNames()[0]), $response->getSeriesUuid()->getSeriesBytes());
         // testing writing string field.
@@ -1118,7 +1003,7 @@ samplePublishSeries();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
+ * DO NOT EDIT! This is a generated sample ("Request",  "sample_get_shelf")
  */
 
 // sample-metadata
@@ -1149,6 +1034,121 @@ function sampleGetShelf()
 
 sampleGetShelf();
 
+============== file: samples/V1/SampleMonologAboutBookRequestStreamingClient.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "sample_monolog_about_book_request_streaming_client")
+ */
+
+// sample-metadata
+//   title: Programming Books
+//   description: Testing calling forms
+//   usage: php samples/V1/SampleMonologAboutBookRequestStreamingClient.php
+// [START sample_monolog_about_book]
+require __DIR__ . '/../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\Comment\Stage;
+use Google\Example\Library\V1\DiscussBookRequest;
+
+/** Testing calling forms */
+function sampleMonologAboutBook()
+{
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $request = new DiscussBookRequest();
+    $request->setName($formattedName);
+
+    try {
+        // Write data to server and wait for a response
+        $requests = [$request];
+        $stream = $libraryServiceClient->monologAboutBook();
+        $response = $stream->writeAllAndReadResponse($requests);
+        printf("The stage of the comment is: %s" . PHP_EOL, Stage::name($response->getStage()));
+    } finally {
+        $libraryServiceClient->close();
+    }
+}
+// [END sample_monolog_about_book]
+
+sampleMonologAboutBook();
+
+============== file: samples/V1/SampleMonologAboutBookRequestStreamingClientAsync.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingClientAsync",  "sample_monolog_about_book_request_streaming_client_async")
+ */
+
+// sample-metadata
+//   title: Programming Books
+//   description: Testing calling forms
+//   usage: php samples/V1/SampleMonologAboutBookRequestStreamingClientAsync.php
+// [START sample_monolog_about_book]
+require __DIR__ . '/../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\Comment\Stage;
+use Google\Example\Library\V1\DiscussBookRequest;
+
+/** Testing calling forms */
+function sampleMonologAboutBook()
+{
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $request = new DiscussBookRequest();
+    $request->setName($formattedName);
+
+    try {
+        // Write data as it becomes available, then wait for a response
+        $requests = [$request];
+        $stream = $libraryServiceClient->monologAboutBook();
+        foreach ($requests as $request) {
+            $stream->write($request);
+        }
+        $response = $stream->readResponse();
+        printf("The stage of the comment is: %s" . PHP_EOL, Stage::name($response->getStage()));
+    } finally {
+        $libraryServiceClient->close();
+    }
+}
+// [END sample_monolog_about_book]
+
+sampleMonologAboutBook();
+
 ============== file: samples/V1/TestDefaultCallingFormForPaging.php ==============
 <?php
 /*
@@ -1168,7 +1168,7 @@ sampleGetShelf();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_paging")
+ * DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_for_paging")
  */
 
 // sample-metadata
@@ -1432,7 +1432,7 @@ function sampleGetShelf()
     $stringBuilder = new StringBuilder();
 
     try {
-        $response = $libraryServiceClient->getShelf($formattedName, $options);
+        $response = $libraryServiceClient->getShelf($formattedName, $options, ['message' => $message, 'stringBuilder' => $stringBuilder]);
         printf("Shelf found." . PHP_EOL);
     } finally {
         $libraryServiceClient->close();
@@ -1461,7 +1461,7 @@ sampleGetShelf();
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("LongRunningRequest",  "wap2")
+ * DO NOT EDIT! This is a generated sample ("LongRunningRequest",  "this_tag_should_be_the_name_of_the_file")
  */
 
 // sample-metadata
@@ -1541,7 +1541,7 @@ sampleGetBigBook($shelf, $bigBookName);
  */
 
 /*
- * DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+ * DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "turing")
  */
 
 // sample-metadata
