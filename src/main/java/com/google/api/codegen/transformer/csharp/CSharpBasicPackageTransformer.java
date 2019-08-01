@@ -41,7 +41,8 @@ public class CSharpBasicPackageTransformer implements ModelToViewTransformer<Pro
       "csharp/gapic_snippets_csproj.snip";
   private static final String UNITTEST_CSPROJ_TEMPLATE_FILENAME =
       "csharp/gapic_unittest_csproj.snip";
-  private static final String SAMPLE_CSPROJ_TEMPLATE_FILENAME = "csharp/gapic_samples_csproj.snip";
+  private static final String SAMPLE_CSPROJ_TEMPLATE_FILENAME =
+      "csharp/gapic_samples_csproj.snip";
 
   private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
 
