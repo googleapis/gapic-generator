@@ -145,9 +145,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     return xapiClass.build();
   }
 
-  private DynamicLangXApiView.Builder prepareApiClassBuilder, GapicInterfaceContext context) {
+  private DynamicLangXApiView.Builder prepareApiClassBuilder(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    List<OptionalArrayMethodView> methods = methodGenerator.generateApiMethods(context);
+    List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 
