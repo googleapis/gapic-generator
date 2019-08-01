@@ -21,6 +21,8 @@
         return []option.ClientOption{
             option.WithEndpoint("{@view.serviceHostname}:{@view.servicePort}"),
             option.WithScopes(DefaultAuthScopes()...),
+            option.WithGRPCDialOption(grpc.WithDefaultCallOptions(
+            			grpc.MaxCallRecvMsgSize(math.MaxInt32))),
         }
     }
 

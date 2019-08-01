@@ -3778,6 +3778,10 @@ class LibraryServiceGrpcTransport(object):
             channel = self.create_channel(
                 address=address,
                 credentials=credentials,
+                options={
+                    'grpc.max_send_message_length': -1,
+                    'grpc.max_receive_message_length': -1,
+                },
             )
 
         self._channel = channel
@@ -4273,6 +4277,10 @@ class MyProtoGrpcTransport(object):
             channel = self.create_channel(
                 address=address,
                 credentials=credentials,
+                options={
+                    'grpc.max_send_message_length': -1,
+                    'grpc.max_receive_message_length': -1,
+                },
             )
 
         self._channel = channel
@@ -4662,7 +4670,7 @@ intersphinx_mapping = {
     'google-gax': ('https://gax-python.readthedocs.io/en/latest/', None),
     'google.api_core': ('https://googleapis.github.io/google-cloud-python/latest', None),
     'grpc': ('https://grpc.io/grpc/python/', None),
-    'requests': ('http://docs.python-requests.org/en/master/', None),
+    'requests': ('https://2.python-requests.org/en/master/', None),
     'fastavro': ('https://fastavro.readthedocs.io/en/stable/', None),
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
 }

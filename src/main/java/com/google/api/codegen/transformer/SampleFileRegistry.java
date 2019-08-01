@@ -14,13 +14,14 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
+
 import com.google.api.codegen.config.SampleConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,37 +55,53 @@ public class SampleFileRegistry {
     }
   }
 
-  public SampleFileRegistry(SurfaceNamer namer, Collection<SampleConfig> sampleConfigs) {
+  public SampleFileRegistry(
+      SurfaceNamer namer, Map<String, List<CallingForm>> configAndMatchingForms) {
     this.namer = namer;
-    for (SampleConfig config : sampleConfigs) {
-      userProvidedIdCount.put(config.id(), userProvidedIdCount.getOrDefault(config.id(), 0) + 1);
+    for (Map.Entry<String, List<CallingForm>> entry : configAndMatchingForms.entrySet()) {
+      userProvidedIdCount.put(entry.getKey(), entry.getValue().size());
     }
   }
 
   public String getUniqueSampleId(SampleConfig config, CallingForm callingForm) {
     String userProvidedId = config.id();
-    if (userProvidedId.equals("")) {
-      userProvidedId =
+    String calculatedBaseId;
+    if (!userProvidedId.equals("")) {
+      Integer count = userProvidedIdCount.get(userProvidedId);
+      Preconditions.checkState(
+          count != null && count > 0,
+          "sample not registered. Id: %s, calling_form: %s",
+          userProvidedId,
+          callingForm);
+
+      // There is only one valid calling form for this sample config,
+      // and the user provided id becomes the final unique id
+      if (count == 1) {
+        return userProvidedId;
+      }
+
+      // The user-provided sample id contains multiple calling forms
+      // We use `{id}_{calling_form}` as the new base id
+      calculatedBaseId =
+          Name.anyLower(userProvidedId, callingForm.toLowerUnderscore()).toLowerUnderscore();
+    } else {
+
+      // User did not provide a sample id. Use `sample_{method_name}`
+      // as a base id.
+      calculatedBaseId =
           "sample_"
               + Name.upperCamel(config.methodConfig().getMethodModel().getSimpleName())
                   .toLowerUnderscore();
     }
-    Integer count = userProvidedIdCount.get(userProvidedId);
-    Preconditions.checkState(count != null && count > 0, "Sample not registered.");
 
-    if (count == 1) {
-      return userProvidedId;
+    // Find a unique id based on base id and save the unique id.
+    String calculatedId = calculatedBaseId;
+    while (userProvidedIdCount.containsKey(calculatedId)) {
+      int suffix = firstNonNull(usedSuffixes.get(calculatedBaseId), 0) + 1;
+      usedSuffixes.put(calculatedId, suffix);
+      calculatedId = calculatedBaseId + '_' + suffix;
     }
-
-    String idWithCallingPattern = userProvidedId + "_" + callingForm.toLowerUnderscore();
-    if (!userProvidedIdCount.containsKey(idWithCallingPattern)) {
-      userProvidedIdCount.put(idWithCallingPattern, 1);
-      return idWithCallingPattern;
-    }
-
-    int suffix = usedSuffixes.getOrDefault(idWithCallingPattern, 0) + 1;
-    usedSuffixes.put(idWithCallingPattern, suffix);
-    return idWithCallingPattern + suffix;
+    return calculatedId;
   }
 
   // TODO(hzyi): remove this method after migrating to sample config.
@@ -112,6 +129,10 @@ public class SampleFileRegistry {
     if (userProvidedIdCount.get(regionTag) == 1) {
       fileName = namer.getApiSampleFileName(regionTag);
     } else {
+      // method names can be in snake_case, camelCase or ParscalCase depending on the language
+      Name methodName =
+          Character.isUpperCase(method.charAt(0)) ? Name.anyCamel(method) : Name.anyLower(method);
+      method = methodName.toLowerUnderscore();
       fileName = namer.getApiSampleFileName(method, callingForm, id);
     }
     addFile(fileName, method, callingForm, id, regionTag);

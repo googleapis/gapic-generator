@@ -153,15 +153,25 @@ public enum CallingForm {
               .put(PHP, RpcType.UNARY, ImmutableList.of(Request))
               .put(PHP, RpcType.LRO, ImmutableList.of(LongRunningRequest, LongRunningRequestAsync))
               .put(PHP, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
-              .put(PHP, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
+              .put(
+                  PHP,
+                  RpcType.CLIENT_STREAMING,
+                  ImmutableList.of(RequestStreamingClient, RequestStreamingClientAsync))
               .put(PHP, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
-              .put(PHP, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
+              .put(
+                  PHP,
+                  RpcType.BIDI_STREAMING,
+                  ImmutableList.of(RequestStreamingBidi, RequestStreamingBidiAsync))
               .put(NODEJS, RpcType.UNARY, ImmutableList.of(Request))
               .put(
                   NODEJS,
                   RpcType.LRO,
-                  ImmutableList.of(LongRunningEventEmitter, LongRunningPromise))
-              .put(NODEJS, RpcType.PAGED_STREAMING, ImmutableList.of(RequestPaged, RequestPagedAll))
+                  ImmutableList.of(
+                      LongRunningPromise, LongRunningEventEmitter, LongRunningPromiseAwait))
+              .put(
+                  NODEJS,
+                  RpcType.PAGED_STREAMING,
+                  ImmutableList.of(RequestAsyncPagedAll, RequestAsyncPaged))
               .put(NODEJS, RpcType.CLIENT_STREAMING, ImmutableList.of(RequestStreamingClient))
               .put(NODEJS, RpcType.SERVER_STREAMING, ImmutableList.of(RequestStreamingServer))
               .put(NODEJS, RpcType.BIDI_STREAMING, ImmutableList.of(RequestStreamingBidi))
