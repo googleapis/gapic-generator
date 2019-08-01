@@ -166,14 +166,8 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
 
   private OptionalArrayMethodView createExampleApiMethodView(
       GapicMethodContext context, boolean packageHasMultipleServices) {
-    OptionalArrayMethodView apiMethodView =
-        new NodeJSMethodViewGenerator(
-                new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer()))
-            .generateOneApiMethod(
-                context,
-                testCaseTransformer.createSmokeTestInitContext(context),
-                packageHasMultipleServices);
-    return apiMethodView;
+    return new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer())
+        .generateApiMethod(context, testCaseTransformer.createSmokeTestInitContext(context));
   }
 
   private List<ViewModel> generateMetadataViews(

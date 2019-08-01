@@ -89,8 +89,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
               .build());
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
-  private final PhpMethodViewGenerator methodGenerator =
-      new PhpMethodViewGenerator(apiMethodTransformer);
   private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   private static final String API_TEMPLATE_FILENAME = "php/partial_veneer_client.snip";
@@ -158,7 +156,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
 
     addApiImports(context);
 
-    List<OptionalArrayMethodView> methods = methodGenerator.generateApiMethods(context);
+    List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
 
     DynamicLangXApiView.Builder apiImplClass = DynamicLangXApiView.newBuilder();
 
