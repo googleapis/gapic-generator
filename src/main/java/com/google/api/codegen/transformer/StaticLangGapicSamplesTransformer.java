@@ -28,6 +28,7 @@ import com.google.api.codegen.config.SampleContext;
 import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.viewmodel.CallingForm;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangFileView;
@@ -190,14 +191,15 @@ public abstract class StaticLangGapicSamplesTransformer
               configsAndMatchingForms.get(sampleConfig.id());
           for (CallingForm form : allMatchingCallingForms) {
             InitCodeOutputType initCodeOutputType =
-                methodContext.getMethodModel().getRequestStreaming()
-                    ? InitCodeOutputType.SingleObject
-                    : InitCodeOutputType.FieldList;
+                CallingForm.isFlattened(form)
+                    ? InitCodeOutputType.FieldList
+                    : InitCodeOutputType.SingleObject;
             SampleContext sampleContext =
                 SampleContext.newBuilder()
                     .uniqueSampleId(registry.getUniqueSampleId(sampleConfig, form))
                     .sampleType(SampleSpec.SampleType.STANDALONE)
                     .callingForm(form)
+                    .clientMethodType(fromCallingForm(form))
                     .sampleConfig(sampleConfig)
                     .initCodeOutputType(initCodeOutputType)
                     .build();
@@ -270,4 +272,6 @@ public abstract class StaticLangGapicSamplesTransformer
             .stream()
             .anyMatch(t -> t.toLowerUnderscore().matches(userProvidedCallingPattern));
   }
+
+  protected abstract ClientMethodType fromCallingForm(CallingForm callingForm);
 }

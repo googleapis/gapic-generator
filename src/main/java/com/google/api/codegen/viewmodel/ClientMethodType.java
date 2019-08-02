@@ -23,9 +23,9 @@ public enum ClientMethodType {
   UnpagedListCallableMethod,
   FlattenedMethod,
   RequestObjectMethod,
-  AsyncRequestObjectMethod,
+  AsyncRequestObjectMethod, // not used in java???
   CallableMethod,
-  OperationRequestObjectMethod,
+  OperationRequestObjectMethod, // not used in java???
   AsyncOperationFlattenedMethod,
   AsyncOperationRequestObjectMethod,
   OperationCallableMethod,

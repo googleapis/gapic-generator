@@ -23,14 +23,35 @@ import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.StaticLangGapicSamplesTransformer;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.CallingForm;
+import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.common.collect.ImmutableMap;
 
 /** A transformer that generates C# standalone samples. */
 public class JavaGapicSamplesTransformer extends StaticLangGapicSamplesTransformer {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "java/standalone_sample.snip";
 
+  private static final ImmutableMap<CallingForm, ClientMethodType> CALLING_FORMS_CLIENT_METHOD_MAP =
+      ImmutableMap.<CallingForm, ClientMethodType>builder()
+          .put(CallingForm.Request, ClientMethodType.RequestObjectMethod)
+          .put(CallingForm.RequestPaged, ClientMethodType.PagedRequestObjectMethod)
+          .put(CallingForm.Flattened, ClientMethodType.FlattenedMethod)
+          .put(CallingForm.FlattenedPaged, ClientMethodType.PagedFlattenedMethod)
+          .put(CallingForm.Callable, ClientMethodType.CallableMethod)
+          .put(CallingForm.CallableList, ClientMethodType.UnpagedListCallableMethod)
+          .put(CallingForm.CallablePaged, ClientMethodType.PagedCallableMethod)
+          .put(CallingForm.CallableStreamingBidi, ClientMethodType.CallableMethod)
+          .put(CallingForm.CallableStreamingClient, ClientMethodType.CallableMethod)
+          .put(CallingForm.CallableStreamingServer, ClientMethodType.CallableMethod)
+          .put(CallingForm.LongRunningCallable, ClientMethodType.OperationCallableMethod)
+          .put(
+              CallingForm.LongRunningRequestAsync,
+              ClientMethodType.AsyncOperationRequestObjectMethod)
+          .build();
+
   private static final StaticLangApiMethodTransformer apiMethodTransformer =
-      new StaticLangApiMethodTransformer(
+      new JavaApiMethodTransformer(
           SampleTransformer.newBuilder()
               .sampleType(SampleSpec.SampleType.STANDALONE)
               .sampleImportTransformer(new JavaSampleImportTransformer())
@@ -50,5 +71,10 @@ public class JavaGapicSamplesTransformer extends StaticLangGapicSamplesTransform
             new ModelTypeTable(
                 new JavaTypeTable(JavaSurfaceNamer.getExamplePackageName(p)),
                 new JavaModelTypeNameConverter(JavaSurfaceNamer.getExamplePackageName(p))));
+  }
+
+  @Override
+  protected ClientMethodType fromCallingForm(CallingForm callingForm) {
+    return CALLING_FORMS_CLIENT_METHOD_MAP.get(callingForm);
   }
 }

@@ -28,13 +28,13 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.gapic.ServiceMessages;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
-import com.google.api.codegen.transformer.java.JavaMethodViewGenerator;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ListMethodDetailView;
+import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.PathTemplateCheckView;
 import com.google.api.codegen.viewmodel.RequestObjectMethodDetailView;
@@ -71,12 +71,16 @@ public class StaticLangApiMethodTransformer {
     this(SampleTransformer.create(SampleType.IN_CODE));
   }
 
-  // TODO: Currently overriden in CSharpApiMethodTransformer. Inspect whether the same logic applies
-  // to Java as well. This is tooooo hacky. Just trying things out.
+  // Overridden in Java and C#.
   /** Generates method views for all methods in an interface. */
   public List<StaticLangApiMethodView> generateApiMethods(InterfaceContext interfaceContext) {
-    return new JavaMethodViewGenerator(this.sampleTransformer.sampleType())
-        .generateApiMethods(interfaceContext);
+    return Collections.emptyList();
+  }
+
+  // Overridden in Java, to be done in C#.
+  public List<StaticLangApiMethodView> generateApiMethods(
+      MethodContext methodContext, SampleContext sampleContext) {
+    return null;
   }
 
   public StaticLangApiMethodView generateApiMethod(
@@ -85,13 +89,17 @@ public class StaticLangApiMethodTransformer {
   }
 
   // Used by: Java
-  public StaticLangApiMethodView generatePagedFlattenedMethod(MethodContext context) {
-    return generatePagedFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
+  public StaticLangApiMethodView generatePagedFlattenedMethod(
+      MethodContext context, SampleContext sampleContext) {
+    return generatePagedFlattenedMethod(
+        context, Collections.<ParamWithSimpleDoc>emptyList(), sampleContext);
   }
 
   // Used by: CSharp (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generatePagedFlattenedMethod(
-      MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      SampleContext sampleContext) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -111,7 +119,8 @@ public class StaticLangApiMethodTransformer {
         additionalParams,
         Synchronicity.Sync,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
 
     return methodViewBuilder
         .type(ClientMethodType.PagedFlattenedMethod)
@@ -121,7 +130,9 @@ public class StaticLangApiMethodTransformer {
 
   // Used by: CSharp
   public StaticLangApiMethodView generatePagedFlattenedAsyncMethod(
-      MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      SampleContext sampleContext) {
     MethodModel methodModel = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -141,7 +152,8 @@ public class StaticLangApiMethodTransformer {
         additionalParams,
         Synchronicity.Async,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
 
     return methodViewBuilder
         .type(ClientMethodType.PagedFlattenedAsyncMethod)
@@ -149,14 +161,18 @@ public class StaticLangApiMethodTransformer {
         .build();
   }
 
-  // Used by: Java
-  public StaticLangApiMethodView generatePagedRequestObjectMethod(MethodContext context) {
-    return generatePagedRequestObjectMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
+  // Used by: Java and Go
+  public StaticLangApiMethodView generatePagedRequestObjectMethod(
+      MethodContext context, SampleContext sampleContext) {
+    return generatePagedRequestObjectMethod(
+        context, Collections.<ParamWithSimpleDoc>emptyList(), sampleContext);
   }
 
   // Used by: CSharp (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generatePagedRequestObjectMethod(
-      MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -178,7 +194,8 @@ public class StaticLangApiMethodTransformer {
         Synchronicity.Sync,
         additionalParams,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
 
     return methodViewBuilder
         .type(ClientMethodType.PagedRequestObjectMethod)
@@ -188,7 +205,9 @@ public class StaticLangApiMethodTransformer {
 
   // Used by: CSharp
   public StaticLangApiMethodView generatePagedRequestObjectAsyncMethod(
-      MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -209,7 +228,8 @@ public class StaticLangApiMethodTransformer {
         Synchronicity.Async,
         additionalParams,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
 
     return methodViewBuilder
         .type(ClientMethodType.AsyncPagedRequestObjectMethod)
@@ -218,7 +238,8 @@ public class StaticLangApiMethodTransformer {
   }
 
   // Used by: Java
-  public StaticLangApiMethodView generatePagedCallableMethod(MethodContext context) {
+  public StaticLangApiMethodView generatePagedCallableMethod(
+      MethodContext context, SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -228,13 +249,18 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.exampleName(namer.getPagedCallableMethodExampleName(method));
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setCallableMethodFields(
-        context, namer.getPagedCallableName(method), methodViewBuilder, context.getCallingForms());
+        context,
+        namer.getPagedCallableName(method),
+        methodViewBuilder,
+        context.getCallingForms(),
+        sampleContext);
 
     return methodViewBuilder.type(ClientMethodType.PagedCallableMethod).build();
   }
 
   // Used by: Java
-  public StaticLangApiMethodView generateUnpagedListCallableMethod(MethodContext context) {
+  public StaticLangApiMethodView generateUnpagedListCallableMethod(
+      MethodContext context, SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -244,7 +270,11 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.exampleName(namer.getCallableMethodExampleName(method));
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setCallableMethodFields(
-        context, namer.getCallableName(method), methodViewBuilder, context.getCallingForms());
+        context,
+        namer.getCallableName(method),
+        methodViewBuilder,
+        context.getCallingForms(),
+        sampleContext);
 
     String getResourceListCallName =
         namer.getFieldGetFunctionName(
@@ -275,13 +305,17 @@ public class StaticLangApiMethodTransformer {
   }
 
   public StaticLangApiMethodView generateFlattenedAsyncMethod(
-      MethodContext context, ClientMethodType type) {
-    return generateFlattenedAsyncMethod(context, Collections.<ParamWithSimpleDoc>emptyList(), type);
+      MethodContext context, ClientMethodType type, SampleContext sampleContext) {
+    return generateFlattenedAsyncMethod(
+        context, Collections.<ParamWithSimpleDoc>emptyList(), type, sampleContext);
   }
 
   // Used by: CSharp
   public StaticLangApiMethodView generateFlattenedAsyncMethod(
-      MethodContext context, List<ParamWithSimpleDoc> additionalParams, ClientMethodType type) {
+      MethodContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      ClientMethodType type,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -296,20 +330,25 @@ public class StaticLangApiMethodTransformer {
         additionalParams,
         Synchronicity.Async,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
     setStaticLangAsyncReturnTypeName(context, methodViewBuilder);
 
     return methodViewBuilder.type(type).build();
   }
 
   // Used by: Java
-  public StaticLangApiMethodView generateFlattenedMethod(MethodContext context) {
-    return generateFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
+  public StaticLangApiMethodView generateFlattenedMethod(
+      MethodContext context, SampleContext sampleContext) {
+    return generateFlattenedMethod(
+        context, Collections.<ParamWithSimpleDoc>emptyList(), sampleContext);
   }
 
   // Used by: CSharp (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generateFlattenedMethod(
-      MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -325,20 +364,25 @@ public class StaticLangApiMethodTransformer {
         additionalParams,
         Synchronicity.Sync,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
     setStaticLangReturnTypeName(context, methodViewBuilder);
 
     return methodViewBuilder.type(ClientMethodType.FlattenedMethod).build();
   }
 
-  // Used by: Java
-  public StaticLangApiMethodView generateRequestObjectMethod(MethodContext context) {
-    return generateRequestObjectMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
+  // Used by: Java, C# and Go
+  public StaticLangApiMethodView generateRequestObjectMethod(
+      MethodContext context, SampleContext sampleContext) {
+    return generateRequestObjectMethod(
+        context, Collections.<ParamWithSimpleDoc>emptyList(), sampleContext);
   }
 
   // Used by: C# (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generateRequestObjectMethod(
-      MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -354,22 +398,29 @@ public class StaticLangApiMethodTransformer {
         Synchronicity.Sync,
         additionalParams,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
     setStaticLangReturnTypeName(context, methodViewBuilder);
 
     return methodViewBuilder.type(ClientMethodType.RequestObjectMethod).build();
   }
 
-  public StaticLangApiMethodView generateRequestObjectAsyncMethod(MethodContext context) {
+  // Used by: C#
+  public StaticLangApiMethodView generateRequestObjectAsyncMethod(
+      MethodContext context, SampleContext sampleContext) {
     return generateRequestObjectAsyncMethod(
         context,
         Collections.<ParamWithSimpleDoc>emptyList(),
-        ClientMethodType.AsyncRequestObjectCallSettingsMethod);
+        ClientMethodType.AsyncRequestObjectCallSettingsMethod,
+        sampleContext);
   }
 
-  // Used by: CSharp
+  // Used by: C#
   public StaticLangApiMethodView generateRequestObjectAsyncMethod(
-      MethodContext context, List<ParamWithSimpleDoc> additionalParams, ClientMethodType type) {
+      MethodContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      ClientMethodType type,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -384,14 +435,16 @@ public class StaticLangApiMethodTransformer {
         Synchronicity.Async,
         additionalParams,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
     setStaticLangAsyncReturnTypeName(context, methodViewBuilder);
 
     return methodViewBuilder.type(type).build();
   }
 
   // Used by: Java
-  public StaticLangApiMethodView generateCallableMethod(MethodContext context) {
+  public StaticLangApiMethodView generateCallableMethod(
+      MethodContext context, SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -400,7 +453,11 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.name(namer.getCallableMethodName(method));
     methodViewBuilder.exampleName(context.getNamer().getCallableMethodExampleName(method));
     setCallableMethodFields(
-        context, namer.getCallableName(method), methodViewBuilder, context.getCallingForms());
+        context,
+        namer.getCallableName(method),
+        methodViewBuilder,
+        context.getCallingForms(),
+        sampleContext);
     methodViewBuilder.responseTypeName(
         context
             .getMethodModel()
@@ -409,8 +466,9 @@ public class StaticLangApiMethodTransformer {
     return methodViewBuilder.type(ClientMethodType.CallableMethod).build();
   }
 
-  // Used by: CSharp
-  public StaticLangApiMethodView generateGrpcStreamingRequestObjectMethod(MethodContext context) {
+  // Used by: CSharp and Go
+  public StaticLangApiMethodView generateGrpcStreamingRequestObjectMethod(
+      MethodContext context, SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -425,7 +483,8 @@ public class StaticLangApiMethodTransformer {
         namer.getCallableMethodName(method),
         Synchronicity.Sync,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
     setStaticLangGrpcStreamingReturnTypeName(context, methodViewBuilder);
 
     return methodViewBuilder.type(ClientMethodType.RequestObjectMethod).build();
@@ -433,7 +492,9 @@ public class StaticLangApiMethodTransformer {
 
   // Used by CSharp.
   public StaticLangApiMethodView generateGrpcStreamingFlattenedMethod(
-      MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -449,20 +510,25 @@ public class StaticLangApiMethodTransformer {
         additionalParams,
         Synchronicity.Sync,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
     setStaticLangGrpcStreamingReturnTypeName(context, methodViewBuilder);
 
     return methodViewBuilder.type(ClientMethodType.FlattenedMethod).build();
   }
 
-  public StaticLangApiMethodView generateOperationRequestObjectMethod(MethodContext context) {
+  // Used by: Go
+  public StaticLangApiMethodView generateOperationRequestObjectMethod(
+      MethodContext context, SampleContext sampleContext) {
     return generateOperationRequestObjectMethod(
-        context, Collections.<ParamWithSimpleDoc>emptyList());
+        context, Collections.<ParamWithSimpleDoc>emptyList(), sampleContext);
   }
 
   // Used by: CSharp
   public StaticLangApiMethodView generateOperationRequestObjectMethod(
-      MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -478,7 +544,8 @@ public class StaticLangApiMethodTransformer {
         Synchronicity.Sync,
         additionalParams,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     TypeModel returnType = context.getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
@@ -486,8 +553,11 @@ public class StaticLangApiMethodTransformer {
     return methodViewBuilder.type(ClientMethodType.OperationRequestObjectMethod).build();
   }
 
+  // Used by: C#
   public StaticLangApiMethodView generateOperationFlattenedMethod(
-      MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -503,7 +573,8 @@ public class StaticLangApiMethodTransformer {
         additionalParams,
         Synchronicity.Sync,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     TypeModel returnType = context.getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
@@ -511,12 +582,14 @@ public class StaticLangApiMethodTransformer {
   }
 
   // Used by Java.
-  public StaticLangApiMethodView generateAsyncOperationFlattenedMethod(MethodContext context) {
+  public StaticLangApiMethodView generateAsyncOperationFlattenedMethod(
+      MethodContext context, SampleContext sampleContext) {
     return generateAsyncOperationFlattenedMethod(
         context,
         Collections.<ParamWithSimpleDoc>emptyList(),
         ClientMethodType.AsyncOperationFlattenedMethod,
-        false);
+        false,
+        sampleContext);
   }
 
   // Used by CSharp (and indirectly by Java via the overload above)
@@ -524,7 +597,8 @@ public class StaticLangApiMethodTransformer {
       MethodContext context,
       List<ParamWithSimpleDoc> additionalParams,
       ClientMethodType type,
-      boolean requiresOperationMethod) {
+      boolean requiresOperationMethod,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -540,7 +614,8 @@ public class StaticLangApiMethodTransformer {
         additionalParams,
         Synchronicity.Async,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
     if (requiresOperationMethod) {
       methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     }
@@ -552,16 +627,18 @@ public class StaticLangApiMethodTransformer {
   }
 
   // Used by: Java
-  public StaticLangApiMethodView generateAsyncOperationRequestObjectMethod(MethodContext context) {
+  public StaticLangApiMethodView generateAsyncOperationRequestObjectMethod(
+      MethodContext context, SampleContext sampleContext) {
     return generateAsyncOperationRequestObjectMethod(
-        context, Collections.<ParamWithSimpleDoc>emptyList(), false);
+        context, Collections.<ParamWithSimpleDoc>emptyList(), false, sampleContext);
   }
 
   // Used by: CSharp (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generateAsyncOperationRequestObjectMethod(
       MethodContext context,
       List<ParamWithSimpleDoc> additionalParams,
-      boolean requiresOperationMethod) {
+      boolean requiresOperationMethod,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -577,7 +654,8 @@ public class StaticLangApiMethodTransformer {
         Synchronicity.Async,
         additionalParams,
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
     if (requiresOperationMethod) {
       // Only for protobuf-based APIs.
       methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
@@ -594,7 +672,8 @@ public class StaticLangApiMethodTransformer {
     return methodViewBuilder.type(ClientMethodType.AsyncOperationRequestObjectMethod).build();
   }
 
-  public StaticLangApiMethodView generateOperationCallableMethod(MethodContext context) {
+  public StaticLangApiMethodView generateOperationCallableMethod(
+      MethodContext context, SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -606,7 +685,8 @@ public class StaticLangApiMethodTransformer {
         context,
         namer.getOperationCallableName(method),
         methodViewBuilder,
-        context.getCallingForms());
+        context.getCallingForms(),
+        sampleContext);
     TypeModel returnType = context.getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
@@ -728,13 +808,19 @@ public class StaticLangApiMethodTransformer {
       List<ParamWithSimpleDoc> additionalParams,
       Synchronicity synchronicity,
       StaticLangApiMethodView.Builder methodViewBuilder,
-      List<CallingForm> callingForms) {
+      List<CallingForm> callingForms,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     Collection<FieldConfig> fieldConfigs =
         context.getFlatteningConfig().getFlattenedFieldConfigs().values();
-    sampleTransformer.generateSamples(
-        methodViewBuilder, context, fieldConfigs, InitCodeOutputType.FieldList, callingForms);
+    if (sampleContext == null) {
+      sampleTransformer.generateSamples(
+          methodViewBuilder, context, fieldConfigs, InitCodeOutputType.FieldList, callingForms);
+    } else {
+      MethodSampleView sampleView = sampleTransformer.generateSample(context, sampleContext);
+      methodViewBuilder.samples(ImmutableList.of(sampleView));
+    }
 
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
@@ -764,14 +850,16 @@ public class StaticLangApiMethodTransformer {
       String callableMethodName,
       Synchronicity sync,
       StaticLangApiMethodView.Builder methodViewBuilder,
-      List<CallingForm> callingForms) {
+      List<CallingForm> callingForms,
+      SampleContext sampleContext) {
     setRequestObjectMethodFields(
         context,
         callableMethodName,
         sync,
         Collections.<ParamWithSimpleDoc>emptyList(),
         methodViewBuilder,
-        callingForms);
+        callingForms,
+        sampleContext);
   }
 
   private void setRequestObjectMethodFields(
@@ -780,7 +868,8 @@ public class StaticLangApiMethodTransformer {
       Synchronicity sync,
       List<ParamWithSimpleDoc> additionalParams,
       StaticLangApiMethodView.Builder methodViewBuilder,
-      List<CallingForm> callingForms) {
+      List<CallingForm> callingForms,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     List<ParamDocView> paramDocs = new ArrayList<>();
@@ -795,12 +884,17 @@ public class StaticLangApiMethodTransformer {
                 namer.getReturnDocLines(context.getSurfaceInterfaceContext(), context, sync))
             .build());
 
-    sampleTransformer.generateSamples(
-        methodViewBuilder,
-        context,
-        context.getMethodConfig().getRequiredFieldConfigs(),
-        InitCodeOutputType.SingleObject,
-        callingForms);
+    if (sampleContext == null) {
+      sampleTransformer.generateSamples(
+          methodViewBuilder,
+          context,
+          context.getMethodConfig().getRequiredFieldConfigs(),
+          InitCodeOutputType.SingleObject,
+          callingForms);
+    } else {
+      MethodSampleView sampleView = sampleTransformer.generateSample(context, sampleContext);
+      methodViewBuilder.samples(ImmutableList.of(sampleView));
+    }
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -818,7 +912,8 @@ public class StaticLangApiMethodTransformer {
       MethodContext context,
       String callableName,
       Builder methodViewBuilder,
-      List<CallingForm> callingForms) {
+      List<CallingForm> callingForms,
+      SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
@@ -827,12 +922,17 @@ public class StaticLangApiMethodTransformer {
             .throwsDocLines(new ArrayList<String>())
             .build());
 
-    sampleTransformer.generateSamples(
-        methodViewBuilder,
-        context,
-        context.getMethodConfig().getRequiredFieldConfigs(),
-        InitCodeOutputType.SingleObject,
-        callingForms);
+    if (sampleContext == null) {
+      sampleTransformer.generateSamples(
+          methodViewBuilder,
+          context,
+          context.getMethodConfig().getRequiredFieldConfigs(),
+          InitCodeOutputType.SingleObject,
+          callingForms);
+    } else {
+      MethodSampleView sampleView = sampleTransformer.generateSample(context, sampleContext);
+      methodViewBuilder.samples(ImmutableList.of(sampleView));
+    }
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
