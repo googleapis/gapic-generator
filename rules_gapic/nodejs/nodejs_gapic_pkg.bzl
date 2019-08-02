@@ -59,7 +59,7 @@ def _nodejs_gapic_src_pkg_impl(ctx):
 
 _nodejs_gapic_src_pkg = rule(
     attrs = {
-        "deps": attr.label_list(allow_files = True, mandatory = True, non_empty = True),
+        "deps": attr.label_list(allow_files = True, mandatory = True),
         "package_dir": attr.string(mandatory = True),
     },
     outputs = {"pkg": "%{name}.tar.gz"},
