@@ -240,12 +240,13 @@ public enum CallingForm {
   public static ImmutableList<CallingForm> getCallingForms(
       MethodContext methodContext, TargetLanguage lang) {
     Preconditions.checkArgument(lang != TargetLanguage.GO, "Go is not supported for now.");
-    List<CallingForms> forms =
+    ImmutableList<CallingForm> forms =
         CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
-    if (methodContext.isFlattenedMethodContext()) {
-      forms =
-          froms.stream().filter(CallingForm::isFlattened).collect(ImmutableList.toImmutableList());
-    }
+    // if (methodContext.isFlattenedMethodContext()) {
+    //   forms =
+    //
+    // forms.stream().filter(CallingForm::isFlattened).collect(ImmutableList.toImmutableList());
+    // }
     return forms;
   }
 
@@ -255,19 +256,19 @@ public enum CallingForm {
     return DEFAULT_CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
   }
 
-  /** Whether this calling form takes a flattened parameter list. */
-  private boolean isFlattened() {
-    return ImmutableSet.<CallingForm>of(
-            Flattened,
-            FlattenedPaged,
-            FlattenedPagedAll,
-            FlattenedPagedPageSize,
-            FlattenedAsync,
-            FlattenedAsyncPaged,
-            FlattenedAsyncPagedAll,
-            FlattenedAsyncPagedPageSize,
-            FlattenedStreamingBidi,
-            FlattenedStreamingServer)
-        .contains(this);
-  }
+  // /** Whether this calling form takes a flattened parameter list. */
+  // private static boolean isFlattened(CallingForm form) {
+  //   return ImmutableSet.<CallingForm>of(
+  //           Flattened,
+  //           FlattenedPaged,
+  //           FlattenedPagedAll,
+  //           FlattenedPagedPageSize,
+  //           FlattenedAsync,
+  //           FlattenedAsyncPaged,
+  //           FlattenedAsyncPagedAll,
+  //           FlattenedAsyncPagedPageSize,
+  //           FlattenedStreamingBidi,
+  //           FlattenedStreamingServer)
+  //       .contains(form);
+  // }
 }

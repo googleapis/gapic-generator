@@ -14,38 +14,19 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.config.GapicInterfaceContext;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceContext;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
-import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.Name;
+import com.google.api.codegen.transformer.StaticLangGapicSamplesTransformer;
 import com.google.api.codegen.util.csharp.CSharpAliasMode;
-import com.google.api.codegen.viewmodel.MethodSampleView;
-import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
-import com.google.api.codegen.viewmodel.StaticLangFileView;
-import com.google.api.codegen.viewmodel.StaticLangSampleClassView;
-import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Streams;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
 
 /** A transformer that generates C# standalone samples. */
-public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer<ProtoApiModel> {
+public class CSharpStandaloneSampleTransformer extends StaticLangGapicSamplesTransformer {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "csharp/standalone_sample.snip";
-  private static final String CSHARP_SAMPLE_PACKAGE_NAME = "Samples";
   private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.Off;
   private static final CSharpCommonTransformer csharpCommonTransformer =
       new CSharpCommonTransformer();
@@ -56,85 +37,17 @@ public class CSharpStandaloneSampleTransformer implements ModelToViewTransformer
               .sampleType(SampleSpec.SampleType.STANDALONE)
               .sampleImportTransformer(new CSharpSampleImportTransformer())
               .build());
-  private final FileHeaderTransformer fileHeaderTransformer =
+  private static final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
 
-  private final GapicCodePathMapper pathMapper;
-
   public CSharpStandaloneSampleTransformer(GapicCodePathMapper pathMapper) {
-    this.pathMapper = pathMapper;
-  }
-
-  @Override
-  public List<String> getTemplateFileNames() {
-    return Collections.singletonList(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
-  }
-
-  @Override
-  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    String packageName = productConfig.getPackageName();
-    CSharpSurfaceNamer namer = new CSharpSurfaceNamer(packageName, ALIAS_MODE);
-    ModelTypeTable typeTable =
-        csharpCommonTransformer.createTypeTable(
-            productConfig.getPackageName() + ".Samples", ALIAS_MODE);
-
-    List<InterfaceContext> interfaceContexts =
-        Streams.stream(model.getInterfaces(productConfig))
-            .filter(i -> productConfig.hasInterfaceConfig(i))
-            .map(
-                i ->
-                    GapicInterfaceContext.create(
-                        i, productConfig, typeTable, namer, new CSharpFeatureConfig()))
-            .collect(ImmutableList.toImmutableList());
-    List<MethodSampleView> allSamples =
-        interfaceContexts
-            .stream()
-            .flatMap(c -> csharpApiMethodTransformer.generateApiMethods(c).stream())
-            .flatMap(m -> m.samples().stream())
-            .collect(ImmutableList.toImmutableList());
-    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
-    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
-    for (InterfaceContext interfaceContext : interfaceContexts) {
-      List<StaticLangApiMethodView> methods =
-          csharpApiMethodTransformer.generateApiMethods(interfaceContext);
-      for (StaticLangApiMethodView method : methods) {
-        for (MethodSampleView sample : method.samples()) {
-          sampleFileViews.add(newSampleFileView(interfaceContext, method, sample, namer, registry));
-        }
-      }
-    }
-    return sampleFileViews.build();
-  }
-
-  private StaticLangFileView newSampleFileView(
-      InterfaceContext context,
-      StaticLangApiMethodView method,
-      MethodSampleView sample,
-      SurfaceNamer namer,
-      SampleFileRegistry registry) {
-    String regionTag = sample.regionTag();
-    String sampleClassName =
-        registry.getSampleClassName(sample, Name.upperCamel(method.name()).toLowerUnderscore());
-    String sampleFileName =
-        registry.getSampleFileName(sample, Name.upperCamel(method.name()).toLowerUnderscore());
-    String sampleOutputPath =
-        Paths.get(
-                pathMapper.getOutputPath(
-                    context.getInterfaceModel().getFullName(), context.getProductConfig()),
-                sampleFileName)
-            .toString();
-    StaticLangSampleClassView sampleClassView =
-        StaticLangSampleClassView.newBuilder()
-            .name(sampleClassName)
-            .libraryMethod(method)
-            .sample(sample)
-            .build();
-
-    return StaticLangFileView.<StaticLangSampleClassView>newBuilder()
-        .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
-        .fileHeader(fileHeaderTransformer.generateFileHeader(context))
-        .outputPath(sampleOutputPath)
-        .classView(sampleClassView)
-        .build();
+    super(
+        STANDALONE_SAMPLE_TEMPLATE_FILENAME,
+        pathMapper,
+        fileHeaderTransformer,
+        csharpApiMethodTransformer,
+        p -> new CSharpFeatureConfig(),
+        p -> new CSharpSurfaceNamer(p.getPackageName(), ALIAS_MODE),
+        p -> csharpCommonTransformer.createTypeTable(p + ".Samples", ALIAS_MODE));
   }
 }

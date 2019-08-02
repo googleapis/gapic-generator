@@ -22,11 +22,13 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.SampleContext;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.gapic.ServiceMessages;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
+import com.google.api.codegen.transformer.java.JavaMethodViewGenerator;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
@@ -70,11 +72,16 @@ public class StaticLangApiMethodTransformer {
   }
 
   // TODO: Currently overriden in CSharpApiMethodTransformer. Inspect whether the same logic applies
-  // to Java as well.
+  // to Java as well. This is tooooo hacky. Just trying things out.
   /** Generates method views for all methods in an interface. */
   public List<StaticLangApiMethodView> generateApiMethods(InterfaceContext interfaceContext) {
-    throw new UnsupportedOperationException(
-        "unimplemented: StaticLangApiMethodTransformer:generateApiMethods");
+    return new JavaMethodViewGenerator(this.sampleTransformer.sampleType())
+        .generateApiMethods(interfaceContext);
+  }
+
+  public StaticLangApiMethodView generateApiMethod(
+      MethodContext methodContext, SampleContext sampleContext) {
+    return null;
   }
 
   // Used by: Java

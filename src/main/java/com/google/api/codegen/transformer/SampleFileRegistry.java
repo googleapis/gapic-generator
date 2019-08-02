@@ -111,6 +111,10 @@ public class SampleFileRegistry {
     Preconditions.checkState(
         userProvidedIdCount.get(regionTag) != null && userProvidedIdCount.get(regionTag) > 0,
         "Sample not registered.");
+    // method names can be in snake_case, camelCase or ParscalCase depending on the language
+    Name methodName =
+        Character.isUpperCase(method.charAt(0)) ? Name.anyCamel(method) : Name.anyLower(method);
+    method = methodName.toLowerUnderscore();
     if (userProvidedIdCount.get(regionTag) == 1) {
       return namer.getApiSampleClassName(regionTag);
     }

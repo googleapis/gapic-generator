@@ -1,4 +1,4 @@
-/* Copyright 2018 Google LLC
+/* Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,150 +14,41 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.config.GapicInterfaceContext;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceContext;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.SampleSpec.SampleType;
+import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SampleFileRegistry;
+import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
-import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.Name;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
+import com.google.api.codegen.transformer.StaticLangGapicSamplesTransformer;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.codegen.viewmodel.MethodSampleView;
-import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
-import com.google.api.codegen.viewmodel.StaticLangFileView;
-import com.google.api.codegen.viewmodel.StaticLangSampleClassView;
-import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.collect.ImmutableList;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-/**
- * A transformer to generate Java standalone samples for each method in the GAPIC surface generated
- * from the same ApiModel.
- */
-public class JavaGapicSamplesTransformer implements ModelToViewTransformer<ProtoApiModel> {
-  private final GapicCodePathMapper pathMapper;
+/** A transformer that generates C# standalone samples. */
+public class JavaGapicSamplesTransformer extends StaticLangGapicSamplesTransformer {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "java/standalone_sample.snip";
-  private final JavaMethodViewGenerator methodGenerator =
-      new JavaMethodViewGenerator(SampleType.STANDALONE);
-  private final StandardImportSectionTransformer importSectionTransformer =
-      new StandardImportSectionTransformer();
-  private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(importSectionTransformer);
+
+  private static final StaticLangApiMethodTransformer apiMethodTransformer =
+      new StaticLangApiMethodTransformer(
+          SampleTransformer.newBuilder()
+              .sampleType(SampleSpec.SampleType.STANDALONE)
+              .sampleImportTransformer(new JavaSampleImportTransformer())
+              .build());
+  private static final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new StandardImportSectionTransformer());
 
   public JavaGapicSamplesTransformer(GapicCodePathMapper pathMapper) {
-    this.pathMapper = pathMapper;
-  }
-
-  @Override
-  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = createSurfaceNamer(productConfig);
-
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
-      if (!productConfig.hasInterfaceConfig(apiInterface)) {
-        continue;
-      }
-
-      ImportTypeTable typeTable = createTypeTable(namer.getExamplePackageName());
-      InterfaceContext context =
-          createInterfaceContext(apiInterface, productConfig, namer, typeTable);
-
-      List<ViewModel> sampleFiles = generateSampleFiles(context);
-      surfaceDocs.addAll(sampleFiles);
-    }
-
-    return surfaceDocs;
-  }
-
-  @Override
-  public List<String> getTemplateFileNames() {
-    return Arrays.asList(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
-  }
-
-  private List<ViewModel> generateSampleFiles(InterfaceContext context) {
-    List<ViewModel> files = new ArrayList<>();
-    SurfaceNamer namer = context.getNamer();
-
-    StaticLangFileView.Builder<StaticLangSampleClassView> sampleFile =
-        StaticLangFileView.<StaticLangSampleClassView>newBuilder();
-    sampleFile.templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
-    List<StaticLangApiMethodView> allMethods = methodGenerator.generateApiMethods(context);
-    List<MethodSampleView> allSamples =
-        allMethods
-            .stream()
-            .flatMap(m -> m.samples().stream())
-            .collect(ImmutableList.toImmutableList());
-    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
-
-    for (StaticLangApiMethodView method : allMethods) {
-      for (MethodSampleView methodSample : method.samples()) {
-        StaticLangSampleClassView classView =
-            StaticLangSampleClassView.newBuilder()
-                .name(
-                    registry.getSampleClassName(
-                        methodSample, Name.lowerCamel(method.name()).toLowerUnderscore()))
-                .libraryMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build())
-                .build();
-        String outputPath =
-            pathMapper.getSamplesOutputPath(
-                context.getInterfaceModel().getFullName(),
-                context.getProductConfig(),
-                method.name());
-        String sampleFileName =
-            registry.getSampleFileName(
-                methodSample, Name.lowerCamel(method.name()).toLowerUnderscore());
-        String fullPath = outputPath + File.separator + sampleFileName;
-
-        files.add(
-            sampleFile
-                .classView(classView)
-                .outputPath(fullPath)
-                .fileHeader(
-                    fileHeaderTransformer.generateFileHeader(
-                        context,
-                        classView.name())) // must be done as the last step to catch all imports
-                .build());
-      }
-    }
-
-    return files;
-  }
-
-  private SurfaceNamer createSurfaceNamer(GapicProductConfig productConfig) {
-    // TODO(vchudnov-g): Consider factoring out this code duplicated from JavaSurfaceTransformer.
-    return new JavaSurfaceNamer(productConfig.getPackageName(), productConfig.getPackageName());
-  }
-
-  private GapicInterfaceContext createInterfaceContext(
-      InterfaceModel apiInterface,
-      GapicProductConfig productConfig,
-      SurfaceNamer namer,
-      ImportTypeTable typeTable) {
-    // TODO(vchudnov-g): Consider factoring out this code duplicated from JavaSurafceTransformer.
-    return GapicInterfaceContext.create(
-        apiInterface,
-        productConfig,
-        (ModelTypeTable) typeTable,
-        namer,
-        JavaFeatureConfig.create(productConfig));
-  }
-
-  private ModelTypeTable createTypeTable(String implicitPackageName) {
-    // TODO(vchudnov-g): Consider factoring out this code duplicated from JavaSurfaceTransformer.
-    return new ModelTypeTable(
-        new JavaTypeTable(implicitPackageName),
-        new JavaModelTypeNameConverter(implicitPackageName));
+    super(
+        STANDALONE_SAMPLE_TEMPLATE_FILENAME,
+        pathMapper,
+        fileHeaderTransformer,
+        apiMethodTransformer,
+        p -> JavaFeatureConfig.create(p),
+        p -> new JavaSurfaceNamer(p.getPackageName(), p.getPackageName()),
+        p ->
+            new ModelTypeTable(
+                new JavaTypeTable(JavaSurfaceNamer.getExamplePackageName(p)),
+                new JavaModelTypeNameConverter(JavaSurfaceNamer.getExamplePackageName(p))));
   }
 }
