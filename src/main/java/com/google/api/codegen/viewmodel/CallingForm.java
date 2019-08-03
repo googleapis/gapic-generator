@@ -133,6 +133,42 @@ public enum CallingForm {
   private static final Table<TargetLanguage, RpcType, ImmutableList<CallingForm>>
       CALLING_FORM_TABLE =
           ImmutableTable.<TargetLanguage, RpcType, ImmutableList<CallingForm>>builder()
+              .put(
+                  CSHARP,
+                  RpcType.UNARY,
+                  ImmutableList.of(Request, RequestAsync, Flattened, FlattenedAsync))
+              .put(
+                  CSHARP,
+                  RpcType.PAGED_STREAMING,
+                  ImmutableList.of(
+                      RequestPaged,
+                      RequestPagedAll,
+                      RequestPagedPageSize,
+                      FlattenedPaged,
+                      FlattenedPagedAll,
+                      FlattenedPagedPageSize,
+                      RequestAsyncPagedAll,
+                      RequestAsyncPagedPageSize,
+                      FlattenedAsyncPaged,
+                      FlattenedAsyncPagedAll,
+                      FlattenedAsyncPagedPageSize))
+              .put(
+                  CSHARP,
+                  RpcType.LRO,
+                  ImmutableList.of(
+                      LongRunningFlattenedPollUntilComplete,
+                      LongRunningFlattenedAsyncPollUntilComplete,
+                      LongRunningRequestPollUntilComplete,
+                      LongRunningRequestAsyncPollUntilComplete))
+              .put(
+                  CSHARP,
+                  RpcType.SERVER_STREAMING,
+                  ImmutableList.of(RequestStreamingServer, FlattenedStreamingServer))
+              .put(
+                  CSHARP,
+                  RpcType.BIDI_STREAMING,
+                  ImmutableList.of(RequestStreamingBidi, FlattenedStreamingBidi))
+              .put(CSHARP, RpcType.CLIENT_STREAMING, ImmutableList.of())
               .put(JAVA, RpcType.UNARY, ImmutableList.of(Request, Flattened, Callable))
               .put(
                   JAVA,

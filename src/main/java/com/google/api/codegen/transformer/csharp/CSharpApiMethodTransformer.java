@@ -262,37 +262,68 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
 
   public StaticLangApiMethodView generateApiMethod(
       MethodContext methodContext, SampleContext sampleContext) {
+    List<ParamWithSimpleDoc> pagedMethodAdditionalParams =
+        new ImmutableList.Builder<ParamWithSimpleDoc>()
+            .addAll(csharpCommonTransformer.pagedMethodAdditionalParams())
+            .addAll(csharpCommonTransformer.callSettingsParam())
+            .build();
+    List<ParamWithSimpleDoc> callSettingsParam = csharpCommonTransformer.callSettingsParam();
     switch (sampleContext.clientMethodType()) {
-      case PagedFlattenedMethod:
-        
-      case PagedRequestObjectMethod:
-      case PagedCallableMethod:
-      case UnpagedListCallableMethod:
+        // Unary and gRPC streaming
       case FlattenedMethod:
+        return generateFlattenedMethod(methodContext, callSettingsParam, sampleContext);
       case RequestObjectMethod:
+        return generateRequestObjectMethod(methodContext, callSettingsParam, sampleContext);
       case AsyncRequestObjectMethod:
-      case CallableMethod:
-      case OperationRequestObjectMethod:
-      case AsyncOperationFlattenedMethod:
-      case AsyncOperationRequestObjectMethod:
-      case OperationCallableMethod:
-
-      case OptionalArrayMethod:
-      case PagedOptionalArrayMethod:
-      case LongRunningOptionalArrayMethod:
-
+        return generateRequestObjectAsyncMethod(
+            methodContext,
+            callSettingsParam,
+            ClientMethodType.AsyncRequestObjectCallSettingsMethod,
+            sampleContext);
       case FlattenedAsyncCallSettingsMethod:
-      case FlattenedAsyncCancellationTokenMethod:
+        return generateFlattenedAsyncMethod(
+            methodContext,
+            callSettingsParam,
+            ClientMethodType.FlattenedAsyncCallSettingsMethod,
+            sampleContext);
+
+        // Paged streaming
+      case PagedFlattenedMethod:
+        return generatePagedFlattenedMethod(
+            methodContext, pagedMethodAdditionalParams, sampleContext);
+      case PagedRequestObjectMethod:
+        return generatePagedRequestObjectMethod(
+            methodContext, csharpCommonTransformer.callSettingsParam(), sampleContext);
+
       case PagedFlattenedAsyncMethod:
-      case AsyncRequestObjectCallSettingsMethod:
-      case AsyncRequestObjectCancellationMethod:
+        return generateFlattenedAsyncMethod(
+            methodContext,
+            callSettingsParam,
+            ClientMethodType.FlattenedAsyncCallSettingsMethod,
+            sampleContext);
       case AsyncPagedRequestObjectMethod:
-      case AsyncOperationFlattenedCallSettingsMethod:
-      case AsyncOperationFlattenedCancellationMethod:
+        return generatePagedRequestObjectAsyncMethod(
+            methodContext, callSettingsParam, sampleContext);
+        // LRO
+      case OperationRequestObjectMethod:
+        return generateOperationRequestObjectMethod(
+            methodContext, callSettingsParam, sampleContext);
       case OperationFlattenedMethod:
+        return generateOperationFlattenedMethod(methodContext, callSettingsParam, sampleContext);
+      case AsyncOperationFlattenedMethod:
+        return generateAsyncOperationFlattenedMethod(
+            methodContext,
+            callSettingsParam,
+            ClientMethodType.AsyncOperationFlattenedMethod,
+            true,
+            sampleContext);
+      case AsyncOperationRequestObjectMethod:
+        return generateOperationRequestObjectMethod(
+            methodContext, callSettingsParam, sampleContext);
       default:
+        throw new IllegalStateException(
+            String.format("Unrecognized client method type: %s", sampleContext.clientMethodType()));
     }
-    return null;
   }
 
   private List<StaticLangApiMethodView> generateFlattenedLroMethods(MethodContext methodContext) {

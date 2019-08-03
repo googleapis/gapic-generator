@@ -214,7 +214,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "library",
             null,
             null,
-            null,
+            sampleConfigFileNames(),
             "csharp_samplegen_config_migration_library.baseline",
             new String[] {"another_service"}));
   }

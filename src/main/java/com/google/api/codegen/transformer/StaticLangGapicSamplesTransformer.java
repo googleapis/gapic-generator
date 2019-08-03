@@ -190,10 +190,22 @@ public abstract class StaticLangGapicSamplesTransformer
           List<CallingForm> allMatchingCallingForms =
               configsAndMatchingForms.get(sampleConfig.id());
           for (CallingForm form : allMatchingCallingForms) {
-            InitCodeOutputType initCodeOutputType =
-                CallingForm.isFlattened(form)
-                    ? InitCodeOutputType.FieldList
-                    : InitCodeOutputType.SingleObject;
+            InitCodeOutputType initCodeOutputType = InitCodeOutputType.SingleObject;
+
+            if (CallingForm.isFlattened(form)) {
+              if (!methodContext.getMethodConfig().isFlattening()) {
+                continue;
+              }
+              initCodeOutputType = InitCodeOutputType.FieldList;
+
+              methodContext =
+                  methodContext
+                      .getSurfaceInterfaceContext()
+                      .asFlattenedMethodContext(
+                          methodContext,
+                          methodContext.getMethodConfig().getFlatteningConfigs().get(0));
+            }
+
             SampleContext sampleContext =
                 SampleContext.newBuilder()
                     .uniqueSampleId(registry.getUniqueSampleId(sampleConfig, form))
@@ -203,6 +215,9 @@ public abstract class StaticLangGapicSamplesTransformer
                     .sampleConfig(sampleConfig)
                     .initCodeOutputType(initCodeOutputType)
                     .build();
+            if (sampleContext.clientMethodType() == null) {
+              System.out.println(form);
+            }
             StaticLangApiMethodView methodView =
                 apiMethodTransformer.generateApiMethod(methodContext, sampleContext);
 

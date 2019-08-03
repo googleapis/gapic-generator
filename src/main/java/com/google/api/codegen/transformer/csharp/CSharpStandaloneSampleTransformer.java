@@ -92,6 +92,6 @@ public class CSharpStandaloneSampleTransformer extends StaticLangGapicSamplesTra
 
   @Override
   protected ClientMethodType fromCallingForm(CallingForm callingForm) {
-    return null;
+    return CALLING_FORMS_CLIENT_METHOD_MAP.get(callingForm);
   }
 }
