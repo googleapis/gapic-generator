@@ -192,12 +192,12 @@ public abstract class StaticLangGapicSamplesTransformer
           for (CallingForm form : allMatchingCallingForms) {
             InitCodeOutputType initCodeOutputType = InitCodeOutputType.SingleObject;
 
+            // In Java and C#, we need to handle flattening.
             if (CallingForm.isFlattened(form)) {
               if (!methodContext.getMethodConfig().isFlattening()) {
                 continue;
               }
               initCodeOutputType = InitCodeOutputType.FieldList;
-
               methodContext =
                   methodContext
                       .getSurfaceInterfaceContext()
@@ -215,9 +215,6 @@ public abstract class StaticLangGapicSamplesTransformer
                     .sampleConfig(sampleConfig)
                     .initCodeOutputType(initCodeOutputType)
                     .build();
-            if (sampleContext.clientMethodType() == null) {
-              System.out.println(form);
-            }
             StaticLangApiMethodView methodView =
                 apiMethodTransformer.generateApiMethod(methodContext, sampleContext);
 
@@ -246,19 +243,6 @@ public abstract class StaticLangGapicSamplesTransformer
       String sampleFileName,
       StaticLangApiMethodView method,
       MethodSampleView sample) {
-    return newSampleFileViewBuilder(
-            productConfig, context, sampleClassName, sampleFileName, method, sample)
-        .build();
-  }
-
-  // see if java needs this (probably not and we can merge them)
-  protected StaticLangFileView.Builder newSampleFileViewBuilder(
-      GapicProductConfig productConfig,
-      InterfaceContext context,
-      String sampleClassName,
-      String sampleFileName,
-      StaticLangApiMethodView method,
-      MethodSampleView sample) {
     StaticLangSampleClassView sampleClassView =
         StaticLangSampleClassView.newBuilder()
             .name(sampleClassName)
@@ -271,11 +255,13 @@ public abstract class StaticLangGapicSamplesTransformer
                 pathMapper.getOutputPath(context.getInterfaceModel().getFullName(), productConfig),
                 sampleFileName)
             .toString();
-    return StaticLangFileView.newBuilder()
-        .templateFileName(templateFileName)
-        .fileHeader(fileHeaderTransformer.generateFileHeader(context))
-        .outputPath(outputPath)
-        .classView(sampleClassView);
+
+    StaticLangFileView.Builder<StaticLangSampleClassView> builder = StaticLangFileView.newBuilder();
+    builder.templateFileName(templateFileName);
+    builder.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    builder.outputPath(outputPath);
+    builder.classView(sampleClassView);
+    return builder.build();
   }
 
   private static boolean hasMatchingCallingForm(

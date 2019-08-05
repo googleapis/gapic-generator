@@ -1,4 +1,4 @@
-/* Copyright 2019 Google LLC
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,23 +32,24 @@ public class JavaGapicSamplesTransformer extends StaticLangGapicSamplesTransform
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "java/standalone_sample.snip";
 
-  private static final ImmutableMap<CallingForm, ClientMethodType> CALLING_FORMS_CLIENT_METHOD_MAP =
-      ImmutableMap.<CallingForm, ClientMethodType>builder()
-          .put(CallingForm.Request, ClientMethodType.RequestObjectMethod)
-          .put(CallingForm.RequestPaged, ClientMethodType.PagedRequestObjectMethod)
-          .put(CallingForm.Flattened, ClientMethodType.FlattenedMethod)
-          .put(CallingForm.FlattenedPaged, ClientMethodType.PagedFlattenedMethod)
-          .put(CallingForm.Callable, ClientMethodType.CallableMethod)
-          .put(CallingForm.CallableList, ClientMethodType.UnpagedListCallableMethod)
-          .put(CallingForm.CallablePaged, ClientMethodType.PagedCallableMethod)
-          .put(CallingForm.CallableStreamingBidi, ClientMethodType.CallableMethod)
-          .put(CallingForm.CallableStreamingClient, ClientMethodType.CallableMethod)
-          .put(CallingForm.CallableStreamingServer, ClientMethodType.CallableMethod)
-          .put(CallingForm.LongRunningCallable, ClientMethodType.OperationCallableMethod)
-          .put(
-              CallingForm.LongRunningRequestAsync,
-              ClientMethodType.AsyncOperationRequestObjectMethod)
-          .build();
+  private static final ImmutableMap<CallingForm, ClientMethodType>
+      CALLING_FORM_CLIENT_METHOD_TYPE_MAP =
+          ImmutableMap.<CallingForm, ClientMethodType>builder()
+              .put(CallingForm.Request, ClientMethodType.RequestObjectMethod)
+              .put(CallingForm.RequestPaged, ClientMethodType.PagedRequestObjectMethod)
+              .put(CallingForm.Flattened, ClientMethodType.FlattenedMethod)
+              .put(CallingForm.FlattenedPaged, ClientMethodType.PagedFlattenedMethod)
+              .put(CallingForm.Callable, ClientMethodType.CallableMethod)
+              .put(CallingForm.CallableList, ClientMethodType.UnpagedListCallableMethod)
+              .put(CallingForm.CallablePaged, ClientMethodType.PagedCallableMethod)
+              .put(CallingForm.CallableStreamingBidi, ClientMethodType.CallableMethod)
+              .put(CallingForm.CallableStreamingClient, ClientMethodType.CallableMethod)
+              .put(CallingForm.CallableStreamingServer, ClientMethodType.CallableMethod)
+              .put(CallingForm.LongRunningCallable, ClientMethodType.OperationCallableMethod)
+              .put(
+                  CallingForm.LongRunningRequestAsync,
+                  ClientMethodType.AsyncOperationRequestObjectMethod)
+              .build();
 
   private static final StaticLangApiMethodTransformer apiMethodTransformer =
       new JavaApiMethodTransformer(
@@ -75,6 +76,6 @@ public class JavaGapicSamplesTransformer extends StaticLangGapicSamplesTransform
 
   @Override
   protected ClientMethodType fromCallingForm(CallingForm callingForm) {
-    return CALLING_FORMS_CLIENT_METHOD_MAP.get(callingForm);
+    return CALLING_FORM_CLIENT_METHOD_TYPE_MAP.get(callingForm);
   }
 }

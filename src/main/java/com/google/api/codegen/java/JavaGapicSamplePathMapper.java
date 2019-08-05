@@ -20,24 +20,27 @@ import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
 
-/**
- * An implementation of GapicCodePathMapper that generates the output path from a prefix, and/or
- * package name.
- */
+/** The PathMapper for Java standalone samples. */
 public class JavaGapicSamplePathMapper implements GapicCodePathMapper {
 
   @Override
   public String getOutputPath(String elementFullName, ProductConfig config) {
     ArrayList<String> dirs = new ArrayList<>();
     dirs.add("samples/src/main/java");
-    for (String seg :
-        JavaSurfaceNamer.getExamplePackageName(config.getPackageName()).split("\\.")) {
+    String samplePackageName = JavaSurfaceNamer.getExamplePackageName(config.getPackageName());
+    for (String seg : samplePackageName.split("\\.")) {
       dirs.add(seg.toLowerCase());
     }
     return Joiner.on("/").join(dirs);
   }
 
+  // TODO(hzyi): Depreate this method.
+  // The method was originally added to the interface `GapicCodePathMapper` because `method` was
+  // needed. However, the method name is no longer needed in any of the seven languages we support,
+  // and therefore we can reuse `getOutputPath` to calculate output path for sample generation.
+  // This means we cannot use one instance of `GapicCodePathMapper` for both codegen and samplegen,
+  // but that is fine.
   public String getSamplesOutputPath(String elementFullName, ProductConfig config, String method) {
-    throw new UnsupportedOperationException("unimplemented");
+    throw new UnsupportedOperationException("Deprecated: use getOutputPath instead.");
   }
 }

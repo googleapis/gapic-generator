@@ -260,6 +260,7 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
     return apiMethods;
   }
 
+  @Override
   public StaticLangApiMethodView generateApiMethod(
       MethodContext methodContext, SampleContext sampleContext) {
     List<ParamWithSimpleDoc> pagedMethodAdditionalParams =
@@ -304,6 +305,7 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
       case AsyncPagedRequestObjectMethod:
         return generatePagedRequestObjectAsyncMethod(
             methodContext, callSettingsParam, sampleContext);
+
         // LRO
       case OperationRequestObjectMethod:
         return generateOperationRequestObjectMethod(

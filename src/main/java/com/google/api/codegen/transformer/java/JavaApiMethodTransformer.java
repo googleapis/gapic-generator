@@ -64,20 +64,6 @@ public class JavaApiMethodTransformer extends StaticLangApiMethodTransformer {
   }
 
   @Override
-  public List<StaticLangApiMethodView> generateApiMethods(
-      MethodContext methodContext, SampleContext sampleContext) {
-    MethodConfig methodConfig = methodContext.getMethodConfig();
-    if (methodConfig.isPageStreaming()) {
-      return generatePagedStreamingMethods(methodContext, sampleContext);
-    } else if (methodConfig.isGrpcStreaming()) {
-      return generateGrpcStreamingMethods(methodContext, sampleContext);
-    } else if (methodContext.isLongRunningMethodContext()) {
-      return generateLongRunningMethods(methodContext, sampleContext);
-    } else {
-      return generateUnaryMethods(methodContext, sampleContext);
-    }
-  }
-
   public StaticLangApiMethodView generateApiMethod(
       MethodContext methodContext, SampleContext sampleContext) {
     switch (sampleContext.clientMethodType()) {
@@ -104,6 +90,20 @@ public class JavaApiMethodTransformer extends StaticLangApiMethodTransformer {
       default:
         throw new IllegalStateException(
             String.format("Unrecognized client method type: %s", sampleContext.clientMethodType()));
+    }
+  }
+
+  private List<StaticLangApiMethodView> generateApiMethods(
+      MethodContext methodContext, SampleContext sampleContext) {
+    MethodConfig methodConfig = methodContext.getMethodConfig();
+    if (methodConfig.isPageStreaming()) {
+      return generatePagedStreamingMethods(methodContext, sampleContext);
+    } else if (methodConfig.isGrpcStreaming()) {
+      return generateGrpcStreamingMethods(methodContext, sampleContext);
+    } else if (methodContext.isLongRunningMethodContext()) {
+      return generateLongRunningMethods(methodContext, sampleContext);
+    } else {
+      return generateUnaryMethods(methodContext, sampleContext);
     }
   }
 

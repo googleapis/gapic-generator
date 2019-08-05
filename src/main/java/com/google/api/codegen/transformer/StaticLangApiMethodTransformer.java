@@ -71,21 +71,19 @@ public class StaticLangApiMethodTransformer {
     this(SampleTransformer.create(SampleType.IN_CODE));
   }
 
-  // Overridden in Java and C#.
-  /** Generates method views for all methods in an interface. */
+  /** Generates method views for all methods in an interface. Overriden in Java and C#. */
   public List<StaticLangApiMethodView> generateApiMethods(InterfaceContext interfaceContext) {
-    return Collections.emptyList();
+    throw new UnsupportedOperationException(
+        "Not implemented: call the override in"
+            + "JavaApiMethodTransformer or CSharpApiMethodTransformer.");
   }
 
-  // Overridden in Java, to be done in C#.
-  public List<StaticLangApiMethodView> generateApiMethods(
-      MethodContext methodContext, SampleContext sampleContext) {
-    return null;
-  }
-
+  /** Generates the method view and standalone sample view for an RPC. Overriden in Java and C#. */
   public StaticLangApiMethodView generateApiMethod(
       MethodContext methodContext, SampleContext sampleContext) {
-    return null;
+    throw new UnsupportedOperationException(
+        "Not implemented: call the override in"
+            + "JavaApiMethodTransformer or CSharpApiMethodTransformer.");
   }
 
   // Used by: Java
@@ -95,7 +93,7 @@ public class StaticLangApiMethodTransformer {
         context, Collections.<ParamWithSimpleDoc>emptyList(), sampleContext);
   }
 
-  // Used by: CSharp (and indirectly by Java via the overload above)
+  // Used by: C# (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generatePagedFlattenedMethod(
       MethodContext context,
       List<ParamWithSimpleDoc> additionalParams,
@@ -128,7 +126,7 @@ public class StaticLangApiMethodTransformer {
         .build();
   }
 
-  // Used by: CSharp
+  // Used by: C#
   public StaticLangApiMethodView generatePagedFlattenedAsyncMethod(
       MethodContext context,
       List<ParamWithSimpleDoc> additionalParams,
@@ -168,7 +166,7 @@ public class StaticLangApiMethodTransformer {
         context, Collections.<ParamWithSimpleDoc>emptyList(), sampleContext);
   }
 
-  // Used by: CSharp (and indirectly by Java via the overload above)
+  // Used by: C# (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generatePagedRequestObjectMethod(
       MethodContext context,
       List<ParamWithSimpleDoc> additionalParams,
@@ -203,7 +201,7 @@ public class StaticLangApiMethodTransformer {
         .build();
   }
 
-  // Used by: CSharp
+  // Used by: C#
   public StaticLangApiMethodView generatePagedRequestObjectAsyncMethod(
       MethodContext context,
       List<ParamWithSimpleDoc> additionalParams,
@@ -310,7 +308,7 @@ public class StaticLangApiMethodTransformer {
         context, Collections.<ParamWithSimpleDoc>emptyList(), type, sampleContext);
   }
 
-  // Used by: CSharp
+  // Used by: C#
   public StaticLangApiMethodView generateFlattenedAsyncMethod(
       MethodContext context,
       List<ParamWithSimpleDoc> additionalParams,
@@ -344,7 +342,7 @@ public class StaticLangApiMethodTransformer {
         context, Collections.<ParamWithSimpleDoc>emptyList(), sampleContext);
   }
 
-  // Used by: CSharp (and indirectly by Java via the overload above)
+  // Used by: C# (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generateFlattenedMethod(
       MethodContext context,
       List<ParamWithSimpleDoc> additionalParams,
@@ -466,7 +464,7 @@ public class StaticLangApiMethodTransformer {
     return methodViewBuilder.type(ClientMethodType.CallableMethod).build();
   }
 
-  // Used by: CSharp and Go
+  // Used by: C# and Go
   public StaticLangApiMethodView generateGrpcStreamingRequestObjectMethod(
       MethodContext context, SampleContext sampleContext) {
     MethodModel method = context.getMethodModel();
@@ -524,7 +522,7 @@ public class StaticLangApiMethodTransformer {
         context, Collections.<ParamWithSimpleDoc>emptyList(), sampleContext);
   }
 
-  // Used by: CSharp
+  // Used by: C#
   public StaticLangApiMethodView generateOperationRequestObjectMethod(
       MethodContext context,
       List<ParamWithSimpleDoc> additionalParams,
@@ -633,7 +631,7 @@ public class StaticLangApiMethodTransformer {
         context, Collections.<ParamWithSimpleDoc>emptyList(), false, sampleContext);
   }
 
-  // Used by: CSharp (and indirectly by Java via the overload above)
+  // Used by: C# (and indirectly by Java via the overload above)
   public StaticLangApiMethodView generateAsyncOperationRequestObjectMethod(
       MethodContext context,
       List<ParamWithSimpleDoc> additionalParams,
