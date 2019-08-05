@@ -425,7 +425,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public List<CallingForm> getCallingForms(MethodContext context) {
     List<CallingForm> forms = CallingForm.getCallingForms(context, TargetLanguage.JAVA);
     if (context.isFlattenedMethodContext()) {
-      forms.stream().filter(CallingForm::isFlattened).collect(ImmutableList.toImmutableList());
+      forms =
+          forms.stream().filter(CallingForm::isFlattened).collect(ImmutableList.toImmutableList());
     }
     return forms;
   }
