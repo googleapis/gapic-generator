@@ -34,7 +34,7 @@ public class JavaGapicSamplePathMapper implements GapicCodePathMapper {
     return Joiner.on("/").join(dirs);
   }
 
-  // TODO(hzyi): Depreate this method.
+  // TODO(hzyi): Deprecate this method.
   // The method was originally added to the interface `GapicCodePathMapper` because `method` was
   // needed. However, the method name is no longer needed in any of the seven languages we support,
   // and therefore we can reuse `getOutputPath` to calculate output path for sample generation.

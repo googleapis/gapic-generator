@@ -86,10 +86,11 @@ public abstract class StaticLangGapicSamplesTransformer
 
     List<InterfaceContext> interfaceContexts =
         Streams.stream(apiModel.getInterfaces(productConfig))
-            .filter(i -> productConfig.hasInterfaceConfig(i))
+            .filter(iface -> productConfig.hasInterfaceConfig(iface))
             .map(
-                i ->
-                    GapicInterfaceContext.create(i, productConfig, typeTable, namer, featureConfig))
+                iface ->
+                    GapicInterfaceContext.create(
+                        iface, productConfig, typeTable, namer, featureConfig))
             .collect(ImmutableList.toImmutableList());
 
     ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable =
@@ -117,8 +118,8 @@ public abstract class StaticLangGapicSamplesTransformer
     List<MethodSampleView> allSamples =
         interfaceContexts
             .stream()
-            .flatMap(c -> apiMethodTransformer.generateApiMethods(c).stream())
-            .flatMap(m -> m.samples().stream())
+            .flatMap(iface -> apiMethodTransformer.generateApiMethods(iface).stream())
+            .flatMap(method -> method.samples().stream())
             .collect(ImmutableList.toImmutableList());
     SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
     ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
@@ -146,7 +147,7 @@ public abstract class StaticLangGapicSamplesTransformer
       SurfaceNamer namer,
       ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable) {
 
-    // Loop through sample configs and and map each sample id to its matching calling forms.
+    // Loop through sample configs and and map each sample ID to its matching calling forms.
     // We need this information when we need to create, in a language-specific way, unique
     // sample ids when one sample id has multiple matching calling forms
     Map<String, List<CallingForm>> configsAndMatchingForms = new HashMap<>();

@@ -89,9 +89,9 @@ public class CSharpStandaloneSampleTransformer extends StaticLangGapicSamplesTra
         pathMapper,
         fileHeaderTransformer,
         csharpApiMethodTransformer,
-        p -> new CSharpFeatureConfig(),
-        p -> new CSharpSurfaceNamer(p.getPackageName(), ALIAS_MODE),
-        p -> csharpCommonTransformer.createTypeTable(p + ".Samples", ALIAS_MODE));
+        product -> new CSharpFeatureConfig(),
+        product -> new CSharpSurfaceNamer(product.getPackageName(), ALIAS_MODE),
+        pkg -> csharpCommonTransformer.createTypeTable(pkg + ".Samples", ALIAS_MODE));
   }
 
   @Override

@@ -73,17 +73,13 @@ public class StaticLangApiMethodTransformer {
 
   /** Generates method views for all methods in an interface. Overriden in Java and C#. */
   public List<StaticLangApiMethodView> generateApiMethods(InterfaceContext interfaceContext) {
-    throw new UnsupportedOperationException(
-        "Not implemented: call the override in"
-            + "JavaApiMethodTransformer or CSharpApiMethodTransformer.");
+    throw new UnsupportedOperationException("Not implemented: language-specific override expected");
   }
 
   /** Generates the method view and standalone sample view for an RPC. Overriden in Java and C#. */
   public StaticLangApiMethodView generateApiMethod(
       MethodContext methodContext, SampleContext sampleContext) {
-    throw new UnsupportedOperationException(
-        "Not implemented: call the override in"
-            + "JavaApiMethodTransformer or CSharpApiMethodTransformer.");
+    throw new UnsupportedOperationException("Not implemented: language-specific override expected");
   }
 
   // Used by: Java

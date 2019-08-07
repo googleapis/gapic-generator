@@ -84,10 +84,11 @@ public abstract class DynamicLangGapicSamplesTransformer
 
     List<InterfaceContext> interfaceContexts =
         Streams.stream(apiModel.getInterfaces(productConfig))
-            .filter(i -> productConfig.hasInterfaceConfig(i))
+            .filter(iface -> productConfig.hasInterfaceConfig(iface))
             .map(
-                i ->
-                    GapicInterfaceContext.create(i, productConfig, typeTable, namer, featureConfig))
+                iface ->
+                    GapicInterfaceContext.create(
+                        iface, productConfig, typeTable, namer, featureConfig))
             .collect(ImmutableList.toImmutableList());
 
     ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable =

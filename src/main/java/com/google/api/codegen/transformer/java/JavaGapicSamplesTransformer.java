@@ -1,4 +1,4 @@
-/* Copyright 2018 Google LLC
+/* Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.common.collect.ImmutableMap;
 
-/** A transformer that generates C# standalone samples. */
+/** A transformer that generates Java standalone samples. */
 public class JavaGapicSamplesTransformer extends StaticLangGapicSamplesTransformer {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "java/standalone_sample.snip";
@@ -66,12 +66,12 @@ public class JavaGapicSamplesTransformer extends StaticLangGapicSamplesTransform
         pathMapper,
         fileHeaderTransformer,
         apiMethodTransformer,
-        p -> JavaFeatureConfig.create(p),
-        p -> new JavaSurfaceNamer(p.getPackageName(), p.getPackageName()),
-        p ->
+        product -> JavaFeatureConfig.create(product),
+        product -> new JavaSurfaceNamer(product.getPackageName(), product.getPackageName()),
+        pkg ->
             new ModelTypeTable(
-                new JavaTypeTable(JavaSurfaceNamer.getExamplePackageName(p)),
-                new JavaModelTypeNameConverter(JavaSurfaceNamer.getExamplePackageName(p))));
+                new JavaTypeTable(JavaSurfaceNamer.getExamplePackageName(pkg)),
+                new JavaModelTypeNameConverter(JavaSurfaceNamer.getExamplePackageName(pkg))));
   }
 
   @Override
