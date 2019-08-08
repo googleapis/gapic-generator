@@ -399,7 +399,7 @@ jobs:
           path: reports/gapic-generator
   generate-clients:
     docker:
-      - image: googleapis/artman:0.30.0
+      - image: googleapis/artman:0.32.1
     working_directory: /tmp/
     environment:
       <<: *anchor_artman_vars
@@ -414,7 +414,7 @@ jobs:
           name: Generate Pubsub Libraries
           command: |
             cd workspace/gapic-generator
-            python generate_clients.py \
+            python3 generate_clients.py \
                 google/pubsub/artman_pubsub.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
@@ -423,7 +423,7 @@ jobs:
           name: Generate Logging Libraries
           command: |
             cd workspace/gapic-generator
-            python generate_clients.py \
+            python3 generate_clients.py \
                 google/logging/artman_logging.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
@@ -433,7 +433,7 @@ jobs:
           command: |
             cd workspace/gapic-generator
             # TODO: Move off artman once package2.yaml is no longer needed.
-            python generate_clients.py \
+            python3 generate_clients.py \
                 google/cloud/speech/artman_speech_v1.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
@@ -442,7 +442,7 @@ jobs:
          name: Generate Showcase Libraries
          command: |
            cd workspace/gapic-generator
-           python generate_clients.py \
+           python3 generate_clients.py \
                google/showcase/artman_showcase.yaml \
                --user-config=.circleci/artman_config.yaml \
                --log-dir=${ARTMAN_REPORTS_DIR} \
@@ -719,7 +719,7 @@ jobs:
     environment:
       ARTMAN_USER_CONFIG: /tmp/workspace/gapic-generator/.circleci/artman_config.yaml
     docker:
-      - image: googleapis/artman:0.30.0
+      - image: googleapis/artman:0.32.1
     steps:
       - attach_workspace:
           at: workspace
