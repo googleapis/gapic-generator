@@ -16,31 +16,28 @@ package com.google.api.codegen.viewmodel;
 
 /** The type of method on the client surface. */
 public enum ClientMethodType {
-  // Java
-  PagedFlattenedMethod,
-  PagedRequestObjectMethod,
-  PagedCallableMethod,
-  UnpagedListCallableMethod,
-  FlattenedMethod,
-  RequestObjectMethod,
-  AsyncRequestObjectMethod,
-  CallableMethod,
-  OperationRequestObjectMethod,
-  AsyncOperationFlattenedMethod,
-  AsyncOperationRequestObjectMethod,
-  OperationCallableMethod,
-  // Dynamic langs
-  OptionalArrayMethod,
-  PagedOptionalArrayMethod,
-  LongRunningOptionalArrayMethod,
-  // C#
-  FlattenedAsyncCallSettingsMethod,
-  FlattenedAsyncCancellationTokenMethod,
-  PagedFlattenedAsyncMethod,
-  AsyncRequestObjectCallSettingsMethod,
-  AsyncRequestObjectCancellationMethod,
-  AsyncPagedRequestObjectMethod,
-  AsyncOperationFlattenedCallSettingsMethod,
-  AsyncOperationFlattenedCancellationMethod,
-  OperationFlattenedMethod,
+  PagedFlattenedMethod, // used by: C# Java
+  PagedRequestObjectMethod, // used by: C# Java
+  PagedCallableMethod, // used by: Java
+  UnpagedListCallableMethod, // used by: Java
+  FlattenedMethod, // used by: C# Java
+  RequestObjectMethod, // used by: C# Java
+  AsyncRequestObjectMethod, // used by: C#
+  CallableMethod, // used by: java
+  OperationRequestObjectMethod, // used by: C#
+  AsyncOperationFlattenedMethod, // used by: C#, Java
+  AsyncOperationRequestObjectMethod, // used by: C#, Java
+  OperationCallableMethod, // used by: C#
+  OptionalArrayMethod, // used by: Go Node.js PHP Python Ruby
+  PagedOptionalArrayMethod, // used by: Go Node.js PHP Python Ruby
+  LongRunningOptionalArrayMethod, // used by: Go Node.js PHP Python Ruby
+  FlattenedAsyncCallSettingsMethod, // used by: C#
+  FlattenedAsyncCancellationTokenMethod, // used by: C#
+  PagedFlattenedAsyncMethod, // used by: C#
+  AsyncRequestObjectCallSettingsMethod, // used by: C#
+  AsyncRequestObjectCancellationMethod, // used by: C#
+  AsyncPagedRequestObjectMethod, // used by: C#
+  AsyncOperationFlattenedCallSettingsMethod, // used by: C#
+  AsyncOperationFlattenedCancellationMethod, // used by: C#
+  OperationFlattenedMethod, // used by: C#
 }

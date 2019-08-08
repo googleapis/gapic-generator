@@ -269,13 +269,14 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
 
       if (method.getRequestStreaming() || method.getResponseStreaming()) {
         apiMethods.add(
-            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext));
+            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext, null));
       } else if (methodConfig.isPageStreaming()) {
-        apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
+        apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext, null));
       } else if (methodContext.isLongRunningMethodContext()) {
-        apiMethods.add(apiMethodTransformer.generateOperationRequestObjectMethod(methodContext));
+        apiMethods.add(
+            apiMethodTransformer.generateOperationRequestObjectMethod(methodContext, null));
       } else {
-        apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
+        apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext, null));
       }
     }
     return apiMethods;

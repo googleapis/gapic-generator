@@ -28,9 +28,11 @@ import com.google.api.codegen.config.SampleContext;
 import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.viewmodel.CallingForm;
-import com.google.api.codegen.viewmodel.DynamicLangSampleView;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.MethodSampleView;
-import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
+import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
+import com.google.api.codegen.viewmodel.StaticLangFileView;
+import com.google.api.codegen.viewmodel.StaticLangSampleClassView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableTable;
@@ -45,33 +47,32 @@ import java.util.function.Function;
 
 /**
  * A base transformer to generate standalone samples for each method in the GAPIC surface generated
- * from the same ApiModel in dynamic languages.
+ * from the same ApiModel in Java and C#.
  */
-public abstract class DynamicLangGapicSamplesTransformer
+public abstract class StaticLangGapicSamplesTransformer
     implements ModelToViewTransformer<ProtoApiModel> {
 
-  private static final SampleSpec.SampleType sampleType = SampleSpec.SampleType.STANDALONE;
   private final String templateFileName;
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer;
-  private final DynamicLangApiMethodTransformer apiMethodTransformer;
-  private final FeatureConfig featureConfig;
+  private final StaticLangApiMethodTransformer apiMethodTransformer;
+  private final Function<GapicProductConfig, FeatureConfig> newFeatureConfig;
   private final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer;
   private final Function<String, ModelTypeTable> newTypeTable;
 
-  protected DynamicLangGapicSamplesTransformer(
+  protected StaticLangGapicSamplesTransformer(
       String templateFileName,
       GapicCodePathMapper pathMapper,
       FileHeaderTransformer fileHeaderTransformer,
-      DynamicLangApiMethodTransformer apiMethodTransformer,
-      FeatureConfig featureConfig,
+      StaticLangApiMethodTransformer apiMethodTransformer,
+      Function<GapicProductConfig, FeatureConfig> newFeatureConfig,
       Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer,
       Function<String, ModelTypeTable> newTypeTable) {
     this.templateFileName = templateFileName;
     this.pathMapper = pathMapper;
     this.fileHeaderTransformer = fileHeaderTransformer;
     this.apiMethodTransformer = apiMethodTransformer;
-    this.featureConfig = featureConfig;
+    this.newFeatureConfig = newFeatureConfig;
     this.newSurfaceNamer = newSurfaceNamer;
     this.newTypeTable = newTypeTable;
   }
@@ -81,6 +82,7 @@ public abstract class DynamicLangGapicSamplesTransformer
     String packageName = productConfig.getPackageName();
     SurfaceNamer namer = newSurfaceNamer.apply(productConfig);
     ModelTypeTable typeTable = newTypeTable.apply(packageName);
+    FeatureConfig featureConfig = newFeatureConfig.apply(productConfig);
 
     List<InterfaceContext> interfaceContexts =
         Streams.stream(apiModel.getInterfaces(productConfig))
@@ -94,7 +96,7 @@ public abstract class DynamicLangGapicSamplesTransformer
     ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable =
         productConfig.getSampleConfigTable();
 
-    // We don't have sample configs written in sample config. Continue to use gapic config.
+    // We don't have sample configs. Continue to use gapic config.
     if (sampleConfigTable.isEmpty()) {
       return generateSamplesFromGapicConfigs(interfaceContexts, productConfig, namer);
     }
@@ -116,19 +118,20 @@ public abstract class DynamicLangGapicSamplesTransformer
     List<MethodSampleView> allSamples =
         interfaceContexts
             .stream()
-            .flatMap(c -> apiMethodTransformer.generateApiMethods(c).stream())
-            .flatMap(m -> m.samples().stream())
+            .flatMap(iface -> apiMethodTransformer.generateApiMethods(iface).stream())
+            .flatMap(method -> method.samples().stream())
             .collect(ImmutableList.toImmutableList());
     SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
     ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
     for (InterfaceContext context : interfaceContexts) {
-      List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
-      for (OptionalArrayMethodView method : methods) {
+      List<StaticLangApiMethodView> methods = apiMethodTransformer.generateApiMethods(context);
+      for (StaticLangApiMethodView method : methods) {
         for (MethodSampleView sample : method.samples()) {
           sampleFileViews.add(
               newSampleFileView(
                   productConfig,
                   context,
+                  registry.getSampleClassName(sample, method.name()),
                   registry.getSampleFileName(sample, method.name()),
                   method,
                   sample));
@@ -144,7 +147,7 @@ public abstract class DynamicLangGapicSamplesTransformer
       SurfaceNamer namer,
       ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable) {
 
-    // Loop through sample configs and and map each sample id to its matching calling forms.
+    // Loop through sample configs and and map each sample ID to its matching calling forms.
     // We need this information when we need to create, in a language-specific way, unique
     // sample ids when one sample id has multiple matching calling forms
     Map<String, List<CallingForm>> configsAndMatchingForms = new HashMap<>();
@@ -188,26 +191,45 @@ public abstract class DynamicLangGapicSamplesTransformer
           List<CallingForm> allMatchingCallingForms =
               configsAndMatchingForms.get(sampleConfig.id());
           for (CallingForm form : allMatchingCallingForms) {
-            InitCodeOutputType initCodeOutputType =
-                methodContext.getMethodModel().getRequestStreaming()
-                    ? InitCodeOutputType.SingleObject
-                    : InitCodeOutputType.FieldList;
+            InitCodeOutputType initCodeOutputType = InitCodeOutputType.SingleObject;
+
+            // In Java and C#, we need to handle flattening.
+            if (CallingForm.isFlattened(form)) {
+              if (!methodContext.getMethodConfig().isFlattening()) {
+                continue;
+              }
+              initCodeOutputType = InitCodeOutputType.FieldList;
+              methodContext =
+                  methodContext
+                      .getSurfaceInterfaceContext()
+                      .asFlattenedMethodContext(
+                          methodContext,
+                          methodContext.getMethodConfig().getFlatteningConfigs().get(0));
+            }
+
             SampleContext sampleContext =
                 SampleContext.newBuilder()
                     .uniqueSampleId(registry.getUniqueSampleId(sampleConfig, form))
                     .sampleType(SampleSpec.SampleType.STANDALONE)
                     .callingForm(form)
+                    .clientMethodType(fromCallingForm(form))
                     .sampleConfig(sampleConfig)
                     .initCodeOutputType(initCodeOutputType)
                     .build();
-            OptionalArrayMethodView methodView =
+            StaticLangApiMethodView methodView =
                 apiMethodTransformer.generateApiMethod(methodContext, sampleContext);
 
             MethodSampleView methodSampleView = methodView.samples().get(0);
             String fileName = namer.getApiSampleFileName(sampleContext.uniqueSampleId());
+            String className = namer.getApiSampleClassName(sampleContext.uniqueSampleId());
             sampleFileViews.add(
                 newSampleFileView(
-                    productConfig, interfaceContext, fileName, methodView, methodSampleView));
+                    productConfig,
+                    interfaceContext,
+                    className,
+                    fileName,
+                    methodView,
+                    methodSampleView));
           }
         }
       }
@@ -215,33 +237,32 @@ public abstract class DynamicLangGapicSamplesTransformer
     return sampleFileViews.build();
   }
 
-  private DynamicLangSampleView newSampleFileView(
+  private StaticLangFileView newSampleFileView(
       GapicProductConfig productConfig,
       InterfaceContext context,
+      String sampleClassName,
       String sampleFileName,
-      OptionalArrayMethodView method,
+      StaticLangApiMethodView method,
       MethodSampleView sample) {
-    return newSampleFileViewBuilder(productConfig, context, sampleFileName, method, sample).build();
-  }
+    StaticLangSampleClassView sampleClassView =
+        StaticLangSampleClassView.newBuilder()
+            .name(sampleClassName)
+            .libraryMethod(method)
+            .sample(sample)
+            .build();
 
-  protected DynamicLangSampleView.Builder newSampleFileViewBuilder(
-      GapicProductConfig productConfig,
-      InterfaceContext context,
-      String sampleFileName,
-      OptionalArrayMethodView method,
-      MethodSampleView sample) {
     String outputPath =
         Paths.get(
-                pathMapper.getSamplesOutputPath(
-                    context.getInterfaceModel().getFullName(), productConfig, method.name()),
+                pathMapper.getOutputPath(context.getInterfaceModel().getFullName(), productConfig),
                 sampleFileName)
             .toString();
-    return DynamicLangSampleView.newBuilder()
-        .templateFileName(templateFileName)
-        .fileHeader(fileHeaderTransformer.generateFileHeader(context))
-        .outputPath(outputPath)
-        .libraryMethod(method)
-        .sample(sample);
+
+    StaticLangFileView.Builder<StaticLangSampleClassView> builder = StaticLangFileView.newBuilder();
+    builder.templateFileName(templateFileName);
+    builder.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    builder.outputPath(outputPath);
+    builder.classView(sampleClassView);
+    return builder.build();
   }
 
   private static boolean hasMatchingCallingForm(
@@ -253,4 +274,6 @@ public abstract class DynamicLangGapicSamplesTransformer
             .stream()
             .anyMatch(t -> t.toLowerUnderscore().matches(userProvidedCallingPattern));
   }
+
+  protected abstract ClientMethodType fromCallingForm(CallingForm callingForm);
 }

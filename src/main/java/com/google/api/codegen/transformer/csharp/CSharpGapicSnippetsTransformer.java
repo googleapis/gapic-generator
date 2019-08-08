@@ -226,7 +226,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     SurfaceNamer namer = methodContext.getNamer();
     StaticLangApiMethodView method =
         generateInitCode(
-            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext),
+            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext, null),
             methodContext,
             methodContext.getMethodConfig().getRequiredFieldConfigs(),
             InitCodeOutputType.SingleObject,
@@ -250,7 +250,8 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
                 methodContext,
                 Collections.<ParamWithSimpleDoc>emptyList(),
                 ClientMethodType.AsyncOperationFlattenedMethod,
-                true),
+                true,
+                null),
             methodContext,
             methodContext.getFlatteningConfig().getFlattenedFieldConfigs().values(),
             InitCodeOutputType.FieldList,
@@ -271,7 +272,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     StaticLangApiMethodView method =
         generateInitCode(
             apiMethodTransformer.generateOperationFlattenedMethod(
-                methodContext, Collections.<ParamWithSimpleDoc>emptyList()),
+                methodContext, Collections.<ParamWithSimpleDoc>emptyList(), null),
             methodContext,
             methodContext.getFlatteningConfig().getFlattenedFieldConfigs().values(),
             InitCodeOutputType.FieldList,
@@ -292,7 +293,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     StaticLangApiMethodView method =
         generateInitCode(
             apiMethodTransformer.generateAsyncOperationRequestObjectMethod(
-                methodContext, Collections.<ParamWithSimpleDoc>emptyList(), true),
+                methodContext, Collections.<ParamWithSimpleDoc>emptyList(), true, null),
             methodContext,
             methodContext.getMethodConfig().getRequiredFieldConfigs(),
             InitCodeOutputType.SingleObject,
@@ -312,7 +313,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     SurfaceNamer namer = methodContext.getNamer();
     StaticLangApiMethodView method =
         generateInitCode(
-            apiMethodTransformer.generateOperationRequestObjectMethod(methodContext),
+            apiMethodTransformer.generateOperationRequestObjectMethod(methodContext, null),
             methodContext,
             methodContext.getMethodConfig().getRequiredFieldConfigs(),
             InitCodeOutputType.SingleObject,
@@ -332,7 +333,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     StaticLangApiMethodView method =
         generateInitCode(
             apiMethodTransformer.generatePagedFlattenedAsyncMethod(
-                methodContext, csharpCommonTransformer.pagedMethodAdditionalParams()),
+                methodContext, csharpCommonTransformer.pagedMethodAdditionalParams(), null),
             methodContext,
             methodContext.getFlatteningConfig().getFlattenedFieldConfigs().values(),
             InitCodeOutputType.FieldList,
@@ -357,7 +358,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     StaticLangApiMethodView method =
         generateInitCode(
             apiMethodTransformer.generatePagedFlattenedMethod(
-                methodContext, csharpCommonTransformer.pagedMethodAdditionalParams()),
+                methodContext, csharpCommonTransformer.pagedMethodAdditionalParams(), null),
             methodContext,
             methodContext.getFlatteningConfig().getFlattenedFieldConfigs().values(),
             InitCodeOutputType.FieldList,
@@ -382,7 +383,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     StaticLangApiMethodView method =
         generateInitCode(
             apiMethodTransformer.generatePagedRequestObjectAsyncMethod(
-                methodContext, csharpCommonTransformer.pagedMethodAdditionalParams()),
+                methodContext, csharpCommonTransformer.pagedMethodAdditionalParams(), null),
             methodContext,
             methodContext.getMethodConfig().getRequiredFieldConfigs(),
             InitCodeOutputType.SingleObject,
@@ -405,7 +406,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     StaticLangApiMethodView method =
         generateInitCode(
             apiMethodTransformer.generatePagedRequestObjectMethod(
-                methodContext, csharpCommonTransformer.pagedMethodAdditionalParams()),
+                methodContext, csharpCommonTransformer.pagedMethodAdditionalParams(), null),
             methodContext,
             methodContext.getMethodConfig().getRequiredFieldConfigs(),
             InitCodeOutputType.SingleObject,
@@ -429,7 +430,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     StaticLangApiMethodView method =
         generateInitCode(
             apiMethodTransformer.generateFlattenedAsyncMethod(
-                methodContext, ClientMethodType.FlattenedAsyncCallSettingsMethod),
+                methodContext, ClientMethodType.FlattenedAsyncCallSettingsMethod, null),
             methodContext,
             methodContext.getFlatteningConfig().getFlattenedFieldConfigs().values(),
             InitCodeOutputType.FieldList,
@@ -452,7 +453,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
       MethodContext methodContext, String suffix) {
     StaticLangApiMethodView method =
         generateInitCode(
-            apiMethodTransformer.generateFlattenedMethod(methodContext),
+            apiMethodTransformer.generateFlattenedMethod(methodContext, null),
             methodContext,
             methodContext.getFlatteningConfig().getFlattenedFieldConfigs().values(),
             InitCodeOutputType.FieldList,
@@ -475,7 +476,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     SurfaceNamer namer = methodContext.getNamer();
     StaticLangApiMethodView method =
         generateInitCode(
-            apiMethodTransformer.generateRequestObjectMethod(methodContext),
+            apiMethodTransformer.generateRequestObjectMethod(methodContext, null),
             methodContext,
             methodContext.getMethodConfig().getRequiredFieldConfigs(),
             InitCodeOutputType.SingleObject,
@@ -497,7 +498,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
     SurfaceNamer namer = methodContext.getNamer();
     StaticLangApiMethodView method =
         generateInitCode(
-            apiMethodTransformer.generateRequestObjectAsyncMethod(methodContext),
+            apiMethodTransformer.generateRequestObjectAsyncMethod(methodContext, null),
             methodContext,
             methodContext.getMethodConfig().getRequiredFieldConfigs(),
             InitCodeOutputType.SingleObject,
