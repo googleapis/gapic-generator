@@ -234,6 +234,7 @@ public abstract class StaticLangGapicSamplesTransformer
         }
       }
     }
+    sampleFileViews.add()
     return sampleFileViews.build();
   }
 
