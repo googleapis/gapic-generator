@@ -96,6 +96,6 @@ public class JavaGapicSamplesTransformer extends StaticLangGapicSamplesTransform
 
   public static SampleManifestTransformer createManifestTransformer() {
     return new SampleManifestTransformer(
-        new JavaSampleMetadataNamer(), newFeatureConfig, newSurfaceNamer, newTypeTable);
+        new JavaSampleMetadataNamer(), newFeatureConfig, newSurfaceNamer, newTypeTable, pathMapper);
   }
 }
