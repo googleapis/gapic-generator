@@ -39,14 +39,16 @@ public abstract class DynamicLangSampleView implements ViewModel {
 
   public abstract String outputPath();
 
-  // Only needed in Java for now
-  @Nullable
-  public abstract String className();
-
   /** The client library method illustrated in this sample. */
   public abstract OptionalArrayMethodView libraryMethod();
 
+  /** Only Used in Python. */
+  @Nullable
   public abstract String gapicPackageName();
+
+  /** Only Used in PHP. */
+  @Nullable
+  public abstract String autoloadPath();
 
   // TODO: Currently we put generated samples in libraryMethod(),
   // extract them, flatten them out and put the samples back so that
@@ -56,9 +58,6 @@ public abstract class DynamicLangSampleView implements ViewModel {
   // for other languages as well and remove @Nullable here.
   @Nullable
   public abstract MethodSampleView sample();
-
-  @Nullable
-  public abstract SampleExtraInfo extraInfo();
 
   public static Builder newBuilder() {
     return new AutoValue_DynamicLangSampleView.Builder();
@@ -75,13 +74,14 @@ public abstract class DynamicLangSampleView implements ViewModel {
 
     public abstract Builder outputPath(String val);
 
-    public abstract Builder className(String val);
+    // Used by PhpGapicSamplesTransformer to calculate `autoloadPath`
+    public abstract String outputPath();
 
     public abstract Builder libraryMethod(OptionalArrayMethodView val);
 
     public abstract Builder gapicPackageName(String val);
 
-    public abstract Builder extraInfo(SampleExtraInfo val);
+    public abstract Builder autoloadPath(String val);
 
     public abstract Builder sample(MethodSampleView val);
 

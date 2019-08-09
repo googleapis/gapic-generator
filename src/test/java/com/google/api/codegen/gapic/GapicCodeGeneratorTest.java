@@ -32,6 +32,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
   public GapicCodeGeneratorTest(
       TargetLanguage language,
       String[] gapicConfigFileNames,
+      String[] sampleConfigFileNames,
       String packageConfigFileName,
       List<String> snippetName,
       String baseline,
@@ -41,6 +42,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
     super(
         language,
         gapicConfigFileNames,
+        sampleConfigFileNames,
         packageConfigFileName,
         snippetName,
         baseline,
@@ -48,9 +50,10 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
         clientPackage);
     this.baseNames = baseNames;
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/common/samples");
   }
 
-  @Parameters(name = "{4}")
+  @Parameters(name = "{5}")
   public static List<Object[]> testedConfigs() {
     return Arrays.asList(
         GapicTestBase2.createTestConfig(
@@ -76,6 +79,16 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "no_path_templates_pkg2.yaml",
             "no_path_templates"),
         GapicTestBase2.createTestConfig(
+            TargetLanguage.PHP,
+            new String[] {"samplegen_config_migration_library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            null,
+            null,
+            sampleConfigFileNames(),
+            "php_samplegen_config_migration_library.baseline",
+            new String[] {"another_service"}),
+        GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"library_gapic.yaml"},
             null,
@@ -92,6 +105,21 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             new String[] {"no_path_templates_gapic.yaml"},
             "no_path_templates_pkg2.yaml",
             "no_path_templates"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA,
+            new String[] {"my_streaming_proto_gapic.yaml"},
+            "my_streaming_proto_pkg2.yaml",
+            "my_streaming_proto"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA,
+            new String[] {"samplegen_config_migration_library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            null,
+            null,
+            sampleConfigFileNames(),
+            "java_samplegen_config_migration_library.baseline",
+            new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
             new String[] {"library_gapic.yaml"},
@@ -110,6 +138,16 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "longrunning_pkg2.yaml",
             "longrunning"),
         GapicTestBase2.createTestConfig(
+            TargetLanguage.RUBY,
+            new String[] {"samplegen_config_migration_library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            null,
+            null,
+            sampleConfigFileNames(),
+            "ruby_samplegen_config_migration_library.baseline",
+            new String[] {"another_service"}),
+        GapicTestBase2.createTestConfig(
             TargetLanguage.PYTHON,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
@@ -127,6 +165,16 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "multiple_services",
             "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
+            TargetLanguage.PYTHON,
+            new String[] {"samplegen_config_migration_library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            null,
+            null,
+            sampleConfigFileNames(),
+            "python_samplegen_config_migration_library.baseline",
+            new String[] {"another_service"}),
+        GapicTestBase2.createTestConfig(
             TargetLanguage.NODEJS,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
@@ -144,15 +192,54 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "multiple_services",
             "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
+            TargetLanguage.NODEJS,
+            new String[] {"samplegen_config_migration_library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            null,
+            null,
+            sampleConfigFileNames(),
+            "nodejs_samplegen_config_migration_library.baseline",
+            new String[] {"another_service"}),
+        GapicTestBase2.createTestConfig(
             TargetLanguage.CSHARP,
             new String[] {"library_gapic.yaml"},
             "library_pkg2.yaml",
             "library",
-            "another_service"));
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.CSHARP,
+            new String[] {"samplegen_config_migration_library_gapic.yaml"},
+            "library_pkg2.yaml",
+            "library",
+            null,
+            null,
+            sampleConfigFileNames(),
+            "csharp_samplegen_config_migration_library.baseline",
+            new String[] {"another_service"}));
   }
 
   @Test
   public void test() throws Exception {
     test(baseNames);
+  }
+
+  private static String[] sampleConfigFileNames() {
+    return new String[] {
+      "babble_about_book.sample.yaml",
+      "delete_shelf.sample.yaml",
+      "discuss_book.sample.yaml",
+      "find_related_books.sample.yaml",
+      "get_big_book.sample.yaml",
+      "get_big_nothing.sample.yaml",
+      "get_book.sample.yaml",
+      "get_book_from_absolutely_anywhere.sample.yaml",
+      "get_shelf.sample.yaml",
+      "list_shelves.sample.yaml",
+      "monolog_about_book.sample.yaml",
+      "publish_series.sample.yaml",
+      "stream_books.sample.yaml",
+      "test_optional_required_flattening_params.sample.yaml"
+    };
   }
 }

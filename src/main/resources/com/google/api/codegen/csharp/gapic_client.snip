@@ -489,7 +489,7 @@
                     {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
                     @if call.anyHeaderRequestParams
                         {@""}    {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName})
-                        {@""}    .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"{@routingHeader(call.headerRequestParams)}"));
+                        {@routingHeader(call.headerRequestParams)};
                     @else
                         {@""}    {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
                     @end
@@ -497,7 +497,7 @@
                     {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
                     @if call.anyHeaderRequestParams
                         {@""}    {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName})
-                        {@""}    .WithCallSettingsOverlay(request => gaxgrpc::CallSettings.FromHeader("x-goog-request-params", $"{@routingHeader(call.headerRequestParams)}"));
+                        {@routingHeader(call.headerRequestParams)};
                     @else
                         {@""}    {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
                     @end
@@ -587,8 +587,8 @@
 
 # headers: List[HeaderRequestParamView]
 @private routingHeader(headers)
-    @join header : headers on "&"
-        {@header.fullyQualifiedName}={request.{@routingHeaderGetters(header.gettersChain)}}
+    @join header : headers
+        {@""}    .WithGoogleRequestParam("{@header.fullyQualifiedName}", request => request.{@routingHeaderGetters(header.gettersChain)})
     @end
 @end
 
@@ -1130,6 +1130,7 @@
 #        TYPE         |    SINGLE    |    SINGLE    |   REPEATED   |   REPEATED   |
 #                     |   OPTIONAL   |   REQUIRED   |   OPTIONAL   |   REQUIRED   |
 # int/float/bool/enum | nullable->def| nothing to do| null->empty  | checknotnull | def = 0/0.0/false/(Enum)0
+# Wrappers            | null ok      | checknotnull | null->empty  | checknotnull | [def = null]
 # string              | null->def    | checknotempty| null->empty  | checknotnull | def = ""
 # bytes               | null->def    | checknotnull | null->empty  | checknotnull | def = byte[0]
 # message             | null ok      | checknotnull | null->empty  | checknotnull | [def = null unused]
@@ -1173,7 +1174,11 @@
                     @if param.typeName == "string"
                         {@param.nameAsMethodName} = gax::GaxPreconditions.CheckNotNullOrEmpty({@param.name}, nameof({@param.name})),
                     @else
-                        {@param.nameAsMethodName} = gax::GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})),
+                        @if param.typeName.endsWith("?")
+                            {@param.nameAsMethodName} = {@param.name} ?? throw new sys::ArgumentNullException(nameof({@param.name})),
+                        @else
+                            {@param.nameAsMethodName} = gax::GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})),
+                        @end
                     @end
                 @end
             @end

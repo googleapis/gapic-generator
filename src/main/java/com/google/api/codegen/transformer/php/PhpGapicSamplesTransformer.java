@@ -18,184 +18,74 @@ package com.google.api.codegen.transformer.php;
  * A transformer to generate PHP standalone samples for each method in the GAPIC surface generated
  * from the same ApiModel.
  */
-import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.DynamicLangGapicSamplesTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SampleTransformer;
-import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
-import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import java.io.File;
-import java.util.Collections;
-import java.util.List;
 
-public class PhpGapicSamplesTransformer implements ModelToViewTransformer<ProtoApiModel> {
+public class PhpGapicSamplesTransformer extends DynamicLangGapicSamplesTransformer {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "php/standalone_sample.snip";
-
-  private final DynamicLangApiMethodTransformer apiMethodTransformer =
+  private static final SampleType sampleType = SampleType.STANDALONE;
+  private static final ImportSectionTransformer importSectionTransformer =
+      new PhpImportSectionTransformer();
+  private static final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
           new PhpApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
-              .initCodeTransformer(
-                  new InitCodeTransformer(new PhpImportSectionTransformer(), false))
+              .initCodeTransformer(new InitCodeTransformer(importSectionTransformer, false))
               .sampleType(SampleType.STANDALONE)
               .sampleImportTransformer(new PhpSampleImportTransformer())
               .build());
-  private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new PhpImportSectionTransformer());
-  private final GapicCodePathMapper pathMapper;
-  private final PhpMethodViewGenerator methodGenerator =
-      new PhpMethodViewGenerator(apiMethodTransformer);
-  private final PackageMetadataConfig packageConfig;
+  private static final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(importSectionTransformer);
 
+  // TODO(hzyi): `packageConfig` is not actually needed. Remove it in a coming PR.
   public PhpGapicSamplesTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
-    this.pathMapper = pathMapper;
-    this.packageConfig = packageConfig;
+    super(
+        STANDALONE_SAMPLE_TEMPLATE_FILENAME,
+        pathMapper,
+        fileHeaderTransformer,
+        apiMethodTransformer,
+        new PhpFeatureConfig(),
+        p -> new PhpSurfaceNamer(p.getPackageName()),
+        p ->
+            new ModelTypeTable(
+                new PhpTypeTable(p + "\\Samples"), new PhpModelTypeNameConverter(p + "\\Samples")));
   }
 
   @Override
-  public List<String> getTemplateFileNames() {
-    return ImmutableList.of(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
-  }
+  protected DynamicLangSampleView.Builder newSampleFileViewBuilder(
+      GapicProductConfig productConfig,
+      InterfaceContext context,
+      String sampleFileName,
+      OptionalArrayMethodView method,
+      MethodSampleView sample) {
 
-  @Override
-  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
-    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
-      if (!productConfig.hasInterfaceConfig(apiInterface)) {
-        continue;
-      }
+    DynamicLangSampleView.Builder builder =
+        super.newSampleFileViewBuilder(productConfig, context, sampleFileName, method, sample);
+    String outputPath = builder.outputPath();
+    String autoloadPath =
+        "__DIR__ . '"
+            + Strings.repeat(
+                "/..", (int) outputPath.chars().filter(c -> c == File.separatorChar).count())
+            + "/vendor/autoload.php'";
 
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      models.addAll(generateSamples(context));
-    }
-    return models.build();
-  }
-
-  private List<ViewModel> generateSamples(GapicInterfaceContext context) {
-    ImmutableList.Builder<ViewModel> viewModels = new ImmutableList.Builder<>();
-    SurfaceNamer namer = context.getNamer();
-
-    List<OptionalArrayMethodView> allMethods = methodGenerator.generateApiMethods(context);
-    List<MethodSampleView> allSamples =
-        allMethods
-            .stream()
-            .flatMap(m -> m.samples().stream())
-            .collect(ImmutableList.toImmutableList());
-    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
-    DynamicLangSampleView.Builder sampleClassBuilder = DynamicLangSampleView.newBuilder();
-    for (OptionalArrayMethodView method : allMethods) {
-      String subPath =
-          pathMapper.getSamplesOutputPath(
-              context.getInterfaceModel().getFullName(),
-              context.getProductConfig(),
-              Name.lowerCamel(method.name()).toLowerUnderscore());
-      for (MethodSampleView methodSample : method.samples()) {
-        String sampleOutputPath =
-            subPath
-                + File.separator
-                + registry.getSampleFileName(
-                    methodSample, Name.anyLower(method.name()).toLowerUnderscore());
-        String autoloadPath =
-            "__DIR__ . '"
-                + Strings.repeat(
-                    "/..",
-                    (int) sampleOutputPath.chars().filter(c -> c == File.separatorChar).count())
-                + "/vendor/autoload.php'";
-        viewModels.add(
-            sampleClassBuilder
-                .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
-                .fileHeader(fileHeaderTransformer.generateFileHeader(context))
-                .outputPath(sampleOutputPath)
-                .libraryMethod(
-                    method.toBuilder().samples(Collections.singletonList(methodSample)).build())
-                .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
-                .extraInfo(
-                    PhpSampleExtraInfo.newBuilder()
-                        .autoloadPath(autoloadPath)
-                        .hasDefaultServiceScopes(
-                            context.getInterfaceConfig().hasDefaultServiceScopes())
-                        .hasDefaultServiceAddress(
-                            context.getInterfaceConfig().hasDefaultServiceAddress())
-                        .build())
-                .build());
-      }
-    }
-    return viewModels.build();
-  }
-
-  @AutoValue
-  public abstract static class PhpSampleExtraInfo extends DynamicLangSampleView.SampleExtraInfo {
-
-    abstract boolean hasDefaultServiceAddress();
-
-    abstract boolean hasDefaultServiceScopes();
-
-    /**
-     * Used by standalone samples. autoload.php generated by "composer install" includes
-     * dependencies that standalone samples require to execute. This path is the relative path from
-     * the standalone sample file to "src/vendor/autoload.php". We put it here so that standalone
-     * samples know how to correctly require autoload.php.
-     */
-    public abstract String autoloadPath();
-
-    public boolean missingDefaultServiceScopes() {
-      return !hasDefaultServiceScopes();
-    }
-
-    public boolean missingDefaultServiceAddress() {
-      return !hasDefaultServiceAddress();
-    }
-
-    public boolean hasMissingDefaultOptions() {
-      return missingDefaultServiceAddress() || missingDefaultServiceScopes();
-    }
-
-    public static Builder newBuilder() {
-      return new AutoValue_PhpGapicSamplesTransformer_PhpSampleExtraInfo.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-      abstract Builder hasDefaultServiceAddress(boolean val);
-
-      abstract Builder hasDefaultServiceScopes(boolean val);
-
-      abstract Builder autoloadPath(String val);
-
-      abstract PhpSampleExtraInfo build();
-    }
-  }
-
-  private GapicInterfaceContext createContext(
-      InterfaceModel apiInterface, GapicProductConfig productConfig) {
-    String samplePackageName = productConfig.getPackageName() + "\\Samples";
-    return GapicInterfaceContext.create(
-        apiInterface,
-        productConfig,
-        new ModelTypeTable(
-            new PhpTypeTable(samplePackageName), new PhpModelTypeNameConverter(samplePackageName)),
-        new PhpSurfaceNamer(productConfig.getPackageName()),
-        new PhpFeatureConfig());
+    return builder.autoloadPath(autoloadPath);
   }
 }

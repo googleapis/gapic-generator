@@ -21,8 +21,8 @@ import com.google.common.collect.ImmutableList;
 @AutoValue
 public abstract class MethodSampleView {
 
-  /** The value set used in this sample. */
-  public abstract SampleValueSetView valueSet();
+  /** The ID of the sample. */
+  public abstract String id();
 
   /** The calling form used in this sample. */
   public abstract CallingForm callingForm();
@@ -62,7 +62,8 @@ public abstract class MethodSampleView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder valueSet(SampleValueSetView val);
+
+    public abstract Builder id(String val);
 
     public abstract Builder callingForm(CallingForm val);
 

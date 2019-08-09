@@ -14,122 +14,47 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.config.GapicInterfaceContext;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.DynamicLangGapicSamplesTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SampleFileRegistry;
 import com.google.api.codegen.transformer.SampleTransformer;
-import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
-import com.google.api.codegen.viewmodel.DynamicLangSampleView;
-import com.google.api.codegen.viewmodel.MethodSampleView;
-import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
-import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Streams;
-import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * A transformer to generate Ruby standalone samples for each method in the GAPIC surface generated
  * from the same ApiModel.
  */
-public class RubyGapicSamplesTransformer implements ModelToViewTransformer<ProtoApiModel> {
+public class RubyGapicSamplesTransformer extends DynamicLangGapicSamplesTransformer {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "ruby/standalone_sample.snip";
-  private static final SampleSpec.SampleType sampleType = SampleSpec.SampleType.STANDALONE;
 
-  private final RubyImportSectionTransformer importSectionTransformer =
+  private static final RubyImportSectionTransformer importSectionTransformer =
       new RubyImportSectionTransformer();
-  private final FileHeaderTransformer fileHeaderTransformer =
+  private static final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
-  private final DynamicLangApiMethodTransformer apiMethodTransformer =
+  private static final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
           new RubyApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
               .initCodeTransformer(new InitCodeTransformer(importSectionTransformer, false))
-              .sampleType(sampleType)
+              .sampleType(SampleSpec.SampleType.STANDALONE)
               .build());
-  private final GapicCodePathMapper pathMapper;
-  private final PackageMetadataConfig packageConfig;
 
+  // TODO(hzyi): `packageConfig` is not actually needed. Remove it in a coming PR.
   public RubyGapicSamplesTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
-    this.pathMapper = pathMapper;
-    this.packageConfig = packageConfig;
-  }
-
-  @Override
-  public List<String> getTemplateFileNames() {
-    return ImmutableList.of(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
-  }
-
-  @Override
-  public List<ViewModel> transform(ProtoApiModel apiModel, GapicProductConfig productConfig) {
-    String packageName = productConfig.getPackageName();
-    RubySurfaceNamer namer = new RubySurfaceNamer(packageName);
-    ModelTypeTable typeTable =
-        new ModelTypeTable(
-            new RubyTypeTable(packageName), new RubyModelTypeNameConverter(packageName));
-
-    List<InterfaceContext> interfaceContexts =
-        Streams.stream(apiModel.getInterfaces(productConfig))
-            .filter(i -> productConfig.hasInterfaceConfig(i))
-            .map(
-                i ->
-                    GapicInterfaceContext.create(
-                        i, productConfig, typeTable, namer, new RubyFeatureConfig()))
-            .collect(ImmutableList.toImmutableList());
-    List<MethodSampleView> allSamples =
-        interfaceContexts
-            .stream()
-            .flatMap(c -> apiMethodTransformer.generateApiMethods(c).stream())
-            .flatMap(m -> m.samples().stream())
-            .collect(ImmutableList.toImmutableList());
-    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
-    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
-    for (InterfaceContext context : interfaceContexts) {
-      List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
-      for (OptionalArrayMethodView method : methods) {
-        for (MethodSampleView sample : method.samples()) {
-          sampleFileViews.add(
-              newSampleFileView(productConfig, context, method, sample, namer, registry));
-        }
-      }
-    }
-    return sampleFileViews.build();
-  }
-
-  private DynamicLangSampleView newSampleFileView(
-      GapicProductConfig productConfig,
-      InterfaceContext context,
-      OptionalArrayMethodView method,
-      MethodSampleView sample,
-      SurfaceNamer namer,
-      SampleFileRegistry registry) {
-    String sampleFileName = registry.getSampleFileName(sample, method.name());
-    String outputPath =
-        Paths.get(
-                pathMapper.getSamplesOutputPath(
-                    context.getInterfaceModel().getFullName(), productConfig, method.name()),
-                sampleFileName)
-            .toString();
-    return DynamicLangSampleView.newBuilder()
-        .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
-        .fileHeader(fileHeaderTransformer.generateFileHeader(context))
-        .outputPath(outputPath)
-        .libraryMethod(method)
-        .sample(sample)
-        .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
-        .build();
+    super(
+        STANDALONE_SAMPLE_TEMPLATE_FILENAME,
+        pathMapper,
+        fileHeaderTransformer,
+        apiMethodTransformer,
+        new RubyFeatureConfig(),
+        p -> new RubySurfaceNamer(p.getPackageName()),
+        p -> new ModelTypeTable(new RubyTypeTable(p), new RubyModelTypeNameConverter(p)));
   }
 }

@@ -15,14 +15,17 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.SampleValueSet;
-import com.google.api.codegen.samplegen.v1.RequestFieldProto;
-import com.google.api.codegen.samplegen.v1.ResponseStatementProto;
-import com.google.api.codegen.samplegen.v1.SampleConfigProto;
-import com.google.api.codegen.samplegen.v1.SampleSpecProto;
+import com.google.api.codegen.samplegen.v1p2.RequestFieldProto;
+import com.google.api.codegen.samplegen.v1p2.ResponseStatementProto;
+import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
+import com.google.api.codegen.samplegen.v1p2.SampleSpecProto;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +46,8 @@ import javax.annotation.Nullable;
 // samples, we can remove them.
 @AutoValue
 public abstract class SampleConfig {
+
+  public static final String DEFAULT_CALLING_PATTERN = "default";
 
   @Nullable
   public abstract String id();
@@ -70,6 +75,12 @@ public abstract class SampleConfig {
 
   @Nullable
   public abstract String callingPattern();
+
+  public boolean usesDefaultCallingForm() {
+    return callingPattern() == null
+        || callingPattern().isEmpty()
+        || callingPattern().equals(DEFAULT_CALLING_PATTERN);
+  }
 
   @Nullable
   public abstract CallingForm callingForm();
@@ -126,11 +137,16 @@ public abstract class SampleConfig {
     public abstract SampleConfig build();
   }
 
-  public static ImmutableList<SampleConfig> createSampleConfigs(
-      SampleConfigProto sampleConfigProto, final Map<String, InterfaceConfig> interfaceConfigMap) {
+  public static ImmutableTable<String, String, ImmutableList<SampleConfig>> createSampleConfigTable(
+      @Nullable SampleConfigProto sampleConfigProto,
+      final Map<String, InterfaceConfig> interfaceConfigMap) {
+    if (sampleConfigProto == null) {
+      sampleConfigProto = SampleConfigProto.getDefaultInstance();
+    }
+
     // First, apply region tag as IDs if IDs are not given
     List<SampleSpecProto> sampleSpecs = new ArrayList<>();
-    for (SampleSpecProto spec : sampleSpecs) {
+    for (SampleSpecProto spec : sampleConfigProto.getSamplesList()) {
       if (spec.getId().isEmpty()) {
         spec = spec.toBuilder().setId(spec.getRegionTag()).build();
       }
@@ -152,39 +168,62 @@ public abstract class SampleConfig {
         duplicateIds.stream().collect(Collectors.joining(", ")));
 
     // Next, flatten the calling pattern list so we have one per sample
+    // Note these are not the final calling pattern values, because the
+    // regexes specified in the config need to be matched against
+    // language-specific calling pattern definitions.
     List<SampleSpecProto> flattenedSampleSpecs = new ArrayList<>();
     for (SampleSpecProto spec : sampleSpecs) {
       if (spec.getCallingPatternsList().isEmpty()) {
-        sampleSpecs.add(spec.toBuilder().addCallingPatterns("").build());
+        flattenedSampleSpecs.add(
+            spec.toBuilder().addCallingPatterns(DEFAULT_CALLING_PATTERN).build());
       }
       for (String pattern : spec.getCallingPatternsList()) {
-        sampleSpecs.add(spec.toBuilder().addCallingPatterns(pattern).build());
+        flattenedSampleSpecs.add(
+            spec.toBuilder().clearCallingPatterns().addCallingPatterns(pattern).build());
       }
     }
 
-    // These are not the final calling pattern values, because the
-    // regexes specified in the config need to be matched against
-    // language-specific calling pattern definitions.
+    // Construct the table.
+    HashBasedTable<String, String, ArrayList<SampleConfig>> table = HashBasedTable.create();
+    for (SampleSpecProto sampleSpec : flattenedSampleSpecs) {
+      SampleConfig config = createOneSampleConfig(sampleSpec, interfaceConfigMap);
+      if (!table.contains(sampleSpec.getService(), sampleSpec.getRpc())) {
+        table.put(sampleSpec.getService(), sampleSpec.getRpc(), new ArrayList<>());
+      }
+      table.get(sampleSpec.getService(), sampleSpec.getRpc()).add(config);
+    }
 
-    // Construct `SampleConfig` objects.
-    return flattenedSampleSpecs
+    // Make an immutable copy.
+    return table
+        .cellSet()
         .stream()
-        .map(spec -> createOneSampleConfig(spec, interfaceConfigMap))
-        .collect(ImmutableList.toImmutableList());
+        .collect(
+            ImmutableTable.toImmutableTable(
+                Table.Cell::getRowKey,
+                Table.Cell::getColumnKey,
+                v -> ImmutableList.copyOf(v.getValue())));
   }
 
   private static SampleConfig createOneSampleConfig(
       SampleSpecProto sampleSpec, Map<String, InterfaceConfig> interfaceConfigMap) {
     InterfaceConfig interfaceConfig = interfaceConfigMap.get(sampleSpec.getService());
     Preconditions.checkNotNull(
-        interfaceConfig, "can't find interface named %s", sampleSpec.getService());
+        interfaceConfig,
+        "sample %s: can't find interface named %s",
+        sampleSpec.getId(),
+        sampleSpec.getService());
     Preconditions.checkState(
         interfaceConfig instanceof GapicInterfaceConfig,
         "can't generate samples for non-gapic libraries");
 
     GapicInterfaceConfig gapicInterfaceConfig = (GapicInterfaceConfig) interfaceConfig;
     MethodConfig methodConfig = gapicInterfaceConfig.getMethodConfigMap().get(sampleSpec.getRpc());
-    Preconditions.checkNotNull(methodConfig, "can't find method named %s", sampleSpec.getRpc());
+    Preconditions.checkNotNull(
+        methodConfig,
+        "sample %s: can't find method named %s in interface %s",
+        sampleSpec.getId(),
+        sampleSpec.getRpc(),
+        sampleSpec.getService());
 
     return SampleConfig.newBuilder()
         .id(sampleSpec.getId())
