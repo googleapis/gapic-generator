@@ -352,8 +352,8 @@ jobs:
     working_directory: /tmp/
     environment:
       TEST_REPORTS_DIR: /tmp/workspace/bazel/reports/gapic-generator
-    docker:
-      - image: l.gcr.io/google/bazel:0.23.1
+    machine:
+      - image: ubuntu-1604:201903-01
     steps:
       - checkout:
           path: gapic-generator
@@ -363,15 +363,14 @@ jobs:
           name: Make reports directory
           command: |
             mkdir -p ${TEST_REPORTS_DIR}
+            wget https://github.com/bazelbuild/bazel/releases/download/0.28.1/bazel-0.28.1-installer-linux-x86_64.sh -O bazel_installer.sh
+            chmod +x bazel_installer.sh
+            ./bazel_installer.sh
       - run:
           name: Run unit tests for gapic-generator
           command: |
             cd gapic-generator
-            bazel --host_jvm_args="-Xmx512m" \
-              test //... \
-              --jvmopt="-Xmx512m" \
-              --local_resources=3072,0.5,1.0 \
-              --experimental_enable_repo_mapping
+            bazel test //...
             find . -type f -regex ".*/bazel-testlogs/.*xml" -exec cp {} ${TEST_REPORTS_DIR} \;
       - store_test_results:
           path: bazel/reports/gapic-generator
