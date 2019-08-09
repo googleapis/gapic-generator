@@ -32,7 +32,6 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.java.JavaGapicCodePathMapper;
-import com.google.api.codegen.java.JavaGapicSamplePathMapper;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -223,11 +222,11 @@ public class GapicGeneratorFactory {
         if (artifactFlags.codeFilesEnabled()) {
           generators.add(newJavaGenerator.apply(new JavaGapicSurfaceTransformer(javaPathMapper)));
           if (artifactFlags.devSamplesEnabled()) {
-            generators.add(
-                newJavaGenerator.apply(
-                    new JavaGapicSamplesTransformer(new JavaGapicSamplePathMapper())));
+            generators.add(newJavaGenerator.apply(new JavaGapicSamplesTransformer()));
             generators.add(
                 newJavaGenerator.apply(new JavaGapicSamplesPackageTransformer(packageConfig)));
+            generators.add(
+                newJavaGenerator.apply(JavaGapicSamplesTransformer.createManifestTransformer()));
           }
         }
 

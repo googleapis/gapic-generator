@@ -14,13 +14,16 @@
  */
 package com.google.api.codegen.viewmodel.metadata;
 
+import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 
 @AutoValue
-public abstract class SampleManifestView {
+public abstract class SampleManifestView implements ViewModel {
 
   @AutoValue
-  public abstract class SampleEntry {
+  public abstract static class SampleEntry {
 
     public abstract String sample();
 
@@ -28,18 +31,24 @@ public abstract class SampleManifestView {
 
     public abstract String regionTag();
 
-    public static SamplePathPair newBuilder() {
-      return new AutoValue_SampleManifestView.SampleEntry.Builder();
+    public static SampleEntry.Builder newBuilder() {
+      return new AutoValue_SampleManifestView_SampleEntry.Builder();
+    }
+
+    public static SampleEntry create(String sample, String path, String regionTag) {
+      return newBuilder().sample(sample).path(path).regionTag(regionTag).build();
     }
 
     @AutoValue.Builder
-    public abstract class Builder {
+    public abstract static class Builder {
 
       public abstract Builder sample(String val);
 
       public abstract Builder path(String val);
 
       public abstract Builder regionTag(String val);
+
+      public abstract SampleEntry build();
     }
   }
 
@@ -47,23 +56,48 @@ public abstract class SampleManifestView {
 
   public abstract String environment();
 
+  public abstract String bin();
+
   public abstract String basePath();
+
+  public abstract String invocation();
 
   public abstract ImmutableList<SampleEntry> sampleEntries();
 
-  public Builder newBuilder() {
+  @Override
+  public String resourceRoot() {
+    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
+  }
+
+  @Override
+  public abstract String templateFileName();
+
+  @Override
+  public abstract String outputPath();
+
+  public static Builder newBuilder() {
     return new AutoValue_SampleManifestView.Builder();
   }
 
   @AutoValue.Builder
-  public abstract class Builder {
+  public abstract static class Builder {
 
     public abstract Builder schemaVersion(String val);
 
     public abstract Builder environment(String val);
 
+    public abstract Builder bin(String val);
+
     public abstract Builder basePath(String val);
 
+    public abstract Builder invocation(String val);
+
     public abstract Builder sampleEntries(ImmutableList<SampleEntry> val);
+
+    public abstract Builder templateFileName(String val);
+
+    public abstract Builder outputPath(String val);
+
+    public abstract SampleManifestView build();
   }
 }
