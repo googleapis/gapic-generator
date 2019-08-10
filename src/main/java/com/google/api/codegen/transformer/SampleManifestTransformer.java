@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+/** Transformer used to generate sample manifest files. */
 public class SampleManifestTransformer implements ModelToViewTransformer<ProtoApiModel> {
 
   private static final String MANIFEST_SCHEMA_VERSION = "3";
@@ -106,8 +107,8 @@ public class SampleManifestTransformer implements ModelToViewTransformer<ProtoAp
     StringBuilder fileName = new StringBuilder();
     String serviceName = model.getServiceName();
 
-    // Trimming the domain name for service name returns a meaningful API name most of the time,
-    // however we may need to handle non-Google APIs in the future
+    // Trimming the domain name from service name returns a meaningful API name most of the time,
+    // but that means we will need to handle non-Google APIs in the future
     int index = serviceName.indexOf(".googleapis.com");
     if (index != -1) {
       serviceName = serviceName.substring(0, index);

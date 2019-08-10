@@ -1,4 +1,4 @@
-/* Copyright 2016 Google LLC
+/* Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.google.api.codegen.util.VersionMatcher;
 import com.google.common.base.Splitter;
 import java.util.List;
 
-/** An implementation of GapicCodePathMapper that is used by Ruby and Python Samples. */
+/** An implementation of GapicCodePathMapper that is used by Node.js, Python and Ruby Samples. */
 public class CommonSampleCodePathMapper implements GapicCodePathMapper {
 
   @Override
