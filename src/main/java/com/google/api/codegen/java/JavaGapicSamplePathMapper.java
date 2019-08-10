@@ -33,14 +33,4 @@ public class JavaGapicSamplePathMapper implements GapicCodePathMapper {
     }
     return Joiner.on("/").join(dirs);
   }
-
-  // TODO(hzyi): Deprecate this method.
-  // The method was originally added to the interface `GapicCodePathMapper` because `method` was
-  // needed. However, the method name is no longer needed in any of the seven languages we support,
-  // and therefore we can reuse `getOutputPath` to calculate output path for sample generation.
-  // This means we cannot use one instance of `GapicCodePathMapper` for both codegen and samplegen,
-  // but that is fine.
-  public String getSamplesOutputPath(String elementFullName, ProductConfig config, String method) {
-    throw new UnsupportedOperationException("Deprecated: use getOutputPath instead.");
-  }
 }

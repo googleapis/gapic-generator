@@ -57,4 +57,8 @@ public class RubyGapicSamplesTransformer extends DynamicLangGapicSamplesTransfor
         p -> new RubySurfaceNamer(p.getPackageName()),
         p -> new ModelTypeTable(new RubyTypeTable(p), new RubyModelTypeNameConverter(p)));
   }
+
+  public SampleManifestTransformer createManifestTransformer() {
+    
+  }
 }

@@ -62,12 +62,6 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
     return Joiner.on("/").join(dirs);
   }
 
-  @Override
-  public String getSamplesOutputPath(
-      String elementFullName, ProductConfig config, String methodName) {
-    return String.join("/", new String[] {"samples", getVersion(elementFullName)});
-  }
-
   private String getVersion(String elementFullName) {
     String apiVersion = "";
     List<String> packages = Splitter.on(".").splitToList(elementFullName);

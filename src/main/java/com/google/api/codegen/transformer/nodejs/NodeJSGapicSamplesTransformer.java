@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSUtils;
@@ -24,8 +24,11 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SampleManifestTransformer;
 import com.google.api.codegen.transformer.SampleTransformer;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.js.JSTypeTable;
+import java.util.function.Function;
 
 /**
  * A transformer to generate NodeJS standalone samples for each method in the GAPIC surface
@@ -47,17 +50,30 @@ public class NodeJSGapicSamplesTransformer extends DynamicLangGapicSamplesTransf
               .sampleImportTransformer(new NodeJSSampleImportTransformer())
               .sampleType(SampleType.STANDALONE)
               .build());
+  private static final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer =
+      product -> new NodeJSSurfaceNamer(product.getPackageName(), NodeJSUtils.isGcloud(product));
+  private static final Function<String, ModelTypeTable> newTypeTable =
+      pkg -> new ModelTypeTable(new JSTypeTable(pkg), new NodeJSModelTypeNameConverter(pkg));
+  private final GapicCodePathMapper pathMapper;
 
-  // TODO(hzyi): `packageConfig` is not actually needed. Remove it in a coming PR.
-  public NodeJSGapicSamplesTransformer(
-      GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
+  public NodeJSGapicSamplesTransformer(GapicCodePathMapper pathMapper) {
     super(
         STANDALONE_SAMPLE_TEMPLATE_FILENAME,
         pathMapper,
         fileHeaderTransformer,
         apiMethodTransformer,
         new NodeJSFeatureConfig(),
-        p -> new NodeJSSurfaceNamer(p.getPackageName(), NodeJSUtils.isGcloud(p)),
-        p -> new ModelTypeTable(new JSTypeTable(p), new NodeJSModelTypeNameConverter(p)));
+        newSurfaceNamer,
+        newTypeTable);
+    this.pathMapper = pathMapper;
+  }
+
+  public SampleManifestTransformer createManifestTransformer() {
+    return new SampleManifestTransformer(
+        new NodeJSSampleMetadataNamer(this),
+        p -> new NodeJSFeatureConfig(),
+        newSurfaceNamer,
+        newTypeTable,
+        pathMapper);
   }
 }

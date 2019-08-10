@@ -22,12 +22,13 @@ import com.google.common.base.Splitter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NodeJSCodePathMapper implements GapicCodePathMapper {
+public class NodeJSSamplePathMapper implements GapicCodePathMapper {
+
   @Override
   public String getOutputPath(String elementFullName, ProductConfig config) {
     ArrayList<String> dirs = new ArrayList<>();
-    dirs.add("src");
-    String apiVersion = getVersion(elementFullName);
+    dirs.add("samples");
+    String apiVersion = getVersion(config.getPackageName());
     if (!apiVersion.isEmpty()) {
       dirs.add(apiVersion);
     }
