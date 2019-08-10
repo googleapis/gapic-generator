@@ -70,7 +70,7 @@ public class NodeJSGapicSamplesTransformer extends DynamicLangGapicSamplesTransf
 
   public SampleManifestTransformer createManifestTransformer() {
     return new SampleManifestTransformer(
-        new NodeJSSampleMetadataNamer(this),
+        new NodeJSSampleMetadataNamer(this, pathMapper),
         p -> new NodeJSFeatureConfig(),
         newSurfaceNamer,
         newTypeTable,

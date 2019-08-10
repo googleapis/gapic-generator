@@ -92,7 +92,7 @@ public class SampleManifestTransformer implements ModelToViewTransformer<ProtoAp
     sampleManifestView.invocation(metadataNamer.getInvocation());
     sampleManifestView.schemaVersion(MANIFEST_SCHEMA_VERSION);
     sampleManifestView.sampleEntries(entries);
-    sampleManifestView.outputPath(getManifestOutputPath(productConfig));
+    sampleManifestView.outputPath(getManifestOutputPath(model, productConfig));
     sampleManifestView.templateFileName(TEMPLATE_NAME);
     return Collections.singletonList(sampleManifestView.build());
   }
@@ -102,14 +102,22 @@ public class SampleManifestTransformer implements ModelToViewTransformer<ProtoAp
     return Collections.singletonList(TEMPLATE_NAME);
   }
 
-  private String getManifestOutputPath(GapicProductConfig productConfig) {
+  private String getManifestOutputPath(ProtoApiModel model, GapicProductConfig productConfig) {
     StringBuilder fileName = new StringBuilder();
-    fileName.append(productConfig.getPackageName());
+    String serviceName = model.getServiceName();
+
+    // Trimming the domain name for service name returns a meaningful API name most of the time,
+    // however we may need to handle non-Google APIs in the future
+    int index = serviceName.indexOf(".googleapis.com");
+    if (index != -1) {
+      serviceName = serviceName.substring(0, index);
+    }
+    fileName.append(serviceName);
     fileName.append(".");
     fileName.append(metadataNamer.getEnvironment());
     fileName.append(".");
     fileName.append(
-        new SimpleDateFormat("YYYYMMDD.hhmmss").format(productConfig.getGenerationTimestamp()));
+        new SimpleDateFormat("YYYYMMdd.hhmmss").format(productConfig.getGenerationTimestamp()));
     fileName.append(".manifest.yaml");
     return Paths.get(pathMapper.getOutputPath(null, productConfig), fileName.toString()).toString();
   }

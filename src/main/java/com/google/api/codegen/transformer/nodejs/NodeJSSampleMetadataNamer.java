@@ -18,17 +18,19 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.SampleContext;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.SampleMetadataNamer;
-import com.google.api.codegen.util.VersionMatcher;
-import java.util.Arrays;
 import java.util.List;
 
 public class NodeJSSampleMetadataNamer implements SampleMetadataNamer {
 
   private final NodeJSGapicSamplesTransformer nodejsSampleTransformer;
+  private final GapicCodePathMapper pathMapper;
 
-  public NodeJSSampleMetadataNamer(NodeJSGapicSamplesTransformer nodejsSampleTransformer) {
+  public NodeJSSampleMetadataNamer(
+      NodeJSGapicSamplesTransformer nodejsSampleTransformer, GapicCodePathMapper pathMapper) {
     this.nodejsSampleTransformer = nodejsSampleTransformer;
+    this.pathMapper = pathMapper;
   }
 
   public String getEnvironment() {
@@ -36,12 +38,7 @@ public class NodeJSSampleMetadataNamer implements SampleMetadataNamer {
   }
 
   public String getBasePath(ProductConfig config) {
-    String version =
-        Arrays.stream(config.getPackageName().split("\\."))
-            .filter(VersionMatcher::isVersion)
-            .findFirst()
-            .get();
-    return "samples/" + version + "/";
+    return pathMapper.getOutputPath("", config);
   }
 
   public String getBin() {
@@ -49,11 +46,11 @@ public class NodeJSSampleMetadataNamer implements SampleMetadataNamer {
   }
 
   public String getInvocation() {
-    return "";
+    return "{bin} {path} @args";
   }
 
   public String getSamplePath(String uniqueSampleId) {
-    return uniqueSampleId;
+    return "{base_path}/" + uniqueSampleId + ".js";
   }
 
   public List<SampleContext> getSampleContexts(

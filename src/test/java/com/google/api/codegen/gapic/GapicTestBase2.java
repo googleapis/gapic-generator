@@ -50,7 +50,7 @@ import javax.annotation.Nullable;
 /** Base class for code generator baseline tests. */
 public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
-  private static final Date frozenTimestamp = new GregorianCalendar(2019, 8, 8).getTime();
+  private static final Date frozenTimestamp = new GregorianCalendar(2019, 7, 1).getTime();
 
   // Wiring
   // ======
