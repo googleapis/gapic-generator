@@ -118,7 +118,7 @@ public class SampleManifestTransformer implements ModelToViewTransformer<ProtoAp
     fileName.append(metadataNamer.getEnvironment());
     fileName.append(".");
     fileName.append(
-        new SimpleDateFormat("YYYYMMdd.hhmmss").format(productConfig.getGenerationTimestamp()));
+        new SimpleDateFormat("yyyyMMdd.hhmmss").format(productConfig.getGenerationTimestamp()));
     fileName.append(".manifest.yaml");
     return Paths.get(pathMapper.getOutputPath(null, productConfig), fileName.toString()).toString();
   }
