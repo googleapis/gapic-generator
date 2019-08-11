@@ -60,9 +60,11 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   private final String[] sampleConfigFileNames;
   @Nullable private final String packageConfigFileName;
   private final ImmutableList<String> snippetNames;
+  private ApiDefaultsConfig apiDefaultsConfig;
+  private DependenciesConfig dependenciesConfig;
+  private PackagingConfig packagingConfig;
   protected ConfigProto gapicConfig;
   protected SampleConfigProto sampleConfig;
-  protected PackageMetadataConfig packageConfig;
   private final String baselineFile;
   private final String protoPackage;
   private final String clientPackage;
@@ -125,21 +127,21 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
               getTestDataLocator(),
               sampleConfigFileNames);
     }
-    if (!Strings.isNullOrEmpty(packageConfigFileName)) {
-      try {
-        ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
-        DependenciesConfig dependenciesConfig =
-            DependenciesConfig.loadFromURL(
-                getTestDataLocator().findTestData("frozen_dependencies.yaml"));
-        PackagingConfig packagingConfig =
+    try {
+      apiDefaultsConfig = ApiDefaultsConfig.load();
+      dependenciesConfig =
+          DependenciesConfig.loadFromURL(
+              getTestDataLocator().findTestData("frozen_dependencies.yaml"));
+      if (!Strings.isNullOrEmpty(packageConfigFileName)) {
+        packagingConfig =
             PackagingConfig.loadFromURL(getTestDataLocator().findTestData(packageConfigFileName));
-        packageConfig =
-            PackageMetadataConfig.createFromPackaging(
-                apiDefaultsConfig, dependenciesConfig, packagingConfig);
-      } catch (IOException e) {
-        throw new IllegalArgumentException("Problem creating packageConfig");
+      } else {
+        packagingConfig = null;
       }
+    } catch (IOException e) {
+      throw new IllegalArgumentException("Problem creating packageConfig");
     }
+
     // TODO (garrettjones) depend on the framework to take care of this.
     if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
@@ -275,6 +277,15 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     }
     ArtifactFlags artifactFlags =
         new ArtifactFlags(enabledArtifacts, ArtifactType.LEGACY_GAPIC_AND_PACKAGE, true);
+
+    PackagingConfig actualPackagingConfig = packagingConfig;
+    if (actualPackagingConfig == null) {
+      actualPackagingConfig =
+          PackagingConfig.loadFromProductConfig(productConfig.getInterfaceConfigMap());
+    }
+    PackageMetadataConfig packageConfig =
+        PackageMetadataConfig.createFromPackaging(
+            apiDefaultsConfig, dependenciesConfig, actualPackagingConfig);
 
     List<CodeGenerator<?>> generators =
         GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
