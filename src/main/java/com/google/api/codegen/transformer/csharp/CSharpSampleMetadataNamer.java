@@ -43,7 +43,7 @@ public class CSharpSampleMetadataNamer implements SampleMetadataNamer {
   }
 
   public String getInvocation() {
-    return "dotnet build /p:StartupObject={path}; {bin}";
+    return "dotnet build /p:StartupObject={path}; {bin} @args";
   }
 
   public String getSamplePath(String uniqueSampleId) {
