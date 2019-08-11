@@ -1,22 +1,20 @@
 # Template for sample manifest yaml file.
 
 @snippet generate(manifest)
-	---
-	type: manifest/samples
-	schema_version: {@manifest.schemaVersion}
-	{@manifest.environment}: &{@manifest.environment}
-	  environment: {@manifest.environment}
-		bin: {@manifest.bin}
-		base_path: {@manifest.basePath}
-		@if manifest.invocation
-			invocation: {@manifest.invocation}
-		@end
-	samples:
-	@join entry : manifest.sampleEntries
-		- <<: *{@manifest.environment}
-		  sample: "{@entry.sample}"
-		  path: "{@entry.path}"
-		  region_tag: "{@entry.regionTag}"
-	@end
+  ---
+  type: manifest/samples
+  schema_version: {@manifest.schemaVersion}
+  {@manifest.environment}: &{@manifest.environment}
+    environment: {@manifest.environment}
+    bin: {@manifest.bin}
+    base_path: {@manifest.basePath}
+    invocation: {@manifest.invocation}
+  samples:
+  @join entry : manifest.sampleEntries
+    - <<: *{@manifest.environment}
+    sample: "{@entry.sample}"
+    path: "{@entry.path}"
+    region_tag: "{@entry.regionTag}"
+  @end
 
 @end

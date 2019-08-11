@@ -81,7 +81,7 @@ public class SampleManifestTransformer implements ModelToViewTransformer<ProtoAp
     }
     ImmutableList<SampleManifestView.SampleEntry> entries = builder.build();
 
-    // Only generate manifest file when samples are configured.
+    // Only generate manifest files when samples are configured through sample config.
     if (entries.isEmpty()) {
       return Collections.emptyList();
     }

@@ -17,12 +17,9 @@ package com.google.api.codegen.gapic;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
-import com.google.api.codegen.util.VersionMatcher;
 import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An implementation of GapicCodePathMapper that generates the output path from a prefix, and/or
@@ -60,17 +57,6 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
       }
     }
     return Joiner.on("/").join(dirs);
-  }
-
-  private String getVersion(String elementFullName) {
-    String apiVersion = "";
-    List<String> packages = Splitter.on(".").splitToList(elementFullName);
-    for (String p : packages) {
-      if (VersionMatcher.isVersion(p)) {
-        apiVersion = p;
-      }
-    }
-    return apiVersion;
   }
 
   /** Formats the given segment of a file path. */
