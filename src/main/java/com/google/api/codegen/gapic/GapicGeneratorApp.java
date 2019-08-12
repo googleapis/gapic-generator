@@ -198,15 +198,6 @@ public class GapicGeneratorApp extends ToolDriverBase {
     ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
     DependenciesConfig dependenciesConfig = DependenciesConfig.load();
 
-    PackagingConfig packagingConfig = null;
-    if (!Strings.isNullOrEmpty(options.get(PACKAGE_CONFIG2_FILE))) {
-      packagingConfig = PackagingConfig.load(options.get(PACKAGE_CONFIG2_FILE));
-    }
-
-    PackageMetadataConfig packageConfig =
-        PackageMetadataConfig.createFromPackaging(
-            apiDefaultsConfig, dependenciesConfig, packagingConfig);
-
     TargetLanguage language;
     if (!Strings.isNullOrEmpty(options.get(LANGUAGE))) {
       language = TargetLanguage.fromString(options.get(LANGUAGE).toUpperCase());
@@ -229,6 +220,18 @@ public class GapicGeneratorApp extends ToolDriverBase {
       ToolUtil.reportDiags(model.getDiagReporter().getDiagCollector(), true);
       return;
     }
+
+    PackagingConfig packagingConfig;
+    if (!Strings.isNullOrEmpty(options.get(PACKAGE_CONFIG2_FILE))) {
+      packagingConfig = PackagingConfig.load(options.get(PACKAGE_CONFIG2_FILE));
+    } else {
+      packagingConfig =
+          PackagingConfig.loadFromProductConfig(productConfig.getInterfaceConfigMap());
+    }
+
+    PackageMetadataConfig packageConfig =
+        PackageMetadataConfig.createFromPackaging(
+            apiDefaultsConfig, dependenciesConfig, packagingConfig);
 
     // TODO(hzyi-google): Once we switch to sample configs, require an
     // additional check to generate samples:

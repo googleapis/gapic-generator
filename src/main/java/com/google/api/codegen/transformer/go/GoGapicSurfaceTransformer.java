@@ -269,13 +269,14 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
 
       if (method.getRequestStreaming() || method.getResponseStreaming()) {
         apiMethods.add(
-            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext));
+            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext, null));
       } else if (methodConfig.isPageStreaming()) {
-        apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
+        apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext, null));
       } else if (methodContext.isLongRunningMethodContext()) {
-        apiMethods.add(apiMethodTransformer.generateOperationRequestObjectMethod(methodContext));
+        apiMethods.add(
+            apiMethodTransformer.generateOperationRequestObjectMethod(methodContext, null));
       } else {
-        apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
+        apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext, null));
       }
     }
     return apiMethods;
@@ -327,6 +328,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
   void addXApiImports(InterfaceContext context, Collection<MethodModel> methods) {
     ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("context;;;");
+    typeTable.saveNicknameFor("math;;;");
     typeTable.saveNicknameFor("google.golang.org/grpc;;;");
     typeTable.saveNicknameFor("github.com/googleapis/gax-go/v2;gax;;");
     typeTable.saveNicknameFor("google.golang.org/api/option;;;");
@@ -409,9 +411,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer<ProtoAp
                   ImportContext.CLIENT,
                   ImportKind.PAGE_STREAM,
                   ImmutableList.<String>of(
-                      "math;;;",
-                      "google.golang.org/api/iterator;;;",
-                      "github.com/golang/protobuf/proto;;;"))
+                      "google.golang.org/api/iterator;;;", "github.com/golang/protobuf/proto;;;"))
               .put(
                   ImportContext.EXAMPLE,
                   ImportKind.PAGE_STREAM,

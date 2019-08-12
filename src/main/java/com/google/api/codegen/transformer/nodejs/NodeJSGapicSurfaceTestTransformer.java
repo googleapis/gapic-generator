@@ -259,12 +259,8 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   private OptionalArrayMethodView createSmokeTestCaseApiMethodView(
       GapicMethodContext context, boolean packageHasMultipleServices) {
     OptionalArrayMethodView apiMethodView =
-        new NodeJSMethodViewGenerator(
-                new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer()))
-            .generateOneApiMethod(
-                context,
-                testCaseTransformer.createSmokeTestInitContext(context),
-                packageHasMultipleServices);
+        new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer())
+            .generateApiMethod(context, testCaseTransformer.createSmokeTestInitContext(context));
 
     return apiMethodView.toBuilder().packageName("../src").build();
   }
