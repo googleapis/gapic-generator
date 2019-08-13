@@ -29,7 +29,7 @@ public class SampleConfigSanitizer {
   }
 
   private static final String TYPE_FIELD_NAME = "type";
-  private static final String SCHEMA_VERSION_FIELD_NAME = "config_schema_version";
+  private static final String SCHEMA_VERSION_FIELD_NAME = "schema_version";
   private static final String VALID_TYPE_VALUE =
       "com.google.api.codegen.samplegen.v1p2.SampleConfigProto";
   private static final String VALID_SCHEMA_VERSION = "1.2.0";
@@ -46,9 +46,14 @@ public class SampleConfigSanitizer {
   private static boolean isValidSampleConfig(String sampleConfigFileName) {
     try (Reader reader = new FileReader(sampleConfigFileName)) {
       Yaml yaml = new Yaml();
-      Map<String, Object> data = yaml.loadAs(reader, Map.class);
-      return VALID_TYPE_VALUE.equals(data.get(TYPE_FIELD_NAME))
-          && VALID_SCHEMA_VERSION.equals(data.get(SCHEMA_VERSION_FIELD_NAME));
+      for (Object rawData : yaml.loadAll(reader)) {
+        Map<String, Object> data = (Map<String, Object>) rawData;
+        if (!VALID_TYPE_VALUE.equals(data.get(TYPE_FIELD_NAME))
+            || !VALID_SCHEMA_VERSION.equals(data.get(SCHEMA_VERSION_FIELD_NAME))) {
+          return false;
+        }
+      }
+      return true;
     } catch (IOException e) {
       throw new IllegalArgumentException(
           String.format("sample config file not found: %s", sampleConfigFileName));
