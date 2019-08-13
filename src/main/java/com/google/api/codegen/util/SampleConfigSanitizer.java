@@ -17,7 +17,6 @@ package com.google.api.codegen.util;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,10 +40,6 @@ public class SampleConfigSanitizer {
         .stream()
         .filter(SampleConfigSanitizer::isValidSampleConfig)
         .collect(Collectors.toList());
-  }
-
-  public static List<String> sanitize(String[] sampleConfigFileNames) {
-    return sanitize(Arrays.asList(sampleConfigFileNames));
   }
 
   @SuppressWarnings("unchecked")
