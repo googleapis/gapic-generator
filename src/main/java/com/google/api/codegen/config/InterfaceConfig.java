@@ -49,6 +49,8 @@ public interface InterfaceConfig {
 
   boolean hasLongRunningOperations();
 
+  boolean hasIamMethods();
+
   boolean hasDefaultServiceAddress();
 
   boolean hasDefaultServiceScopes();

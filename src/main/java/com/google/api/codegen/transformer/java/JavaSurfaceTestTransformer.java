@@ -195,7 +195,8 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     StaticLangApiMethodView initialApiMethodView;
     if (methodConfig.isPageStreaming()) {
       if (methodContext.isFlattenedMethodContext()) {
-        initialApiMethodView = apiMethodTransformer.generatePagedFlattenedMethod(methodContext);
+        initialApiMethodView =
+            apiMethodTransformer.generatePagedFlattenedMethod(methodContext, null);
       } else {
         throw new UnsupportedOperationException(
             "Unsupported smoke test type: page-streaming + request-object");
@@ -205,14 +206,14 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
     } else if (methodContext.isLongRunningMethodContext()) {
       if (methodContext.isFlattenedMethodContext()) {
         initialApiMethodView =
-            apiMethodTransformer.generateAsyncOperationFlattenedMethod(methodContext);
+            apiMethodTransformer.generateAsyncOperationFlattenedMethod(methodContext, null);
       } else {
         throw new UnsupportedOperationException(
             "Unsupported smoke test type: long-running + request-object");
       }
     } else {
       if (methodContext.isFlattenedMethodContext()) {
-        initialApiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext);
+        initialApiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext, null);
       } else {
         throw new UnsupportedOperationException(
             "Unsupported smoke test type: simple-call + request-object");

@@ -2877,6 +2877,23 @@ namespace Google.Example.Library.V1.Samples
         }
     }
 }
+============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/Google.Example.Library.V1.Samples.csproj ==============
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Google.Example.Library.V1/Google.Example.Library.V1.csproj" />
+    <PackageReference Include="CommandLineParser" Version="2.5.0" />
+  </ItemGroup>
+
+</Project>
+
 ============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/Lovelace.cs ==============
 // Copyright 2019 Google LLC
 //
@@ -4048,6 +4065,7 @@ namespace Google.Example.Library.V1.Samples
     // [START test_float_and_int64]
     using Google.Example.Library.V1;
     using Google.Protobuf;
+    using Google.Protobuf.WellKnownTypes;
     using System;
     using System.Collections.Generic;
 
@@ -4089,6 +4107,38 @@ namespace Google.Example.Library.V1.Samples
                 RequiredRepeatedFixed32 = { },
                 RequiredRepeatedFixed64 = { },
                 RequiredMap = { },
+                RequiredAnyValue = new Any(),
+                RequiredStructValue = new Struct(),
+                RequiredValueValue = new Value(),
+                RequiredListValueValue = new ListValue(),
+                RequiredTimeValue = new Timestamp(),
+                RequiredDurationValue = new Duration(),
+                RequiredFieldMaskValue = new FieldMask(),
+                RequiredInt32Value = null,
+                RequiredUint32Value = null,
+                RequiredInt64Value = null,
+                RequiredUint64Value = null,
+                RequiredFloatValue = null,
+                RequiredDoubleValue = null,
+                RequiredStringValue = null,
+                RequiredBoolValue = null,
+                RequiredBytesValue = null,
+                RequiredRepeatedAnyValue = { },
+                RequiredRepeatedStructValue = { },
+                RequiredRepeatedValueValue = { },
+                RequiredRepeatedListValueValue = { },
+                RequiredRepeatedTimeValue = { },
+                RequiredRepeatedDurationValue = { },
+                RequiredRepeatedFieldMaskValue = { },
+                RequiredRepeatedInt32Value = { },
+                RequiredRepeatedUint32Value = { },
+                RequiredRepeatedInt64Value = { },
+                RequiredRepeatedUint64Value = { },
+                RequiredRepeatedFloatValue = { },
+                RequiredRepeatedDoubleValue = { },
+                RequiredRepeatedStringValue = { },
+                RequiredRepeatedBoolValue = { },
+                RequiredRepeatedBytesValue = { },
             };
             TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.TestOptionalRequiredFlatteningParams(request);
             Console.WriteLine(response);
@@ -7028,8 +7078,8 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for TestOptionalRequiredFlatteningParamsAsync</summary>
         public async Task TestOptionalRequiredFlatteningParamsAsync2()
         {
-            // Snippet: TestOptionalRequiredFlatteningParamsAsync(int,long,float,double,bool,TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum,string,ByteString,TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage,BookNameOneof,BookNameOneof,string,int,long,IEnumerable<int>,IEnumerable<long>,IEnumerable<float>,IEnumerable<double>,IEnumerable<bool>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>,IEnumerable<string>,IEnumerable<ByteString>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>,IEnumerable<BookNameOneof>,IEnumerable<BookNameOneof>,IEnumerable<string>,IEnumerable<int>,IEnumerable<long>,IDictionary<int, string>,int?,long?,float?,double?,bool?,TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum?,string,ByteString,TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage,BookNameOneof,BookNameOneof,string,int?,long?,IEnumerable<int>,IEnumerable<long>,IEnumerable<float>,IEnumerable<double>,IEnumerable<bool>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>,IEnumerable<string>,IEnumerable<ByteString>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>,IEnumerable<BookNameOneof>,IEnumerable<BookNameOneof>,IEnumerable<string>,IEnumerable<int>,IEnumerable<long>,IDictionary<int, string>,Any,Struct,Value,ListValue,Timestamp,Duration,FieldMask,int?,uint?,long?,ulong?,float?,double?,string,bool?,ByteString,IEnumerable<Any>,IEnumerable<Struct>,IEnumerable<Value>,IEnumerable<ListValue>,IEnumerable<Timestamp>,IEnumerable<Duration>,IEnumerable<FieldMask>,IEnumerable<int?>,IEnumerable<uint?>,IEnumerable<long?>,IEnumerable<ulong?>,IEnumerable<float?>,IEnumerable<double?>,IEnumerable<string>,IEnumerable<bool?>,IEnumerable<ByteString>,CallSettings)
-            // Additional: TestOptionalRequiredFlatteningParamsAsync(int,long,float,double,bool,TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum,string,ByteString,TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage,BookNameOneof,BookNameOneof,string,int,long,IEnumerable<int>,IEnumerable<long>,IEnumerable<float>,IEnumerable<double>,IEnumerable<bool>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>,IEnumerable<string>,IEnumerable<ByteString>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>,IEnumerable<BookNameOneof>,IEnumerable<BookNameOneof>,IEnumerable<string>,IEnumerable<int>,IEnumerable<long>,IDictionary<int, string>,int?,long?,float?,double?,bool?,TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum?,string,ByteString,TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage,BookNameOneof,BookNameOneof,string,int?,long?,IEnumerable<int>,IEnumerable<long>,IEnumerable<float>,IEnumerable<double>,IEnumerable<bool>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>,IEnumerable<string>,IEnumerable<ByteString>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>,IEnumerable<BookNameOneof>,IEnumerable<BookNameOneof>,IEnumerable<string>,IEnumerable<int>,IEnumerable<long>,IDictionary<int, string>,Any,Struct,Value,ListValue,Timestamp,Duration,FieldMask,int?,uint?,long?,ulong?,float?,double?,string,bool?,ByteString,IEnumerable<Any>,IEnumerable<Struct>,IEnumerable<Value>,IEnumerable<ListValue>,IEnumerable<Timestamp>,IEnumerable<Duration>,IEnumerable<FieldMask>,IEnumerable<int?>,IEnumerable<uint?>,IEnumerable<long?>,IEnumerable<ulong?>,IEnumerable<float?>,IEnumerable<double?>,IEnumerable<string>,IEnumerable<bool?>,IEnumerable<ByteString>,CancellationToken)
+            // Snippet: TestOptionalRequiredFlatteningParamsAsync(int,long,float,double,bool,TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum,string,ByteString,TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage,BookNameOneof,BookNameOneof,string,int,long,IEnumerable<int>,IEnumerable<long>,IEnumerable<float>,IEnumerable<double>,IEnumerable<bool>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>,IEnumerable<string>,IEnumerable<ByteString>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>,IEnumerable<BookNameOneof>,IEnumerable<BookNameOneof>,IEnumerable<string>,IEnumerable<int>,IEnumerable<long>,IDictionary<int, string>,Any,Struct,Value,ListValue,Timestamp,Duration,FieldMask,int?,uint?,long?,ulong?,float?,double?,string,bool?,ByteString,IEnumerable<Any>,IEnumerable<Struct>,IEnumerable<Value>,IEnumerable<ListValue>,IEnumerable<Timestamp>,IEnumerable<Duration>,IEnumerable<FieldMask>,IEnumerable<int?>,IEnumerable<uint?>,IEnumerable<long?>,IEnumerable<ulong?>,IEnumerable<float?>,IEnumerable<double?>,IEnumerable<string>,IEnumerable<bool?>,IEnumerable<ByteString>,int?,long?,float?,double?,bool?,TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum?,string,ByteString,TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage,BookNameOneof,BookNameOneof,string,int?,long?,IEnumerable<int>,IEnumerable<long>,IEnumerable<float>,IEnumerable<double>,IEnumerable<bool>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>,IEnumerable<string>,IEnumerable<ByteString>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>,IEnumerable<BookNameOneof>,IEnumerable<BookNameOneof>,IEnumerable<string>,IEnumerable<int>,IEnumerable<long>,IDictionary<int, string>,Any,Struct,Value,ListValue,Timestamp,Duration,FieldMask,int?,uint?,long?,ulong?,float?,double?,string,bool?,ByteString,IEnumerable<Any>,IEnumerable<Struct>,IEnumerable<Value>,IEnumerable<ListValue>,IEnumerable<Timestamp>,IEnumerable<Duration>,IEnumerable<FieldMask>,IEnumerable<int?>,IEnumerable<uint?>,IEnumerable<long?>,IEnumerable<ulong?>,IEnumerable<float?>,IEnumerable<double?>,IEnumerable<string>,IEnumerable<bool?>,IEnumerable<ByteString>,CallSettings)
+            // Additional: TestOptionalRequiredFlatteningParamsAsync(int,long,float,double,bool,TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum,string,ByteString,TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage,BookNameOneof,BookNameOneof,string,int,long,IEnumerable<int>,IEnumerable<long>,IEnumerable<float>,IEnumerable<double>,IEnumerable<bool>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>,IEnumerable<string>,IEnumerable<ByteString>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>,IEnumerable<BookNameOneof>,IEnumerable<BookNameOneof>,IEnumerable<string>,IEnumerable<int>,IEnumerable<long>,IDictionary<int, string>,Any,Struct,Value,ListValue,Timestamp,Duration,FieldMask,int?,uint?,long?,ulong?,float?,double?,string,bool?,ByteString,IEnumerable<Any>,IEnumerable<Struct>,IEnumerable<Value>,IEnumerable<ListValue>,IEnumerable<Timestamp>,IEnumerable<Duration>,IEnumerable<FieldMask>,IEnumerable<int?>,IEnumerable<uint?>,IEnumerable<long?>,IEnumerable<ulong?>,IEnumerable<float?>,IEnumerable<double?>,IEnumerable<string>,IEnumerable<bool?>,IEnumerable<ByteString>,int?,long?,float?,double?,bool?,TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum?,string,ByteString,TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage,BookNameOneof,BookNameOneof,string,int?,long?,IEnumerable<int>,IEnumerable<long>,IEnumerable<float>,IEnumerable<double>,IEnumerable<bool>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>,IEnumerable<string>,IEnumerable<ByteString>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>,IEnumerable<BookNameOneof>,IEnumerable<BookNameOneof>,IEnumerable<string>,IEnumerable<int>,IEnumerable<long>,IDictionary<int, string>,Any,Struct,Value,ListValue,Timestamp,Duration,FieldMask,int?,uint?,long?,ulong?,float?,double?,string,bool?,ByteString,IEnumerable<Any>,IEnumerable<Struct>,IEnumerable<Value>,IEnumerable<ListValue>,IEnumerable<Timestamp>,IEnumerable<Duration>,IEnumerable<FieldMask>,IEnumerable<int?>,IEnumerable<uint?>,IEnumerable<long?>,IEnumerable<ulong?>,IEnumerable<float?>,IEnumerable<double?>,IEnumerable<string>,IEnumerable<bool?>,IEnumerable<ByteString>,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
@@ -7062,6 +7112,38 @@ namespace Google.Example.Library.V1.Snippets
             IEnumerable<int> requiredRepeatedFixed32 = new List<int>();
             IEnumerable<long> requiredRepeatedFixed64 = new List<long>();
             IDictionary<int, string> requiredMap = new Dictionary<int, string>();
+            Any requiredAnyValue = new Any();
+            Struct requiredStructValue = new Struct();
+            Value requiredValueValue = new Value();
+            ListValue requiredListValueValue = new ListValue();
+            Timestamp requiredTimeValue = new Timestamp();
+            Duration requiredDurationValue = new Duration();
+            FieldMask requiredFieldMaskValue = new FieldMask();
+            int? requiredInt32Value = null;
+            uint? requiredUint32Value = null;
+            long? requiredInt64Value = null;
+            ulong? requiredUint64Value = null;
+            float? requiredFloatValue = null;
+            double? requiredDoubleValue = null;
+            string requiredStringValue = null;
+            bool? requiredBoolValue = null;
+            ByteString requiredBytesValue = null;
+            IEnumerable<Any> requiredRepeatedAnyValue = new List<Any>();
+            IEnumerable<Struct> requiredRepeatedStructValue = new List<Struct>();
+            IEnumerable<Value> requiredRepeatedValueValue = new List<Value>();
+            IEnumerable<ListValue> requiredRepeatedListValueValue = new List<ListValue>();
+            IEnumerable<Timestamp> requiredRepeatedTimeValue = new List<Timestamp>();
+            IEnumerable<Duration> requiredRepeatedDurationValue = new List<Duration>();
+            IEnumerable<FieldMask> requiredRepeatedFieldMaskValue = new List<FieldMask>();
+            IEnumerable<int?> requiredRepeatedInt32Value = new List<int?>();
+            IEnumerable<uint?> requiredRepeatedUint32Value = new List<uint?>();
+            IEnumerable<long?> requiredRepeatedInt64Value = new List<long?>();
+            IEnumerable<ulong?> requiredRepeatedUint64Value = new List<ulong?>();
+            IEnumerable<float?> requiredRepeatedFloatValue = new List<float?>();
+            IEnumerable<double?> requiredRepeatedDoubleValue = new List<double?>();
+            IEnumerable<string> requiredRepeatedStringValue = new List<string>();
+            IEnumerable<bool?> requiredRepeatedBoolValue = new List<bool?>();
+            IEnumerable<ByteString> requiredRepeatedBytesValue = new List<ByteString>();
             int optionalSingularInt32 = 0;
             long optionalSingularInt64 = 0L;
             float optionalSingularFloat = 0.0f;
@@ -7124,14 +7206,14 @@ namespace Google.Example.Library.V1.Snippets
             IEnumerable<bool?> repeatedBoolValue = new List<bool?>();
             IEnumerable<ByteString> repeatedBytesValue = new List<ByteString>();
             // Make the request
-            TestOptionalRequiredFlatteningParamsResponse response = await libraryServiceClient.TestOptionalRequiredFlatteningParamsAsync(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
+            TestOptionalRequiredFlatteningParamsResponse response = await libraryServiceClient.TestOptionalRequiredFlatteningParamsAsync(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, requiredAnyValue, requiredStructValue, requiredValueValue, requiredListValueValue, requiredTimeValue, requiredDurationValue, requiredFieldMaskValue, requiredInt32Value, requiredUint32Value, requiredInt64Value, requiredUint64Value, requiredFloatValue, requiredDoubleValue, requiredStringValue, requiredBoolValue, requiredBytesValue, requiredRepeatedAnyValue, requiredRepeatedStructValue, requiredRepeatedValueValue, requiredRepeatedListValueValue, requiredRepeatedTimeValue, requiredRepeatedDurationValue, requiredRepeatedFieldMaskValue, requiredRepeatedInt32Value, requiredRepeatedUint32Value, requiredRepeatedInt64Value, requiredRepeatedUint64Value, requiredRepeatedFloatValue, requiredRepeatedDoubleValue, requiredRepeatedStringValue, requiredRepeatedBoolValue, requiredRepeatedBytesValue, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
             // End snippet
         }
 
         /// <summary>Snippet for TestOptionalRequiredFlatteningParams</summary>
         public void TestOptionalRequiredFlatteningParams2()
         {
-            // Snippet: TestOptionalRequiredFlatteningParams(int,long,float,double,bool,TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum,string,ByteString,TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage,BookNameOneof,BookNameOneof,string,int,long,IEnumerable<int>,IEnumerable<long>,IEnumerable<float>,IEnumerable<double>,IEnumerable<bool>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>,IEnumerable<string>,IEnumerable<ByteString>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>,IEnumerable<BookNameOneof>,IEnumerable<BookNameOneof>,IEnumerable<string>,IEnumerable<int>,IEnumerable<long>,IDictionary<int, string>,int?,long?,float?,double?,bool?,TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum?,string,ByteString,TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage,BookNameOneof,BookNameOneof,string,int?,long?,IEnumerable<int>,IEnumerable<long>,IEnumerable<float>,IEnumerable<double>,IEnumerable<bool>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>,IEnumerable<string>,IEnumerable<ByteString>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>,IEnumerable<BookNameOneof>,IEnumerable<BookNameOneof>,IEnumerable<string>,IEnumerable<int>,IEnumerable<long>,IDictionary<int, string>,Any,Struct,Value,ListValue,Timestamp,Duration,FieldMask,int?,uint?,long?,ulong?,float?,double?,string,bool?,ByteString,IEnumerable<Any>,IEnumerable<Struct>,IEnumerable<Value>,IEnumerable<ListValue>,IEnumerable<Timestamp>,IEnumerable<Duration>,IEnumerable<FieldMask>,IEnumerable<int?>,IEnumerable<uint?>,IEnumerable<long?>,IEnumerable<ulong?>,IEnumerable<float?>,IEnumerable<double?>,IEnumerable<string>,IEnumerable<bool?>,IEnumerable<ByteString>,CallSettings)
+            // Snippet: TestOptionalRequiredFlatteningParams(int,long,float,double,bool,TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum,string,ByteString,TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage,BookNameOneof,BookNameOneof,string,int,long,IEnumerable<int>,IEnumerable<long>,IEnumerable<float>,IEnumerable<double>,IEnumerable<bool>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>,IEnumerable<string>,IEnumerable<ByteString>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>,IEnumerable<BookNameOneof>,IEnumerable<BookNameOneof>,IEnumerable<string>,IEnumerable<int>,IEnumerable<long>,IDictionary<int, string>,Any,Struct,Value,ListValue,Timestamp,Duration,FieldMask,int?,uint?,long?,ulong?,float?,double?,string,bool?,ByteString,IEnumerable<Any>,IEnumerable<Struct>,IEnumerable<Value>,IEnumerable<ListValue>,IEnumerable<Timestamp>,IEnumerable<Duration>,IEnumerable<FieldMask>,IEnumerable<int?>,IEnumerable<uint?>,IEnumerable<long?>,IEnumerable<ulong?>,IEnumerable<float?>,IEnumerable<double?>,IEnumerable<string>,IEnumerable<bool?>,IEnumerable<ByteString>,int?,long?,float?,double?,bool?,TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum?,string,ByteString,TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage,BookNameOneof,BookNameOneof,string,int?,long?,IEnumerable<int>,IEnumerable<long>,IEnumerable<float>,IEnumerable<double>,IEnumerable<bool>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>,IEnumerable<string>,IEnumerable<ByteString>,IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>,IEnumerable<BookNameOneof>,IEnumerable<BookNameOneof>,IEnumerable<string>,IEnumerable<int>,IEnumerable<long>,IDictionary<int, string>,Any,Struct,Value,ListValue,Timestamp,Duration,FieldMask,int?,uint?,long?,ulong?,float?,double?,string,bool?,ByteString,IEnumerable<Any>,IEnumerable<Struct>,IEnumerable<Value>,IEnumerable<ListValue>,IEnumerable<Timestamp>,IEnumerable<Duration>,IEnumerable<FieldMask>,IEnumerable<int?>,IEnumerable<uint?>,IEnumerable<long?>,IEnumerable<ulong?>,IEnumerable<float?>,IEnumerable<double?>,IEnumerable<string>,IEnumerable<bool?>,IEnumerable<ByteString>,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
@@ -7164,6 +7246,38 @@ namespace Google.Example.Library.V1.Snippets
             IEnumerable<int> requiredRepeatedFixed32 = new List<int>();
             IEnumerable<long> requiredRepeatedFixed64 = new List<long>();
             IDictionary<int, string> requiredMap = new Dictionary<int, string>();
+            Any requiredAnyValue = new Any();
+            Struct requiredStructValue = new Struct();
+            Value requiredValueValue = new Value();
+            ListValue requiredListValueValue = new ListValue();
+            Timestamp requiredTimeValue = new Timestamp();
+            Duration requiredDurationValue = new Duration();
+            FieldMask requiredFieldMaskValue = new FieldMask();
+            int? requiredInt32Value = null;
+            uint? requiredUint32Value = null;
+            long? requiredInt64Value = null;
+            ulong? requiredUint64Value = null;
+            float? requiredFloatValue = null;
+            double? requiredDoubleValue = null;
+            string requiredStringValue = null;
+            bool? requiredBoolValue = null;
+            ByteString requiredBytesValue = null;
+            IEnumerable<Any> requiredRepeatedAnyValue = new List<Any>();
+            IEnumerable<Struct> requiredRepeatedStructValue = new List<Struct>();
+            IEnumerable<Value> requiredRepeatedValueValue = new List<Value>();
+            IEnumerable<ListValue> requiredRepeatedListValueValue = new List<ListValue>();
+            IEnumerable<Timestamp> requiredRepeatedTimeValue = new List<Timestamp>();
+            IEnumerable<Duration> requiredRepeatedDurationValue = new List<Duration>();
+            IEnumerable<FieldMask> requiredRepeatedFieldMaskValue = new List<FieldMask>();
+            IEnumerable<int?> requiredRepeatedInt32Value = new List<int?>();
+            IEnumerable<uint?> requiredRepeatedUint32Value = new List<uint?>();
+            IEnumerable<long?> requiredRepeatedInt64Value = new List<long?>();
+            IEnumerable<ulong?> requiredRepeatedUint64Value = new List<ulong?>();
+            IEnumerable<float?> requiredRepeatedFloatValue = new List<float?>();
+            IEnumerable<double?> requiredRepeatedDoubleValue = new List<double?>();
+            IEnumerable<string> requiredRepeatedStringValue = new List<string>();
+            IEnumerable<bool?> requiredRepeatedBoolValue = new List<bool?>();
+            IEnumerable<ByteString> requiredRepeatedBytesValue = new List<ByteString>();
             int optionalSingularInt32 = 0;
             long optionalSingularInt64 = 0L;
             float optionalSingularFloat = 0.0f;
@@ -7226,7 +7340,7 @@ namespace Google.Example.Library.V1.Snippets
             IEnumerable<bool?> repeatedBoolValue = new List<bool?>();
             IEnumerable<ByteString> repeatedBytesValue = new List<ByteString>();
             // Make the request
-            TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.TestOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
+            TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.TestOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, requiredAnyValue, requiredStructValue, requiredValueValue, requiredListValueValue, requiredTimeValue, requiredDurationValue, requiredFieldMaskValue, requiredInt32Value, requiredUint32Value, requiredInt64Value, requiredUint64Value, requiredFloatValue, requiredDoubleValue, requiredStringValue, requiredBoolValue, requiredBytesValue, requiredRepeatedAnyValue, requiredRepeatedStructValue, requiredRepeatedValueValue, requiredRepeatedListValueValue, requiredRepeatedTimeValue, requiredRepeatedDurationValue, requiredRepeatedFieldMaskValue, requiredRepeatedInt32Value, requiredRepeatedUint32Value, requiredRepeatedInt64Value, requiredRepeatedUint64Value, requiredRepeatedFloatValue, requiredRepeatedDoubleValue, requiredRepeatedStringValue, requiredRepeatedBoolValue, requiredRepeatedBytesValue, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
             // End snippet
         }
 
@@ -7269,6 +7383,38 @@ namespace Google.Example.Library.V1.Snippets
                 RequiredRepeatedFixed32 = { },
                 RequiredRepeatedFixed64 = { },
                 RequiredMap = { },
+                RequiredAnyValue = new Any(),
+                RequiredStructValue = new Struct(),
+                RequiredValueValue = new Value(),
+                RequiredListValueValue = new ListValue(),
+                RequiredTimeValue = new Timestamp(),
+                RequiredDurationValue = new Duration(),
+                RequiredFieldMaskValue = new FieldMask(),
+                RequiredInt32Value = null,
+                RequiredUint32Value = null,
+                RequiredInt64Value = null,
+                RequiredUint64Value = null,
+                RequiredFloatValue = null,
+                RequiredDoubleValue = null,
+                RequiredStringValue = null,
+                RequiredBoolValue = null,
+                RequiredBytesValue = null,
+                RequiredRepeatedAnyValue = { },
+                RequiredRepeatedStructValue = { },
+                RequiredRepeatedValueValue = { },
+                RequiredRepeatedListValueValue = { },
+                RequiredRepeatedTimeValue = { },
+                RequiredRepeatedDurationValue = { },
+                RequiredRepeatedFieldMaskValue = { },
+                RequiredRepeatedInt32Value = { },
+                RequiredRepeatedUint32Value = { },
+                RequiredRepeatedInt64Value = { },
+                RequiredRepeatedUint64Value = { },
+                RequiredRepeatedFloatValue = { },
+                RequiredRepeatedDoubleValue = { },
+                RequiredRepeatedStringValue = { },
+                RequiredRepeatedBoolValue = { },
+                RequiredRepeatedBytesValue = { },
             };
             // Make the request
             TestOptionalRequiredFlatteningParamsResponse response = await libraryServiceClient.TestOptionalRequiredFlatteningParamsAsync(request);
@@ -7313,6 +7459,38 @@ namespace Google.Example.Library.V1.Snippets
                 RequiredRepeatedFixed32 = { },
                 RequiredRepeatedFixed64 = { },
                 RequiredMap = { },
+                RequiredAnyValue = new Any(),
+                RequiredStructValue = new Struct(),
+                RequiredValueValue = new Value(),
+                RequiredListValueValue = new ListValue(),
+                RequiredTimeValue = new Timestamp(),
+                RequiredDurationValue = new Duration(),
+                RequiredFieldMaskValue = new FieldMask(),
+                RequiredInt32Value = null,
+                RequiredUint32Value = null,
+                RequiredInt64Value = null,
+                RequiredUint64Value = null,
+                RequiredFloatValue = null,
+                RequiredDoubleValue = null,
+                RequiredStringValue = null,
+                RequiredBoolValue = null,
+                RequiredBytesValue = null,
+                RequiredRepeatedAnyValue = { },
+                RequiredRepeatedStructValue = { },
+                RequiredRepeatedValueValue = { },
+                RequiredRepeatedListValueValue = { },
+                RequiredRepeatedTimeValue = { },
+                RequiredRepeatedDurationValue = { },
+                RequiredRepeatedFieldMaskValue = { },
+                RequiredRepeatedInt32Value = { },
+                RequiredRepeatedUint32Value = { },
+                RequiredRepeatedInt64Value = { },
+                RequiredRepeatedUint64Value = { },
+                RequiredRepeatedFloatValue = { },
+                RequiredRepeatedDoubleValue = { },
+                RequiredRepeatedStringValue = { },
+                RequiredRepeatedBoolValue = { },
+                RequiredRepeatedBytesValue = { },
             };
             // Make the request
             TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.TestOptionalRequiredFlatteningParams(request);
@@ -9420,6 +9598,38 @@ namespace Google.Example.Library.V1.Tests
                 RequiredRepeatedFixed32 = { },
                 RequiredRepeatedFixed64 = { },
                 RequiredMap = { },
+                RequiredAnyValue = new Any(),
+                RequiredStructValue = new Struct(),
+                RequiredValueValue = new Value(),
+                RequiredListValueValue = new ListValue(),
+                RequiredTimeValue = new Timestamp(),
+                RequiredDurationValue = new Duration(),
+                RequiredFieldMaskValue = new FieldMask(),
+                RequiredInt32Value = null,
+                RequiredUint32Value = null,
+                RequiredInt64Value = null,
+                RequiredUint64Value = null,
+                RequiredFloatValue = null,
+                RequiredDoubleValue = null,
+                RequiredStringValue = null,
+                RequiredBoolValue = null,
+                RequiredBytesValue = null,
+                RequiredRepeatedAnyValue = { },
+                RequiredRepeatedStructValue = { },
+                RequiredRepeatedValueValue = { },
+                RequiredRepeatedListValueValue = { },
+                RequiredRepeatedTimeValue = { },
+                RequiredRepeatedDurationValue = { },
+                RequiredRepeatedFieldMaskValue = { },
+                RequiredRepeatedInt32Value = { },
+                RequiredRepeatedUint32Value = { },
+                RequiredRepeatedInt64Value = { },
+                RequiredRepeatedUint64Value = { },
+                RequiredRepeatedFloatValue = { },
+                RequiredRepeatedDoubleValue = { },
+                RequiredRepeatedStringValue = { },
+                RequiredRepeatedBoolValue = { },
+                RequiredRepeatedBytesValue = { },
                 OptionalSingularInt32 = 1196565723,
                 OptionalSingularInt64 = 1196565628L,
                 OptionalSingularFloat = -1.19939918E8f,
@@ -9515,6 +9725,38 @@ namespace Google.Example.Library.V1.Tests
             IEnumerable<int> requiredRepeatedFixed32 = new List<int>();
             IEnumerable<long> requiredRepeatedFixed64 = new List<long>();
             IDictionary<int, string> requiredMap = new Dictionary<int, string>();
+            Any requiredAnyValue = new Any();
+            Struct requiredStructValue = new Struct();
+            Value requiredValueValue = new Value();
+            ListValue requiredListValueValue = new ListValue();
+            Timestamp requiredTimeValue = new Timestamp();
+            Duration requiredDurationValue = new Duration();
+            FieldMask requiredFieldMaskValue = new FieldMask();
+            int? requiredInt32Value = null;
+            uint? requiredUint32Value = null;
+            long? requiredInt64Value = null;
+            ulong? requiredUint64Value = null;
+            float? requiredFloatValue = null;
+            double? requiredDoubleValue = null;
+            string requiredStringValue = null;
+            bool? requiredBoolValue = null;
+            ByteString requiredBytesValue = null;
+            IEnumerable<Any> requiredRepeatedAnyValue = new List<Any>();
+            IEnumerable<Struct> requiredRepeatedStructValue = new List<Struct>();
+            IEnumerable<Value> requiredRepeatedValueValue = new List<Value>();
+            IEnumerable<ListValue> requiredRepeatedListValueValue = new List<ListValue>();
+            IEnumerable<Timestamp> requiredRepeatedTimeValue = new List<Timestamp>();
+            IEnumerable<Duration> requiredRepeatedDurationValue = new List<Duration>();
+            IEnumerable<FieldMask> requiredRepeatedFieldMaskValue = new List<FieldMask>();
+            IEnumerable<int?> requiredRepeatedInt32Value = new List<int?>();
+            IEnumerable<uint?> requiredRepeatedUint32Value = new List<uint?>();
+            IEnumerable<long?> requiredRepeatedInt64Value = new List<long?>();
+            IEnumerable<ulong?> requiredRepeatedUint64Value = new List<ulong?>();
+            IEnumerable<float?> requiredRepeatedFloatValue = new List<float?>();
+            IEnumerable<double?> requiredRepeatedDoubleValue = new List<double?>();
+            IEnumerable<string> requiredRepeatedStringValue = new List<string>();
+            IEnumerable<bool?> requiredRepeatedBoolValue = new List<bool?>();
+            IEnumerable<ByteString> requiredRepeatedBytesValue = new List<ByteString>();
             int optionalSingularInt32 = 1196565723;
             long optionalSingularInt64 = 1196565628L;
             float optionalSingularFloat = -1.19939918E8f;
@@ -9576,7 +9818,7 @@ namespace Google.Example.Library.V1.Tests
             IEnumerable<string> repeatedStringValue = new List<string>();
             IEnumerable<bool?> repeatedBoolValue = new List<bool?>();
             IEnumerable<ByteString> repeatedBytesValue = new List<ByteString>();
-            TestOptionalRequiredFlatteningParamsResponse response = client.TestOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
+            TestOptionalRequiredFlatteningParamsResponse response = client.TestOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, requiredAnyValue, requiredStructValue, requiredValueValue, requiredListValueValue, requiredTimeValue, requiredDurationValue, requiredFieldMaskValue, requiredInt32Value, requiredUint32Value, requiredInt64Value, requiredUint64Value, requiredFloatValue, requiredDoubleValue, requiredStringValue, requiredBoolValue, requiredBytesValue, requiredRepeatedAnyValue, requiredRepeatedStructValue, requiredRepeatedValueValue, requiredRepeatedListValueValue, requiredRepeatedTimeValue, requiredRepeatedDurationValue, requiredRepeatedFieldMaskValue, requiredRepeatedInt32Value, requiredRepeatedUint32Value, requiredRepeatedInt64Value, requiredRepeatedUint64Value, requiredRepeatedFloatValue, requiredRepeatedDoubleValue, requiredRepeatedStringValue, requiredRepeatedBoolValue, requiredRepeatedBytesValue, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -9620,6 +9862,38 @@ namespace Google.Example.Library.V1.Tests
                 RequiredRepeatedFixed32 = { },
                 RequiredRepeatedFixed64 = { },
                 RequiredMap = { },
+                RequiredAnyValue = new Any(),
+                RequiredStructValue = new Struct(),
+                RequiredValueValue = new Value(),
+                RequiredListValueValue = new ListValue(),
+                RequiredTimeValue = new Timestamp(),
+                RequiredDurationValue = new Duration(),
+                RequiredFieldMaskValue = new FieldMask(),
+                RequiredInt32Value = null,
+                RequiredUint32Value = null,
+                RequiredInt64Value = null,
+                RequiredUint64Value = null,
+                RequiredFloatValue = null,
+                RequiredDoubleValue = null,
+                RequiredStringValue = null,
+                RequiredBoolValue = null,
+                RequiredBytesValue = null,
+                RequiredRepeatedAnyValue = { },
+                RequiredRepeatedStructValue = { },
+                RequiredRepeatedValueValue = { },
+                RequiredRepeatedListValueValue = { },
+                RequiredRepeatedTimeValue = { },
+                RequiredRepeatedDurationValue = { },
+                RequiredRepeatedFieldMaskValue = { },
+                RequiredRepeatedInt32Value = { },
+                RequiredRepeatedUint32Value = { },
+                RequiredRepeatedInt64Value = { },
+                RequiredRepeatedUint64Value = { },
+                RequiredRepeatedFloatValue = { },
+                RequiredRepeatedDoubleValue = { },
+                RequiredRepeatedStringValue = { },
+                RequiredRepeatedBoolValue = { },
+                RequiredRepeatedBytesValue = { },
                 OptionalSingularInt32 = 1196565723,
                 OptionalSingularInt64 = 1196565628L,
                 OptionalSingularFloat = -1.19939918E8f,
@@ -9715,6 +9989,38 @@ namespace Google.Example.Library.V1.Tests
             IEnumerable<int> requiredRepeatedFixed32 = new List<int>();
             IEnumerable<long> requiredRepeatedFixed64 = new List<long>();
             IDictionary<int, string> requiredMap = new Dictionary<int, string>();
+            Any requiredAnyValue = new Any();
+            Struct requiredStructValue = new Struct();
+            Value requiredValueValue = new Value();
+            ListValue requiredListValueValue = new ListValue();
+            Timestamp requiredTimeValue = new Timestamp();
+            Duration requiredDurationValue = new Duration();
+            FieldMask requiredFieldMaskValue = new FieldMask();
+            int? requiredInt32Value = null;
+            uint? requiredUint32Value = null;
+            long? requiredInt64Value = null;
+            ulong? requiredUint64Value = null;
+            float? requiredFloatValue = null;
+            double? requiredDoubleValue = null;
+            string requiredStringValue = null;
+            bool? requiredBoolValue = null;
+            ByteString requiredBytesValue = null;
+            IEnumerable<Any> requiredRepeatedAnyValue = new List<Any>();
+            IEnumerable<Struct> requiredRepeatedStructValue = new List<Struct>();
+            IEnumerable<Value> requiredRepeatedValueValue = new List<Value>();
+            IEnumerable<ListValue> requiredRepeatedListValueValue = new List<ListValue>();
+            IEnumerable<Timestamp> requiredRepeatedTimeValue = new List<Timestamp>();
+            IEnumerable<Duration> requiredRepeatedDurationValue = new List<Duration>();
+            IEnumerable<FieldMask> requiredRepeatedFieldMaskValue = new List<FieldMask>();
+            IEnumerable<int?> requiredRepeatedInt32Value = new List<int?>();
+            IEnumerable<uint?> requiredRepeatedUint32Value = new List<uint?>();
+            IEnumerable<long?> requiredRepeatedInt64Value = new List<long?>();
+            IEnumerable<ulong?> requiredRepeatedUint64Value = new List<ulong?>();
+            IEnumerable<float?> requiredRepeatedFloatValue = new List<float?>();
+            IEnumerable<double?> requiredRepeatedDoubleValue = new List<double?>();
+            IEnumerable<string> requiredRepeatedStringValue = new List<string>();
+            IEnumerable<bool?> requiredRepeatedBoolValue = new List<bool?>();
+            IEnumerable<ByteString> requiredRepeatedBytesValue = new List<ByteString>();
             int optionalSingularInt32 = 1196565723;
             long optionalSingularInt64 = 1196565628L;
             float optionalSingularFloat = -1.19939918E8f;
@@ -9776,7 +10082,7 @@ namespace Google.Example.Library.V1.Tests
             IEnumerable<string> repeatedStringValue = new List<string>();
             IEnumerable<bool?> repeatedBoolValue = new List<bool?>();
             IEnumerable<ByteString> repeatedBytesValue = new List<ByteString>();
-            TestOptionalRequiredFlatteningParamsResponse response = await client.TestOptionalRequiredFlatteningParamsAsync(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
+            TestOptionalRequiredFlatteningParamsResponse response = await client.TestOptionalRequiredFlatteningParamsAsync(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, requiredAnyValue, requiredStructValue, requiredValueValue, requiredListValueValue, requiredTimeValue, requiredDurationValue, requiredFieldMaskValue, requiredInt32Value, requiredUint32Value, requiredInt64Value, requiredUint64Value, requiredFloatValue, requiredDoubleValue, requiredStringValue, requiredBoolValue, requiredBytesValue, requiredRepeatedAnyValue, requiredRepeatedStructValue, requiredRepeatedValueValue, requiredRepeatedListValueValue, requiredRepeatedTimeValue, requiredRepeatedDurationValue, requiredRepeatedFieldMaskValue, requiredRepeatedInt32Value, requiredRepeatedUint32Value, requiredRepeatedInt64Value, requiredRepeatedUint64Value, requiredRepeatedFloatValue, requiredRepeatedDoubleValue, requiredRepeatedStringValue, requiredRepeatedBoolValue, requiredRepeatedBytesValue, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -9820,6 +10126,38 @@ namespace Google.Example.Library.V1.Tests
                 RequiredRepeatedFixed32 = { },
                 RequiredRepeatedFixed64 = { },
                 RequiredMap = { },
+                RequiredAnyValue = new Any(),
+                RequiredStructValue = new Struct(),
+                RequiredValueValue = new Value(),
+                RequiredListValueValue = new ListValue(),
+                RequiredTimeValue = new Timestamp(),
+                RequiredDurationValue = new Duration(),
+                RequiredFieldMaskValue = new FieldMask(),
+                RequiredInt32Value = null,
+                RequiredUint32Value = null,
+                RequiredInt64Value = null,
+                RequiredUint64Value = null,
+                RequiredFloatValue = null,
+                RequiredDoubleValue = null,
+                RequiredStringValue = null,
+                RequiredBoolValue = null,
+                RequiredBytesValue = null,
+                RequiredRepeatedAnyValue = { },
+                RequiredRepeatedStructValue = { },
+                RequiredRepeatedValueValue = { },
+                RequiredRepeatedListValueValue = { },
+                RequiredRepeatedTimeValue = { },
+                RequiredRepeatedDurationValue = { },
+                RequiredRepeatedFieldMaskValue = { },
+                RequiredRepeatedInt32Value = { },
+                RequiredRepeatedUint32Value = { },
+                RequiredRepeatedInt64Value = { },
+                RequiredRepeatedUint64Value = { },
+                RequiredRepeatedFloatValue = { },
+                RequiredRepeatedDoubleValue = { },
+                RequiredRepeatedStringValue = { },
+                RequiredRepeatedBoolValue = { },
+                RequiredRepeatedBytesValue = { },
             };
             TestOptionalRequiredFlatteningParamsResponse expectedResponse = new TestOptionalRequiredFlatteningParamsResponse();
             mockGrpcClient.Setup(x => x.TestOptionalRequiredFlatteningParams(request, It.IsAny<CallOptions>()))
@@ -9869,6 +10207,38 @@ namespace Google.Example.Library.V1.Tests
                 RequiredRepeatedFixed32 = { },
                 RequiredRepeatedFixed64 = { },
                 RequiredMap = { },
+                RequiredAnyValue = new Any(),
+                RequiredStructValue = new Struct(),
+                RequiredValueValue = new Value(),
+                RequiredListValueValue = new ListValue(),
+                RequiredTimeValue = new Timestamp(),
+                RequiredDurationValue = new Duration(),
+                RequiredFieldMaskValue = new FieldMask(),
+                RequiredInt32Value = null,
+                RequiredUint32Value = null,
+                RequiredInt64Value = null,
+                RequiredUint64Value = null,
+                RequiredFloatValue = null,
+                RequiredDoubleValue = null,
+                RequiredStringValue = null,
+                RequiredBoolValue = null,
+                RequiredBytesValue = null,
+                RequiredRepeatedAnyValue = { },
+                RequiredRepeatedStructValue = { },
+                RequiredRepeatedValueValue = { },
+                RequiredRepeatedListValueValue = { },
+                RequiredRepeatedTimeValue = { },
+                RequiredRepeatedDurationValue = { },
+                RequiredRepeatedFieldMaskValue = { },
+                RequiredRepeatedInt32Value = { },
+                RequiredRepeatedUint32Value = { },
+                RequiredRepeatedInt64Value = { },
+                RequiredRepeatedUint64Value = { },
+                RequiredRepeatedFloatValue = { },
+                RequiredRepeatedDoubleValue = { },
+                RequiredRepeatedStringValue = { },
+                RequiredRepeatedBoolValue = { },
+                RequiredRepeatedBytesValue = { },
             };
             TestOptionalRequiredFlatteningParamsResponse expectedResponse = new TestOptionalRequiredFlatteningParamsResponse();
             mockGrpcClient.Setup(x => x.TestOptionalRequiredFlatteningParamsAsync(request, It.IsAny<CallOptions>()))
@@ -15966,6 +16336,102 @@ namespace Google.Example.Library.V1
         /// <param name="requiredMap">
         ///
         /// </param>
+        /// <param name="requiredAnyValue">
+        ///
+        /// </param>
+        /// <param name="requiredStructValue">
+        ///
+        /// </param>
+        /// <param name="requiredValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredListValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredTimeValue">
+        ///
+        /// </param>
+        /// <param name="requiredDurationValue">
+        ///
+        /// </param>
+        /// <param name="requiredFieldMaskValue">
+        ///
+        /// </param>
+        /// <param name="requiredInt32Value">
+        ///
+        /// </param>
+        /// <param name="requiredUint32Value">
+        ///
+        /// </param>
+        /// <param name="requiredInt64Value">
+        ///
+        /// </param>
+        /// <param name="requiredUint64Value">
+        ///
+        /// </param>
+        /// <param name="requiredFloatValue">
+        ///
+        /// </param>
+        /// <param name="requiredDoubleValue">
+        ///
+        /// </param>
+        /// <param name="requiredStringValue">
+        ///
+        /// </param>
+        /// <param name="requiredBoolValue">
+        ///
+        /// </param>
+        /// <param name="requiredBytesValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedAnyValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedStructValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedListValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedTimeValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDurationValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFieldMaskValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt32Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedUint32Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt64Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedUint64Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFloatValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDoubleValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedStringValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBoolValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBytesValue">
+        ///
+        /// </param>
         /// <param name="optionalSingularInt32">
         ///
         /// </param>
@@ -16185,6 +16651,38 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<int> requiredRepeatedFixed32,
             scg::IEnumerable<long> requiredRepeatedFixed64,
             scg::IDictionary<int, string> requiredMap,
+            pbwkt::Any requiredAnyValue,
+            pbwkt::Struct requiredStructValue,
+            pbwkt::Value requiredValueValue,
+            pbwkt::ListValue requiredListValueValue,
+            pbwkt::Timestamp requiredTimeValue,
+            pbwkt::Duration requiredDurationValue,
+            pbwkt::FieldMask requiredFieldMaskValue,
+            int? requiredInt32Value,
+            uint? requiredUint32Value,
+            long? requiredInt64Value,
+            ulong? requiredUint64Value,
+            float? requiredFloatValue,
+            double? requiredDoubleValue,
+            string requiredStringValue,
+            bool? requiredBoolValue,
+            pb::ByteString requiredBytesValue,
+            scg::IEnumerable<pbwkt::Any> requiredRepeatedAnyValue,
+            scg::IEnumerable<pbwkt::Struct> requiredRepeatedStructValue,
+            scg::IEnumerable<pbwkt::Value> requiredRepeatedValueValue,
+            scg::IEnumerable<pbwkt::ListValue> requiredRepeatedListValueValue,
+            scg::IEnumerable<pbwkt::Timestamp> requiredRepeatedTimeValue,
+            scg::IEnumerable<pbwkt::Duration> requiredRepeatedDurationValue,
+            scg::IEnumerable<pbwkt::FieldMask> requiredRepeatedFieldMaskValue,
+            scg::IEnumerable<int?> requiredRepeatedInt32Value,
+            scg::IEnumerable<uint?> requiredRepeatedUint32Value,
+            scg::IEnumerable<long?> requiredRepeatedInt64Value,
+            scg::IEnumerable<ulong?> requiredRepeatedUint64Value,
+            scg::IEnumerable<float?> requiredRepeatedFloatValue,
+            scg::IEnumerable<double?> requiredRepeatedDoubleValue,
+            scg::IEnumerable<string> requiredRepeatedStringValue,
+            scg::IEnumerable<bool?> requiredRepeatedBoolValue,
+            scg::IEnumerable<pb::ByteString> requiredRepeatedBytesValue,
             int? optionalSingularInt32,
             long? optionalSingularInt64,
             float? optionalSingularFloat,
@@ -16278,6 +16776,38 @@ namespace Google.Example.Library.V1
                     RequiredRepeatedFixed32 = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFixed32, nameof(requiredRepeatedFixed32)) },
                     RequiredRepeatedFixed64 = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFixed64, nameof(requiredRepeatedFixed64)) },
                     RequiredMap = { gax::GaxPreconditions.CheckNotNull(requiredMap, nameof(requiredMap)) },
+                    RequiredAnyValue = gax::GaxPreconditions.CheckNotNull(requiredAnyValue, nameof(requiredAnyValue)),
+                    RequiredStructValue = gax::GaxPreconditions.CheckNotNull(requiredStructValue, nameof(requiredStructValue)),
+                    RequiredValueValue = gax::GaxPreconditions.CheckNotNull(requiredValueValue, nameof(requiredValueValue)),
+                    RequiredListValueValue = gax::GaxPreconditions.CheckNotNull(requiredListValueValue, nameof(requiredListValueValue)),
+                    RequiredTimeValue = gax::GaxPreconditions.CheckNotNull(requiredTimeValue, nameof(requiredTimeValue)),
+                    RequiredDurationValue = gax::GaxPreconditions.CheckNotNull(requiredDurationValue, nameof(requiredDurationValue)),
+                    RequiredFieldMaskValue = gax::GaxPreconditions.CheckNotNull(requiredFieldMaskValue, nameof(requiredFieldMaskValue)),
+                    RequiredInt32Value = requiredInt32Value ?? throw new sys::ArgumentNullException(nameof(requiredInt32Value)),
+                    RequiredUint32Value = requiredUint32Value ?? throw new sys::ArgumentNullException(nameof(requiredUint32Value)),
+                    RequiredInt64Value = requiredInt64Value ?? throw new sys::ArgumentNullException(nameof(requiredInt64Value)),
+                    RequiredUint64Value = requiredUint64Value ?? throw new sys::ArgumentNullException(nameof(requiredUint64Value)),
+                    RequiredFloatValue = requiredFloatValue ?? throw new sys::ArgumentNullException(nameof(requiredFloatValue)),
+                    RequiredDoubleValue = requiredDoubleValue ?? throw new sys::ArgumentNullException(nameof(requiredDoubleValue)),
+                    RequiredStringValue = gax::GaxPreconditions.CheckNotNullOrEmpty(requiredStringValue, nameof(requiredStringValue)),
+                    RequiredBoolValue = requiredBoolValue ?? throw new sys::ArgumentNullException(nameof(requiredBoolValue)),
+                    RequiredBytesValue = gax::GaxPreconditions.CheckNotNull(requiredBytesValue, nameof(requiredBytesValue)),
+                    RequiredRepeatedAnyValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedAnyValue, nameof(requiredRepeatedAnyValue)) },
+                    RequiredRepeatedStructValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedStructValue, nameof(requiredRepeatedStructValue)) },
+                    RequiredRepeatedValueValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedValueValue, nameof(requiredRepeatedValueValue)) },
+                    RequiredRepeatedListValueValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedListValueValue, nameof(requiredRepeatedListValueValue)) },
+                    RequiredRepeatedTimeValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedTimeValue, nameof(requiredRepeatedTimeValue)) },
+                    RequiredRepeatedDurationValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedDurationValue, nameof(requiredRepeatedDurationValue)) },
+                    RequiredRepeatedFieldMaskValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFieldMaskValue, nameof(requiredRepeatedFieldMaskValue)) },
+                    RequiredRepeatedInt32Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedInt32Value, nameof(requiredRepeatedInt32Value)) },
+                    RequiredRepeatedUint32Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedUint32Value, nameof(requiredRepeatedUint32Value)) },
+                    RequiredRepeatedInt64Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedInt64Value, nameof(requiredRepeatedInt64Value)) },
+                    RequiredRepeatedUint64Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedUint64Value, nameof(requiredRepeatedUint64Value)) },
+                    RequiredRepeatedFloatValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFloatValue, nameof(requiredRepeatedFloatValue)) },
+                    RequiredRepeatedDoubleValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedDoubleValue, nameof(requiredRepeatedDoubleValue)) },
+                    RequiredRepeatedStringValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedStringValue, nameof(requiredRepeatedStringValue)) },
+                    RequiredRepeatedBoolValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedBoolValue, nameof(requiredRepeatedBoolValue)) },
+                    RequiredRepeatedBytesValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedBytesValue, nameof(requiredRepeatedBytesValue)) },
                     OptionalSingularInt32 = optionalSingularInt32 ?? 0, // Optional
                     OptionalSingularInt64 = optionalSingularInt64 ?? 0L, // Optional
                     OptionalSingularFloat = optionalSingularFloat ?? 0.0f, // Optional
@@ -16430,6 +16960,102 @@ namespace Google.Example.Library.V1
         ///
         /// </param>
         /// <param name="requiredMap">
+        ///
+        /// </param>
+        /// <param name="requiredAnyValue">
+        ///
+        /// </param>
+        /// <param name="requiredStructValue">
+        ///
+        /// </param>
+        /// <param name="requiredValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredListValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredTimeValue">
+        ///
+        /// </param>
+        /// <param name="requiredDurationValue">
+        ///
+        /// </param>
+        /// <param name="requiredFieldMaskValue">
+        ///
+        /// </param>
+        /// <param name="requiredInt32Value">
+        ///
+        /// </param>
+        /// <param name="requiredUint32Value">
+        ///
+        /// </param>
+        /// <param name="requiredInt64Value">
+        ///
+        /// </param>
+        /// <param name="requiredUint64Value">
+        ///
+        /// </param>
+        /// <param name="requiredFloatValue">
+        ///
+        /// </param>
+        /// <param name="requiredDoubleValue">
+        ///
+        /// </param>
+        /// <param name="requiredStringValue">
+        ///
+        /// </param>
+        /// <param name="requiredBoolValue">
+        ///
+        /// </param>
+        /// <param name="requiredBytesValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedAnyValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedStructValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedListValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedTimeValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDurationValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFieldMaskValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt32Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedUint32Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt64Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedUint64Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFloatValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDoubleValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedStringValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBoolValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBytesValue">
         ///
         /// </param>
         /// <param name="optionalSingularInt32">
@@ -16651,6 +17277,38 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<int> requiredRepeatedFixed32,
             scg::IEnumerable<long> requiredRepeatedFixed64,
             scg::IDictionary<int, string> requiredMap,
+            pbwkt::Any requiredAnyValue,
+            pbwkt::Struct requiredStructValue,
+            pbwkt::Value requiredValueValue,
+            pbwkt::ListValue requiredListValueValue,
+            pbwkt::Timestamp requiredTimeValue,
+            pbwkt::Duration requiredDurationValue,
+            pbwkt::FieldMask requiredFieldMaskValue,
+            int? requiredInt32Value,
+            uint? requiredUint32Value,
+            long? requiredInt64Value,
+            ulong? requiredUint64Value,
+            float? requiredFloatValue,
+            double? requiredDoubleValue,
+            string requiredStringValue,
+            bool? requiredBoolValue,
+            pb::ByteString requiredBytesValue,
+            scg::IEnumerable<pbwkt::Any> requiredRepeatedAnyValue,
+            scg::IEnumerable<pbwkt::Struct> requiredRepeatedStructValue,
+            scg::IEnumerable<pbwkt::Value> requiredRepeatedValueValue,
+            scg::IEnumerable<pbwkt::ListValue> requiredRepeatedListValueValue,
+            scg::IEnumerable<pbwkt::Timestamp> requiredRepeatedTimeValue,
+            scg::IEnumerable<pbwkt::Duration> requiredRepeatedDurationValue,
+            scg::IEnumerable<pbwkt::FieldMask> requiredRepeatedFieldMaskValue,
+            scg::IEnumerable<int?> requiredRepeatedInt32Value,
+            scg::IEnumerable<uint?> requiredRepeatedUint32Value,
+            scg::IEnumerable<long?> requiredRepeatedInt64Value,
+            scg::IEnumerable<ulong?> requiredRepeatedUint64Value,
+            scg::IEnumerable<float?> requiredRepeatedFloatValue,
+            scg::IEnumerable<double?> requiredRepeatedDoubleValue,
+            scg::IEnumerable<string> requiredRepeatedStringValue,
+            scg::IEnumerable<bool?> requiredRepeatedBoolValue,
+            scg::IEnumerable<pb::ByteString> requiredRepeatedBytesValue,
             int? optionalSingularInt32,
             long? optionalSingularInt64,
             float? optionalSingularFloat,
@@ -16742,6 +17400,38 @@ namespace Google.Example.Library.V1
                 requiredRepeatedFixed32,
                 requiredRepeatedFixed64,
                 requiredMap,
+                requiredAnyValue,
+                requiredStructValue,
+                requiredValueValue,
+                requiredListValueValue,
+                requiredTimeValue,
+                requiredDurationValue,
+                requiredFieldMaskValue,
+                requiredInt32Value,
+                requiredUint32Value,
+                requiredInt64Value,
+                requiredUint64Value,
+                requiredFloatValue,
+                requiredDoubleValue,
+                requiredStringValue,
+                requiredBoolValue,
+                requiredBytesValue,
+                requiredRepeatedAnyValue,
+                requiredRepeatedStructValue,
+                requiredRepeatedValueValue,
+                requiredRepeatedListValueValue,
+                requiredRepeatedTimeValue,
+                requiredRepeatedDurationValue,
+                requiredRepeatedFieldMaskValue,
+                requiredRepeatedInt32Value,
+                requiredRepeatedUint32Value,
+                requiredRepeatedInt64Value,
+                requiredRepeatedUint64Value,
+                requiredRepeatedFloatValue,
+                requiredRepeatedDoubleValue,
+                requiredRepeatedStringValue,
+                requiredRepeatedBoolValue,
+                requiredRepeatedBytesValue,
                 optionalSingularInt32,
                 optionalSingularInt64,
                 optionalSingularFloat,
@@ -16893,6 +17583,102 @@ namespace Google.Example.Library.V1
         ///
         /// </param>
         /// <param name="requiredMap">
+        ///
+        /// </param>
+        /// <param name="requiredAnyValue">
+        ///
+        /// </param>
+        /// <param name="requiredStructValue">
+        ///
+        /// </param>
+        /// <param name="requiredValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredListValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredTimeValue">
+        ///
+        /// </param>
+        /// <param name="requiredDurationValue">
+        ///
+        /// </param>
+        /// <param name="requiredFieldMaskValue">
+        ///
+        /// </param>
+        /// <param name="requiredInt32Value">
+        ///
+        /// </param>
+        /// <param name="requiredUint32Value">
+        ///
+        /// </param>
+        /// <param name="requiredInt64Value">
+        ///
+        /// </param>
+        /// <param name="requiredUint64Value">
+        ///
+        /// </param>
+        /// <param name="requiredFloatValue">
+        ///
+        /// </param>
+        /// <param name="requiredDoubleValue">
+        ///
+        /// </param>
+        /// <param name="requiredStringValue">
+        ///
+        /// </param>
+        /// <param name="requiredBoolValue">
+        ///
+        /// </param>
+        /// <param name="requiredBytesValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedAnyValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedStructValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedListValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedTimeValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDurationValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFieldMaskValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt32Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedUint32Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt64Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedUint64Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFloatValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDoubleValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedStringValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBoolValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBytesValue">
         ///
         /// </param>
         /// <param name="optionalSingularInt32">
@@ -17114,6 +17900,38 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<int> requiredRepeatedFixed32,
             scg::IEnumerable<long> requiredRepeatedFixed64,
             scg::IDictionary<int, string> requiredMap,
+            pbwkt::Any requiredAnyValue,
+            pbwkt::Struct requiredStructValue,
+            pbwkt::Value requiredValueValue,
+            pbwkt::ListValue requiredListValueValue,
+            pbwkt::Timestamp requiredTimeValue,
+            pbwkt::Duration requiredDurationValue,
+            pbwkt::FieldMask requiredFieldMaskValue,
+            int? requiredInt32Value,
+            uint? requiredUint32Value,
+            long? requiredInt64Value,
+            ulong? requiredUint64Value,
+            float? requiredFloatValue,
+            double? requiredDoubleValue,
+            string requiredStringValue,
+            bool? requiredBoolValue,
+            pb::ByteString requiredBytesValue,
+            scg::IEnumerable<pbwkt::Any> requiredRepeatedAnyValue,
+            scg::IEnumerable<pbwkt::Struct> requiredRepeatedStructValue,
+            scg::IEnumerable<pbwkt::Value> requiredRepeatedValueValue,
+            scg::IEnumerable<pbwkt::ListValue> requiredRepeatedListValueValue,
+            scg::IEnumerable<pbwkt::Timestamp> requiredRepeatedTimeValue,
+            scg::IEnumerable<pbwkt::Duration> requiredRepeatedDurationValue,
+            scg::IEnumerable<pbwkt::FieldMask> requiredRepeatedFieldMaskValue,
+            scg::IEnumerable<int?> requiredRepeatedInt32Value,
+            scg::IEnumerable<uint?> requiredRepeatedUint32Value,
+            scg::IEnumerable<long?> requiredRepeatedInt64Value,
+            scg::IEnumerable<ulong?> requiredRepeatedUint64Value,
+            scg::IEnumerable<float?> requiredRepeatedFloatValue,
+            scg::IEnumerable<double?> requiredRepeatedDoubleValue,
+            scg::IEnumerable<string> requiredRepeatedStringValue,
+            scg::IEnumerable<bool?> requiredRepeatedBoolValue,
+            scg::IEnumerable<pb::ByteString> requiredRepeatedBytesValue,
             int? optionalSingularInt32,
             long? optionalSingularInt64,
             float? optionalSingularFloat,
@@ -17207,6 +18025,38 @@ namespace Google.Example.Library.V1
                     RequiredRepeatedFixed32 = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFixed32, nameof(requiredRepeatedFixed32)) },
                     RequiredRepeatedFixed64 = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFixed64, nameof(requiredRepeatedFixed64)) },
                     RequiredMap = { gax::GaxPreconditions.CheckNotNull(requiredMap, nameof(requiredMap)) },
+                    RequiredAnyValue = gax::GaxPreconditions.CheckNotNull(requiredAnyValue, nameof(requiredAnyValue)),
+                    RequiredStructValue = gax::GaxPreconditions.CheckNotNull(requiredStructValue, nameof(requiredStructValue)),
+                    RequiredValueValue = gax::GaxPreconditions.CheckNotNull(requiredValueValue, nameof(requiredValueValue)),
+                    RequiredListValueValue = gax::GaxPreconditions.CheckNotNull(requiredListValueValue, nameof(requiredListValueValue)),
+                    RequiredTimeValue = gax::GaxPreconditions.CheckNotNull(requiredTimeValue, nameof(requiredTimeValue)),
+                    RequiredDurationValue = gax::GaxPreconditions.CheckNotNull(requiredDurationValue, nameof(requiredDurationValue)),
+                    RequiredFieldMaskValue = gax::GaxPreconditions.CheckNotNull(requiredFieldMaskValue, nameof(requiredFieldMaskValue)),
+                    RequiredInt32Value = requiredInt32Value ?? throw new sys::ArgumentNullException(nameof(requiredInt32Value)),
+                    RequiredUint32Value = requiredUint32Value ?? throw new sys::ArgumentNullException(nameof(requiredUint32Value)),
+                    RequiredInt64Value = requiredInt64Value ?? throw new sys::ArgumentNullException(nameof(requiredInt64Value)),
+                    RequiredUint64Value = requiredUint64Value ?? throw new sys::ArgumentNullException(nameof(requiredUint64Value)),
+                    RequiredFloatValue = requiredFloatValue ?? throw new sys::ArgumentNullException(nameof(requiredFloatValue)),
+                    RequiredDoubleValue = requiredDoubleValue ?? throw new sys::ArgumentNullException(nameof(requiredDoubleValue)),
+                    RequiredStringValue = gax::GaxPreconditions.CheckNotNullOrEmpty(requiredStringValue, nameof(requiredStringValue)),
+                    RequiredBoolValue = requiredBoolValue ?? throw new sys::ArgumentNullException(nameof(requiredBoolValue)),
+                    RequiredBytesValue = gax::GaxPreconditions.CheckNotNull(requiredBytesValue, nameof(requiredBytesValue)),
+                    RequiredRepeatedAnyValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedAnyValue, nameof(requiredRepeatedAnyValue)) },
+                    RequiredRepeatedStructValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedStructValue, nameof(requiredRepeatedStructValue)) },
+                    RequiredRepeatedValueValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedValueValue, nameof(requiredRepeatedValueValue)) },
+                    RequiredRepeatedListValueValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedListValueValue, nameof(requiredRepeatedListValueValue)) },
+                    RequiredRepeatedTimeValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedTimeValue, nameof(requiredRepeatedTimeValue)) },
+                    RequiredRepeatedDurationValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedDurationValue, nameof(requiredRepeatedDurationValue)) },
+                    RequiredRepeatedFieldMaskValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFieldMaskValue, nameof(requiredRepeatedFieldMaskValue)) },
+                    RequiredRepeatedInt32Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedInt32Value, nameof(requiredRepeatedInt32Value)) },
+                    RequiredRepeatedUint32Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedUint32Value, nameof(requiredRepeatedUint32Value)) },
+                    RequiredRepeatedInt64Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedInt64Value, nameof(requiredRepeatedInt64Value)) },
+                    RequiredRepeatedUint64Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedUint64Value, nameof(requiredRepeatedUint64Value)) },
+                    RequiredRepeatedFloatValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFloatValue, nameof(requiredRepeatedFloatValue)) },
+                    RequiredRepeatedDoubleValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedDoubleValue, nameof(requiredRepeatedDoubleValue)) },
+                    RequiredRepeatedStringValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedStringValue, nameof(requiredRepeatedStringValue)) },
+                    RequiredRepeatedBoolValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedBoolValue, nameof(requiredRepeatedBoolValue)) },
+                    RequiredRepeatedBytesValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedBytesValue, nameof(requiredRepeatedBytesValue)) },
                     OptionalSingularInt32 = optionalSingularInt32 ?? 0, // Optional
                     OptionalSingularInt64 = optionalSingularInt64 ?? 0L, // Optional
                     OptionalSingularFloat = optionalSingularFloat ?? 0.0f, // Optional
@@ -17359,6 +18209,102 @@ namespace Google.Example.Library.V1
         ///
         /// </param>
         /// <param name="requiredMap">
+        ///
+        /// </param>
+        /// <param name="requiredAnyValue">
+        ///
+        /// </param>
+        /// <param name="requiredStructValue">
+        ///
+        /// </param>
+        /// <param name="requiredValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredListValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredTimeValue">
+        ///
+        /// </param>
+        /// <param name="requiredDurationValue">
+        ///
+        /// </param>
+        /// <param name="requiredFieldMaskValue">
+        ///
+        /// </param>
+        /// <param name="requiredInt32Value">
+        ///
+        /// </param>
+        /// <param name="requiredUint32Value">
+        ///
+        /// </param>
+        /// <param name="requiredInt64Value">
+        ///
+        /// </param>
+        /// <param name="requiredUint64Value">
+        ///
+        /// </param>
+        /// <param name="requiredFloatValue">
+        ///
+        /// </param>
+        /// <param name="requiredDoubleValue">
+        ///
+        /// </param>
+        /// <param name="requiredStringValue">
+        ///
+        /// </param>
+        /// <param name="requiredBoolValue">
+        ///
+        /// </param>
+        /// <param name="requiredBytesValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedAnyValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedStructValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedListValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedTimeValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDurationValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFieldMaskValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt32Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedUint32Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt64Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedUint64Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFloatValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDoubleValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedStringValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBoolValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBytesValue">
         ///
         /// </param>
         /// <param name="optionalSingularInt32">
@@ -17580,6 +18526,38 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<int> requiredRepeatedFixed32,
             scg::IEnumerable<long> requiredRepeatedFixed64,
             scg::IDictionary<int, string> requiredMap,
+            pbwkt::Any requiredAnyValue,
+            pbwkt::Struct requiredStructValue,
+            pbwkt::Value requiredValueValue,
+            pbwkt::ListValue requiredListValueValue,
+            pbwkt::Timestamp requiredTimeValue,
+            pbwkt::Duration requiredDurationValue,
+            pbwkt::FieldMask requiredFieldMaskValue,
+            int? requiredInt32Value,
+            uint? requiredUint32Value,
+            long? requiredInt64Value,
+            ulong? requiredUint64Value,
+            float? requiredFloatValue,
+            double? requiredDoubleValue,
+            string requiredStringValue,
+            bool? requiredBoolValue,
+            pb::ByteString requiredBytesValue,
+            scg::IEnumerable<pbwkt::Any> requiredRepeatedAnyValue,
+            scg::IEnumerable<pbwkt::Struct> requiredRepeatedStructValue,
+            scg::IEnumerable<pbwkt::Value> requiredRepeatedValueValue,
+            scg::IEnumerable<pbwkt::ListValue> requiredRepeatedListValueValue,
+            scg::IEnumerable<pbwkt::Timestamp> requiredRepeatedTimeValue,
+            scg::IEnumerable<pbwkt::Duration> requiredRepeatedDurationValue,
+            scg::IEnumerable<pbwkt::FieldMask> requiredRepeatedFieldMaskValue,
+            scg::IEnumerable<int?> requiredRepeatedInt32Value,
+            scg::IEnumerable<uint?> requiredRepeatedUint32Value,
+            scg::IEnumerable<long?> requiredRepeatedInt64Value,
+            scg::IEnumerable<ulong?> requiredRepeatedUint64Value,
+            scg::IEnumerable<float?> requiredRepeatedFloatValue,
+            scg::IEnumerable<double?> requiredRepeatedDoubleValue,
+            scg::IEnumerable<string> requiredRepeatedStringValue,
+            scg::IEnumerable<bool?> requiredRepeatedBoolValue,
+            scg::IEnumerable<pb::ByteString> requiredRepeatedBytesValue,
             int? optionalSingularInt32,
             long? optionalSingularInt64,
             float? optionalSingularFloat,
@@ -17673,6 +18651,38 @@ namespace Google.Example.Library.V1
                     RequiredRepeatedFixed32 = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFixed32, nameof(requiredRepeatedFixed32)) },
                     RequiredRepeatedFixed64 = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFixed64, nameof(requiredRepeatedFixed64)) },
                     RequiredMap = { gax::GaxPreconditions.CheckNotNull(requiredMap, nameof(requiredMap)) },
+                    RequiredAnyValue = gax::GaxPreconditions.CheckNotNull(requiredAnyValue, nameof(requiredAnyValue)),
+                    RequiredStructValue = gax::GaxPreconditions.CheckNotNull(requiredStructValue, nameof(requiredStructValue)),
+                    RequiredValueValue = gax::GaxPreconditions.CheckNotNull(requiredValueValue, nameof(requiredValueValue)),
+                    RequiredListValueValue = gax::GaxPreconditions.CheckNotNull(requiredListValueValue, nameof(requiredListValueValue)),
+                    RequiredTimeValue = gax::GaxPreconditions.CheckNotNull(requiredTimeValue, nameof(requiredTimeValue)),
+                    RequiredDurationValue = gax::GaxPreconditions.CheckNotNull(requiredDurationValue, nameof(requiredDurationValue)),
+                    RequiredFieldMaskValue = gax::GaxPreconditions.CheckNotNull(requiredFieldMaskValue, nameof(requiredFieldMaskValue)),
+                    RequiredInt32Value = requiredInt32Value ?? throw new sys::ArgumentNullException(nameof(requiredInt32Value)),
+                    RequiredUint32Value = requiredUint32Value ?? throw new sys::ArgumentNullException(nameof(requiredUint32Value)),
+                    RequiredInt64Value = requiredInt64Value ?? throw new sys::ArgumentNullException(nameof(requiredInt64Value)),
+                    RequiredUint64Value = requiredUint64Value ?? throw new sys::ArgumentNullException(nameof(requiredUint64Value)),
+                    RequiredFloatValue = requiredFloatValue ?? throw new sys::ArgumentNullException(nameof(requiredFloatValue)),
+                    RequiredDoubleValue = requiredDoubleValue ?? throw new sys::ArgumentNullException(nameof(requiredDoubleValue)),
+                    RequiredStringValue = gax::GaxPreconditions.CheckNotNullOrEmpty(requiredStringValue, nameof(requiredStringValue)),
+                    RequiredBoolValue = requiredBoolValue ?? throw new sys::ArgumentNullException(nameof(requiredBoolValue)),
+                    RequiredBytesValue = gax::GaxPreconditions.CheckNotNull(requiredBytesValue, nameof(requiredBytesValue)),
+                    RequiredRepeatedAnyValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedAnyValue, nameof(requiredRepeatedAnyValue)) },
+                    RequiredRepeatedStructValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedStructValue, nameof(requiredRepeatedStructValue)) },
+                    RequiredRepeatedValueValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedValueValue, nameof(requiredRepeatedValueValue)) },
+                    RequiredRepeatedListValueValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedListValueValue, nameof(requiredRepeatedListValueValue)) },
+                    RequiredRepeatedTimeValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedTimeValue, nameof(requiredRepeatedTimeValue)) },
+                    RequiredRepeatedDurationValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedDurationValue, nameof(requiredRepeatedDurationValue)) },
+                    RequiredRepeatedFieldMaskValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFieldMaskValue, nameof(requiredRepeatedFieldMaskValue)) },
+                    RequiredRepeatedInt32Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedInt32Value, nameof(requiredRepeatedInt32Value)) },
+                    RequiredRepeatedUint32Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedUint32Value, nameof(requiredRepeatedUint32Value)) },
+                    RequiredRepeatedInt64Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedInt64Value, nameof(requiredRepeatedInt64Value)) },
+                    RequiredRepeatedUint64Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedUint64Value, nameof(requiredRepeatedUint64Value)) },
+                    RequiredRepeatedFloatValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFloatValue, nameof(requiredRepeatedFloatValue)) },
+                    RequiredRepeatedDoubleValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedDoubleValue, nameof(requiredRepeatedDoubleValue)) },
+                    RequiredRepeatedStringValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedStringValue, nameof(requiredRepeatedStringValue)) },
+                    RequiredRepeatedBoolValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedBoolValue, nameof(requiredRepeatedBoolValue)) },
+                    RequiredRepeatedBytesValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedBytesValue, nameof(requiredRepeatedBytesValue)) },
                     OptionalSingularInt32 = optionalSingularInt32 ?? 0, // Optional
                     OptionalSingularInt64 = optionalSingularInt64 ?? 0L, // Optional
                     OptionalSingularFloat = optionalSingularFloat ?? 0.0f, // Optional
@@ -17827,6 +18837,102 @@ namespace Google.Example.Library.V1
         /// <param name="requiredMap">
         ///
         /// </param>
+        /// <param name="requiredAnyValue">
+        ///
+        /// </param>
+        /// <param name="requiredStructValue">
+        ///
+        /// </param>
+        /// <param name="requiredValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredListValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredTimeValue">
+        ///
+        /// </param>
+        /// <param name="requiredDurationValue">
+        ///
+        /// </param>
+        /// <param name="requiredFieldMaskValue">
+        ///
+        /// </param>
+        /// <param name="requiredInt32Value">
+        ///
+        /// </param>
+        /// <param name="requiredUint32Value">
+        ///
+        /// </param>
+        /// <param name="requiredInt64Value">
+        ///
+        /// </param>
+        /// <param name="requiredUint64Value">
+        ///
+        /// </param>
+        /// <param name="requiredFloatValue">
+        ///
+        /// </param>
+        /// <param name="requiredDoubleValue">
+        ///
+        /// </param>
+        /// <param name="requiredStringValue">
+        ///
+        /// </param>
+        /// <param name="requiredBoolValue">
+        ///
+        /// </param>
+        /// <param name="requiredBytesValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedAnyValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedStructValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedListValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedTimeValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDurationValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFieldMaskValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt32Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedUint32Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt64Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedUint64Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFloatValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDoubleValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedStringValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBoolValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBytesValue">
+        ///
+        /// </param>
         /// <param name="optionalSingularInt32">
         ///
         /// </param>
@@ -18046,6 +19152,38 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<int> requiredRepeatedFixed32,
             scg::IEnumerable<long> requiredRepeatedFixed64,
             scg::IDictionary<int, string> requiredMap,
+            pbwkt::Any requiredAnyValue,
+            pbwkt::Struct requiredStructValue,
+            pbwkt::Value requiredValueValue,
+            pbwkt::ListValue requiredListValueValue,
+            pbwkt::Timestamp requiredTimeValue,
+            pbwkt::Duration requiredDurationValue,
+            pbwkt::FieldMask requiredFieldMaskValue,
+            int? requiredInt32Value,
+            uint? requiredUint32Value,
+            long? requiredInt64Value,
+            ulong? requiredUint64Value,
+            float? requiredFloatValue,
+            double? requiredDoubleValue,
+            string requiredStringValue,
+            bool? requiredBoolValue,
+            pb::ByteString requiredBytesValue,
+            scg::IEnumerable<pbwkt::Any> requiredRepeatedAnyValue,
+            scg::IEnumerable<pbwkt::Struct> requiredRepeatedStructValue,
+            scg::IEnumerable<pbwkt::Value> requiredRepeatedValueValue,
+            scg::IEnumerable<pbwkt::ListValue> requiredRepeatedListValueValue,
+            scg::IEnumerable<pbwkt::Timestamp> requiredRepeatedTimeValue,
+            scg::IEnumerable<pbwkt::Duration> requiredRepeatedDurationValue,
+            scg::IEnumerable<pbwkt::FieldMask> requiredRepeatedFieldMaskValue,
+            scg::IEnumerable<int?> requiredRepeatedInt32Value,
+            scg::IEnumerable<uint?> requiredRepeatedUint32Value,
+            scg::IEnumerable<long?> requiredRepeatedInt64Value,
+            scg::IEnumerable<ulong?> requiredRepeatedUint64Value,
+            scg::IEnumerable<float?> requiredRepeatedFloatValue,
+            scg::IEnumerable<double?> requiredRepeatedDoubleValue,
+            scg::IEnumerable<string> requiredRepeatedStringValue,
+            scg::IEnumerable<bool?> requiredRepeatedBoolValue,
+            scg::IEnumerable<pb::ByteString> requiredRepeatedBytesValue,
             int? optionalSingularInt32,
             long? optionalSingularInt64,
             float? optionalSingularFloat,
@@ -18137,6 +19275,38 @@ namespace Google.Example.Library.V1
                 requiredRepeatedFixed32,
                 requiredRepeatedFixed64,
                 requiredMap,
+                requiredAnyValue,
+                requiredStructValue,
+                requiredValueValue,
+                requiredListValueValue,
+                requiredTimeValue,
+                requiredDurationValue,
+                requiredFieldMaskValue,
+                requiredInt32Value,
+                requiredUint32Value,
+                requiredInt64Value,
+                requiredUint64Value,
+                requiredFloatValue,
+                requiredDoubleValue,
+                requiredStringValue,
+                requiredBoolValue,
+                requiredBytesValue,
+                requiredRepeatedAnyValue,
+                requiredRepeatedStructValue,
+                requiredRepeatedValueValue,
+                requiredRepeatedListValueValue,
+                requiredRepeatedTimeValue,
+                requiredRepeatedDurationValue,
+                requiredRepeatedFieldMaskValue,
+                requiredRepeatedInt32Value,
+                requiredRepeatedUint32Value,
+                requiredRepeatedInt64Value,
+                requiredRepeatedUint64Value,
+                requiredRepeatedFloatValue,
+                requiredRepeatedDoubleValue,
+                requiredRepeatedStringValue,
+                requiredRepeatedBoolValue,
+                requiredRepeatedBytesValue,
                 optionalSingularInt32,
                 optionalSingularInt64,
                 optionalSingularFloat,
@@ -18288,6 +19458,102 @@ namespace Google.Example.Library.V1
         ///
         /// </param>
         /// <param name="requiredMap">
+        ///
+        /// </param>
+        /// <param name="requiredAnyValue">
+        ///
+        /// </param>
+        /// <param name="requiredStructValue">
+        ///
+        /// </param>
+        /// <param name="requiredValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredListValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredTimeValue">
+        ///
+        /// </param>
+        /// <param name="requiredDurationValue">
+        ///
+        /// </param>
+        /// <param name="requiredFieldMaskValue">
+        ///
+        /// </param>
+        /// <param name="requiredInt32Value">
+        ///
+        /// </param>
+        /// <param name="requiredUint32Value">
+        ///
+        /// </param>
+        /// <param name="requiredInt64Value">
+        ///
+        /// </param>
+        /// <param name="requiredUint64Value">
+        ///
+        /// </param>
+        /// <param name="requiredFloatValue">
+        ///
+        /// </param>
+        /// <param name="requiredDoubleValue">
+        ///
+        /// </param>
+        /// <param name="requiredStringValue">
+        ///
+        /// </param>
+        /// <param name="requiredBoolValue">
+        ///
+        /// </param>
+        /// <param name="requiredBytesValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedAnyValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedStructValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedListValueValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedTimeValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDurationValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFieldMaskValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt32Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedUint32Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt64Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedUint64Value">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFloatValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDoubleValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedStringValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBoolValue">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBytesValue">
         ///
         /// </param>
         /// <param name="optionalSingularInt32">
@@ -18509,6 +19775,38 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<int> requiredRepeatedFixed32,
             scg::IEnumerable<long> requiredRepeatedFixed64,
             scg::IDictionary<int, string> requiredMap,
+            pbwkt::Any requiredAnyValue,
+            pbwkt::Struct requiredStructValue,
+            pbwkt::Value requiredValueValue,
+            pbwkt::ListValue requiredListValueValue,
+            pbwkt::Timestamp requiredTimeValue,
+            pbwkt::Duration requiredDurationValue,
+            pbwkt::FieldMask requiredFieldMaskValue,
+            int? requiredInt32Value,
+            uint? requiredUint32Value,
+            long? requiredInt64Value,
+            ulong? requiredUint64Value,
+            float? requiredFloatValue,
+            double? requiredDoubleValue,
+            string requiredStringValue,
+            bool? requiredBoolValue,
+            pb::ByteString requiredBytesValue,
+            scg::IEnumerable<pbwkt::Any> requiredRepeatedAnyValue,
+            scg::IEnumerable<pbwkt::Struct> requiredRepeatedStructValue,
+            scg::IEnumerable<pbwkt::Value> requiredRepeatedValueValue,
+            scg::IEnumerable<pbwkt::ListValue> requiredRepeatedListValueValue,
+            scg::IEnumerable<pbwkt::Timestamp> requiredRepeatedTimeValue,
+            scg::IEnumerable<pbwkt::Duration> requiredRepeatedDurationValue,
+            scg::IEnumerable<pbwkt::FieldMask> requiredRepeatedFieldMaskValue,
+            scg::IEnumerable<int?> requiredRepeatedInt32Value,
+            scg::IEnumerable<uint?> requiredRepeatedUint32Value,
+            scg::IEnumerable<long?> requiredRepeatedInt64Value,
+            scg::IEnumerable<ulong?> requiredRepeatedUint64Value,
+            scg::IEnumerable<float?> requiredRepeatedFloatValue,
+            scg::IEnumerable<double?> requiredRepeatedDoubleValue,
+            scg::IEnumerable<string> requiredRepeatedStringValue,
+            scg::IEnumerable<bool?> requiredRepeatedBoolValue,
+            scg::IEnumerable<pb::ByteString> requiredRepeatedBytesValue,
             int? optionalSingularInt32,
             long? optionalSingularInt64,
             float? optionalSingularFloat,
@@ -18602,6 +19900,38 @@ namespace Google.Example.Library.V1
                     RequiredRepeatedFixed32 = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFixed32, nameof(requiredRepeatedFixed32)) },
                     RequiredRepeatedFixed64 = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFixed64, nameof(requiredRepeatedFixed64)) },
                     RequiredMap = { gax::GaxPreconditions.CheckNotNull(requiredMap, nameof(requiredMap)) },
+                    RequiredAnyValue = gax::GaxPreconditions.CheckNotNull(requiredAnyValue, nameof(requiredAnyValue)),
+                    RequiredStructValue = gax::GaxPreconditions.CheckNotNull(requiredStructValue, nameof(requiredStructValue)),
+                    RequiredValueValue = gax::GaxPreconditions.CheckNotNull(requiredValueValue, nameof(requiredValueValue)),
+                    RequiredListValueValue = gax::GaxPreconditions.CheckNotNull(requiredListValueValue, nameof(requiredListValueValue)),
+                    RequiredTimeValue = gax::GaxPreconditions.CheckNotNull(requiredTimeValue, nameof(requiredTimeValue)),
+                    RequiredDurationValue = gax::GaxPreconditions.CheckNotNull(requiredDurationValue, nameof(requiredDurationValue)),
+                    RequiredFieldMaskValue = gax::GaxPreconditions.CheckNotNull(requiredFieldMaskValue, nameof(requiredFieldMaskValue)),
+                    RequiredInt32Value = requiredInt32Value ?? throw new sys::ArgumentNullException(nameof(requiredInt32Value)),
+                    RequiredUint32Value = requiredUint32Value ?? throw new sys::ArgumentNullException(nameof(requiredUint32Value)),
+                    RequiredInt64Value = requiredInt64Value ?? throw new sys::ArgumentNullException(nameof(requiredInt64Value)),
+                    RequiredUint64Value = requiredUint64Value ?? throw new sys::ArgumentNullException(nameof(requiredUint64Value)),
+                    RequiredFloatValue = requiredFloatValue ?? throw new sys::ArgumentNullException(nameof(requiredFloatValue)),
+                    RequiredDoubleValue = requiredDoubleValue ?? throw new sys::ArgumentNullException(nameof(requiredDoubleValue)),
+                    RequiredStringValue = gax::GaxPreconditions.CheckNotNullOrEmpty(requiredStringValue, nameof(requiredStringValue)),
+                    RequiredBoolValue = requiredBoolValue ?? throw new sys::ArgumentNullException(nameof(requiredBoolValue)),
+                    RequiredBytesValue = gax::GaxPreconditions.CheckNotNull(requiredBytesValue, nameof(requiredBytesValue)),
+                    RequiredRepeatedAnyValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedAnyValue, nameof(requiredRepeatedAnyValue)) },
+                    RequiredRepeatedStructValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedStructValue, nameof(requiredRepeatedStructValue)) },
+                    RequiredRepeatedValueValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedValueValue, nameof(requiredRepeatedValueValue)) },
+                    RequiredRepeatedListValueValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedListValueValue, nameof(requiredRepeatedListValueValue)) },
+                    RequiredRepeatedTimeValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedTimeValue, nameof(requiredRepeatedTimeValue)) },
+                    RequiredRepeatedDurationValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedDurationValue, nameof(requiredRepeatedDurationValue)) },
+                    RequiredRepeatedFieldMaskValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFieldMaskValue, nameof(requiredRepeatedFieldMaskValue)) },
+                    RequiredRepeatedInt32Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedInt32Value, nameof(requiredRepeatedInt32Value)) },
+                    RequiredRepeatedUint32Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedUint32Value, nameof(requiredRepeatedUint32Value)) },
+                    RequiredRepeatedInt64Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedInt64Value, nameof(requiredRepeatedInt64Value)) },
+                    RequiredRepeatedUint64Value = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedUint64Value, nameof(requiredRepeatedUint64Value)) },
+                    RequiredRepeatedFloatValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFloatValue, nameof(requiredRepeatedFloatValue)) },
+                    RequiredRepeatedDoubleValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedDoubleValue, nameof(requiredRepeatedDoubleValue)) },
+                    RequiredRepeatedStringValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedStringValue, nameof(requiredRepeatedStringValue)) },
+                    RequiredRepeatedBoolValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedBoolValue, nameof(requiredRepeatedBoolValue)) },
+                    RequiredRepeatedBytesValue = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedBytesValue, nameof(requiredRepeatedBytesValue)) },
                     OptionalSingularInt32 = optionalSingularInt32 ?? 0, // Optional
                     OptionalSingularInt64 = optionalSingularInt64 ?? 0L, // Optional
                     OptionalSingularFloat = optionalSingularFloat ?? 0.0f, // Optional
