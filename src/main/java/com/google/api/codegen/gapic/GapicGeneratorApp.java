@@ -27,6 +27,7 @@ import com.google.api.codegen.config.PackagingConfig;
 import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.codegen.util.ProtoParser;
+import com.google.api.codegen.util.SampleConfigSanitizer;
 import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -155,7 +156,7 @@ public class GapicGeneratorApp extends ToolDriverBase {
     if (sampleConfigFileNames.size() > 0) {
       ConfigSource configSource =
           loadConfigFromFiles(
-              sampleConfigFileNames,
+              SampleConfigSanitizer.sanitize(sampleConfigFileNames),
               SampleConfigProto.getDescriptor().getFullName(),
               SampleConfigProto.getDefaultInstance());
 
