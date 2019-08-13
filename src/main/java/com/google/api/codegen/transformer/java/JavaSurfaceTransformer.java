@@ -750,7 +750,8 @@ public class JavaSurfaceTransformer {
         .map(InterfaceModel::getFullName)
         .findFirst()
         .map(name -> pathMapper.getOutputPath(name, productConfig))
-        .ifPresent(path -> packageInfo.outputPath(path + File.separator + "package-info.java"));
+        .map(path -> packageInfo.outputPath(path + File.separator + "package-info.java"))
+        .orElseThrow(() -> new IllegalStateException("found no configured interface."));
     packageInfo.releaseLevel(productConfig.getReleaseLevel());
 
     return packageInfo.build();
