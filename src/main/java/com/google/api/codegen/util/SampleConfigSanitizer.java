@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.yaml.snakeyaml.Yaml;
 
+/** Utility class that removes illegal sample config yaml files. */
 public class SampleConfigSanitizer {
 
   private SampleConfigSanitizer() {
