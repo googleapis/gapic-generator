@@ -86,27 +86,15 @@ def com_google_api_codegen_repositories():
     )
 
     _maybe(
-        native.maven_jar,
-        name = "guava_maven",
-        artifact = "com.google.guava:guava:18.0",
-    )
-
-    _maybe(
         native.bind,
         name = "guava",
-        actual = "@guava_maven//jar",
-    )
-
-    _maybe(
-        native.maven_jar,
-        name = "gson_maven",
-        artifact = "com.google.code.gson:gson:2.7",
+        actual = "@com_google_guava_guava__com_google_api_codegen//jar",
     )
 
     _maybe(
         native.bind,
         name = "gson",
-        actual = "@gson_maven//jar",
+        actual = "@com_google_code_gson_gson//jar",
     )
 
     _maybe(
