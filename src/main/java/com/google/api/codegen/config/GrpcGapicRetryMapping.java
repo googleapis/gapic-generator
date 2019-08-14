@@ -26,6 +26,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.util.Durations;
+import com.google.rpc.Code;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,16 +52,16 @@ public abstract class GrpcGapicRetryMapping {
     codesDefMap.putIfAbsent(defaultCodesBuilder.getName(), defaultCodesBuilder.build());
 
     // build retry-to-interface mapping from gRPC ServiceConfig
-    int retryNdx = 1;
-    int noRetryNdx = 1;
+    int retryIndex = 1;
+    int noRetryIndex = 1;
     for (com.google.api.codegen.grpc.MethodConfig methodConfig : config.getMethodConfigList()) {
       RetryPolicy retryPolicy = methodConfig.getRetryPolicy();
       String policyName;
       if (methodConfig.getRetryOrHedgingPolicyCase() == RetryOrHedgingPolicyCase.RETRY_POLICY) {
-        policyName = "retry_policy_" + retryNdx++;
+        policyName = "retry_policy_" + retryIndex++;
       } else {
         // make "unique" no_retry configs because the MethodConfig timeout may differ
-        policyName = "no_retry_" + noRetryNdx++;
+        policyName = "no_retry_" + noRetryIndex++;
       }
 
       long timeout = Durations.toMillis(methodConfig.getTimeout());
@@ -77,9 +78,9 @@ public abstract class GrpcGapicRetryMapping {
       // construct retry codes from RetryPolicy
       RetryCodesDefinitionProto.Builder codesBuilder = RetryCodesDefinitionProto.newBuilder();
       codesBuilder.setName(policyName + "_codes");
-      retryPolicy
-          .getRetryableStatusCodesList()
-          .forEach(code -> codesBuilder.addRetryCodes(code.name()));
+      for (Code code : retryPolicy.getRetryableStatusCodesList()) {
+        codesBuilder.addRetryCodes(code.name());
+      }
       codesDefMap.putIfAbsent(codesBuilder.getName(), codesBuilder.build());
 
       // apply specific method config (overwrites) or apply service config to all methods (does

@@ -103,14 +103,11 @@ public class RetryDefinitionsTransformer {
     ImmutableMap<String, String> methodParamMap = retryMapping.methodParamsMap();
     ImmutableMap<String, RetryParamsDefinitionProto> paramsDefMap = retryMapping.paramsDefMap();
 
-    methodParamMap
-        .keySet()
-        .stream()
-        .filter(name -> name.startsWith(service))
-        .forEach(
-            name ->
-                paramsMap.putIfAbsent(
-                    methodParamMap.get(name), paramsDefMap.get(methodParamMap.get(name))));
+    for (String name : methodParamMap.keySet()) {
+      if (name.startsWith(service)) {
+        paramsMap.putIfAbsent(methodParamMap.get(name), paramsDefMap.get(methodParamMap.get(name)));
+      }
+    }
 
     // force the addition of the default, no retry params config
     paramsMap.putIfAbsent("no_retry_params", paramsDefMap.get("no_retry_params"));
