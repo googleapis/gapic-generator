@@ -41,6 +41,7 @@ def _gapic_srcjar_impl(ctx):
         _set_args(attr.language, "--language=", arguments)
         _set_args(attr.src, "--descriptor=", arguments, inputs)
         _set_args(attr.package, "--package=", arguments)
+        _set_args(attr.grpc_service_config, "--grpc_service_config=", arguments, inputs)
 
     gapic_generator = ctx.executable.gapic_generator
     ctx.actions.run(
