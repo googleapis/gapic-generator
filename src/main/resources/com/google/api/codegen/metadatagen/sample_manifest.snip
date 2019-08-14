@@ -9,11 +9,17 @@
     bin: {@manifest.bin}
     base_path: {@manifest.basePath}
     invocation: {@manifest.invocation}
+    @if manifest.packageName
+      package: {@manifest.packageName}
+    @end
   samples:
   @join entry : manifest.sampleEntries
     - <<: *{@manifest.environment}
       sample: "{@entry.sample}"
       path: "{@entry.path}"
+      @if entry.className
+        class: {@entry.className}
+      @end
       region_tag: "{@entry.regionTag}"
   @end
 

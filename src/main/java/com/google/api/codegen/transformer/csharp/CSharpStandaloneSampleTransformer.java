@@ -117,7 +117,7 @@ public class CSharpStandaloneSampleTransformer extends StaticLangGapicSamplesTra
 
   public SampleManifestTransformer createManifestTransformer() {
     return new SampleManifestTransformer(
-        new CSharpSampleMetadataNamer(this),
+        new CSharpSampleMetadataNamer(this, pathMapper),
         newFeatureConfig,
         newSurfaceNamer,
         newTypeTable,

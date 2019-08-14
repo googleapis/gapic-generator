@@ -29,14 +29,23 @@ public abstract class SampleManifestView implements ViewModel {
 
     public abstract String path();
 
+    /** Only needed by Java and C#. */
+    public abstract String className();
+
     public abstract String regionTag();
 
     public static SampleEntry.Builder newBuilder() {
       return new AutoValue_SampleManifestView_SampleEntry.Builder();
     }
 
-    public static SampleEntry create(String sample, String path, String regionTag) {
-      return newBuilder().sample(sample).path(path).regionTag(regionTag).build();
+    public static SampleEntry create(
+        String sample, String path, String className, String regionTag) {
+      return newBuilder()
+          .sample(sample)
+          .path(path)
+          .regionTag(regionTag)
+          .className(className)
+          .build();
     }
 
     @AutoValue.Builder
@@ -45,6 +54,8 @@ public abstract class SampleManifestView implements ViewModel {
       public abstract Builder sample(String val);
 
       public abstract Builder path(String val);
+
+      public abstract Builder className(String val);
 
       public abstract Builder regionTag(String val);
 
@@ -59,6 +70,9 @@ public abstract class SampleManifestView implements ViewModel {
   public abstract String bin();
 
   public abstract String basePath();
+
+  /** Only needed by Java and C#. */
+  public abstract String packageName();
 
   public abstract String invocation();
 
@@ -95,6 +109,8 @@ public abstract class SampleManifestView implements ViewModel {
     public abstract Builder sampleEntries(ImmutableList<SampleEntry> val);
 
     public abstract Builder templateFileName(String val);
+
+    public abstract Builder packageName(String val);
 
     public abstract Builder outputPath(String val);
 

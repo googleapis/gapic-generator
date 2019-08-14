@@ -18,6 +18,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.SampleContext;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.SampleMetadataNamer;
 import com.google.api.codegen.util.Name;
 import java.util.List;
@@ -25,9 +26,12 @@ import java.util.List;
 public class CSharpSampleMetadataNamer implements SampleMetadataNamer {
 
   private final CSharpStandaloneSampleTransformer csharpSampleTransformer;
+  private final GapicCodePathMapper pathMapper;
 
-  public CSharpSampleMetadataNamer(CSharpStandaloneSampleTransformer csharpSampleTransformer) {
+  public CSharpSampleMetadataNamer(
+      CSharpStandaloneSampleTransformer csharpSampleTransformer, GapicCodePathMapper pathMapper) {
     this.csharpSampleTransformer = csharpSampleTransformer;
+    this.pathMapper = pathMapper;
   }
 
   public String getEnvironment() {
@@ -35,7 +39,7 @@ public class CSharpSampleMetadataNamer implements SampleMetadataNamer {
   }
 
   public String getBasePath(ProductConfig config) {
-    return config.getPackageName() + "Samples";
+    return config.getPackageName() + ".Samples";
   }
 
   public String getBin() {
@@ -43,11 +47,19 @@ public class CSharpSampleMetadataNamer implements SampleMetadataNamer {
   }
 
   public String getInvocation() {
-    return "dotnet build /p:StartupObject={path}; {bin} @args";
+    return "dotnet build /p:StartupObject={package}; {bin} @args";
   }
 
   public String getSamplePath(String uniqueSampleId) {
-    return "{base_path}." + Name.from(uniqueSampleId).toUpperCamel() + "Main";
+    return "{base_path}/" + Name.from(uniqueSampleId).toUpperCamel() + ".cs";
+  }
+
+  public String getSampleClassName(String uniqueSampleId) {
+    return "{package}." + Name.from(uniqueSampleId).toUpperCamel() + "Main";
+  }
+
+  public String getPackageName(GapicProductConfig productConfig) {
+    return productConfig.getPackageName() + ".Samples";
   }
 
   public List<SampleContext> getSampleContexts(

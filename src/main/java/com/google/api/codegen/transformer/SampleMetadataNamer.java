@@ -36,6 +36,14 @@ public interface SampleMetadataNamer {
 
   String getSamplePath(String uniqueSampleId);
 
+  default String getSampleClassName(String uniqueSampleId) {
+    return "";
+  }
+
+  default String getPackageName(GapicProductConfig productConfig) {
+    return "";
+  }
+
   List<SampleContext> getSampleContexts(
       List<InterfaceContext> interfaceContexts, GapicProductConfig productConfig);
 }

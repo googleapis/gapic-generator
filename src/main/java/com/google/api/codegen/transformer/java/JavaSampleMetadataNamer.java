@@ -18,18 +18,25 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.SampleContext;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.SampleMetadataNamer;
 import com.google.api.codegen.util.Name;
 import java.util.List;
 
 public class JavaSampleMetadataNamer implements SampleMetadataNamer {
 
+  private final GapicCodePathMapper pathMapper;
+
+  public JavaSampleMetadataNamer(GapicCodePathMapper pathMapper) {
+    this.pathMapper = pathMapper;
+  }
+
   public String getEnvironment() {
     return "java";
   }
 
   public String getBasePath(ProductConfig config) {
-    return JavaSurfaceNamer.getExamplePackageName(config.getPackageName());
+    return pathMapper.getOutputPath("", config);
   }
 
   public String getBin() {
@@ -37,11 +44,19 @@ public class JavaSampleMetadataNamer implements SampleMetadataNamer {
   }
 
   public String getInvocation() {
-    return "{bin} -PmainClass={path} --args='@args'";
+    return "{bin} -PmainClass={class} --args='@args'";
   }
 
   public String getSamplePath(String uniqueSampleId) {
-    return "{base_path}." + Name.from(uniqueSampleId).toUpperCamel();
+    return "{base_path}/" + Name.from(uniqueSampleId).toUpperCamel() + ".java";
+  }
+
+  public String getSampleClassName(String uniqueSampleId) {
+    return "{package}." + Name.from(uniqueSampleId).toUpperCamel();
+  }
+
+  public String getPackageName(GapicProductConfig productConfig) {
+    return JavaSurfaceNamer.getExamplePackageName(productConfig.getPackageName());
   }
 
   public List<SampleContext> getSampleContexts(

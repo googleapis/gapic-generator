@@ -77,7 +77,8 @@ public class SampleManifestTransformer implements ModelToViewTransformer<ProtoAp
       String sample = context.uniqueSampleId();
       String path = metadataNamer.getSamplePath(sample);
       String regionTag = context.sampleConfig().regionTag();
-      builder.add(SampleManifestView.SampleEntry.create(sample, path, regionTag));
+      String className = metadataNamer.getSampleClassName(sample);
+      builder.add(SampleManifestView.SampleEntry.create(sample, path, className, regionTag));
     }
     ImmutableList<SampleManifestView.SampleEntry> entries = builder.build();
 
@@ -90,6 +91,7 @@ public class SampleManifestTransformer implements ModelToViewTransformer<ProtoAp
     sampleManifestView.environment(metadataNamer.getEnvironment());
     sampleManifestView.bin(metadataNamer.getBin());
     sampleManifestView.basePath(metadataNamer.getBasePath(productConfig));
+    sampleManifestView.packageName(metadataNamer.getPackageName(productConfig));
     sampleManifestView.invocation(metadataNamer.getInvocation());
     sampleManifestView.schemaVersion(MANIFEST_SCHEMA_VERSION);
     sampleManifestView.sampleEntries(entries);
