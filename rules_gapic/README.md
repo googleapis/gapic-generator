@@ -82,7 +82,7 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 1. **`php/php_gapic_repositories.bzl`** - this file declares the PHP-specific dependencies of the generated output and is supposed to be included in the WORKSPACE file of the consuming workspace (for example in `googleapis`). This file also declares the `php` repository rule, which downloads and builds from sources the PHP interpreter (by using `gcc`, `make` and `autoconf` tools, so they are expected to be installed on the system).
 
 #### Node.js
-There are no any specific to Node.js dependencies at this moment (thay may be added in the future).
+There are not any specific to Node.js dependencies at this moment (they may be added in the future).
 
 #### Ruby
-There are no any specific to Ruby dependencies at this moment (thay may be added in the future).
+There are not any specific to Ruby dependencies at this moment (they may be added in the future).
