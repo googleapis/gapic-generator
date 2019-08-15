@@ -399,30 +399,30 @@ public class OutputTransformer {
             .map(c -> context.getNamer().localVarName(Name.anyLower(c)))
             .toArray(Object[]::new);
     String formattedComment = String.format(comment, args);
-    // We need to call split with a negative limit because user
+    // We need to call split with a negative limit because the user
     // might explicitly specify empty comment lines at the end of
-    // the comment block.
-    // But we need to explicitly trim the last element because we don't
-    // want to include the blankline introduced by yaml syntax
+    // the comment block, but we also need to explicitly trim the last
+    // element since we don't want to include the blankline introduced
+    // by YAML syntax.
     //
     // For example:
-    // If yaml looks like:
+    // If the YAML looks like:
     // ```
     // comment: |
     //   I am line1
     //   I am line2
     // ```
-    // Parsed config would be: `I am line1\nI am line2\n`.
+    // then the parsed config would be: `I am line1\nI am line2\n`,
     //
-    // And splittedComments would be: ["I am line1", "I am line2", ""]
+    // and splitComments would be: ["I am line1", "I am line2", ""],
     //
-    // But we don't want the last empty string.
-    String[] splittedComments = formattedComment.split("\\n", -1);
-    int end = splittedComments.length - 1;
-    end = splittedComments[end].equals("") ? end - 1 : end;
+    // but we don't want the last empty string.
+    String[] splitComments = formattedComment.split("\\n", -1);
+    int end = splitComments.length - 1;
+    end = splitComments[end].equals("") ? end - 1 : end;
     ImmutableList<String> lines =
         IntStream.range(0, end + 1) // the second index is exclusive
-            .mapToObj(i -> splittedComments[i])
+            .mapToObj(i -> splitComments[i])
             .collect(ImmutableList.toImmutableList());
     return OutputView.CommentView.newBuilder().lines(lines).build();
   }
