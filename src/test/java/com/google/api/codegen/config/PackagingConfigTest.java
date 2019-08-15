@@ -63,12 +63,25 @@ public class PackagingConfigTest {
     PackagingConfig expected;
 
     // 0
-    expected = config("pubsub", "v1", "google-cloud", "google/pubsub/v1", true, ReleaseLevel.GA);
+    expected =
+        config(
+            "pubsub",
+            "v1",
+            "google-cloud",
+            "google/pubsub/v1",
+            true,
+            ReleaseLevel.UNSET_RELEASE_LEVEL);
     params.add(param("google.pubsub.v1.Subscriber", true, expected));
 
     // 1
     expected =
-        config("longrunning", "v1", "google-cloud", "google/longrunning", false, ReleaseLevel.GA);
+        config(
+            "longrunning",
+            "v1",
+            "google-cloud",
+            "google/longrunning",
+            false,
+            ReleaseLevel.UNSET_RELEASE_LEVEL);
     params.add(param("google.longrunning.Operations", false, expected));
 
     // 2
@@ -116,7 +129,14 @@ public class PackagingConfigTest {
     params.add(param("google.cloud.vision.v1beta1.ProductSearch", false, expected));
 
     // 6
-    expected = config("graph", "v1", "google-home", "google/home/graph/v1", false, ReleaseLevel.GA);
+    expected =
+        config(
+            "graph",
+            "v1",
+            "google-home",
+            "google/home/graph/v1",
+            false,
+            ReleaseLevel.UNSET_RELEASE_LEVEL);
     params.add(param("google.home.graph.v1.HomeGraphApiService", false, expected));
 
     // 7
@@ -127,7 +147,7 @@ public class PackagingConfigTest {
             "google-streetview",
             "google/streetview/publish/v1",
             false,
-            ReleaseLevel.GA);
+            ReleaseLevel.UNSET_RELEASE_LEVEL);
     params.add(param("google.streetview.publish.v1.StreetViewPublishService", false, expected));
 
     // 8
@@ -143,12 +163,25 @@ public class PackagingConfigTest {
         param("google.cloud.videointelligence.beta1.VideoIntelligenceService", false, expected));
 
     // 9
-    expected = config("admin", "v1", "google-iam", "google/iam/admin/v1", false, ReleaseLevel.GA);
+    expected =
+        config(
+            "admin",
+            "v1",
+            "google-iam",
+            "google/iam/admin/v1",
+            false,
+            ReleaseLevel.UNSET_RELEASE_LEVEL);
     params.add(param("google.iam.admin.v1.IAM", true, expected));
 
     // 10
     expected =
-        config("<wrong_input>", "v1", "google-cloud", "<wrong_input>", false, ReleaseLevel.GA);
+        config(
+            "<wrong_input>",
+            "v1",
+            "google-cloud",
+            "<wrong_input>",
+            false,
+            ReleaseLevel.UNSET_RELEASE_LEVEL);
     params.add(param("<wrong_input>", false, expected));
 
     return params.build();

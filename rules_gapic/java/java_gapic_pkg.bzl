@@ -66,7 +66,7 @@ def _java_gapic_build_configs_pkg_impl(ctx):
     done
     chmod 644 {package_dir_path}/*
     cd {package_dir_path}
-    tar -zchpf {package_dir}.tar.gz {package_dir_expr}
+    tar -zchpf {package_dir}.tar.gz {package_dir_expr}*
     cd -
     mv {package_dir_path}/{package_dir}.tar.gz {pkg}
     """.format(
@@ -132,7 +132,7 @@ def _java_gapic_srcs_pkg_impl(ctx):
         rm -r -f {package_dir_path}/src/test/java/META-INF
     done
     cd {package_dir_path}
-    tar -zchpf {package_dir}.tar.gz {package_dir_expr}
+    tar -zchpf {package_dir}.tar.gz {package_dir_expr}*
     cd -
     mv {package_dir_path}/{package_dir}.tar.gz {pkg}
     """.format(
