@@ -71,6 +71,17 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 
 5. **`ruby_gapic_assembly_pkg`** - Ruby **macro** which accepts the previously built `ruby_proto_library`, `ruby_grpc_library` and `ruby_gapic_library` artifacts as arguments and packages them into an idiomatic (for Ruby) package which is ready for opensourcing and is independent from Bazel.
 
+#### C#
+1. **`csharp_proto_library`** - C# **macro**, which generates C# protobuf stubs by calling protobuf compiller with `--csharp_out` parameter.
+
+2. **`csharp_grpc_library`** - C# **macro**, which generates C# gRPC stubs by calling protobuf compiller with the C# gRPC plugin.
+
+3. **`csharp_gapic_srcjar`** - C# **macro**, which first calls `gapic_srcjar` to generate the source code, then calls an internal rule which does all the C#-specific postprocessing of the code (currenly just splitting the code into main, test, smoke test and package `.srcjar` files (zip format)).
+
+4. **`csharp_gapic_library`** - C# **macro**, which calls `csharp_gapic_srcjar` to generate and postprocess gapic library. 
+
+5. **`csharp_gapic_assembly_pkg`** - C# **macro** which accepts the previously built `csharp_proto_library`, `csharp_grpc_library` and `csharp_gapic_library` artifacts as arguments and packages them into an idiomatic (for C#) package which is ready for opensourcing and is independent from Bazel.
+
 ### Generated Artifacts Dependencies Resolution
 #### Java
 1. **`java/java_gapic_repositories.bzl`** - this file essentially replaces `artman_<service>.yaml`, `dependencies.yaml` and `api_defaults.yaml` by using `bazel` itself for dependencies resolution. Previously the dependencies were handled in a form of yaml config values, when they are not validated to: 1) be correct/exist; 2) match generated code; 3) be sufficient/redundant. To deal with dependencies versions mismatch, the `repo_mapping` feature of Bazel is supposed to be used (enabled by `--experimental_enable_repo_mapping` command line argument).
@@ -86,3 +97,6 @@ There are not any specific to Node.js dependencies at this moment (they may be a
 
 #### Ruby
 There are not any specific to Ruby dependencies at this moment (they may be added in the future).
+
+#### C#
+There are not any specific to C# dependencies at this moment (they may be added in the future).

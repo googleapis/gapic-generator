@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+GapicInfo = provider(fields = ["main", "test", "smoke_test", "pkg"])
+
 def _set_args(arg, arg_name, args, inputs = None, required = False):
     if not arg:
         if required:
