@@ -59,11 +59,6 @@ public abstract class PhpGapicCodePathMapper implements GapicCodePathMapper {
     return Joiner.on("/").join(dirs);
   }
 
-  @Override
-  public String getSamplesOutputPath(String elementFullName, ProductConfig config, String method) {
-    return getOutputPath(elementFullName, config);
-  }
-
   public static Builder newBuilder() {
     return new AutoValue_PhpGapicCodePathMapper.Builder();
   }
