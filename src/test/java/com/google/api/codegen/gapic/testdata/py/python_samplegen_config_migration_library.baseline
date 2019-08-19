@@ -5645,6 +5645,10 @@ samples:
   path: "{base_path}/delete_shelf_request_empty_response_type_without_response_handling.py"
   region_tag: "sample"
 - <<: *python
+  sample: "testing_map"
+  path: "{base_path}/testing_map.py"
+  region_tag: "testing_map"
+- <<: *python
   sample: "publish_series_request_pi_version"
   path: "{base_path}/publish_series_request_pi_version.py"
   region_tag: "canonical"
@@ -6372,6 +6376,58 @@ def sample_get_shelf():
 
 def main():
   sample_get_shelf()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/testing_map.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "testing_map")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: testing maps
+#   description: testing maps in request fields
+#   usage: python3 samples/v1/testing_map.py
+
+# [START testing_map]
+from google.cloud.example import library_v1
+
+def sample_create_book():
+  """testing maps in request fields"""
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.shelf_path('my_shelf')
+  map_string_value_item = 'my_string_value'
+  map_string_value = {1: map_string_value_item}
+  field = 4147
+  map_message_value_item = {'field': field}
+  map_message_value = {'something': map_message_value_item}
+  book = {'map_string_value': map_string_value, 'map_message_value': map_message_value}
+
+  response = client.create_book(name, book)
+  print(u'Book created!')
+# [END testing_map]
+
+def main():
+  sample_create_book()
 
 if __name__ == '__main__':
   main()

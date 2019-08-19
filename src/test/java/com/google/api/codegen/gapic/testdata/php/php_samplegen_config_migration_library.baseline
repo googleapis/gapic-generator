@@ -1440,6 +1440,66 @@ function sampleGetShelf()
 
 sampleGetShelf();
 
+============== file: samples/V1/TestingMap.php ==============
+<?php
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * DO NOT EDIT! This is a generated sample ("Request",  "testing_map")
+ */
+
+// sample-metadata
+//   title: testing maps
+//   description: testing maps in request fields
+//   usage: php samples/V1/TestingMap.php
+// [START testing_map]
+require __DIR__ . '/../../vendor/autoload.php';
+
+use Google\Cloud\Example\Library\V1\LibraryServiceClient;
+use Google\Example\Library\V1\Book;
+use Google\Example\Library\V1\SomeMessage;
+
+/** testing maps in request fields */
+function sampleCreateBook()
+{
+    $libraryServiceClient = new LibraryServiceClient();
+
+    $formattedName = $libraryServiceClient->shelfName('my_shelf');
+    $mapStringValueItem = 'my_string_value';
+    $mapStringValue = [1 => $mapStringValueItem];
+    $field = 4147;
+    $mapMessageValueItem = new SomeMessage();
+    $mapMessageValueItem->setField($field);
+    $mapMessageValue = ['something' => $mapMessageValueItem];
+    $book = new Book();
+    $book->setMapStringValue($mapStringValue);
+    $book->setMapMessageValue($mapMessageValue);
+
+    try {
+        $response = $libraryServiceClient->createBook($formattedName, $book);
+        printf("Book created!" . PHP_EOL);
+    } finally {
+        $libraryServiceClient->close();
+    }
+}
+// [END testing_map]
+
+sampleCreateBook();
+
 ============== file: samples/V1/ThisTagShouldBeTheNameOfTheFile.php ==============
 <?php
 /*
@@ -1635,6 +1695,10 @@ samples:
   sample: "delete_shelf_request_empty_response_type_without_response_handling"
   path: "{base_path}/DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling.php"
   region_tag: "sample"
+- <<: *php
+  sample: "testing_map"
+  path: "{base_path}/TestingMap.php"
+  region_tag: "testing_map"
 - <<: *php
   sample: "publish_series_request_pi_version"
   path: "{base_path}/PublishSeriesRequestPiVersion.php"

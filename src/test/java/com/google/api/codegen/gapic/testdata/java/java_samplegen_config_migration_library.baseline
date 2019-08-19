@@ -1725,6 +1725,85 @@ public class TestSettingUpEmptyObjectsInRequest {
     sampleGetShelf();
   }
 }
+============== file: samples/src/main/java/com/google/example/examples/library/v1/TestingMap.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Request",  "testing_map")
+// sample-metadata:
+//   title: testing maps
+//   description: testing maps in request fields
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.TestingMap
+
+package com.google.example.examples.library.v1;
+
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.CreateBookRequest;
+import com.google.example.library.v1.LibraryClient;
+import com.google.example.library.v1.ShelfName;
+import com.google.example.library.v1.SomeMessage;
+import java.util.HashMap;
+import java.util.Map;
+
+public class TestingMap {
+  // [START testing_map]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.CreateBookRequest;
+   * import com.google.example.library.v1.LibraryClient;
+   * import com.google.example.library.v1.ShelfName;
+   * import com.google.example.library.v1.SomeMessage;
+   * import java.util.HashMap;
+   * import java.util.Map;
+   */
+
+  /** testing maps in request fields */
+  public static void sampleCreateBook() {
+    try (LibraryClient libraryClient = LibraryClient.create()) {
+      ShelfName name = ShelfName.of("my_shelf");
+      String mapStringValueItem = "my_string_value";
+      Map<int, String> mapStringValue = new HashMap<>();
+      mapStringValue.put(1, mapStringValueItem);
+      int field = 4147;
+      SomeMessage mapMessageValueItem = SomeMessage.newBuilder()
+        .setField(field)
+        .build();
+      Map<String, SomeMessage> mapMessageValue = new HashMap<>();
+      mapMessageValue.put("something", mapMessageValueItem);
+      Book book = Book.newBuilder()
+        .putAllMapStringValue(mapStringValue)
+        .putAllMapMessageValue(mapMessageValue)
+        .build();
+      CreateBookRequest request = CreateBookRequest.newBuilder()
+        .setName(name.toString())
+        .setBook(book)
+        .build();
+      Book response = libraryClient.createBook(request);
+      System.out.println("Book created!");
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END testing_map]
+
+  public static void main(String[] args) {
+    sampleCreateBook();
+  }
+}
 ============== file: samples/src/main/java/com/google/example/examples/library/v1/ThisTagShouldBeTheNameOfTheFile.java ==============
 /*
  * Copyright 2019 Google LLC
@@ -1963,6 +2042,11 @@ samples:
   path: "{base_path}/DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling.java"
   class: {package}.DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling
   region_tag: "sample"
+- <<: *java
+  sample: "testing_map"
+  path: "{base_path}/TestingMap.java"
+  class: {package}.TestingMap
+  region_tag: "testing_map"
 - <<: *java
   sample: "publish_series_request_pi_version"
   path: "{base_path}/PublishSeriesRequestPiVersion.java"

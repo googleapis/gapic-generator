@@ -1227,6 +1227,78 @@ namespace Google.Example.Library.V1.Samples
         }
     }
 }
+============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/TestingMap.cs ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Generated code. DO NOT EDIT!
+
+// This is a generated sample ("Request", "testing_map")
+
+// sample-metadata
+//   title: testing maps
+//   description: testing maps in request fields
+//   usage: dotnet run
+
+using CommandLine;
+
+namespace Google.Example.Library.V1.Samples
+{
+    // [START testing_map]
+    using Google.Example.Library.V1;
+    using System;
+    using System.Collections.Generic;
+
+    public class TestingMap
+    {
+        /// <summary>
+        /// testing maps in request fields
+        /// </summary>
+        public static void SampleCreateBook()
+        {
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            CreateBookRequest request = new CreateBookRequest
+            {
+                ShelfName = new ShelfName("my_shelf"),
+                Book = new Book
+                {
+                    MapStringValue = {
+                                         { 1, "my_string_value" },
+                                     },
+                    MapMessageValue = {
+                                          { "something",
+                                            new SomeMessage
+                                            {
+                                                Field = 4147,
+                                            } },
+                                      },
+                },
+            };
+            Book response = libraryServiceClient.CreateBook(request);
+            Console.WriteLine("Book created!");
+        }
+    }
+
+    // [END testing_map]
+
+    public class TestingMapMain {
+        public static void Main(string[] args)
+        {
+            TestingMap.SampleCreateBook();
+        }
+    }
+}
 ============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/ThisTagShouldBeTheNameOfTheFile.cs ==============
 // Copyright 2019 Google LLC
 //
@@ -1452,6 +1524,11 @@ samples:
   path: "{base_path}/DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling.cs"
   class: {package}.DeleteShelfRequestEmptyResponseTypeWithoutResponseHandlingMain
   region_tag: "sample"
+- <<: *csharp
+  sample: "testing_map"
+  path: "{base_path}/TestingMap.cs"
+  class: {package}.TestingMapMain
+  region_tag: "testing_map"
 - <<: *csharp
   sample: "publish_series_request_pi_version"
   path: "{base_path}/PublishSeriesRequestPiVersion.cs"

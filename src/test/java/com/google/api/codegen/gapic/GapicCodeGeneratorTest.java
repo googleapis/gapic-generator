@@ -229,6 +229,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
       "fake.sample.yaml",
       "another_fake.sample.yaml",
       "babble_about_book.sample.yaml",
+      "create_book.sample.yaml",
       "delete_shelf.sample.yaml",
       "discuss_book.sample.yaml",
       "find_related_books.sample.yaml",
