@@ -15,10 +15,10 @@
 def construct_package_dir_paths(attr_package_dir, out_pkg, label_name):
     if attr_package_dir:
         package_dir = attr_package_dir
-        package_dir_expr = "../{}/*".format(package_dir)
+        package_dir_expr = "../{}/".format(package_dir)
     else:
         package_dir = label_name
-        package_dir_expr = "./*"
+        package_dir_expr = "./"
 
     # We need to include label in the path to eliminate possible output files duplicates
     # (labels are guaranteed to be unique by bazel itself)

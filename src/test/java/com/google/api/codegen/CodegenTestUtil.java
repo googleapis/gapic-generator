@@ -18,6 +18,7 @@ import com.google.api.codegen.gapic.GapicTestConfig;
 import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.codegen.util.MultiYamlReader;
+import com.google.api.codegen.util.SampleConfigSanitizer;
 import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -112,12 +113,15 @@ public class CodegenTestUtil {
             SampleConfigProto.getDescriptor().getFullName(),
             SampleConfigProto.getDefaultInstance());
 
+    List<String> configFilePaths = new ArrayList<>();
     List<File> configFiles = new ArrayList<>();
     for (String sampleConfigFileName : sampleConfigFileNames) {
       URL sampleConfigUrl = testDataLocator.findTestData(sampleConfigFileName);
-
       String sampleConfigPath = Objects.requireNonNull(sampleConfigUrl).getPath();
+      configFilePaths.add(sampleConfigPath);
+    }
 
+    for (String sampleConfigPath : SampleConfigSanitizer.sanitize(configFilePaths)) {
       File configFile = new File(sampleConfigPath);
       configFiles.add(configFile);
     }

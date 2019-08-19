@@ -108,6 +108,8 @@ public abstract class GapicProductConfig implements ProductConfig {
   public abstract ImmutableTable<String, String, ImmutableList<SampleConfig>>
       getSampleConfigTable();
 
+  public abstract Date getGenerationTimestamp();
+
   public GapicProductConfig withPackageName(String packageName) {
     return new AutoValue_GapicProductConfig(
         getInterfaceConfigMap(),
@@ -123,7 +125,27 @@ public abstract class GapicProductConfig implements ProductConfig {
         getDefaultResourceNameFieldConfigMap(),
         getConfigSchemaVersion(),
         enableStringFormattingFunctionsOverride(),
-        getSampleConfigTable());
+        getSampleConfigTable(),
+        getGenerationTimestamp());
+  }
+
+  public GapicProductConfig withGenerationTimestamp(Date timestamp) {
+    return new AutoValue_GapicProductConfig(
+        getInterfaceConfigMap(),
+        getPackageName(),
+        getDomainLayerLocation(),
+        getReleaseLevel(),
+        getResourceNameMessageConfigs(),
+        getCopyrightLines(),
+        getLicenseLines(),
+        getResourceNameConfigs(),
+        getProtoParser(),
+        getTransportProtocol(),
+        getDefaultResourceNameFieldConfigMap(),
+        getConfigSchemaVersion(),
+        enableStringFormattingFunctionsOverride(),
+        getSampleConfigTable(),
+        timestamp);
   }
 
   @Nullable
@@ -364,7 +386,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion,
         enableStringFormatFunctionsOverride,
-        SampleConfig.createSampleConfigTable(sampleConfigProto, interfaceConfigMap));
+        SampleConfig.createSampleConfigTable(sampleConfigProto, interfaceConfigMap),
+        new Date());
   }
 
   public static GapicProductConfig create(
@@ -438,7 +461,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
         configSchemaVersion,
         enableStringFormatFunctionsOverride,
-        ImmutableTable.of());
+        ImmutableTable.of(),
+        new Date());
   }
 
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
@@ -480,7 +504,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         createResponseFieldConfigMap(messageConfigs, ImmutableMap.of()),
         configSchemaVersion,
         false,
-        ImmutableTable.of());
+        ImmutableTable.of(),
+        new Date());
   }
 
   /** Return the list of information about clients to be generated. */

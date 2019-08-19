@@ -44,6 +44,9 @@ public abstract class SampleContext {
   /** Whether to pass a single object or a list of fields to the method call. */
   public abstract InitCodeOutputType initCodeOutputType();
 
+  @Nullable
+  public abstract MethodContext methodContext();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleContext.Builder();
   }
@@ -62,6 +65,8 @@ public abstract class SampleContext {
     public abstract Builder initCodeOutputType(InitCodeOutputType val);
 
     public abstract Builder clientMethodType(ClientMethodType val);
+
+    public abstract Builder methodContext(MethodContext val);
 
     public abstract SampleContext build();
   }

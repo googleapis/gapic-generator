@@ -252,6 +252,8 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
 
   private static String[] sampleConfigFileNames() {
     return new String[] {
+      "fake.sample.yaml",
+      "another_fake.sample.yaml",
       "babble_about_book.sample.yaml",
       "delete_shelf.sample.yaml",
       "discuss_book.sample.yaml",

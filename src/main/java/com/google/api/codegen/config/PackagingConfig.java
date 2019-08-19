@@ -221,8 +221,6 @@ public abstract class PackagingConfig {
       releaseLevel = ReleaseLevel.ALPHA;
     } else if (ver.contains("beta")) {
       releaseLevel = ReleaseLevel.BETA;
-    } else if (!ver.isEmpty()) {
-      releaseLevel = ReleaseLevel.GA;
     }
 
     Builder builder =

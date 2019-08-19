@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -48,6 +50,9 @@ import javax.annotation.Nullable;
 
 /** Base class for code generator baseline tests. */
 public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
+
+  private static final Date frozenTimestamp = new GregorianCalendar(2019, 7, 1).getTime();
+
   // Wiring
   // ======
 
@@ -283,6 +288,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             clientPackage,
             language,
             grpcServiceConfig);
+
+    productConfig = productConfig.withGenerationTimestamp(frozenTimestamp);
     if (productConfig == null) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());

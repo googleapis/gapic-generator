@@ -14,17 +14,23 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SampleManifestTransformer;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.StaticLangGapicSamplesTransformer;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.common.collect.ImmutableMap;
+import java.util.function.Function;
 
 /** A transformer that generates C# standalone samples. */
 public class CSharpStandaloneSampleTransformer extends StaticLangGapicSamplesTransformer {
@@ -83,19 +89,38 @@ public class CSharpStandaloneSampleTransformer extends StaticLangGapicSamplesTra
   private static final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
 
+  private static final Function<GapicProductConfig, FeatureConfig> newFeatureConfig =
+      product -> new CSharpFeatureConfig();
+  private static final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer =
+      product -> new CSharpSurfaceNamer(product.getPackageName(), ALIAS_MODE);
+  private static final Function<String, ModelTypeTable> newTypeTable =
+      pkg -> csharpCommonTransformer.createTypeTable(pkg + ".Samples", ALIAS_MODE);
+
+  private final GapicCodePathMapper pathMapper;
+
   public CSharpStandaloneSampleTransformer(GapicCodePathMapper pathMapper) {
     super(
         STANDALONE_SAMPLE_TEMPLATE_FILENAME,
         pathMapper,
         fileHeaderTransformer,
         csharpApiMethodTransformer,
-        product -> new CSharpFeatureConfig(),
-        product -> new CSharpSurfaceNamer(product.getPackageName(), ALIAS_MODE),
-        pkg -> csharpCommonTransformer.createTypeTable(pkg + ".Samples", ALIAS_MODE));
+        newFeatureConfig,
+        newSurfaceNamer,
+        newTypeTable);
+    this.pathMapper = pathMapper;
   }
 
   @Override
   protected ClientMethodType fromCallingForm(CallingForm callingForm) {
     return CALLING_FORM_CLIENT_METHOD_TYPE_MAP.get(callingForm);
+  }
+
+  public SampleManifestTransformer createManifestTransformer() {
+    return new SampleManifestTransformer(
+        new CSharpSampleMetadataNamer(this, pathMapper),
+        newFeatureConfig,
+        newSurfaceNamer,
+        newTypeTable,
+        pathMapper);
   }
 }
