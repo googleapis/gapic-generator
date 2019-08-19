@@ -448,13 +448,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
       case UNSET_RELEASE_LEVEL:
         // fallthrough
       case ALPHA:
-        return "Development Status :: 3 - Alpha";
+        return "3 - Alpha";
       case BETA:
-        return "Development Status :: 4 - Beta";
+        return "4 - Beta";
       case GA:
-        return "Development Status :: 5 - Production/Stable";
+        return "5 - Production/Stable";
       case DEPRECATED:
-        return "Development Status :: 7 - Inactive";
+        return "7 - Inactive";
       default:
         throw new IllegalStateException("Invalid development status");
     }
