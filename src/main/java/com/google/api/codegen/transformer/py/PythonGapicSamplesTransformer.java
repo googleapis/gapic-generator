@@ -25,6 +25,7 @@ import com.google.api.codegen.transformer.DynamicLangGapicSamplesTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SampleManifestTransformer;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.py.PythonTypeTable;
@@ -55,9 +56,12 @@ public class PythonGapicSamplesTransformer extends DynamicLangGapicSamplesTransf
               .sampleImportTransformer(new PythonSampleImportTransformer())
               .build());
   private static final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer =
-      p -> new PythonSurfaceNamer(p.getPackageName());
+      product -> new PythonSurfaceNamer(product.getPackageName());
+  private static final Function<String, ModelTypeTable> newTypeTable =
+      pkg -> new ModelTypeTable(new PythonTypeTable(pkg), new PythonModelTypeNameConverter(pkg));
 
   private final PackageMetadataConfig packageConfig;
+  private final GapicCodePathMapper pathMapper;
 
   public PythonGapicSamplesTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
@@ -68,8 +72,9 @@ public class PythonGapicSamplesTransformer extends DynamicLangGapicSamplesTransf
         apiMethodTransformer,
         new DefaultFeatureConfig(),
         newSurfaceNamer,
-        p -> new ModelTypeTable(new PythonTypeTable(p), new PythonModelTypeNameConverter(p)));
+        newTypeTable);
     this.packageConfig = packageConfig;
+    this.pathMapper = pathMapper;
   }
 
   @Override
@@ -82,5 +87,14 @@ public class PythonGapicSamplesTransformer extends DynamicLangGapicSamplesTransf
     return super.newSampleFileViewBuilder(productConfig, context, sampleFileName, method, sample)
         .gapicPackageName(
             newSurfaceNamer.apply(productConfig).getGapicPackageName(packageConfig.packageName()));
+  }
+
+  public SampleManifestTransformer createManifestTransformer() {
+    return new SampleManifestTransformer(
+        new PythonSampleMetadataNamer(this, pathMapper),
+        p -> new DefaultFeatureConfig(),
+        newSurfaceNamer,
+        newTypeTable,
+        pathMapper);
   }
 }

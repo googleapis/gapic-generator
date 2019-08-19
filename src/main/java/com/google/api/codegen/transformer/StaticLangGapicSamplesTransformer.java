@@ -102,8 +102,7 @@ public abstract class StaticLangGapicSamplesTransformer
     }
 
     // Generate samples using sample configs.
-    return generateSamplesFromSampleConfigs(
-        interfaceContexts, productConfig, namer, sampleConfigTable);
+    return generateSamplesFromSampleConfigs(interfaceContexts, productConfig);
   }
 
   @Override
@@ -111,41 +110,12 @@ public abstract class StaticLangGapicSamplesTransformer
     return Arrays.asList(templateFileName);
   }
 
-  private List<ViewModel> generateSamplesFromGapicConfigs(
-      List<InterfaceContext> interfaceContexts,
-      GapicProductConfig productConfig,
-      SurfaceNamer namer) {
-    List<MethodSampleView> allSamples =
-        interfaceContexts
-            .stream()
-            .flatMap(iface -> apiMethodTransformer.generateApiMethods(iface).stream())
-            .flatMap(method -> method.samples().stream())
-            .collect(ImmutableList.toImmutableList());
-    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
-    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
-    for (InterfaceContext context : interfaceContexts) {
-      List<StaticLangApiMethodView> methods = apiMethodTransformer.generateApiMethods(context);
-      for (StaticLangApiMethodView method : methods) {
-        for (MethodSampleView sample : method.samples()) {
-          sampleFileViews.add(
-              newSampleFileView(
-                  productConfig,
-                  context,
-                  registry.getSampleClassName(sample, method.name()),
-                  registry.getSampleFileName(sample, method.name()),
-                  method,
-                  sample));
-        }
-      }
-    }
-    return sampleFileViews.build();
-  }
-
-  private List<ViewModel> generateSamplesFromSampleConfigs(
-      List<InterfaceContext> interfaceContexts,
-      GapicProductConfig productConfig,
-      SurfaceNamer namer,
-      ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable) {
+  public List<SampleContext> getSampleContexts(
+      List<InterfaceContext> interfaceContexts, GapicProductConfig productConfig) {
+    SurfaceNamer namer = newSurfaceNamer.apply(productConfig);
+    ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable =
+        productConfig.getSampleConfigTable();
+    ImmutableList.Builder<SampleContext> sampleContexts = ImmutableList.builder();
 
     // Loop through sample configs and and map each sample ID to its matching calling forms.
     // We need this information when we need to create, in a language-specific way, unique
@@ -173,8 +143,6 @@ public abstract class StaticLangGapicSamplesTransformer
     }
 
     SampleFileRegistry registry = new SampleFileRegistry(namer, configsAndMatchingForms);
-
-    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
     for (InterfaceContext interfaceContext : interfaceContexts) {
       for (MethodModel method : interfaceContext.getSupportedMethods()) {
         MethodContext methodContext = interfaceContext.asRequestMethodContext(method);
@@ -215,24 +183,63 @@ public abstract class StaticLangGapicSamplesTransformer
                     .clientMethodType(fromCallingForm(form))
                     .sampleConfig(sampleConfig)
                     .initCodeOutputType(initCodeOutputType)
+                    .methodContext(methodContext)
                     .build();
-            StaticLangApiMethodView methodView =
-                apiMethodTransformer.generateApiMethod(methodContext, sampleContext);
-
-            MethodSampleView methodSampleView = methodView.samples().get(0);
-            String fileName = namer.getApiSampleFileName(sampleContext.uniqueSampleId());
-            String className = namer.getApiSampleClassName(sampleContext.uniqueSampleId());
-            sampleFileViews.add(
-                newSampleFileView(
-                    productConfig,
-                    interfaceContext,
-                    className,
-                    fileName,
-                    methodView,
-                    methodSampleView));
+            sampleContexts.add(sampleContext);
           }
         }
       }
+    }
+    return sampleContexts.build();
+  }
+
+  private List<ViewModel> generateSamplesFromGapicConfigs(
+      List<InterfaceContext> interfaceContexts,
+      GapicProductConfig productConfig,
+      SurfaceNamer namer) {
+    List<MethodSampleView> allSamples =
+        interfaceContexts
+            .stream()
+            .flatMap(iface -> apiMethodTransformer.generateApiMethods(iface).stream())
+            .flatMap(method -> method.samples().stream())
+            .collect(ImmutableList.toImmutableList());
+    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
+    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
+    for (InterfaceContext context : interfaceContexts) {
+      List<StaticLangApiMethodView> methods = apiMethodTransformer.generateApiMethods(context);
+      for (StaticLangApiMethodView method : methods) {
+        for (MethodSampleView sample : method.samples()) {
+          sampleFileViews.add(
+              newSampleFileView(
+                  productConfig,
+                  context,
+                  registry.getSampleClassName(sample, method.name()),
+                  registry.getSampleFileName(sample, method.name()),
+                  method,
+                  sample));
+        }
+      }
+    }
+    return sampleFileViews.build();
+  }
+
+  private List<ViewModel> generateSamplesFromSampleConfigs(
+      List<InterfaceContext> interfaceContexts, GapicProductConfig productConfig) {
+    SurfaceNamer namer = newSurfaceNamer.apply(productConfig);
+    List<SampleContext> sampleContexts = getSampleContexts(interfaceContexts, productConfig);
+    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
+    for (SampleContext sampleContext : sampleContexts) {
+      StaticLangApiMethodView methodView =
+          apiMethodTransformer.generateApiMethod(sampleContext.methodContext(), sampleContext);
+
+      MethodSampleView methodSampleView = methodView.samples().get(0);
+      String fileName = namer.getApiSampleFileName(sampleContext.uniqueSampleId());
+      String className = namer.getApiSampleClassName(sampleContext.uniqueSampleId());
+      InterfaceContext interfaceContext =
+          sampleContext.methodContext().getSurfaceInterfaceContext();
+      sampleFileViews.add(
+          newSampleFileView(
+              productConfig, interfaceContext, className, fileName, methodView, methodSampleView));
     }
     return sampleFileViews.build();
   }

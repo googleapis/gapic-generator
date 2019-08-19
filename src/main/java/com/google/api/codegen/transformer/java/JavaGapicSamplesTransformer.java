@@ -14,23 +14,39 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.java.JavaGapicSamplePathMapper;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SampleManifestTransformer;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.StaticLangGapicSamplesTransformer;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.common.collect.ImmutableMap;
+import java.util.function.Function;
 
 /** A transformer that generates Java standalone samples. */
 public class JavaGapicSamplesTransformer extends StaticLangGapicSamplesTransformer {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "java/standalone_sample.snip";
+
+  private static final Function<GapicProductConfig, FeatureConfig> newFeatureConfig =
+      product -> JavaFeatureConfig.create(product);
+  private static final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer =
+      product -> new JavaSurfaceNamer(product.getPackageName(), product.getPackageName());
+  private static final Function<String, ModelTypeTable> newTypeTable =
+      pkg ->
+          new ModelTypeTable(
+              new JavaTypeTable(JavaSurfaceNamer.getExamplePackageName(pkg)),
+              new JavaModelTypeNameConverter(JavaSurfaceNamer.getExamplePackageName(pkg)));
 
   private static final ImmutableMap<CallingForm, ClientMethodType>
       CALLING_FORM_CLIENT_METHOD_TYPE_MAP =
@@ -60,22 +76,30 @@ public class JavaGapicSamplesTransformer extends StaticLangGapicSamplesTransform
   private static final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
 
-  public JavaGapicSamplesTransformer(GapicCodePathMapper pathMapper) {
+  private static final GapicCodePathMapper pathMapper = new JavaGapicSamplePathMapper();
+
+  public JavaGapicSamplesTransformer() {
     super(
         STANDALONE_SAMPLE_TEMPLATE_FILENAME,
         pathMapper,
         fileHeaderTransformer,
         apiMethodTransformer,
-        product -> JavaFeatureConfig.create(product),
-        product -> new JavaSurfaceNamer(product.getPackageName(), product.getPackageName()),
-        pkg ->
-            new ModelTypeTable(
-                new JavaTypeTable(JavaSurfaceNamer.getExamplePackageName(pkg)),
-                new JavaModelTypeNameConverter(JavaSurfaceNamer.getExamplePackageName(pkg))));
+        newFeatureConfig,
+        newSurfaceNamer,
+        newTypeTable);
   }
 
   @Override
   protected ClientMethodType fromCallingForm(CallingForm callingForm) {
     return CALLING_FORM_CLIENT_METHOD_TYPE_MAP.get(callingForm);
+  }
+
+  public static SampleManifestTransformer createManifestTransformer() {
+    return new SampleManifestTransformer(
+        new JavaSampleMetadataNamer(pathMapper),
+        newFeatureConfig,
+        newSurfaceNamer,
+        newTypeTable,
+        pathMapper);
   }
 }
