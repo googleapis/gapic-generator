@@ -27,7 +27,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.util.Durations;
 import com.google.rpc.Code;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -156,7 +155,7 @@ public abstract class GrpcGapicRetryMapping {
         .setMaxRetryDelayMillis(Durations.toMillis(retryPolicy.getMaxBackoff()))
         .setInitialRetryDelayMillis(Durations.toMillis(retryPolicy.getInitialBackoff()))
         .setRetryDelayMultiplier(
-            prepareFloatForDoubleFormatPrinting(retryPolicy.getBackoffMultiplier()))
+            convertFloatToDouble(retryPolicy.getBackoffMultiplier()))
         .setTotalTimeoutMillis(timeout)
         .setName(policyName);
   }
@@ -171,7 +170,7 @@ public abstract class GrpcGapicRetryMapping {
   }
 
   /**
-   * Converts a float to a double via DecimalFormat and rounds to the nearest hundredth.
+   * Converts a float to a double via their string representations without any rounding.
    *
    * <p>This is necessary because when a float is converted to a double the double is more precise.
    * When that same double is printed (e.g. in a template), the more precise value is used. For
@@ -179,9 +178,8 @@ public abstract class GrpcGapicRetryMapping {
    * multiplier does not need to be this precise (it was originally a float) and it is not the
    * expected value.
    */
-  private static double prepareFloatForDoubleFormatPrinting(float f) {
-    String formatted = new DecimalFormat(".##").format(f);
-    return Double.parseDouble(formatted);
+  private static double convertFloatToDouble(float f) {
+    return Double.valueOf(Float.toString(f));
   }
 
   private static String fullyQualifiedName(String service, String method) {
