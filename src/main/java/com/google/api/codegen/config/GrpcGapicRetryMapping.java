@@ -27,6 +27,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.util.Durations;
 import com.google.rpc.Code;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,13 +43,11 @@ public abstract class GrpcGapicRetryMapping {
 
     // add no_retry configs for unknown/unspecified methods
     RetryParamsDefinitionProto.Builder defaultParamsBuilder =
-        RetryParamsDefinitionProto.newBuilder();
-    defaultParamsBuilder.setTotalTimeoutMillis(0);
-    defaultParamsBuilder.setName("no_retry_params");
+        retryPolicyToParamsBuilder(RetryPolicy.getDefaultInstance(), 0, "no_retry_params");
     paramsDefMap.putIfAbsent(defaultParamsBuilder.getName(), defaultParamsBuilder.build());
 
-    RetryCodesDefinitionProto.Builder defaultCodesBuilder = RetryCodesDefinitionProto.newBuilder();
-    defaultCodesBuilder.setName("no_retry_codes");
+    RetryCodesDefinitionProto.Builder defaultCodesBuilder =
+        retryPolicyToCodesBuilder(RetryPolicy.getDefaultInstance(), "no_retry_codes");
     codesDefMap.putIfAbsent(defaultCodesBuilder.getName(), defaultCodesBuilder.build());
 
     // build retry-to-interface mapping from gRPC ServiceConfig
@@ -67,40 +66,24 @@ public abstract class GrpcGapicRetryMapping {
       long timeout = Durations.toMillis(methodConfig.getTimeout());
 
       // construct retry params from RetryPolicy
-      RetryParamsDefinitionProto.Builder paramsBuilder = RetryParamsDefinitionProto.newBuilder();
-      paramsBuilder.setMaxRetryDelayMillis(Durations.toMillis(retryPolicy.getMaxBackoff()));
-      paramsBuilder.setInitialRetryDelayMillis(Durations.toMillis(retryPolicy.getInitialBackoff()));
-      paramsBuilder.setRetryDelayMultiplier(floatToDouble(retryPolicy.getBackoffMultiplier()));
-      paramsBuilder.setTotalTimeoutMillis(timeout);
-      paramsBuilder.setName(policyName + "_params");
+      RetryParamsDefinitionProto.Builder paramsBuilder =
+          retryPolicyToParamsBuilder(retryPolicy, timeout, policyName + "_params");
       paramsDefMap.putIfAbsent(paramsBuilder.getName(), paramsBuilder.build());
 
       // construct retry codes from RetryPolicy
-      RetryCodesDefinitionProto.Builder codesBuilder = RetryCodesDefinitionProto.newBuilder();
-      codesBuilder.setName(policyName + "_codes");
-      for (Code code : retryPolicy.getRetryableStatusCodesList()) {
-        codesBuilder.addRetryCodes(code.name());
-      }
+      RetryCodesDefinitionProto.Builder codesBuilder =
+          retryPolicyToCodesBuilder(retryPolicy, policyName + "_codes");
       codesDefMap.putIfAbsent(codesBuilder.getName(), codesBuilder.build());
 
-      // apply specific method config (overwrites) or apply service config to all methods (does
-      // not overwrite method-specific policies)
+      // apply the MethodConfig.RetryPolicy to names
       for (Name name : methodConfig.getNameList()) {
-        String serviceBase = name.getService();
-
-        if (!Strings.isNullOrEmpty(name.getMethod())) {
-          String fullName = fullyQualifiedName(serviceBase, name.getMethod());
-          methodCodesMap.put(fullName, codesBuilder.getName());
-          methodParamsMap.put(fullName, paramsBuilder.getName());
-          continue;
-        }
-
-        Interface interProto = protoInterfaces.get(serviceBase);
-        for (Method method : interProto.getMethods()) {
-          String fullName = method.getFullName();
-          methodCodesMap.putIfAbsent(fullName, codesBuilder.getName());
-          methodParamsMap.putIfAbsent(fullName, paramsBuilder.getName());
-        }
+        applyRetryPolicyToName(
+            name,
+            codesBuilder.getName(),
+            paramsBuilder.getName(),
+            methodCodesMap,
+            methodParamsMap,
+            protoInterfaces);
       }
     }
 
@@ -132,7 +115,63 @@ public abstract class GrpcGapicRetryMapping {
   }
 
   /**
-   * Converts a float to a double rounding to the nearest hundredth.
+   * Applies the converted RetryPolicy to the name(s) specified in the given MethodConfig.Name.
+   *
+   * <p>If a Name contains a local method name, the corresponding RetryPolicy takes precedence over
+   * a top-level Service-defined RetryPolicy (overwrites). If a Name contains only a service name,
+   * the corresponding RetryPolicy is applied to all methods in that service interface, without
+   * overwriting existing method-specific entries.
+   */
+  private static void applyRetryPolicyToName(
+      Name name,
+      String codesName,
+      String paramsName,
+      Map<String, String> methodCodesMap,
+      Map<String, String> methodParamsMap,
+      Map<String, Interface> protoInterfaces) {
+    String service = name.getService();
+    String method = name.getMethod();
+
+    // a method-specific name overwrites an existing service-defined entry
+    if (!Strings.isNullOrEmpty(method)) {
+      String fullName = fullyQualifiedName(service, method);
+      methodCodesMap.put(fullName, codesName);
+      methodParamsMap.put(fullName, paramsName);
+      return;
+    }
+
+    // apply the RetryPolicy to all methods in the service interface that don't already have an
+    // entry
+    Interface interProto = protoInterfaces.get(service);
+    for (Method methodProto : interProto.getMethods()) {
+      String fullName = methodProto.getFullName();
+      methodCodesMap.putIfAbsent(fullName, codesName);
+      methodParamsMap.putIfAbsent(fullName, paramsName);
+    }
+  }
+
+  private static RetryParamsDefinitionProto.Builder retryPolicyToParamsBuilder(
+      RetryPolicy retryPolicy, long timeout, String policyName) {
+    return RetryParamsDefinitionProto.newBuilder()
+        .setMaxRetryDelayMillis(Durations.toMillis(retryPolicy.getMaxBackoff()))
+        .setInitialRetryDelayMillis(Durations.toMillis(retryPolicy.getInitialBackoff()))
+        .setRetryDelayMultiplier(
+            prepareFloatForDoubleFormatPrinting(retryPolicy.getBackoffMultiplier()))
+        .setTotalTimeoutMillis(timeout)
+        .setName(policyName);
+  }
+
+  private static RetryCodesDefinitionProto.Builder retryPolicyToCodesBuilder(
+      RetryPolicy retryPolicy, String codesName) {
+    RetryCodesDefinitionProto.Builder codesBuilder = RetryCodesDefinitionProto.newBuilder();
+    for (Code code : retryPolicy.getRetryableStatusCodesList()) {
+      codesBuilder.addRetryCodes(code.name());
+    }
+    return codesBuilder.setName(codesName);
+  }
+
+  /**
+   * Converts a float to a double via DecimalFormat and rounds to the nearest hundredth.
    *
    * <p>This is necessary because when a float is converted to a double the double is more precise.
    * When that same double is printed (e.g. in a template), the more precise value is used. For
@@ -140,8 +179,9 @@ public abstract class GrpcGapicRetryMapping {
    * multiplier does not need to be this precise (it was originally a float) and it is not the
    * expected value.
    */
-  private static double floatToDouble(float f) {
-    return Math.round(f * 100) / 100.0;
+  private static double prepareFloatForDoubleFormatPrinting(float f) {
+    String formatted = new DecimalFormat(".##").format(f);
+    return Double.parseDouble(formatted);
   }
 
   private static String fullyQualifiedName(String service, String method) {
